@@ -236,6 +236,7 @@ func main() {
 	app.Get("/microservices", h.Microservices)
 	app.Get("/system-architectures", h.SystemArchitectures)
 	app.Get("/golang", h.Golang)
+	app.Get("/python", h.Python)
 	app.Get("/python-asyncio", h.PythonAsyncio)
 	app.Get("/deployment-guide", h.DeploymentGuide)
 	app.Get("/topic/:category/:topic", h.TopicDetail)

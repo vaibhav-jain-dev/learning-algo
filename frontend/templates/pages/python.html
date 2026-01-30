@@ -1,0 +1,1567 @@
+<div class="guide-page python-theme">
+    <nav class="breadcrumb">
+        <a href="/">Home</a> <span class="breadcrumb-sep">/</span> <span>Python Development</span>
+    </nav>
+
+    <div class="guide-header python-header">
+        <div class="guide-header-content">
+            <span class="guide-badge python-badge">Python 3.10+</span>
+            <h1>Python Development Guide</h1>
+            <p class="guide-description">Master Python from fundamentals to production - complete learning roadmap with interactive examples</p>
+            <div class="guide-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">&#128218;</span>
+                    <span class="stat-text">5 Sections</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">&#9889;</span>
+                    <span class="stat-text">Interactive Code</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">&#128200;</span>
+                    <span class="stat-text">Beginner to Advanced</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLICKABLE ROADMAP SECTION -->
+    <section class="roadmap-section">
+        <h2 class="roadmap-title">Python Learning Roadmap</h2>
+        <p class="roadmap-subtitle">Click any topic to jump to detailed content with examples</p>
+
+        <div class="roadmap-grid">
+            <!-- Language Fundamentals Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title fundamentals-py">Language Fundamentals</h3>
+
+                <div class="roadmap-card" data-topic="variables" onclick="scrollToTopic('python-basics')">
+                    <h4>Variables & Types</h4>
+                    <ul>
+                        <li>Dynamic typing</li>
+                        <li>Type hints (PEP 484)</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/typing.html" target="_blank" class="card-link">typing docs</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python variables and types including dynamic typing, type hints, and common data structures with examples')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="functions" onclick="scrollToTopic('python-basics')">
+                    <h4>Functions</h4>
+                    <ul>
+                        <li>*args, **kwargs</li>
+                        <li>First-class functions</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions" target="_blank" class="card-link">Functions docs</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python functions including *args, **kwargs, lambda, closures, and first-class function concepts')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="classes" onclick="scrollToTopic('python-basics')">
+                    <h4>Classes & OOP</h4>
+                    <ul>
+                        <li>Dunder methods</li>
+                        <li>Inheritance, MRO</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/tutorial/classes.html" target="_blank" class="card-link">Classes docs</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python classes and OOP including dunder methods, inheritance, MRO, and dataclasses')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="decorators" onclick="scrollToTopic('intermediate')">
+                    <h4>Decorators</h4>
+                    <ul>
+                        <li>Function decorators</li>
+                        <li>Class decorators</li>
+                    </ul>
+                    <a href="https://realpython.com/primer-on-python-decorators/" target="_blank" class="card-link">Real Python</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python decorators including function decorators, class decorators, and functools.wraps')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="generators" onclick="scrollToTopic('intermediate')">
+                    <h4>Generators & Iterators</h4>
+                    <ul>
+                        <li>yield, yield from</li>
+                        <li>Iterator protocol</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/howto/functional.html#generators" target="_blank" class="card-link">Generators</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python generators and iterators including yield, yield from, and the iterator protocol')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="context" onclick="scrollToTopic('intermediate')">
+                    <h4>Context Managers</h4>
+                    <ul>
+                        <li>with statement</li>
+                        <li>contextlib</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/contextlib.html" target="_blank" class="card-link">contextlib</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python context managers including with statement, __enter__/__exit__, and contextlib')">Copy Prompt</button>
+                </div>
+            </div>
+
+            <!-- Standard Library Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title stdlib-py">Standard Library</h3>
+
+                <div class="roadmap-card" data-topic="collections" onclick="scrollToTopic('intermediate')">
+                    <h4>Collections</h4>
+                    <ul>
+                        <li>defaultdict, Counter</li>
+                        <li>deque, namedtuple</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/collections.html" target="_blank" class="card-link">collections</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python collections module including defaultdict, Counter, deque, and namedtuple with examples')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="itertools" onclick="scrollToTopic('intermediate')">
+                    <h4>itertools</h4>
+                    <ul>
+                        <li>Infinite iterators</li>
+                        <li>Combinatoric functions</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/itertools.html" target="_blank" class="card-link">itertools</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python itertools module including chain, product, permutations, and groupby with examples')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="functools" onclick="scrollToTopic('intermediate')">
+                    <h4>functools</h4>
+                    <ul>
+                        <li>lru_cache, partial</li>
+                        <li>reduce, wraps</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/functools.html" target="_blank" class="card-link">functools</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python functools module including lru_cache, partial, reduce, and singledispatch')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="pathlib" onclick="scrollToTopic('python-basics')">
+                    <h4>pathlib & Files</h4>
+                    <ul>
+                        <li>Path operations</li>
+                        <li>File I/O</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/pathlib.html" target="_blank" class="card-link">pathlib</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python pathlib module and file operations including Path, reading/writing files')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="dataclasses" onclick="scrollToTopic('intermediate')">
+                    <h4>dataclasses</h4>
+                    <ul>
+                        <li>@dataclass decorator</li>
+                        <li>field(), frozen</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/dataclasses.html" target="_blank" class="card-link">dataclasses</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python dataclasses including @dataclass, field(), frozen, and comparison with namedtuple')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="json" onclick="scrollToTopic('python-basics')">
+                    <h4>JSON & Serialization</h4>
+                    <ul>
+                        <li>json, pickle</li>
+                        <li>Custom encoders</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/json.html" target="_blank" class="card-link">json</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python JSON handling including json module, custom encoders/decoders, and serialization')">Copy Prompt</button>
+                </div>
+            </div>
+
+            <!-- Concurrency & Async Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title concurrency-py">Concurrency & Async</h3>
+
+                <div class="roadmap-card" data-topic="threading" onclick="scrollToTopic('advanced')">
+                    <h4>Threading</h4>
+                    <ul>
+                        <li>Thread, Lock</li>
+                        <li>GIL limitations</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/threading.html" target="_blank" class="card-link">threading</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python threading including Thread, Lock, GIL, and when to use threading vs multiprocessing')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="multiprocessing" onclick="scrollToTopic('advanced')">
+                    <h4>Multiprocessing</h4>
+                    <ul>
+                        <li>Process, Pool</li>
+                        <li>Shared memory</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/multiprocessing.html" target="_blank" class="card-link">multiprocessing</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python multiprocessing including Process, Pool, shared memory, and inter-process communication')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card highlight-card" data-topic="asyncio" onclick="window.location.href='/python-asyncio'">
+                    <h4>asyncio</h4>
+                    <ul>
+                        <li>async/await</li>
+                        <li>Event loop, Tasks</li>
+                    </ul>
+                    <a href="/python-asyncio" class="card-link">Full Guide</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python asyncio including async/await, event loop, Tasks, and concurrent coroutines')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="concurrent" onclick="scrollToTopic('advanced')">
+                    <h4>concurrent.futures</h4>
+                    <ul>
+                        <li>ThreadPoolExecutor</li>
+                        <li>ProcessPoolExecutor</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/concurrent.futures.html" target="_blank" class="card-link">futures</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python concurrent.futures including ThreadPoolExecutor, ProcessPoolExecutor, and Future objects')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="aiohttp" onclick="scrollToTopic('advanced')">
+                    <h4>Async HTTP</h4>
+                    <ul>
+                        <li>aiohttp, httpx</li>
+                        <li>Async patterns</li>
+                    </ul>
+                    <a href="https://docs.aiohttp.org/" target="_blank" class="card-link">aiohttp</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python async HTTP with aiohttp and httpx including client sessions and server setup')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="queues" onclick="scrollToTopic('advanced')">
+                    <h4>Queues & Patterns</h4>
+                    <ul>
+                        <li>asyncio.Queue</li>
+                        <li>Producer/Consumer</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/asyncio-queue.html" target="_blank" class="card-link">Async Queues</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python async patterns including asyncio.Queue, producer/consumer, and rate limiting')">Copy Prompt</button>
+                </div>
+            </div>
+
+            <!-- Production & Tooling Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title production-py">Production & Tooling</h3>
+
+                <div class="roadmap-card" data-topic="testing" onclick="scrollToTopic('advanced')">
+                    <h4>Testing</h4>
+                    <ul>
+                        <li>pytest, unittest</li>
+                        <li>Mocking, fixtures</li>
+                    </ul>
+                    <a href="https://docs.pytest.org/" target="_blank" class="card-link">pytest</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python testing with pytest including fixtures, mocking, parametrize, and async tests')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="debugging" onclick="scrollToTopic('intermediate')">
+                    <h4>Debugging</h4>
+                    <ul>
+                        <li>pdb, breakpoint()</li>
+                        <li>logging module</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/pdb.html" target="_blank" class="card-link">pdb</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python debugging with pdb, breakpoint(), and the logging module with examples')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="typing" onclick="scrollToTopic('intermediate')">
+                    <h4>Type Checking</h4>
+                    <ul>
+                        <li>mypy, pyright</li>
+                        <li>Generic types</li>
+                    </ul>
+                    <a href="https://mypy.readthedocs.io/" target="_blank" class="card-link">mypy</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python type checking with mypy including Generic types, Protocol, and TypeVar')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="packaging" onclick="scrollToTopic('advanced')">
+                    <h4>Packaging</h4>
+                    <ul>
+                        <li>pyproject.toml</li>
+                        <li>setuptools, poetry</li>
+                    </ul>
+                    <a href="https://packaging.python.org/" target="_blank" class="card-link">Packaging Guide</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python packaging with pyproject.toml, setuptools, and poetry for distribution')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="venv" onclick="scrollToTopic('python-basics')">
+                    <h4>Virtual Environments</h4>
+                    <ul>
+                        <li>venv, pip</li>
+                        <li>requirements.txt</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/venv.html" target="_blank" class="card-link">venv</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python virtual environments with venv, pip, and requirements management')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="profiling" onclick="scrollToTopic('advanced')">
+                    <h4>Profiling</h4>
+                    <ul>
+                        <li>cProfile, line_profiler</li>
+                        <li>memory_profiler</li>
+                    </ul>
+                    <a href="https://docs.python.org/3/library/profile.html" target="_blank" class="card-link">profile</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python profiling with cProfile, line_profiler, and memory_profiler for optimization')">Copy Prompt</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="guide-nav">
+        <a href="#python-basics" class="guide-nav-link active" data-section="python-basics">
+            <span class="nav-icon">&#128013;</span> Python Basics
+        </a>
+        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">
+            <span class="nav-icon">&#128295;</span> Intermediate
+        </a>
+        <a href="#advanced" class="guide-nav-link" data-section="advanced">
+            <span class="nav-icon">&#128640;</span> Advanced
+        </a>
+    </div>
+
+    <!-- PYTHON BASICS SECTION -->
+    <section id="python-basics" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#128013;</span> Python Language Fundamentals</h2>
+            <p class="section-description">Essential Python concepts you need to master</p>
+        </div>
+
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#128161;</span>
+                <h3>Why Python?</h3>
+            </div>
+            <p>Python is one of the most versatile programming languages. It's used for web development, data science, machine learning, automation, and more. Its readable syntax and vast ecosystem make it perfect for beginners and experts alike.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <span class="concept-icon">&#128221;</span>
+                    <h4>Readable Syntax</h4>
+                    <p>Clean, intuitive code</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#128230;</span>
+                    <h4>Rich Ecosystem</h4>
+                    <p>PyPI: 400K+ packages</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#9889;</span>
+                    <h4>Rapid Development</h4>
+                    <p>Prototype to production fast</p>
+                </div>
+                <div class="concept-card">
+                    <span class="concept-icon">&#128101;</span>
+                    <h4>Community</h4>
+                    <p>Huge, helpful community</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128221;</span>
+                <h3>Variables and Types</h3>
+            </div>
+            <p>Python is dynamically typed, but supports type hints for better code documentation and IDE support.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Variables and Type Hints
+from typing import List, Dict, Optional, Tuple, Any
+
+# Basic types - dynamically typed
+name = "Alice"      # str
+age = 30            # int
+price = 19.99       # float
+is_active = True    # bool
+
+# With type hints (PEP 484)
+name: str = "Alice"
+age: int = 30
+price: float = 19.99
+is_active: bool = True
+
+# Collections
+numbers: List[int] = [1, 2, 3, 4, 5]
+user_data: Dict[str, Any] = {"name": "Alice", "age": 30}
+coordinates: Tuple[float, float] = (10.5, 20.3)
+unique_ids: set = {1, 2, 3, 4, 5}
+
+# Optional type (can be None)
+email: Optional[str] = None
+
+# Print with f-strings (formatted strings)
+print(f"Name: {name}, Age: {age}")
+print(f"Price: ${price:.2f}")
+print(f"Active: {is_active}")
+
+# Type checking at runtime
+print(f"\nType of name: {type(name)}")
+print(f"Type of age: {type(age)}")
+print(f"Type of numbers: {type(numbers)}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#9881;</span>
+                <h3>Functions</h3>
+            </div>
+            <p>Functions are first-class objects in Python. They can be passed around, stored in variables, and returned from other functions.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Functions - Complete Guide
+from typing import Callable, Any
+
+# Basic function with type hints
+def greet(name: str) -> str:
+    """Return a greeting message."""
+    return f"Hello, {name}!"
+
+# Default arguments
+def create_user(name: str, age: int = 0, active: bool = True) -> dict:
+    return {"name": name, "age": age, "active": active}
+
+# *args - variable positional arguments
+def sum_all(*numbers: int) -> int:
+    """Sum all provided numbers."""
+    return sum(numbers)
+
+# **kwargs - variable keyword arguments
+def print_info(**info: Any) -> None:
+    """Print all key-value pairs."""
+    for key, value in info.items():
+        print(f"{key}: {value}")
+
+# Function returning function (closure)
+def multiplier(factor: int) -> Callable[[int], int]:
+    def multiply(x: int) -> int:
+        return x * factor
+    return multiply
+
+# Lambda functions (anonymous)
+square = lambda x: x ** 2
+add = lambda a, b: a + b
+
+# Examples
+print("=== Basic Function ===")
+print(greet("Alice"))
+
+print("\n=== Default Arguments ===")
+print(create_user("Bob"))
+print(create_user("Charlie", age=25))
+
+print("\n=== *args ===")
+print(f"Sum: {sum_all(1, 2, 3, 4, 5)}")
+
+print("\n=== **kwargs ===")
+print_info(name="Alice", age=30, city="NYC")
+
+print("\n=== Closure ===")
+double = multiplier(2)
+triple = multiplier(3)
+print(f"double(5) = {double(5)}")
+print(f"triple(5) = {triple(5)}")
+
+print("\n=== Lambda ===")
+print(f"square(4) = {square(4)}")
+numbers = [1, 2, 3, 4, 5]
+squared = list(map(square, numbers))
+print(f"Squared: {squared}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Classes and OOP</h3>
+            </div>
+            <p>Python supports object-oriented programming with classes, inheritance, and special methods (dunder methods).</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Classes - OOP Complete Guide
+from dataclasses import dataclass
+from typing import Optional
+
+class User:
+    """A basic user class demonstrating OOP concepts."""
+
+    # Class variable (shared by all instances)
+    user_count = 0
+
+    def __init__(self, name: str, email: str, age: int = 0):
+        """Initialize user instance."""
+        self.name = name
+        self.email = email
+        self.age = age
+        User.user_count += 1
+        self._id = User.user_count  # Private by convention
+
+    def __str__(self) -> str:
+        """String representation for print()."""
+        return f"User({self.name}, {self.email})"
+
+    def __repr__(self) -> str:
+        """Developer representation."""
+        return f"User(name={self.name!r}, email={self.email!r}, age={self.age})"
+
+    def __eq__(self, other: object) -> bool:
+        """Equality comparison."""
+        if not isinstance(other, User):
+            return NotImplemented
+        return self.email == other.email
+
+    @property
+    def id(self) -> int:
+        """Read-only property."""
+        return self._id
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "User":
+        """Alternative constructor from dictionary."""
+        return cls(data["name"], data["email"], data.get("age", 0))
+
+    @staticmethod
+    def validate_email(email: str) -> bool:
+        """Static method - doesn't need instance."""
+        return "@" in email and "." in email
+
+
+# Inheritance
+class AdminUser(User):
+    """Admin user with extra permissions."""
+
+    def __init__(self, name: str, email: str, permissions: list = None):
+        super().__init__(name, email)
+        self.permissions = permissions or ["read", "write", "admin"]
+
+    def __str__(self) -> str:
+        return f"Admin({self.name}, perms={self.permissions})"
+
+
+# Using dataclass (Python 3.7+)
+@dataclass
+class Product:
+    name: str
+    price: float
+    quantity: int = 0
+
+    @property
+    def total_value(self) -> float:
+        return self.price * self.quantity
+
+
+# Examples
+print("=== Basic Class ===")
+user1 = User("Alice", "alice@example.com", 30)
+print(user1)
+print(repr(user1))
+
+print("\n=== Class Method ===")
+user_data = {"name": "Bob", "email": "bob@example.com", "age": 25}
+user2 = User.from_dict(user_data)
+print(user2)
+
+print("\n=== Static Method ===")
+print(f"Valid email: {User.validate_email('test@example.com')}")
+
+print("\n=== Inheritance ===")
+admin = AdminUser("Charlie", "charlie@example.com")
+print(admin)
+
+print("\n=== Dataclass ===")
+product = Product("Laptop", 999.99, 5)
+print(f"{product.name}: ${product.total_value:.2f}")
+
+print(f"\n=== Class Variable ===")
+print(f"Total users created: {User.user_count}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128451;</span>
+                <h3>List Comprehensions and Generators</h3>
+            </div>
+            <p>Python's list comprehensions provide a concise way to create lists. Generators are memory-efficient iterators.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># List Comprehensions and Generators
+from typing import Iterator, Generator
+
+# Basic list comprehension
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+squares = [x**2 for x in numbers]
+print(f"Squares: {squares}")
+
+# With condition
+evens = [x for x in numbers if x % 2 == 0]
+print(f"Evens: {evens}")
+
+# Nested comprehension
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+flattened = [item for row in matrix for item in row]
+print(f"Flattened: {flattened}")
+
+# Dictionary comprehension
+word = "hello"
+char_count = {char: word.count(char) for char in set(word)}
+print(f"Char count: {char_count}")
+
+# Set comprehension
+unique_lengths = {len(word) for word in ["apple", "banana", "cherry"]}
+print(f"Unique lengths: {unique_lengths}")
+
+print("\n=== Generators ===")
+
+# Generator expression (lazy evaluation)
+squares_gen = (x**2 for x in range(1, 6))
+print(f"Generator: {squares_gen}")
+print(f"As list: {list(squares_gen)}")
+
+# Generator function with yield
+def fibonacci(n: int) -> Generator[int, None, None]:
+    """Generate first n Fibonacci numbers."""
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+
+print(f"Fibonacci: {list(fibonacci(10))}")
+
+# Generator with yield from
+def nested_generator() -> Generator[int, None, None]:
+    yield from range(3)
+    yield from range(10, 13)
+
+print(f"Nested: {list(nested_generator())}")
+
+# Memory comparison
+import sys
+list_size = sys.getsizeof([x**2 for x in range(1000)])
+gen_size = sys.getsizeof((x**2 for x in range(1000)))
+print(f"\nList size: {list_size} bytes")
+print(f"Generator size: {gen_size} bytes")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERMEDIATE SECTION -->
+    <section id="intermediate" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#128295;</span> Intermediate Python</h2>
+            <p class="section-description">Level up with decorators, context managers, and standard library</p>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#127873;</span>
+                <h3>Decorators</h3>
+            </div>
+            <p>Decorators modify or enhance functions without changing their source code. They're fundamental to Python frameworks.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Decorators - Complete Guide
+import functools
+import time
+from typing import Callable, Any
+
+# Basic decorator
+def timer(func: Callable) -> Callable:
+    """Time function execution."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs) -> Any:
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        end = time.perf_counter()
+        print(f"{func.__name__} took {end - start:.4f}s")
+        return result
+    return wrapper
+
+# Decorator with arguments
+def retry(max_attempts: int = 3, delay: float = 1.0):
+    """Retry decorator with configurable attempts."""
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs) -> Any:
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt < max_attempts - 1:
+                        print(f"Attempt {attempt + 1} failed: {e}")
+                        time.sleep(delay)
+                    else:
+                        raise
+        return wrapper
+    return decorator
+
+# Using decorators
+@timer
+def slow_function():
+    """A slow function."""
+    time.sleep(0.1)
+    return "done"
+
+@retry(max_attempts=3, delay=0.1)
+def flaky_function():
+    """Sometimes fails."""
+    import random
+    if random.random() < 0.7:
+        raise ValueError("Random failure")
+    return "success"
+
+# Class-based decorator
+class Memoize:
+    """Cache function results."""
+    def __init__(self, func: Callable):
+        self.func = func
+        self.cache = {}
+
+    def __call__(self, *args) -> Any:
+        if args in self.cache:
+            return self.cache[args]
+        result = self.func(*args)
+        self.cache[args] = result
+        return result
+
+@Memoize
+def fibonacci(n: int) -> int:
+    if n < 2:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# Examples
+print("=== Timer Decorator ===")
+slow_function()
+
+print("\n=== Memoized Fibonacci ===")
+print(f"fib(30) = {fibonacci(30)}")
+
+print("\n=== Built-in functools.lru_cache ===")
+@functools.lru_cache(maxsize=128)
+def expensive_computation(n: int) -> int:
+    return sum(i**2 for i in range(n))
+
+print(f"Result: {expensive_computation(1000)}")
+print(f"Cache info: {expensive_computation.cache_info()}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128274;</span>
+                <h3>Context Managers</h3>
+            </div>
+            <p>Context managers ensure proper resource management using the <code>with</code> statement.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Context Managers
+from contextlib import contextmanager
+import time
+from typing import Generator
+
+# Class-based context manager
+class Timer:
+    """Time code execution."""
+    def __init__(self, name: str = "Block"):
+        self.name = name
+
+    def __enter__(self):
+        self.start = time.perf_counter()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        elapsed = time.perf_counter() - self.start
+        print(f"{self.name} took {elapsed:.4f}s")
+        return False  # Don't suppress exceptions
+
+# Function-based context manager
+@contextmanager
+def temp_value(obj: dict, key: str, value) -> Generator:
+    """Temporarily set a dict value."""
+    old_value = obj.get(key)
+    obj[key] = value
+    try:
+        yield obj
+    finally:
+        if old_value is None:
+            del obj[key]
+        else:
+            obj[key] = old_value
+
+# Database-like context manager
+@contextmanager
+def database_connection(db_name: str) -> Generator:
+    """Simulate database connection."""
+    print(f"Connecting to {db_name}...")
+    connection = {"name": db_name, "connected": True}
+    try:
+        yield connection
+    finally:
+        print(f"Closing connection to {db_name}")
+        connection["connected"] = False
+
+# Examples
+print("=== Class-based Timer ===")
+with Timer("Loop"):
+    total = sum(i**2 for i in range(10000))
+    print(f"Result: {total}")
+
+print("\n=== Temp Value ===")
+config = {"debug": False, "timeout": 30}
+print(f"Before: {config}")
+with temp_value(config, "debug", True) as cfg:
+    print(f"Inside: {cfg}")
+print(f"After: {config}")
+
+print("\n=== Database Connection ===")
+with database_connection("mydb") as conn:
+    print(f"Working with: {conn}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>Collections Module</h3>
+            </div>
+            <p>The collections module provides specialized container types for efficient data handling.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Collections Module
+from collections import Counter, defaultdict, deque, namedtuple, OrderedDict
+
+# Counter - count hashable objects
+print("=== Counter ===")
+words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+word_count = Counter(words)
+print(f"Counts: {word_count}")
+print(f"Most common: {word_count.most_common(2)}")
+
+text = "hello world"
+char_count = Counter(text)
+print(f"Char count: {char_count}")
+
+# defaultdict - dict with default factory
+print("\n=== defaultdict ===")
+grouped = defaultdict(list)
+data = [("fruit", "apple"), ("fruit", "banana"), ("vegetable", "carrot")]
+for category, item in data:
+    grouped[category].append(item)
+print(f"Grouped: {dict(grouped)}")
+
+# Counter with defaultdict
+word_len = defaultdict(int)
+for word in words:
+    word_len[word] += 1
+print(f"Word lengths: {dict(word_len)}")
+
+# deque - double-ended queue (efficient append/pop from both ends)
+print("\n=== deque ===")
+d = deque([1, 2, 3], maxlen=5)
+d.append(4)      # Add to right
+d.appendleft(0)  # Add to left
+print(f"Deque: {d}")
+d.rotate(1)      # Rotate right
+print(f"Rotated: {d}")
+
+# namedtuple - tuple with named fields
+print("\n=== namedtuple ===")
+Point = namedtuple("Point", ["x", "y"])
+p = Point(10, 20)
+print(f"Point: {p}, x={p.x}, y={p.y}")
+
+# Convert to dict
+print(f"As dict: {p._asdict()}")
+
+# With defaults (Python 3.7+)
+Person = namedtuple("Person", ["name", "age", "city"], defaults=["Unknown", 0, "NYC"])
+print(f"Person: {Person('Alice')}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADVANCED SECTION -->
+    <section id="advanced" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#128640;</span> Advanced Python</h2>
+            <p class="section-description">Concurrency, testing, and production patterns</p>
+        </div>
+
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#128101;</span>
+                <h3>Threading and Concurrency</h3>
+            </div>
+            <p>Python's threading is limited by the GIL (Global Interpreter Lock), but it's still useful for I/O-bound tasks.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Threading
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# Basic threading
+def worker(name: str, delay: float) -> str:
+    """Simulate work with delay."""
+    print(f"Worker {name} starting...")
+    time.sleep(delay)
+    result = f"Worker {name} done after {delay}s"
+    print(result)
+    return result
+
+# Using ThreadPoolExecutor (recommended approach)
+print("=== ThreadPoolExecutor ===")
+start = time.perf_counter()
+
+with ThreadPoolExecutor(max_workers=3) as executor:
+    # Submit tasks
+    futures = [
+        executor.submit(worker, "A", 0.1),
+        executor.submit(worker, "B", 0.15),
+        executor.submit(worker, "C", 0.2),
+    ]
+
+    # Collect results as they complete
+    for future in as_completed(futures):
+        result = future.result()
+
+elapsed = time.perf_counter() - start
+print(f"Total time: {elapsed:.2f}s (ran in parallel!)")
+
+# Thread synchronization with Lock
+print("\n=== Thread-safe Counter ===")
+
+class Counter:
+    def __init__(self):
+        self.value = 0
+        self.lock = threading.Lock()
+
+    def increment(self):
+        with self.lock:
+            current = self.value
+            time.sleep(0.001)  # Simulate processing
+            self.value = current + 1
+
+counter = Counter()
+
+def increment_many(n: int):
+    for _ in range(n):
+        counter.increment()
+
+threads = [threading.Thread(target=increment_many, args=(10,)) for _ in range(5)]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+
+print(f"Counter value: {counter.value} (expected: 50)")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+
+            <div class="info-box">
+                <div class="info-header">
+                    <span class="info-icon">&#128161;</span>
+                    <span>GIL Note</span>
+                </div>
+                <p><strong>The Global Interpreter Lock (GIL)</strong> prevents true parallel execution of Python threads. Use <strong>multiprocessing</strong> for CPU-bound tasks or <strong>asyncio</strong> for I/O-bound tasks.</p>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#9889;</span>
+                <h3>concurrent.futures</h3>
+            </div>
+            <p>The <code>concurrent.futures</code> module provides a high-level interface for asynchronously executing callables.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># concurrent.futures - ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+import time
+import math
+
+def cpu_bound_task(n: int) -> int:
+    """CPU-intensive calculation."""
+    return sum(i * i for i in range(n))
+
+def io_bound_task(url: str) -> dict:
+    """Simulated I/O task."""
+    time.sleep(0.1)  # Simulate network delay
+    return {"url": url, "status": 200}
+
+# CPU-bound with ProcessPoolExecutor
+print("=== CPU-bound Tasks ===")
+numbers = [1000000, 2000000, 3000000, 4000000]
+
+start = time.perf_counter()
+# Note: ProcessPoolExecutor doesn't work in this sandbox
+# but here's the pattern:
+with ThreadPoolExecutor(max_workers=4) as executor:
+    results = list(executor.map(cpu_bound_task, [10000] * 4))
+elapsed = time.perf_counter() - start
+print(f"Results: {results[:2]}...")
+print(f"Time: {elapsed:.2f}s")
+
+# I/O-bound with ThreadPoolExecutor
+print("\n=== I/O-bound Tasks ===")
+urls = ["http://example.com/1", "http://example.com/2",
+        "http://example.com/3", "http://example.com/4"]
+
+start = time.perf_counter()
+with ThreadPoolExecutor(max_workers=4) as executor:
+    results = list(executor.map(io_bound_task, urls))
+elapsed = time.perf_counter() - start
+print(f"Fetched {len(results)} URLs in {elapsed:.2f}s")
+
+# Using submit for more control
+print("\n=== Using submit() ===")
+with ThreadPoolExecutor(max_workers=2) as executor:
+    future1 = executor.submit(cpu_bound_task, 10000)
+    future2 = executor.submit(cpu_bound_task, 20000)
+
+    print(f"Task 1 done: {future1.done()}")
+    print(f"Task 1 result: {future1.result()}")
+    print(f"Task 2 result: {future2.result()}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128270;</span>
+                <h3>Error Handling Patterns</h3>
+            </div>
+            <p>Production-quality Python code requires robust error handling and custom exceptions.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Python Error Handling Patterns
+from typing import Optional
+import traceback
+
+# Custom exceptions
+class ValidationError(Exception):
+    """Raised when validation fails."""
+    def __init__(self, field: str, message: str):
+        self.field = field
+        self.message = message
+        super().__init__(f"{field}: {message}")
+
+class NotFoundError(Exception):
+    """Raised when resource is not found."""
+    pass
+
+class ServiceError(Exception):
+    """Raised for service-level errors."""
+    def __init__(self, message: str, code: int = 500):
+        self.code = code
+        super().__init__(message)
+
+# Function with proper error handling
+def validate_user(data: dict) -> dict:
+    """Validate user data."""
+    if "name" not in data:
+        raise ValidationError("name", "is required")
+    if len(data["name"]) < 2:
+        raise ValidationError("name", "must be at least 2 characters")
+    if "email" not in data:
+        raise ValidationError("email", "is required")
+    if "@" not in data["email"]:
+        raise ValidationError("email", "must be valid")
+    return data
+
+def get_user(user_id: int) -> Optional[dict]:
+    """Get user by ID."""
+    users = {1: {"name": "Alice"}, 2: {"name": "Bob"}}
+    if user_id not in users:
+        raise NotFoundError(f"User {user_id} not found")
+    return users[user_id]
+
+# Using try/except/else/finally
+print("=== Validation Error ===")
+try:
+    validate_user({"name": "A"})
+except ValidationError as e:
+    print(f"Validation failed - {e.field}: {e.message}")
+
+print("\n=== Not Found Error ===")
+try:
+    user = get_user(99)
+except NotFoundError as e:
+    print(f"Error: {e}")
+
+print("\n=== Chained Exceptions ===")
+try:
+    try:
+        result = 1 / 0
+    except ZeroDivisionError as e:
+        raise ServiceError("Calculation failed", 500) from e
+except ServiceError as e:
+    print(f"Service error (code {e.code}): {e}")
+    print(f"Caused by: {e.__cause__}")
+
+print("\n=== try/except/else/finally ===")
+try:
+    user = get_user(1)
+except NotFoundError:
+    print("User not found")
+else:
+    print(f"Found user: {user}")
+finally:
+    print("Cleanup complete")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128203;</span>
+                <h3>Testing with pytest</h3>
+            </div>
+            <p>pytest is the standard testing framework for Python. Here are common patterns.</p>
+
+            <div class="code-example">
+                <pre><code class="language-python"># pytest Patterns (conceptual - pytest runs externally)
+import unittest
+from unittest.mock import Mock, patch
+from dataclasses import dataclass
+from typing import List
+
+# Code to test
+@dataclass
+class User:
+    name: str
+    email: str
+
+    def is_valid(self) -> bool:
+        return "@" in self.email and len(self.name) >= 2
+
+class UserService:
+    def __init__(self, repository):
+        self.repository = repository
+
+    def get_user(self, user_id: int) -> User:
+        data = self.repository.find_by_id(user_id)
+        if not data:
+            raise ValueError(f"User {user_id} not found")
+        return User(**data)
+
+    def get_all_users(self) -> List[User]:
+        return [User(**d) for d in self.repository.find_all()]
+
+# Unit tests
+class TestUser(unittest.TestCase):
+    def test_valid_user(self):
+        user = User("Alice", "alice@example.com")
+        self.assertTrue(user.is_valid())
+
+    def test_invalid_email(self):
+        user = User("Alice", "invalid-email")
+        self.assertFalse(user.is_valid())
+
+    def test_short_name(self):
+        user = User("A", "a@example.com")
+        self.assertFalse(user.is_valid())
+
+class TestUserService(unittest.TestCase):
+    def setUp(self):
+        self.mock_repo = Mock()
+        self.service = UserService(self.mock_repo)
+
+    def test_get_user_success(self):
+        self.mock_repo.find_by_id.return_value = {
+            "name": "Alice", "email": "alice@example.com"
+        }
+        user = self.service.get_user(1)
+        self.assertEqual(user.name, "Alice")
+        self.mock_repo.find_by_id.assert_called_once_with(1)
+
+    def test_get_user_not_found(self):
+        self.mock_repo.find_by_id.return_value = None
+        with self.assertRaises(ValueError) as ctx:
+            self.service.get_user(99)
+        self.assertIn("99", str(ctx.exception))
+
+# Run tests
+if __name__ == "__main__":
+    loader = unittest.TestLoader()
+    suite = unittest.TestSuite()
+
+    suite.addTests(loader.loadTestsFromTestCase(TestUser))
+    suite.addTests(loader.loadTestsFromTestCase(TestUserService))
+
+    runner = unittest.TextTestRunner(verbosity=2)
+    runner.run(suite)</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Python Theme Colors */
+.python-theme .guide-header {
+    background: linear-gradient(135deg, #3776ab10 0%, #ffd43b10 100%);
+    border-color: #3776ab30;
+}
+
+.python-badge {
+    background: linear-gradient(135deg, #3776ab 0%, #ffd43b 100%) !important;
+}
+
+.python-theme .guide-header h1 {
+    background: linear-gradient(135deg, #3776ab 0%, #306998 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.python-theme .guide-nav-link.active {
+    background: linear-gradient(135deg, #3776ab 0%, #306998 100%);
+}
+
+.python-theme .section-header {
+    border-bottom-color: #3776ab;
+}
+
+.python-theme .topic-block code {
+    background: #3776ab15;
+    color: #3776ab;
+}
+
+.python-theme .topic-block.highlight-block {
+    background: linear-gradient(135deg, #3776ab08 0%, #ffffff 100%);
+    border-color: #3776ab40;
+}
+
+/* Python Roadmap Column Colors */
+.column-title.fundamentals-py {
+    background: #dbeafe;
+    color: #1e40af;
+    border-left: 4px solid #3776ab;
+}
+
+.column-title.stdlib-py {
+    background: #fef3c7;
+    color: #92400e;
+    border-left: 4px solid #ffd43b;
+}
+
+.column-title.concurrency-py {
+    background: #dcfce7;
+    color: #166534;
+    border-left: 4px solid #16a34a;
+}
+
+.column-title.production-py {
+    background: #fce7f3;
+    color: #9d174d;
+    border-left: 4px solid #db2777;
+}
+
+/* Reuse roadmap styles from golang.html */
+.roadmap-section {
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    background: var(--color-bg-secondary, #f8fafc);
+    border-radius: 1rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+.roadmap-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.roadmap-subtitle {
+    text-align: center;
+    color: var(--color-text-secondary, #64748b);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .roadmap-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .roadmap-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.roadmap-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.column-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.roadmap-card {
+    background: var(--color-bg-primary, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    padding: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.roadmap-card:hover {
+    border-color: #3776ab;
+    box-shadow: 0 4px 12px rgba(55, 118, 171, 0.15);
+    transform: translateY(-2px);
+}
+
+.roadmap-card.highlight-card {
+    border-color: #3776ab;
+    background: linear-gradient(135deg, #3776ab08 0%, #ffffff 100%);
+}
+
+.roadmap-card h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.roadmap-card ul {
+    margin: 0 0 0.5rem 0;
+    padding-left: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary, #64748b);
+}
+
+.roadmap-card li {
+    margin-bottom: 0.15rem;
+}
+
+.card-link {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #3776ab;
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.copy-prompt-btn {
+    display: block;
+    width: 100%;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-bg-tertiary, #f1f5f9);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary, #64748b);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.copy-prompt-btn:hover {
+    background: #3776ab;
+    color: white;
+    border-color: #3776ab;
+}
+</style>
+
+<script>
+(function() {
+    // Navigation highlighting
+    const navLinks = document.querySelectorAll('.guide-nav-link');
+    const sections = document.querySelectorAll('.guide-section');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Scroll spy
+    window.addEventListener('scroll', function() {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 150;
+            if (pageYOffset >= sectionTop) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-section') === current) {
+                link.classList.add('active');
+            }
+        });
+    });
+
+    // Run code buttons
+    document.querySelectorAll('.run-code-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const codeBlock = this.parentElement.querySelector('code');
+            const code = codeBlock.textContent;
+            const language = this.dataset.language || 'python';
+
+            this.disabled = true;
+            this.textContent = 'Running...';
+
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: code, language: language})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    let pollCount = 0;
+                    const maxPolls = 120;
+                    const checkResult = () => {
+                        pollCount++;
+                        fetch('/api/execution/' + data.id)
+                        .then(r => r.json())
+                        .then(result => {
+                            if (result.state === 'complete' || result.state === 'error' || result.state === 'stopped') {
+                                this.disabled = false;
+                                this.textContent = 'Run Code';
+
+                                let outputDiv = this.parentElement.querySelector('.code-output');
+                                if (!outputDiv) {
+                                    outputDiv = document.createElement('div');
+                                    outputDiv.className = 'code-output';
+                                    this.parentElement.appendChild(outputDiv);
+                                }
+
+                                if (result.error) {
+                                    outputDiv.innerHTML = '<pre class="error-output">' + escapeHtml(result.error) + '</pre>';
+                                } else {
+                                    outputDiv.innerHTML = '<pre class="success-output">' + escapeHtml(result.output || 'No output') + '</pre>';
+                                }
+                            } else if (pollCount >= maxPolls) {
+                                this.disabled = false;
+                                this.textContent = 'Run Code';
+                                let outputDiv = this.parentElement.querySelector('.code-output');
+                                if (!outputDiv) {
+                                    outputDiv = document.createElement('div');
+                                    outputDiv.className = 'code-output';
+                                    this.parentElement.appendChild(outputDiv);
+                                }
+                                outputDiv.innerHTML = '<pre class="error-output">Execution timed out</pre>';
+                            } else {
+                                setTimeout(checkResult, 500);
+                            }
+                        });
+                    };
+                    checkResult();
+                }
+            })
+            .catch(err => {
+                this.disabled = false;
+                this.textContent = 'Run Code';
+                alert('Error: ' + err.message);
+            });
+        });
+    });
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Highlight code if hljs available
+    if (typeof hljs !== 'undefined') {
+        document.querySelectorAll('.code-example pre code').forEach(block => {
+            hljs.highlightElement(block);
+        });
+    }
+})();
+
+// Roadmap navigation function
+function scrollToTopic(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const headerOffset = 100;
+        const elementPosition = section.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+
+        document.querySelectorAll('.guide-nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-section') === sectionId) {
+                link.classList.add('active');
+            }
+        });
+    }
+}
+
+// Copy prompt function
+function copyPrompt(promptText) {
+    navigator.clipboard.writeText(promptText).then(() => {
+        const notification = document.createElement('div');
+        notification.textContent = 'Prompt copied to clipboard!';
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3776ab;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(55, 118, 171, 0.4);
+            animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 2000);
+    }).catch(err => {
+        const textarea = document.createElement('textarea');
+        textarea.value = promptText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('Prompt copied!');
+    });
+}
+
+// Add animations
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(styleSheet);
+</script>
