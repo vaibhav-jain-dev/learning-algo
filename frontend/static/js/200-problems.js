@@ -4626,18 +4626,32 @@
             basePath += '/similar/' + similarIdx;
         }
 
+        // Check if problem has examples for test code generation
+        var fullId = category + '/' + problemId;
+        var problem = window.ProblemRenderer && window.ProblemRenderer.get(fullId);
+
         // Load Python code (for Solutions tab reference only)
         fetch(basePath + '/python_code.py')
             .then(function(r) { return r.ok ? r.text() : null; })
             .then(function(code) {
                 if (code) {
                     fullSolutions.python = code;
-                    // Extract template from solution
-                    var template = extractTemplate(code, 'python', problemId);
+                    // Try to generate test code template if problem has examples
+                    var template;
+                    if (problem && problem.examples && problem.examples.length > 0) {
+                        template = generateTemplateFromProblem(problem, 'python', code);
+                    } else {
+                        template = extractTemplate(code, 'python', problemId);
+                    }
                     originalCode.python = template;
                     currentCode.python = template;
                 } else {
-                    originalCode.python = getDefaultCode('python', problemId);
+                    // No solution file, use problem-based template or default
+                    if (problem && problem.examples && problem.examples.length > 0) {
+                        originalCode.python = generateTemplateFromProblem(problem, 'python', null);
+                    } else {
+                        originalCode.python = getDefaultCode('python', problemId);
+                    }
                     currentCode.python = originalCode.python;
                 }
                 if (currentLanguage === 'python' && editor) {
@@ -4645,7 +4659,11 @@
                 }
             })
             .catch(function() {
-                originalCode.python = getDefaultCode('python', problemId);
+                if (problem && problem.examples && problem.examples.length > 0) {
+                    originalCode.python = generateTemplateFromProblem(problem, 'python', null);
+                } else {
+                    originalCode.python = getDefaultCode('python', problemId);
+                }
                 currentCode.python = originalCode.python;
             });
 
@@ -4655,12 +4673,22 @@
             .then(function(code) {
                 if (code) {
                     fullSolutions.go = code;
-                    // Extract template from solution
-                    var template = extractTemplate(code, 'go', problemId);
+                    // Try to generate test code template if problem has examples
+                    var template;
+                    if (problem && problem.examples && problem.examples.length > 0) {
+                        template = generateTemplateFromProblem(problem, 'go', code);
+                    } else {
+                        template = extractTemplate(code, 'go', problemId);
+                    }
                     originalCode.go = template;
                     currentCode.go = template;
                 } else {
-                    originalCode.go = getDefaultCode('go', problemId);
+                    // No solution file, use problem-based template or default
+                    if (problem && problem.examples && problem.examples.length > 0) {
+                        originalCode.go = generateTemplateFromProblem(problem, 'go', null);
+                    } else {
+                        originalCode.go = getDefaultCode('go', problemId);
+                    }
                     currentCode.go = originalCode.go;
                 }
                 if (currentLanguage === 'go' && editor) {
@@ -4668,9 +4696,133 @@
                 }
             })
             .catch(function() {
-                originalCode.go = getDefaultCode('go', problemId);
+                if (problem && problem.examples && problem.examples.length > 0) {
+                    originalCode.go = generateTemplateFromProblem(problem, 'go', null);
+                } else {
+                    originalCode.go = getDefaultCode('go', problemId);
+                }
                 currentCode.go = originalCode.go;
             });
+    }
+
+    /**
+     * Generate a code template from problem configuration
+     * @param {Object} problem - Problem configuration
+     * @param {string} lang - Language
+     * @param {string} solutionCode - Original solution code (optional)
+     * @returns {string} Code template
+     */
+    function generateTemplateFromProblem(problem, lang, solutionCode) {
+        if (!problem || !problem.examples || problem.examples.length === 0) {
+            return getDefaultCode(lang, problem ? problem.id : 'solution');
+        }
+
+        var funcName;
+        if (lang === 'python') {
+            funcName = problem.id.replace(/^\d+-/, '').replace(/-/g, '_');
+        } else {
+            funcName = problem.id.replace(/^\d+-/, '').replace(/-/g, '_')
+                .split('_').map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join('');
+        }
+
+        // Get parameters from first example
+        var firstInput = problem.examples[0].input;
+        var paramNames = Object.keys(firstInput);
+
+        if (lang === 'python') {
+            var paramList = paramNames.join(', ');
+            var template = 'def ' + funcName + '(' + paramList + '):\n';
+            template += '    """\n';
+            template += '    ' + problem.name + '\n\n';
+            if (problem.description) {
+                template += '    ' + problem.description.substring(0, 150).replace(/\n/g, '\n    ') + '...\n';
+            }
+            template += '    """\n';
+            template += '    # TODO: Implement your solution\n';
+            template += '    pass\n\n\n';
+            template += '# Example usage:\n';
+            template += '# Input: ' + window.ProblemRenderer.formatInput(firstInput) + '\n';
+            template += '# Expected Output: ' + window.ProblemRenderer.formatOutput(problem.examples[0].output) + '\n';
+            template += 'if __name__ == "__main__":\n';
+            template += '    # Test with first example\n';
+            paramNames.forEach(function(p) {
+                template += '    ' + p + ' = ' + toPythonLiteral(firstInput[p]) + '\n';
+            });
+            template += '    result = ' + funcName + '(' + paramList + ')\n';
+            template += '    print("Result:", result)\n';
+            return template;
+        } else {
+            // Go template
+            var params = paramNames.map(function(name) {
+                var val = firstInput[name];
+                var goType = 'interface{}';
+                if (typeof val === 'number') {
+                    goType = Number.isInteger(val) ? 'int' : 'float64';
+                } else if (typeof val === 'string') {
+                    goType = 'string';
+                } else if (typeof val === 'boolean') {
+                    goType = 'bool';
+                } else if (Array.isArray(val) && val.length > 0) {
+                    var first = val[0];
+                    if (typeof first === 'number') {
+                        goType = '[]int';
+                    } else if (typeof first === 'string') {
+                        goType = '[]string';
+                    }
+                }
+                return name + ' ' + goType;
+            });
+            var paramDecl = params.join(', ');
+
+            var expectedOutput = problem.examples[0].output;
+            var returnType = 'interface{}';
+            if (typeof expectedOutput === 'number') {
+                returnType = Number.isInteger(expectedOutput) ? 'int' : 'float64';
+            } else if (typeof expectedOutput === 'string') {
+                returnType = 'string';
+            } else if (typeof expectedOutput === 'boolean') {
+                returnType = 'bool';
+            } else if (Array.isArray(expectedOutput) && expectedOutput.length > 0) {
+                if (typeof expectedOutput[0] === 'number') {
+                    returnType = '[]int';
+                } else if (typeof expectedOutput[0] === 'string') {
+                    returnType = '[]string';
+                }
+            }
+
+            var template = 'package main\n\n';
+            template += 'import "fmt"\n\n';
+            template += '// ' + funcName + ' - ' + problem.name + '\n';
+            template += 'func ' + funcName + '(' + paramDecl + ') ' + returnType + ' {\n';
+            template += '\t// TODO: Implement your solution\n';
+            if (returnType === 'int') {
+                template += '\treturn 0\n';
+            } else if (returnType === 'float64') {
+                template += '\treturn 0.0\n';
+            } else if (returnType === 'string') {
+                template += '\treturn ""\n';
+            } else if (returnType === 'bool') {
+                template += '\treturn false\n';
+            } else if (returnType.startsWith('[]')) {
+                template += '\treturn nil\n';
+            } else {
+                template += '\treturn nil\n';
+            }
+            template += '}\n\n';
+            template += '// Example usage:\n';
+            template += '// Input: ' + window.ProblemRenderer.formatInput(firstInput) + '\n';
+            template += '// Expected Output: ' + window.ProblemRenderer.formatOutput(expectedOutput) + '\n';
+            template += 'func main() {\n';
+            template += '\t// Test with first example\n';
+            paramNames.forEach(function(name) {
+                template += '\t' + name + ' := ' + toGoLiteral(firstInput[name]) + '\n';
+            });
+            template += '\tresult := ' + funcName + '(' + paramNames.join(', ') + ')\n';
+            template += '\tfmt.Println("Result:", result)\n';
+            template += '}\n';
+
+            return template;
+        }
     }
 
     // Extract function template from solution code (keeps signature, removes implementation)
@@ -4937,6 +5089,14 @@
 
         if (output) output.innerHTML = '<div style="color:#888;">Running...</div>';
 
+        // Update run button to show loading state
+        var runBtn = document.getElementById('run-btn');
+        var runTestsBtn = document.getElementById('run-tests-btn');
+        if (runBtn) {
+            runBtn.disabled = true;
+            runBtn.innerHTML = '<span class="spinner"></span> Running...';
+        }
+
         fetch('/htmx/execute', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -4944,11 +5104,509 @@
         })
         .then(function(r) { return r.text(); })
         .then(function(html) {
-            if (output) output.innerHTML = html;
+            // Check if output contains test results
+            var testResults = window.ProblemRenderer && window.ProblemRenderer.parseTestResults(html);
+            if (testResults) {
+                if (output) output.innerHTML = renderTestResults(testResults, html);
+            } else {
+                if (output) output.innerHTML = html;
+            }
         })
         .catch(function(err) {
             if (output) output.innerHTML = '<div style="color:#f44;">Error: ' + err.message + '</div>';
+        })
+        .finally(function() {
+            // Reset run button
+            if (runBtn) {
+                runBtn.disabled = false;
+                runBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Run Code';
+            }
         });
+    };
+
+    /**
+     * Render test results in a nice format
+     * @param {Object} results - Parsed test results
+     * @param {string} rawOutput - Raw output for fallback
+     * @returns {string} HTML string
+     */
+    function renderTestResults(results, rawOutput) {
+        if (!results) return rawOutput;
+
+        var html = '<div class="test-results">';
+
+        // Summary header
+        var allPassed = results.failed === 0;
+        var summaryClass = allPassed ? 'test-summary-pass' : 'test-summary-fail';
+        var summaryIcon = allPassed ? '✓' : '✗';
+
+        html += '<div class="test-summary ' + summaryClass + '">';
+        html += '<span class="summary-icon">' + summaryIcon + '</span>';
+        html += '<span class="summary-text">' + results.passed + '/' + results.total + ' tests passed</span>';
+        html += '</div>';
+
+        // Individual test results
+        html += '<div class="test-cases">';
+        results.results.forEach(function(test, idx) {
+            var statusClass = test.status === 'PASS' ? 'test-pass' : (test.status === 'ERROR' ? 'test-error' : 'test-fail');
+            var statusIcon = test.status === 'PASS' ? '✓' : (test.status === 'ERROR' ? '!' : '✗');
+
+            html += '<div class="test-case ' + statusClass + '">';
+            html += '<div class="test-header" onclick="toggleTestDetails(this)">';
+            html += '<span class="test-status-icon">' + statusIcon + '</span>';
+            html += '<span class="test-name">' + test.name + '</span>';
+            html += '<span class="test-status-badge">' + test.status + '</span>';
+            html += '<span class="test-expand-icon">▶</span>';
+            html += '</div>';
+
+            html += '<div class="test-details" style="display:none;">';
+            if (test.error) {
+                html += '<div class="test-error-msg"><strong>Error:</strong> ' + escapeHtmlOutput(test.error) + '</div>';
+            } else {
+                html += '<div class="test-expected"><strong>Expected:</strong> <code>' + escapeHtmlOutput(JSON.stringify(test.expected)) + '</code></div>';
+                html += '<div class="test-actual"><strong>Actual:</strong> <code>' + escapeHtmlOutput(JSON.stringify(test.actual)) + '</code></div>';
+            }
+            html += '</div>';
+
+            html += '</div>';
+        });
+        html += '</div>';
+
+        html += '</div>';
+
+        return html;
+    }
+
+    // Toggle test details visibility
+    window.toggleTestDetails = function(header) {
+        var details = header.nextElementSibling;
+        var icon = header.querySelector('.test-expand-icon');
+        if (details) {
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+                if (icon) icon.textContent = '▼';
+            } else {
+                details.style.display = 'none';
+                if (icon) icon.textContent = '▶';
+            }
+        }
+    };
+
+    // Helper to escape HTML in output
+    function escapeHtmlOutput(str) {
+        if (str === null || str === undefined) return 'null';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    /**
+     * Run tests for current problem
+     * Generates test code and executes it
+     */
+    window.runTests = function() {
+        if (!currentProblem || !window.ProblemRenderer) {
+            var output = document.getElementById('output-content');
+            if (output) output.innerHTML = '<div style="color:#f44;">No problem loaded or ProblemRenderer not available.</div>';
+            return;
+        }
+
+        var fullId = currentProblem.category + '/' + currentProblem.id;
+        var problem = window.ProblemRenderer.get(fullId);
+
+        if (!problem || !problem.examples || problem.examples.length === 0) {
+            var output = document.getElementById('output-content');
+            if (output) output.innerHTML = '<div style="color:#f59e0b;">No test cases available for this problem.</div>';
+            return;
+        }
+
+        // Get user's solution code (just the function, not the test harness)
+        var userCode = editor ? editor.getValue() : (document.getElementById('code-fallback') || {}).value || '';
+
+        // Generate test code with the user's solution
+        var testCode = generateTestCodeWithUserSolution(problem, currentLanguage, userCode);
+
+        var output = document.getElementById('output-content');
+        if (output) output.innerHTML = '<div style="color:#888;">Running ' + problem.examples.length + ' test cases...</div>';
+
+        // Update button states
+        var runTestsBtn = document.getElementById('run-tests-btn');
+        var runBtn = document.getElementById('run-btn');
+        if (runTestsBtn) {
+            runTestsBtn.disabled = true;
+            runTestsBtn.innerHTML = '<span class="spinner"></span> Testing...';
+        }
+
+        fetch('/htmx/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'code=' + encodeURIComponent(testCode) + '&language=' + currentLanguage
+        })
+        .then(function(r) { return r.text(); })
+        .then(function(html) {
+            var testResults = window.ProblemRenderer.parseTestResults(html);
+            if (testResults) {
+                if (output) output.innerHTML = renderTestResults(testResults, html);
+            } else {
+                // No test results found, show raw output
+                if (output) output.innerHTML = html;
+            }
+        })
+        .catch(function(err) {
+            if (output) output.innerHTML = '<div style="color:#f44;">Error: ' + err.message + '</div>';
+        })
+        .finally(function() {
+            // Reset button states
+            if (runTestsBtn) {
+                runTestsBtn.disabled = false;
+                runTestsBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> Run Tests';
+            }
+        });
+    };
+
+    /**
+     * Generate test code that incorporates user's solution
+     * @param {Object} problem - Problem configuration
+     * @param {string} lang - Language
+     * @param {string} userCode - User's solution code
+     * @returns {string} Complete test code
+     */
+    function generateTestCodeWithUserSolution(problem, lang, userCode) {
+        var testCases = window.ProblemRenderer.getTestCases(problem);
+        var funcName = window.ProblemRenderer.getFunctionName(problem.id, lang);
+
+        if (testCases.length === 0) {
+            return userCode; // No test cases, just return user code
+        }
+
+        if (lang === 'python') {
+            return generatePythonTestWithUser(problem, testCases, funcName, userCode);
+        } else if (lang === 'go' || lang === 'golang') {
+            return generateGoTestWithUser(problem, testCases, funcName, userCode);
+        }
+
+        return userCode;
+    }
+
+    /**
+     * Generate Python test code with user's solution
+     */
+    function generatePythonTestWithUser(problem, testCases, funcName, userCode) {
+        // Try to extract just the function definition from user code
+        var cleanUserCode = userCode;
+
+        // Remove any existing test runner code
+        var testRunnerStart = userCode.indexOf('# ============ TEST RUNNER');
+        if (testRunnerStart !== -1) {
+            cleanUserCode = userCode.substring(0, testRunnerStart).trim();
+        }
+
+        // Remove if __name__ == "__main__" block
+        var mainMatch = cleanUserCode.match(/(\n\s*if\s+__name__\s*==\s*["']__main__["']\s*:[\s\S]*$)/m);
+        if (mainMatch) {
+            cleanUserCode = cleanUserCode.replace(mainMatch[0], '').trim();
+        }
+
+        // Build test cases as Python list
+        var testCasesPy = testCases.map(function(tc) {
+            return "{'input': " + toPythonLiteral(tc.input) + ", 'expected': " + toPythonLiteral(tc.expectedOutput) + ", 'name': " + JSON.stringify(tc.name) + "}";
+        }).join(',\n        ');
+
+        // Get parameter names
+        var paramNames = Object.keys(testCases[0].input);
+        var paramList = paramNames.join(', ');
+        var paramUnpack = paramNames.map(function(p) { return p + " = input_args['" + p + "']"; }).join('\n            ');
+
+        var code = cleanUserCode + '\n\n';
+        code += '# ============ TEST RUNNER (DO NOT MODIFY BELOW) ============\n';
+        code += 'import json\n\n';
+        code += 'def compare_output(actual, expected):\n';
+        code += '    """Compare actual output with expected output."""\n';
+        code += '    if isinstance(actual, list) and isinstance(expected, list):\n';
+        code += '        if len(actual) == len(expected):\n';
+        code += '            try:\n';
+        code += '                if sorted(actual) == sorted(expected):\n';
+        code += '                    return True\n';
+        code += '            except TypeError:\n';
+        code += '                pass\n';
+        code += '        return actual == expected\n';
+        code += '    return actual == expected\n\n';
+        code += 'def run_tests():\n';
+        code += '    test_cases = [\n        ' + testCasesPy + '\n    ]\n\n';
+        code += '    results = []\n';
+        code += '    passed = 0\n';
+        code += '    failed = 0\n\n';
+        code += '    for i, tc in enumerate(test_cases):\n';
+        code += '        try:\n';
+        code += '            input_args = tc["input"]\n';
+        code += '            ' + paramUnpack + '\n\n';
+        code += '            actual = ' + funcName + '(' + paramList + ')\n';
+        code += '            expected = tc["expected"]\n\n';
+        code += '            is_pass = compare_output(actual, expected)\n\n';
+        code += '            if is_pass:\n';
+        code += '                passed += 1\n';
+        code += '                status = "PASS"\n';
+        code += '            else:\n';
+        code += '                failed += 1\n';
+        code += '                status = "FAIL"\n\n';
+        code += '            results.append({\n';
+        code += '                "name": tc["name"],\n';
+        code += '                "status": status,\n';
+        code += '                "expected": expected,\n';
+        code += '                "actual": actual\n';
+        code += '            })\n\n';
+        code += '        except Exception as e:\n';
+        code += '            failed += 1\n';
+        code += '            results.append({\n';
+        code += '                "name": tc["name"],\n';
+        code += '                "status": "ERROR",\n';
+        code += '                "error": str(e)\n';
+        code += '            })\n\n';
+        code += '    output = {\n';
+        code += '        "total": len(test_cases),\n';
+        code += '        "passed": passed,\n';
+        code += '        "failed": failed,\n';
+        code += '        "results": results\n';
+        code += '    }\n';
+        code += '    print("__TEST_RESULTS__")\n';
+        code += '    print(json.dumps(output, default=str))\n';
+        code += '    print("__END_TEST_RESULTS__")\n\n';
+        code += 'if __name__ == "__main__":\n';
+        code += '    run_tests()\n';
+
+        return code;
+    }
+
+    /**
+     * Convert JS value to Python literal
+     */
+    function toPythonLiteral(val) {
+        if (val === null || val === undefined) return 'None';
+        if (typeof val === 'boolean') return val ? 'True' : 'False';
+        if (typeof val === 'string') return JSON.stringify(val);
+        if (typeof val === 'number') return String(val);
+        if (Array.isArray(val)) {
+            return '[' + val.map(toPythonLiteral).join(', ') + ']';
+        }
+        if (typeof val === 'object') {
+            var pairs = Object.keys(val).map(function(k) {
+                return JSON.stringify(k) + ': ' + toPythonLiteral(val[k]);
+            });
+            return '{' + pairs.join(', ') + '}';
+        }
+        return String(val);
+    }
+
+    /**
+     * Generate Go test code with user's solution
+     */
+    function generateGoTestWithUser(problem, testCases, funcName, userCode) {
+        // For Go, we need to be more careful about code structure
+        // Try to extract just the function
+
+        var cleanUserCode = userCode;
+
+        // Remove test runner code if present
+        var testRunnerStart = userCode.indexOf('// ============ TEST RUNNER');
+        if (testRunnerStart !== -1) {
+            cleanUserCode = userCode.substring(0, testRunnerStart).trim();
+        }
+
+        // Remove existing main function
+        cleanUserCode = cleanUserCode.replace(/func main\(\)\s*\{[\s\S]*?\n\}/g, '');
+
+        // Get parameter types from first test case
+        var firstInput = testCases[0].input;
+        var params = Object.keys(firstInput).map(function(name) {
+            var val = firstInput[name];
+            var goType = 'interface{}';
+            if (typeof val === 'number') {
+                goType = Number.isInteger(val) ? 'int' : 'float64';
+            } else if (typeof val === 'string') {
+                goType = 'string';
+            } else if (typeof val === 'boolean') {
+                goType = 'bool';
+            } else if (Array.isArray(val) && val.length > 0) {
+                var first = val[0];
+                if (typeof first === 'number') {
+                    goType = '[]int';
+                } else if (typeof first === 'string') {
+                    goType = '[]string';
+                } else {
+                    goType = '[]interface{}';
+                }
+            }
+            return { name: name, type: goType };
+        });
+
+        // Determine return type
+        var expectedOutput = testCases[0].expectedOutput;
+        var returnType = 'interface{}';
+        if (typeof expectedOutput === 'number') {
+            returnType = Number.isInteger(expectedOutput) ? 'int' : 'float64';
+        } else if (typeof expectedOutput === 'string') {
+            returnType = 'string';
+        } else if (typeof expectedOutput === 'boolean') {
+            returnType = 'bool';
+        } else if (Array.isArray(expectedOutput) && expectedOutput.length > 0) {
+            if (typeof expectedOutput[0] === 'number') {
+                returnType = '[]int';
+            } else if (typeof expectedOutput[0] === 'string') {
+                returnType = '[]string';
+            }
+        }
+
+        // Build test cases struct
+        var testCasesGo = testCases.map(function(tc) {
+            var inputVals = params.map(function(p) { return toGoLiteral(tc.input[p.name]); }).join(', ');
+            var expectedVal = toGoLiteral(tc.expectedOutput);
+            return '\t\t{"' + tc.name + '", ' + inputVals + ', ' + expectedVal + '},';
+        }).join('\n');
+
+        var paramDecls = params.map(function(p) { return p.name + ' ' + p.type; }).join('\n\t\t');
+        var paramNames = params.map(function(p) { return 'tc.' + p.name; }).join(', ');
+
+        // Check if user code has package declaration
+        var hasPackage = /^\s*package\s+main/m.test(cleanUserCode);
+
+        var code = '';
+        if (!hasPackage) {
+            code += 'package main\n\n';
+        }
+
+        // Add necessary imports if not present
+        if (cleanUserCode.indexOf('"encoding/json"') === -1) {
+            code += 'import (\n';
+            code += '\t"encoding/json"\n';
+            code += '\t"fmt"\n';
+            code += '\t"reflect"\n';
+            code += '\t"sort"\n';
+            code += ')\n\n';
+        }
+
+        code += cleanUserCode + '\n\n';
+        code += '// ============ TEST RUNNER (DO NOT MODIFY BELOW) ============\n\n';
+        code += 'type TestResult struct {\n';
+        code += '\tName     string      `json:"name"`\n';
+        code += '\tStatus   string      `json:"status"`\n';
+        code += '\tExpected interface{} `json:"expected"`\n';
+        code += '\tActual   interface{} `json:"actual"`\n';
+        code += '\tError    string      `json:"error,omitempty"`\n';
+        code += '}\n\n';
+        code += 'type TestOutput struct {\n';
+        code += '\tTotal   int          `json:"total"`\n';
+        code += '\tPassed  int          `json:"passed"`\n';
+        code += '\tFailed  int          `json:"failed"`\n';
+        code += '\tResults []TestResult `json:"results"`\n';
+        code += '}\n\n';
+        code += 'func compareOutputTest(actual, expected interface{}) bool {\n';
+        code += '\tactualSlice, actualIsSlice := actual.([]int)\n';
+        code += '\texpectedSlice, expectedIsSlice := expected.([]int)\n';
+        code += '\tif actualIsSlice && expectedIsSlice {\n';
+        code += '\t\tif len(actualSlice) != len(expectedSlice) {\n';
+        code += '\t\t\treturn false\n';
+        code += '\t\t}\n';
+        code += '\t\taCopy := make([]int, len(actualSlice))\n';
+        code += '\t\teCopy := make([]int, len(expectedSlice))\n';
+        code += '\t\tcopy(aCopy, actualSlice)\n';
+        code += '\t\tcopy(eCopy, expectedSlice)\n';
+        code += '\t\tsort.Ints(aCopy)\n';
+        code += '\t\tsort.Ints(eCopy)\n';
+        code += '\t\treturn reflect.DeepEqual(aCopy, eCopy)\n';
+        code += '\t}\n';
+        code += '\treturn reflect.DeepEqual(actual, expected)\n';
+        code += '}\n\n';
+        code += 'func main() {\n';
+        code += '\ttestCases := []struct {\n';
+        code += '\t\tname     string\n';
+        code += '\t\t' + paramDecls + '\n';
+        code += '\t\texpected ' + returnType + '\n';
+        code += '\t}{\n';
+        code += testCasesGo + '\n';
+        code += '\t}\n\n';
+        code += '\toutput := TestOutput{\n';
+        code += '\t\tTotal:   len(testCases),\n';
+        code += '\t\tResults: make([]TestResult, 0, len(testCases)),\n';
+        code += '\t}\n\n';
+        code += '\tfor _, tc := range testCases {\n';
+        code += '\t\tresult := TestResult{Name: tc.name}\n';
+        code += '\t\tactual := ' + funcName + '(' + paramNames + ')\n';
+        code += '\t\tresult.Expected = tc.expected\n';
+        code += '\t\tresult.Actual = actual\n\n';
+        code += '\t\tif compareOutputTest(actual, tc.expected) {\n';
+        code += '\t\t\tresult.Status = "PASS"\n';
+        code += '\t\t\toutput.Passed++\n';
+        code += '\t\t} else {\n';
+        code += '\t\t\tresult.Status = "FAIL"\n';
+        code += '\t\t\toutput.Failed++\n';
+        code += '\t\t}\n';
+        code += '\t\toutput.Results = append(output.Results, result)\n';
+        code += '\t}\n\n';
+        code += '\tfmt.Println("__TEST_RESULTS__")\n';
+        code += '\tjsonOutput, _ := json.Marshal(output)\n';
+        code += '\tfmt.Println(string(jsonOutput))\n';
+        code += '\tfmt.Println("__END_TEST_RESULTS__")\n';
+        code += '}\n';
+
+        return code;
+    }
+
+    /**
+     * Convert JS value to Go literal
+     */
+    function toGoLiteral(val) {
+        if (val === null || val === undefined) return 'nil';
+        if (typeof val === 'boolean') return val ? 'true' : 'false';
+        if (typeof val === 'string') return JSON.stringify(val);
+        if (typeof val === 'number') return String(val);
+        if (Array.isArray(val)) {
+            if (val.length === 0) return '[]interface{}{}';
+            var first = val[0];
+            if (typeof first === 'number' && Number.isInteger(first)) {
+                return '[]int{' + val.join(', ') + '}';
+            }
+            if (typeof first === 'string') {
+                return '[]string{' + val.map(function(v) { return JSON.stringify(v); }).join(', ') + '}';
+            }
+            if (Array.isArray(first)) {
+                var inner = val.map(function(arr) { return '{' + arr.join(', ') + '}'; }).join(', ');
+                return '[][]int{' + inner + '}';
+            }
+            return '[]interface{}{' + val.map(toGoLiteral).join(', ') + '}';
+        }
+        if (typeof val === 'object') {
+            var pairs = Object.keys(val).map(function(k) {
+                return JSON.stringify(k) + ': ' + toGoLiteral(val[k]);
+            });
+            return 'map[string]interface{}{' + pairs.join(', ') + '}';
+        }
+        return String(val);
+    }
+
+    /**
+     * Load test template for current problem
+     * Sets up the editor with pre-filled test code
+     */
+    window.loadTestTemplate = function() {
+        if (!currentProblem || !window.ProblemRenderer) {
+            return;
+        }
+
+        var fullId = currentProblem.category + '/' + currentProblem.id;
+        var problem = window.ProblemRenderer.get(fullId);
+
+        if (!problem) {
+            return;
+        }
+
+        var testCode = window.ProblemRenderer.generateTestCode(problem, currentLanguage);
+
+        if (testCode && editor) {
+            editor.setValue(testCode);
+            currentCode[currentLanguage] = testCode;
+        }
     };
 
     window.clearOutput = function() {

@@ -365,6 +365,469 @@
             .replace(/'/g, '&#039;');
     }
 
+    /**
+     * Convert JS value to Python literal
+     * @param {*} val - Value to convert
+     * @returns {string} Python literal string
+     */
+    function toPythonLiteral(val) {
+        if (val === null || val === undefined) return 'None';
+        if (typeof val === 'boolean') return val ? 'True' : 'False';
+        if (typeof val === 'string') return JSON.stringify(val);
+        if (typeof val === 'number') return String(val);
+        if (Array.isArray(val)) {
+            return '[' + val.map(toPythonLiteral).join(', ') + ']';
+        }
+        if (typeof val === 'object') {
+            const pairs = Object.entries(val).map(([k, v]) => JSON.stringify(k) + ': ' + toPythonLiteral(v));
+            return '{' + pairs.join(', ') + '}';
+        }
+        return String(val);
+    }
+
+    /**
+     * Convert JS value to Go literal
+     * @param {*} val - Value to convert
+     * @param {string} hint - Type hint (optional)
+     * @returns {string} Go literal string
+     */
+    function toGoLiteral(val, hint) {
+        if (val === null || val === undefined) return 'nil';
+        if (typeof val === 'boolean') return val ? 'true' : 'false';
+        if (typeof val === 'string') return JSON.stringify(val);
+        if (typeof val === 'number') {
+            if (Number.isInteger(val)) return String(val);
+            return String(val);
+        }
+        if (Array.isArray(val)) {
+            if (val.length === 0) return '[]interface{}{}';
+            // Detect element type
+            const first = val[0];
+            if (typeof first === 'number' && Number.isInteger(first)) {
+                return '[]int{' + val.join(', ') + '}';
+            }
+            if (typeof first === 'string') {
+                return '[]string{' + val.map(v => JSON.stringify(v)).join(', ') + '}';
+            }
+            if (Array.isArray(first)) {
+                // 2D array
+                const inner = val.map(arr => '{' + arr.join(', ') + '}').join(', ');
+                return '[][]int{' + inner + '}';
+            }
+            return '[]interface{}{' + val.map(v => toGoLiteral(v)).join(', ') + '}';
+        }
+        if (typeof val === 'object') {
+            const pairs = Object.entries(val).map(([k, v]) => JSON.stringify(k) + ': ' + toGoLiteral(v));
+            return 'map[string]interface{}{' + pairs.join(', ') + '}';
+        }
+        return String(val);
+    }
+
+    /**
+     * Get the function name from the problem ID
+     * @param {string} problemId - Problem ID (e.g., "02-two-number-sum")
+     * @param {string} lang - Language ("python" or "go")
+     * @returns {string} Function name
+     */
+    function getFunctionName(problemId, lang) {
+        // Remove leading numbers and convert to appropriate case
+        const base = problemId.replace(/^\d+-/, '').replace(/-/g, '_');
+        if (lang === 'python') {
+            return base;
+        } else {
+            // Go uses PascalCase
+            return base.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+        }
+    }
+
+    /**
+     * Generate test cases data from problem examples
+     * @param {Object} problem - Problem configuration
+     * @returns {Array} Test cases array
+     */
+    function getTestCases(problem) {
+        if (!problem || !problem.examples) return [];
+        return problem.examples.map((ex, i) => ({
+            id: i,
+            name: 'Test Case ' + (i + 1),
+            input: ex.input,
+            expectedOutput: ex.output,
+            explanation: ex.explanation || ''
+        }));
+    }
+
+    /**
+     * Generate Python test code that runs all test cases
+     * @param {Object} problem - Problem configuration
+     * @returns {string} Python code with test runner
+     */
+    function generatePythonTestCode(problem) {
+        const funcName = getFunctionName(problem.id, 'python');
+        const testCases = getTestCases(problem);
+
+        if (testCases.length === 0) {
+            return `def ${funcName}():
+    """
+    ${problem.name}
+
+    Write your solution here.
+    """
+    pass
+
+if __name__ == "__main__":
+    result = ${funcName}()
+    print(result)
+`;
+        }
+
+        // Extract parameter names from first test case
+        const firstInput = testCases[0].input;
+        const paramNames = Object.keys(firstInput);
+        const paramList = paramNames.join(', ');
+
+        let code = `def ${funcName}(${paramList}):
+    """
+    ${problem.name}
+
+    ${problem.description ? problem.description.substring(0, 200) + '...' : ''}
+
+    Write your solution here.
+    """
+    # TODO: Implement your solution
+    pass
+
+
+# ============ TEST RUNNER (DO NOT MODIFY BELOW) ============
+import json
+
+def compare_output(actual, expected):
+    """Compare actual output with expected output."""
+    # Handle array comparisons (order may not matter for some problems)
+    if isinstance(actual, list) and isinstance(expected, list):
+        # For arrays of primitives, sort and compare
+        if len(actual) == len(expected):
+            try:
+                if sorted(actual) == sorted(expected):
+                    return True
+            except TypeError:
+                pass
+        return actual == expected
+    return actual == expected
+
+def run_tests():
+    test_cases = ${toPythonLiteral(testCases.map(tc => ({ input: tc.input, expected: tc.expectedOutput, name: tc.name })))}
+
+    results = []
+    passed = 0
+    failed = 0
+
+    for i, tc in enumerate(test_cases):
+        try:
+            # Unpack input parameters
+            input_args = tc['input']
+            ${paramNames.map(p => `${p} = input_args['${p}']`).join('\n            ')}
+
+            # Run solution
+            actual = ${funcName}(${paramList})
+            expected = tc['expected']
+
+            # Compare results
+            is_pass = compare_output(actual, expected)
+
+            if is_pass:
+                passed += 1
+                status = "PASS"
+            else:
+                failed += 1
+                status = "FAIL"
+
+            results.append({
+                'name': tc['name'],
+                'status': status,
+                'expected': expected,
+                'actual': actual
+            })
+
+        except Exception as e:
+            failed += 1
+            results.append({
+                'name': tc['name'],
+                'status': 'ERROR',
+                'error': str(e)
+            })
+
+    # Output results in JSON format for parsing
+    output = {
+        'total': len(test_cases),
+        'passed': passed,
+        'failed': failed,
+        'results': results
+    }
+    print("__TEST_RESULTS__")
+    print(json.dumps(output, default=str))
+    print("__END_TEST_RESULTS__")
+
+    return output
+
+if __name__ == "__main__":
+    run_tests()
+`;
+        return code;
+    }
+
+    /**
+     * Generate Go test code that runs all test cases
+     * @param {Object} problem - Problem configuration
+     * @returns {string} Go code with test runner
+     */
+    function generateGoTestCode(problem) {
+        const funcName = getFunctionName(problem.id, 'go');
+        const testCases = getTestCases(problem);
+
+        if (testCases.length === 0) {
+            return `package main
+
+import "fmt"
+
+func ${funcName}() interface{} {
+	// ${problem.name}
+	// Write your solution here
+	return nil
+}
+
+func main() {
+	result := ${funcName}()
+	fmt.Println(result)
+}
+`;
+        }
+
+        // Extract parameter info from first test case
+        const firstInput = testCases[0].input;
+        const params = Object.entries(firstInput).map(([name, val]) => {
+            let goType = 'interface{}';
+            if (typeof val === 'number') {
+                goType = Number.isInteger(val) ? 'int' : 'float64';
+            } else if (typeof val === 'string') {
+                goType = 'string';
+            } else if (typeof val === 'boolean') {
+                goType = 'bool';
+            } else if (Array.isArray(val)) {
+                if (val.length > 0) {
+                    const first = val[0];
+                    if (typeof first === 'number') {
+                        goType = '[]int';
+                    } else if (typeof first === 'string') {
+                        goType = '[]string';
+                    } else if (Array.isArray(first)) {
+                        goType = '[][]int';
+                    } else {
+                        goType = '[]interface{}';
+                    }
+                } else {
+                    goType = '[]int';
+                }
+            }
+            return { name: name, type: goType };
+        });
+
+        const paramDecl = params.map(p => p.name + ' ' + p.type).join(', ');
+        const paramNames = params.map(p => p.name).join(', ');
+
+        // Determine return type from expected output
+        const expectedOutput = testCases[0].expectedOutput;
+        let returnType = 'interface{}';
+        if (typeof expectedOutput === 'number') {
+            returnType = Number.isInteger(expectedOutput) ? 'int' : 'float64';
+        } else if (typeof expectedOutput === 'string') {
+            returnType = 'string';
+        } else if (typeof expectedOutput === 'boolean') {
+            returnType = 'bool';
+        } else if (Array.isArray(expectedOutput)) {
+            if (expectedOutput.length > 0 && typeof expectedOutput[0] === 'number') {
+                returnType = '[]int';
+            } else if (expectedOutput.length > 0 && typeof expectedOutput[0] === 'string') {
+                returnType = '[]string';
+            } else {
+                returnType = '[]interface{}';
+            }
+        }
+
+        let code = `package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"sort"
+)
+
+func ${funcName}(${paramDecl}) ${returnType} {
+	// ${problem.name}
+	// Write your solution here
+
+	// TODO: Implement your solution
+	return ${returnType === 'int' ? '0' : returnType === 'float64' ? '0.0' : returnType === 'string' ? '""' : returnType === 'bool' ? 'false' : 'nil'}
+}
+
+// ============ TEST RUNNER (DO NOT MODIFY BELOW) ============
+
+type TestResult struct {
+	Name     string      \`json:"name"\`
+	Status   string      \`json:"status"\`
+	Expected interface{} \`json:"expected"\`
+	Actual   interface{} \`json:"actual"\`
+	Error    string      \`json:"error,omitempty"\`
+}
+
+type TestOutput struct {
+	Total   int          \`json:"total"\`
+	Passed  int          \`json:"passed"\`
+	Failed  int          \`json:"failed"\`
+	Results []TestResult \`json:"results"\`
+}
+
+func compareOutput(actual, expected interface{}) bool {
+	// Handle slice comparisons
+	actualSlice, actualIsSlice := actual.([]int)
+	expectedSlice, expectedIsSlice := expected.([]int)
+	if actualIsSlice && expectedIsSlice {
+		if len(actualSlice) != len(expectedSlice) {
+			return false
+		}
+		// Try sorted comparison
+		aCopy := make([]int, len(actualSlice))
+		eCopy := make([]int, len(expectedSlice))
+		copy(aCopy, actualSlice)
+		copy(eCopy, expectedSlice)
+		sort.Ints(aCopy)
+		sort.Ints(eCopy)
+		return reflect.DeepEqual(aCopy, eCopy)
+	}
+	return reflect.DeepEqual(actual, expected)
+}
+
+func main() {
+	testCases := []struct {
+		name     string
+		${params.map(p => p.name + ' ' + p.type).join('\n\t\t')}
+		expected ${returnType}
+	}{
+${testCases.map((tc, i) => {
+    const inputVals = params.map(p => toGoLiteral(tc.input[p.name])).join(', ');
+    const expectedVal = toGoLiteral(tc.expectedOutput);
+    return `\t\t{"${tc.name}", ${inputVals}, ${expectedVal}},`;
+}).join('\n')}
+	}
+
+	output := TestOutput{
+		Total:   len(testCases),
+		Results: make([]TestResult, 0, len(testCases)),
+	}
+
+	for _, tc := range testCases {
+		result := TestResult{Name: tc.name}
+
+		// Run the solution
+		actual := ${funcName}(${paramNames.split(', ').map(n => 'tc.' + n).join(', ')})
+		result.Expected = tc.expected
+		result.Actual = actual
+
+		if compareOutput(actual, tc.expected) {
+			result.Status = "PASS"
+			output.Passed++
+		} else {
+			result.Status = "FAIL"
+			output.Failed++
+		}
+
+		output.Results = append(output.Results, result)
+	}
+
+	fmt.Println("__TEST_RESULTS__")
+	jsonOutput, _ := json.Marshal(output)
+	fmt.Println(string(jsonOutput))
+	fmt.Println("__END_TEST_RESULTS__")
+}
+`;
+        return code;
+    }
+
+    /**
+     * Generate test code for a problem
+     * @param {Object} problem - Problem configuration
+     * @param {string} lang - Language ("python" or "go")
+     * @returns {string} Test code
+     */
+    function generateTestCode(problem, lang) {
+        if (lang === 'python') {
+            return generatePythonTestCode(problem);
+        } else if (lang === 'go' || lang === 'golang') {
+            return generateGoTestCode(problem);
+        }
+        return '';
+    }
+
+    /**
+     * Parse test results from execution output
+     * @param {string} output - Execution output
+     * @returns {Object|null} Parsed test results or null if not found
+     */
+    function parseTestResults(output) {
+        const startMarker = '__TEST_RESULTS__';
+        const endMarker = '__END_TEST_RESULTS__';
+
+        const startIdx = output.indexOf(startMarker);
+        const endIdx = output.indexOf(endMarker);
+
+        if (startIdx === -1 || endIdx === -1) return null;
+
+        const jsonStr = output.substring(startIdx + startMarker.length, endIdx).trim();
+
+        try {
+            return JSON.parse(jsonStr);
+        } catch (e) {
+            console.error('[ProblemRenderer] Failed to parse test results:', e);
+            return null;
+        }
+    }
+
+    /**
+     * Validate a single output against expected
+     * @param {*} actual - Actual output
+     * @param {*} expected - Expected output
+     * @returns {boolean} Whether they match
+     */
+    function validateOutput(actual, expected) {
+        // Handle null/undefined
+        if (actual === expected) return true;
+        if (actual === null || expected === null) return false;
+        if (actual === undefined || expected === undefined) return false;
+
+        // Handle arrays
+        if (Array.isArray(actual) && Array.isArray(expected)) {
+            if (actual.length !== expected.length) return false;
+            // Try exact match first
+            if (JSON.stringify(actual) === JSON.stringify(expected)) return true;
+            // Try sorted match for simple arrays
+            try {
+                const sortedActual = [...actual].sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+                const sortedExpected = [...expected].sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+                return JSON.stringify(sortedActual) === JSON.stringify(sortedExpected);
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Handle objects
+        if (typeof actual === 'object' && typeof expected === 'object') {
+            return JSON.stringify(actual) === JSON.stringify(expected);
+        }
+
+        // Handle primitives
+        return actual === expected;
+    }
+
     // Global function to switch between solution tabs
     window.showSolutionTab = function(lang) {
         // Update tab buttons
@@ -427,6 +890,12 @@
         renderHTML: renderProblemHTML,
         getDashboardData: getDashboardData,
         search: searchProblems,
+        // Test runner functions
+        getTestCases: getTestCases,
+        generateTestCode: generateTestCode,
+        parseTestResults: parseTestResults,
+        validateOutput: validateOutput,
+        getFunctionName: getFunctionName,
         _problems: PROBLEMS,
         _categories: CATEGORIES
     };
