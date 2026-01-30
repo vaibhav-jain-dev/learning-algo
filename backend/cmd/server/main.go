@@ -221,6 +221,7 @@ func main() {
 	// Unified database learning routes (dashboard + lessons in tabs)
 	app.Get("/sql", h.SQL)                      // Combined SQL playground and lessons
 	app.Get("/elasticsearch", h.Elasticsearch)  // Combined Elasticsearch playground and lessons
+	app.Get("/elasticsearch/search-architecture", h.SearchArchitecture) // Real-world search implementation case study
 	app.Get("/redis", h.Redis)                  // Combined Redis playground and lessons
 
 	// Other learning routes

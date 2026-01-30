@@ -733,6 +733,13 @@ func (h *Handlers) Elasticsearch(c *fiber.Ctx) error {
 	})
 }
 
+// SearchArchitecture renders the Search Architecture Evolution page (real-world ES implementation)
+func (h *Handlers) SearchArchitecture(c *fiber.Ctx) error {
+	return c.Render("pages/search-architecture", fiber.Map{
+		"Title": "Search Architecture Evolution - Real-World Implementation",
+	})
+}
+
 // Redis renders the unified Redis page with dashboard and lessons tabs
 func (h *Handlers) Redis(c *fiber.Ctx) error {
 	return c.Render("pages/redis-unified", fiber.Map{
