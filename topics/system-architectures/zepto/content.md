@@ -4,7 +4,7 @@
 
 Design a 10-minute grocery delivery platform operating through strategically located dark stores, managing real-time inventory across thousands of SKUs, optimizing last-mile delivery with dedicated rider fleets, and predicting hyper-local demand patterns to maintain service level agreements.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff6b35;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff6b35;">
 
 ### Core Requirements
 
@@ -19,7 +19,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 ### Key Assumptions (Explicitly Stated)
 
@@ -39,7 +39,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ## Quick Commerce: The Business Model Deep Dive
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### What Makes Quick Commerce Different
 
@@ -137,7 +137,7 @@ Quick commerce fundamentally inverts traditional retail economics. Instead of op
 
 ### Interview Questions: Quick Commerce Business Model
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
 #### Level 1: "How does quick commerce differ from traditional e-commerce delivery?"
 
@@ -210,7 +210,7 @@ Quick commerce fundamentally inverts traditional retail economics. Instead of op
 
 ## Dark Store Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### What Is a Dark Store?
 
@@ -393,7 +393,7 @@ class DarkStorePlacementOptimizer:
 
 ### Interview Questions: Dark Store Architecture
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
 #### Level 1: "Why use dark stores instead of partnering with existing retail stores?"
 
@@ -526,7 +526,7 @@ class DarkStorePlacementOptimizer:
 
 ## Delivery Optimization System
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Last-Mile Delivery: The Hidden Complexity
 
@@ -814,7 +814,7 @@ class RiderTrackingService:
 
 ### Interview Questions: Delivery Optimization
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
 #### Level 1: "How do you assign orders to riders?"
 
@@ -965,7 +965,7 @@ class RiderTrackingService:
 
 ## Inventory Management System
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### The Inventory Accuracy Challenge
 
@@ -1315,7 +1315,7 @@ class CycleCountService:
 
 ### Interview Questions: Inventory Management
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
 #### Level 1: "How do you prevent overselling when multiple customers try to buy the last item simultaneously?"
 
@@ -1464,7 +1464,7 @@ class CycleCountService:
 
 ## Demand Prediction System
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Why Demand Prediction Matters
 
@@ -1792,7 +1792,7 @@ class DemandForecastingService:
 
 ### Interview Questions: Demand Prediction
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
 
 #### Level 1: "How do you predict demand for a new dark store with no historical data?"
 
@@ -2017,7 +2017,7 @@ class DemandForecastingService:
 
 ## High-Level System Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">ZEPTO SYSTEM ARCHITECTURE</h4>
@@ -2161,7 +2161,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 ## Scaling Phases
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
@@ -2249,7 +2249,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 ## Trade-offs and Design Decisions
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
 <h4 style="color: #fbbf24; margin: 0 0 20px 0; text-align: center;">CRITICAL DESIGN TRADE-OFFS</h4>
@@ -2344,7 +2344,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 ## Interview Tips: What To Say and What To Avoid
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
@@ -2410,7 +2410,7 @@ When asked an open-ended question, structure your response:
 
 ## Cross-References
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Related System Design Topics
 

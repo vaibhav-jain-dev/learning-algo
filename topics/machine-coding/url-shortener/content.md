@@ -470,7 +470,7 @@ This is a manifestation of the [[CAP theorem]](/topics/system-design/cap-theorem
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Capacity Analysis:</div>
 <div style="color: #c9d1d9; font-size: 12px;">
 <div>32 datacenters x 32 workers = 1,024 total ID generators</div>
@@ -643,7 +643,7 @@ If A's clock later jumps forward (NTP correction), it might generate duplicate t
 
 </div>
 
-<div style="background: #21262d; padding: 12px 20px; border-radius: 8px; margin-top: 12px;">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 8px; margin-top: 12px;">
 <div style="color: #ffa657; font-size: 11px;">Server C nearly exhausted - requesting new range 5M-6M</div>
 </div>
 
@@ -1155,7 +1155,7 @@ class NamespaceManager:
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
-<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 20px; border-radius: 10px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">Customer Domain</div>
 <div style="color: #dcfce7; font-size: 10px;">go.nike.com</div>
 </div>
@@ -1176,7 +1176,7 @@ class NamespaceManager:
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SSL/TLS Considerations:</div>
 <div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
 <div>1. Customer adds CNAME record pointing to your infrastructure</div>
@@ -1635,7 +1635,7 @@ Redirect status codes fundamentally affect your analytics capabilities.
 
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px;">
 <div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Real-World Choices:</div>
 <div style="color: #c9d1d9; font-size: 11px;">
 <div>bit.ly: 301 + tracking pixel (best of both worlds)</div>
@@ -2014,7 +2014,7 @@ URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), maki
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
-<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 13px;">Browser</div>
 <div style="color: #dcfce7; font-size: 10px; margin-top: 4px;">301 Cache</div>
 </div>
@@ -2040,7 +2040,7 @@ URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), maki
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px; margin-top: 8px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 8px;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
 <div>
 <div style="color: #22c55e; font-weight: bold; font-size: 11px;">Browser Cache</div>

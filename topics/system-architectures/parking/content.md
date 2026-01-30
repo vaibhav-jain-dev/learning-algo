@@ -21,7 +21,7 @@ Design a smart parking management system for multi-level parking lots with real-
 ## Core Concepts Overview
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 20px 0;">
-<h4 style="color: #58a6ff; margin-top: 0;">Fundamental Parking System Equation</h4>
+<h4 style="color: #1d4ed8; margin-top: 0;">Fundamental Parking System Equation</h4>
 <div style="font-family: 'Courier New', monospace; font-size: 15px; background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; text-align: center; color: #e6edf3;">
 Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span style="color: #4ade80;">Sensor Integration</span> + <span style="color: #4ade80;">Payment Processing</span> + <span style="color: #4ade80;">Real-time Availability</span> + <span style="color: #4ade80;">Dynamic Pricing</span>
 </div>
@@ -36,7 +36,7 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 ## High-Level Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">PARKING SYSTEM ARCHITECTURE</h3>
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">PARKING SYSTEM ARCHITECTURE</h3>
 
 <!-- Entry/Exit Gates Layer -->
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
@@ -64,11 +64,11 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 </div>
 
 <!-- Arrow Down -->
-<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 8px 0;">&#8595;</div>
+<div style="text-align: center; color: #1d4ed8; font-size: 24px; margin: 8px 0;">&#8595;</div>
 
 <!-- Parking Service Layer -->
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
-<div style="color: #58a6ff; font-weight: bold; text-align: center; margin-bottom: 16px;">PARKING SERVICE</div>
+<div style="color: #1d4ed8; font-weight: bold; text-align: center; margin-bottom: 16px;">PARKING SERVICE</div>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
 <div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
 <span style="color: #8b949e;">Spot Management</span>
@@ -86,7 +86,7 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 </div>
 
 <!-- Arrow Down -->
-<div style="text-align: center; color: #58a6ff; font-size: 24px; margin: 8px 0;">&#8595;</div>
+<div style="text-align: center; color: #1d4ed8; font-size: 24px; margin: 8px 0;">&#8595;</div>
 
 <!-- Data Layer -->
 <div style="display: flex; justify-content: space-between; gap: 16px;">
@@ -1454,7 +1454,7 @@ class DynamicPricingService:
 </div>
 
 <div style="background: #161b22; border: 1px solid #1f6feb; border-radius: 8px; padding: 16px;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px; font-size: 13px;">levels</div>
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px; font-size: 13px;">levels</div>
 <div style="color: #8b949e; font-size: 12px; line-height: 1.6;">id, lot_id, floor_number, name, total_spots</div>
 </div>
 
@@ -1588,7 +1588,7 @@ class SimpleParking:
 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #161b22; border-radius: 8px; padding: 12px;">
 <div style="color: #f9826c; font-weight: bold; font-size: 12px;">Trade-off</div>
 <div style="color: #3fb950; font-weight: bold; font-size: 12px;">Option A</div>
-<div style="color: #58a6ff; font-weight: bold; font-size: 12px;">Option B</div>
+<div style="color: #1d4ed8; font-weight: bold; font-size: 12px;">Option B</div>
 <div style="color: #a371f7; font-weight: bold; font-size: 12px;">Decision Factor</div>
 </div>
 

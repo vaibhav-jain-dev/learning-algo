@@ -1,6 +1,6 @@
 # Design Tinder: Location-Based Dating Platform
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #fe3c72;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #fe3c72;">
 
 ## Problem Statement
 
@@ -26,25 +26,25 @@ Design a location-based dating application that enables users to discover potent
 
 ## Core Architecture Overview
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">TINDER SYSTEM ARCHITECTURE</h3>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
 <!-- Client Layer -->
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 20px; border: 2px solid #fe3c72;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #fe3c72;">
 <div style="color: #fe3c72; font-weight: bold; margin-bottom: 12px; text-align: center;">CLIENT LAYER</div>
 <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-<div style="background: #161b22; border: 1px solid #484f58; border-radius: 8px; padding: 12px 20px; text-align: center;">
-<div style="color: #c9d1d9; font-weight: bold; font-size: 13px;">iOS App</div>
+<div style="background: #f1f5f9; border: 1px solid #484f58; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #1e293b; font-weight: bold; font-size: 13px;">iOS App</div>
 <div style="color: #8b949e; font-size: 11px;">Swift + CoreLocation</div>
 </div>
-<div style="background: #161b22; border: 1px solid #484f58; border-radius: 8px; padding: 12px 20px; text-align: center;">
-<div style="color: #c9d1d9; font-weight: bold; font-size: 13px;">Android App</div>
+<div style="background: #f1f5f9; border: 1px solid #484f58; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #1e293b; font-weight: bold; font-size: 13px;">Android App</div>
 <div style="color: #8b949e; font-size: 11px;">Kotlin + FusedLocation</div>
 </div>
-<div style="background: #161b22; border: 1px solid #484f58; border-radius: 8px; padding: 12px 20px; text-align: center;">
-<div style="color: #c9d1d9; font-weight: bold; font-size: 13px;">Web App</div>
+<div style="background: #f1f5f9; border: 1px solid #484f58; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="color: #1e293b; font-weight: bold; font-size: 13px;">Web App</div>
 <div style="color: #8b949e; font-size: 11px;">React + WebSocket</div>
 </div>
 </div>
@@ -97,19 +97,19 @@ Design a location-based dating application that enables users to discover potent
 </div>
 
 <!-- Data Layer -->
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 20px; border: 2px solid #484f58;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #484f58;">
 <div style="color: #8b949e; font-weight: bold; margin-bottom: 12px; text-align: center;">DATA LAYER</div>
 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-<div style="background: #161b22; border: 1px solid #238636; border-radius: 6px; padding: 10px 16px;">
+<div style="background: #f1f5f9; border: 1px solid #238636; border-radius: 6px; padding: 10px 16px;">
 <span style="color: #3fb950; font-size: 12px;">PostgreSQL (Profiles)</span>
 </div>
-<div style="background: #161b22; border: 1px solid #f0883e; border-radius: 6px; padding: 10px 16px;">
+<div style="background: #f1f5f9; border: 1px solid #f0883e; border-radius: 6px; padding: 10px 16px;">
 <span style="color: #f0883e; font-size: 12px;">Cassandra (Swipes/Chat)</span>
 </div>
-<div style="background: #161b22; border: 1px solid #da3633; border-radius: 6px; padding: 10px 16px;">
+<div style="background: #f1f5f9; border: 1px solid #da3633; border-radius: 6px; padding: 10px 16px;">
 <span style="color: #f85149; font-size: 12px;">Redis Cluster (Cache/Geo)</span>
 </div>
-<div style="background: #161b22; border: 1px solid #8957e5; border-radius: 6px; padding: 10px 16px;">
+<div style="background: #f1f5f9; border: 1px solid #8957e5; border-radius: 6px; padding: 10px 16px;">
 <span style="color: #a371f7; font-size: 12px;">Elasticsearch (Discovery)</span>
 </div>
 </div>
@@ -122,7 +122,7 @@ Design a location-based dating application that enables users to discover potent
 
 ## 1. Geolocation Indexing Deep Dive
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3fb950;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3fb950;">
 
 ### The Fundamental Challenge
 
@@ -130,7 +130,7 @@ When a user in Manhattan opens Tinder at 8pm on Friday, they expect to see nearb
 
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Naive Approach Failure</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Computing haversine distance to 150K users = 150K floating-point calculations per request.
 At 1000 concurrent requests: 150M calculations/second. Latency: ~500ms. Unacceptable.
 </div>
@@ -138,7 +138,7 @@ At 1000 concurrent requests: 150M calculations/second. Latency: ~500ms. Unaccept
 
 ### Geospatial Indexing Strategies
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 #### Strategy 1: Geohashing
 
@@ -157,7 +157,7 @@ Precision levels:
 
 <div style="background: rgba(56, 139, 253, 0.1); border: 1px solid #58a6ff; border-radius: 8px; padding: 12px; margin: 12px 0;">
 <div style="color: #58a6ff; font-weight: bold;">Key Insight</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 For a 10-mile radius search, we use precision 5 (4.9km cells). We query the user's cell plus all 8 adjacent cells to handle boundary cases. This reduces candidate set from 150K to ~8K users in 9 cells.
 </div>
 </div>
@@ -220,29 +220,29 @@ nearby = redis.georadius(
 
 ### Location Update Architecture
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Critical Design Decision**: How frequently should we update user locations?
 
 <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
-<div style="background: #161b22; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
+<div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px;">Continuous Updates</div>
 <div style="color: #8b949e; font-size: 12px;">Every GPS change triggers update</div>
-<div style="color: #c9d1d9; font-size: 12px; margin-top: 8px;">Pros: Always accurate</div>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">Pros: Always accurate</div>
 <div style="color: #f85149; font-size: 12px;">Cons: 1000s of writes/user/day, battery drain</div>
 </div>
 
-<div style="background: #161b22; border: 2px solid #1f6feb; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
+<div style="background: #f1f5f9; border: 2px solid #1f6feb; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Significant Movement</div>
 <div style="color: #8b949e; font-size: 12px;">Update when moved 500m+ from last location</div>
-<div style="color: #c9d1d9; font-size: 12px; margin-top: 8px;">Pros: Balanced accuracy/efficiency</div>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">Pros: Balanced accuracy/efficiency</div>
 <div style="color: #f0883e; font-size: 12px;">Cons: Slight staleness in dense areas</div>
 </div>
 
-<div style="background: #161b22; border: 2px solid #f0883e; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">On App Open</div>
 <div style="color: #8b949e; font-size: 12px;">Update only when user opens app</div>
-<div style="color: #c9d1d9; font-size: 12px; margin-top: 8px;">Pros: Minimal writes</div>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">Pros: Minimal writes</div>
 <div style="color: #f85149; font-size: 12px;">Cons: Stale data for inactive users</div>
 </div>
 </div>
@@ -256,7 +256,7 @@ nearby = redis.georadius(
 <div style="background: rgba(248, 81, 73, 0.15); border: 2px solid #f85149; border-radius: 12px; padding: 20px; margin: 16px 0;">
 <div style="color: #f85149; font-weight: bold; font-size: 15px; margin-bottom: 12px;">CRITICAL: Never Expose Exact Coordinates</div>
 
-<div style="color: #c9d1d9; font-size: 13px; line-height: 1.8;">
+<div style="color: #1e293b; font-size: 13px; line-height: 1.8;">
 
 **Trilateration Attack**: If an attacker can see exact distances from multiple spoofed locations, they can triangulate a user's precise location. Three distance measurements from different points uniquely identify a position.
 
@@ -287,7 +287,7 @@ def get_display_distance(actual_distance_km):
 
 ### Interview Questions: Geolocation Indexing
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
 #### Level 1: "How do you efficiently find users within a geographic radius?"
 
@@ -335,22 +335,22 @@ def get_display_distance(actual_distance_km):
 
 ## 2. Recommendation Engine Deep Dive
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 ### The Multi-Stage Recommendation Pipeline
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
 <!-- Stage 1 -->
-<div style="background: #161b22; border-left: 4px solid #238636; border-radius: 0 8px 8px 0; padding: 20px;">
+<div style="background: #f1f5f9; border-left: 4px solid #238636; border-radius: 0 8px 8px 0; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
 <div style="background: #238636; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</div>
 <span style="color: #3fb950; font-weight: bold; font-size: 15px;">CANDIDATE GENERATION</span>
 <span style="color: #8b949e; font-size: 12px;">(1M users -> 10K candidates)</span>
 </div>
-<div style="color: #c9d1d9; font-size: 13px; line-height: 1.7;">
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
 <strong>Filters Applied:</strong>
 <ul style="margin: 8px 0; padding-left: 20px;">
 <li>Geographic proximity (within user's radius preference)</li>
@@ -365,13 +365,13 @@ def get_display_distance(actual_distance_km):
 </div>
 
 <!-- Stage 2 -->
-<div style="background: #161b22; border-left: 4px solid #8957e5; border-radius: 0 8px 8px 0; padding: 20px;">
+<div style="background: #f1f5f9; border-left: 4px solid #8957e5; border-radius: 0 8px 8px 0; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
 <div style="background: #8957e5; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</div>
 <span style="color: #a371f7; font-weight: bold; font-size: 15px;">SCORING & RANKING</span>
 <span style="color: #8b949e; font-size: 12px;">(10K candidates -> 500 ranked)</span>
 </div>
-<div style="color: #c9d1d9; font-size: 13px; line-height: 1.7;">
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
 
 **Scoring Formula:**
 ```
@@ -391,13 +391,13 @@ score = w1 * elo_compatibility
 </div>
 
 <!-- Stage 3 -->
-<div style="background: #161b22; border-left: 4px solid #1f6feb; border-radius: 0 8px 8px 0; padding: 20px;">
+<div style="background: #f1f5f9; border-left: 4px solid #1f6feb; border-radius: 0 8px 8px 0; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
 <div style="background: #1f6feb; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</div>
 <span style="color: #58a6ff; font-weight: bold; font-size: 15px;">DIVERSIFICATION & ORDERING</span>
 <span style="color: #8b949e; font-size: 12px;">(500 ranked -> 100 served)</span>
 </div>
-<div style="color: #c9d1d9; font-size: 13px; line-height: 1.7;">
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
 <strong>Goals:</strong>
 <ul style="margin: 8px 0; padding-left: 20px;">
 <li><strong>Diversity injection:</strong> Don't show 20 similar profiles in a row (vary by distance, looks, interests)</li>
@@ -409,13 +409,13 @@ score = w1 * elo_compatibility
 </div>
 
 <!-- Stage 4 -->
-<div style="background: #161b22; border-left: 4px solid #f0883e; border-radius: 0 8px 8px 0; padding: 20px;">
+<div style="background: #f1f5f9; border-left: 4px solid #f0883e; border-radius: 0 8px 8px 0; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
 <div style="background: #f0883e; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">4</div>
 <span style="color: #f0883e; font-weight: bold; font-size: 15px;">CACHING & SERVING</span>
 <span style="color: #8b949e; font-size: 12px;">(Pre-compute for active users)</span>
 </div>
-<div style="color: #c9d1d9; font-size: 13px; line-height: 1.7;">
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
 <strong>Pre-computed Stacks:</strong> For users active in last 24 hours, compute and cache top 500 candidates in Redis.
 <br><br>
 <strong>Cache Key:</strong> <code>stack:{user_id}</code><br>
@@ -429,11 +429,11 @@ score = w1 * elo_compatibility
 
 ### The ELO Desirability System
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="background: rgba(137, 87, 229, 0.15); border: 1px solid #8957e5; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">Assumption</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Users have varying levels of "desirability" that can be inferred from swipe patterns. Matching users with similar desirability scores increases mutual match probability and overall user satisfaction.
 </div>
 </div>
@@ -475,7 +475,7 @@ class ELOSystem:
 
 <div style="background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 12px; margin: 12px 0;">
 <div style="color: #f85149; font-weight: bold;">Trade-off: "Leagues" Controversy</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 ELO creates implicit "leagues" which can feel discriminatory. Tinder officially moved away from pure ELO in 2019, replacing it with a multi-factor "desirability" score that includes profile engagement, message response rates, and behavioral signals. The concept remains - they just don't call it ELO anymore.
 </div>
 </div>
@@ -484,7 +484,7 @@ ELO creates implicit "leagues" which can feel discriminatory. Tinder officially 
 
 ### Cold Start Problem
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Problem**: New user Alex joins. No swipe history, no ELO, no engagement data. How do we recommend profiles to Alex, and how do we show Alex to others?
 
@@ -492,23 +492,23 @@ ELO creates implicit "leagues" which can feel discriminatory. Tinder officially 
 
 <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
 
-<div style="background: #161b22; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 250px;">
+<div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 250px;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px;">New User Boost</div>
-<div style="color: #c9d1d9; font-size: 12px;">
+<div style="color: #1e293b; font-size: 12px;">
 Show new users to a diverse range of ELO brackets for first 48 hours. Track who swipes right on them to quickly calibrate their actual score. Within 100 incoming swipes, we have enough signal.
 </div>
 </div>
 
-<div style="background: #161b22; border: 2px solid #1f6feb; border-radius: 8px; padding: 16px; flex: 1; min-width: 250px;">
+<div style="background: #f1f5f9; border: 2px solid #1f6feb; border-radius: 8px; padding: 16px; flex: 1; min-width: 250px;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Profile Proxy Signals</div>
-<div style="color: #c9d1d9; font-size: 12px;">
+<div style="color: #1e293b; font-size: 12px;">
 Use profile completeness, photo count, bio length, verified status, connected social accounts as initial scoring proxy. More complete profiles start with higher initial scores.
 </div>
 </div>
 
-<div style="background: #161b22; border: 2px solid #f0883e; border-radius: 8px; padding: 16px; flex: 1; min-width: 250px;">
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 8px; padding: 16px; flex: 1; min-width: 250px;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Photo Quality ML</div>
-<div style="color: #c9d1d9; font-size: 12px;">
+<div style="color: #1e293b; font-size: 12px;">
 Run ML models on uploaded photos to assess quality (lighting, resolution, face visibility, smile detection). This gives an initial attractiveness proxy before behavioral data exists.
 </div>
 </div>
@@ -521,7 +521,7 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 
 ### Interview Questions: Recommendation Engine
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
 #### Level 1: "Why not just show random profiles that match user preferences?"
 
@@ -580,11 +580,11 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 
 ## 3. Swipe Mechanics Deep Dive
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #da3633;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #da3633;">
 
 ### Swipe Data Model
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 # Swipe event schema
@@ -609,11 +609,11 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 
 ### Storage Architecture for Swipes
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 At 2B+ swipes/day, storage strategy is critical.
 
-<div style="background: #161b22; border: 2px solid #f0883e; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">Cassandra Schema for Swipes</div>
 
 ```sql
@@ -651,7 +651,7 @@ CREATE TABLE likes (
 
 <div style="background: rgba(56, 139, 253, 0.1); border: 1px solid #58a6ff; border-radius: 8px; padding: 12px; margin: 12px 0;">
 <div style="color: #58a6ff; font-weight: bold;">Assumption</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Old swipes (> 6 months) have diminishing value. User preferences change, people's photos update, relationships end. Setting 180-day TTL on swipe data means users might see profiles they passed on long ago - this is a feature, not a bug. It gives second chances.
 </div>
 </div>
@@ -662,7 +662,7 @@ Old swipes (> 6 months) have diminishing value. User preferences change, people'
 
 ### Bloom Filters for "Already Swiped" Check
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **The Problem**: When generating recommendations, we must exclude profiles the user already swiped on. Checking against 20,000+ swipe records per user is slow.
 
@@ -722,18 +722,18 @@ class SwipeTracker:
 ```
 
 <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
-<div style="background: #161b22; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
+<div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px;">Bloom Filter Pros</div>
-<ul style="color: #c9d1d9; font-size: 12px; margin: 0; padding-left: 16px;">
+<ul style="color: #1e293b; font-size: 12px; margin: 0; padding-left: 16px;">
 <li>O(1) lookup, ~0.1ms</li>
 <li>Space efficient: ~24KB vs 160KB for explicit set</li>
 <li>No false negatives guaranteed</li>
 </ul>
 </div>
 
-<div style="background: #161b22; border: 2px solid #f85149; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
+<div style="background: #f1f5f9; border: 2px solid #f85149; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Bloom Filter Cons</div>
-<ul style="color: #c9d1d9; font-size: 12px; margin: 0; padding-left: 16px;">
+<ul style="color: #1e293b; font-size: 12px; margin: 0; padding-left: 16px;">
 <li>~1% false positives (user might miss a profile they never swiped)</li>
 <li>Can't remove items (use Cuckoo filter if needed)</li>
 <li>Must rebuild if corrupted</li>
@@ -747,7 +747,7 @@ class SwipeTracker:
 
 ### Rate Limiting Swipes
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Business Requirement**: Free users get 100 right-swipes per 12-hour window. Premium users: unlimited. Super Likes: 1/day free, 5/day premium.
 
@@ -811,7 +811,7 @@ class SwipeRateLimiter:
 
 <div style="background: rgba(240, 136, 62, 0.15); border: 1px solid #f0883e; border-radius: 8px; padding: 12px; margin: 12px 0;">
 <div style="color: #f0883e; font-weight: bold;">Trade-off: Strictness vs. User Experience</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Hard limits frustrate users but drive premium conversions. Soft limits (slow down swiping speed after 100) are more user-friendly but less monetizable. Tinder uses hard limits. Bumble uses soft limits with "out of swipes" messaging.
 </div>
 </div>
@@ -822,7 +822,7 @@ Hard limits frustrate users but drive premium conversions. Soft limits (slow dow
 
 ### Interview Questions: Swipe Mechanics
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
 #### Level 1: "How do you prevent showing someone a user they already swiped on?"
 
@@ -886,15 +886,15 @@ Hard limits frustrate users but drive premium conversions. Soft limits (slow dow
 
 ## 4. Match Detection Algorithm
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #fe3c72;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #fe3c72;">
 
 ### The Simultaneous Swipe Race Condition
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="background: rgba(248, 81, 73, 0.15); border: 2px solid #f85149; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">The Race Condition Scenario</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 At 9:47:32.150pm, Sarah and Mike both swipe right on each other from different phones simultaneously:
 
 1. Sarah's request hits Server A: "Did Mike like me?" -> Query returns NO (Mike's like not yet persisted)
@@ -910,7 +910,7 @@ At 9:47:32.150pm, Sarah and Mike both swipe right on each other from different p
 
 ### Solution 1: Deterministic Distributed Locking
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 import redis
@@ -992,7 +992,7 @@ class MatchDetector:
 
 <div style="background: rgba(56, 139, 253, 0.1); border: 1px solid #58a6ff; border-radius: 8px; padding: 12px; margin: 12px 0;">
 <div style="color: #58a6ff; font-weight: bold;">Key Insight: Deterministic Lock Key</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 By sorting user IDs, we ensure that regardless of who swipes first (Sarah->Mike or Mike->Sarah), both requests compete for the same lock: <code>match_lock:mike_123:sarah_456</code>. One request wins, completes the check, then the other request proceeds and finds the match.
 </div>
 </div>
@@ -1001,7 +1001,7 @@ By sorting user IDs, we ensure that regardless of who swipes first (Sarah->Mike 
 
 ### Solution 2: Event Sourcing with Asynchronous Reconciliation
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 For extreme scale (>100K swipes/second), synchronous locking creates contention. Alternative: eventually consistent match detection.
 
@@ -1058,18 +1058,18 @@ class AsyncMatchDetector:
 ```
 
 <div style="display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;">
-<div style="background: #161b22; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
+<div style="background: #f1f5f9; border: 2px solid #238636; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px;">Pros</div>
-<ul style="color: #c9d1d9; font-size: 12px; margin: 0; padding-left: 16px;">
+<ul style="color: #1e293b; font-size: 12px; margin: 0; padding-left: 16px;">
 <li>No distributed locking overhead</li>
 <li>Scales linearly with partitions</li>
 <li>Swipe latency unaffected by match detection</li>
 </ul>
 </div>
 
-<div style="background: #161b22; border: 2px solid #f85149; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
+<div style="background: #f1f5f9; border: 2px solid #f85149; border-radius: 8px; padding: 16px; flex: 1; min-width: 200px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Cons</div>
-<ul style="color: #c9d1d9; font-size: 12px; margin: 0; padding-left: 16px;">
+<ul style="color: #1e293b; font-size: 12px; margin: 0; padding-left: 16px;">
 <li>Match notification delay (50-500ms after swipe)</li>
 <li>More complex architecture</li>
 <li>State store management</li>
@@ -1081,7 +1081,7 @@ class AsyncMatchDetector:
 
 ### Background Reconciliation
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 Even with good match detection, edge cases exist. A nightly job catches orphaned mutual likes:
 
@@ -1117,7 +1117,7 @@ def reconcile_orphaned_matches():
 
 ### Interview Questions: Match Detection
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
 #### Level 1: "How do you detect when two users have mutually liked each other?"
 
@@ -1183,33 +1183,33 @@ def reconcile_orphaned_matches():
 
 ## 5. Real-Time Messaging Deep Dive
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 ### Chat Architecture Overview
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <!-- Client Connection -->
 <div style="background: #21262d; border: 2px solid #fe3c72; border-radius: 8px; padding: 16px;">
 <div style="color: #fe3c72; font-weight: bold; margin-bottom: 8px;">Client Connection Layer</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 WebSocket connections from mobile/web clients. Each connection authenticated via JWT and registered with a Connection Manager that tracks which server handles which user.
 </div>
 </div>
 
 <!-- WebSocket Servers -->
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-<div style="background: #161b22; border: 1px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="background: #f1f5f9; border: 1px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
 <div style="color: #58a6ff; font-size: 12px;">WS Server 1</div>
 <div style="color: #8b949e; font-size: 10px;">10K connections</div>
 </div>
-<div style="background: #161b22; border: 1px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="background: #f1f5f9; border: 1px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
 <div style="color: #58a6ff; font-size: 12px;">WS Server 2</div>
 <div style="color: #8b949e; font-size: 10px;">10K connections</div>
 </div>
-<div style="background: #161b22; border: 1px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="background: #f1f5f9; border: 1px solid #58a6ff; border-radius: 8px; padding: 12px 20px; text-align: center;">
 <div style="color: #58a6ff; font-size: 12px;">WS Server N</div>
 <div style="color: #8b949e; font-size: 10px;">10K connections</div>
 </div>
@@ -1218,22 +1218,22 @@ WebSocket connections from mobile/web clients. Each connection authenticated via
 <!-- Redis Pub/Sub -->
 <div style="background: #21262d; border: 2px solid #da3633; border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Redis Pub/Sub (Message Fanout)</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 When User A on Server 1 sends a message to User B on Server 3, the message is published to Redis channel <code>user:{user_b}</code>. Server 3 subscribes to that channel and delivers to User B's WebSocket.
 </div>
 </div>
 
 <!-- Message Storage -->
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-<div style="background: #161b22; border: 1px solid #8957e5; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="background: #f1f5f9; border: 1px solid #8957e5; border-radius: 8px; padding: 12px 20px; text-align: center;">
 <div style="color: #a371f7; font-size: 12px;">Cassandra</div>
 <div style="color: #8b949e; font-size: 10px;">Message persistence</div>
 </div>
-<div style="background: #161b22; border: 1px solid #f0883e; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="background: #f1f5f9; border: 1px solid #f0883e; border-radius: 8px; padding: 12px 20px; text-align: center;">
 <div style="color: #f0883e; font-size: 12px;">Redis</div>
 <div style="color: #8b949e; font-size: 10px;">Recent messages cache</div>
 </div>
-<div style="background: #161b22; border: 1px solid #3fb950; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="background: #f1f5f9; border: 1px solid #3fb950; border-radius: 8px; padding: 12px 20px; text-align: center;">
 <div style="color: #3fb950; font-size: 12px;">S3</div>
 <div style="color: #8b949e; font-size: 10px;">Media attachments</div>
 </div>
@@ -1244,7 +1244,7 @@ When User A on Server 1 sends a message to User B on Server 3, the message is pu
 
 ### Message Data Model
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 # Message schema
@@ -1295,7 +1295,7 @@ CREATE TABLE conversations_by_user (
 
 ### WebSocket Connection Management
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```python
 class ConnectionManager:
@@ -1372,36 +1372,36 @@ class ConnectionManager:
 
 ### Message Delivery Guarantees
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Challenge**: User might be offline, on flaky connection, or switching between WiFi and cellular.
 
 <div style="display: flex; flex-direction: column; gap: 16px; margin: 16px 0;">
 
-<div style="background: #161b22; border-left: 4px solid #238636; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="background: #f1f5f9; border-left: 4px solid #238636; border-radius: 0 8px 8px 0; padding: 16px;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 8px;">At-Least-Once Delivery</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Messages are persisted to Cassandra before sending. If WebSocket delivery fails, the message remains stored. When user reconnects, they query for messages since their last seen timestamp.
 </div>
 </div>
 
-<div style="background: #161b22; border-left: 4px solid #1f6feb; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="background: #f1f5f9; border-left: 4px solid #1f6feb; border-radius: 0 8px 8px 0; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Delivery ACK</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Client sends ACK when message is received and displayed. Server updates <code>delivered_at</code> timestamp. Sender sees checkmark change from "sent" to "delivered."
 </div>
 </div>
 
-<div style="background: #161b22; border-left: 4px solid #f0883e; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="background: #f1f5f9; border-left: 4px solid #f0883e; border-radius: 0 8px 8px 0; padding: 16px;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Read Receipts</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 When recipient scrolls chat to view messages, client sends "read" event with list of message IDs. Server updates <code>read_at</code> timestamps and notifies sender (if online) via WebSocket.
 </div>
 </div>
 
-<div style="background: #161b22; border-left: 4px solid #da3633; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="background: #f1f5f9; border-left: 4px solid #da3633; border-radius: 0 8px 8px 0; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Offline Queue + Push</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 If recipient is offline (no WebSocket, no Redis entry), message is queued and a push notification is sent via FCM/APNS. On app open, client syncs from last known message timestamp.
 </div>
 </div>
@@ -1451,11 +1451,11 @@ async def handle_message_ack(self, user_id: str, message_ids: list, ack_type: st
 
 ### Typing Indicators
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="background: rgba(56, 139, 253, 0.1); border: 1px solid #58a6ff; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
 <div style="color: #58a6ff; font-weight: bold;">Design Choice</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Typing indicators are ephemeral - we don't persist them. They flow directly through Redis Pub/Sub with short TTL. If lost, the worst case is the other person doesn't see "typing..." for a moment.
 </div>
 </div>
@@ -1490,11 +1490,11 @@ async def send_typing_indicator(self, sender_id: str, recipient_id: str, is_typi
 
 ### Message Moderation
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 <div style="background: rgba(248, 81, 73, 0.15); border: 1px solid #f85149; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Safety Requirement</div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 Dating apps are targets for harassment, scams, and inappropriate content. All messages must be filterable for safety.
 </div>
 </div>
@@ -1544,7 +1544,7 @@ class MessageModerator:
 
 ### Interview Questions: Real-Time Messaging
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
 #### Level 1: "How do you deliver a message between two users who are connected to different servers?"
 
@@ -1631,7 +1631,7 @@ class MessageModerator:
 
 ## Technology Selection Matrix
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 | Component | Technology | Why This Choice | When to Reconsider |
 |-----------|------------|-----------------|-------------------|
@@ -1653,7 +1653,7 @@ class MessageModerator:
 
 ## Scaling Evolution
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
@@ -1663,7 +1663,7 @@ class MessageModerator:
 <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold;">Phase 1: MVP</div>
 <span style="color: #8b949e;">< 50K users</span>
 </div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 
 **Stack**: PostgreSQL + PostGIS + Redis + S3
 
@@ -1688,7 +1688,7 @@ class MessageModerator:
 <div style="background: #1f6feb; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold;">Phase 2: Growth</div>
 <span style="color: #8b949e;">50K - 1M users</span>
 </div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 
 **Stack**: PostgreSQL + Elasticsearch + Redis Cluster + Cassandra + Kafka
 
@@ -1713,7 +1713,7 @@ class MessageModerator:
 <div style="background: #8957e5; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold;">Phase 3: Scale</div>
 <span style="color: #8b949e;">> 10M users</span>
 </div>
-<div style="color: #c9d1d9; font-size: 13px;">
+<div style="color: #1e293b; font-size: 13px;">
 
 **Stack**: Global PostgreSQL (Vitess/CockroachDB) + Regional Elasticsearch + Redis Cluster + Cassandra Multi-DC + Kafka
 
@@ -1739,7 +1739,7 @@ class MessageModerator:
 
 ## Cross-References
 
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 ### Related System Designs
 - [[Design Bumble]](/topic/system-architectures/bumble) - Similar dating app with women-first messaging
@@ -1772,32 +1772,32 @@ class MessageModerator:
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #238636; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">1</div>
-<span style="color: #c9d1d9;">Start simple - PostGIS handles 100K users, no geohashing needed early</span>
+<span style="color: #1e293b;">Start simple - PostGIS handles 100K users, no geohashing needed early</span>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #1f6feb; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">2</div>
-<span style="color: #c9d1d9;">ELO/desirability scoring increases mutual match rates 3-5x vs. random</span>
+<span style="color: #1e293b;">ELO/desirability scoring increases mutual match rates 3-5x vs. random</span>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #8957e5; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">3</div>
-<span style="color: #c9d1d9;">Bloom filters for swipe deduplication: O(1) check, 1% acceptable false positive rate</span>
+<span style="color: #1e293b;">Bloom filters for swipe deduplication: O(1) check, 1% acceptable false positive rate</span>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #f0883e; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">4</div>
-<span style="color: #c9d1d9;">Deterministic locking with sorted user IDs prevents simultaneous swipe race condition</span>
+<span style="color: #1e293b;">Deterministic locking with sorted user IDs prevents simultaneous swipe race condition</span>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #da3633; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">5</div>
-<span style="color: #c9d1d9;">Location privacy is critical - never expose exact coordinates, use fuzzing</span>
+<span style="color: #1e293b;">Location privacy is critical - never expose exact coordinates, use fuzzing</span>
 </div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #6e40c9; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0;">6</div>
-<span style="color: #c9d1d9;">Pre-computed stacks reduce P99 latency from 500ms to 50ms at scale</span>
+<span style="color: #1e293b;">Pre-computed stacks reduce P99 latency from 500ms to 50ms at scale</span>
 </div>
 
 </div>

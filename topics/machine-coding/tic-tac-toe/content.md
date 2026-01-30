@@ -581,17 +581,17 @@ class TicTacToeLeetCode:
 <th style="text-align: left; padding: 8px;">Two Counters</th>
 <th style="text-align: left; padding: 8px;">Signed Counter</th>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 8px;">Space</td>
 <td style="padding: 8px;">4n + 4 integers</td>
 <td style="padding: 8px;">2n + 2 integers</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 8px;">Undo Support</td>
 <td style="padding: 8px;">Easy (decrement)</td>
 <td style="padding: 8px;">Easy (subtract delta)</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 8px;">Draw Detection</td>
 <td style="padding: 8px;">Check both counters > 0</td>
 <td style="padding: 8px;">Cannot detect blocked lines</td>
@@ -810,25 +810,25 @@ A cell (x, y, z) is on a space diagonal if:
 <th style="text-align: left; padding: 12px;">AI Feasibility</th>
 <th style="text-align: left; padding: 12px;">Typical Use</th>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">3x3</td>
 <td style="padding: 12px;">~5,500</td>
 <td style="padding: 12px; color: #22c55e;">Perfect play (minimax)</td>
 <td style="padding: 12px;">Classic game</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">4x4</td>
 <td style="padding: 12px;">~6 million</td>
 <td style="padding: 12px; color: #22c55e;">Perfect play with pruning</td>
 <td style="padding: 12px;">Extended variant</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">5x5 (4 to win)</td>
 <td style="padding: 12px;">~10^12</td>
 <td style="padding: 12px; color: #c2410c;">Heuristic required</td>
 <td style="padding: 12px;">Gomoku variant</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">15x15 (5 to win)</td>
 <td style="padding: 12px;">~3^225</td>
 <td style="padding: 12px; color: #ef4444;">MCTS or neural nets</td>
@@ -2012,37 +2012,37 @@ func (ai *AI) evaluateTerminal(depth int) float64 {
 <th style="padding: 12px; text-align: left;">Optimized</th>
 <th style="padding: 12px; text-align: left;">Notes</th>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">Make Move</td>
 <td style="padding: 12px; color: #c2410c;">O(n)</td>
 <td style="padding: 12px; color: #22c55e;">O(1)</td>
 <td style="padding: 12px; color: #64748b;">Counter updates</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">Win Check (N-in-a-row)</td>
 <td style="padding: 12px; color: #c2410c;">O(n)</td>
 <td style="padding: 12px; color: #22c55e;">O(1)</td>
 <td style="padding: 12px; color: #64748b;">Counter comparison</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">Win Check (M-in-a-row)</td>
 <td style="padding: 12px; color: #ef4444;">O(n)</td>
 <td style="padding: 12px; color: #c2410c;">O(m)</td>
 <td style="padding: 12px; color: #64748b;">Direction scan</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">Get Valid Moves</td>
 <td style="padding: 12px; color: #ef4444;">O(n^2)</td>
 <td style="padding: 12px; color: #22c55e;">O(1)*</td>
 <td style="padding: 12px; color: #64748b;">*With set maintenance</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">Undo</td>
 <td style="padding: 12px; color: #22c55e;">O(1)</td>
 <td style="padding: 12px; color: #22c55e;">O(1)</td>
 <td style="padding: 12px; color: #64748b;">Pop from history</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 12px;">AI (3x3)</td>
 <td style="padding: 12px; color: #ef4444;">O(9!)</td>
 <td style="padding: 12px; color: #22c55e;">~O(150)</td>

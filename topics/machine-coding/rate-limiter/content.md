@@ -253,7 +253,7 @@ limiter.register_endpoint_cost("POST:/batch/*", EndpointCost.VERY_EXPENSIVE)
 
 ### Internal Mechanism
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 <div style="text-align: center; margin-bottom: 20px;">
 <div style="display: inline-block; background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px 40px;">
@@ -262,15 +262,15 @@ limiter.register_endpoint_cost("POST:/batch/*", EndpointCost.VERY_EXPENSIVE)
 <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
 
 <div style="text-align: center;">
-<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 8px;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin-bottom: 8px;">
 <div style="font-size: 12px; color: #8b949e; margin-bottom: 8px;">Bucket State</div>
 <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; max-width: 100px;">
 <div style="background: #238636; width: 14px; height: 14px; border-radius: 50%;"></div>
 <div style="background: #238636; width: 14px; height: 14px; border-radius: 50%;"></div>
 <div style="background: #238636; width: 14px; height: 14px; border-radius: 50%;"></div>
 <div style="background: #238636; width: 14px; height: 14px; border-radius: 50%;"></div>
-<div style="background: #21262d; width: 14px; height: 14px; border-radius: 50%; border: 2px dashed #30363d;"></div>
-<div style="background: #21262d; width: 14px; height: 14px; border-radius: 50%; border: 2px dashed #30363d;"></div>
+<div style="background: #f8fafc; width: 14px; height: 14px; border-radius: 50%; border: 2px dashed #e2e8f0;"></div>
+<div style="background: #f8fafc; width: 14px; height: 14px; border-radius: 50%; border: 2px dashed #e2e8f0;"></div>
 </div>
 <div style="color: #7ee787; font-size: 11px; margin-top: 8px;">4/6 tokens</div>
 </div>
@@ -280,7 +280,7 @@ limiter.register_endpoint_cost("POST:/batch/*", EndpointCost.VERY_EXPENSIVE)
 <div style="color: #8b949e; font-size: 24px;">+</div>
 
 <div style="text-align: center;">
-<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 8px;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin-bottom: 8px;">
 <div style="font-size: 12px; color: #8b949e; margin-bottom: 8px;">Refill Rate</div>
 <div style="color: #58a6ff; font-size: 18px; font-weight: bold;">2/sec</div>
 </div>
@@ -290,7 +290,7 @@ limiter.register_endpoint_cost("POST:/batch/*", EndpointCost.VERY_EXPENSIVE)
 <div style="color: #8b949e; font-size: 24px;">+</div>
 
 <div style="text-align: center;">
-<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin-bottom: 8px;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin-bottom: 8px;">
 <div style="font-size: 12px; color: #8b949e; margin-bottom: 8px;">Last Update</div>
 <div style="color: #f0883e; font-size: 14px; font-weight: bold;">1706012345.123</div>
 </div>
@@ -322,7 +322,7 @@ new_tokens = min(capacity, old_tokens + (current_time - last_update) * rate)
 
 ### Token Bucket: Step-by-Step Execution
 
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Scenario**: Rate = 10 tokens/sec, Capacity = 20 tokens
 
@@ -650,7 +650,7 @@ elapsed = current_time - last_update  # Always >= 0
 
 The thundering herd occurs when many blocked clients retry simultaneously after their rate limits reset:
 
-<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="display: flex; align-items: center; gap: 20px;">
 <div style="text-align: center; flex: 1;">
 <div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">All clients blocked</div>
@@ -876,15 +876,15 @@ result = bucket.allow(tokens=80, allow_borrowing=True)
 
 **The Fixed Window Boundary Problem:**
 
-<div style="background: #0d1117; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 16px 0;">
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="display: flex; align-items: center; gap: 8px;">
 <div style="width: 100px; color: #8b949e; font-size: 12px;">Limit: 100/min</div>
 <div style="flex: 1; display: flex;">
-<div style="flex: 1; background: linear-gradient(90deg, transparent 90%, #f85149 90%); height: 24px; border: 1px solid #30363d; border-right: none; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px;">
+<div style="flex: 1; background: linear-gradient(90deg, transparent 90%, #f85149 90%); height: 24px; border: 1px solid #e2e8f0; border-right: none; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px;">
 <span style="color: #f85149; font-size: 10px;">100 req</span>
 </div>
-<div style="flex: 1; background: linear-gradient(90deg, #f85149 10%, transparent 10%); height: 24px; border: 1px solid #30363d; display: flex; align-items: center; padding-left: 4px;">
+<div style="flex: 1; background: linear-gradient(90deg, #f85149 10%, transparent 10%); height: 24px; border: 1px solid #e2e8f0; display: flex; align-items: center; padding-left: 4px;">
 <span style="color: #f85149; font-size: 10px;">100 req</span>
 </div>
 </div>
@@ -909,11 +909,11 @@ Window 1 (00:00-01:00) | Window 2 (01:00-02:00)
 
 ### Sliding Window Counter: The Weighted Average Solution
 
-<div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **The Key Insight**: Instead of storing every request timestamp, approximate the count using a weighted average of the current and previous window.
 
-<div style="background: #0d1117; border-radius: 8px; padding: 20px; margin: 16px 0;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 20px; margin: 16px 0;">
 
 **Visual: Sliding Window at 25% into Current Window**
 
@@ -921,7 +921,7 @@ Window 1 (00:00-01:00) | Window 2 (01:00-02:00)
 <div style="width: 120px; color: #8b949e; font-size: 12px;">Previous Window</div>
 <div style="flex: 1; position: relative;">
 <div style="display: flex; height: 40px;">
-<div style="flex: 3; background: linear-gradient(90deg, rgba(139, 148, 158, 0.1) 0%, rgba(139, 148, 158, 0.3) 100%); border: 1px solid #30363d; display: flex; align-items: center; justify-content: center;">
+<div style="flex: 3; background: linear-gradient(90deg, rgba(139, 148, 158, 0.1) 0%, rgba(139, 148, 158, 0.3) 100%); border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center;">
 <span style="color: #d2a8ff; font-size: 12px;">84 requests (75% weight)</span>
 </div>
 <div style="flex: 1; background: rgba(136, 87, 229, 0.3); border: 1px solid #8957e5; display: flex; align-items: center; justify-content: center;">
@@ -1458,7 +1458,7 @@ allowed, remaining, reset = limiter.allow("user:123", weight=200)
 
 **Problem**: With multiple application servers, each server has its own rate limiter state. A user could send requests to different servers and effectively multiply their rate limit.
 
-<div style="background: #0d1117; border-radius: 8px; padding: 20px; margin: 16px 0;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 20px; margin: 16px 0;">
 
 <div style="text-align: center; color: #8b949e; font-size: 14px; margin-bottom: 16px;">User with 100/min limit sends requests round-robin</div>
 
@@ -1502,7 +1502,7 @@ Result: 150 requests/min with 100/min limit!
 
 ### Redis Implementation: Atomic Token Bucket
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 **Why Lua Scripts?**
 
@@ -2775,7 +2775,7 @@ def run_chaos_tests():
 
 ## Algorithm Comparison
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 | Algorithm | Time | Space | Accuracy | Burst | Best For |
 |-----------|------|-------|----------|-------|----------|
@@ -2798,7 +2798,7 @@ def run_chaos_tests():
 
 ### HTTP Response Headers
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
 ```http
 HTTP/1.1 429 Too Many Requests
