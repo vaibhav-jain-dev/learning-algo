@@ -5446,10 +5446,45 @@
         .then(function(r) { return r.text(); })
         .then(function(html) {
             console.log('[RunTests] Raw response length:', html.length);
-            var testResults = window.ProblemRenderer.parseTestResults(html);
-            console.log('[RunTests] Parsed results:', testResults);
 
-            if (testResults) {
+            // Try to parse test results - use inline parser for reliability
+            var testResults = null;
+
+            try {
+                // Strip HTML tags
+                var cleanOutput = html.replace(/<[^>]*>/g, ' ');
+
+                // Decode HTML entities
+                cleanOutput = cleanOutput
+                    .replace(/&quot;/g, '"')
+                    .replace(/&amp;/g, '&')
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/&#39;/g, "'")
+                    .replace(/&nbsp;/g, ' ');
+
+                var startMarker = '__TEST_RESULTS__';
+                var endMarker = '__END_TEST_RESULTS__';
+
+                var startIdx = cleanOutput.indexOf(startMarker);
+                var endIdx = cleanOutput.indexOf(endMarker);
+
+                console.log('[RunTests] Markers found at:', startIdx, endIdx);
+
+                if (startIdx !== -1 && endIdx !== -1) {
+                    var jsonStr = cleanOutput.substring(startIdx + startMarker.length, endIdx).trim();
+                    // Remove any newlines within the JSON
+                    jsonStr = jsonStr.replace(/[\r\n]+/g, '');
+                    console.log('[RunTests] JSON preview:', jsonStr.substring(0, 100));
+
+                    testResults = JSON.parse(jsonStr);
+                    console.log('[RunTests] Parsed successfully:', testResults.total, 'tests');
+                }
+            } catch (e) {
+                console.error('[RunTests] Parse error:', e.message);
+            }
+
+            if (testResults && testResults.results) {
                 var renderedHtml = renderTestResults(testResults, html);
                 if (output) {
                     output.innerHTML = renderedHtml;
@@ -5463,7 +5498,7 @@
             } else {
                 // No test results found, show raw output
                 console.log('[RunTests] No test results parsed, showing raw output');
-                if (output) output.innerHTML = '<span class="output-label">Output</span>' + html;
+                if (output) output.innerHTML = '<span class="output-label">Output</span><pre style="margin:0;white-space:pre-wrap;word-wrap:break-word;">' + escapeHtmlOutput(html) + '</pre>';
             }
         })
         .catch(function(err) {
