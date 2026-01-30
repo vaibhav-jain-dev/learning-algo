@@ -5445,23 +5445,26 @@
         })
         .then(function(r) { return r.text(); })
         .then(function(html) {
-            console.log('[RunTests] Raw response length:', html.length);
+            console.log('[RunTests] Raw response:', html.substring(0, 500));
 
-            // Try to parse test results - use inline parser for reliability
+            // Try to parse test results
             var testResults = null;
 
             try {
-                // Strip HTML tags
-                var cleanOutput = html.replace(/<[^>]*>/g, ' ');
-
-                // Decode HTML entities
-                cleanOutput = cleanOutput
+                // The server returns HTML. The actual output is inside the HTML.
+                // First decode any HTML entities in the whole response
+                var decoded = html
                     .replace(/&quot;/g, '"')
                     .replace(/&amp;/g, '&')
                     .replace(/&lt;/g, '<')
                     .replace(/&gt;/g, '>')
                     .replace(/&#39;/g, "'")
-                    .replace(/&nbsp;/g, ' ');
+                    .replace(/&nbsp;/g, ' ')
+                    .replace(/&#x27;/g, "'")
+                    .replace(/&#x2F;/g, '/');
+
+                // Then strip HTML tags to get text content
+                var cleanOutput = decoded.replace(/<[^>]*>/g, ' ');
 
                 var startMarker = '__TEST_RESULTS__';
                 var endMarker = '__END_TEST_RESULTS__';
@@ -5469,16 +5472,16 @@
                 var startIdx = cleanOutput.indexOf(startMarker);
                 var endIdx = cleanOutput.indexOf(endMarker);
 
-                console.log('[RunTests] Markers found at:', startIdx, endIdx);
+                console.log('[RunTests] Looking for markers in cleaned output');
+                console.log('[RunTests] Markers found:', startIdx !== -1, endIdx !== -1);
 
                 if (startIdx !== -1 && endIdx !== -1) {
                     var jsonStr = cleanOutput.substring(startIdx + startMarker.length, endIdx).trim();
-                    // Remove any newlines within the JSON
-                    jsonStr = jsonStr.replace(/[\r\n]+/g, '');
-                    console.log('[RunTests] JSON preview:', jsonStr.substring(0, 100));
+                    jsonStr = jsonStr.replace(/[\r\n\s]+/g, ' ').trim();
+                    console.log('[RunTests] JSON:', jsonStr.substring(0, 200));
 
                     testResults = JSON.parse(jsonStr);
-                    console.log('[RunTests] Parsed successfully:', testResults.total, 'tests');
+                    console.log('[RunTests] Parsed:', testResults.total, 'tests,', testResults.passed, 'passed');
                 }
             } catch (e) {
                 console.error('[RunTests] Parse error:', e.message);
@@ -5488,7 +5491,6 @@
                 var renderedHtml = renderTestResults(testResults, html);
                 if (output) {
                     output.innerHTML = renderedHtml;
-                    // Auto-expand output panel for test results
                     var outputPanel = document.getElementById('output-panel');
                     if (outputPanel) {
                         var minHeight = Math.min(350, window.innerHeight * 0.4);
@@ -5496,9 +5498,11 @@
                     }
                 }
             } else {
-                // No test results found, show raw output
-                console.log('[RunTests] No test results parsed, showing raw output');
-                if (output) output.innerHTML = '<span class="output-label">Output</span><pre style="margin:0;white-space:pre-wrap;word-wrap:break-word;">' + escapeHtmlOutput(html) + '</pre>';
+                // No test results - show the server's HTML response directly (so it renders properly)
+                console.log('[RunTests] Showing server response as-is');
+                if (output) {
+                    output.innerHTML = '<span class="output-label">Output</span>' + html;
+                }
             }
         })
         .catch(function(err) {
