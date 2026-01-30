@@ -87,76 +87,76 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <!-- CDN Layer -->
 <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-  <strong>CloudFront (CDN)</strong>
+<strong>CloudFront (CDN)</strong>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
 <!-- Client Apps -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-  <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
-    <strong>Web App</strong><br><span style="font-size: 11px;">(React/Next)</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
-    <strong>Mobile API</strong><br><span style="font-size: 11px;">Gateway</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
-    <strong>Seller API</strong><br><span style="font-size: 11px;">Gateway</span>
-  </div>
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
+<strong>Web App</strong><br><span style="font-size: 11px;">(React/Next)</span>
+</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
+<strong>Mobile API</strong><br><span style="font-size: 11px;">Gateway</span>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 120px;">
+<strong>Seller API</strong><br><span style="font-size: 11px;">Gateway</span>
+</div>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
 <!-- API Gateway -->
 <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-  <strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth, Routing</span>
+<strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth, Routing</span>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
 <!-- Microservices Layer -->
 <div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 800px;">
-  <div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">SERVICE MESH (Envoy/Istio)</div>
+<div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">SERVICE MESH (Envoy/Istio)</div>
 
-  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Product</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Search</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Cart</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Order</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Payment</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-  </div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Product</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Search</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Cart</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Order</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Payment</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+</div>
 
-  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Inventory</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">User</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Notification</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Shipping</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Review</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-  </div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Inventory</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">User</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Notification</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Shipping</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #16a34a;">Review</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+</div>
 
-  <div style="text-align: center; color: #475569; font-size: 12px; margin-top: 12px;">MICROSERVICES LAYER</div>
+<div style="text-align: center; color: #475569; font-size: 12px; margin-top: 12px;">MICROSERVICES LAYER</div>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
 <!-- Event Streaming Layer -->
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 16px; padding: 16px; width: 100%; max-width: 800px; text-align: center;">
-  <strong style="color: #d97706;">MESSAGE BUS (Kafka)</strong>
-  <div style="color: #475569; font-size: 12px; margin-top: 4px;">EVENT STREAMING LAYER</div>
+<strong style="color: #d97706;">MESSAGE BUS (Kafka)</strong>
+<div style="color: #475569; font-size: 12px; margin-top: 4px;">EVENT STREAMING LAYER</div>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
 <!-- Data Layer -->
 <div style="background: #f1f5f9; border: 2px solid #7c3aed; border-radius: 16px; padding: 20px; width: 100%; max-width: 800px;">
-  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-    <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>DynamoDB</strong><br><span style="font-size: 11px;">(Catalog)</span></div>
-    <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Aurora</strong><br><span style="font-size: 11px;">(Orders)</span></div>
-    <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Elasticsearch</strong><br><span style="font-size: 11px;">(Search)</span></div>
-    <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Redis</strong><br><span style="font-size: 11px;">(Cache)</span></div>
-    <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>S3</strong><br><span style="font-size: 11px;">(Images)</span></div>
-  </div>
-  <div style="text-align: center; color: #475569; font-size: 12px; margin-top: 12px;">DATA LAYER</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>DynamoDB</strong><br><span style="font-size: 11px;">(Catalog)</span></div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Aurora</strong><br><span style="font-size: 11px;">(Orders)</span></div>
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Elasticsearch</strong><br><span style="font-size: 11px;">(Search)</span></div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>Redis</strong><br><span style="font-size: 11px;">(Cache)</span></div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 8px; padding: 10px 16px; text-align: center; color: white; min-width: 100px;"><strong>S3</strong><br><span style="font-size: 11px;">(Images)</span></div>
+</div>
+<div style="text-align: center; color: #475569; font-size: 12px; margin-top: 12px;">DATA LAYER</div>
 </div>
 
 </div>
@@ -185,57 +185,57 @@ Design a large-scale e-commerce platform like Amazon that handles product catalo
 
 <!-- Monolith Container -->
 <div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 700px;">
-  <h4 style="text-align: center; color: #1d4ed8; margin: 0 0 16px 0;">E-COMMERCE MONOLITH</h4>
+<h4 style="text-align: center; color: #1d4ed8; margin: 0 0 16px 0;">E-COMMERCE MONOLITH</h4>
 
-  <!-- Presentation Layer -->
-  <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
-    <div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">PRESENTATION LAYER</div>
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Web Pages</strong><br><span style="font-size: 11px; color: #475569;">(Templates)</span></div>
-      <div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">REST API</strong><br><span style="font-size: 11px; color: #475569;">(JSON)</span></div>
-      <div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Admin Panel</strong><br><span style="font-size: 11px; color: #475569;">(Dashboard)</span></div>
-    </div>
-  </div>
+<!-- Presentation Layer -->
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+<div style="text-align: center; color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">PRESENTATION LAYER</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Web Pages</strong><br><span style="font-size: 11px; color: #475569;">(Templates)</span></div>
+<div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">REST API</strong><br><span style="font-size: 11px; color: #475569;">(JSON)</span></div>
+<div style="background: white; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px;"><strong style="color: #1d4ed8;">Admin Panel</strong><br><span style="font-size: 11px; color: #475569;">(Dashboard)</span></div>
+</div>
+</div>
 
-  <!-- Business Logic Layer -->
-  <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
-    <div style="text-align: center; color: #16a34a; font-weight: bold; margin-bottom: 12px;">BUSINESS LOGIC LAYER</div>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Products</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Cart</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Orders</strong></div>
-    </div>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Users</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Payments</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Inventory</strong></div>
-    </div>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Search</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Reviews</strong></div>
-    </div>
-  </div>
+<!-- Business Logic Layer -->
+<div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+<div style="text-align: center; color: #16a34a; font-weight: bold; margin-bottom: 12px;">BUSINESS LOGIC LAYER</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Products</strong></div>
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Cart</strong></div>
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Orders</strong></div>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Users</strong></div>
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Payments</strong></div>
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Inventory</strong></div>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Search</strong></div>
+<div style="background: white; border-radius: 6px; padding: 8px 14px; text-align: center;"><strong style="color: #16a34a; font-size: 13px;">Reviews</strong></div>
+</div>
+</div>
 
-  <!-- Data Access Layer -->
-  <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
-    <strong style="color: #7c3aed;">DATA ACCESS LAYER</strong><br>
-    <span style="font-size: 12px; color: #475569;">(ORM: Django ORM / SQLAlchemy / TypeORM)</span>
-  </div>
+<!-- Data Access Layer -->
+<div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
+<strong style="color: #7c3aed;">DATA ACCESS LAYER</strong><br>
+<span style="font-size: 12px; color: #475569;">(ORM: Django ORM / SQLAlchemy / TypeORM)</span>
+</div>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
 <!-- Databases -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>PostgreSQL</strong>
-  </div>
-  <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>Redis</strong><br><span style="font-size: 11px;">(Cache/Sessions)</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>S3</strong><br><span style="font-size: 11px;">(Images)</span>
-  </div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>PostgreSQL</strong>
+</div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Redis</strong><br><span style="font-size: 11px;">(Cache/Sessions)</span>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>S3</strong><br><span style="font-size: 11px;">(Images)</span>
+</div>
 </div>
 
 </div>

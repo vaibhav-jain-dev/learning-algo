@@ -13,45 +13,45 @@ Bottleneck removal is the systematic practice of identifying and eliminating con
 Understanding where time is spent before optimizing is fundamental. Premature optimization without profiling leads to wasted effort on non-critical paths while real bottlenecks persist.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #00d9ff; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">PROFILING HIERARCHY</h3>
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
-    <div style="background: rgba(0, 217, 255, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(0, 217, 255, 0.3);">
-      <div style="color: #00d9ff; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L1: Distributed Tracing</div>
-      <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
+<h3 style="color: #00d9ff; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">PROFILING HIERARCHY</h3>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+<div style="background: rgba(0, 217, 255, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(0, 217, 255, 0.3);">
+<div style="color: #00d9ff; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L1: Distributed Tracing</div>
+<div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
         Cross-service latency, request flow visualization, span analysis
-      </div>
-      <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
-        <span style="color: #ffd93d; font-size: 0.75em;">Tools: Jaeger, Zipkin, AWS X-Ray</span>
-      </div>
-    </div>
-    <div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 107, 107, 0.3);">
-      <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L2: Application Profiling</div>
-      <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
+</div>
+<div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
+<span style="color: #ffd93d; font-size: 0.75em;">Tools: Jaeger, Zipkin, AWS X-Ray</span>
+</div>
+</div>
+<div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 107, 107, 0.3);">
+<div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L2: Application Profiling</div>
+<div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
         CPU flame graphs, memory allocation, GC pressure, lock contention
-      </div>
-      <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
-        <span style="color: #ffd93d; font-size: 0.75em;">Tools: pprof, async-profiler, perf</span>
-      </div>
-    </div>
-    <div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(78, 205, 196, 0.3);">
-      <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L3: Database Profiling</div>
-      <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
+</div>
+<div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
+<span style="color: #ffd93d; font-size: 0.75em;">Tools: pprof, async-profiler, perf</span>
+</div>
+</div>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(78, 205, 196, 0.3);">
+<div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L3: Database Profiling</div>
+<div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
         Query execution plans, lock wait analysis, I/O statistics
-      </div>
-      <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
-        <span style="color: #ffd93d; font-size: 0.75em;">Tools: EXPLAIN ANALYZE, pg_stat_statements</span>
-      </div>
-    </div>
-    <div style="background: rgba(162, 155, 254, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(162, 155, 254, 0.3);">
-      <div style="color: #a29bfe; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L4: System Profiling</div>
-      <div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
+</div>
+<div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
+<span style="color: #ffd93d; font-size: 0.75em;">Tools: EXPLAIN ANALYZE, pg_stat_statements</span>
+</div>
+</div>
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(162, 155, 254, 0.3);">
+<div style="color: #a29bfe; font-weight: 700; font-size: 1.1em; margin-bottom: 12px;">L4: System Profiling</div>
+<div style="color: #475569; font-size: 0.85em; line-height: 1.6;">
         Kernel syscalls, network stack, disk I/O, CPU cache misses
-      </div>
-      <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
-        <span style="color: #ffd93d; font-size: 0.75em;">Tools: eBPF, strace, iostat, vmstat</span>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.08); border-radius: 6px;">
+<span style="color: #ffd93d; font-size: 0.75em;">Tools: eBPF, strace, iostat, vmstat</span>
+</div>
+</div>
+</div>
 </div>
 
 ### Internal Mechanism: CPU Flame Graphs
@@ -77,24 +77,24 @@ func main() {
 ```
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ffd93d;">
-  <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">CRITICAL INSIGHT: The USE Method</div>
-  <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">CRITICAL INSIGHT: The USE Method</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
     For every resource, check: <strong>Utilization</strong> (percentage of time busy), <strong>Saturation</strong> (queue depth when busy), and <strong>Errors</strong> (count of error events). This systematic approach prevents overlooking subtle bottlenecks.
-  </div>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #00d9ff; font-weight: 600;">Utilization</div>
-      <div style="color: #475569; font-size: 0.8em; margin-top: 4px;">CPU at 95% = obvious bottleneck</div>
-    </div>
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #ff6b6b; font-weight: 600;">Saturation</div>
-      <div style="color: #475569; font-size: 0.8em; margin-top: 4px;">Run queue > CPU cores = hidden bottleneck</div>
-    </div>
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #4ecdc4; font-weight: 600;">Errors</div>
-      <div style="color: #475569; font-size: 0.8em; margin-top: 4px;">Timeout errors = downstream bottleneck</div>
-    </div>
-  </div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #00d9ff; font-weight: 600;">Utilization</div>
+<div style="color: #475569; font-size: 0.8em; margin-top: 4px;">CPU at 95% = obvious bottleneck</div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #ff6b6b; font-weight: 600;">Saturation</div>
+<div style="color: #475569; font-size: 0.8em; margin-top: 4px;">Run queue > CPU cores = hidden bottleneck</div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #4ecdc4; font-weight: 600;">Errors</div>
+<div style="color: #475569; font-size: 0.8em; margin-top: 4px;">Timeout errors = downstream bottleneck</div>
+</div>
+</div>
 </div>
 
 ### Edge Case: Coordinated Omission
@@ -122,29 +122,29 @@ for i in range(1000):
 ### Interview Deep-Dive: Profiling Techniques
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: How would you identify which microservice is the bottleneck in a request that spans 10 services?</h4>
-  <div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: How would you identify which microservice is the bottleneck in a request that spans 10 services?</h4>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Use distributed tracing with span analysis. Each service creates a span with start/end timestamps. The bottleneck is the span with the longest duration that's on the critical path. Look for spans where self-time (total time minus child spans) is high - this isolates actual processing time from waiting on downstream services.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: The tracing shows Service B takes 500ms, but CPU utilization is only 5%. What's happening and how do you diagnose further?</h4>
-  <div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
-    <div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: The tracing shows Service B takes 500ms, but CPU utilization is only 5%. What's happening and how do you diagnose further?</h4>
+<div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
+<div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Low CPU with high latency indicates the service is waiting, not computing. Possible causes: (1) I/O wait - database queries, network calls, disk reads; (2) Lock contention - threads blocked on mutexes; (3) Thread pool exhaustion - all workers busy, requests queued. Diagnose with: <code>pprof block profile</code> for lock contention, <code>pprof mutex profile</code> for mutex waits, and trace child spans to identify slow downstream calls. Also check connection pool metrics - if at max connections, requests queue waiting for available connections.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: The block profile shows threads waiting on a channel receive. The channel is fed by a goroutine making database calls. How do you determine if the database is the root cause or if there's a producer-consumer imbalance?</h4>
-  <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
-    <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: The block profile shows threads waiting on a channel receive. The channel is fed by a goroutine making database calls. How do you determine if the database is the root cause or if there's a producer-consumer imbalance?</h4>
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
+<div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Measure both independently. For the database: check <code>pg_stat_activity</code> for active queries, <code>pg_stat_statements</code> for query timing, and connection wait events. For producer-consumer imbalance: add metrics for channel buffer utilization over time. If the channel is frequently empty (consumers starving), the producer (DB goroutine) is too slow. If the channel is frequently full (producers blocking), consumers are too slow. The fix differs: slow DB requires query optimization or read replicas; slow consumers need more worker goroutines. A true database bottleneck will show in DB-side metrics (high active_time, lock waits, I/O waits).
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ---
@@ -154,45 +154,45 @@ for i in range(1000):
 Databases are the most common bottleneck in microservices because they're stateful, shared, and bound by fundamental I/O constraints. Understanding database internals is essential for effective optimization.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #ff6b6b; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">DATABASE BOTTLENECK TAXONOMY</h3>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-    <div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
-      <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Connection Exhaustion</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
+<h3 style="color: #ff6b6b; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">DATABASE BOTTLENECK TAXONOMY</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+<div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
+<div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Connection Exhaustion</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
         Each connection consumes ~10MB RAM (PostgreSQL) for work_mem, sort buffers, and connection state. With 100 microservice instances each opening 20 connections, you need 2000 database connections.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-        <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Connection poolers like PgBouncer in transaction mode multiplex many client connections over fewer database connections.</div>
-      </div>
-    </div>
-    <div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
-      <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Lock Contention</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Connection poolers like PgBouncer in transaction mode multiplex many client connections over fewer database connections.</div>
+</div>
+</div>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
+<div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Lock Contention</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
         Row-level locks during UPDATE cause transactions to wait. Hot rows (popular products, counters) become serialization points. Even SELECT can block if it needs a share lock conflicting with an exclusive lock.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-        <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Optimistic locking with version columns, or sharding hot data across multiple rows.</div>
-      </div>
-    </div>
-    <div style="background: rgba(162, 155, 254, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(162, 155, 254, 0.3);">
-      <div style="color: #a29bfe; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Query Plan Degradation</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Optimistic locking with version columns, or sharding hot data across multiple rows.</div>
+</div>
+</div>
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(162, 155, 254, 0.3);">
+<div style="color: #a29bfe; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Query Plan Degradation</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
         Statistics become stale as data distribution changes. The planner chooses sequential scan over index scan because it believes the table is smaller than it actually is. ANALYZE frequency matters.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-        <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Automated ANALYZE schedules, query plan monitoring, plan baselines (Oracle) or pg_hint_plan.</div>
-      </div>
-    </div>
-    <div style="background: rgba(255, 217, 61, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 217, 61, 0.3);">
-      <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Write Amplification</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Automated ANALYZE schedules, query plan monitoring, plan baselines (Oracle) or pg_hint_plan.</div>
+</div>
+</div>
+<div style="background: rgba(255, 217, 61, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 217, 61, 0.3);">
+<div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Write Amplification</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
         B-tree index updates during INSERT cause page splits. A single row insert might trigger multiple page writes across multiple indexes. Wide rows with many indexes are particularly expensive.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-        <div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Careful index design, partial indexes, periodic REINDEX to reclaim space.</div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd93d; font-size: 0.85em;"><strong>Solution:</strong> Careful index design, partial indexes, periodic REINDEX to reclaim space.</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Internal Mechanism: The N+1 Query Problem at Scale
@@ -229,18 +229,18 @@ func GetOrdersWithItemsOptimized(userID string) ([]Order, error) {
 ```
 
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff6b6b;">
-  <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">ASSUMPTION CHECK: Read Replicas Solve All Read Bottlenecks</div>
-  <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px;">
-    <strong>False.</strong> Read replicas introduce replication lag (typically 10ms-1s, but can spike to minutes during load). This creates read-after-write inconsistency: a user updates their profile, immediately reads it back, and sees stale data because their read went to a replica that hasn't received the write yet.
-  </div>
-  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 8px;">Mitigation Strategies:</div>
-    <ul style="color: #475569; font-size: 0.9em; margin: 0; padding-left: 20px;">
-      <li><strong>Session consistency:</strong> Route user's reads to primary for X seconds after their write</li>
-      <li><strong>Causal consistency:</strong> Track LSN (Log Sequence Number) of last write, wait for replica to catch up</li>
-      <li><strong>Monotonic reads:</strong> Sticky sessions to same replica within a request</li>
-    </ul>
-  </div>
+<div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">ASSUMPTION CHECK: Read Replicas Solve All Read Bottlenecks</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px;">
+<strong>False.</strong> Read replicas introduce replication lag (typically 10ms-1s, but can spike to minutes during load). This creates read-after-write inconsistency: a user updates their profile, immediately reads it back, and sees stale data because their read went to a replica that hasn't received the write yet.
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 8px;">Mitigation Strategies:</div>
+<ul style="color: #475569; font-size: 0.9em; margin: 0; padding-left: 20px;">
+<li><strong>Session consistency:</strong> Route user's reads to primary for X seconds after their write</li>
+<li><strong>Causal consistency:</strong> Track LSN (Log Sequence Number) of last write, wait for replica to catch up</li>
+<li><strong>Monotonic reads:</strong> Sticky sessions to same replica within a request</li>
+</ul>
+</div>
 </div>
 
 ### Connection Pooling Deep Dive
@@ -262,45 +262,45 @@ db.SetConnMaxIdleTime(1 * time.Minute)  // Close idle connections
 ```
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">TRADE-OFF: Pool Size vs. Queue Wait Time</div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: rgba(255, 107, 107, 0.15); border-radius: 10px; padding: 16px;">
-      <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Too Few Connections</div>
-      <div style="color: #475569; font-size: 0.9em;">Requests queue waiting for available connection. Latency spikes under load. Pool utilization hits 100%.</div>
-    </div>
-    <div style="background: rgba(255, 107, 107, 0.15); border-radius: 10px; padding: 16px;">
-      <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Too Many Connections</div>
-      <div style="color: #475569; font-size: 0.9em;">Database memory exhaustion. Context switching overhead. Diminishing returns past 50-100 connections per core.</div>
-    </div>
-  </div>
+<div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">TRADE-OFF: Pool Size vs. Queue Wait Time</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: rgba(255, 107, 107, 0.15); border-radius: 10px; padding: 16px;">
+<div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Too Few Connections</div>
+<div style="color: #475569; font-size: 0.9em;">Requests queue waiting for available connection. Latency spikes under load. Pool utilization hits 100%.</div>
+</div>
+<div style="background: rgba(255, 107, 107, 0.15); border-radius: 10px; padding: 16px;">
+<div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Too Many Connections</div>
+<div style="color: #475569; font-size: 0.9em;">Database memory exhaustion. Context switching overhead. Diminishing returns past 50-100 connections per core.</div>
+</div>
+</div>
 </div>
 
 ### Interview Deep-Dive: Database Bottlenecks
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: Your application's p99 latency spikes to 2 seconds during peak hours. Database CPU is at 30%. What's your diagnosis approach?</h4>
-  <div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: Your application's p99 latency spikes to 2 seconds during peak hours. Database CPU is at 30%. What's your diagnosis approach?</h4>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Low CPU with high latency suggests the database is waiting, not computing. Check in order: (1) <code>pg_stat_activity</code> for wait_event_type - look for "Lock", "IO", "Client" waits; (2) Connection pool metrics - are connections exhausted, causing application-level queuing?; (3) <code>pg_locks</code> for lock contention between transactions; (4) I/O wait times with <code>pg_stat_io</code>. The p99 spike (not p50) suggests specific queries or lock patterns, not general overload.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: You find heavy lock waits on a "balances" table. Multiple services update user balances concurrently. How do you reduce contention without changing the schema?</h4>
-  <div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
-    <div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: You find heavy lock waits on a "balances" table. Multiple services update user balances concurrently. How do you reduce contention without changing the schema?</h4>
+<div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
+<div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Several approaches: (1) <strong>SELECT FOR UPDATE SKIP LOCKED</strong> - workers grab unlocked rows, skip contested ones; (2) <strong>Optimistic locking</strong> with version column - read version, update with WHERE version = X, retry on conflict; (3) <strong>Advisory locks</strong> on user_id to serialize at application level with shorter hold time; (4) <strong>Batch updates</strong> - aggregate balance changes in Redis, flush to database periodically; (5) <strong>NOWAIT option</strong> - fail fast rather than wait, let application retry with backoff. For balance-specific case, consider event sourcing - append balance change events, compute current balance on read (see [[event-sourcing]](/system-design/event-sourcing)).
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You implement optimistic locking but now see high retry rates (30%) under load. The retries are causing more contention. How do you break this cycle?</h4>
-  <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
-    <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You implement optimistic locking but now see high retry rates (30%) under load. The retries are causing more contention. How do you break this cycle?</h4>
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
+<div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       High retry rates indicate fundamental contention that optimistic locking can't solve - you're just moving the serialization point. Solutions: (1) <strong>Exponential backoff with jitter</strong> - prevents retry storms by spreading retries over time; (2) <strong>Pre-partitioned locks</strong> - hash user_id to one of N lock buckets, reducing collision probability from 100% to 1/N; (3) <strong>Fundamentally change the model</strong> - for balances, use credit/debit ledger entries (append-only, no contention) and compute balance as SUM(). Reads are slower but writes never conflict; (4) <strong>CQRS pattern</strong> - separate write model (event log) from read model (materialized balance). The retry spiral indicates the data model doesn't match the access pattern.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ---
@@ -310,52 +310,52 @@ db.SetConnMaxIdleTime(1 * time.Minute)  // Close idle connections
 Converting synchronous operations to asynchronous decouples producers from consumers, enabling independent scaling and improved response times. However, async introduces complexity: delivery guarantees, ordering, idempotency, and observability challenges.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #4ecdc4; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">SYNC vs ASYNC PROCESSING FLOW</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
-      <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px; text-align: center;">Synchronous (Blocking)</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-        <div style="background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Client Request</div>
-        <div style="color: #475569; font-size: 1.2em;">|</div>
-        <div style="background: #6366f1; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Order Service</div>
-        <div style="color: #475569; font-size: 1.2em;">|</div>
-        <div style="background: #8b5cf6; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Payment Service (500ms)</div>
-        <div style="color: #475569; font-size: 1.2em;">|</div>
-        <div style="background: #a855f7; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Email Service (1000ms)</div>
-        <div style="color: #475569; font-size: 1.2em;">|</div>
-        <div style="background: #c084fc; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Analytics (200ms)</div>
-      </div>
-      <div style="background: rgba(255, 107, 107, 0.3); border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center;">
-        <div style="color: #ff6b6b; font-weight: 600;">Total: 1700ms blocking</div>
-        <div style="color: #475569; font-size: 0.85em;">Client waits for everything</div>
-      </div>
-    </div>
-    <div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
-      <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px; text-align: center;">Asynchronous (Non-blocking)</div>
-      <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-        <div style="background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Client Request</div>
-        <div style="color: #475569; font-size: 1.2em;">|</div>
-        <div style="background: #6366f1; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Order Service</div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <div style="color: #475569; font-size: 1.2em;">|</div>
-          <div style="background: #10b981; color: white; padding: 8px 16px; border-radius: 8px; font-size: 0.85em;">Publish Event</div>
-        </div>
-        <div style="background: rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 8px 16px;">
-          <div style="color: #10b981; font-size: 0.85em;">Message Queue</div>
-        </div>
-        <div style="display: flex; gap: 12px; margin-top: 8px;">
-          <div style="background: #8b5cf6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8em;">Payment</div>
-          <div style="background: #a855f7; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8em;">Email</div>
-          <div style="background: #c084fc; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8em;">Analytics</div>
-        </div>
-        <div style="color: #475569; font-size: 0.8em;">(process independently)</div>
-      </div>
-      <div style="background: rgba(78, 205, 196, 0.3); border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center;">
-        <div style="color: #4ecdc4; font-weight: 600;">Response: 50ms</div>
-        <div style="color: #475569; font-size: 0.85em;">Background processing continues</div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #4ecdc4; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">SYNC vs ASYNC PROCESSING FLOW</h3>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
+<div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px; text-align: center;">Synchronous (Blocking)</div>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+<div style="background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Client Request</div>
+<div style="color: #475569; font-size: 1.2em;">|</div>
+<div style="background: #6366f1; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Order Service</div>
+<div style="color: #475569; font-size: 1.2em;">|</div>
+<div style="background: #8b5cf6; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Payment Service (500ms)</div>
+<div style="color: #475569; font-size: 1.2em;">|</div>
+<div style="background: #a855f7; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Email Service (1000ms)</div>
+<div style="color: #475569; font-size: 1.2em;">|</div>
+<div style="background: #c084fc; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Analytics (200ms)</div>
+</div>
+<div style="background: rgba(255, 107, 107, 0.3); border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center;">
+<div style="color: #ff6b6b; font-weight: 600;">Total: 1700ms blocking</div>
+<div style="color: #475569; font-size: 0.85em;">Client waits for everything</div>
+</div>
+</div>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
+<div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px; text-align: center;">Asynchronous (Non-blocking)</div>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+<div style="background: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Client Request</div>
+<div style="color: #475569; font-size: 1.2em;">|</div>
+<div style="background: #6366f1; color: white; padding: 10px 20px; border-radius: 8px; font-size: 0.9em;">Order Service</div>
+<div style="display: flex; gap: 8px; align-items: center;">
+<div style="color: #475569; font-size: 1.2em;">|</div>
+<div style="background: #10b981; color: white; padding: 8px 16px; border-radius: 8px; font-size: 0.85em;">Publish Event</div>
+</div>
+<div style="background: rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 8px 16px;">
+<div style="color: #10b981; font-size: 0.85em;">Message Queue</div>
+</div>
+<div style="display: flex; gap: 12px; margin-top: 8px;">
+<div style="background: #8b5cf6; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8em;">Payment</div>
+<div style="background: #a855f7; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8em;">Email</div>
+<div style="background: #c084fc; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8em;">Analytics</div>
+</div>
+<div style="color: #475569; font-size: 0.8em;">(process independently)</div>
+</div>
+<div style="background: rgba(78, 205, 196, 0.3); border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center;">
+<div style="color: #4ecdc4; font-weight: 600;">Response: 50ms</div>
+<div style="color: #475569; font-size: 0.85em;">Background processing continues</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Internal Mechanism: Message Queue Delivery Guarantees
@@ -403,19 +403,19 @@ func ProcessOrderEvent(ctx context.Context, event OrderEvent) error {
 ```
 
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
-  <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">DESIGN CHOICE: Transactional Outbox Pattern</div>
-  <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px;">
+<div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">DESIGN CHOICE: Transactional Outbox Pattern</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px;">
     Publishing to a message queue after database commit creates a dual-write problem: the database write succeeds but queue publish fails, leaving the system inconsistent. The Transactional Outbox solves this by writing events to an outbox table in the same database transaction, then a separate process polls and publishes.
-  </div>
-  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-    <pre style="margin: 0; color: #1e293b; font-size: 0.85em; overflow-x: auto;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+<pre style="margin: 0; color: #1e293b; font-size: 0.85em; overflow-x: auto;">
 BEGIN TRANSACTION;
   INSERT INTO orders (id, user_id, total) VALUES (...);
   INSERT INTO outbox (aggregate_id, event_type, payload)
     VALUES (order_id, 'OrderCreated', '{"orderId": "..."}');
 COMMIT;
 -- Separate CDC process or poller reads outbox and publishes to Kafka</pre>
-  </div>
+</div>
 </div>
 
 ### Edge Case: Consumer Lag and Backpressure
@@ -455,29 +455,29 @@ func StartConsumer(ctx context.Context, queue Queue) {
 ### Interview Deep-Dive: Async Processing
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: When should you NOT use async processing even though it would improve response time?</h4>
-  <div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: When should you NOT use async processing even though it would improve response time?</h4>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Avoid async when: (1) <strong>User expects immediate feedback</strong> - payment confirmation, real-time validation; (2) <strong>Ordering is critical and complex</strong> - async makes ordering guarantees harder; (3) <strong>Debugging/observability is paramount</strong> - distributed traces across async boundaries are harder to follow; (4) <strong>System is already simple</strong> - async adds operational complexity (DLQs, retry logic, idempotency); (5) <strong>Strong consistency required</strong> - read-after-write must see the update. The complexity cost must be justified by the latency or decoupling benefits.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: Your async email service processes messages from Kafka but sometimes sends duplicate emails. The idempotency check uses Redis but still fails. Why?</h4>
-  <div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
-    <div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: Your async email service processes messages from Kafka but sometimes sends duplicate emails. The idempotency check uses Redis but still fails. Why?</h4>
+<div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
+<div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Several failure modes: (1) <strong>Check-then-act race condition</strong> - if using GET then SET instead of atomic SETNX, two consumers can pass the check simultaneously; (2) <strong>Redis key expiration</strong> - if TTL expires before Kafka consumer commits offset, reprocessing occurs after TTL; (3) <strong>Consumer crash after email sent, before commit</strong> - Kafka redelivers message, but Redis key exists so... wait, actually this should work. Unless: (4) <strong>Redis is separate from email send</strong> - if Redis SET succeeds, email send fails, consumer crashes, Redis key remains but email never sent. On retry, idempotency check blocks the retry. Need: atomic "check, process, mark" or compensation. Use Redis transaction: check key, if not exists mark as "processing", send email, mark as "complete".
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You fix the idempotency issue but now have a new problem: some emails are never sent because the "processing" state gets stuck when workers crash. How do you implement reliable exactly-once email delivery?</h4>
-  <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
-    <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You fix the idempotency issue but now have a new problem: some emails are never sent because the "processing" state gets stuck when workers crash. How do you implement reliable exactly-once email delivery?</h4>
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
+<div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Implement a state machine with timeout-based recovery: (1) States: PENDING -> PROCESSING -> SENT or FAILED; (2) When claiming a message, set state to PROCESSING with a claim_until timestamp (now + 5 minutes); (3) Background reaper queries for messages WHERE state = 'PROCESSING' AND claim_until < NOW(), resets them to PENDING for retry; (4) After successful send, atomically set state to SENT; (5) For the email service specifically, check with the email provider's API if the message was actually sent (using a client-generated message ID) before retrying - this handles "send succeeded but ack failed" cases. This is essentially implementing a transactional outbox (see [[transactional-outbox]](/microservices/patterns)) with lease-based claiming.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ---
@@ -487,65 +487,65 @@ func StartConsumer(ctx context.Context, queue Queue) {
 Caching reduces latency and backend load by storing computed results closer to the requester. However, caches introduce consistency challenges, cache stampedes, and memory pressure. Effective caching requires understanding invalidation strategies, eviction policies, and failure modes.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #ffd93d; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">MULTI-TIER CACHE ARCHITECTURE</h3>
-  <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
-    <div style="display: flex; align-items: center; gap: 16px; width: 100%; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
-        <div style="color: white; font-weight: 700;">Client</div>
-        <div style="color: #bfdbfe; font-size: 0.8em;">Browser/App</div>
-      </div>
-      <div style="color: #4ecdc4; font-size: 1.5em;">-></div>
-      <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
-        <div style="color: white; font-weight: 700;">L1: CDN</div>
-        <div style="color: #a7f3d0; font-size: 0.8em;">Edge Cache</div>
-        <div style="color: #6ee7b7; font-size: 0.75em; margin-top: 4px;">~10ms latency</div>
-      </div>
-      <div style="color: #4ecdc4; font-size: 1.5em;">-></div>
-      <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
-        <div style="color: white; font-weight: 700;">L2: Gateway</div>
-        <div style="color: #ddd6fe; font-size: 0.8em;">API Cache</div>
-        <div style="color: #c4b5fd; font-size: 0.75em; margin-top: 4px;">~25ms latency</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px; width: 100%; justify-content: center;">
-      <div style="color: #4ecdc4; font-size: 1.5em;">-></div>
-      <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
-        <div style="color: white; font-weight: 700;">L3: App</div>
-        <div style="color: #fef3c7; font-size: 0.8em;">In-Process</div>
-        <div style="color: #fde68a; font-size: 0.75em; margin-top: 4px;">~1ms latency</div>
-      </div>
-      <div style="color: #4ecdc4; font-size: 1.5em;">-></div>
-      <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
-        <div style="color: white; font-weight: 700;">L4: Redis</div>
-        <div style="color: #fecaca; font-size: 0.8em;">Distributed</div>
-        <div style="color: #fca5a5; font-size: 0.75em; margin-top: 4px;">~5ms latency</div>
-      </div>
-      <div style="color: #4ecdc4; font-size: 1.5em;">-></div>
-      <div style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
-        <div style="color: white; font-weight: 700;">Database</div>
-        <div style="color: #d1d5db; font-size: 0.8em;">Source of Truth</div>
-        <div style="color: #9ca3af; font-size: 0.75em; margin-top: 4px;">~50ms latency</div>
-      </div>
-    </div>
-  </div>
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 24px;">
-    <div style="background: rgba(16, 185, 129, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #10b981; font-weight: 600; font-size: 0.9em;">CDN</div>
-      <div style="color: #475569; font-size: 0.8em;">Static assets, public API responses</div>
-    </div>
-    <div style="background: rgba(139, 92, 246, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #8b5cf6; font-weight: 600; font-size: 0.9em;">Gateway</div>
-      <div style="color: #475569; font-size: 0.8em;">Auth tokens, rate limit state</div>
-    </div>
-    <div style="background: rgba(245, 158, 11, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #f59e0b; font-weight: 600; font-size: 0.9em;">In-Process</div>
-      <div style="color: #475569; font-size: 0.8em;">Hot config, compiled regexes</div>
-    </div>
-    <div style="background: rgba(239, 68, 68, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #ef4444; font-weight: 600; font-size: 0.9em;">Redis</div>
-      <div style="color: #475569; font-size: 0.8em;">Session, user data, query results</div>
-    </div>
-  </div>
+<h3 style="color: #ffd93d; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">MULTI-TIER CACHE ARCHITECTURE</h3>
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+<div style="display: flex; align-items: center; gap: 16px; width: 100%; justify-content: center;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
+<div style="color: white; font-weight: 700;">Client</div>
+<div style="color: #bfdbfe; font-size: 0.8em;">Browser/App</div>
+</div>
+<div style="color: #4ecdc4; font-size: 1.5em;">-></div>
+<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
+<div style="color: white; font-weight: 700;">L1: CDN</div>
+<div style="color: #a7f3d0; font-size: 0.8em;">Edge Cache</div>
+<div style="color: #6ee7b7; font-size: 0.75em; margin-top: 4px;">~10ms latency</div>
+</div>
+<div style="color: #4ecdc4; font-size: 1.5em;">-></div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
+<div style="color: white; font-weight: 700;">L2: Gateway</div>
+<div style="color: #ddd6fe; font-size: 0.8em;">API Cache</div>
+<div style="color: #c4b5fd; font-size: 0.75em; margin-top: 4px;">~25ms latency</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; width: 100%; justify-content: center;">
+<div style="color: #4ecdc4; font-size: 1.5em;">-></div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
+<div style="color: white; font-weight: 700;">L3: App</div>
+<div style="color: #fef3c7; font-size: 0.8em;">In-Process</div>
+<div style="color: #fde68a; font-size: 0.75em; margin-top: 4px;">~1ms latency</div>
+</div>
+<div style="color: #4ecdc4; font-size: 1.5em;">-></div>
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
+<div style="color: white; font-weight: 700;">L4: Redis</div>
+<div style="color: #fecaca; font-size: 0.8em;">Distributed</div>
+<div style="color: #fca5a5; font-size: 0.75em; margin-top: 4px;">~5ms latency</div>
+</div>
+<div style="color: #4ecdc4; font-size: 1.5em;">-></div>
+<div style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); padding: 16px 32px; border-radius: 10px; text-align: center; min-width: 140px;">
+<div style="color: white; font-weight: 700;">Database</div>
+<div style="color: #d1d5db; font-size: 0.8em;">Source of Truth</div>
+<div style="color: #9ca3af; font-size: 0.75em; margin-top: 4px;">~50ms latency</div>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 24px;">
+<div style="background: rgba(16, 185, 129, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #10b981; font-weight: 600; font-size: 0.9em;">CDN</div>
+<div style="color: #475569; font-size: 0.8em;">Static assets, public API responses</div>
+</div>
+<div style="background: rgba(139, 92, 246, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #8b5cf6; font-weight: 600; font-size: 0.9em;">Gateway</div>
+<div style="color: #475569; font-size: 0.8em;">Auth tokens, rate limit state</div>
+</div>
+<div style="background: rgba(245, 158, 11, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #f59e0b; font-weight: 600; font-size: 0.9em;">In-Process</div>
+<div style="color: #475569; font-size: 0.8em;">Hot config, compiled regexes</div>
+</div>
+<div style="background: rgba(239, 68, 68, 0.15); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #ef4444; font-weight: 600; font-size: 0.9em;">Redis</div>
+<div style="color: #475569; font-size: 0.8em;">Session, user data, query results</div>
+</div>
+</div>
 </div>
 
 ### Internal Mechanism: Cache Stampede Prevention
@@ -612,29 +612,29 @@ func GetProductWithEarlyExpiry(ctx context.Context, id string) (*Product, error)
 ```
 
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ffd93d;">
-  <div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">TRADE-OFF: Cache Invalidation Strategies</div>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
-      <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 8px;">Time-Based (TTL)</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Simple, eventual consistency. Data stale until expiry.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Use when: Staleness is acceptable (product catalog, user profiles)</div>
-    </div>
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
-      <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Event-Based Invalidation</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Near-real-time. Complex dependency tracking required.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Use when: Updates are infrequent but must be visible quickly</div>
-    </div>
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
-      <div style="color: #a29bfe; font-weight: 600; margin-bottom: 8px;">Write-Through</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Cache always consistent. Write latency increased.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Use when: Read-heavy with occasional writes, consistency critical</div>
-    </div>
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
-      <div style="color: #10b981; font-weight: 600; margin-bottom: 8px;">Cache-Aside + Version</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Key includes version: "user:123:v5". Increment version on update.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Use when: Avoiding explicit invalidation, tolerating orphaned keys</div>
-    </div>
-  </div>
+<div style="color: #ffd93d; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">TRADE-OFF: Cache Invalidation Strategies</div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 8px;">Time-Based (TTL)</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Simple, eventual consistency. Data stale until expiry.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Use when: Staleness is acceptable (product catalog, user profiles)</div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
+<div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Event-Based Invalidation</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Near-real-time. Complex dependency tracking required.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Use when: Updates are infrequent but must be visible quickly</div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
+<div style="color: #a29bfe; font-weight: 600; margin-bottom: 8px;">Write-Through</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Cache always consistent. Write latency increased.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Use when: Read-heavy with occasional writes, consistency critical</div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 10px; padding: 16px;">
+<div style="color: #10b981; font-weight: 600; margin-bottom: 8px;">Cache-Aside + Version</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Key includes version: "user:123:v5". Increment version on update.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Use when: Avoiding explicit invalidation, tolerating orphaned keys</div>
+</div>
+</div>
 </div>
 
 ### Edge Case: Cache and Database Consistency
@@ -671,29 +671,29 @@ func SetCacheIfFresh(ctx context.Context, key string, value interface{}, version
 ### Interview Deep-Dive: Caching Layers
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: Your cache hit rate is 95% but p99 latency is still high. How is this possible?</h4>
-  <div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: Your cache hit rate is 95% but p99 latency is still high. How is this possible?</h4>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       P99 is dominated by the 5% of cache misses, not the 95% hits. If cache hits take 5ms and misses take 500ms, p99 is closer to 500ms because 1 in 20 requests is a miss. Additionally: (1) <strong>Hot key problem</strong> - specific keys are accessed so frequently that Redis itself becomes bottleneck; (2) <strong>Large values</strong> - serialization/deserialization time for large cached objects; (3) <strong>Network latency variance</strong> - even to Redis, network can have p99 spikes; (4) <strong>GC pauses</strong> - in-process caches can cause GC pressure. Check if misses correlate with specific keys or patterns.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: You identify a hot key (celebrity user profile viewed 100K times/second). How do you cache this effectively?</h4>
-  <div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
-    <div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: You identify a hot key (celebrity user profile viewed 100K times/second). How do you cache this effectively?</h4>
+<div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
+<div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Multiple strategies: (1) <strong>Local caching</strong> - each app instance caches hot keys in-memory (Caffeine, Guava). 100 instances each handling 1K/s is easier than Redis handling 100K/s; (2) <strong>Key replication</strong> - spread the key across multiple Redis keys (user:123:shard:0 through user:123:shard:9), randomly select on read. 10x the memory but 10x the throughput; (3) <strong>Read replicas</strong> - distribute reads across multiple Redis replicas; (4) <strong>CDN caching</strong> - if the data is public, push to edge. Combine: local cache (1ms, 80% hit) -> Redis (5ms, 19% hit) -> database (1% miss). For a celebrity profile that changes rarely, aggressive TTL (5min) with event-based invalidation works well.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You implement local caching but now profile updates take minutes to propagate to all instances. Business requires updates visible within 5 seconds. How do you solve this without losing the local cache benefit?</h4>
-  <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
-    <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You implement local caching but now profile updates take minutes to propagate to all instances. Business requires updates visible within 5 seconds. How do you solve this without losing the local cache benefit?</h4>
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
+<div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Implement pub/sub invalidation: (1) When profile updates, publish invalidation event to Redis Pub/Sub channel; (2) Each app instance subscribes to this channel; (3) On receiving invalidation, evict from local cache; (4) Next request fetches fresh data, repopulates local cache. This gives you local cache speed with near-real-time invalidation. For 5-second guarantee: (1) Short local TTL (30s) as backup; (2) Monitor pub/sub lag; (3) Consider using Redis Streams instead of Pub/Sub for persistence (handles instance restarts). Alternative: use a two-tier TTL - local cache 30s, Redis 5min. Local always checks Redis version before using cached value. If version changed, invalidate. This is more network calls but simpler operationally than pub/sub.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ---
@@ -703,36 +703,36 @@ func SetCacheIfFresh(ctx context.Context, key string, value interface{}, version
 Horizontal scaling adds more instances to handle increased load, as opposed to vertical scaling (bigger machines). It's the foundation of cloud-native architectures but requires stateless design and careful consideration of data consistency.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #10b981; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">HORIZONTAL SCALING PREREQUISITES</h3>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-    <div style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(16, 185, 129, 0.3);">
-      <div style="color: #10b981; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Stateless Services</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
+<h3 style="color: #10b981; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px;">HORIZONTAL SCALING PREREQUISITES</h3>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+<div style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(16, 185, 129, 0.3);">
+<div style="color: #10b981; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Stateless Services</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
         No request should depend on state from a previous request being on the same instance. Session, cache, and file storage must be externalized.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-        <div style="color: #ffd93d; font-size: 0.85em;"><strong>Move to:</strong> Redis for sessions, S3 for files, external cache</div>
-      </div>
-    </div>
-    <div style="background: rgba(139, 92, 246, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(139, 92, 246, 0.3);">
-      <div style="color: #8b5cf6; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Idempotent Operations</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd93d; font-size: 0.85em;"><strong>Move to:</strong> Redis for sessions, S3 for files, external cache</div>
+</div>
+</div>
+<div style="background: rgba(139, 92, 246, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(139, 92, 246, 0.3);">
+<div style="color: #8b5cf6; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Idempotent Operations</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
         Requests may be retried due to timeouts or load balancer failover. The same request executed twice must produce the same result.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-        <div style="color: #ffd93d; font-size: 0.85em;"><strong>Implement:</strong> Idempotency keys, upserts instead of inserts</div>
-      </div>
-    </div>
-    <div style="background: rgba(245, 158, 11, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(245, 158, 11, 0.3);">
-      <div style="color: #f59e0b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Graceful Shutdown</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd93d; font-size: 0.85em;"><strong>Implement:</strong> Idempotency keys, upserts instead of inserts</div>
+</div>
+</div>
+<div style="background: rgba(245, 158, 11, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(245, 158, 11, 0.3);">
+<div style="color: #f59e0b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Graceful Shutdown</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7; margin-bottom: 12px;">
         Instances are added/removed dynamically. In-flight requests must complete before termination. Health checks must accurately reflect readiness.
-      </div>
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-        <div style="color: #ffd93d; font-size: 0.85em;"><strong>Handle:</strong> SIGTERM, drain connections, fail health checks</div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+<div style="color: #ffd93d; font-size: 0.85em;"><strong>Handle:</strong> SIGTERM, drain connections, fail health checks</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Internal Mechanism: Auto-Scaling Decisions
@@ -803,28 +803,28 @@ spec:
 ```
 
 <div style="background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #10b981;">
-  <div style="color: #10b981; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">DESIGN CHOICE: Scaling Metrics Selection</div>
-  <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px;">
+<div style="color: #10b981; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">DESIGN CHOICE: Scaling Metrics Selection</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7; margin-bottom: 16px;">
     CPU utilization is a lagging indicator - by the time CPU is high, users are already experiencing latency. Better metrics are leading indicators of saturation.
-  </div>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-      <div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Lagging Indicators</div>
-      <ul style="color: #475569; font-size: 0.85em; margin: 0; padding-left: 16px;">
-        <li>CPU/Memory utilization</li>
-        <li>Error rate spikes</li>
-        <li>P99 latency exceeded</li>
-      </ul>
-    </div>
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-      <div style="color: #10b981; font-weight: 600; margin-bottom: 8px;">Leading Indicators</div>
-      <ul style="color: #475569; font-size: 0.85em; margin: 0; padding-left: 16px;">
-        <li>Queue depth / consumer lag</li>
-        <li>Connection pool utilization</li>
-        <li>Request rate trend (derivative)</li>
-      </ul>
-    </div>
-  </div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+<div style="color: #ff6b6b; font-weight: 600; margin-bottom: 8px;">Lagging Indicators</div>
+<ul style="color: #475569; font-size: 0.85em; margin: 0; padding-left: 16px;">
+<li>CPU/Memory utilization</li>
+<li>Error rate spikes</li>
+<li>P99 latency exceeded</li>
+</ul>
+</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+<div style="color: #10b981; font-weight: 600; margin-bottom: 8px;">Leading Indicators</div>
+<ul style="color: #475569; font-size: 0.85em; margin: 0; padding-left: 16px;">
+<li>Queue depth / consumer lag</li>
+<li>Connection pool utilization</li>
+<li>Request rate trend (derivative)</li>
+</ul>
+</div>
+</div>
 </div>
 
 ### Edge Case: Cold Start and Connection Pool Exhaustion
@@ -884,57 +884,57 @@ Database connection pool exhaustion during scale-out is common: 10 instances eac
 The choice of load balancing algorithm affects latency distribution and is critical for horizontal scaling effectiveness.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <h3 style="color: #a29bfe; margin: 0 0 24px 0; font-size: 1.2em; text-align: center;">LOAD BALANCING ALGORITHMS</h3>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-    <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(162, 155, 254, 0.2);">
-      <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Round Robin</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Simple, equal distribution. Ignores instance health and load.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Issue: Slow instance receives equal traffic, becomes bottleneck.</div>
-    </div>
-    <div style="background: rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(16, 185, 129, 0.2);">
-      <div style="color: #10b981; font-weight: 600; margin-bottom: 12px;">Least Connections</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Routes to instance with fewest active connections.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Better: Slow instances naturally receive less traffic.</div>
-    </div>
-    <div style="background: rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(245, 158, 11, 0.2);">
-      <div style="color: #f59e0b; font-weight: 600; margin-bottom: 12px;">Weighted Round Robin</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Assign weights based on instance capacity.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Use for: Heterogeneous instances, canary deployments.</div>
-    </div>
-    <div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(78, 205, 196, 0.2);">
-      <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Power of Two Choices</div>
-      <div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Pick 2 random instances, route to one with fewer connections.</div>
-      <div style="color: #ffd93d; font-size: 0.85em;">Best: Combines randomness with load awareness, O(1) decision.</div>
-    </div>
-  </div>
+<h3 style="color: #a29bfe; margin: 0 0 24px 0; font-size: 1.2em; text-align: center;">LOAD BALANCING ALGORITHMS</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(162, 155, 254, 0.2);">
+<div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Round Robin</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Simple, equal distribution. Ignores instance health and load.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Issue: Slow instance receives equal traffic, becomes bottleneck.</div>
+</div>
+<div style="background: rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(16, 185, 129, 0.2);">
+<div style="color: #10b981; font-weight: 600; margin-bottom: 12px;">Least Connections</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Routes to instance with fewest active connections.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Better: Slow instances naturally receive less traffic.</div>
+</div>
+<div style="background: rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(245, 158, 11, 0.2);">
+<div style="color: #f59e0b; font-weight: 600; margin-bottom: 12px;">Weighted Round Robin</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Assign weights based on instance capacity.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Use for: Heterogeneous instances, canary deployments.</div>
+</div>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; border: 1px solid rgba(78, 205, 196, 0.2);">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Power of Two Choices</div>
+<div style="color: #475569; font-size: 0.9em; margin-bottom: 8px;">Pick 2 random instances, route to one with fewer connections.</div>
+<div style="color: #ffd93d; font-size: 0.85em;">Best: Combines randomness with load awareness, O(1) decision.</div>
+</div>
+</div>
 </div>
 
 ### Interview Deep-Dive: Horizontal Scaling
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: You scale from 10 to 50 instances but latency doesn't improve proportionally. What might be happening?</h4>
-  <div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-    <div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ff6b6b; margin: 0 0 20px 0; font-size: 1.2em;">Level 1: You scale from 10 to 50 instances but latency doesn't improve proportionally. What might be happening?</h4>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+<div style="color: #4ecdc4; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       The bottleneck has moved. Common causes: (1) <strong>Shared database</strong> - 50 instances all hitting the same database, now database is the bottleneck; (2) <strong>Shared cache</strong> - Redis or Memcached becomes saturated; (3) <strong>Network bandwidth</strong> - aggregate bandwidth exceeds network capacity; (4) <strong>Lock contention</strong> - more instances mean more concurrent access to locked resources; (5) <strong>Connection limits</strong> - downstream services can't handle 5x the connections; (6) <strong>Cold start impact</strong> - new instances slower during warmup, dragging down overall latency. Check: database metrics, cache hit rates, connection pool wait times.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: You've identified the database as the new bottleneck after scaling. Adding read replicas helped but write performance is still poor. What are your options?</h4>
-  <div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
-    <div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #ffd93d; margin: 20px 0 20px 0; font-size: 1.1em; padding-left: 20px; border-left: 3px solid #ffd93d;">Level 2: You've identified the database as the new bottleneck after scaling. Adding read replicas helped but write performance is still poor. What are your options?</h4>
+<div style="background: rgba(255, 217, 61, 0.1); border-radius: 10px; padding: 20px; margin-bottom: 20px; margin-left: 20px;">
+<div style="color: #ffd93d; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Writes are harder to scale than reads. Options: (1) <strong>Write batching</strong> - buffer writes in memory/Redis, flush periodically (trades latency for throughput); (2) <strong>Sharding</strong> - partition data by user_id or tenant_id across multiple database instances (see [[database-sharding]](/system-design/database-sharding)); (3) <strong>CQRS</strong> - separate write model (optimized for writes) from read model (optimized for reads), sync via events; (4) <strong>Async writes</strong> - queue writes for background processing, return immediately; (5) <strong>Reduce write frequency</strong> - aggregate updates instead of individual writes (e.g., view counts). For immediate relief: analyze slow write queries, optimize indexes for write patterns, consider SSDs for I/O-bound writes.
-    </div>
-  </div>
+</div>
+</div>
 
-  <h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You implement sharding by user_id. Now you have cross-shard queries for reports that aggregate data across all users. These queries are extremely slow. How do you handle this?</h4>
-  <div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
-    <div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
-    <div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
+<h4 style="color: #a29bfe; margin: 20px 0 20px 0; font-size: 1em; padding-left: 40px; border-left: 3px solid #a29bfe;">Level 3: You implement sharding by user_id. Now you have cross-shard queries for reports that aggregate data across all users. These queries are extremely slow. How do you handle this?</h4>
+<div style="background: rgba(162, 155, 254, 0.1); border-radius: 10px; padding: 20px; margin-left: 40px;">
+<div style="color: #a29bfe; font-weight: 600; margin-bottom: 12px;">Answer:</div>
+<div style="color: #1e293b; font-size: 0.95em; line-height: 1.7;">
       Cross-shard queries are the fundamental challenge of sharding. Strategies: (1) <strong>Scatter-gather</strong> - query all shards in parallel, aggregate results in application layer. Works for simple aggregations but limited for complex joins; (2) <strong>Dedicated analytics database</strong> - stream changes to a columnar database (ClickHouse, BigQuery) optimized for analytical queries. Operational queries stay on shards, reports go to analytics DB; (3) <strong>Pre-computed aggregates</strong> - maintain running totals updated on each write. Trade write cost for read speed; (4) <strong>Lambda/Kappa architecture</strong> - real-time stream processing (Flink, Spark Streaming) maintains aggregates, batch jobs correct any drift; (5) <strong>Change the query</strong> - if reports are "per-tenant", route to the tenant's shard. Avoid true cross-shard queries by designing data locality. The pattern: OLTP on shards, OLAP on separate infrastructure.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ---
@@ -946,33 +946,33 @@ The choice of load balancing algorithm affects latency distribution and is criti
 Effective bottleneck removal requires comprehensive observability. The three pillars work together:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <h3 style="color: #00d9ff; margin: 0 0 24px 0; font-size: 1.2em; text-align: center;">OBSERVABILITY PILLARS FOR BOTTLENECK DETECTION</h3>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-    <div style="background: rgba(0, 217, 255, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(0, 217, 255, 0.3);">
-      <div style="color: #00d9ff; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Metrics</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
-        <strong>RED Method:</strong> Rate, Errors, Duration for services.<br/>
-        <strong>USE Method:</strong> Utilization, Saturation, Errors for resources.<br/>
-        <strong>Key:</strong> Histogram percentiles (p50, p95, p99), not averages.
-      </div>
-    </div>
-    <div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
-      <div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Traces</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
+<h3 style="color: #00d9ff; margin: 0 0 24px 0; font-size: 1.2em; text-align: center;">OBSERVABILITY PILLARS FOR BOTTLENECK DETECTION</h3>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+<div style="background: rgba(0, 217, 255, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(0, 217, 255, 0.3);">
+<div style="color: #00d9ff; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Metrics</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
+<strong>RED Method:</strong> Rate, Errors, Duration for services.<br/>
+<strong>USE Method:</strong> Utilization, Saturation, Errors for resources.<br/>
+<strong>Key:</strong> Histogram percentiles (p50, p95, p99), not averages.
+</div>
+</div>
+<div style="background: rgba(255, 107, 107, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 107, 107, 0.3);">
+<div style="color: #ff6b6b; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Traces</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
         End-to-end request flow across services.<br/>
         Identify slow spans and service dependencies.<br/>
-        <strong>Key:</strong> Sample high-latency requests for detailed analysis.
-      </div>
-    </div>
-    <div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
-      <div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Logs</div>
-      <div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
+<strong>Key:</strong> Sample high-latency requests for detailed analysis.
+</div>
+</div>
+<div style="background: rgba(78, 205, 196, 0.1); border-radius: 12px; padding: 24px; border: 1px solid rgba(78, 205, 196, 0.3);">
+<div style="color: #4ecdc4; font-weight: 700; font-size: 1.1em; margin-bottom: 16px;">Logs</div>
+<div style="color: #475569; font-size: 0.9em; line-height: 1.7;">
         Structured logs with trace IDs for correlation.<br/>
         Error details and context for debugging.<br/>
-        <strong>Key:</strong> Log slow queries, cache misses, retry events.
-      </div>
-    </div>
-  </div>
+<strong>Key:</strong> Log slow queries, cache misses, retry events.
+</div>
+</div>
+</div>
 </div>
 
 ### Related Concepts
@@ -990,30 +990,30 @@ Effective bottleneck removal requires comprehensive observability. The three pil
 ## Key Takeaways
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-    <div style="background: rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
-      <div style="color: #10b981; font-weight: 700; margin-bottom: 12px;">1. Profile Before Optimizing</div>
-      <div style="color: #475569; font-size: 0.9em;">Use distributed tracing and the USE method to identify real bottlenecks. Premature optimization wastes effort on non-critical paths.</div>
-    </div>
-    <div style="background: rgba(255, 107, 107, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #ff6b6b;">
-      <div style="color: #ff6b6b; font-weight: 700; margin-bottom: 12px;">2. Bottlenecks Migrate</div>
-      <div style="color: #475569; font-size: 0.9em;">Fixing one bottleneck reveals the next. Plan for this: scaling the app layer will expose database limits, adding replicas will expose write bottlenecks.</div>
-    </div>
-    <div style="background: rgba(255, 217, 61, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #ffd93d;">
-      <div style="color: #ffd93d; font-weight: 700; margin-bottom: 12px;">3. Caching is Not Free</div>
-      <div style="color: #475569; font-size: 0.9em;">Caches introduce consistency challenges, stampede risks, and operational complexity. Design invalidation strategy upfront.</div>
-    </div>
-    <div style="background: rgba(162, 155, 254, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #a29bfe;">
-      <div style="color: #a29bfe; font-weight: 700; margin-bottom: 12px;">4. Async Requires Idempotency</div>
-      <div style="color: #475569; font-size: 0.9em;">Asynchronous processing with at-least-once delivery means messages may be duplicated. Design consumers to handle this gracefully.</div>
-    </div>
-    <div style="background: rgba(78, 205, 196, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #4ecdc4;">
-      <div style="color: #4ecdc4; font-weight: 700; margin-bottom: 12px;">5. Scale Stateless First</div>
-      <div style="color: #475569; font-size: 0.9em;">Horizontal scaling requires stateless services. Move sessions, files, and caches to external stores before adding instances.</div>
-    </div>
-    <div style="background: rgba(0, 217, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #00d9ff;">
-      <div style="color: #00d9ff; font-weight: 700; margin-bottom: 12px;">6. Connection Pools Have Limits</div>
-      <div style="color: #475569; font-size: 0.9em;">More app instances mean more database connections. Plan connection limits across your entire fleet, not per-instance.</div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+<div style="background: rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #10b981; font-weight: 700; margin-bottom: 12px;">1. Profile Before Optimizing</div>
+<div style="color: #475569; font-size: 0.9em;">Use distributed tracing and the USE method to identify real bottlenecks. Premature optimization wastes effort on non-critical paths.</div>
+</div>
+<div style="background: rgba(255, 107, 107, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #ff6b6b;">
+<div style="color: #ff6b6b; font-weight: 700; margin-bottom: 12px;">2. Bottlenecks Migrate</div>
+<div style="color: #475569; font-size: 0.9em;">Fixing one bottleneck reveals the next. Plan for this: scaling the app layer will expose database limits, adding replicas will expose write bottlenecks.</div>
+</div>
+<div style="background: rgba(255, 217, 61, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #ffd93d;">
+<div style="color: #ffd93d; font-weight: 700; margin-bottom: 12px;">3. Caching is Not Free</div>
+<div style="color: #475569; font-size: 0.9em;">Caches introduce consistency challenges, stampede risks, and operational complexity. Design invalidation strategy upfront.</div>
+</div>
+<div style="background: rgba(162, 155, 254, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #a29bfe;">
+<div style="color: #a29bfe; font-weight: 700; margin-bottom: 12px;">4. Async Requires Idempotency</div>
+<div style="color: #475569; font-size: 0.9em;">Asynchronous processing with at-least-once delivery means messages may be duplicated. Design consumers to handle this gracefully.</div>
+</div>
+<div style="background: rgba(78, 205, 196, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #4ecdc4;">
+<div style="color: #4ecdc4; font-weight: 700; margin-bottom: 12px;">5. Scale Stateless First</div>
+<div style="color: #475569; font-size: 0.9em;">Horizontal scaling requires stateless services. Move sessions, files, and caches to external stores before adding instances.</div>
+</div>
+<div style="background: rgba(0, 217, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #00d9ff;">
+<div style="color: #00d9ff; font-weight: 700; margin-bottom: 12px;">6. Connection Pools Have Limits</div>
+<div style="color: #475569; font-size: 0.9em;">More app instances mean more database connections. Plan connection limits across your entire fleet, not per-instance.</div>
+</div>
+</div>
 </div>

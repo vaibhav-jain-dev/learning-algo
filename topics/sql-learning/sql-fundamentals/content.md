@@ -641,14 +641,14 @@ WHERE EXTRACT(MONTH FROM created_at) = 1;  -- Bad: function prevents index use
 </div>
 
 <div>
-<div style="background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 12px;">Hard</div>
-<ul style="margin: 0; padding-left: 20px; color: #1e293b; line-height: 2;">
-<li><strong>How do you find the second highest salary?</strong><br/>
-<span style="color: #475569;">Use DISTINCT with LIMIT/OFFSET: <code>SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1</code>. Alternatively, use a subquery: <code>SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees)</code>.</span></li>
-<li><strong>What happens with NOT IN when the subquery contains NULL?</strong><br/>
-<span style="color: #475569;">It returns no results. Use NOT EXISTS instead for safety.</span></li>
-<li><strong>How would you optimize a slow GROUP BY query?</strong><br/>
-<span style="color: #475569;">Add indexes on GROUP BY columns. Filter rows with WHERE before grouping. Avoid SELECT * and only select needed columns. Consider using HAVING only when filtering on aggregates is required. Analyze the query plan with EXPLAIN ANALYZE.</span></li>
+  <div style="background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 20px; display: inline-block; font-weight: bold; margin-bottom: 12px;">Hard</div>
+  <ul style="margin: 0; padding-left: 20px; color: #1e293b; line-height: 2;">
+  <li><strong>How do you find the second highest salary?</strong><br/>
+  <span style="color: #475569;">Use DISTINCT with LIMIT/OFFSET: <code>SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1</code>. Alternatively, use a subquery: <code>SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees)</code>.</span></li>
+  <li><strong>What happens with NOT IN when the subquery contains NULL?</strong><br/>
+  <span style="color: #475569;">It returns no results. Use NOT EXISTS instead for safety.</span></li>
+  <li><strong>How would you optimize a slow GROUP BY query?</strong><br/>
+  <span style="color: #475569;">Add indexes on GROUP BY columns. Filter rows with WHERE before grouping. Avoid SELECT * and only select needed columns. Consider using HAVING only when filtering on aggregates is required. Analyze the query plan with EXPLAIN ANALYZE.</span></li>
 </ul>
 </div>
 </div>
@@ -767,45 +767,45 @@ JOIN monthly_orders m2
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">Query Structure</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8;">
-SELECT columns<br/>
-FROM table<br/>
-WHERE row_conditions<br/>
-GROUP BY columns<br/>
-HAVING group_conditions<br/>
-ORDER BY columns<br/>
-LIMIT n OFFSET m;
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">Query Structure</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-family: monospace; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  SELECT columns<br/>
+  FROM table<br/>
+  WHERE row_conditions<br/>
+  GROUP BY columns<br/>
+  HAVING group_conditions<br/>
+  ORDER BY columns<br/>
+  LIMIT n OFFSET m;
 </div>
 </div>
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">Common Operators</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
-<code>=, !=, <>, <, >, <=, >=</code><br/>
-<code>AND, OR, NOT</code><br/>
-<code>IN (list), NOT IN (list)</code><br/>
-<code>BETWEEN a AND b</code><br/>
-<code>LIKE pattern, ILIKE pattern</code><br/>
-<code>IS NULL, IS NOT NULL</code>
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">Common Operators</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  <code>=, !=, <>, <, >, <=, >=</code><br/>
+  <code>AND, OR, NOT</code><br/>
+  <code>IN (list), NOT IN (list)</code><br/>
+  <code>BETWEEN a AND b</code><br/>
+  <code>LIKE pattern, ILIKE pattern</code><br/>
+  <code>IS NULL, IS NOT NULL</code>
 </div>
 </div>
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">Aggregate Functions</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
-<code>COUNT(*), COUNT(col)</code><br/>
-<code>COUNT(DISTINCT col)</code><br/>
-<code>SUM(col), AVG(col)</code><br/>
-<code>MIN(col), MAX(col)</code><br/>
-<code>STRING_AGG(col, delimiter)</code>
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">Aggregate Functions</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  <code>COUNT(*), COUNT(col)</code><br/>
+  <code>COUNT(DISTINCT col)</code><br/>
+  <code>SUM(col), AVG(col)</code><br/>
+  <code>MIN(col), MAX(col)</code><br/>
+  <code>STRING_AGG(col, delimiter)</code>
 </div>
 </div>
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">NULL Functions</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
-<code>COALESCE(a, b, c)</code> - First non-null<br/>
-<code>NULLIF(a, b)</code> - NULL if a = b<br/>
-<code>IS NULL</code> - Check for NULL<br/>
-<code>IS NOT NULL</code> - Check for non-NULL
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">NULL Functions</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  <code>COALESCE(a, b, c)</code> - First non-null<br/>
+  <code>NULLIF(a, b)</code> - NULL if a = b<br/>
+  <code>IS NULL</code> - Check for NULL<br/>
+  <code>IS NOT NULL</code> - Check for non-NULL
 </div>
 </div>
 </div>

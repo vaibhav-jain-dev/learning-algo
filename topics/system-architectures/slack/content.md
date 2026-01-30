@@ -55,49 +55,49 @@ Design a real-time team communication platform with channels, direct messages, f
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; text-align: center;">CHANNEL SERVICE</div>
 <div style="color: #475569; font-size: 11px; margin-top: 8px;">
 <div>- Create channels</div>
-<div>- Manage members</div>
-<div>- Handle permissions</div>
-</div>
-</div>
+  <div>- Manage members</div>
+    <div>- Handle permissions</div>
+    </div>
+  </div>
 
-<div style="background: #f8fafc; border: 2px solid #a371f7; border-radius: 12px; padding: 16px; min-width: 150px;">
-<div style="color: #a371f7; font-weight: bold; font-size: 13px; text-align: center;">MESSAGE SERVICE</div>
-<div style="color: #475569; font-size: 11px; margin-top: 8px;">
-<div>- Send/Receive</div>
-<div>- Threading</div>
-<div>- Reactions</div>
-</div>
-</div>
+  <div style="background: #f8fafc; border: 2px solid #a371f7; border-radius: 12px; padding: 16px; min-width: 150px;">
+  <div style="color: #a371f7; font-weight: bold; font-size: 13px; text-align: center;">MESSAGE SERVICE</div>
+  <div style="color: #475569; font-size: 11px; margin-top: 8px;">
+  <div>- Send/Receive</div>
+    <div>- Threading</div>
+      <div>- Reactions</div>
+      </div>
+    </div>
 
-<div style="background: #f8fafc; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; min-width: 150px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 13px; text-align: center;">PRESENCE SERVICE</div>
-<div style="color: #475569; font-size: 11px; margin-top: 8px;">
-<div>- Online/Offline</div>
-<div>- Typing indicators</div>
-<div>- Status updates</div>
-</div>
-</div>
+    <div style="background: #f8fafc; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; min-width: 150px;">
+    <div style="color: #58a6ff; font-weight: bold; font-size: 13px; text-align: center;">PRESENCE SERVICE</div>
+    <div style="color: #475569; font-size: 11px; margin-top: 8px;">
+    <div>- Online/Offline</div>
+      <div>- Typing indicators</div>
+        <div>- Status updates</div>
+        </div>
+      </div>
 
-</div>
+    </div>
 
-<!-- Arrow -->
-<div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
+    <!-- Arrow -->
+    <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
 
-<!-- Real-time Gateway -->
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px 40px; text-align: center; min-width: 300px;">
-<div style="color: #1e293b; font-weight: bold; font-size: 14px;">REAL-TIME GATEWAY</div>
-<div style="color: #7c3aed; font-size: 12px; margin-top: 4px;">WebSocket Connections | Pub/Sub Routing</div>
-</div>
+    <!-- Real-time Gateway -->
+    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 20px 40px; text-align: center; min-width: 300px;">
+    <div style="color: #1e293b; font-weight: bold; font-size: 14px;">REAL-TIME GATEWAY</div>
+    <div style="color: #7c3aed; font-size: 12px; margin-top: 4px;">WebSocket Connections | Pub/Sub Routing</div>
+  </div>
 
-<!-- Arrow -->
-<div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
+  <!-- Arrow -->
+  <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
 
-<!-- Data Stores Row -->
-<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+  <!-- Data Stores Row -->
+  <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
 
-<div style="background: linear-gradient(135deg, #0969da 0%, #218bff 100%); border-radius: 10px; padding: 14px 20px; text-align: center;">
-<div style="color: #1e293b; font-weight: bold; font-size: 12px;">PostgreSQL</div>
-<div style="color: #3b82f6; font-size: 10px;">(Messages)</div>
+  <div style="background: linear-gradient(135deg, #0969da 0%, #218bff 100%); border-radius: 10px; padding: 14px 20px; text-align: center;">
+  <div style="color: #1e293b; font-weight: bold; font-size: 12px;">PostgreSQL</div>
+  <div style="color: #3b82f6; font-size: 10px;">(Messages)</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #b62324 0%, #da3633 100%); border-radius: 10px; padding: 14px 20px; text-align: center;">
@@ -138,25 +138,25 @@ Design a real-time team communication platform with channels, direct messages, f
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 8px;">1. HTTP POST /messages</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.6;">
 <div>- Validate user permissions for channel</div>
-<div>- Store message in PostgreSQL</div>
-<div>- Generate unique message_id (timestamp-based)</div>
-</div>
-</div>
+  <div>- Store message in PostgreSQL</div>
+    <div>- Generate unique message_id (timestamp-based)</div>
+    </div>
+  </div>
 
-<!-- Arrow -->
-<div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #58a6ff;"></div>
+  <!-- Arrow -->
+  <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #58a6ff;"></div>
 
-<!-- Step 2 -->
-<div style="background: #f8fafc; border: 2px solid #a371f7; border-radius: 12px; padding: 16px 24px; max-width: 450px; width: 100%;">
-<div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 8px;">2. Publish to Redis Pub/Sub</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px; color: #16a34a;">
-<div style="color: #ff7b72;">PUBLISH</div> channel:#general:messages
-<div style="margin-top: 6px; color: #475569;">{</div>
-<div style="padding-left: 12px; color: #2563eb;">"id": "msg_123",</div>
-<div style="padding-left: 12px; color: #2563eb;">"text": "Hello!",</div>
-<div style="padding-left: 12px; color: #2563eb;">"user": "user_A",</div>
-<div style="padding-left: 12px; color: #2563eb;">"ts": 1234567890.123</div>
-<div style="color: #475569;">}</div>
+  <!-- Step 2 -->
+  <div style="background: #f8fafc; border: 2px solid #a371f7; border-radius: 12px; padding: 16px 24px; max-width: 450px; width: 100%;">
+  <div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 8px;">2. Publish to Redis Pub/Sub</div>
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px; color: #16a34a;">
+  <div style="color: #ff7b72;">PUBLISH</div> channel:#general:messages
+  <div style="margin-top: 6px; color: #475569;">{</div>
+  <div style="padding-left: 12px; color: #2563eb;">"id": "msg_123",</div>
+  <div style="padding-left: 12px; color: #2563eb;">"text": "Hello!",</div>
+  <div style="padding-left: 12px; color: #2563eb;">"user": "user_A",</div>
+  <div style="padding-left: 12px; color: #2563eb;">"ts": 1234567890.123</div>
+  <div style="color: #475569;">}</div>
 </div>
 </div>
 
@@ -168,19 +168,19 @@ Design a real-time team communication platform with channels, direct messages, f
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">3. Real-time Gateway</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.6;">
 <div>- Subscribed to channel:#general topic</div>
-<div>- Receives message from Redis</div>
-<div>- Looks up connected channel members</div>
-</div>
-</div>
+  <div>- Receives message from Redis</div>
+    <div>- Looks up connected channel members</div>
+    </div>
+  </div>
 
-<!-- Arrow -->
-<div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #58a6ff;"></div>
+  <!-- Arrow -->
+  <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #58a6ff;"></div>
 
-<!-- Recipients -->
-<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 8px; padding: 10px 16px; text-align: center;">
-<div style="color: #1e293b; font-weight: bold; font-size: 12px;">User B</div>
-<div style="color: #3b82f6; font-size: 10px;">(WebSocket)</div>
+  <!-- Recipients -->
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+  <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 8px; padding: 10px 16px; text-align: center;">
+  <div style="color: #1e293b; font-weight: bold; font-size: 12px;">User B</div>
+  <div style="color: #3b82f6; font-size: 10px;">(WebSocket)</div>
 </div>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 8px; padding: 10px 16px; text-align: center;">
 <div style="color: #1e293b; font-weight: bold; font-size: 12px;">User C</div>
@@ -316,79 +316,79 @@ class WebSocketHandler:
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; text-align: center;">WORKSPACE SERVICE</div>
 <div style="color: #475569; font-size: 11px; margin-top: 8px;">
 <div>- Workspaces</div>
-<div>- Channels</div>
-<div>- Members</div>
-</div>
-</div>
+  <div>- Channels</div>
+    <div>- Members</div>
+    </div>
+  </div>
 
-<div style="background: #f8fafc; border: 2px solid #a371f7; border-radius: 12px; padding: 16px; min-width: 160px;">
-<div style="color: #a371f7; font-weight: bold; font-size: 13px; text-align: center;">MESSAGE SERVICE</div>
-<div style="color: #475569; font-size: 11px; margin-top: 8px;">
-<div>- Send/Receive</div>
-<div>- Threads</div>
-<div>- Reactions</div>
-</div>
-</div>
+  <div style="background: #f8fafc; border: 2px solid #a371f7; border-radius: 12px; padding: 16px; min-width: 160px;">
+  <div style="color: #a371f7; font-weight: bold; font-size: 13px; text-align: center;">MESSAGE SERVICE</div>
+  <div style="color: #475569; font-size: 11px; margin-top: 8px;">
+  <div>- Send/Receive</div>
+    <div>- Threads</div>
+      <div>- Reactions</div>
+      </div>
+    </div>
 
-<div style="background: #f8fafc; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; min-width: 160px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 13px; text-align: center;">REALTIME GATEWAY</div>
-<div style="color: #475569; font-size: 11px; margin-top: 8px;">
-<div>- WebSocket</div>
-<div>- Connections</div>
-<div>- Routing</div>
-</div>
-</div>
+    <div style="background: #f8fafc; border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; min-width: 160px;">
+    <div style="color: #58a6ff; font-weight: bold; font-size: 13px; text-align: center;">REALTIME GATEWAY</div>
+    <div style="color: #475569; font-size: 11px; margin-top: 8px;">
+    <div>- WebSocket</div>
+      <div>- Connections</div>
+        <div>- Routing</div>
+        </div>
+      </div>
 
-</div>
+    </div>
 
-<!-- Arrow -->
-<div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
+    <!-- Arrow -->
+    <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
 
-<!-- Kafka Event Bus -->
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 40px; text-align: center;">
-<div style="color: #1e293b; font-weight: bold; font-size: 14px;">Kafka Event Bus</div>
-</div>
+    <!-- Kafka Event Bus -->
+    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px 40px; text-align: center;">
+    <div style="color: #1e293b; font-weight: bold; font-size: 14px;">Kafka Event Bus</div>
+  </div>
 
-<!-- Arrow -->
-<div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
+  <!-- Arrow -->
+  <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #58a6ff; margin: 8px 0;"></div>
 
-<!-- Services Row 2 -->
-<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+  <!-- Services Row 2 -->
+  <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
 
-<div style="background: #f8fafc; border: 2px solid #238636; border-radius: 12px; padding: 16px; min-width: 160px;">
-<div style="color: #238636; font-weight: bold; font-size: 13px; text-align: center;">PRESENCE SERVICE</div>
-<div style="color: #475569; font-size: 11px; margin-top: 8px;">
-<div>- Online/Away</div>
-<div>- Typing</div>
-<div>- Status</div>
-</div>
-</div>
+  <div style="background: #f8fafc; border: 2px solid #238636; border-radius: 12px; padding: 16px; min-width: 160px;">
+  <div style="color: #238636; font-weight: bold; font-size: 13px; text-align: center;">PRESENCE SERVICE</div>
+  <div style="color: #475569; font-size: 11px; margin-top: 8px;">
+  <div>- Online/Away</div>
+    <div>- Typing</div>
+      <div>- Status</div>
+      </div>
+    </div>
 
-<div style="background: #f8fafc; border: 2px solid #f85149; border-radius: 12px; padding: 16px; min-width: 160px;">
-<div style="color: #f85149; font-weight: bold; font-size: 13px; text-align: center;">SEARCH SERVICE</div>
-<div style="color: #475569; font-size: 11px; margin-top: 8px;">
-<div>- Elasticsearch</div>
-<div>- Index msgs</div>
-<div>- Query</div>
-</div>
-</div>
+    <div style="background: #f8fafc; border: 2px solid #f85149; border-radius: 12px; padding: 16px; min-width: 160px;">
+    <div style="color: #f85149; font-weight: bold; font-size: 13px; text-align: center;">SEARCH SERVICE</div>
+    <div style="color: #475569; font-size: 11px; margin-top: 8px;">
+    <div>- Elasticsearch</div>
+      <div>- Index msgs</div>
+        <div>- Query</div>
+        </div>
+      </div>
 
-<div style="background: #f8fafc; border: 2px solid #d29922; border-radius: 12px; padding: 16px; min-width: 160px;">
-<div style="color: #d29922; font-weight: bold; font-size: 13px; text-align: center;">FILE SERVICE</div>
-<div style="color: #475569; font-size: 11px; margin-top: 8px;">
-<div>- Upload</div>
-<div>- Preview</div>
-<div>- CDN</div>
-</div>
-</div>
+      <div style="background: #f8fafc; border: 2px solid #d29922; border-radius: 12px; padding: 16px; min-width: 160px;">
+      <div style="color: #d29922; font-weight: bold; font-size: 13px; text-align: center;">FILE SERVICE</div>
+      <div style="color: #475569; font-size: 11px; margin-top: 8px;">
+      <div>- Upload</div>
+        <div>- Preview</div>
+          <div>- CDN</div>
+          </div>
+        </div>
 
-</div>
+      </div>
 
-</div>
+    </div>
 
-</div>
+  </div>
 
-### Message Storage Schema
+  ### Message Storage Schema
 
 ```sql
 -- Partitioned by workspace and time
@@ -421,7 +421,7 @@ CREATE INDEX idx_messages_thread
     WHERE thread_ts IS NOT NULL;
 ```
 
-### Handling Presence at Scale
+  ### Handling Presence at Scale
 
 ```python
 class PresenceService:
@@ -499,16 +499,16 @@ class PresenceService:
 <div style="color: #16a34a; font-weight: bold; font-size: 13px; margin-bottom: 12px;">WEBSOCKET EDGE SERVERS</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.8; margin-bottom: 16px;">
 <div>- Terminate WebSocket connections at edge for low latency</div>
-<div>- Reduce round-trip time for real-time messages</div>
-<div>- Handle connection multiplexing (multiple channels per socket)</div>
-</div>
+  <div>- Reduce round-trip time for real-time messages</div>
+    <div>- Handle connection multiplexing (multiple channels per socket)</div>
+    </div>
 
-<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-<div style="background: #238636; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">US-EAST</div>
-<div style="background: #1f6feb; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">US-WEST</div>
-<div style="background: #a371f7; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">EU-WEST</div>
-<div style="background: #f0883e; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">AP-SOUTH</div>
-</div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+    <div style="background: #238636; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">US-EAST</div>
+    <div style="background: #1f6feb; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">US-WEST</div>
+    <div style="background: #a371f7; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">EU-WEST</div>
+    <div style="background: #f0883e; border-radius: 8px; padding: 10px 16px; color: #1e293b; font-size: 12px; font-weight: bold;">AP-SOUTH</div>
+  </div>
 </div>
 </div>
 
@@ -545,33 +545,33 @@ class PresenceService:
 <div style="color: #d4f8d4; font-size: 11px; margin-top: 8px;">100K workspaces</div>
 <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 10px; padding-top: 10px; font-size: 10px; color: #d4f8d4;">
 <div>Postgres</div>
-<div>Redis</div>
-<div>Services</div>
-</div>
-</div>
+  <div>Redis</div>
+    <div>Services</div>
+    </div>
+  </div>
 
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
-<div style="color: #1e293b; font-weight: bold; font-size: 13px;">CELL-2</div>
-<div style="color: #3b82f6; font-size: 11px; margin-top: 8px;">100K workspaces</div>
-<div style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 10px; padding-top: 10px; font-size: 10px; color: #3b82f6;">
-<div>Postgres</div>
-<div>Redis</div>
-<div>Services</div>
-</div>
-</div>
+  <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
+  <div style="color: #1e293b; font-weight: bold; font-size: 13px;">CELL-2</div>
+  <div style="color: #3b82f6; font-size: 11px; margin-top: 8px;">100K workspaces</div>
+  <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 10px; padding-top: 10px; font-size: 10px; color: #3b82f6;">
+  <div>Postgres</div>
+    <div>Redis</div>
+      <div>Services</div>
+      </div>
+    </div>
 
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
-<div style="color: #1e293b; font-weight: bold; font-size: 13px;">CELL-N</div>
-<div style="color: #7c3aed; font-size: 11px; margin-top: 8px;">100K workspaces</div>
-<div style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 10px; padding-top: 10px; font-size: 10px; color: #7c3aed;">
-<div>Postgres</div>
-<div>Redis</div>
-<div>Services</div>
-</div>
-</div>
+    <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 16px; min-width: 140px; text-align: center;">
+    <div style="color: #1e293b; font-weight: bold; font-size: 13px;">CELL-N</div>
+    <div style="color: #7c3aed; font-size: 11px; margin-top: 8px;">100K workspaces</div>
+    <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 10px; padding-top: 10px; font-size: 10px; color: #7c3aed;">
+    <div>Postgres</div>
+      <div>Redis</div>
+        <div>Services</div>
+        </div>
+      </div>
 
-</div>
-</div>
+    </div>
+  </div>
 
 </div>
 
@@ -739,20 +739,20 @@ class TypingService:
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 10px; text-align: center;">Search Indexer (Consumer)</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.6;">
 <div>- Extract text, mentions, links</div>
-<div>- Enrich with user/channel metadata</div>
-<div>- Handle edits (update doc)</div>
-<div>- Handle deletes (remove doc)</div>
-</div>
-</div>
+  <div>- Enrich with user/channel metadata</div>
+    <div>- Handle edits (update doc)</div>
+      <div>- Handle deletes (remove doc)</div>
+      </div>
+    </div>
 
-<!-- Arrow -->
-<div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #a371f7;"></div>
+    <!-- Arrow -->
+    <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #a371f7;"></div>
 
-<!-- Elasticsearch -->
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 10px; padding: 14px 24px; text-align: center;">
-<div style="color: #1e293b; font-weight: bold; font-size: 13px;">Elasticsearch Index</div>
-<div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">Index per workspace | Sharded by channel_id</div>
-</div>
+    <!-- Elasticsearch -->
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 10px; padding: 14px 24px; text-align: center;">
+    <div style="color: #1e293b; font-weight: bold; font-size: 13px;">Elasticsearch Index</div>
+    <div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">Index per workspace | Sharded by channel_id</div>
+  </div>
 
 </div>
 
@@ -1439,70 +1439,70 @@ def on_channel_read(user_id, channel_id, read_ts):
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Architecture</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.8;">
 <div>- Single Node.js + Socket.io</div>
-<div>- PostgreSQL on RDS ($50/mo)</div>
-<div>- Redis for pub/sub ($25/mo)</div>
-<div>- S3 for files ($10/mo)</div>
-<div>- EC2 t3.medium ($30/mo)</div>
-</div>
-<div style="color: #16a34a; font-weight: bold; margin-top: 12px;">Total: ~$115/month</div>
-</div>
+  <div>- PostgreSQL on RDS ($50/mo)</div>
+    <div>- Redis for pub/sub ($25/mo)</div>
+      <div>- S3 for files ($10/mo)</div>
+        <div>- EC2 t3.medium ($30/mo)</div>
+        </div>
+        <div style="color: #16a34a; font-weight: bold; margin-top: 12px;">Total: ~$115/month</div>
+      </div>
 
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">This Handles</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8;">
-<div>- 1000 concurrent WebSockets</div>
-<div>- 100K messages/day</div>
-<div>- Basic presence/typing</div>
-<div>- File uploads</div>
-</div>
-<div style="color: #f85149; font-weight: bold; margin-top: 12px; font-size: 12px;">You do NOT need: Kafka, Elasticsearch, Cell architecture, Custom gateway, Microservices</div>
-</div>
+      <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
+      <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">This Handles</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.8;">
+      <div>- 1000 concurrent WebSockets</div>
+        <div>- 100K messages/day</div>
+          <div>- Basic presence/typing</div>
+            <div>- File uploads</div>
+            </div>
+            <div style="color: #f85149; font-weight: bold; margin-top: 12px; font-size: 12px;">You do NOT need: Kafka, Elasticsearch, Cell architecture, Custom gateway, Microservices</div>
+          </div>
 
-</div>
+        </div>
 
-</div>
+      </div>
 
-### When Firebase/Pusher is Enough
+      ### When Firebase/Pusher is Enough
 
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
+      <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
 
-| Use Case | Firebase Realtime DB | Pusher | Custom |
-|----------|---------------------|--------|--------|
-| Concurrent users < 1K | Yes | Yes | Overkill |
-| Concurrent users 1K-10K | Maybe | Yes | Consider |
-| Concurrent users > 10K | No | Maybe | Yes |
-| Need message history | Limited | No | Yes |
-| Need search | No | No | Yes |
-| Need compliance (SOC2) | Limited | Yes | Yes |
-| Cost at 100K MAU | ~$500/mo | ~$400/mo | ~$200/mo |
+      | Use Case | Firebase Realtime DB | Pusher | Custom |
+      |----------|---------------------|--------|--------|
+      | Concurrent users < 1K | Yes | Yes | Overkill |
+      | Concurrent users 1K-10K | Maybe | Yes | Consider |
+      | Concurrent users > 10K | No | Maybe | Yes |
+      | Need message history | Limited | No | Yes |
+      | Need search | No | No | Yes |
+      | Need compliance (SOC2) | Limited | Yes | Yes |
+      | Cost at 100K MAU | ~$500/mo | ~$400/mo | ~$200/mo |
 
-**Firebase is perfect for**:
-- MVPs and prototypes
-- Mobile-first apps with offline sync
-- Real-time dashboards
-- Collaborative features (like Google Docs cursors)
+      **Firebase is perfect for**:
+      - MVPs and prototypes
+      - Mobile-first apps with offline sync
+      - Real-time dashboards
+      - Collaborative features (like Google Docs cursors)
 
-**Pusher is perfect for**:
-- Adding real-time to existing apps
-- Notifications and activity feeds
-- Live updates without WebSocket complexity
+      **Pusher is perfect for**:
+      - Adding real-time to existing apps
+      - Notifications and activity feeds
+      - Live updates without WebSocket complexity
 
-</div>
+    </div>
 
-### When You Don't Need Cell Architecture
+    ### When You Don't Need Cell Architecture
 
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
 
-<div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; flex-direction: column; gap: 12px;">
 
-<div style="background: #f8fafc; border-left: 4px solid #238636; border-radius: 0 8px 8px 0; padding: 12px 16px;">
-<div style="color: #238636; font-weight: bold; font-size: 13px;">Single-tenant database (workspace_id column)</div>
-<div style="color: #475569; font-size: 12px; margin-top: 4px;">Works until: Individual workspace needs isolation, DB > 5TB, or 10K+ workspaces</div>
-</div>
+    <div style="background: #f8fafc; border-left: 4px solid #238636; border-radius: 0 8px 8px 0; padding: 12px 16px;">
+    <div style="color: #238636; font-weight: bold; font-size: 13px;">Single-tenant database (workspace_id column)</div>
+    <div style="color: #475569; font-size: 12px; margin-top: 4px;">Works until: Individual workspace needs isolation, DB > 5TB, or 10K+ workspaces</div>
+  </div>
 
-<div style="background: #f8fafc; border-left: 4px solid #1f6feb; border-radius: 0 8px 8px 0; padding: 12px 16px;">
-<div style="color: #1f6feb; font-weight: bold; font-size: 13px;">Schema-per-tenant (Postgres schemas)</div>
-<div style="color: #475569; font-size: 12px; margin-top: 4px;">Works until: 100+ schemas (migrations painful), connection pooling complex</div>
+  <div style="background: #f8fafc; border-left: 4px solid #1f6feb; border-radius: 0 8px 8px 0; padding: 12px 16px;">
+  <div style="color: #1f6feb; font-weight: bold; font-size: 13px;">Schema-per-tenant (Postgres schemas)</div>
+  <div style="color: #475569; font-size: 12px; margin-top: 4px;">Works until: 100+ schemas (migrations painful), connection pooling complex</div>
 </div>
 
 <div style="background: #f8fafc; border-left: 4px solid #a371f7; border-radius: 0 8px 8px 0; padding: 12px 16px;">
@@ -1526,15 +1526,15 @@ def on_channel_read(user_id, channel_id, read_ts):
 <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Discord's approach:</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.8;">
 <div>- Guild ID determines which process handles it</div>
-<div>- No complex distributed transactions within a guild</div>
-<div>- Cross-guild features are eventually consistent</div>
-<div>- Scaling = add more machines, assign new guilds to them</div>
-</div>
-</div>
+  <div>- No complex distributed transactions within a guild</div>
+    <div>- Cross-guild features are eventually consistent</div>
+      <div>- Scaling = add more machines, assign new guilds to them</div>
+      </div>
+    </div>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-top: 12px;">
-<span style="color: #f0883e; font-weight: bold;">For your design:</span> <span style="color: #475569; font-size: 13px;">Consider whether workspace-per-process could simplify your architecture before jumping to distributed everything.</span>
-</div>
+    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-top: 12px;">
+    <span style="color: #f0883e; font-weight: bold;">For your design:</span> <span style="color: #475569; font-size: 13px;">Consider whether workspace-per-process could simplify your architecture before jumping to distributed everything.</span>
+  </div>
 
 </div>
 
@@ -1589,74 +1589,74 @@ def on_channel_read(user_id, channel_id, read_ts):
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Slack's Approach: Optimistic + Verification</div>
 <div style="color: #475569; font-size: 12px; line-height: 1.8;">
 <div>1. Sender gets immediate "sent" confirmation</div>
-<div>2. Message stored durably (source of truth)</div>
-<div>3. Real-time delivery is best-effort</div>
-<div>4. Clients periodically sync to catch missed messages</div>
-<div>5. Mobile uses push notifications as backup</div>
-</div>
-</div>
+  <div>2. Message stored durably (source of truth)</div>
+    <div>3. Real-time delivery is best-effort</div>
+      <div>4. Clients periodically sync to catch missed messages</div>
+        <div>5. Mobile uses push notifications as backup</div>
+        </div>
+      </div>
 
-</div>
+    </div>
 
-### Mitigating WebSocket Complexity
+    ### Mitigating WebSocket Complexity
 
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
 
-| Challenge | Mitigation Strategy |
-|-----------|---------------------|
-| Connection drops | Automatic reconnect with exponential backoff |
-| Load balancer stickiness | Use connection ID routing, not IP affinity |
-| Server restarts | Graceful drain: stop new connections, wait for existing to migrate |
-| Memory per connection | Minimize per-connection state; use shared subscription pools |
-| Thundering herd on reconnect | Jittered reconnection delays (random 0-30s) |
-| Corporate firewalls | HTTP long-polling fallback |
+    | Challenge | Mitigation Strategy |
+    |-----------|---------------------|
+    | Connection drops | Automatic reconnect with exponential backoff |
+    | Load balancer stickiness | Use connection ID routing, not IP affinity |
+    | Server restarts | Graceful drain: stop new connections, wait for existing to migrate |
+    | Memory per connection | Minimize per-connection state; use shared subscription pools |
+    | Thundering herd on reconnect | Jittered reconnection delays (random 0-30s) |
+    | Corporate firewalls | HTTP long-polling fallback |
 
-</div>
+  </div>
 
-### Cost Optimization at Scale
+  ### Cost Optimization at Scale
 
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0;">
 
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 16px;">10M Daily Active Users - Cost Breakdown & Optimization</div>
+  <div style="color: #58a6ff; font-weight: bold; margin-bottom: 16px;">10M Daily Active Users - Cost Breakdown & Optimization</div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">Before Optimization</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8;">
-<div>Compute: $150K/mo</div>
-<div>Database: $80K/mo</div>
-<div>Bandwidth: $50K/mo</div>
-<div>Search: $40K/mo</div>
-</div>
-<div style="color: #f85149; font-weight: bold; margin-top: 12px;">Total: $320K/month</div>
-</div>
+  <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
+  <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">Before Optimization</div>
+  <div style="color: #475569; font-size: 12px; line-height: 1.8;">
+  <div>Compute: $150K/mo</div>
+    <div>Database: $80K/mo</div>
+      <div>Bandwidth: $50K/mo</div>
+        <div>Search: $40K/mo</div>
+        </div>
+        <div style="color: #f85149; font-weight: bold; margin-top: 12px;">Total: $320K/month</div>
+      </div>
 
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">After Optimization</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8;">
-<div>Compute: $80K/mo (auto-scaling, spot)</div>
-<div>Database: $45K/mo (hot/cold tiering)</div>
-<div>Bandwidth: $25K/mo (compression, CDN)</div>
-<div>Search: $20K/mo (index last 90 days)</div>
-</div>
-<div style="color: #16a34a; font-weight: bold; margin-top: 12px;">Total: $170K/month</div>
-</div>
+      <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
+      <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">After Optimization</div>
+      <div style="color: #475569; font-size: 12px; line-height: 1.8;">
+      <div>Compute: $80K/mo (auto-scaling, spot)</div>
+        <div>Database: $45K/mo (hot/cold tiering)</div>
+          <div>Bandwidth: $25K/mo (compression, CDN)</div>
+            <div>Search: $20K/mo (index last 90 days)</div>
+            </div>
+            <div style="color: #16a34a; font-weight: bold; margin-top: 12px;">Total: $170K/month</div>
+          </div>
 
-</div>
+        </div>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-top: 16px;">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">Key Optimizations:</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.6;">
-1. Message archival: Move messages > 90 days to cold storage |
-2. Spot instances: Use for stateless workers |
-3. Reserved instances: For predictable base load |
-4. Connection multiplexing: Multiple channels per WebSocket |
-5. Batch operations: Group typing indicators, presence updates
-</div>
-</div>
+        <div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-top: 16px;">
+        <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">Key Optimizations:</div>
+        <div style="color: #475569; font-size: 12px; line-height: 1.6;">
+        1. Message archival: Move messages > 90 days to cold storage |
+        2. Spot instances: Use for stateless workers |
+        3. Reserved instances: For predictable base load |
+        4. Connection multiplexing: Multiple channels per WebSocket |
+        5. Batch operations: Group typing indicators, presence updates
+      </div>
+    </div>
 
-</div>
+  </div>
 
 </div>
 </div>

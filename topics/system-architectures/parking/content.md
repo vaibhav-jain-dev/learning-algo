@@ -67,8 +67,8 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 <div style="text-align: center; color: #1d4ed8; font-size: 24px; margin: 8px 0;">&#8595;</div>
 
 <!-- Parking Service Layer -->
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
-<div style="color: #1d4ed8; font-weight: bold; text-align: center; margin-bottom: 16px;">PARKING SERVICE</div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="color: #1e40af; font-weight: bold; text-align: center; margin-bottom: 16px;">PARKING SERVICE</div>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
 <div style="background: #f8fafc; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
 <span style="color: #8b949e;">Spot Management</span>
@@ -416,10 +416,10 @@ class SpotAllocationStrategy:
 
 <!-- MQTT/Cloud Layer -->
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; text-align: center;">
-<div style="color: #60a5fa; font-weight: bold;">MQTT Broker</div>
-<div style="color: #93c5fd; font-size: 11px; margin-top: 4px;">IoT message transport</div>
-<div style="color: #6b7280; font-size: 10px;">Topics: lot/+/spot/+/status</div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold;">MQTT Broker</div>
+<div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">IoT message transport</div>
+<div style="color: #475569; font-size: 10px;">Topics: lot/+/spot/+/status</div>
 </div>
 <div style="background: linear-gradient(135deg, #1a472a 0%, #0d2818 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 16px; text-align: center;">
 <div style="color: #4ade80; font-weight: bold;">Event Processor</div>
@@ -856,12 +856,12 @@ class PaymentService:
 
 <span style="color: #4ade80;">Real-time availability</span> provides drivers with current parking capacity information through mobile apps, display boards, and navigation systems. The key challenge is balancing <span style="color: #4ade80;">data freshness</span> against <span style="color: #4ade80;">system load</span> and <span style="color: #4ade80;">infrastructure cost</span>.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-<h4 style="margin-top: 0; color: #f8fafc;">Availability Update Strategies</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="margin-top: 0; color: #1e293b;">Availability Update Strategies</h4>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
-<div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
-<strong style="color: #4ade80;">Push (WebSocket)</strong>
-<p style="color: #cbd5e1; margin: 8px 0 0 0; font-size: 13px;">Server pushes updates on change. Lowest latency but requires persistent connections. Best for mobile apps.</p>
+<div style="background: #dbeafe; padding: 16px; border-radius: 8px; border: 1px solid #93c5fd;">
+<strong style="color: #166534;">Push (WebSocket)</strong>
+<p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Server pushes updates on change. Lowest latency but requires persistent connections. Best for mobile apps.</p>
 </div>
 <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
 <strong style="color: #fbbf24;">Poll (HTTP)</strong>

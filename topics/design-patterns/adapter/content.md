@@ -2589,42 +2589,42 @@ class TestStripeAdapterIntegration:
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
 <div>
-<h4 style="color: #1e40af; margin-top: 0;">Core Principles</h4>
-<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-<li><strong>Single Responsibility:</strong> Adapters ONLY translate interfaces</li>
-<li><strong>Bidirectional Translation:</strong> Transform both requests AND responses</li>
-<li><strong>Error Normalization:</strong> Convert provider errors to domain errors</li>
-<li><strong>Semantic Preservation:</strong> Maintain business meaning across interfaces</li>
+  <h4 style="color: #1e40af; margin-top: 0;">Core Principles</h4>
+  <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+  <li><strong>Single Responsibility:</strong> Adapters ONLY translate interfaces</li>
+  <li><strong>Bidirectional Translation:</strong> Transform both requests AND responses</li>
+  <li><strong>Error Normalization:</strong> Convert provider errors to domain errors</li>
+  <li><strong>Semantic Preservation:</strong> Maintain business meaning across interfaces</li>
 </ul>
 </div>
 
 <div>
-<h4 style="color: #1e40af; margin-top: 0;">Design Decisions</h4>
-<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-<li><strong>Object over Class:</strong> Prefer composition for flexibility</li>
-<li><strong>Interface Segregation:</strong> Don't implement what you can't support</li>
-<li><strong>Capability Discovery:</strong> Let clients query supported features</li>
-<li><strong>Telemetry Built-in:</strong> Monitor adaptation overhead and drift</li>
+  <h4 style="color: #1e40af; margin-top: 0;">Design Decisions</h4>
+  <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+  <li><strong>Object over Class:</strong> Prefer composition for flexibility</li>
+  <li><strong>Interface Segregation:</strong> Don't implement what you can't support</li>
+  <li><strong>Capability Discovery:</strong> Let clients query supported features</li>
+  <li><strong>Telemetry Built-in:</strong> Monitor adaptation overhead and drift</li>
 </ul>
 </div>
 
 <div>
-<h4 style="color: #1e40af; margin-top: 0;">Production Concerns</h4>
-<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-<li><strong>Resilience:</strong> Circuit breakers and retry logic at adapter boundary</li>
-<li><strong>Idempotency:</strong> Handle duplicate requests from either side</li>
-<li><strong>Version Management:</strong> Strategy for adaptee API changes</li>
-<li><strong>Testing:</strong> Test transformations, errors, and edge cases separately</li>
+  <h4 style="color: #1e40af; margin-top: 0;">Production Concerns</h4>
+  <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+  <li><strong>Resilience:</strong> Circuit breakers and retry logic at adapter boundary</li>
+  <li><strong>Idempotency:</strong> Handle duplicate requests from either side</li>
+  <li><strong>Version Management:</strong> Strategy for adaptee API changes</li>
+  <li><strong>Testing:</strong> Test transformations, errors, and edge cases separately</li>
 </ul>
 </div>
 
 <div>
-<h4 style="color: #1e40af; margin-top: 0;">Common Pitfalls</h4>
-<ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
-<li><strong>Business Logic Creep:</strong> Keep adapters pure translators</li>
-<li><strong>Leaky Abstractions:</strong> Don't expose adaptee-specific types</li>
-<li><strong>Adapter Chains:</strong> Avoid adapting adapters</li>
-<li><strong>Incomplete Implementation:</strong> Better to refuse than half-implement</li>
+  <h4 style="color: #1e40af; margin-top: 0;">Common Pitfalls</h4>
+  <ul style="color: #1e3a8a; margin: 0; padding-left: 20px;">
+  <li><strong>Business Logic Creep:</strong> Keep adapters pure translators</li>
+  <li><strong>Leaky Abstractions:</strong> Don't expose adaptee-specific types</li>
+  <li><strong>Adapter Chains:</strong> Avoid adapting adapters</li>
+  <li><strong>Incomplete Implementation:</strong> Better to refuse than half-implement</li>
 </ul>
 </div>
 

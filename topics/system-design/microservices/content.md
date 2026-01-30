@@ -201,38 +201,38 @@ Inventory, Email, Analytics listen
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden;">
 <thead>
-<tr style="background: #7048e8; color: white;">
-<th style="padding: 12px; text-align: left; font-size: 13px;">Protocol</th>
-<th style="padding: 12px; text-align: left; font-size: 13px;">Latency</th>
-<th style="padding: 12px; text-align: left; font-size: 13px;">Use Case</th>
-<th style="padding: 12px; text-align: left; font-size: 13px;">Trade-offs</th>
-</tr>
+  <tr style="background: #7048e8; color: white;">
+  <th style="padding: 12px; text-align: left; font-size: 13px;">Protocol</th>
+  <th style="padding: 12px; text-align: left; font-size: 13px;">Latency</th>
+  <th style="padding: 12px; text-align: left; font-size: 13px;">Use Case</th>
+  <th style="padding: 12px; text-align: left; font-size: 13px;">Trade-offs</th>
+  </tr>
 </thead>
 <tbody>
-<tr style="border-bottom: 1px solid #e9ecef;">
-<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>REST/HTTP</strong></td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">~10-100ms</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">CRUD operations, external APIs</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">Simple but verbose</td>
-</tr>
-<tr style="border-bottom: 1px solid #e9ecef; background: #f8f9fa;">
-<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>gRPC</strong></td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">~1-10ms</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">Internal service-to-service</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">Fast but needs proto files</td>
-</tr>
-<tr style="border-bottom: 1px solid #e9ecef;">
-<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>GraphQL</strong></td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">~10-50ms</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">API aggregation, BFF pattern</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">Flexible but complex caching</td>
-</tr>
-<tr style="background: #f8f9fa;">
-<td style="padding: 12px; font-size: 13px; color: #495057;"><strong>Message Queue</strong></td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">~1-1000ms</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">Async workflows, event sourcing</td>
-<td style="padding: 12px; font-size: 13px; color: #495057;">Decoupled but eventual consistency</td>
-</tr>
+  <tr style="border-bottom: 1px solid #e9ecef;">
+  <td style="padding: 12px; font-size: 13px; color: #495057;"><strong>REST/HTTP</strong></td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">~10-100ms</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">CRUD operations, external APIs</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">Simple but verbose</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e9ecef; background: #f8f9fa;">
+  <td style="padding: 12px; font-size: 13px; color: #495057;"><strong>gRPC</strong></td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">~1-10ms</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">Internal service-to-service</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">Fast but needs proto files</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e9ecef;">
+  <td style="padding: 12px; font-size: 13px; color: #495057;"><strong>GraphQL</strong></td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">~10-50ms</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">API aggregation, BFF pattern</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">Flexible but complex caching</td>
+  </tr>
+  <tr style="background: #f8f9fa;">
+  <td style="padding: 12px; font-size: 13px; color: #495057;"><strong>Message Queue</strong></td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">~1-1000ms</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">Async workflows, event sourcing</td>
+  <td style="padding: 12px; font-size: 13px; color: #495057;">Decoupled but eventual consistency</td>
+  </tr>
 </tbody>
 </table>
 </div>
@@ -1418,39 +1418,39 @@ Uber grew from monolith to 2,200+ microservices. They learned that too many serv
 <h4 style="color: #495057; margin: 0 0 20px 0; text-align: center;">MICROSERVICES QUICK REFERENCE</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 <div>
-<h5 style="color: #1971c2; margin: 0 0 12px 0;">Communication</h5>
-<ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
-<li>Sync: REST, gRPC (real-time)</li>
-<li>Async: Events, Message Queues</li>
-<li>Always set timeouts</li>
-<li>Use circuit breakers</li>
+  <h5 style="color: #1971c2; margin: 0 0 12px 0;">Communication</h5>
+  <ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
+  <li>Sync: REST, gRPC (real-time)</li>
+  <li>Async: Events, Message Queues</li>
+  <li>Always set timeouts</li>
+  <li>Use circuit breakers</li>
 </ul>
 </div>
 <div>
-<h5 style="color: #2f9e44; margin: 0 0 12px 0;">Data Patterns</h5>
-<ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
-<li>Database per service</li>
-<li>Saga for transactions</li>
-<li>Event sourcing for audit</li>
-<li>CQRS for read/write split</li>
+  <h5 style="color: #2f9e44; margin: 0 0 12px 0;">Data Patterns</h5>
+  <ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
+  <li>Database per service</li>
+  <li>Saga for transactions</li>
+  <li>Event sourcing for audit</li>
+  <li>CQRS for read/write split</li>
 </ul>
 </div>
 <div>
-<h5 style="color: #e8590c; margin: 0 0 12px 0;">Resilience</h5>
-<ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
-<li>Circuit breaker (fail fast)</li>
-<li>Retry with backoff</li>
-<li>Bulkhead (isolation)</li>
-<li>Fallback (degraded mode)</li>
+  <h5 style="color: #e8590c; margin: 0 0 12px 0;">Resilience</h5>
+  <ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
+  <li>Circuit breaker (fail fast)</li>
+  <li>Retry with backoff</li>
+  <li>Bulkhead (isolation)</li>
+  <li>Fallback (degraded mode)</li>
 </ul>
 </div>
 <div>
-<h5 style="color: #7048e8; margin: 0 0 12px 0;">Observability</h5>
-<ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
-<li>Distributed tracing</li>
-<li>Centralized logging</li>
-<li>Metrics (RED: Rate, Error, Duration)</li>
-<li>Health checks</li>
+  <h5 style="color: #7048e8; margin: 0 0 12px 0;">Observability</h5>
+  <ul style="color: #495057; font-size: 13px; margin: 0; padding-left: 20px;">
+  <li>Distributed tracing</li>
+  <li>Centralized logging</li>
+  <li>Metrics (RED: Rate, Error, Duration)</li>
+  <li>Health checks</li>
 </ul>
 </div>
 </div>

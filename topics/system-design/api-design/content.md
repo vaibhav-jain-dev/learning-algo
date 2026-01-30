@@ -15,39 +15,39 @@ This guide provides interview-depth coverage of the critical dimensions of API d
 **GraphQL** models APIs around a typed schema with a single endpoint. Clients specify exactly what data they need through queries. The client dictates response structure.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
-  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">REST vs GraphQL: Request Flow Comparison</h4>
-  <div style="display: flex; flex-wrap: wrap; gap: 24px;">
-    <div style="flex: 1; min-width: 300px;">
-      <div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">REST: Multiple Round Trips</div>
-      <div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px; border: 1px solid #3b82f6;">
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
-            <strong>Request 1:</strong> GET /users/123
-          </div>
-          <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">REST vs GraphQL: Request Flow Comparison</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 24px;">
+<div style="flex: 1; min-width: 300px;">
+<div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">REST: Multiple Round Trips</div>
+<div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px; border: 1px solid #3b82f6;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
+<strong>Request 1:</strong> GET /users/123
+</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
             Response: {id, name, email}
-          </div>
-          <div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
-            <strong>Request 2:</strong> GET /users/123/orders
-          </div>
-          <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
+</div>
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
+<strong>Request 2:</strong> GET /users/123/orders
+</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
             Response: [{orderId, total, items}...]
-          </div>
-          <div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
-            <strong>Request 3:</strong> GET /products/456
-          </div>
-          <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
+</div>
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
+<strong>Request 3:</strong> GET /products/456
+</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px;">
             Response: {productId, name, price}
-          </div>
-        </div>
-        <div style="color: #f97316; font-size: 12px; margin-top: 12px; text-align: center;">3 round trips, potential over-fetching</div>
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 300px;">
-      <div style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">GraphQL: Single Request</div>
-      <div style="background: #fff1f2; padding: 16px; border-radius: 0 0 8px 8px; border: 1px solid #e11d48;">
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="background: #fce7f3; color: #9d174d; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre;">query {
+</div>
+</div>
+<div style="color: #f97316; font-size: 12px; margin-top: 12px; text-align: center;">3 round trips, potential over-fetching</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 300px;">
+<div style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">GraphQL: Single Request</div>
+<div style="background: #fff1f2; padding: 16px; border-radius: 0 0 8px 8px; border: 1px solid #e11d48;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #fce7f3; color: #9d174d; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre;">query {
   user(id: "123") {
     name
     orders(first: 5) {
@@ -56,17 +56,17 @@ This guide provides interview-depth coverage of the critical dimensions of API d
     }
   }
 }</div>
-          <div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre;">{
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre;">{
   "user": {
     "name": "Alice",
     "orders": [...]
   }
 }</div>
-        </div>
-        <div style="color: #4ade80; font-size: 12px; margin-top: 12px; text-align: center;">1 round trip, exact data requested</div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="color: #4ade80; font-size: 12px; margin-top: 12px; text-align: center;">1 round trip, exact data requested</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Internal Mechanisms
@@ -114,24 +114,24 @@ const orderLoader = new DataLoader(async (userIds) => {
 ### Trade-offs Deep Dive
 
 <div style="background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #92400e; margin: 0 0 16px 0;">Critical Trade-off: Query Complexity Control</h4>
-  <div style="color: #1e293b; font-size: 14px; line-height: 1.6;">
-    <p><strong>The Problem:</strong> GraphQL allows arbitrarily deep queries. A malicious or naive client can request:</p>
-    <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">query Evil {
+<h4 style="color: #92400e; margin: 0 0 16px 0;">Critical Trade-off: Query Complexity Control</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.6;">
+<p><strong>The Problem:</strong> GraphQL allows arbitrarily deep queries. A malicious or naive client can request:</p>
+<pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">query Evil {
   user(id: "1") {
     friends { friends { friends { friends { friends {
       posts { comments { author { posts { comments { ... } } } } }
     } } } } }
   }
 }</pre>
-    <p style="margin-top: 12px;"><strong>Mitigation Strategies:</strong></p>
-    <ul style="margin: 8px 0; padding-left: 20px;">
-      <li><strong>Query Depth Limiting:</strong> Reject queries exceeding N levels (typically 7-10)</li>
-      <li><strong>Query Cost Analysis:</strong> Assign weights to fields, reject queries exceeding budget</li>
-      <li><strong>Persistent Queries:</strong> Only allow pre-registered query hashes in production</li>
-      <li><strong>Timeout Enforcement:</strong> Kill long-running resolvers</li>
-    </ul>
-  </div>
+<p style="margin-top: 12px;"><strong>Mitigation Strategies:</strong></p>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li><strong>Query Depth Limiting:</strong> Reject queries exceeding N levels (typically 7-10)</li>
+<li><strong>Query Cost Analysis:</strong> Assign weights to fields, reject queries exceeding budget</li>
+<li><strong>Persistent Queries:</strong> Only allow pre-registered query hashes in production</li>
+<li><strong>Timeout Enforcement:</strong> Kill long-running resolvers</li>
+</ul>
+</div>
 </div>
 
 | Dimension | REST | GraphQL |
@@ -266,48 +266,48 @@ Pagination solves the challenge of efficiently retrieving large datasets in mana
 ### Pagination Approaches
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">Pagination Strategy Comparison</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px; border-radius: 0 8px 8px 0;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <div>
-          <div style="color: #b91c1c; font-weight: 600; font-size: 16px;">Offset Pagination</div>
-          <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items LIMIT 20 OFFSET 1000</code>
-        </div>
-        <div style="text-align: right;">
-          <div style="color: #b91c1c; font-weight: 600;">O(offset + limit)</div>
-          <div style="color: #64748b; font-size: 12px;">Performance degrades with offset</div>
-        </div>
-      </div>
-      <div style="color: #1e293b; font-size: 13px; margin-top: 8px;">Database must scan and discard offset rows. At offset 1M, DB reads 1M rows to return 20.</div>
-    </div>
-    <div style="background: #dcfce7; border-left: 4px solid #22c55e; padding: 16px; border-radius: 0 8px 8px 0;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <div>
-          <div style="color: #15803d; font-weight: 600; font-size: 16px;">Cursor/Keyset Pagination</div>
-          <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items WHERE id > 1000 LIMIT 20</code>
-        </div>
-        <div style="text-align: right;">
-          <div style="color: #15803d; font-weight: 600;">O(limit)</div>
-          <div style="color: #64748b; font-size: 12px;">Constant time regardless of position</div>
-        </div>
-      </div>
-      <div style="color: #1e293b; font-size: 13px; margin-top: 8px;">Uses indexed column for positioning. Index seek directly to starting row. Consistent performance.</div>
-    </div>
-    <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 0 8px 8px 0;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <div>
-          <div style="color: #1e40af; font-weight: 600; font-size: 16px;">Seek Pagination (Composite Keys)</div>
-          <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">WHERE (date, id) > ('2024-01-15', 500) LIMIT 20</code>
-        </div>
-        <div style="text-align: right;">
-          <div style="color: #1e40af; font-weight: 600;">O(limit)</div>
-          <div style="color: #64748b; font-size: 12px;">Supports complex sort orders</div>
-        </div>
-      </div>
-      <div style="color: #1e293b; font-size: 13px; margin-top: 8px;">Row value comparison on composite index. Enables pagination on non-unique columns with tiebreaker.</div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">Pagination Strategy Comparison</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px; border-radius: 0 8px 8px 0;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+<div>
+  <div style="color: #b91c1c; font-weight: 600; font-size: 16px;">Offset Pagination</div>
+  <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items LIMIT 20 OFFSET 1000</code>
+</div>
+<div style="text-align: right;">
+<div style="color: #b91c1c; font-weight: 600;">O(offset + limit)</div>
+<div style="color: #64748b; font-size: 12px;">Performance degrades with offset</div>
+</div>
+</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px;">Database must scan and discard offset rows. At offset 1M, DB reads 1M rows to return 20.</div>
+</div>
+<div style="background: #dcfce7; border-left: 4px solid #22c55e; padding: 16px; border-radius: 0 8px 8px 0;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+<div>
+  <div style="color: #15803d; font-weight: 600; font-size: 16px;">Cursor/Keyset Pagination</div>
+  <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items WHERE id > 1000 LIMIT 20</code>
+</div>
+<div style="text-align: right;">
+<div style="color: #15803d; font-weight: 600;">O(limit)</div>
+<div style="color: #64748b; font-size: 12px;">Constant time regardless of position</div>
+</div>
+</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px;">Uses indexed column for positioning. Index seek directly to starting row. Consistent performance.</div>
+</div>
+<div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 0 8px 8px 0;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+<div>
+  <div style="color: #1e40af; font-weight: 600; font-size: 16px;">Seek Pagination (Composite Keys)</div>
+  <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">WHERE (date, id) > ('2024-01-15', 500) LIMIT 20</code>
+</div>
+<div style="text-align: right;">
+<div style="color: #1e40af; font-weight: 600;">O(limit)</div>
+<div style="color: #64748b; font-size: 12px;">Supports complex sort orders</div>
+</div>
+</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px;">Row value comparison on composite index. Enables pagination on non-unique columns with tiebreaker.</div>
+</div>
+</div>
 </div>
 
 ### Internal Mechanisms: Cursor Implementation
@@ -350,25 +350,25 @@ function decodeCursor(cursor) {
 ### Edge Cases and Failure Modes
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #b91c1c; margin: 0 0 16px 0;">Pagination Pitfalls</h4>
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 600;">Page Drift (Offset Pagination)</div>
-      <div style="color: #1e293b; font-size: 13px;">User on page 5. New item inserted. Page 6 request shows item already seen on page 5 (duplicate) while another item is skipped entirely.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 600;">Cursor Invalidation</div>
-      <div style="color: #1e293b; font-size: 13px;">Cursor references item_123. Item deleted. Next page query fails or returns unexpected results. Must handle gracefully with "cursor expired" error.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 600;">Non-Unique Sort Column</div>
-      <div style="color: #1e293b; font-size: 13px;">Sorting by created_at where 1000 items share same timestamp. Keyset pagination with WHERE created_at > X either skips items or returns duplicates.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 600;">Backward Pagination Complexity</div>
-      <div style="color: #1e293b; font-size: 13px;">Moving backward requires reversing sort order, then reversing results. Edge: first page has no "previous" cursor; must handle client-side.</div>
-    </div>
-  </div>
+<h4 style="color: #b91c1c; margin: 0 0 16px 0;">Pagination Pitfalls</h4>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600;">Page Drift (Offset Pagination)</div>
+<div style="color: #1e293b; font-size: 13px;">User on page 5. New item inserted. Page 6 request shows item already seen on page 5 (duplicate) while another item is skipped entirely.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600;">Cursor Invalidation</div>
+<div style="color: #1e293b; font-size: 13px;">Cursor references item_123. Item deleted. Next page query fails or returns unexpected results. Must handle gracefully with "cursor expired" error.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600;">Non-Unique Sort Column</div>
+<div style="color: #1e293b; font-size: 13px;">Sorting by created_at where 1000 items share same timestamp. Keyset pagination with WHERE created_at > X either skips items or returns duplicates.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600;">Backward Pagination Complexity</div>
+<div style="color: #1e293b; font-size: 13px;">Moving backward requires reversing sort order, then reversing results. Edge: first page has no "previous" cursor; must handle client-side.</div>
+</div>
+</div>
 </div>
 
 ### Real-World Implementation Pattern
@@ -581,45 +581,45 @@ See also: [[distributed-systems]](/topics/system-design/distributed-systems), [[
 APIs are contracts. Once clients integrate, any breaking change causes production failures. Versioning provides escape hatches for evolution while maintaining backward compatibility.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">Versioning Strategy Comparison</h4>
-  <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-    <div style="flex: 1; min-width: 220px; background: #dcfce7; padding: 16px; border-radius: 8px;">
-      <div style="color: #15803d; font-weight: 600; margin-bottom: 8px;">URL Path Versioning</div>
-      <code style="background: #166534; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">/v1/users/123</code>
-      <div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
-        <strong>Pros:</strong> Explicit, cacheable, easy routing<br>
-        <strong>Cons:</strong> URL pollution, version lock-in<br>
-        <strong>Used by:</strong> Stripe, GitHub, Twitter
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 220px; background: #dbeafe; padding: 16px; border-radius: 8px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Header Versioning</div>
-      <code style="background: #1e40af; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">Accept: application/vnd.api.v2+json</code>
-      <div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
-        <strong>Pros:</strong> Clean URLs, content negotiation<br>
-        <strong>Cons:</strong> Hidden, harder to test<br>
-        <strong>Used by:</strong> GitHub (also), Azure
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 220px; background: #fef3c7; padding: 16px; border-radius: 8px;">
-      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Query Parameter</div>
-      <code style="background: #92400e; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">/users/123?api-version=2024-01</code>
-      <div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
-        <strong>Pros:</strong> Optional, gradual adoption<br>
-        <strong>Cons:</strong> Easy to forget, cache key issues<br>
-        <strong>Used by:</strong> AWS, Google Cloud
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 220px; background: #f3e8ff; padding: 16px; border-radius: 8px;">
-      <div style="color: #7c3aed; font-weight: 600; margin-bottom: 8px;">Date-Based Versioning</div>
-      <code style="background: #7c3aed; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">Stripe-Version: 2024-01-15</code>
-      <div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
-        <strong>Pros:</strong> Fine-grained, self-documenting<br>
-        <strong>Cons:</strong> Complex support matrix<br>
-        <strong>Used by:</strong> Stripe
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">Versioning Strategy Comparison</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+<div style="flex: 1; min-width: 220px; background: #dcfce7; padding: 16px; border-radius: 8px;">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px;">URL Path Versioning</div>
+<code style="background: #166534; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">/v1/users/123</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
+<strong>Pros:</strong> Explicit, cacheable, easy routing<br>
+<strong>Cons:</strong> URL pollution, version lock-in<br>
+<strong>Used by:</strong> Stripe, GitHub, Twitter
+</div>
+</div>
+<div style="flex: 1; min-width: 220px; background: #dbeafe; padding: 16px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Header Versioning</div>
+<code style="background: #1e40af; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">Accept: application/vnd.api.v2+json</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
+<strong>Pros:</strong> Clean URLs, content negotiation<br>
+<strong>Cons:</strong> Hidden, harder to test<br>
+<strong>Used by:</strong> GitHub (also), Azure
+</div>
+</div>
+<div style="flex: 1; min-width: 220px; background: #fef3c7; padding: 16px; border-radius: 8px;">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Query Parameter</div>
+<code style="background: #92400e; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">/users/123?api-version=2024-01</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
+<strong>Pros:</strong> Optional, gradual adoption<br>
+<strong>Cons:</strong> Easy to forget, cache key issues<br>
+<strong>Used by:</strong> AWS, Google Cloud
+</div>
+</div>
+<div style="flex: 1; min-width: 220px; background: #f3e8ff; padding: 16px; border-radius: 8px;">
+<div style="color: #7c3aed; font-weight: 600; margin-bottom: 8px;">Date-Based Versioning</div>
+<code style="background: #7c3aed; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block;">Stripe-Version: 2024-01-15</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px;">
+<strong>Pros:</strong> Fine-grained, self-documenting<br>
+<strong>Cons:</strong> Complex support matrix<br>
+<strong>Used by:</strong> Stripe
+</div>
+</div>
+</div>
 </div>
 
 ### Internal Implementation: Version Resolution
@@ -682,37 +682,37 @@ versionTransforms.set('2.0.0', (data) => ({
 ### Breaking vs Non-Breaking Changes
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin: 0 0 16px 0;">Change Classification</h4>
-  <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-    <div style="flex: 1; min-width: 280px;">
-      <div style="background: #dcfce7; padding: 12px; border-radius: 8px 8px 0 0; color: #15803d; font-weight: 600;">Non-Breaking (Safe)</div>
-      <div style="background: #f0fdf4; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
-        <ul style="margin: 0; padding-left: 20px; color: #1e293b;">
-          <li>Adding new optional fields to responses</li>
-          <li>Adding new optional request parameters</li>
-          <li>Adding new endpoints</li>
-          <li>Adding new enum values (if client ignores unknown)</li>
-          <li>Relaxing validation (accepting more input)</li>
-          <li>Adding new HTTP methods to existing resources</li>
-        </ul>
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 280px;">
-      <div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600;">Breaking (Requires New Version)</div>
-      <div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
-        <ul style="margin: 0; padding-left: 20px; color: #1e293b;">
-          <li>Removing or renaming fields</li>
-          <li>Changing field types (int to string)</li>
-          <li>Changing response structure</li>
-          <li>Adding required request parameters</li>
-          <li>Removing endpoints</li>
-          <li>Tightening validation</li>
-          <li>Changing error codes/formats</li>
-          <li>Changing authentication requirements</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin: 0 0 16px 0;">Change Classification</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+<div style="flex: 1; min-width: 280px;">
+<div style="background: #dcfce7; padding: 12px; border-radius: 8px 8px 0 0; color: #15803d; font-weight: 600;">Non-Breaking (Safe)</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b;">
+<li>Adding new optional fields to responses</li>
+<li>Adding new optional request parameters</li>
+<li>Adding new endpoints</li>
+<li>Adding new enum values (if client ignores unknown)</li>
+<li>Relaxing validation (accepting more input)</li>
+<li>Adding new HTTP methods to existing resources</li>
+</ul>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px;">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600;">Breaking (Requires New Version)</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b;">
+<li>Removing or renaming fields</li>
+<li>Changing field types (int to string)</li>
+<li>Changing response structure</li>
+<li>Adding required request parameters</li>
+<li>Removing endpoints</li>
+<li>Tightening validation</li>
+<li>Changing error codes/formats</li>
+<li>Changing authentication requirements</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 
 ### Deprecation Lifecycle
@@ -857,37 +857,37 @@ function versionMiddleware(req, res, next) {
 **Solution Architecture:**
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
-  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Version Translation Architecture</h4>
-  <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
-    <div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">Client Request</div>
-      <div style="font-size: 12px; opacity: 0.9;">API-Version: 2024-01</div>
-    </div>
-    <div style="color: #94a3b8;">|</div>
-    <div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; width: 80%; max-width: 400px;">
-      <div style="font-weight: 600;">API Gateway</div>
-      <div style="font-size: 12px; opacity: 0.9; margin-top: 4px;">Version Registry + Transform Engine</div>
-    </div>
-    <div style="display: flex; gap: 24px; color: #94a3b8;">
-      <span>|</span>
-      <span>|</span>
-      <span>|</span>
-    </div>
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
-        <div style="font-weight: 600; font-size: 14px;">User Service</div>
-        <div style="font-size: 11px; opacity: 0.9;">Internal v3.2</div>
-      </div>
-      <div style="background: #f59e0b; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
-        <div style="font-weight: 600; font-size: 14px;">Order Service</div>
-        <div style="font-size: 11px; opacity: 0.9;">Internal v2.1</div>
-      </div>
-      <div style="background: #ef4444; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
-        <div style="font-weight: 600; font-size: 14px;">Payment Service</div>
-        <div style="font-size: 11px; opacity: 0.9;">Internal v4.0</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Version Translation Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">Client Request</div>
+<div style="font-size: 12px; opacity: 0.9;">API-Version: 2024-01</div>
+</div>
+<div style="color: #94a3b8;">|</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; width: 80%; max-width: 400px;">
+<div style="font-weight: 600;">API Gateway</div>
+<div style="font-size: 12px; opacity: 0.9; margin-top: 4px;">Version Registry + Transform Engine</div>
+</div>
+<div style="display: flex; gap: 24px; color: #94a3b8;">
+<span>|</span>
+<span>|</span>
+<span>|</span>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600; font-size: 14px;">User Service</div>
+<div style="font-size: 11px; opacity: 0.9;">Internal v3.2</div>
+</div>
+<div style="background: #f59e0b; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600; font-size: 14px;">Order Service</div>
+<div style="font-size: 11px; opacity: 0.9;">Internal v2.1</div>
+</div>
+<div style="background: #ef4444; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600; font-size: 14px;">Payment Service</div>
+<div style="font-size: 11px; opacity: 0.9;">Internal v4.0</div>
+</div>
+</div>
+</div>
 </div>
 
 **Implementation Components:**
@@ -990,44 +990,44 @@ For APIs: Replaying a request with the same idempotency key returns the same res
 ### Implementation Architecture
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
-  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Idempotency Request Flow</h4>
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
-      <div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px; min-width: 120px; text-align: center;">Request + Key</div>
-      <div style="color: #94a3b8;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
-        <strong>1. Check Store</strong>: Key exists?
-      </div>
-    </div>
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
-      <div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
-        <strong>YES</strong>: Return cached response (no side effects)
-      </div>
-    </div>
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
-      <div style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
-        <strong>NO</strong>: Acquire lock, process request
-      </div>
-    </div>
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
-      <div style="color: #94a3b8;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
-        <strong>2. Execute</strong>: Run business logic
-      </div>
-    </div>
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
-      <div style="color: #94a3b8;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
-        <strong>3. Store</strong>: Save response with key (TTL: 24h)
-      </div>
-    </div>
-    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
-      <div style="color: #94a3b8;">--></div>
-      <div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
-        <strong>4. Release</strong>: Unlock, return response
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Idempotency Request Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+<div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px; min-width: 120px; text-align: center;">Request + Key</div>
+<div style="color: #94a3b8;">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
+<strong>1. Check Store</strong>: Key exists?
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
+<strong>YES</strong>: Return cached response (no side effects)
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+<div style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
+<strong>NO</strong>: Acquire lock, process request
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+<div style="color: #94a3b8;">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
+<strong>2. Execute</strong>: Run business logic
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+<div style="color: #94a3b8;">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
+<strong>3. Store</strong>: Save response with key (TTL: 24h)
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px;">
+<div style="color: #94a3b8;">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px;">
+<strong>4. Release</strong>: Unlock, return response
+</div>
+</div>
+</div>
 </div>
 
 ### Production Implementation
@@ -1166,25 +1166,25 @@ def idempotent(service: IdempotencyService):
 ### Edge Cases and Failure Modes
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #b91c1c; margin: 0 0 16px 0;">Idempotency Edge Cases</h4>
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-      <div style="color: #b91c1c; font-weight: 600;">Key Reuse with Different Payload</div>
-      <div style="color: #1e293b; font-size: 13px;">Client uses same key for different requests. Without fingerprint validation, second request returns first response (wrong data). <strong>Solution:</strong> Store and validate request hash.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-      <div style="color: #b91c1c; font-weight: 600;">Partial Execution Failure</div>
-      <div style="color: #1e293b; font-size: 13px;">Request processed payment but crashed before caching response. Retry will charge again. <strong>Solution:</strong> Use database transactions that include idempotency record.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-      <div style="color: #b91c1c; font-weight: 600;">Redis Failure During Lock</div>
-      <div style="color: #1e293b; font-size: 13px;">Lock acquired, Redis fails, lock never released. Retries blocked. <strong>Solution:</strong> Use lock TTL, implement circuit breaker.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-      <div style="color: #b91c1c; font-weight: 600;">Non-Deterministic Operations</div>
-      <div style="color: #1e293b; font-size: 13px;">Endpoint uses current timestamp or random values. Replayed response has stale data. <strong>Solution:</strong> Accept these values as input, not server-generated.</div>
-    </div>
-  </div>
+<h4 style="color: #b91c1c; margin: 0 0 16px 0;">Idempotency Edge Cases</h4>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<div style="color: #b91c1c; font-weight: 600;">Key Reuse with Different Payload</div>
+<div style="color: #1e293b; font-size: 13px;">Client uses same key for different requests. Without fingerprint validation, second request returns first response (wrong data). <strong>Solution:</strong> Store and validate request hash.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<div style="color: #b91c1c; font-weight: 600;">Partial Execution Failure</div>
+<div style="color: #1e293b; font-size: 13px;">Request processed payment but crashed before caching response. Retry will charge again. <strong>Solution:</strong> Use database transactions that include idempotency record.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<div style="color: #b91c1c; font-weight: 600;">Redis Failure During Lock</div>
+<div style="color: #1e293b; font-size: 13px;">Lock acquired, Redis fails, lock never released. Retries blocked. <strong>Solution:</strong> Use lock TTL, implement circuit breaker.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<div style="color: #b91c1c; font-weight: 600;">Non-Deterministic Operations</div>
+<div style="color: #1e293b; font-size: 13px;">Endpoint uses current timestamp or random values. Replayed response has stale data. <strong>Solution:</strong> Accept these values as input, not server-generated.</div>
+</div>
+</div>
 </div>
 
 ### Interview Questions: Idempotency
@@ -1302,40 +1302,40 @@ def create_payment():
 **Solution: Orchestrated Saga with Per-Step Idempotency**
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
-  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Distributed Idempotency Architecture</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-    <div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">API Gateway</div>
-      <div style="font-size: 11px;">Idempotency-Key: order_abc123</div>
-    </div>
-    <div style="color: #94a3b8;">|</div>
-    <div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; width: 80%; max-width: 400px;">
-      <div style="font-weight: 600; text-align: center;">Saga Orchestrator</div>
-      <div style="font-size: 12px; margin-top: 8px; text-align: center;">Tracks saga state + step completion</div>
-    </div>
-    <div style="display: flex; gap: 8px; color: #94a3b8;">
-      <span>|</span>
-      <span>|</span>
-      <span>|</span>
-    </div>
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: #22c55e; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px;">
-        <div style="font-weight: 600; font-size: 13px;">Step 1</div>
-        <div style="font-size: 11px;">Reserve Inventory</div>
-        <div style="font-size: 10px; opacity: 0.8;">key: order_abc123_inv</div>
-      </div>
-      <div style="background: #f59e0b; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px;">
-        <div style="font-weight: 600; font-size: 13px;">Step 2</div>
-        <div style="font-size: 11px;">Charge Payment</div>
-        <div style="font-size: 10px; opacity: 0.8;">key: order_abc123_pay</div>
-      </div>
-      <div style="background: #ef4444; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px;">
-        <div style="font-weight: 600; font-size: 13px;">Step 3</div>
-        <div style="font-size: 11px;">Create Shipment</div>
-        <div style="font-size: 10px; opacity: 0.8;">key: order_abc123_ship</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Distributed Idempotency Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">API Gateway</div>
+<div style="font-size: 11px;">Idempotency-Key: order_abc123</div>
+</div>
+<div style="color: #94a3b8;">|</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; width: 80%; max-width: 400px;">
+<div style="font-weight: 600; text-align: center;">Saga Orchestrator</div>
+<div style="font-size: 12px; margin-top: 8px; text-align: center;">Tracks saga state + step completion</div>
+</div>
+<div style="display: flex; gap: 8px; color: #94a3b8;">
+<span>|</span>
+<span>|</span>
+<span>|</span>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #22c55e; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="font-weight: 600; font-size: 13px;">Step 1</div>
+<div style="font-size: 11px;">Reserve Inventory</div>
+<div style="font-size: 10px; opacity: 0.8;">key: order_abc123_inv</div>
+</div>
+<div style="background: #f59e0b; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="font-weight: 600; font-size: 13px;">Step 2</div>
+<div style="font-size: 11px;">Charge Payment</div>
+<div style="font-size: 10px; opacity: 0.8;">key: order_abc123_pay</div>
+</div>
+<div style="background: #ef4444; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="font-weight: 600; font-size: 13px;">Step 3</div>
+<div style="font-size: 11px;">Create Shipment</div>
+<div style="font-size: 10px; opacity: 0.8;">key: order_abc123_ship</div>
+</div>
+</div>
+</div>
 </div>
 
 **Implementation:**
@@ -1475,70 +1475,70 @@ Well-designed errors balance these needs while maintaining consistency across th
 ```
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin: 0 0 16px 0;">Error Field Purposes</h4>
-  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-    <tr style="background: #e2e8f0;">
-      <th style="padding: 12px; text-align: left; color: #1e293b;">Field</th>
-      <th style="padding: 12px; text-align: left; color: #1e293b;">Purpose</th>
-      <th style="padding: 12px; text-align: left; color: #1e293b;">Example</th>
-    </tr>
-    <tr style="background: #f8fafc;">
-      <td style="padding: 12px; color: #1e293b;"><code>code</code></td>
-      <td style="padding: 12px; color: #1e293b;">Machine-readable identifier for programmatic handling</td>
-      <td style="padding: 12px; color: #1e293b;"><code>PAYMENT_DECLINED</code></td>
-    </tr>
-    <tr style="background: #ffffff;">
-      <td style="padding: 12px; color: #1e293b;"><code>message</code></td>
-      <td style="padding: 12px; color: #1e293b;">Human-readable description for developers</td>
-      <td style="padding: 12px; color: #1e293b;">"The card was declined"</td>
-    </tr>
-    <tr style="background: #f8fafc;">
-      <td style="padding: 12px; color: #1e293b;"><code>type</code></td>
-      <td style="padding: 12px; color: #1e293b;">Error category for broad handling logic</td>
-      <td style="padding: 12px; color: #1e293b;"><code>validation_error</code>, <code>authentication_error</code></td>
-    </tr>
-    <tr style="background: #ffffff;">
-      <td style="padding: 12px; color: #1e293b;"><code>param</code></td>
-      <td style="padding: 12px; color: #1e293b;">Specific field that caused the error</td>
-      <td style="padding: 12px; color: #1e293b;"><code>email</code>, <code>card_number</code></td>
-    </tr>
-    <tr style="background: #f8fafc;">
-      <td style="padding: 12px; color: #1e293b;"><code>request_id</code></td>
-      <td style="padding: 12px; color: #1e293b;">Correlation ID for support and debugging</td>
-      <td style="padding: 12px; color: #1e293b;"><code>req_8xKj2Mn4Pq</code></td>
-    </tr>
-    <tr style="background: #ffffff;">
-      <td style="padding: 12px; color: #1e293b;"><code>doc_url</code></td>
-      <td style="padding: 12px; color: #1e293b;">Link to detailed documentation</td>
-      <td style="padding: 12px; color: #1e293b;"><code>https://docs.api.com/errors#...</code></td>
-    </tr>
-  </table>
+<h4 style="color: #1e40af; margin: 0 0 16px 0;">Error Field Purposes</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<tr style="background: #e2e8f0;">
+<th style="padding: 12px; text-align: left; color: #1e293b;">Field</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Purpose</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Example</th>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; color: #1e293b;"><code>code</code></td>
+<td style="padding: 12px; color: #1e293b;">Machine-readable identifier for programmatic handling</td>
+<td style="padding: 12px; color: #1e293b;"><code>PAYMENT_DECLINED</code></td>
+</tr>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; color: #1e293b;"><code>message</code></td>
+<td style="padding: 12px; color: #1e293b;">Human-readable description for developers</td>
+<td style="padding: 12px; color: #1e293b;">"The card was declined"</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; color: #1e293b;"><code>type</code></td>
+<td style="padding: 12px; color: #1e293b;">Error category for broad handling logic</td>
+<td style="padding: 12px; color: #1e293b;"><code>validation_error</code>, <code>authentication_error</code></td>
+</tr>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; color: #1e293b;"><code>param</code></td>
+<td style="padding: 12px; color: #1e293b;">Specific field that caused the error</td>
+<td style="padding: 12px; color: #1e293b;"><code>email</code>, <code>card_number</code></td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; color: #1e293b;"><code>request_id</code></td>
+<td style="padding: 12px; color: #1e293b;">Correlation ID for support and debugging</td>
+<td style="padding: 12px; color: #1e293b;"><code>req_8xKj2Mn4Pq</code></td>
+</tr>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; color: #1e293b;"><code>doc_url</code></td>
+<td style="padding: 12px; color: #1e293b;">Link to detailed documentation</td>
+<td style="padding: 12px; color: #1e293b;"><code>https://docs.api.com/errors#...</code></td>
+</tr>
+</table>
 </div>
 
 ### HTTP Status Code Semantics
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin: 0 0 16px 0;">Status Code Decision Tree</h4>
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="background: #dcfce7; padding: 12px; border-radius: 8px; border-left: 4px solid #22c55e;">
-      <strong style="color: #15803d;">2xx - Success</strong>
-      <div style="font-size: 13px; color: #1e293b; margin-top: 4px;">
-        <code>200</code> GET/PUT/PATCH success | <code>201</code> POST created | <code>204</code> DELETE success (no body)
-      </div>
-    </div>
-    <div style="background: #fef3c7; padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-      <strong style="color: #92400e;">4xx - Client Error (Don't Retry)</strong>
-      <div style="font-size: 13px; color: #1e293b; margin-top: 4px;">
-        <code>400</code> Malformed request | <code>401</code> Auth missing | <code>403</code> Auth valid, no permission | <code>404</code> Resource not found | <code>409</code> Conflict/duplicate | <code>422</code> Semantic error | <code>429</code> Rate limited (retry with backoff)
-      </div>
-    </div>
-    <div style="background: #fee2e2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">
-      <strong style="color: #b91c1c;">5xx - Server Error (Safe to Retry)</strong>
-      <div style="font-size: 13px; color: #1e293b; margin-top: 4px;">
-        <code>500</code> Internal error | <code>502</code> Bad gateway | <code>503</code> Service unavailable | <code>504</code> Gateway timeout
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin: 0 0 16px 0;">Status Code Decision Tree</h4>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #dcfce7; padding: 12px; border-radius: 8px; border-left: 4px solid #22c55e;">
+<strong style="color: #15803d;">2xx - Success</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px;">
+<code>200</code> GET/PUT/PATCH success | <code>201</code> POST created | <code>204</code> DELETE success (no body)
+</div>
+</div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+<strong style="color: #92400e;">4xx - Client Error (Don't Retry)</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px;">
+<code>400</code> Malformed request | <code>401</code> Auth missing | <code>403</code> Auth valid, no permission | <code>404</code> Resource not found | <code>409</code> Conflict/duplicate | <code>422</code> Semantic error | <code>429</code> Rate limited (retry with backoff)
+</div>
+</div>
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<strong style="color: #b91c1c;">5xx - Server Error (Safe to Retry)</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px;">
+<code>500</code> Internal error | <code>502</code> Bad gateway | <code>503</code> Service unavailable | <code>504</code> Gateway timeout
+</div>
+</div>
+</div>
 </div>
 
 ### Error Categories Implementation
@@ -1661,29 +1661,29 @@ def handle_unexpected_error(error: Exception):
 ### Security Considerations
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #b91c1c; margin: 0 0 16px 0;">Error Information Leakage Risks</h4>
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="background: white; padding: 12px; border-radius: 8px;">
-      <div style="color: #b91c1c; font-weight: 600;">Stack Traces</div>
-      <div style="color: #1e293b; font-size: 13px;">Revealing framework, library versions, file paths enables targeted attacks.</div>
-      <div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Log internally, return generic message externally.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px;">
-      <div style="color: #b91c1c; font-weight: 600;">SQL Errors</div>
-      <div style="color: #1e293b; font-size: 13px;">"Column 'password_hash' not found" reveals schema details.</div>
-      <div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Catch all DB errors, return "database error" generically.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px;">
-      <div style="color: #b91c1c; font-weight: 600;">User Enumeration</div>
-      <div style="color: #1e293b; font-size: 13px;">"User not found" vs "Invalid password" reveals which emails exist.</div>
-      <div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Return "Invalid credentials" for both cases.</div>
-    </div>
-    <div style="background: white; padding: 12px; border-radius: 8px;">
-      <div style="color: #b91c1c; font-weight: 600;">Rate Limit Details</div>
-      <div style="color: #1e293b; font-size: 13px;">"User 123 has 5 requests remaining" confirms user existence.</div>
-      <div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Generic "rate limited" without user-specific details.</div>
-    </div>
-  </div>
+<h4 style="color: #b91c1c; margin: 0 0 16px 0;">Error Information Leakage Risks</h4>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: white; padding: 12px; border-radius: 8px;">
+<div style="color: #b91c1c; font-weight: 600;">Stack Traces</div>
+<div style="color: #1e293b; font-size: 13px;">Revealing framework, library versions, file paths enables targeted attacks.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Log internally, return generic message externally.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px;">
+<div style="color: #b91c1c; font-weight: 600;">SQL Errors</div>
+<div style="color: #1e293b; font-size: 13px;">"Column 'password_hash' not found" reveals schema details.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Catch all DB errors, return "database error" generically.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px;">
+<div style="color: #b91c1c; font-weight: 600;">User Enumeration</div>
+<div style="color: #1e293b; font-size: 13px;">"User not found" vs "Invalid password" reveals which emails exist.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Return "Invalid credentials" for both cases.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px;">
+<div style="color: #b91c1c; font-weight: 600;">Rate Limit Details</div>
+<div style="color: #1e293b; font-size: 13px;">"User 123 has 5 requests remaining" confirms user existence.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px;">Fix: Generic "rate limited" without user-specific details.</div>
+</div>
+</div>
 </div>
 
 ### Interview Questions: Error Handling
@@ -2013,41 +2013,41 @@ Once an API is published, external developers write code that depends on its beh
 ### Types of Breaking Changes
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin: 0 0 16px 0;">Breaking Change Categories</h4>
-  <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-    <div style="flex: 1; min-width: 280px;">
-      <div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600;">Syntactic Breaking Changes</div>
-      <div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
-        <ul style="margin: 0; padding-left: 20px; color: #1e293b;">
-          <li>Removing endpoints</li>
-          <li>Removing or renaming fields</li>
-          <li>Changing field types</li>
-          <li>Changing URL structure</li>
-          <li>Changing HTTP methods</li>
-          <li>Adding required parameters</li>
-        </ul>
-        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fecaca; color: #b91c1c; font-size: 12px;">
+<h4 style="color: #1e40af; margin: 0 0 16px 0;">Breaking Change Categories</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+<div style="flex: 1; min-width: 280px;">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600;">Syntactic Breaking Changes</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b;">
+<li>Removing endpoints</li>
+<li>Removing or renaming fields</li>
+<li>Changing field types</li>
+<li>Changing URL structure</li>
+<li>Changing HTTP methods</li>
+<li>Adding required parameters</li>
+</ul>
+<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fecaca; color: #b91c1c; font-size: 12px;">
           Detected by schema validation
-        </div>
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 280px;">
-      <div style="background: #fef3c7; padding: 12px; border-radius: 8px 8px 0 0; color: #92400e; font-weight: 600;">Semantic Breaking Changes</div>
-      <div style="background: #fffbeb; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
-        <ul style="margin: 0; padding-left: 20px; color: #1e293b;">
-          <li>Changing field meaning/units</li>
-          <li>Changing error codes</li>
-          <li>Changing rate limits</li>
-          <li>Changing authentication</li>
-          <li>Changing side effects</li>
-          <li>Changing default values</li>
-        </ul>
-        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fde68a; color: #92400e; font-size: 12px;">
+</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px;">
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px 8px 0 0; color: #92400e; font-weight: 600;">Semantic Breaking Changes</div>
+<div style="background: #fffbeb; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px;">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b;">
+<li>Changing field meaning/units</li>
+<li>Changing error codes</li>
+<li>Changing rate limits</li>
+<li>Changing authentication</li>
+<li>Changing side effects</li>
+<li>Changing default values</li>
+</ul>
+<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fde68a; color: #92400e; font-size: 12px;">
           Often undetected until production failure
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Compatibility Strategies
@@ -2323,31 +2323,31 @@ ORDER BY days_remaining ASC;
 **Solution: Multi-Phase Migration with Escape Hatches**
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #cbd5e1;">
-  <h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Breaking Change Migration Phases</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-      <div style="flex: 1; min-width: 200px; background: #22c55e; color: white; padding: 16px; border-radius: 8px;">
-        <div style="font-weight: 600;">Phase 1: Announcement</div>
-        <div style="font-size: 12px; margin-top: 8px;">T-180 days</div>
-        <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Documentation, blog, email to all devs</div>
-      </div>
-      <div style="flex: 1; min-width: 200px; background: #3b82f6; color: white; padding: 16px; border-radius: 8px;">
-        <div style="font-weight: 600;">Phase 2: Soft Warnings</div>
-        <div style="font-size: 12px; margin-top: 8px;">T-120 days</div>
-        <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Deprecation headers, dashboard alerts</div>
-      </div>
-      <div style="flex: 1; min-width: 200px; background: #f59e0b; color: white; padding: 16px; border-radius: 8px;">
-        <div style="font-weight: 600;">Phase 3: Hard Warnings</div>
-        <div style="font-size: 12px; margin-top: 8px;">T-60 days</div>
-        <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Targeted emails, support outreach</div>
-      </div>
-      <div style="flex: 1; min-width: 200px; background: #ef4444; color: white; padding: 16px; border-radius: 8px;">
-        <div style="font-weight: 600;">Phase 4: Enforcement</div>
-        <div style="font-size: 12px; margin-top: 8px;">T-0</div>
-        <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Gradual rollout, extension requests</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center;">Breaking Change Migration Phases</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; gap: 16px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 200px; background: #22c55e; color: white; padding: 16px; border-radius: 8px;">
+<div style="font-weight: 600;">Phase 1: Announcement</div>
+<div style="font-size: 12px; margin-top: 8px;">T-180 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Documentation, blog, email to all devs</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #3b82f6; color: white; padding: 16px; border-radius: 8px;">
+<div style="font-weight: 600;">Phase 2: Soft Warnings</div>
+<div style="font-size: 12px; margin-top: 8px;">T-120 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Deprecation headers, dashboard alerts</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #f59e0b; color: white; padding: 16px; border-radius: 8px;">
+<div style="font-weight: 600;">Phase 3: Hard Warnings</div>
+<div style="font-size: 12px; margin-top: 8px;">T-60 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Targeted emails, support outreach</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #ef4444; color: white; padding: 16px; border-radius: 8px;">
+<div style="font-weight: 600;">Phase 4: Enforcement</div>
+<div style="font-size: 12px; margin-top: 8px;">T-0</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Gradual rollout, extension requests</div>
+</div>
+</div>
+</div>
 </div>
 
 **Implementation:**

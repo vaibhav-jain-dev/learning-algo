@@ -370,13 +370,13 @@ Reduces latency and database load through **data caching**.
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 12px 20px; color: #fff; font-size: 11px;">App</div>
 <div style="display: flex; flex-direction: column; gap: 4px; color: #7ee787; font-size: 10px;">
 <div>1. Read →</div>
-<div>← Miss</div>
-<div>3. Write →</div>
-</div>
-<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 6px; padding: 12px 16px; color: #fff; font-size: 11px;">Cache</div>
-<div style="color: #58a6ff; font-size: 10px;">2. Read ↔</div>
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 6px; padding: 12px 16px; color: #fff; font-size: 11px;">DB</div>
-</div>
+  <div>← Miss</div>
+    <div>3. Write →</div>
+    </div>
+    <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 6px; padding: 12px 16px; color: #fff; font-size: 11px;">Cache</div>
+    <div style="color: #58a6ff; font-size: 10px;">2. Read ↔</div>
+    <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 6px; padding: 12px 16px; color: #fff; font-size: 11px;">DB</div>
+  </div>
 </div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 12px;">WRITE-THROUGH</div>
@@ -439,42 +439,42 @@ Reduces latency and database load through **data caching**.
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">WHY DIFFERENT DATABASES?</div>
 <div style="color: #1e293b; font-size: 11px; display: grid; gap: 6px;">
 <div>• User data needs strong consistency <span style="color: #58a6ff;">(PostgreSQL)</span></div>
-<div>• Orders have complex nested structures <span style="color: #a371f7;">(MongoDB)</span></div>
-<div>• Search needs full-text indexing <span style="color: #ffa657;">(Elasticsearch)</span></div>
-<div>• Sessions need fast access <span style="color: #f85149;">(Redis)</span></div>
-<div>• Analytics need columnar storage <span style="color: #7ee787;">(ClickHouse)</span></div>
-</div>
-</div>
-</div>
+  <div>• Orders have complex nested structures <span style="color: #a371f7;">(MongoDB)</span></div>
+    <div>• Search needs full-text indexing <span style="color: #ffa657;">(Elasticsearch)</span></div>
+      <div>• Sessions need fast access <span style="color: #f85149;">(Redis)</span></div>
+        <div>• Analytics need columnar storage <span style="color: #7ee787;">(ClickHouse)</span></div>
+        </div>
+      </div>
+    </div>
 
-### Polyglot Persistence
+    ### Polyglot Persistence
 
-| Service | Database | Reason |
-|---------|----------|--------|
-| User Management | PostgreSQL | ACID, relations |
-| Product Catalog | MongoDB | Flexible schema |
-| Search | Elasticsearch | Full-text search |
-| Session Store | Redis | Fast key-value |
-| Analytics | ClickHouse | Columnar, aggregations |
-| Time Series | InfluxDB | Time-based queries |
-| Graph Relations | Neo4j | Complex relationships |
+    | Service | Database | Reason |
+    |---------|----------|--------|
+    | User Management | PostgreSQL | ACID, relations |
+    | Product Catalog | MongoDB | Flexible schema |
+    | Search | Elasticsearch | Full-text search |
+    | Session Store | Redis | Fast key-value |
+    | Analytics | ClickHouse | Columnar, aggregations |
+    | Time Series | InfluxDB | Time-based queries |
+    | Graph Relations | Neo4j | Complex relationships |
 
----
+    ---
 
-## 7. Observability Stack
+    ## 7. Observability Stack
 
-### Three Pillars of Observability
+    ### Three Pillars of Observability
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">OBSERVABILITY PILLARS</h4>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px; color: #fff; text-align: center;">
-<div style="font-weight: bold; font-size: 14px; margin-bottom: 8px;">LOGS</div>
-<div style="font-size: 11px; opacity: 0.9; margin-bottom: 12px;">What happened?</div>
-<div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
-<span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 10px;">ELK/EFK</span>
-<span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 10px;">Loki</span>
-</div>
+    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+    <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">OBSERVABILITY PILLARS</h4>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+    <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px; color: #fff; text-align: center;">
+    <div style="font-weight: bold; font-size: 14px; margin-bottom: 8px;">LOGS</div>
+    <div style="font-size: 11px; opacity: 0.9; margin-bottom: 12px;">What happened?</div>
+    <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+    <span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 10px;">ELK/EFK</span>
+    <span style="background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; font-size: 10px;">Loki</span>
+  </div>
 </div>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px; color: #fff; text-align: center;">
 <div style="font-weight: bold; font-size: 14px; margin-bottom: 8px;">METRICS</div>

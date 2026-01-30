@@ -5,42 +5,42 @@
 The <span style="color:#10b981">**Circuit Breaker pattern**</span> is a stability pattern that prevents cascading failures in distributed systems. Like an electrical circuit breaker that trips to prevent house fires, a software circuit breaker stops making requests to a failing service, giving it time to recover while providing fallback responses.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CIRCUIT BREAKER STATE MACHINE</h3>
-  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 24px 32px; border-radius: 16px; text-align: center; border: 3px solid #22c55e; min-width: 140px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
-      <div style="color: #166534; font-weight: 800; font-size: 18px;">CLOSED</div>
-      <div style="color: #15803d; font-size: 13px; margin-top: 6px; font-weight: 500;">Normal Operation</div>
-      <div style="color: #16a34a; font-size: 12px; margin-top: 4px;">All requests pass through</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-      <div style="background: #fef2f2; color: #dc2626; font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600;">failures >= threshold</div>
-      <div style="color: #dc2626; font-size: 24px; font-weight: bold;">&#8594;</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 24px 32px; border-radius: 16px; text-align: center; border: 3px solid #ef4444; min-width: 140px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);">
-      <div style="color: #dc2626; font-weight: 800; font-size: 18px;">OPEN</div>
-      <div style="color: #b91c1c; font-size: 13px; margin-top: 6px; font-weight: 500;">Circuit Tripped</div>
-      <div style="color: #dc2626; font-size: 12px; margin-top: 4px;">Requests fail immediately</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-      <div style="background: #fef3c7; color: #92400e; font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600;">timeout expires</div>
-      <div style="color: #f59e0b; font-size: 24px; font-weight: bold;">&#8594;</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 24px 32px; border-radius: 16px; text-align: center; border: 3px solid #f59e0b; min-width: 140px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);">
-      <div style="color: #92400e; font-weight: 800; font-size: 18px;">HALF-OPEN</div>
-      <div style="color: #b45309; font-size: 13px; margin-top: 6px; font-weight: 500;">Testing Recovery</div>
-      <div style="color: #d97706; font-size: 12px; margin-top: 4px;">Limited probe requests</div>
-    </div>
-  </div>
-  <div style="display: flex; justify-content: center; gap: 60px; margin-top: 24px; flex-wrap: wrap;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <div style="width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div>
-      <span style="color: #16a34a; font-size: 13px; font-weight: 500;">probe success &#8594; CLOSED</span>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
-      <span style="color: #dc2626; font-size: 13px; font-weight: 500;">probe failure &#8594; OPEN</span>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CIRCUIT BREAKER STATE MACHINE</h3>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 24px 32px; border-radius: 16px; text-align: center; border: 3px solid #22c55e; min-width: 140px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);">
+<div style="color: #166534; font-weight: 800; font-size: 18px;">CLOSED</div>
+<div style="color: #15803d; font-size: 13px; margin-top: 6px; font-weight: 500;">Normal Operation</div>
+<div style="color: #16a34a; font-size: 12px; margin-top: 4px;">All requests pass through</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+<div style="background: #fef2f2; color: #dc2626; font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600;">failures >= threshold</div>
+<div style="color: #dc2626; font-size: 24px; font-weight: bold;">&#8594;</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 24px 32px; border-radius: 16px; text-align: center; border: 3px solid #ef4444; min-width: 140px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);">
+<div style="color: #dc2626; font-weight: 800; font-size: 18px;">OPEN</div>
+<div style="color: #b91c1c; font-size: 13px; margin-top: 6px; font-weight: 500;">Circuit Tripped</div>
+<div style="color: #dc2626; font-size: 12px; margin-top: 4px;">Requests fail immediately</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+<div style="background: #fef3c7; color: #92400e; font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600;">timeout expires</div>
+<div style="color: #f59e0b; font-size: 24px; font-weight: bold;">&#8594;</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 24px 32px; border-radius: 16px; text-align: center; border: 3px solid #f59e0b; min-width: 140px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);">
+<div style="color: #92400e; font-weight: 800; font-size: 18px;">HALF-OPEN</div>
+<div style="color: #b45309; font-size: 13px; margin-top: 6px; font-weight: 500;">Testing Recovery</div>
+<div style="color: #d97706; font-size: 12px; margin-top: 4px;">Limited probe requests</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 60px; margin-top: 24px; flex-wrap: wrap;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 12px; height: 12px; background: #22c55e; border-radius: 50%;"></div>
+<span style="color: #16a34a; font-size: 13px; font-weight: 500;">probe success &#8594; CLOSED</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+<span style="color: #dc2626; font-size: 13px; font-weight: 500;">probe failure &#8594; OPEN</span>
+</div>
+</div>
 </div>
 
 **The Core Insight**: When you call an external service and it starts failing, instead of repeatedly hammering it (which wastes resources and might make things worse), you <span style="color:#10b981">**"open the circuit"**</span> - immediately reject requests for a cooling-off period, then carefully test if the service has recovered.
@@ -52,25 +52,25 @@ The <span style="color:#10b981">**Circuit Breaker pattern**</span> is a stabilit
 Circuit breakers are essential infrastructure at companies with [[microservices]](/topic/system-design/microservices) architectures. Understanding this pattern demonstrates you can design systems that <span style="color:#10b981">**fail gracefully**</span> rather than catastrophically.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CIRCUIT BREAKERS IN PRODUCTION</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
-      <div style="color: #dc2626; font-weight: 700; margin-bottom: 8px;">Netflix (Hystrix)</div>
-      <div style="color: #7f1d1d; font-size: 13px;">Pioneered circuit breakers in microservices. When their recommendations service fails, users still see content - just without personalized suggestions. Hystrix handled billions of thread-isolated calls daily.</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Uber</div>
-      <div style="color: #1d4ed8; font-size: 13px;">Uses circuit breakers between pricing, dispatch, and payment services. A payment outage cannot crash ride-hailing - rides continue, payment retries later with queued transactions.</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
-      <div style="color: #065f46; font-weight: 700; margin-bottom: 8px;">Amazon</div>
-      <div style="color: #047857; font-size: 13px;">Every microservice uses circuit breakers. Product recommendations failing cannot prevent checkout. They pioneered the "cell-based architecture" to contain blast radius.</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Stripe</div>
-      <div style="color: #b45309; font-size: 13px;">Protects payment processing from third-party fraud detection services. If fraud check times out, use cached risk score rather than failing the payment - graceful degradation.</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CIRCUIT BREAKERS IN PRODUCTION</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 8px;">Netflix (Hystrix)</div>
+<div style="color: #7f1d1d; font-size: 13px;">Pioneered circuit breakers in microservices. When their recommendations service fails, users still see content - just without personalized suggestions. Hystrix handled billions of thread-isolated calls daily.</div>
+</div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Uber</div>
+<div style="color: #1d4ed8; font-size: 13px;">Uses circuit breakers between pricing, dispatch, and payment services. A payment outage cannot crash ride-hailing - rides continue, payment retries later with queued transactions.</div>
+</div>
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #065f46; font-weight: 700; margin-bottom: 8px;">Amazon</div>
+<div style="color: #047857; font-size: 13px;">Every microservice uses circuit breakers. Product recommendations failing cannot prevent checkout. They pioneered the "cell-based architecture" to contain blast radius.</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Stripe</div>
+<div style="color: #b45309; font-size: 13px;">Protects payment processing from third-party fraud detection services. If fraud check times out, use cached risk score rather than failing the payment - graceful degradation.</div>
+</div>
+</div>
 </div>
 
 **Interview Signal**: When asked "What happens when Service B fails?", mentioning circuit breakers immediately shows you understand fault tolerance beyond simple retries and have experience with production distributed systems.
@@ -84,31 +84,31 @@ Understanding each state and its transitions is critical for both implementation
 ### State 1: CLOSED (Normal Operation)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">CLOSED STATE - REQUEST FLOW</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">Client</div>
-      <div style="color: #64748b; font-size: 20px;">&#8594;</div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 20px; border-radius: 10px; color: #166534; font-weight: 700; border: 2px solid #22c55e; position: relative;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">CLOSED STATE - REQUEST FLOW</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">Client</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 20px; border-radius: 10px; color: #166534; font-weight: 700; border: 2px solid #22c55e; position: relative;">
         Circuit Breaker
-        <div style="position: absolute; top: -8px; right: -8px; background: #22c55e; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">CLOSED</div>
-      </div>
-      <div style="color: #22c55e; font-size: 20px;">&#8594;</div>
-      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 20px; border-radius: 10px; color: #475569; font-weight: 600; border: 2px solid #94a3b8;">Service</div>
-    </div>
-    <div style="background: #dcfce7; border-radius: 12px; padding: 16px 20px; border: 1px solid #86efac;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
-        <div>
-          <div style="color: #166534; font-weight: 700; font-size: 14px;">Behavior</div>
-          <div style="color: #15803d; font-size: 13px; margin-top: 4px;">All requests pass through normally</div>
-        </div>
-        <div>
-          <div style="color: #166534; font-weight: 700; font-size: 14px;">Tracking</div>
-          <div style="color: #15803d; font-size: 13px; margin-top: 4px;">Counting failures in sliding window</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="position: absolute; top: -8px; right: -8px; background: #22c55e; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">CLOSED</div>
+</div>
+<div style="color: #22c55e; font-size: 20px;">&#8594;</div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 20px; border-radius: 10px; color: #475569; font-weight: 600; border: 2px solid #94a3b8;">Service</div>
+</div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 16px 20px; border: 1px solid #86efac;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
+<div>
+  <div style="color: #166534; font-weight: 700; font-size: 14px;">Behavior</div>
+  <div style="color: #15803d; font-size: 13px; margin-top: 4px;">All requests pass through normally</div>
+</div>
+<div>
+  <div style="color: #166534; font-weight: 700; font-size: 14px;">Tracking</div>
+  <div style="color: #15803d; font-size: 13px; margin-top: 4px;">Counting failures in sliding window</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 In the <span style="color:#10b981">**CLOSED state**</span>, the circuit breaker is like a closed electrical circuit - current (requests) flows through normally:
@@ -121,36 +121,36 @@ In the <span style="color:#10b981">**CLOSED state**</span>, the circuit breaker 
 ### State 2: OPEN (Failing Fast)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">OPEN STATE - FAIL FAST</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">Client</div>
-      <div style="color: #64748b; font-size: 20px;">&#8594;</div>
-      <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 12px 20px; border-radius: 10px; color: #dc2626; font-weight: 700; border: 2px solid #ef4444; position: relative;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">OPEN STATE - FAIL FAST</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">Client</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); padding: 12px 20px; border-radius: 10px; color: #dc2626; font-weight: 700; border: 2px solid #ef4444; position: relative;">
         Circuit Breaker
-        <div style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">OPEN</div>
-      </div>
-      <div style="color: #ef4444; font-size: 20px; font-weight: bold;">&#10007;</div>
-      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 20px; border-radius: 10px; color: #94a3b8; font-weight: 600; border: 2px dashed #94a3b8; text-decoration: line-through;">Service</div>
-    </div>
-    <div style="background: #fef2f2; border-radius: 12px; padding: 16px 20px; border: 1px solid #fca5a5;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
-        <div>
-          <div style="color: #dc2626; font-weight: 700; font-size: 14px;">Behavior</div>
-          <div style="color: #b91c1c; font-size: 13px; margin-top: 4px;">Requests immediately rejected</div>
-        </div>
-        <div>
-          <div style="color: #dc2626; font-weight: 700; font-size: 14px;">Response</div>
-          <div style="color: #b91c1c; font-size: 13px; margin-top: 4px;">Fallback or error returned</div>
-        </div>
-      </div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #92400e; font-size: 13px;">
-        <span style="font-weight: 700;">Timer Running:</span> After timeout (e.g., 30s) &#8594; transitions to HALF-OPEN
-      </div>
-    </div>
-  </div>
+<div style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">OPEN</div>
+</div>
+<div style="color: #ef4444; font-size: 20px; font-weight: bold;">&#10007;</div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 20px; border-radius: 10px; color: #94a3b8; font-weight: 600; border: 2px dashed #94a3b8; text-decoration: line-through;">Service</div>
+</div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 16px 20px; border: 1px solid #fca5a5;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
+<div>
+  <div style="color: #dc2626; font-weight: 700; font-size: 14px;">Behavior</div>
+  <div style="color: #b91c1c; font-size: 13px; margin-top: 4px;">Requests immediately rejected</div>
+</div>
+<div>
+  <div style="color: #dc2626; font-weight: 700; font-size: 14px;">Response</div>
+  <div style="color: #b91c1c; font-size: 13px; margin-top: 4px;">Fallback or error returned</div>
+</div>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #92400e; font-size: 13px;">
+<span style="font-weight: 700;">Timer Running:</span> After timeout (e.g., 30s) &#8594; transitions to HALF-OPEN
+</div>
+</div>
+</div>
 </div>
 
 The <span style="color:#10b981">**OPEN state**</span> is the circuit breaker's protective mode:
@@ -164,36 +164,36 @@ The <span style="color:#10b981">**OPEN state**</span> is the circuit breaker's p
 ### State 3: HALF-OPEN (Testing Recovery)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">HALF-OPEN STATE - PROBE TESTING</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">HALF-OPEN STATE - PROBE TESTING</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; color: #1e40af; font-weight: 700; border: 2px solid #3b82f6;">
         Probe Request
-        <div style="font-size: 10px; font-weight: 500; margin-top: 2px;">1 of N allowed</div>
-      </div>
-      <div style="color: #64748b; font-size: 20px;">&#8594;</div>
-      <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 12px 20px; border-radius: 10px; color: #92400e; font-weight: 700; border: 2px solid #f59e0b; position: relative;">
+<div style="font-size: 10px; font-weight: 500; margin-top: 2px;">1 of N allowed</div>
+</div>
+<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 12px 20px; border-radius: 10px; color: #92400e; font-weight: 700; border: 2px solid #f59e0b; position: relative;">
         Circuit Breaker
-        <div style="position: absolute; top: -8px; right: -8px; background: #f59e0b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">HALF-OPEN</div>
-      </div>
-      <div style="color: #f59e0b; font-size: 20px;">&#8594;?</div>
-      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 20px; border-radius: 10px; color: #475569; font-weight: 600; border: 2px solid #94a3b8;">Service</div>
-    </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 700; font-size: 15px;">Probe Succeeds</div>
-        <div style="color: #15803d; font-size: 24px; margin: 8px 0;">&#8595;</div>
-        <div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600;">CLOSED</div>
-        <div style="color: #166534; font-size: 12px; margin-top: 8px;">Reset failure count, resume normal operation</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #ef4444;">
-        <div style="color: #dc2626; font-weight: 700; font-size: 15px;">Probe Fails</div>
-        <div style="color: #b91c1c; font-size: 24px; margin: 8px 0;">&#8595;</div>
-        <div style="background: #ef4444; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600;">OPEN</div>
-        <div style="color: #dc2626; font-size: 12px; margin-top: 8px;">Reset timeout, wait again before retrying</div>
-      </div>
-    </div>
-  </div>
+<div style="position: absolute; top: -8px; right: -8px; background: #f59e0b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 600;">HALF-OPEN</div>
+</div>
+<div style="color: #f59e0b; font-size: 20px;">&#8594;?</div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 20px; border-radius: 10px; color: #475569; font-weight: 600; border: 2px solid #94a3b8;">Service</div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; font-size: 15px;">Probe Succeeds</div>
+<div style="color: #15803d; font-size: 24px; margin: 8px 0;">&#8595;</div>
+<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600;">CLOSED</div>
+<div style="color: #166534; font-size: 12px; margin-top: 8px;">Reset failure count, resume normal operation</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #ef4444;">
+<div style="color: #dc2626; font-weight: 700; font-size: 15px;">Probe Fails</div>
+<div style="color: #b91c1c; font-size: 24px; margin: 8px 0;">&#8595;</div>
+<div style="background: #ef4444; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600;">OPEN</div>
+<div style="color: #dc2626; font-size: 12px; margin-top: 8px;">Reset timeout, wait again before retrying</div>
+</div>
+</div>
+</div>
 </div>
 
 The <span style="color:#10b981">**HALF-OPEN state**</span> is the recovery testing phase:
@@ -211,83 +211,83 @@ The <span style="color:#10b981">**HALF-OPEN state**</span> is the recovery testi
 The way you count and evaluate failures significantly impacts circuit breaker effectiveness.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">FAILURE THRESHOLD STRATEGIES</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Count-Based Threshold</div>
-      <div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px;">Trip after N consecutive or total failures in window.</div>
-      <div style="background: #eff6ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
-        <div style="color: #1e40af;">failure_threshold: 5</div>
-        <div style="color: #64748b; margin-top: 4px;"># Trip after 5 failures in window</div>
-      </div>
-      <div style="color: #475569; font-size: 12px; margin-top: 12px;">
-        <span style="color: #22c55e; font-weight: 600;">Pro:</span> Simple to understand<br>
-        <span style="color: #ef4444; font-weight: 600;">Con:</span> Doesn't account for request volume
-      </div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #10b981;">
-      <div style="color: #065f46; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Percentage-Based Threshold</div>
-      <div style="color: #047857; font-size: 13px; margin-bottom: 12px;">Trip when failure rate exceeds percentage (with minimum calls).</div>
-      <div style="background: #ecfdf5; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
-        <div style="color: #065f46;">failure_rate_threshold: 50%</div>
-        <div style="color: #065f46;">minimum_calls: 10</div>
-        <div style="color: #64748b; margin-top: 4px;"># Need 10+ calls, 50%+ failure</div>
-      </div>
-      <div style="color: #475569; font-size: 12px; margin-top: 12px;">
-        <span style="color: #22c55e; font-weight: 600;">Pro:</span> Adapts to traffic volume<br>
-        <span style="color: #ef4444; font-weight: 600;">Con:</span> Needs minimum sample size
-      </div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Slow Call Threshold</div>
-      <div style="color: #b45309; font-size: 13px; margin-bottom: 12px;">Count slow responses (exceeding latency threshold) as failures.</div>
-      <div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
-        <div style="color: #92400e;">slow_call_threshold: 5s</div>
-        <div style="color: #92400e;">slow_call_rate_threshold: 80%</div>
-        <div style="color: #64748b; margin-top: 4px;"># Trip if 80%+ calls > 5s</div>
-      </div>
-      <div style="color: #475569; font-size: 12px; margin-top: 12px;">
-        <span style="color: #22c55e; font-weight: 600;">Pro:</span> Detects degradation before timeout<br>
-        <span style="color: #ef4444; font-weight: 600;">Con:</span> Requires latency tracking
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">FAILURE THRESHOLD STRATEGIES</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+<div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Count-Based Threshold</div>
+<div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px;">Trip after N consecutive or total failures in window.</div>
+<div style="background: #eff6ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+<div style="color: #1e40af;">failure_threshold: 5</div>
+<div style="color: #64748b; margin-top: 4px;"># Trip after 5 failures in window</div>
+</div>
+<div style="color: #475569; font-size: 12px; margin-top: 12px;">
+<span style="color: #22c55e; font-weight: 600;">Pro:</span> Simple to understand<br>
+<span style="color: #ef4444; font-weight: 600;">Con:</span> Doesn't account for request volume
+</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #10b981;">
+<div style="color: #065f46; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Percentage-Based Threshold</div>
+<div style="color: #047857; font-size: 13px; margin-bottom: 12px;">Trip when failure rate exceeds percentage (with minimum calls).</div>
+<div style="background: #ecfdf5; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+<div style="color: #065f46;">failure_rate_threshold: 50%</div>
+<div style="color: #065f46;">minimum_calls: 10</div>
+<div style="color: #64748b; margin-top: 4px;"># Need 10+ calls, 50%+ failure</div>
+</div>
+<div style="color: #475569; font-size: 12px; margin-top: 12px;">
+<span style="color: #22c55e; font-weight: 600;">Pro:</span> Adapts to traffic volume<br>
+<span style="color: #ef4444; font-weight: 600;">Con:</span> Needs minimum sample size
+</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 12px; font-size: 15px;">Slow Call Threshold</div>
+<div style="color: #b45309; font-size: 13px; margin-bottom: 12px;">Count slow responses (exceeding latency threshold) as failures.</div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+<div style="color: #92400e;">slow_call_threshold: 5s</div>
+<div style="color: #92400e;">slow_call_rate_threshold: 80%</div>
+<div style="color: #64748b; margin-top: 4px;"># Trip if 80%+ calls > 5s</div>
+</div>
+<div style="color: #475569; font-size: 12px; margin-top: 12px;">
+<span style="color: #22c55e; font-weight: 600;">Pro:</span> Detects degradation before timeout<br>
+<span style="color: #ef4444; font-weight: 600;">Con:</span> Requires latency tracking
+</div>
+</div>
+</div>
 </div>
 
 ### Sliding Window Types
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">SLIDING WINDOW IMPLEMENTATIONS</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Count-Based Sliding Window</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 16px;">Records last N calls regardless of time. Memory efficient but time-insensitive.</div>
-      <div style="background: #f1f5f9; border-radius: 8px; padding: 12px;">
-        <div style="display: flex; gap: 4px; justify-content: center; margin-bottom: 8px;">
-          <div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">S</div>
-          <div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">S</div>
-          <div style="width: 24px; height: 24px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">F</div>
-          <div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">S</div>
-          <div style="width: 24px; height: 24px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">F</div>
-        </div>
-        <div style="color: #64748b; font-size: 11px; text-align: center;">Last 5 calls: 2 failures = 40% failure rate</div>
-      </div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
-      <div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Time-Based Sliding Window</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 16px;">Records calls within last N seconds. More accurate for variable traffic.</div>
-      <div style="background: #f1f5f9; border-radius: 8px; padding: 12px;">
-        <div style="display: flex; align-items: end; gap: 4px; justify-content: center; margin-bottom: 8px;">
-          <div style="width: 20px; height: 30px; background: #22c55e; border-radius: 4px;"></div>
-          <div style="width: 20px; height: 20px; background: #22c55e; border-radius: 4px;"></div>
-          <div style="width: 20px; height: 40px; background: #ef4444; border-radius: 4px;"></div>
-          <div style="width: 20px; height: 25px; background: #22c55e; border-radius: 4px;"></div>
-          <div style="width: 20px; height: 35px; background: #ef4444; border-radius: 4px;"></div>
-        </div>
-        <div style="color: #64748b; font-size: 11px; text-align: center;">Last 60 seconds: aggregated by buckets</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">SLIDING WINDOW IMPLEMENTATIONS</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Count-Based Sliding Window</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 16px;">Records last N calls regardless of time. Memory efficient but time-insensitive.</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 12px;">
+<div style="display: flex; gap: 4px; justify-content: center; margin-bottom: 8px;">
+<div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">S</div>
+<div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">S</div>
+<div style="width: 24px; height: 24px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">F</div>
+<div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">S</div>
+<div style="width: 24px; height: 24px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">F</div>
+</div>
+<div style="color: #64748b; font-size: 11px; text-align: center;">Last 5 calls: 2 failures = 40% failure rate</div>
+</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Time-Based Sliding Window</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 16px;">Records calls within last N seconds. More accurate for variable traffic.</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 12px;">
+<div style="display: flex; align-items: end; gap: 4px; justify-content: center; margin-bottom: 8px;">
+<div style="width: 20px; height: 30px; background: #22c55e; border-radius: 4px;"></div>
+<div style="width: 20px; height: 20px; background: #22c55e; border-radius: 4px;"></div>
+<div style="width: 20px; height: 40px; background: #ef4444; border-radius: 4px;"></div>
+<div style="width: 20px; height: 25px; background: #22c55e; border-radius: 4px;"></div>
+<div style="width: 20px; height: 35px; background: #ef4444; border-radius: 4px;"></div>
+</div>
+<div style="color: #64748b; font-size: 11px; text-align: center;">Last 60 seconds: aggregated by buckets</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -297,40 +297,40 @@ The way you count and evaluate failures significantly impacts circuit breaker ef
 <span style="color:#10b981">**Timeout configuration**</span> is critical - it determines how quickly your circuit breaker responds to failures and how conservatively it tests recovery.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0: 24px 0; font-size: 18px; font-weight: 600;">TIMEOUT CONFIGURATION</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 24px;">
-    <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #6366f1;">
-      <div style="color: #4338ca; font-weight: 700; margin-bottom: 12px;">Wait Duration in Open State</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">How long to wait before testing recovery.</div>
-      <div style="background: #eef2ff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #4338ca;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0: 24px 0; font-size: 18px; font-weight: 600;">TIMEOUT CONFIGURATION</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 24px;">
+<div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #6366f1;">
+<div style="color: #4338ca; font-weight: 700; margin-bottom: 12px;">Wait Duration in Open State</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">How long to wait before testing recovery.</div>
+<div style="background: #eef2ff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #4338ca;">
         wait_duration: 30s
-      </div>
-      <div style="color: #64748b; font-size: 12px; margin-top: 10px;">
-        <strong>Too short:</strong> Overwhelm recovering service<br>
-        <strong>Too long:</strong> Slow recovery, poor UX
-      </div>
-    </div>
-    <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #ec4899;">
-      <div style="color: #be185d; font-weight: 700; margin-bottom: 12px;">Call Timeout</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Maximum time to wait for a response before counting as failure.</div>
-      <div style="background: #fdf2f8; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #be185d;">
+</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 10px;">
+<strong>Too short:</strong> Overwhelm recovering service<br>
+<strong>Too long:</strong> Slow recovery, poor UX
+</div>
+</div>
+<div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #ec4899;">
+<div style="color: #be185d; font-weight: 700; margin-bottom: 12px;">Call Timeout</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Maximum time to wait for a response before counting as failure.</div>
+<div style="background: #fdf2f8; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #be185d;">
         call_timeout: 5s
-      </div>
-      <div style="color: #64748b; font-size: 12px; margin-top: 10px;">
+</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 10px;">
         Should be less than client's timeout to fail gracefully.
-      </div>
-    </div>
-    <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #14b8a6;">
-      <div style="color: #0f766e; font-weight: 700; margin-bottom: 12px;">Exponential Backoff</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Increase wait duration after each failed recovery attempt.</div>
-      <div style="background: #f0fdfa; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #0f766e;">
+</div>
+</div>
+<div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #14b8a6;">
+<div style="color: #0f766e; font-weight: 700; margin-bottom: 12px;">Exponential Backoff</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Increase wait duration after each failed recovery attempt.</div>
+<div style="background: #f0fdfa; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #0f766e;">
         base: 30s, max: 5m, multiplier: 2
-      </div>
-      <div style="color: #64748b; font-size: 12px; margin-top: 10px;">
+</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 10px;">
         30s &#8594; 60s &#8594; 120s &#8594; 240s &#8594; 300s
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ### Timeout Strategy Comparison
@@ -349,90 +349,90 @@ The way you count and evaluate failures significantly impacts circuit breaker ef
 The <span style="color:#10b981">**Bulkhead pattern**</span> complements circuit breakers by isolating resources so a failure in one area cannot exhaust resources needed by others - like watertight compartments in a ship.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">BULKHEAD PATTERN - RESOURCE ISOLATION</h3>
-  <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
-    <div style="background: white; border-radius: 16px; padding: 24px; border: 3px solid #3b82f6; min-width: 200px;">
-      <div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 16px;">Without Bulkhead</div>
-      <div style="background: #fee2e2; border-radius: 12px; padding: 16px; border: 2px dashed #ef4444;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 1</div>
-          <div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 2</div>
-          <div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 3</div>
-          <div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 4</div>
-        </div>
-        <div style="color: #991b1b; font-size: 11px; text-align: center; margin-top: 12px; font-weight: 600;">All threads stuck waiting for slow Service A</div>
-      </div>
-      <div style="text-align: center; margin-top: 12px; color: #dc2626; font-size: 12px;">Service B, C, D also blocked!</div>
-    </div>
-    <div style="display: flex; align-items: center; color: #64748b; font-size: 32px;">&#8594;</div>
-    <div style="background: white; border-radius: 16px; padding: 24px; border: 3px solid #22c55e; min-width: 280px;">
-      <div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 16px;">With Bulkhead</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-        <div style="background: #fee2e2; border-radius: 8px; padding: 12px; border: 2px solid #ef4444;">
-          <div style="color: #dc2626; font-size: 10px; font-weight: 600; text-align: center;">Service A Pool (2)</div>
-          <div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
-            <div style="background: #fca5a5; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T1</div>
-            <div style="background: #fca5a5; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T2</div>
-          </div>
-        </div>
-        <div style="background: #dcfce7; border-radius: 8px; padding: 12px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center;">Service B Pool (2)</div>
-          <div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
-            <div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T3</div>
-            <div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T4</div>
-          </div>
-        </div>
-        <div style="background: #dcfce7; border-radius: 8px; padding: 12px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center;">Service C Pool (2)</div>
-          <div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
-            <div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T5</div>
-            <div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T6</div>
-          </div>
-        </div>
-        <div style="background: #dcfce7; border-radius: 8px; padding: 12px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center;">Service D Pool (2)</div>
-          <div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
-            <div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T7</div>
-            <div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T8</div>
-          </div>
-        </div>
-      </div>
-      <div style="text-align: center; margin-top: 12px; color: #166534; font-size: 12px;">Service A isolated, B/C/D unaffected!</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">BULKHEAD PATTERN - RESOURCE ISOLATION</h3>
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+<div style="background: white; border-radius: 16px; padding: 24px; border: 3px solid #3b82f6; min-width: 200px;">
+<div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 16px;">Without Bulkhead</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 16px; border: 2px dashed #ef4444;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 1</div>
+<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 2</div>
+<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 3</div>
+<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d;">Thread 4</div>
+</div>
+<div style="color: #991b1b; font-size: 11px; text-align: center; margin-top: 12px; font-weight: 600;">All threads stuck waiting for slow Service A</div>
+</div>
+<div style="text-align: center; margin-top: 12px; color: #dc2626; font-size: 12px;">Service B, C, D also blocked!</div>
+</div>
+<div style="display: flex; align-items: center; color: #64748b; font-size: 32px;">&#8594;</div>
+<div style="background: white; border-radius: 16px; padding: 24px; border: 3px solid #22c55e; min-width: 280px;">
+<div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 16px;">With Bulkhead</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+<div style="background: #fee2e2; border-radius: 8px; padding: 12px; border: 2px solid #ef4444;">
+<div style="color: #dc2626; font-size: 10px; font-weight: 600; text-align: center;">Service A Pool (2)</div>
+<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
+<div style="background: #fca5a5; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T1</div>
+<div style="background: #fca5a5; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T2</div>
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 12px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center;">Service B Pool (2)</div>
+<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
+<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T3</div>
+<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T4</div>
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 12px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center;">Service C Pool (2)</div>
+<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
+<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T5</div>
+<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T6</div>
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 12px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center;">Service D Pool (2)</div>
+<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center;">
+<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T7</div>
+<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px;">T8</div>
+</div>
+</div>
+</div>
+<div style="text-align: center; margin-top: 12px; color: #166534; font-size: 12px;">Service A isolated, B/C/D unaffected!</div>
+</div>
+</div>
 </div>
 
 ### Bulkhead Types
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-    <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #6366f1;">
-      <div style="color: #4338ca; font-weight: 700; margin-bottom: 12px;">Thread Pool Bulkhead</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Dedicate a fixed thread pool to each dependency. Threads waiting for slow service don't block other services.</div>
-      <div style="background: #eef2ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #4338ca;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #6366f1;">
+<div style="color: #4338ca; font-weight: 700; margin-bottom: 12px;">Thread Pool Bulkhead</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Dedicate a fixed thread pool to each dependency. Threads waiting for slow service don't block other services.</div>
+<div style="background: #eef2ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #4338ca;">
         payment_pool: max=10<br>
         inventory_pool: max=20<br>
         notification_pool: max=5
-      </div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Semaphore Bulkhead</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Limit concurrent calls using a semaphore. Lighter weight than thread pools but less isolation.</div>
-      <div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #92400e;">
+</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Semaphore Bulkhead</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Limit concurrent calls using a semaphore. Lighter weight than thread pools but less isolation.</div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #92400e;">
         max_concurrent_calls: 25<br>
         max_wait_duration: 100ms
-      </div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
-      <div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Connection Pool Bulkhead</div>
-      <div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Separate [[connection pools]](/topic/system-design/connection-pooling) per dependency. Prevents one service from exhausting all connections.</div>
-      <div style="background: #ecfdf5; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #065f46;">
+</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #065f46; font-weight: 700; margin-bottom: 12px;">Connection Pool Bulkhead</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Separate [[connection pools]](/topic/system-design/connection-pooling) per dependency. Prevents one service from exhausting all connections.</div>
+<div style="background: #ecfdf5; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #065f46;">
         db_primary: max_conn=50<br>
         db_replica: max_conn=100<br>
         cache: max_conn=25
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ### Circuit Breaker + Bulkhead Together
@@ -495,115 +495,115 @@ class ResilientServiceClient:
 <span style="color:#10b981">**Cascading failures**</span> occur when a failure in one service causes failures in dependent services, which then cause failures in their dependents, creating a domino effect that can bring down an entire system.
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #ef4444;">
-  <h3 style="color: #dc2626; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CASCADING FAILURE ANATOMY</h3>
-  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
-      <div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
-        <div style="color: #dc2626; font-weight: 600;">Database Slowdown</div>
-        <div style="color: #7f1d1d; font-size: 13px;">Service D's database becomes slow due to lock contention</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
-      <div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
-        <div style="color: #dc2626; font-weight: 600;">Service D Threads Exhaust</div>
-        <div style="color: #7f1d1d; font-size: 13px;">All threads waiting for slow DB, cannot accept new requests</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
-      <div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
-        <div style="color: #dc2626; font-weight: 600;">Service C Threads Exhaust</div>
-        <div style="color: #7f1d1d; font-size: 13px;">Service C waits for D, its threads also become blocked</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
-      <div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
-        <div style="color: #dc2626; font-weight: 600;">Services A & B Fail</div>
-        <div style="color: #7f1d1d; font-size: 13px;">A and B depend on C, they also exhaust threads waiting</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="background: #7f1d1d; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">5</div>
-      <div style="flex: 1; background: #7f1d1d; border-radius: 8px; padding: 12px 16px;">
-        <div style="color: white; font-weight: 600;">Complete System Outage</div>
-        <div style="color: #fecaca; font-size: 13px;">API Gateway cannot reach any service - entire platform down</div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #dc2626; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CASCADING FAILURE ANATOMY</h3>
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
+<div style="color: #dc2626; font-weight: 600;">Database Slowdown</div>
+<div style="color: #7f1d1d; font-size: 13px;">Service D's database becomes slow due to lock contention</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
+<div style="color: #dc2626; font-weight: 600;">Service D Threads Exhaust</div>
+<div style="color: #7f1d1d; font-size: 13px;">All threads waiting for slow DB, cannot accept new requests</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
+<div style="color: #dc2626; font-weight: 600;">Service C Threads Exhaust</div>
+<div style="color: #7f1d1d; font-size: 13px;">Service C waits for D, its threads also become blocked</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
+<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #fca5a5;">
+<div style="color: #dc2626; font-weight: 600;">Services A & B Fail</div>
+<div style="color: #7f1d1d; font-size: 13px;">A and B depend on C, they also exhaust threads waiting</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #7f1d1d; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">5</div>
+<div style="flex: 1; background: #7f1d1d; border-radius: 8px; padding: 12px 16px;">
+<div style="color: white; font-weight: 600;">Complete System Outage</div>
+<div style="color: #fecaca; font-size: 13px;">API Gateway cannot reach any service - entire platform down</div>
+</div>
+</div>
+</div>
 </div>
 
 ### How Circuit Breakers Prevent Cascading Failures
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #10b981;">
-  <h3 style="color: #065f46; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WITH CIRCUIT BREAKERS</h3>
-  <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
-    <div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #22c55e; text-align: center;">
-      <div style="color: #166534; font-weight: 700;">Service A</div>
-      <div style="color: #15803d; font-size: 12px; margin-top: 4px;">Operating normally</div>
-      <div style="background: #22c55e; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Fallback for C</div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #22c55e; text-align: center;">
-      <div style="color: #166534; font-weight: 700;">Service B</div>
-      <div style="color: #15803d; font-size: 12px; margin-top: 4px;">Operating normally</div>
-      <div style="background: #22c55e; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Fallback for C</div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #f59e0b; text-align: center;">
-      <div style="color: #92400e; font-weight: 700;">Service C</div>
-      <div style="color: #b45309; font-size: 12px; margin-top: 4px;">Circuit OPEN for D</div>
-      <div style="background: #f59e0b; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Degraded mode</div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #ef4444; text-align: center;">
-      <div style="color: #dc2626; font-weight: 700;">Service D</div>
-      <div style="color: #b91c1c; font-size: 12px; margin-top: 4px;">DB issues</div>
-      <div style="background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Isolated failure</div>
-    </div>
-  </div>
-  <div style="background: white; border-radius: 8px; padding: 16px; border: 1px solid #86efac;">
-    <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Result:</div>
-    <div style="color: #047857; font-size: 13px;">
-      <div>&#8226; Service D's failure is <strong>isolated</strong> - it cannot affect A or B</div>
-      <div>&#8226; Service C <strong>fails fast</strong> for D calls, uses cached data or defaults</div>
-      <div>&#8226; Users experience <strong>degraded service</strong>, not complete outage</div>
-      <div>&#8226; D has <strong>breathing room</strong> to recover without being hammered</div>
-    </div>
-  </div>
+<h3 style="color: #065f46; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WITH CIRCUIT BREAKERS</h3>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+<div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #22c55e; text-align: center;">
+<div style="color: #166534; font-weight: 700;">Service A</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px;">Operating normally</div>
+<div style="background: #22c55e; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Fallback for C</div>
 </div>
+<div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #22c55e; text-align: center;">
+<div style="color: #166534; font-weight: 700;">Service B</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px;">Operating normally</div>
+<div style="background: #22c55e; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Fallback for C</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #f59e0b; text-align: center;">
+<div style="color: #92400e; font-weight: 700;">Service C</div>
+<div style="color: #b45309; font-size: 12px; margin-top: 4px;">Circuit OPEN for D</div>
+<div style="background: #f59e0b; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Degraded mode</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 16px 20px; border: 2px solid #ef4444; text-align: center;">
+<div style="color: #dc2626; font-weight: 700;">Service D</div>
+<div style="color: #b91c1c; font-size: 12px; margin-top: 4px;">DB issues</div>
+<div style="background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px;">Isolated failure</div>
+</div>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Result:</div>
+<div style="color: #047857; font-size: 13px;">
+<div>&#8226; Service D's failure is <strong>isolated</strong> - it cannot affect A or B</div>
+  <div>&#8226; Service C <strong>fails fast</strong> for D calls, uses cached data or defaults</div>
+    <div>&#8226; Users experience <strong>degraded service</strong>, not complete outage</div>
+      <div>&#8226; D has <strong>breathing room</strong> to recover without being hammered</div>
+      </div>
+    </div>
+  </div>
 
----
+  ---
 
-## Configuration Parameters Reference
+  ## Configuration Parameters Reference
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
   <h3 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600;">KEY CONFIGURATION OPTIONS</h3>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-    <div style="background: #dbeafe; padding: 16px; border-radius: 8px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Failure Threshold</div>
-      <div style="color: #1d4ed8; font-size: 13px;">Number or percentage of failures before opening circuit (e.g., 5 failures or 50%)</div>
-    </div>
-    <div style="background: #dcfce7; padding: 16px; border-radius: 8px;">
-      <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Success Threshold</div>
-      <div style="color: #15803d; font-size: 13px;">Number of successes in half-open to close circuit (e.g., 3 consecutive)</div>
-    </div>
-    <div style="background: #fef3c7; padding: 16px; border-radius: 8px;">
-      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Timeout Duration</div>
-      <div style="color: #b45309; font-size: 13px;">How long to stay open before testing (e.g., 30 seconds)</div>
-    </div>
-    <div style="background: #f3e8ff; padding: 16px; border-radius: 8px;">
-      <div style="color: #6b21a8; font-weight: 600; margin-bottom: 8px;">Sliding Window Size</div>
-      <div style="color: #7c3aed; font-size: 13px;">Time window or call count for failure tracking (e.g., 60s or last 100 calls)</div>
-    </div>
-    <div style="background: #fef2f2; padding: 16px; border-radius: 8px;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Half-Open Limit</div>
-      <div style="color: #b91c1c; font-size: 13px;">Max concurrent requests in half-open state (e.g., 3 probe requests)</div>
-    </div>
-    <div style="background: #ecfdf5; padding: 16px; border-radius: 8px;">
-      <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Slow Call Threshold</div>
-      <div style="color: #047857; font-size: 13px;">Response time that counts as "slow" (e.g., 5 seconds)</div>
-    </div>
-  </div>
+  <div style="background: #dbeafe; padding: 16px; border-radius: 8px;">
+  <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Failure Threshold</div>
+  <div style="color: #1d4ed8; font-size: 13px;">Number or percentage of failures before opening circuit (e.g., 5 failures or 50%)</div>
+</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Success Threshold</div>
+<div style="color: #15803d; font-size: 13px;">Number of successes in half-open to close circuit (e.g., 3 consecutive)</div>
+</div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 8px;">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Timeout Duration</div>
+<div style="color: #b45309; font-size: 13px;">How long to stay open before testing (e.g., 30 seconds)</div>
+</div>
+<div style="background: #f3e8ff; padding: 16px; border-radius: 8px;">
+<div style="color: #6b21a8; font-weight: 600; margin-bottom: 8px;">Sliding Window Size</div>
+<div style="color: #7c3aed; font-size: 13px;">Time window or call count for failure tracking (e.g., 60s or last 100 calls)</div>
+</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Half-Open Limit</div>
+<div style="color: #b91c1c; font-size: 13px;">Max concurrent requests in half-open state (e.g., 3 probe requests)</div>
+</div>
+<div style="background: #ecfdf5; padding: 16px; border-radius: 8px;">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Slow Call Threshold</div>
+<div style="color: #047857; font-size: 13px;">Response time that counts as "slow" (e.g., 5 seconds)</div>
+</div>
+</div>
 </div>
 
 ---
@@ -1058,37 +1058,37 @@ func (cb *CircuitBreaker) recordFailure() {
 ## Fallback Strategies
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">FALLBACK OPTIONS WHEN CIRCUIT IS OPEN</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Return Cached Data</div>
-      <div style="color: #15803d; font-size: 13px; margin-bottom: 12px;">Serve stale but acceptable data from [[cache]](/topic/system-design/caching) when fresh data unavailable.</div>
-      <div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #166534;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">FALLBACK OPTIONS WHEN CIRCUIT IS OPEN</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Return Cached Data</div>
+<div style="color: #15803d; font-size: 13px; margin-bottom: 12px;">Serve stale but acceptable data from [[cache]](/topic/system-design/caching) when fresh data unavailable.</div>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #166534;">
         return cache.get(key) or DEFAULT
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Queue for Later</div>
-      <div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px;">Add request to a [[message queue]](/topic/system-design/message-queues) and process when service recovers.</div>
-      <div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e40af;">
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Queue for Later</div>
+<div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px;">Add request to a [[message queue]](/topic/system-design/message-queues) and process when service recovers.</div>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e40af;">
         queue.add(request)<br>return "Processing soon"
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Default Response</div>
-      <div style="color: #b45309; font-size: 13px; margin-bottom: 12px;">Return a safe default that allows the user to continue their workflow.</div>
-      <div style="background: #fefce8; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #92400e;">
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Default Response</div>
+<div style="color: #b45309; font-size: 13px; margin-bottom: 12px;">Return a safe default that allows the user to continue their workflow.</div>
+<div style="background: #fefce8; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #92400e;">
         return {"recommendations": []}
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 20px; border: 2px solid #a855f7;">
-      <div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">Alternative Service</div>
-      <div style="color: #7c3aed; font-size: 13px; margin-bottom: 12px;">Call a backup service or use degraded functionality from another source.</div>
-      <div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #6b21a8;">
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 20px; border: 2px solid #a855f7;">
+<div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">Alternative Service</div>
+<div style="color: #7c3aed; font-size: 13px; margin-bottom: 12px;">Call a backup service or use degraded functionality from another source.</div>
+<div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #6b21a8;">
         return backup_service.call()
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -1096,33 +1096,33 @@ func (cb *CircuitBreaker) recordFailure() {
 ## Common Pitfalls
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Not Distinguishing Error Types</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Not all errors should trip the circuit. A 400 Bad Request is a <strong>client error</strong>, not a service failure. Only count 5xx errors, timeouts, and connection failures.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Not Distinguishing Error Types</div>
+<div style="color: #7f1d1d; font-size: 14px;">Not all errors should trip the circuit. A 400 Bad Request is a <strong>client error</strong>, not a service failure. Only count 5xx errors, timeouts, and connection failures.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">2. Setting Thresholds Too Low</div>
-  <div style="color: #7f1d1d; font-size: 14px;">A threshold of 2-3 failures can cause false trips during normal network jitter. Start with higher thresholds (5-10) and use percentage-based thresholds with minimum sample size.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">2. Setting Thresholds Too Low</div>
+<div style="color: #7f1d1d; font-size: 14px;">A threshold of 2-3 failures can cause false trips during normal network jitter. Start with higher thresholds (5-10) and use percentage-based thresholds with minimum sample size.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">3. Forgetting the Fallback</div>
-  <div style="color: #7f1d1d; font-size: 14px;">A circuit breaker without a fallback just converts slow failures to fast failures. Always provide a <strong>degraded experience</strong> - even "try again later" is better than a crash.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">3. Forgetting the Fallback</div>
+<div style="color: #7f1d1d; font-size: 14px;">A circuit breaker without a fallback just converts slow failures to fast failures. Always provide a <strong>degraded experience</strong> - even "try again later" is better than a crash.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">4. One Circuit Per Service (Not Per Instance)</div>
-  <div style="color: #7f1d1d; font-size: 14px;">If you have one circuit for "payment service" but 10 instances, one bad instance trips the circuit for all. Consider per-instance circuits or use service mesh instance-level routing.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">4. One Circuit Per Service (Not Per Instance)</div>
+<div style="color: #7f1d1d; font-size: 14px;">If you have one circuit for "payment service" but 10 instances, one bad instance trips the circuit for all. Consider per-instance circuits or use service mesh instance-level routing.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">5. Not Monitoring Circuit State</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Circuit breakers should emit metrics. Alert when circuits open frequently - it indicates an underlying problem that needs investigation, not just protection.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">5. Not Monitoring Circuit State</div>
+<div style="color: #7f1d1d; font-size: 14px;">Circuit breakers should emit metrics. Alert when circuits open frequently - it indicates an underlying problem that needs investigation, not just protection.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">6. No Timeout on Downstream Calls</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Circuit breakers detect failures, but if your calls have no timeout, they hang forever and the circuit never sees a failure. Always set timeouts - they're a prerequisite for circuit breakers.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">6. No Timeout on Downstream Calls</div>
+<div style="color: #7f1d1d; font-size: 14px;">Circuit breakers detect failures, but if your calls have no timeout, they hang forever and the circuit never sees a failure. Always set timeouts - they're a prerequisite for circuit breakers.</div>
 </div>
 
 ---

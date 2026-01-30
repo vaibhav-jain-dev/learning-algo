@@ -121,31 +121,31 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">BENEFITS:</div>
 <div style="color: #22c55e; font-size: 12px; margin-left: 8px;">
 <div>+ Loose coupling</div>
-<div>+ Independent scaling</div>
-<div>+ Polyglot persistence</div>
-<div>+ Fault isolation</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 200px;">
-<div style="color: #dc2626; font-weight: bold; font-size: 13px; margin-bottom: 8px;">DRAWBACKS:</div>
-<div style="color: #dc2626; font-size: 12px; margin-left: 8px;">
-<div>- No ACID across services</div>
-<div>- Complex queries across services</div>
-<div>- Data duplication</div>
-</div>
-</div>
-</div>
-</div>
+  <div>+ Independent scaling</div>
+    <div>+ Polyglot persistence</div>
+      <div>+ Fault isolation</div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+    <div style="color: #dc2626; font-weight: bold; font-size: 13px; margin-bottom: 8px;">DRAWBACKS:</div>
+    <div style="color: #dc2626; font-size: 12px; margin-left: 8px;">
+    <div>- No ACID across services</div>
+      <div>- Complex queries across services</div>
+        <div>- Data duplication</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
----
+  ---
 
-## 2. Saga Pattern
+  ## 2. Saga Pattern
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: SAGA</h3>
-<div style="margin-bottom: 24px;">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
-<div style="color: #1e293b; font-size: 13px;">How to maintain data consistency across services without distributed transactions (2PC)?</div>
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: SAGA</h3>
+  <div style="margin-bottom: 24px;">
+  <div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
+  <div style="color: #1e293b; font-size: 13px;">How to maintain data consistency across services without distributed transactions (2PC)?</div>
 </div>
 <div style="margin-bottom: 24px;">
 <div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
@@ -166,10 +166,10 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 8px;">On FAILURE (e.g., payment fails):</div>
 <div style="color: #1e293b; font-size: 11px;">
 <div>- Payment Service publishes payment.failed</div>
-<div>- Inventory Service compensates: release reserved stock</div>
-<div>- Order Service updates status to FAILED</div>
-</div>
-</div>
+  <div>- Inventory Service compensates: release reserved stock</div>
+    <div>- Order Service updates status to FAILED</div>
+    </div>
+  </div>
 </div>
 <div style="color: #3b82f6; font-weight: bold; font-size: 14px; margin-bottom: 12px;">TYPE 2: ORCHESTRATION (Central Coordinator)</div>
 <div style="background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
@@ -268,31 +268,31 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">WHEN TO USE:</div>
 <div style="color: #22c55e; font-size: 12px; margin-left: 8px;">
 <div>+ Read and write workloads have different requirements</div>
-<div>+ Complex queries across aggregates</div>
-<div>+ Need to scale reads and writes independently</div>
-<div>+ Event sourcing is used</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 200px;">
-<div style="color: #dc2626; font-weight: bold; font-size: 13px; margin-bottom: 8px;">WHEN NOT TO USE:</div>
-<div style="color: #dc2626; font-size: 12px; margin-left: 8px;">
-<div>- Simple CRUD applications</div>
-<div>- Strong consistency is required</div>
-<div>- Team unfamiliar with eventual consistency</div>
-</div>
-</div>
-</div>
-</div>
+  <div>+ Complex queries across aggregates</div>
+    <div>+ Need to scale reads and writes independently</div>
+      <div>+ Event sourcing is used</div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 200px;">
+    <div style="color: #dc2626; font-weight: bold; font-size: 13px; margin-bottom: 8px;">WHEN NOT TO USE:</div>
+    <div style="color: #dc2626; font-size: 12px; margin-left: 8px;">
+    <div>- Simple CRUD applications</div>
+      <div>- Strong consistency is required</div>
+        <div>- Team unfamiliar with eventual consistency</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
----
+  ---
 
-## 4. Event Sourcing
+  ## 4. Event Sourcing
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: EVENT SOURCING</h3>
-<div style="margin-bottom: 24px;">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
-<div style="color: #1e293b; font-size: 13px;">How to maintain an audit log of all changes and enable rebuilding state from history?</div>
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: EVENT SOURCING</h3>
+  <div style="margin-bottom: 24px;">
+  <div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
+  <div style="color: #1e293b; font-size: 13px;">How to maintain an audit log of all changes and enable rebuilding state from history?</div>
 </div>
 <div style="margin-bottom: 24px;">
 <div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
@@ -356,16 +356,16 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 12px;">EVENT STORE STRUCTURE:</div>
 <div style="background: #1e293b; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px; color: #e2e8f0;">
 <div>{</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"event_id"</span>: <span style="color: #93c5fd;">"evt-123"</span>,</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"aggregate_type"</span>: <span style="color: #93c5fd;">"Order"</span>,</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"aggregate_id"</span>: <span style="color: #93c5fd;">"ORD-1"</span>,</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"event_type"</span>: <span style="color: #93c5fd;">"OrderShipped"</span>,</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"version"</span>: <span style="color: #f97316;">3</span>,</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"timestamp"</span>: <span style="color: #93c5fd;">"2024-01-15T10:30:00Z"</span>,</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"data"</span>: { <span style="color: #93c5fd;">"tracking_number"</span>: <span style="color: #93c5fd;">"TRK-456"</span>, <span style="color: #93c5fd;">"carrier"</span>: <span style="color: #93c5fd;">"FedEx"</span> },</div>
-<div style="margin-left: 16px;"><span style="color: #22c55e;">"metadata"</span>: { <span style="color: #93c5fd;">"user_id"</span>: <span style="color: #93c5fd;">"user-789"</span>, <span style="color: #93c5fd;">"correlation_id"</span>: <span style="color: #93c5fd;">"req-abc"</span> }</div>
-<div>}</div>
-</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"event_id"</span>: <span style="color: #93c5fd;">"evt-123"</span>,</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"aggregate_type"</span>: <span style="color: #93c5fd;">"Order"</span>,</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"aggregate_id"</span>: <span style="color: #93c5fd;">"ORD-1"</span>,</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"event_type"</span>: <span style="color: #93c5fd;">"OrderShipped"</span>,</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"version"</span>: <span style="color: #f97316;">3</span>,</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"timestamp"</span>: <span style="color: #93c5fd;">"2024-01-15T10:30:00Z"</span>,</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"data"</span>: { <span style="color: #93c5fd;">"tracking_number"</span>: <span style="color: #93c5fd;">"TRK-456"</span>, <span style="color: #93c5fd;">"carrier"</span>: <span style="color: #93c5fd;">"FedEx"</span> },</div>
+  <div style="margin-left: 16px;"><span style="color: #22c55e;">"metadata"</span>: { <span style="color: #93c5fd;">"user_id"</span>: <span style="color: #93c5fd;">"user-789"</span>, <span style="color: #93c5fd;">"correlation_id"</span>: <span style="color: #93c5fd;">"req-abc"</span> }</div>
+  <div>}</div>
+  </div>
 </div>
 
 ---
@@ -418,41 +418,41 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 8px;">RESPONSIBILITIES:</div>
 <div style="color: #1e293b; font-size: 12px; margin-left: 8px;">
 <div>- Authentication & Authorization</div>
-<div>- Rate limiting & Throttling</div>
-<div>- Request/Response transformation</div>
-<div>- Load balancing</div>
-<div>- Caching</div>
-<div>- Circuit breaking</div>
-<div>- Monitoring & Logging</div>
-<div>- API versioning</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 200px;">
-<div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">POPULAR IMPLEMENTATIONS:</div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px;">
-<span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Kong</span>
-<span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">AWS API Gateway</span>
-<span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Nginx</span>
-<span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Envoy</span>
-<span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Traefik</span>
-</div>
-</div>
-</div>
-</div>
+  <div>- Rate limiting & Throttling</div>
+    <div>- Request/Response transformation</div>
+      <div>- Load balancing</div>
+        <div>- Caching</div>
+          <div>- Circuit breaking</div>
+            <div>- Monitoring & Logging</div>
+              <div>- API versioning</div>
+              </div>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+            <div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">POPULAR IMPLEMENTATIONS:</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Kong</span>
+            <span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">AWS API Gateway</span>
+            <span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Nginx</span>
+            <span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Envoy</span>
+            <span style="background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #86efac;">Traefik</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
----
+    ---
 
-## 6. Backend for Frontend (BFF)
+    ## 6. Backend for Frontend (BFF)
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: BACKEND FOR FRONTEND (BFF)</h3>
-<div style="margin-bottom: 24px;">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
-<div style="color: #1e293b; font-size: 13px;">Different clients (web, mobile, IoT) have different data needs. A single API is either over-fetching or under-fetching.</div>
-</div>
-<div style="margin-bottom: 24px;">
-<div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
-<div style="color: #1e293b; font-size: 13px;">Create separate backend for each frontend type.</div>
+    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+    <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: BACKEND FOR FRONTEND (BFF)</h3>
+    <div style="margin-bottom: 24px;">
+    <div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
+    <div style="color: #1e293b; font-size: 13px;">Different clients (web, mobile, IoT) have different data needs. A single API is either over-fetching or under-fetching.</div>
+  </div>
+  <div style="margin-bottom: 24px;">
+  <div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
+  <div style="color: #1e293b; font-size: 13px;">Create separate backend for each frontend type.</div>
 </div>
 <div style="background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
 <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 24px; justify-content: center;">
@@ -494,56 +494,56 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #7c3aed; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Mobile BFF</div>
 <div style="color: #1e293b; font-size: 11px;">
 <div>- Smaller payload</div>
-<div>- Image thumbnails</div>
-<div>- Paginated lists</div>
-<div>- Offline-first</div>
-<div>- Push notif ready</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 200px; background: rgba(59,130,246,0.05); border-radius: 8px; padding: 16px; border: 1px solid rgba(59,130,246,0.2);">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Web BFF</div>
-<div style="color: #1e293b; font-size: 11px;">
-<div>- Full payload</div>
-<div>- High-res images</div>
-<div>- Infinite scroll</div>
-<div>- Real-time updates</div>
-<div>- WebSocket ready</div>
-</div>
-</div>
-</div>
-</div>
+  <div>- Image thumbnails</div>
+    <div>- Paginated lists</div>
+      <div>- Offline-first</div>
+        <div>- Push notif ready</div>
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 200px; background: rgba(59,130,246,0.05); border-radius: 8px; padding: 16px; border: 1px solid rgba(59,130,246,0.2);">
+      <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Web BFF</div>
+      <div style="color: #1e293b; font-size: 11px;">
+      <div>- Full payload</div>
+        <div>- High-res images</div>
+          <div>- Infinite scroll</div>
+            <div>- Real-time updates</div>
+              <div>- WebSocket ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
----
+        ---
 
-## 7. Circuit Breaker Pattern
+        ## 7. Circuit Breaker Pattern
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: CIRCUIT BREAKER</h3>
-<div style="margin-bottom: 24px;">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
-<div style="color: #1e293b; font-size: 13px;">How to prevent cascade failures when a service is unavailable?</div>
-</div>
-<div style="margin-bottom: 24px;">
-<div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
-<div style="color: #1e293b; font-size: 13px;">Implement a circuit breaker that stops requests when failures exceed a threshold.</div>
-</div>
-<div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 12px;">STATE MACHINE:</div>
-<div style="background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
-<div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
-<div style="text-align: center;">
-<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11px; flex-direction: column;">
-<div>CLOSED</div>
-<div style="font-size: 9px; opacity: 0.8;">(Normal)</div>
-</div>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-<div style="color: #dc2626; font-size: 10px;">failure threshold exceeded</div>
-<div style="color: #dc2626; font-size: 16px;">-></div>
+        <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+        <h3 style="color: #3b82f6; margin: 0 0 8px 0; font-size: 16px;">PATTERN: CIRCUIT BREAKER</h3>
+        <div style="margin-bottom: 24px;">
+        <div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PROBLEM:</div>
+        <div style="color: #1e293b; font-size: 13px;">How to prevent cascade failures when a service is unavailable?</div>
+      </div>
+      <div style="margin-bottom: 24px;">
+      <div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">SOLUTION:</div>
+      <div style="color: #1e293b; font-size: 13px;">Implement a circuit breaker that stops requests when failures exceed a threshold.</div>
+    </div>
+    <div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 12px;">STATE MACHINE:</div>
+    <div style="background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
+    <div style="text-align: center;">
+    <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11px; flex-direction: column;">
+    <div>CLOSED</div>
+      <div style="font-size: 9px; opacity: 0.8;">(Normal)</div>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+  <div style="color: #dc2626; font-size: 10px;">failure threshold exceeded</div>
+  <div style="color: #dc2626; font-size: 16px;">-></div>
 </div>
 <div style="text-align: center;">
 <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11px; flex-direction: column;">
 <div>OPEN</div>
-<div style="font-size: 9px; opacity: 0.8;">(Fast fail)</div>
+  <div style="font-size: 9px; opacity: 0.8;">(Fast fail)</div>
 </div>
 </div>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
@@ -553,7 +553,7 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="text-align: center;">
 <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11px; flex-direction: column;">
 <div>HALF-OPEN</div>
-<div style="font-size: 9px; opacity: 0.8;">(Test mode)</div>
+  <div style="font-size: 9px; opacity: 0.8;">(Test mode)</div>
 </div>
 </div>
 </div>
@@ -565,20 +565,20 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 12px;">IMPLEMENTATION EXAMPLE (Go):</div>
 <div style="background: #1e293b; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px; color: #e2e8f0; margin-bottom: 24px; overflow-x: auto;">
 <div><span style="color: #f97316;">breaker</span> := gobreaker.NewCircuitBreaker(gobreaker.Settings{</div>
-<div style="margin-left: 16px;">Name:        <span style="color: #93c5fd;">"payment-service"</span>,</div>
-<div style="margin-left: 16px;">MaxRequests: <span style="color: #f97316;">5</span>,           <span style="color: #94a3b8;">// Requests in half-open</span></div>
-<div style="margin-left: 16px;">Interval:    <span style="color: #f97316;">10</span> * time.Second, <span style="color: #94a3b8;">// Clear counts</span></div>
-<div style="margin-left: 16px;">Timeout:     <span style="color: #f97316;">30</span> * time.Second, <span style="color: #94a3b8;">// Time in open</span></div>
-<div style="margin-left: 16px;">ReadyToTrip: <span style="color: #f97316;">func</span>(counts) <span style="color: #f97316;">bool</span> { <span style="color: #f97316;">return</span> counts.ConsecutiveFailures > <span style="color: #f97316;">3</span> },</div>
-<div>})</div>
-<div style="margin-top: 8px;"><span style="color: #f97316;">result</span>, err := breaker.Execute(<span style="color: #f97316;">func</span>() { <span style="color: #f97316;">return</span> paymentClient.ProcessPayment(ctx, payment) })</div>
-</div>
-<div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 8px;">CONFIGURATION:</div>
-<div style="color: #1e293b; font-size: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
-<div style="flex: 1; min-width: 200px;">- Failure threshold: 50% failures in 10 seconds</div>
-<div style="flex: 1; min-width: 200px;">- Open duration: 30 seconds before trying again</div>
-<div style="flex: 1; min-width: 200px;">- Half-open: Allow 3 test requests</div>
-<div style="flex: 1; min-width: 200px;">- Reset: Full reset after 10 consecutive successes</div>
+  <div style="margin-left: 16px;">Name:        <span style="color: #93c5fd;">"payment-service"</span>,</div>
+  <div style="margin-left: 16px;">MaxRequests: <span style="color: #f97316;">5</span>,           <span style="color: #94a3b8;">// Requests in half-open</span></div>
+  <div style="margin-left: 16px;">Interval:    <span style="color: #f97316;">10</span> * time.Second, <span style="color: #94a3b8;">// Clear counts</span></div>
+  <div style="margin-left: 16px;">Timeout:     <span style="color: #f97316;">30</span> * time.Second, <span style="color: #94a3b8;">// Time in open</span></div>
+  <div style="margin-left: 16px;">ReadyToTrip: <span style="color: #f97316;">func</span>(counts) <span style="color: #f97316;">bool</span> { <span style="color: #f97316;">return</span> counts.ConsecutiveFailures > <span style="color: #f97316;">3</span> },</div>
+  <div>})</div>
+    <div style="margin-top: 8px;"><span style="color: #f97316;">result</span>, err := breaker.Execute(<span style="color: #f97316;">func</span>() { <span style="color: #f97316;">return</span> paymentClient.ProcessPayment(ctx, payment) })</div>
+  </div>
+  <div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 8px;">CONFIGURATION:</div>
+  <div style="color: #1e293b; font-size: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+  <div style="flex: 1; min-width: 200px;">- Failure threshold: 50% failures in 10 seconds</div>
+  <div style="flex: 1; min-width: 200px;">- Open duration: 30 seconds before trying again</div>
+  <div style="flex: 1; min-width: 200px;">- Half-open: Allow 3 test requests</div>
+  <div style="flex: 1; min-width: 200px;">- Reset: Full reset after 10 consecutive successes</div>
 </div>
 </div>
 
@@ -603,9 +603,9 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #1e293b; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SHARED THREAD POOL (100)</div>
 <div style="color: #dc2626; font-size: 11px;">
 <div>All requests share same pool</div>
-<div>Slow service exhausts all threads</div>
-<div style="font-weight: bold;">ALL services affected!</div>
-</div>
+  <div>Slow service exhausts all threads</div>
+    <div style="font-weight: bold;">ALL services affected!</div>
+  </div>
 </div>
 </div>
 <div style="flex: 1; min-width: 250px; background: rgba(34,197,94,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(34,197,94,0.2);">
@@ -635,22 +635,22 @@ This comprehensive guide covers the essential design patterns you need to know w
 <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">1. Thread Pool Isolation</div>
 <div style="color: #1e293b; font-size: 11px;">
 <div>- Separate thread pools per dependency</div>
-<div>- Slow dependency can't exhaust all threads</div>
-</div>
+  <div>- Slow dependency can't exhaust all threads</div>
+  </div>
 </div>
 <div style="flex: 1; min-width: 180px; background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;">
 <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">2. Semaphore Isolation</div>
 <div style="color: #1e293b; font-size: 11px;">
 <div>- Limit concurrent calls to dependency</div>
-<div>- Lower overhead than thread pools</div>
-</div>
+  <div>- Lower overhead than thread pools</div>
+  </div>
 </div>
 <div style="flex: 1; min-width: 180px; background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;">
 <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">3. Connection Pool Isolation</div>
 <div style="color: #1e293b; font-size: 11px;">
 <div>- Separate DB connection pools per service</div>
-<div>- Prevents DB connection exhaustion</div>
-</div>
+  <div>- Prevents DB connection exhaustion</div>
+  </div>
 </div>
 </div>
 </div>

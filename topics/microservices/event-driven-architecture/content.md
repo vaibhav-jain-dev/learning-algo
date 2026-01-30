@@ -102,119 +102,119 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="color: #64748b; font-size: 10px;">
 <div style="font-weight: bold; color: #7ee787; margin-bottom: 4px;">Characteristics:</div>
 <div>- Immutable (cannot be changed after creation)</div>
-<div>- Past tense (OrderCreated, not CreateOrder)</div>
-<div>- Contains enough data for consumers</div>
-<div>- Self-describing (includes type and schema version)</div>
-</div>
-</div>
-<!-- PRODUCER -->
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">PRODUCER (Publisher)</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Service that emits events when something happens</div>
-<div style="color: #64748b; font-size: 10px;">
-<div style="font-weight: bold; color: #58a6ff; margin-bottom: 4px;">Responsibilities:</div>
-<div>- Create well-formed events</div>
-<div>- Ensure delivery to message broker</div>
-<div>- Handle publish failures</div>
-<div>- Not responsible for post-publish handling</div>
-</div>
-</div>
-<!-- CONSUMER -->
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
-<div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CONSUMER (Subscriber)</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Service that reacts to events</div>
-<div style="color: #64748b; font-size: 10px;">
-<div style="font-weight: bold; color: #58a6ff; margin-bottom: 4px;">Responsibilities:</div>
-<div>- Subscribe to relevant topics</div>
-<div>- Process events idempotently</div>
-<div>- Handle processing failures</div>
-<div>- Manage consumer offsets</div>
-</div>
-</div>
-<!-- EVENT BROKER -->
-<div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
-<div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">EVENT BROKER</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 8px;">Infrastructure that routes events from producers to consumers</div>
-<div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px;">
-<span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">Kafka</span>
-<span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">RabbitMQ</span>
-<span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">EventBridge</span>
-<span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">Redis Streams</span>
-</div>
-<div style="color: #64748b; font-size: 10px;">
-<div style="font-weight: bold; color: #58a6ff; margin-bottom: 4px;">Responsibilities:</div>
-<div>- Receive events from producers</div>
-<div>- Store events (optionally)</div>
-<div>- Deliver events to consumers</div>
-<div>- Handle consumer groups and partitioning</div>
-</div>
-</div>
-</div>
-</div>
+  <div>- Past tense (OrderCreated, not CreateOrder)</div>
+    <div>- Contains enough data for consumers</div>
+      <div>- Self-describing (includes type and schema version)</div>
+      </div>
+    </div>
+    <!-- PRODUCER -->
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
+    <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">PRODUCER (Publisher)</div>
+    <div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Service that emits events when something happens</div>
+    <div style="color: #64748b; font-size: 10px;">
+    <div style="font-weight: bold; color: #58a6ff; margin-bottom: 4px;">Responsibilities:</div>
+    <div>- Create well-formed events</div>
+      <div>- Ensure delivery to message broker</div>
+        <div>- Handle publish failures</div>
+          <div>- Not responsible for post-publish handling</div>
+          </div>
+        </div>
+        <!-- CONSUMER -->
+        <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
+        <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CONSUMER (Subscriber)</div>
+        <div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Service that reacts to events</div>
+        <div style="color: #64748b; font-size: 10px;">
+        <div style="font-weight: bold; color: #58a6ff; margin-bottom: 4px;">Responsibilities:</div>
+        <div>- Subscribe to relevant topics</div>
+          <div>- Process events idempotently</div>
+            <div>- Handle processing failures</div>
+              <div>- Manage consumer offsets</div>
+              </div>
+            </div>
+            <!-- EVENT BROKER -->
+            <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
+            <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">EVENT BROKER</div>
+            <div style="color: #1e293b; font-size: 11px; margin-bottom: 8px;">Infrastructure that routes events from producers to consumers</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px;">
+            <span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">Kafka</span>
+            <span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">RabbitMQ</span>
+            <span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">EventBridge</span>
+            <span style="background: rgba(247,129,102,0.2); color: #f78166; padding: 2px 6px; border-radius: 4px; font-size: 9px;">Redis Streams</span>
+          </div>
+          <div style="color: #64748b; font-size: 10px;">
+          <div style="font-weight: bold; color: #58a6ff; margin-bottom: 4px;">Responsibilities:</div>
+          <div>- Receive events from producers</div>
+            <div>- Store events (optionally)</div>
+              <div>- Deliver events to consumers</div>
+                <div>- Handle consumer groups and partitioning</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
----
+          ---
 
-## Event Types
+          ## Event Types
 
-### Event Classification
+          ### Event Classification
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT TYPES</h4>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-<!-- Domain Events -->
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">1. DOMAIN EVENTS</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Business-meaningful events within a bounded context</div>
-<div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px;">
-<span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">OrderPlaced</span>
-<span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">PaymentReceived</span>
-<span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">InventoryReserved</span>
-<span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">ShipmentDelivered</span>
-</div>
-<div style="color: #64748b; font-size: 10px;">
-<div>- Named in business language</div>
-<div>- Contains business-relevant data</div>
-<div>- Triggers business workflows</div>
-</div>
-</div>
-<!-- Integration Events -->
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">2. INTEGRATION EVENTS</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Events that cross service boundaries</div>
-<div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">
-<div style="font-weight: bold; margin-bottom: 4px;">Design considerations:</div>
-<div>- Should be versioned</div>
-<div>- Minimize data exposure</div>
-<div>- Consider backward compatibility</div>
-</div>
-<div style="background: rgba(248,81,73,0.1); border-radius: 6px; padding: 8px; font-size: 9px;">
-<span style="color: #f85149; font-weight: bold;">Anti-pattern:</span> <span style="color: #64748b;">Exposing all domain events as integration events</span>
-</div>
-</div>
-<!-- Event Notification -->
-<div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
-<div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">3. EVENT NOTIFICATION</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Minimal event that signals something happened</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 9px; color: #1e293b; margin-bottom: 8px;">
-{ <span style="color: #7ee787;">"type"</span>: <span style="color: #a5d6ff;">"OrderStatusChanged"</span>, <span style="color: #7ee787;">"order_id"</span>: <span style="color: #a5d6ff;">"123"</span> }
-</div>
-<div style="font-size: 9px;">
-<span style="color: #7ee787;">Pros:</span> <span style="color: #64748b;">Small payload, less coupling</span><br/>
-<span style="color: #f85149;">Cons:</span> <span style="color: #64748b;">Requires callback for details</span>
-</div>
-</div>
-<!-- Event-Carried State Transfer -->
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
-<div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">4. EVENT-CARRIED STATE TRANSFER</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Event contains all data needed by consumers</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 9px; color: #1e293b; margin-bottom: 8px;">
-{ <span style="color: #7ee787;">"type"</span>: <span style="color: #a5d6ff;">"OrderCreated"</span>,<br/>
-&nbsp;&nbsp;<span style="color: #7ee787;">"customer"</span>: { ... },<br/>
-&nbsp;&nbsp;<span style="color: #7ee787;">"items"</span>: [...], <span style="color: #7ee787;">"total"</span>: <span style="color: #f78166;">150.00</span> }
-</div>
-<div style="font-size: 9px;">
-<span style="color: #7ee787;">Pros:</span> <span style="color: #64748b;">No callbacks, consumer autonomous</span><br/>
-<span style="color: #f85149;">Cons:</span> <span style="color: #64748b;">Larger payload, data duplication</span>
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+          <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT TYPES</h4>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+          <!-- Domain Events -->
+          <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
+          <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">1. DOMAIN EVENTS</div>
+          <div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Business-meaningful events within a bounded context</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px;">
+          <span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">OrderPlaced</span>
+          <span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">PaymentReceived</span>
+          <span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">InventoryReserved</span>
+          <span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 2px 8px; border-radius: 4px; font-size: 9px;">ShipmentDelivered</span>
+        </div>
+        <div style="color: #64748b; font-size: 10px;">
+        <div>- Named in business language</div>
+          <div>- Contains business-relevant data</div>
+            <div>- Triggers business workflows</div>
+            </div>
+          </div>
+          <!-- Integration Events -->
+          <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff;">
+          <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">2. INTEGRATION EVENTS</div>
+          <div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Events that cross service boundaries</div>
+          <div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">
+          <div style="font-weight: bold; margin-bottom: 4px;">Design considerations:</div>
+          <div>- Should be versioned</div>
+            <div>- Minimize data exposure</div>
+              <div>- Consider backward compatibility</div>
+              </div>
+              <div style="background: rgba(248,81,73,0.1); border-radius: 6px; padding: 8px; font-size: 9px;">
+              <span style="color: #f85149; font-weight: bold;">Anti-pattern:</span> <span style="color: #64748b;">Exposing all domain events as integration events</span>
+            </div>
+          </div>
+          <!-- Event Notification -->
+          <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #f78166;">
+          <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">3. EVENT NOTIFICATION</div>
+          <div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Minimal event that signals something happened</div>
+          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 9px; color: #1e293b; margin-bottom: 8px;">
+          { <span style="color: #7ee787;">"type"</span>: <span style="color: #a5d6ff;">"OrderStatusChanged"</span>, <span style="color: #7ee787;">"order_id"</span>: <span style="color: #a5d6ff;">"123"</span> }
+        </div>
+        <div style="font-size: 9px;">
+        <span style="color: #7ee787;">Pros:</span> <span style="color: #64748b;">Small payload, less coupling</span><br/>
+        <span style="color: #f85149;">Cons:</span> <span style="color: #64748b;">Requires callback for details</span>
+      </div>
+    </div>
+    <!-- Event-Carried State Transfer -->
+    <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
+    <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">4. EVENT-CARRIED STATE TRANSFER</div>
+    <div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;">Event contains all data needed by consumers</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 9px; color: #1e293b; margin-bottom: 8px;">
+    { <span style="color: #7ee787;">"type"</span>: <span style="color: #a5d6ff;">"OrderCreated"</span>,<br/>
+    &nbsp;&nbsp;<span style="color: #7ee787;">"customer"</span>: { ... },<br/>
+    &nbsp;&nbsp;<span style="color: #7ee787;">"items"</span>: [...], <span style="color: #7ee787;">"total"</span>: <span style="color: #f78166;">150.00</span> }
+  </div>
+  <div style="font-size: 9px;">
+  <span style="color: #7ee787;">Pros:</span> <span style="color: #64748b;">No callbacks, consumer autonomous</span><br/>
+  <span style="color: #f85149;">Cons:</span> <span style="color: #64748b;">Larger payload, data duplication</span>
 </div>
 </div>
 </div>
@@ -230,42 +230,42 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">METADATA (Envelope)</div>
 <div style="font-family: monospace; font-size: 9px; color: #1e293b;">
 <div><span style="color: #7ee787;">"id"</span>: <span style="color: #a5d6ff;">"evt-550e8400-..."</span></div>
-<div><span style="color: #7ee787;">"type"</span>: <span style="color: #a5d6ff;">"com.company.order.OrderCreated"</span></div>
-<div><span style="color: #7ee787;">"source"</span>: <span style="color: #a5d6ff;">"order-service"</span></div>
-<div><span style="color: #7ee787;">"spec_version"</span>: <span style="color: #a5d6ff;">"1.0"</span></div>
-<div><span style="color: #7ee787;">"time"</span>: <span style="color: #a5d6ff;">"2024-01-15T10:30:00Z"</span></div>
-<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
-<span style="color: #64748b;">// Correlation</span><br/>
-<span style="color: #7ee787;">"correlation_id"</span>: <span style="color: #a5d6ff;">"req-abc123"</span><br/>
-<span style="color: #7ee787;">"causation_id"</span>: <span style="color: #a5d6ff;">"evt-xyz789"</span>
-</div>
-</div>
-</div>
-<!-- Payload Section -->
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PAYLOAD (Business Data)</div>
-<div style="font-family: monospace; font-size: 9px; color: #1e293b;">
-<div><span style="color: #7ee787;">"data"</span>: {</div>
-<div style="margin-left: 12px;"><span style="color: #7ee787;">"order_id"</span>: <span style="color: #a5d6ff;">"ord-123"</span>,</div>
-<div style="margin-left: 12px;"><span style="color: #7ee787;">"customer_id"</span>: <span style="color: #a5d6ff;">"cust-456"</span>,</div>
-<div style="margin-left: 12px;"><span style="color: #7ee787;">"items"</span>: [{</div>
-<div style="margin-left: 24px;"><span style="color: #7ee787;">"product_id"</span>: <span style="color: #a5d6ff;">"prod-789"</span>,</div>
-<div style="margin-left: 24px;"><span style="color: #7ee787;">"quantity"</span>: <span style="color: #f78166;">2</span>,</div>
-<div style="margin-left: 24px;"><span style="color: #7ee787;">"unit_price"</span>: <span style="color: #f78166;">49.99</span></div>
-<div style="margin-left: 12px;">}],</div>
-<div style="margin-left: 12px;"><span style="color: #7ee787;">"total"</span>: <span style="color: #f78166;">99.98</span></div>
-<div>}</div>
-</div>
-</div>
-</div>
-<!-- CloudEvents Specification -->
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
-<div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CLOUDEVENTS SPECIFICATION</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 8px;">Industry standard for event format - <span style="color: #58a6ff;">https://cloudevents.io/</span></div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px;">
-<div style="font-size: 10px;">
-<span style="color: #7ee787; font-weight: bold;">Required:</span>
-<span style="color: #64748b;">id, source, specversion, type</span>
+  <div><span style="color: #7ee787;">"type"</span>: <span style="color: #a5d6ff;">"com.company.order.OrderCreated"</span></div>
+    <div><span style="color: #7ee787;">"source"</span>: <span style="color: #a5d6ff;">"order-service"</span></div>
+      <div><span style="color: #7ee787;">"spec_version"</span>: <span style="color: #a5d6ff;">"1.0"</span></div>
+        <div><span style="color: #7ee787;">"time"</span>: <span style="color: #a5d6ff;">"2024-01-15T10:30:00Z"</span></div>
+          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
+          <span style="color: #64748b;">// Correlation</span><br/>
+          <span style="color: #7ee787;">"correlation_id"</span>: <span style="color: #a5d6ff;">"req-abc123"</span><br/>
+          <span style="color: #7ee787;">"causation_id"</span>: <span style="color: #a5d6ff;">"evt-xyz789"</span>
+        </div>
+      </div>
+    </div>
+    <!-- Payload Section -->
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787;">
+    <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PAYLOAD (Business Data)</div>
+    <div style="font-family: monospace; font-size: 9px; color: #1e293b;">
+    <div><span style="color: #7ee787;">"data"</span>: {</div>
+      <div style="margin-left: 12px;"><span style="color: #7ee787;">"order_id"</span>: <span style="color: #a5d6ff;">"ord-123"</span>,</div>
+      <div style="margin-left: 12px;"><span style="color: #7ee787;">"customer_id"</span>: <span style="color: #a5d6ff;">"cust-456"</span>,</div>
+      <div style="margin-left: 12px;"><span style="color: #7ee787;">"items"</span>: [{</div>
+      <div style="margin-left: 24px;"><span style="color: #7ee787;">"product_id"</span>: <span style="color: #a5d6ff;">"prod-789"</span>,</div>
+      <div style="margin-left: 24px;"><span style="color: #7ee787;">"quantity"</span>: <span style="color: #f78166;">2</span>,</div>
+      <div style="margin-left: 24px;"><span style="color: #7ee787;">"unit_price"</span>: <span style="color: #f78166;">49.99</span></div>
+      <div style="margin-left: 12px;">}],</div>
+      <div style="margin-left: 12px;"><span style="color: #7ee787;">"total"</span>: <span style="color: #f78166;">99.98</span></div>
+      <div>}</div>
+      </div>
+    </div>
+  </div>
+  <!-- CloudEvents Specification -->
+  <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #8957e5;">
+  <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CLOUDEVENTS SPECIFICATION</div>
+  <div style="color: #1e293b; font-size: 11px; margin-bottom: 8px;">Industry standard for event format - <span style="color: #58a6ff;">https://cloudevents.io/</span></div>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+  <div style="font-size: 10px;">
+  <span style="color: #7ee787; font-weight: bold;">Required:</span>
+  <span style="color: #64748b;">id, source, specversion, type</span>
 </div>
 <div style="font-size: 10px;">
 <span style="color: #f0883e; font-weight: bold;">Optional:</span>
@@ -319,38 +319,38 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="color: #1e293b; font-size: 11px; margin-bottom: 12px;"><strong>Topic:</strong> order-events (3 partitions, replication factor 3)</div>
 <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; font-family: monospace; font-size: 10px;">
 <div><span style="color: #7ee787;">Partition 0:</span> <span style="color: #64748b;">[msg0][msg3][msg6][msg9]...</span></div>
-<div><span style="color: #58a6ff;">Partition 1:</span> <span style="color: #64748b;">[msg1][msg4][msg7][msg10]...</span></div>
-<div><span style="color: #8957e5;">Partition 2:</span> <span style="color: #64748b;">[msg2][msg5][msg8][msg11]...</span></div>
-</div>
-<div style="color: #64748b; font-size: 10px;">
-<div><strong style="color: #1e293b;">Partitioning strategy:</strong></div>
-<div>- Key-based: hash(order_id) % num_partitions</div>
-<div>- Round-robin: If no key specified</div>
-<div style="margin-top: 8px; color: #7ee787;"><strong>Same key always goes to same partition - Ordering guarantee</strong></div>
-</div>
-</div>
-<!-- Consumer Groups -->
-<div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CONSUMER GROUPS:</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #7ee787;">
-<div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Group: order-processor</div>
-<div style="font-size: 10px; color: #1e293b;">
-<div>Consumer 1 ← Partition 0</div>
-<div>Consumer 2 ← Partition 1</div>
-<div>Consumer 3 ← Partition 2</div>
-</div>
-</div>
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #58a6ff;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Group: analytics</div>
-<div style="font-size: 10px; color: #1e293b;">
-<div>Consumer A ← All partitions</div>
-<div style="margin-top: 8px; color: #64748b; font-style: italic;">(single consumer handles all)</div>
-</div>
-</div>
-</div>
-<div style="margin-top: 12px; background: rgba(248,81,73,0.1); border-radius: 6px; padding: 8px; font-size: 10px; color: #f85149;">
-<strong>Note:</strong> Max consumers per group = Number of partitions
-</div>
+  <div><span style="color: #58a6ff;">Partition 1:</span> <span style="color: #64748b;">[msg1][msg4][msg7][msg10]...</span></div>
+    <div><span style="color: #8957e5;">Partition 2:</span> <span style="color: #64748b;">[msg2][msg5][msg8][msg11]...</span></div>
+    </div>
+    <div style="color: #64748b; font-size: 10px;">
+    <div><strong style="color: #1e293b;">Partitioning strategy:</strong></div>
+      <div>- Key-based: hash(order_id) % num_partitions</div>
+        <div>- Round-robin: If no key specified</div>
+          <div style="margin-top: 8px; color: #7ee787;"><strong>Same key always goes to same partition - Ordering guarantee</strong></div>
+        </div>
+      </div>
+      <!-- Consumer Groups -->
+      <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CONSUMER GROUPS:</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #7ee787;">
+      <div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Group: order-processor</div>
+      <div style="font-size: 10px; color: #1e293b;">
+      <div>Consumer 1 ← Partition 0</div>
+        <div>Consumer 2 ← Partition 1</div>
+          <div>Consumer 3 ← Partition 2</div>
+          </div>
+        </div>
+        <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #58a6ff;">
+        <div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Group: analytics</div>
+        <div style="font-size: 10px; color: #1e293b;">
+        <div>Consumer A ← All partitions</div>
+          <div style="margin-top: 8px; color: #64748b; font-style: italic;">(single consumer handles all)</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 12px; background: rgba(248,81,73,0.1); border-radius: 6px; padding: 8px; font-size: 10px; color: #f85149;">
+    <strong>Note:</strong> Max consumers per group = Number of partitions
+  </div>
 </div>
 
 ### Topic Design
@@ -379,12 +379,12 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">2. MULTIPLE EVENT TYPES PER TOPIC</div>
 <div style="font-size: 10px; margin-bottom: 12px; color: #1e293b;">
 <div><span style="color: #58a6ff;">order.events</span>: OrderCreated, OrderShipped, OrderDelivered</div>
-<div><span style="color: #58a6ff;">payment.events</span>: PaymentReceived, RefundIssued</div>
-</div>
-<div style="font-size: 10px;">
-<div style="color: #7ee787;">+ Fewer topics</div>
-<div style="color: #7ee787;">+ Natural ordering within aggregate</div>
-<div style="color: #f85149;">- Consumers receive unneeded events</div>
+  <div><span style="color: #58a6ff;">payment.events</span>: PaymentReceived, RefundIssued</div>
+  </div>
+  <div style="font-size: 10px;">
+  <div style="color: #7ee787;">+ Fewer topics</div>
+  <div style="color: #7ee787;">+ Natural ordering within aggregate</div>
+  <div style="color: #f85149;">- Consumers receive unneeded events</div>
 </div>
 </div>
 </div>
@@ -393,28 +393,28 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PARTITION COUNT GUIDELINES</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div>
-<div style="color: #1e293b; font-weight: bold; font-size: 10px; margin-bottom: 6px;">Factors to consider:</div>
-<div style="font-size: 10px; color: #64748b;">
-<div>- Expected throughput</div>
-<div>- Number of consumer instances</div>
-<div>- Ordering requirements</div>
-</div>
-</div>
-<div>
-<div style="color: #1e293b; font-weight: bold; font-size: 10px; margin-bottom: 6px;">Rules of thumb:</div>
-<div style="font-size: 10px; color: #64748b;">
-<div>- partitions >= max consumers</div>
-<div>- Cannot reduce partitions later</div>
-<div>- More partitions = more overhead</div>
-</div>
-</div>
-</div>
-<div style="margin-top: 12px; background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 10px; margin-bottom: 6px;">Example Calculation:</div>
-<div style="font-size: 10px; color: #1e293b;">
-Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | With buffer: 12-15 partitions
-</div>
-</div>
+  <div style="color: #1e293b; font-weight: bold; font-size: 10px; margin-bottom: 6px;">Factors to consider:</div>
+  <div style="font-size: 10px; color: #64748b;">
+  <div>- Expected throughput</div>
+    <div>- Number of consumer instances</div>
+      <div>- Ordering requirements</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #1e293b; font-weight: bold; font-size: 10px; margin-bottom: 6px;">Rules of thumb:</div>
+      <div style="font-size: 10px; color: #64748b;">
+      <div>- partitions >= max consumers</div>
+        <div>- Cannot reduce partitions later</div>
+          <div>- More partitions = more overhead</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 12px; background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+      <div style="color: #7ee787; font-weight: bold; font-size: 10px; margin-bottom: 6px;">Example Calculation:</div>
+      <div style="font-size: 10px; color: #1e293b;">
+      Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | With buffer: 12-15 partitions
+    </div>
+  </div>
 </div>
 </div>
 
@@ -521,13 +521,13 @@ Load snapshot v100, apply events 101-150
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
 <!-- Commands (Write) Side -->
 <div>
-<div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787; margin-bottom: 12px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">COMMANDS</div>
-<div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 9px;">
-<span style="background: rgba(126,231,135,0.2); padding: 2px 6px; border-radius: 4px; color: #7ee787;">CreateOrder</span>
-<span style="background: rgba(126,231,135,0.2); padding: 2px 6px; border-radius: 4px; color: #7ee787;">AddItem</span>
-<span style="background: rgba(126,231,135,0.2); padding: 2px 6px; border-radius: 4px; color: #7ee787;">ProcessPayment</span>
+  <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
+  <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #7ee787; margin-bottom: 12px;">
+  <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">COMMANDS</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 9px;">
+  <span style="background: rgba(126,231,135,0.2); padding: 2px 6px; border-radius: 4px; color: #7ee787;">CreateOrder</span>
+  <span style="background: rgba(126,231,135,0.2); padding: 2px 6px; border-radius: 4px; color: #7ee787;">AddItem</span>
+  <span style="background: rgba(126,231,135,0.2); padding: 2px 6px; border-radius: 4px; color: #7ee787;">ProcessPayment</span>
 </div>
 </div>
 <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
@@ -535,24 +535,24 @@ Load snapshot v100, apply events 101-150
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">WRITE MODEL</div>
 <div style="font-size: 10px; color: #1e293b;">
 <div>- Event Store</div>
-<div>- Domain Logic</div>
-<div>- Aggregates</div>
-</div>
-</div>
-<div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
-<div style="background: #1f6feb; border-radius: 8px; padding: 12px; text-align: center; color: #fff; font-size: 10px;">
-<strong>PostgreSQL</strong><br/>(Event Store)
+  <div>- Domain Logic</div>
+    <div>- Aggregates</div>
+    </div>
+  </div>
+  <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
+  <div style="background: #1f6feb; border-radius: 8px; padding: 12px; text-align: center; color: #fff; font-size: 10px;">
+  <strong>PostgreSQL</strong><br/>(Event Store)
 </div>
 </div>
 <!-- Queries (Read) Side -->
 <div>
-<div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff; margin-bottom: 12px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">QUERIES</div>
-<div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 9px;">
-<span style="background: rgba(88,166,255,0.2); padding: 2px 6px; border-radius: 4px; color: #58a6ff;">GetOrder</span>
-<span style="background: rgba(88,166,255,0.2); padding: 2px 6px; border-radius: 4px; color: #58a6ff;">ListOrders</span>
-<span style="background: rgba(88,166,255,0.2); padding: 2px 6px; border-radius: 4px; color: #58a6ff;">GetAnalytics</span>
+  <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
+  <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 3px solid #58a6ff; margin-bottom: 12px;">
+  <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">QUERIES</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 9px;">
+  <span style="background: rgba(88,166,255,0.2); padding: 2px 6px; border-radius: 4px; color: #58a6ff;">GetOrder</span>
+  <span style="background: rgba(88,166,255,0.2); padding: 2px 6px; border-radius: 4px; color: #58a6ff;">ListOrders</span>
+  <span style="background: rgba(88,166,255,0.2); padding: 2px 6px; border-radius: 4px; color: #58a6ff;">GetAnalytics</span>
 </div>
 </div>
 <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
@@ -560,8 +560,8 @@ Load snapshot v100, apply events 101-150
 <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">READ MODEL</div>
 <div style="font-size: 10px; color: #1e293b;">
 <div>- Materialized Views</div>
-<div>- Optimized for queries</div>
-</div>
+  <div>- Optimized for queries</div>
+  </div>
 </div>
 <div style="text-align: center; color: #58a6ff; margin-bottom: 8px;">↓</div>
 <div style="display: flex; gap: 8px;">
@@ -585,10 +585,10 @@ Load snapshot v100, apply events 101-150
 <div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">PROJECTION EXAMPLE:</div>
 <div style="font-family: monospace; font-size: 9px; color: #1e293b;">
 <div><span style="color: #8957e5;">case</span> <span style="color: #7ee787;">OrderCreated</span>: INSERT INTO order_list...</div>
-<div><span style="color: #8957e5;">case</span> <span style="color: #58a6ff;">ItemAdded</span>: UPDATE order_list SET total += price</div>
-<div><span style="color: #8957e5;">case</span> <span style="color: #f78166;">OrderShipped</span>: UPDATE order_list SET status = 'SHIPPED'</div>
-</div>
-</div>
+  <div><span style="color: #8957e5;">case</span> <span style="color: #58a6ff;">ItemAdded</span>: UPDATE order_list SET total += price</div>
+    <div><span style="color: #8957e5;">case</span> <span style="color: #f78166;">OrderShipped</span>: UPDATE order_list SET status = 'SHIPPED'</div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -625,27 +625,27 @@ Load snapshot v100, apply events 101-150
 <div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">BACKWARD (Recommended)</div>
 <div style="font-size: 9px; color: #1e293b;">
 <div>New schema reads old data</div>
-<div>Deploy consumers first</div>
-<div style="color: #7ee787; margin-top: 4px;">+ Add optional fields</div>
-<div style="color: #f85149;">- Cannot add required</div>
-</div>
+  <div>Deploy consumers first</div>
+    <div style="color: #7ee787; margin-top: 4px;">+ Add optional fields</div>
+    <div style="color: #f85149;">- Cannot add required</div>
+  </div>
 </div>
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #58a6ff;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">FORWARD</div>
 <div style="font-size: 9px; color: #1e293b;">
 <div>Old schema reads new data</div>
-<div>Deploy producers first</div>
-<div style="color: #7ee787; margin-top: 4px;">+ Add fields</div>
-<div style="color: #f85149;">- Cannot remove required</div>
-</div>
+  <div>Deploy producers first</div>
+    <div style="color: #7ee787; margin-top: 4px;">+ Add fields</div>
+    <div style="color: #f85149;">- Cannot remove required</div>
+  </div>
 </div>
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #8957e5;">
 <div style="color: #8957e5; font-weight: bold; font-size: 11px; margin-bottom: 8px;">FULL</div>
 <div style="font-size: 9px; color: #1e293b;">
 <div>Both directions compatible</div>
-<div>Safest but restrictive</div>
-<div style="color: #7ee787; margin-top: 4px;">+ Optional fields w/ defaults</div>
-</div>
+  <div>Safest but restrictive</div>
+    <div style="color: #7ee787; margin-top: 4px;">+ Optional fields w/ defaults</div>
+  </div>
 </div>
 </div>
 <!-- Avro Schema Example -->
@@ -687,53 +687,53 @@ Load snapshot v100, apply events 101-150
 <div style="color: #7ee787; font-weight: bold; font-size: 11px; margin-bottom: 8px;">PRODUCER</div>
 <div style="font-size: 9px; color: #1e293b;">
 <div>- Events published/sec</div>
-<div>- Publish latency (p50, p95, p99)</div>
-<div>- Publish failures</div>
-<div>- Batch size</div>
-</div>
-</div>
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #58a6ff;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">CONSUMER</div>
-<div style="font-size: 9px; color: #1e293b;">
-<div>- Events consumed/sec</div>
-<div>- Processing latency</div>
-<div style="color: #f85149; font-weight: bold;">- Consumer lag (CRITICAL!)</div>
-<div>- Processing failures</div>
-<div>- DLQ size</div>
-</div>
-</div>
-<div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #f78166;">
-<div style="color: #f78166; font-weight: bold; font-size: 11px; margin-bottom: 8px;">BROKER</div>
-<div style="font-size: 9px; color: #1e293b;">
-<div>- Messages in/out per topic</div>
-<div>- Disk usage</div>
-<div>- Replication lag</div>
-<div>- Under-replicated partitions</div>
-</div>
-</div>
-</div>
-<!-- Distributed Tracing -->
-<div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DISTRIBUTED TRACING:</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-<div style="color: #7ee787; font-size: 10px; margin-bottom: 8px;">Producer: Include trace context</div>
-<div style="font-family: monospace; font-size: 9px; color: #1e293b;">
-event := Event{<br/>
-&nbsp;&nbsp;TraceID: span.TraceID(),<br/>
-&nbsp;&nbsp;SpanID: span.SpanID(),<br/>
-&nbsp;&nbsp;CorrelationID: ctx.Value(...)<br/>
-}
-</div>
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
-<div style="color: #58a6ff; font-size: 10px; margin-bottom: 8px;">Consumer: Continue trace</div>
-<div style="font-family: monospace; font-size: 9px; color: #1e293b;">
-parentCtx := trace.Context...<br/>
-ctx, span := tracer.Start(<br/>
-&nbsp;&nbsp;parentCtx, "process-event"<br/>
-)
-</div>
-</div>
+  <div>- Publish latency (p50, p95, p99)</div>
+    <div>- Publish failures</div>
+      <div>- Batch size</div>
+      </div>
+    </div>
+    <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #58a6ff;">
+    <div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 8px;">CONSUMER</div>
+    <div style="font-size: 9px; color: #1e293b;">
+    <div>- Events consumed/sec</div>
+      <div>- Processing latency</div>
+        <div style="color: #f85149; font-weight: bold;">- Consumer lag (CRITICAL!)</div>
+        <div>- Processing failures</div>
+          <div>- DLQ size</div>
+          </div>
+        </div>
+        <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #f78166;">
+        <div style="color: #f78166; font-weight: bold; font-size: 11px; margin-bottom: 8px;">BROKER</div>
+        <div style="font-size: 9px; color: #1e293b;">
+        <div>- Messages in/out per topic</div>
+          <div>- Disk usage</div>
+            <div>- Replication lag</div>
+              <div>- Under-replicated partitions</div>
+              </div>
+            </div>
+          </div>
+          <!-- Distributed Tracing -->
+          <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DISTRIBUTED TRACING:</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+          <div style="color: #7ee787; font-size: 10px; margin-bottom: 8px;">Producer: Include trace context</div>
+          <div style="font-family: monospace; font-size: 9px; color: #1e293b;">
+          event := Event{<br/>
+          &nbsp;&nbsp;TraceID: span.TraceID(),<br/>
+          &nbsp;&nbsp;SpanID: span.SpanID(),<br/>
+          &nbsp;&nbsp;CorrelationID: ctx.Value(...)<br/>
+          }
+        </div>
+      </div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px;">
+      <div style="color: #58a6ff; font-size: 10px; margin-bottom: 8px;">Consumer: Continue trace</div>
+      <div style="font-family: monospace; font-size: 9px; color: #1e293b;">
+      parentCtx := trace.Context...<br/>
+      ctx, span := tracer.Start(<br/>
+      &nbsp;&nbsp;parentCtx, "process-event"<br/>
+      )
+    </div>
+  </div>
 </div>
 <!-- Alerting -->
 <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">ALERTING:</div>
@@ -742,19 +742,19 @@ ctx, span := tracer.Start(<br/>
 <div style="color: #f85149; font-weight: bold; font-size: 11px; margin-bottom: 8px;">CRITICAL</div>
 <div style="font-size: 9px; color: #1e293b;">
 <div>- Consumer lag > 10,000 messages</div>
-<div>- DLQ messages > 0</div>
-<div>- Under-replicated partitions > 0</div>
-</div>
-</div>
-<div style="background: rgba(240,136,62,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #f0883e;">
-<div style="color: #f0883e; font-weight: bold; font-size: 11px; margin-bottom: 8px;">WARNING</div>
-<div style="font-size: 9px; color: #1e293b;">
-<div>- Consumer lag growing</div>
-<div>- Processing latency > SLA</div>
-<div>- Disk usage > 80%</div>
-</div>
-</div>
-</div>
+  <div>- DLQ messages > 0</div>
+    <div>- Under-replicated partitions > 0</div>
+    </div>
+  </div>
+  <div style="background: rgba(240,136,62,0.1); border-radius: 12px; padding: 12px; border-left: 3px solid #f0883e;">
+  <div style="color: #f0883e; font-weight: bold; font-size: 11px; margin-bottom: 8px;">WARNING</div>
+  <div style="font-size: 9px; color: #1e293b;">
+  <div>- Consumer lag growing</div>
+    <div>- Processing latency > SLA</div>
+      <div>- Disk usage > 80%</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---

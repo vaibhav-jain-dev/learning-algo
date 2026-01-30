@@ -7,13 +7,13 @@
 When you need the current state, you <span style="color:#10b981">**replay all events**</span> from the beginning (or from a snapshot) to reconstruct it. This gives you a complete audit trail and the ability to understand exactly how you got to any particular state.
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
-  <h4 style="margin-top: 0; color: #166534;">Core Principle</h4>
-  <div style="font-size: 18px; font-weight: 500; color: #15803d;">
+<h4 style="margin-top: 0; color: #166534;">Core Principle</h4>
+<div style="font-size: 18px; font-weight: 500; color: #15803d;">
     "Don't store state. Store the facts that led to that state."
-  </div>
-  <div style="margin-top: 12px; color: #475569;">
+</div>
+<div style="margin-top: 12px; color: #475569;">
     Events are immutable historical facts. The current state is a left-fold over the event stream.
-  </div>
+</div>
 </div>
 
 ---
@@ -23,25 +23,25 @@ When you need the current state, you <span style="color:#10b981">**replay all ev
 ### Real Company Examples
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Companies Using Event Sourcing</h4>
-  <div style="display: grid; gap: 16px;">
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e293b; font-weight: 600;">Netflix - Viewing History</div>
-      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Netflix stores every play, pause, seek, and completion event. This enables "Continue Watching" features, personalized recommendations, and analytics on viewing patterns across millions of users.</div>
-    </div>
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
-      <div style="color: #1e293b; font-weight: 600;">Stripe - Payment Processing</div>
-      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Every payment state change is an event: created, authorized, captured, refunded. This provides complete audit trails for financial compliance and enables rebuilding payment states for dispute resolution.</div>
-    </div>
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
-      <div style="color: #1e293b; font-weight: 600;">LinkedIn - Activity Feed</div>
-      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Posts, likes, comments, and shares are all events. This enables building multiple views (feed, notifications, analytics) from the same event stream without duplicating business logic.</div>
-    </div>
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6;">
-      <div style="color: #1e293b; font-weight: 600;">LMAX Exchange - Financial Trading</div>
-      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Processes 6 million transactions/second with sub-millisecond latency using event sourcing. Complete audit trail built-in, with ability to replay any trading day for debugging or compliance.</div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Companies Using Event Sourcing</h4>
+<div style="display: grid; gap: 16px;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e293b; font-weight: 600;">Netflix - Viewing History</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">Netflix stores every play, pause, seek, and completion event. This enables "Continue Watching" features, personalized recommendations, and analytics on viewing patterns across millions of users.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+<div style="color: #1e293b; font-weight: 600;">Stripe - Payment Processing</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">Every payment state change is an event: created, authorized, captured, refunded. This provides complete audit trails for financial compliance and enables rebuilding payment states for dispute resolution.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+<div style="color: #1e293b; font-weight: 600;">LinkedIn - Activity Feed</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">Posts, likes, comments, and shares are all events. This enables building multiple views (feed, notifications, analytics) from the same event stream without duplicating business logic.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6;">
+<div style="color: #1e293b; font-weight: 600;">LMAX Exchange - Financial Trading</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">Processes 6 million transactions/second with sub-millisecond latency using event sourcing. Complete audit trail built-in, with ability to replay any trading day for debugging or compliance.</div>
+</div>
+</div>
 </div>
 
 **Key Benefits:**
@@ -60,27 +60,27 @@ When you need the current state, you <span style="color:#10b981">**replay all ev
 The <span style="color:#10b981">**Event Store**</span> is the heart of an event-sourced system - an append-only log that stores all events in the order they occurred.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Event Store Architecture</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Event Store Architecture</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 4px; margin: 20px 0;">
-    <div style="background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px 20px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <div style="font-weight: 600;">Event Stream: order-12345</div>
-        <div style="font-size: 12px; opacity: 0.9;">Aggregate ID identifies the stream</div>
-      </div>
-      <div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px;">
+<div style="display: flex; flex-direction: column; gap: 4px; margin: 20px 0;">
+<div style="background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px 20px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+<div>
+  <div style="font-weight: 600;">Event Stream: order-12345</div>
+  <div style="font-size: 12px; opacity: 0.9;">Aggregate ID identifies the stream</div>
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px;">
         Append-Only
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af; padding: 10px 16px; font-size: 12px; font-weight: 600; border: 1px solid #3b82f6;">
-      <div>Version</div>
-      <div>Event Type</div>
-      <div>Timestamp</div>
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af; padding: 10px 16px; font-size: 12px; font-weight: 600; border: 1px solid #3b82f6;">
+<div>Version</div>
+  <div>Event Type</div>
+    <div>Timestamp</div>
       <div>Data (JSON)</div>
-    </div>
+      </div>
 
-    <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #ecfdf5; padding: 10px 16px; font-size: 13px; border-left: 4px solid #10b981;">
+      <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #ecfdf5; padding: 10px 16px; font-size: 13px; border-left: 4px solid #10b981;">
       <div style="color: #065f46; font-weight: 600;">1</div>
       <div style="color: #047857;">OrderCreated</div>
       <div style="color: #6b7280;">10:00:01</div>
@@ -88,48 +88,48 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
     </div>
 
     <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #f0fdf4; padding: 10px 16px; font-size: 13px; border-left: 4px solid #22c55e;">
-      <div style="color: #065f46; font-weight: 600;">2</div>
-      <div style="color: #047857;">ItemAdded</div>
-      <div style="color: #6b7280;">10:00:05</div>
-      <div style="color: #374151; font-family: monospace; font-size: 11px;">{sku: "ABC", qty: 2}</div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #ecfdf5; padding: 10px 16px; font-size: 13px; border-left: 4px solid #10b981;">
-      <div style="color: #065f46; font-weight: 600;">3</div>
-      <div style="color: #047857;">ItemAdded</div>
-      <div style="color: #6b7280;">10:00:12</div>
-      <div style="color: #374151; font-family: monospace; font-size: 11px;">{sku: "XYZ", qty: 1}</div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #f0fdf4; padding: 10px 16px; font-size: 13px; border-left: 4px solid #22c55e;">
-      <div style="color: #065f46; font-weight: 600;">4</div>
-      <div style="color: #047857;">OrderSubmitted</div>
-      <div style="color: #6b7280;">10:00:30</div>
-      <div style="color: #374151; font-family: monospace; font-size: 11px;">{total: 150.00}</div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #fef3c7; padding: 10px 16px; font-size: 13px; border-left: 4px solid #f59e0b; border-radius: 0 0 8px 8px;">
-      <div style="color: #92400e; font-weight: 600;">5</div>
-      <div style="color: #b45309;">PaymentReceived</div>
-      <div style="color: #6b7280;">10:01:15</div>
-      <div style="color: #374151; font-family: monospace; font-size: 11px;">{amount: 150.00}</div>
-    </div>
+    <div style="color: #065f46; font-weight: 600;">2</div>
+    <div style="color: #047857;">ItemAdded</div>
+    <div style="color: #6b7280;">10:00:05</div>
+    <div style="color: #374151; font-family: monospace; font-size: 11px;">{sku: "ABC", qty: 2}</div>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
-    <div style="background: #eff6ff; border-radius: 8px; padding: 16px; text-align: center;">
-      <div style="font-size: 24px; font-weight: 700; color: #1d4ed8;">Immutable</div>
-      <div style="font-size: 13px; color: #3b82f6; margin-top: 4px;">Events never change once written</div>
-    </div>
-    <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; text-align: center;">
-      <div style="font-size: 24px; font-weight: 700; color: #15803d;">Ordered</div>
-      <div style="font-size: 13px; color: #22c55e; margin-top: 4px;">Version number ensures ordering</div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center;">
-      <div style="font-size: 24px; font-weight: 700; color: #b45309;">Complete</div>
-      <div style="font-size: 13px; color: #f59e0b; margin-top: 4px;">Full history preserved forever</div>
-    </div>
-  </div>
+  <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #ecfdf5; padding: 10px 16px; font-size: 13px; border-left: 4px solid #10b981;">
+  <div style="color: #065f46; font-weight: 600;">3</div>
+  <div style="color: #047857;">ItemAdded</div>
+  <div style="color: #6b7280;">10:00:12</div>
+  <div style="color: #374151; font-family: monospace; font-size: 11px;">{sku: "XYZ", qty: 1}</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #f0fdf4; padding: 10px 16px; font-size: 13px; border-left: 4px solid #22c55e;">
+<div style="color: #065f46; font-weight: 600;">4</div>
+<div style="color: #047857;">OrderSubmitted</div>
+<div style="color: #6b7280;">10:00:30</div>
+<div style="color: #374151; font-family: monospace; font-size: 11px;">{total: 150.00}</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #fef3c7; padding: 10px 16px; font-size: 13px; border-left: 4px solid #f59e0b; border-radius: 0 0 8px 8px;">
+<div style="color: #92400e; font-weight: 600;">5</div>
+<div style="color: #b45309;">PaymentReceived</div>
+<div style="color: #6b7280;">10:01:15</div>
+<div style="color: #374151; font-family: monospace; font-size: 11px;">{amount: 150.00}</div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; font-weight: 700; color: #1d4ed8;">Immutable</div>
+<div style="font-size: 13px; color: #3b82f6; margin-top: 4px;">Events never change once written</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; font-weight: 700; color: #15803d;">Ordered</div>
+<div style="font-size: 13px; color: #22c55e; margin-top: 4px;">Version number ensures ordering</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; font-weight: 700; color: #b45309;">Complete</div>
+<div style="font-size: 13px; color: #f59e0b; margin-top: 4px;">Full history preserved forever</div>
+</div>
+</div>
 </div>
 
 **Event Store Key Properties:**
@@ -148,48 +148,48 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
 <span style="color:#10b981">**Snapshots**</span> are periodic saves of aggregate state that optimize event replay performance.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Snapshot Strategy</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Snapshot Strategy</h4>
 
-  <div style="display: flex; align-items: stretch; gap: 4px; margin: 20px 0;">
-    <div style="flex: 1; display: flex; flex-direction: column;">
-      <div style="background: #fee2e2; padding: 12px; border-radius: 8px 0 0 0; text-align: center; font-size: 13px; color: #991b1b; font-weight: 600;">Without Snapshots</div>
-      <div style="background: #fef2f2; padding: 16px; border-radius: 0 0 0 8px; flex: 1;">
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 1</div>
-          <div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 2</div>
-          <div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">...</div>
-          <div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 999</div>
-          <div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 1000</div>
-        </div>
-        <div style="margin-top: 12px; padding: 8px; background: #fee2e2; border-radius: 4px; text-align: center;">
-          <div style="font-size: 12px; color: #991b1b; font-weight: 600;">Replay ALL 1000 events</div>
-          <div style="font-size: 11px; color: #b91c1c;">Slow startup time</div>
-        </div>
-      </div>
-    </div>
+<div style="display: flex; align-items: stretch; gap: 4px; margin: 20px 0;">
+<div style="flex: 1; display: flex; flex-direction: column;">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 0 0 0; text-align: center; font-size: 13px; color: #991b1b; font-weight: 600;">Without Snapshots</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 0 8px; flex: 1;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 1</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 2</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">...</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 999</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d;">Event 1000</div>
+</div>
+<div style="margin-top: 12px; padding: 8px; background: #fee2e2; border-radius: 4px; text-align: center;">
+<div style="font-size: 12px; color: #991b1b; font-weight: 600;">Replay ALL 1000 events</div>
+<div style="font-size: 11px; color: #b91c1c;">Slow startup time</div>
+</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; padding: 0 8px; color: #64748b; font-size: 20px;">vs</div>
+<div style="display: flex; align-items: center; padding: 0 8px; color: #64748b; font-size: 20px;">vs</div>
 
-    <div style="flex: 1; display: flex; flex-direction: column;">
-      <div style="background: #d1fae5; padding: 12px; border-radius: 0 8px 0 0; text-align: center; font-size: 13px; color: #065f46; font-weight: 600;">With Snapshots</div>
-      <div style="background: #ecfdf5; padding: 16px; border-radius: 0 0 8px 0; flex: 1;">
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <div style="background: #86efac; padding: 10px; border-radius: 4px; text-align: center; border: 2px solid #22c55e;">
-            <div style="font-size: 12px; color: #065f46; font-weight: 600;">Snapshot @ v900</div>
-            <div style="font-size: 10px; color: #047857;">Full state saved</div>
-          </div>
-          <div style="color: #6b7280; text-align: center; font-size: 11px;">load</div>
-          <div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534;">Event 901</div>
-          <div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534;">...</div>
-          <div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534;">Event 1000</div>
-        </div>
-        <div style="margin-top: 12px; padding: 8px; background: #d1fae5; border-radius: 4px; text-align: center;">
-          <div style="font-size: 12px; color: #065f46; font-weight: 600;">Replay only 100 events</div>
-          <div style="font-size: 11px; color: #047857;">10x faster startup</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="flex: 1; display: flex; flex-direction: column;">
+<div style="background: #d1fae5; padding: 12px; border-radius: 0 8px 0 0; text-align: center; font-size: 13px; color: #065f46; font-weight: 600;">With Snapshots</div>
+<div style="background: #ecfdf5; padding: 16px; border-radius: 0 0 8px 0; flex: 1;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="background: #86efac; padding: 10px; border-radius: 4px; text-align: center; border: 2px solid #22c55e;">
+<div style="font-size: 12px; color: #065f46; font-weight: 600;">Snapshot @ v900</div>
+<div style="font-size: 10px; color: #047857;">Full state saved</div>
+</div>
+<div style="color: #6b7280; text-align: center; font-size: 11px;">load</div>
+<div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534;">Event 901</div>
+<div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534;">...</div>
+<div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534;">Event 1000</div>
+</div>
+<div style="margin-top: 12px; padding: 8px; background: #d1fae5; border-radius: 4px; text-align: center;">
+<div style="font-size: 12px; color: #065f46; font-weight: 600;">Replay only 100 events</div>
+<div style="font-size: 11px; color: #047857;">10x faster startup</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 **Snapshot Strategies:**
@@ -208,156 +208,156 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
 <span style="color:#10b981">**Projections**</span> transform the event stream into read-optimized views (also called <span style="color:#10b981">**read models**</span>).
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Multiple Projections from Single Event Stream</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Multiple Projections from Single Event Stream</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
-    <!-- Event Stream -->
-    <div style="background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 16px 24px; border-radius: 12px; text-align: center;">
-      <div style="font-weight: 600; font-size: 16px;">Event Stream</div>
-      <div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">OrderCreated, ItemAdded, PaymentReceived, OrderShipped...</div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
+<!-- Event Stream -->
+<div style="background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 16px 24px; border-radius: 12px; text-align: center;">
+<div style="font-weight: 600; font-size: 16px;">Event Stream</div>
+<div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">OrderCreated, ItemAdded, PaymentReceived, OrderShipped...</div>
+</div>
 
-    <!-- Arrows -->
-    <div style="display: flex; justify-content: space-around; color: #8b5cf6;">
-      <div style="text-align: center;">
-        <div style="font-size: 24px;">|</div>
-        <div style="font-size: 20px;">V</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 24px;">|</div>
-        <div style="font-size: 20px;">V</div>
-      </div>
-      <div style="text-align: center;">
-        <div style="font-size: 24px;">|</div>
-        <div style="font-size: 20px;">V</div>
-      </div>
-    </div>
+<!-- Arrows -->
+<div style="display: flex; justify-content: space-around; color: #8b5cf6;">
+<div style="text-align: center;">
+<div style="font-size: 24px;">|</div>
+<div style="font-size: 20px;">V</div>
+</div>
+<div style="text-align: center;">
+<div style="font-size: 24px;">|</div>
+<div style="font-size: 20px;">V</div>
+</div>
+<div style="text-align: center;">
+<div style="font-size: 24px;">|</div>
+<div style="font-size: 20px;">V</div>
+</div>
+</div>
 
-    <!-- Projections -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
-        <div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px;">Order Summary</div>
-        <div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569;">
+<!-- Projections -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px;">Order Summary</div>
+<div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569;">
           {<br>
           &nbsp;&nbsp;orderId: "123",<br>
           &nbsp;&nbsp;status: "shipped",<br>
           &nbsp;&nbsp;total: $150<br>
           }
-        </div>
-        <div style="margin-top: 8px; font-size: 12px; color: #3b82f6;">Optimized for: Order details page</div>
-      </div>
+</div>
+<div style="margin-top: 8px; font-size: 12px; color: #3b82f6;">Optimized for: Order details page</div>
+</div>
 
-      <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 16px;">
-        <div style="color: #15803d; font-weight: 600; margin-bottom: 8px;">Customer Orders</div>
-        <div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569;">
+<div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 16px;">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px;">Customer Orders</div>
+<div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569;">
           {<br>
           &nbsp;&nbsp;customerId: "C1",<br>
           &nbsp;&nbsp;orders: [123, 456],<br>
           &nbsp;&nbsp;totalSpent: $500<br>
           }
-        </div>
-        <div style="margin-top: 8px; font-size: 12px; color: #22c55e;">Optimized for: Customer dashboard</div>
-      </div>
+</div>
+<div style="margin-top: 8px; font-size: 12px; color: #22c55e;">Optimized for: Customer dashboard</div>
+</div>
 
-      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px;">
-        <div style="color: #b45309; font-weight: 600; margin-bottom: 8px;">Sales Analytics</div>
-        <div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569;">
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px;">
+<div style="color: #b45309; font-weight: 600; margin-bottom: 8px;">Sales Analytics</div>
+<div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569;">
           {<br>
           &nbsp;&nbsp;date: "2024-01",<br>
           &nbsp;&nbsp;revenue: $50K,<br>
           &nbsp;&nbsp;orderCount: 340<br>
           }
-        </div>
-        <div style="margin-top: 8px; font-size: 12px; color: #f59e0b;">Optimized for: Reports</div>
+</div>
+<div style="margin-top: 8px; font-size: 12px; color: #f59e0b;">Optimized for: Reports</div>
+</div>
+</div>
+</div>
+
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Projection Characteristics</div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 13px; color: #475569;">
+<div>Derived from events (can rebuild anytime)</div>
+  <div>Eventually consistent with event store</div>
+    <div>Optimized for specific query patterns</div>
+      <div>Can use different storage technologies</div>
       </div>
     </div>
   </div>
 
-  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px;">
-    <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Projection Characteristics</div>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 13px; color: #475569;">
-      <div>Derived from events (can rebuild anytime)</div>
-      <div>Eventually consistent with event store</div>
-      <div>Optimized for specific query patterns</div>
-      <div>Can use different storage technologies</div>
-    </div>
-  </div>
-</div>
+  **Projection Types:**
 
-**Projection Types:**
+  | Type | Description | Use Case |
+  |------|-------------|----------|
+  | <span style="color:#10b981">**Live Projection**</span> | Updated in real-time as events occur | User-facing queries |
+  | <span style="color:#10b981">**Catch-up Projection**</span> | Periodically catches up with event stream | Batch analytics |
+  | <span style="color:#10b981">**One-time Projection**</span> | Built once for specific analysis | Ad-hoc reports |
 
-| Type | Description | Use Case |
-|------|-------------|----------|
-| <span style="color:#10b981">**Live Projection**</span> | Updated in real-time as events occur | User-facing queries |
-| <span style="color:#10b981">**Catch-up Projection**</span> | Periodically catches up with event stream | Batch analytics |
-| <span style="color:#10b981">**One-time Projection**</span> | Built once for specific analysis | Ad-hoc reports |
+  ---
 
----
+  ### CQRS Integration
 
-### CQRS Integration
+  <span style="color:#10b981">**CQRS (Command Query Responsibility Segregation)**</span> separates read and write operations into different models. Event Sourcing and CQRS are natural partners - see [[CQRS Pattern]](/topic/design-patterns/cqrs) for detailed coverage.
 
-<span style="color:#10b981">**CQRS (Command Query Responsibility Segregation)**</span> separates read and write operations into different models. Event Sourcing and CQRS are natural partners - see [[CQRS Pattern]](/topic/design-patterns/cqrs) for detailed coverage.
-
-<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #1e293b; margin-top: 0;">Event Sourcing + CQRS Architecture</h4>
 
   <div style="display: flex; flex-direction: column; gap: 16px; margin: 20px 0;">
-    <!-- Top Row: Commands and Queries -->
-    <div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px;">
-      <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
-        <div style="font-weight: 700; font-size: 18px;">Commands</div>
-        <div style="font-size: 13px; opacity: 0.9; margin-top: 8px;">PlaceOrder, AddItem, CancelOrder</div>
-        <div style="margin-top: 12px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px; font-size: 12px;">
-          Write Path
-        </div>
-      </div>
-      <div></div>
-      <div style="background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
-        <div style="font-weight: 700; font-size: 18px;">Queries</div>
-        <div style="font-size: 13px; opacity: 0.9; margin-top: 8px;">GetOrder, ListOrders, GetAnalytics</div>
-        <div style="margin-top: 12px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px; font-size: 12px;">
-          Read Path
-        </div>
-      </div>
-    </div>
+  <!-- Top Row: Commands and Queries -->
+  <div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px;">
+  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+  <div style="font-weight: 700; font-size: 18px;">Commands</div>
+  <div style="font-size: 13px; opacity: 0.9; margin-top: 8px;">PlaceOrder, AddItem, CancelOrder</div>
+  <div style="margin-top: 12px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px; font-size: 12px;">
+  Write Path
+</div>
+</div>
+<div></div>
+  <div style="background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+  <div style="font-weight: 700; font-size: 18px;">Queries</div>
+  <div style="font-size: 13px; opacity: 0.9; margin-top: 8px;">GetOrder, ListOrders, GetAnalytics</div>
+  <div style="margin-top: 12px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px; font-size: 12px;">
+  Read Path
+</div>
+</div>
+</div>
 
-    <!-- Arrows -->
-    <div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px; text-align: center; color: #64748b;">
-      <div style="font-size: 20px;">|<br>V</div>
-      <div></div>
-      <div style="font-size: 20px;">^<br>|</div>
-    </div>
+<!-- Arrows -->
+<div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px; text-align: center; color: #64748b;">
+<div style="font-size: 20px;">|<br>V</div>
+<div></div>
+  <div style="font-size: 20px;">^<br>|</div>
+</div>
 
-    <!-- Middle: Domain + Projections -->
-    <div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px;">
-      <div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 16px; border-radius: 12px; text-align: center;">
-        <div style="color: #b45309; font-weight: 600;">Domain / Aggregates</div>
-        <div style="font-size: 12px; color: #92400e; margin-top: 4px;">Business logic, validation</div>
-      </div>
-      <div></div>
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 16px; border-radius: 12px; text-align: center;">
-        <div style="color: #1d4ed8; font-weight: 600;">Projections / Read Models</div>
-        <div style="font-size: 12px; color: #2563eb; margin-top: 4px;">Denormalized, query-optimized</div>
-      </div>
-    </div>
+<!-- Middle: Domain + Projections -->
+<div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px;">
+<div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 16px; border-radius: 12px; text-align: center;">
+<div style="color: #b45309; font-weight: 600;">Domain / Aggregates</div>
+<div style="font-size: 12px; color: #92400e; margin-top: 4px;">Business logic, validation</div>
+</div>
+<div></div>
+  <div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 16px; border-radius: 12px; text-align: center;">
+  <div style="color: #1d4ed8; font-weight: 600;">Projections / Read Models</div>
+  <div style="font-size: 12px; color: #2563eb; margin-top: 4px;">Denormalized, query-optimized</div>
+</div>
+</div>
 
-    <!-- Arrows -->
-    <div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px; text-align: center; color: #64748b;">
-      <div style="font-size: 20px;">|<br>V</div>
-      <div style="font-size: 20px;"><br>----></div>
-      <div style="font-size: 20px;">^<br>|</div>
-    </div>
+<!-- Arrows -->
+<div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px; text-align: center; color: #64748b;">
+<div style="font-size: 20px;">|<br>V</div>
+<div style="font-size: 20px;"><br>----></div>
+<div style="font-size: 20px;">^<br>|</div>
+</div>
 
-    <!-- Event Store -->
-    <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
-      <div style="font-weight: 700; font-size: 18px;">Event Store</div>
-      <div style="font-size: 13px; opacity: 0.9; margin-top: 8px;">Append-only log of all domain events</div>
-      <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px;">
-        <div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px;">Source of Truth</div>
-        <div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px;">Publishes Events</div>
-      </div>
-    </div>
-  </div>
+<!-- Event Store -->
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+<div style="font-weight: 700; font-size: 18px;">Event Store</div>
+<div style="font-size: 13px; opacity: 0.9; margin-top: 8px;">Append-only log of all domain events</div>
+<div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px;">
+<div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px;">Source of Truth</div>
+<div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px;">Publishes Events</div>
+</div>
+</div>
+</div>
 </div>
 
 **Why Combine Event Sourcing with CQRS?**
@@ -376,58 +376,58 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
 <span style="color:#10b981">**Event Versioning**</span> handles schema evolution when event structures need to change over time.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Event Schema Evolution Strategies</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Event Schema Evolution Strategies</h4>
 
-  <div style="display: grid; gap: 16px; margin: 20px 0;">
-    <!-- Upcasting -->
-    <div style="background: #ecfdf5; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <div style="color: #065f46; font-weight: 700; font-size: 16px;">1. Upcasting (Recommended)</div>
-        <div style="background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: 12px;">Best Practice</div>
-      </div>
-      <div style="color: #047857; font-size: 14px; margin-bottom: 12px;">Transform old events to new schema on-the-fly during read</div>
-      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-        <div style="background: white; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">
-          <div style="color: #6b7280; font-size: 10px; margin-bottom: 4px;">V1 (stored)</div>
+<div style="display: grid; gap: 16px; margin: 20px 0;">
+<!-- Upcasting -->
+<div style="background: #ecfdf5; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<div style="color: #065f46; font-weight: 700; font-size: 16px;">1. Upcasting (Recommended)</div>
+<div style="background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: 12px;">Best Practice</div>
+</div>
+<div style="color: #047857; font-size: 14px; margin-bottom: 12px;">Transform old events to new schema on-the-fly during read</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: white; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">
+<div style="color: #6b7280; font-size: 10px; margin-bottom: 4px;">V1 (stored)</div>
           {name: "Alice"}
-        </div>
-        <div style="color: #10b981; font-size: 20px;">-></div>
-        <div style="background: white; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">
-          <div style="color: #6b7280; font-size: 10px; margin-bottom: 4px;">V2 (upcasted)</div>
+</div>
+<div style="color: #10b981; font-size: 20px;">-></div>
+<div style="background: white; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">
+<div style="color: #6b7280; font-size: 10px; margin-bottom: 4px;">V2 (upcasted)</div>
           {owner: "Alice"}
-        </div>
-        <div style="color: #10b981; font-size: 20px;">-></div>
-        <div style="background: white; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">
-          <div style="color: #6b7280; font-size: 10px; margin-bottom: 4px;">V3 (upcasted)</div>
+</div>
+<div style="color: #10b981; font-size: 20px;">-></div>
+<div style="background: white; border: 1px solid #d1fae5; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">
+<div style="color: #6b7280; font-size: 10px; margin-bottom: 4px;">V3 (upcasted)</div>
           {owner: "Alice", currency: "USD"}
-        </div>
-      </div>
-    </div>
+</div>
+</div>
+</div>
 
-    <!-- Weak Schema -->
-    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1d4ed8; font-weight: 700; font-size: 16px; margin-bottom: 8px;">2. Weak Schema / Optional Fields</div>
-      <div style="color: #2563eb; font-size: 14px; margin-bottom: 12px;">Design events with optional fields, use defaults for missing data</div>
-      <div style="background: white; border: 1px solid #dbeafe; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 12px; color: #475569;">
+<!-- Weak Schema -->
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #1d4ed8; font-weight: 700; font-size: 16px; margin-bottom: 8px;">2. Weak Schema / Optional Fields</div>
+<div style="color: #2563eb; font-size: 14px; margin-bottom: 12px;">Design events with optional fields, use defaults for missing data</div>
+<div style="background: white; border: 1px solid #dbeafe; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 12px; color: #475569;">
         event.data.get("currency", "USD")  # Default if not present
-      </div>
-    </div>
+</div>
+</div>
 
-    <!-- New Event Type -->
-    <div style="background: #fef3c7; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
-      <div style="color: #b45309; font-weight: 700; font-size: 16px; margin-bottom: 8px;">3. New Event Type</div>
-      <div style="color: #92400e; font-size: 14px; margin-bottom: 12px;">Create new event type for breaking changes, handle both in projections</div>
-      <div style="display: flex; gap: 12px;">
-        <div style="background: white; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">OrderPlacedV1</div>
-        <div style="background: white; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">OrderPlacedV2</div>
-      </div>
-    </div>
-  </div>
+<!-- New Event Type -->
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #b45309; font-weight: 700; font-size: 16px; margin-bottom: 8px;">3. New Event Type</div>
+<div style="color: #92400e; font-size: 14px; margin-bottom: 12px;">Create new event type for breaking changes, handle both in projections</div>
+<div style="display: flex; gap: 12px;">
+<div style="background: white; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">OrderPlacedV1</div>
+<div style="background: white; border: 1px solid #fde68a; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;">OrderPlacedV2</div>
+</div>
+</div>
+</div>
 
-  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 16px;">
-    <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Golden Rule: Never Modify Stored Events</div>
-    <div style="color: #7f1d1d; font-size: 14px;">Events are immutable historical facts. Transform on read, never on write.</div>
-  </div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Golden Rule: Never Modify Stored Events</div>
+<div style="color: #7f1d1d; font-size: 14px;">Events are immutable historical facts. Transform on read, never on write.</div>
+</div>
 </div>
 
 ---
@@ -437,90 +437,90 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
 <span style="color:#10b981">**Event Replay**</span> is the process of re-processing events to rebuild state or projections.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Replay Strategies Comparison</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Replay Strategies Comparison</h4>
 
-  <div style="display: grid; gap: 16px; margin: 20px 0;">
-    <!-- Full Replay -->
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
-      <div style="background: #3b82f6; color: white; padding: 12px 20px; font-weight: 600;">
+<div style="display: grid; gap: 16px; margin: 20px 0;">
+<!-- Full Replay -->
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+<div style="background: #3b82f6; color: white; padding: 12px 20px; font-weight: 600;">
         Full Replay
-      </div>
-      <div style="padding: 16px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div>
-            <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use</div>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
-              <li>Rebuilding projection from scratch</li>
-              <li>Fixing bugs in projection logic</li>
-              <li>Creating new projection</li>
-            </ul>
-          </div>
-          <div>
-            <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">Considerations</div>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
-              <li>Can be slow for large streams</li>
-              <li>Run during off-peak hours</li>
-              <li>Consider parallelization</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+</div>
+<div style="padding: 16px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div>
+  <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use</div>
+  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
+  <li>Rebuilding projection from scratch</li>
+  <li>Fixing bugs in projection logic</li>
+  <li>Creating new projection</li>
+</ul>
+</div>
+<div>
+  <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">Considerations</div>
+  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
+  <li>Can be slow for large streams</li>
+  <li>Run during off-peak hours</li>
+  <li>Consider parallelization</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- Partial Replay -->
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
-      <div style="background: #22c55e; color: white; padding: 12px 20px; font-weight: 600;">
+<!-- Partial Replay -->
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+<div style="background: #22c55e; color: white; padding: 12px 20px; font-weight: 600;">
         Partial Replay (from Snapshot)
-      </div>
-      <div style="padding: 16px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div>
-            <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use</div>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
-              <li>Loading aggregate for command</li>
-              <li>Recovery after crash</li>
-              <li>Hot standby sync</li>
-            </ul>
-          </div>
-          <div>
-            <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">Considerations</div>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
-              <li>Requires snapshot management</li>
-              <li>Trade-off: storage vs speed</li>
-              <li>Snapshot frequency tuning</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+</div>
+<div style="padding: 16px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div>
+  <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use</div>
+  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
+  <li>Loading aggregate for command</li>
+  <li>Recovery after crash</li>
+  <li>Hot standby sync</li>
+</ul>
+</div>
+<div>
+  <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">Considerations</div>
+  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
+  <li>Requires snapshot management</li>
+  <li>Trade-off: storage vs speed</li>
+  <li>Snapshot frequency tuning</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 
-    <!-- Parallel Replay -->
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
-      <div style="background: #8b5cf6; color: white; padding: 12px 20px; font-weight: 600;">
+<!-- Parallel Replay -->
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+<div style="background: #8b5cf6; color: white; padding: 12px 20px; font-weight: 600;">
         Parallel Replay
-      </div>
-      <div style="padding: 16px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div>
-            <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use</div>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
-              <li>Massive event volumes</li>
-              <li>Time-critical rebuilds</li>
-              <li>Multi-tenant systems</li>
-            </ul>
-          </div>
-          <div>
-            <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">Considerations</div>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
-              <li>Partition by aggregate ID</li>
-              <li>Merge results carefully</li>
-              <li>Handle cross-aggregate queries</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="padding: 16px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div>
+  <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use</div>
+  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
+  <li>Massive event volumes</li>
+  <li>Time-critical rebuilds</li>
+  <li>Multi-tenant systems</li>
+</ul>
+</div>
+<div>
+  <div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px;">Considerations</div>
+  <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569;">
+  <li>Partition by aggregate ID</li>
+  <li>Merge results carefully</li>
+  <li>Handle cross-aggregate queries</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -530,121 +530,121 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
 ### Traditional vs Event Sourcing
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">State Storage Comparison</h4>
+<h4 style="color: #1e293b; margin-top: 0;">State Storage Comparison</h4>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Traditional (CRUD)</div>
-      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 4px; padding: 12px; font-family: monospace; font-size: 13px; color: #475569;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Traditional (CRUD)</div>
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 4px; padding: 12px; font-family: monospace; font-size: 13px; color: #475569;">
         User: {<br>
         &nbsp;&nbsp;id: 123,<br>
         &nbsp;&nbsp;name: "Alice",<br>
         &nbsp;&nbsp;balance: 150<br>
         }
-      </div>
-      <div style="color: #64748b; font-size: 13px; margin-top: 8px;">Only current state stored. History is lost.</div>
-    </div>
+</div>
+<div style="color: #64748b; font-size: 13px; margin-top: 8px;">Only current state stored. History is lost.</div>
+</div>
 
-    <div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
-      <div style="color: #065f46; font-weight: 600; margin-bottom: 12px;">Event Sourcing</div>
-      <div style="background: white; border: 1px solid #d1fae5; border-radius: 4px; padding: 12px; font-family: monospace; font-size: 12px; color: #047857;">
+<div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 12px;">Event Sourcing</div>
+<div style="background: white; border: 1px solid #d1fae5; border-radius: 4px; padding: 12px; font-family: monospace; font-size: 12px; color: #047857;">
         1. AccountCreated {id: 123, name: "Alice"}<br>
         2. MoneyDeposited {amount: 200}<br>
         3. MoneyWithdrawn {amount: 50}<br>
-        <div style="color: #10b981; margin-top: 8px;">Replay = balance: 150</div>
-      </div>
-      <div style="color: #059669; font-size: 13px; margin-top: 8px;">Complete history. Can rebuild any point in time.</div>
-    </div>
-  </div>
+<div style="color: #10b981; margin-top: 8px;">Replay = balance: 150</div>
+</div>
+<div style="color: #059669; font-size: 13px; margin-top: 8px;">Complete history. Can rebuild any point in time.</div>
+</div>
+</div>
 </div>
 
 ### Core Components
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Event Sourcing Architecture</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Event Sourcing Architecture</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
-        <div style="font-weight: 600;">Command</div>
-        <div style="font-size: 12px;">User Intent</div>
-      </div>
-      <div style="color: #64748b;">-></div>
-      <div style="background: #8b5cf6; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
-        <div style="font-weight: 600;">Aggregate</div>
-        <div style="font-size: 12px;">Business Logic</div>
-      </div>
-      <div style="color: #64748b;">-></div>
-      <div style="background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
-        <div style="font-weight: 600;">Event</div>
-        <div style="font-size: 12px;">Fact Recorded</div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
+<div style="font-weight: 600;">Command</div>
+<div style="font-size: 12px;">User Intent</div>
+</div>
+<div style="color: #64748b;">-></div>
+<div style="background: #8b5cf6; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
+<div style="font-weight: 600;">Aggregate</div>
+<div style="font-size: 12px;">Business Logic</div>
+</div>
+<div style="color: #64748b;">-></div>
+<div style="background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
+<div style="font-weight: 600;">Event</div>
+<div style="font-size: 12px;">Fact Recorded</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: flex-start; gap: 16px; margin-left: 300px;">
-      <div style="color: #64748b;">|<br>V</div>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin-left: 300px;">
+<div style="color: #64748b;">|<br>V</div>
+</div>
 
-    <div style="display: flex; align-items: center; gap: 16px; margin-left: 240px;">
-      <div style="background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
-        <div style="font-weight: 600;">Event Store</div>
-        <div style="font-size: 12px;">Append-Only Log</div>
-      </div>
-      <div style="color: #64748b;">-></div>
-      <div style="background: #ec4899; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
-        <div style="font-weight: 600;">Projection</div>
-        <div style="font-size: 12px;">Read Model</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; align-items: center; gap: 16px; margin-left: 240px;">
+<div style="background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
+<div style="font-weight: 600;">Event Store</div>
+<div style="font-size: 12px;">Append-Only Log</div>
+</div>
+<div style="color: #64748b;">-></div>
+<div style="background: #ec4899; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center;">
+<div style="font-weight: 600;">Projection</div>
+<div style="font-size: 12px;">Read Model</div>
+</div>
+</div>
+</div>
 
-  <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 13px;">
-    <div style="background: #f1f5f9; padding: 12px; border-radius: 6px;">
-      <div style="color: #1e293b; font-weight: 600;">Event Store</div>
-      <div style="color: #64748b;">Immutable, append-only log of all events</div>
-    </div>
-    <div style="background: #f1f5f9; padding: 12px; border-radius: 6px;">
-      <div style="color: #1e293b; font-weight: 600;">Aggregate</div>
-      <div style="color: #64748b;">Domain entity that produces and applies events</div>
-    </div>
-    <div style="background: #f1f5f9; padding: 12px; border-radius: 6px;">
-      <div style="color: #1e293b; font-weight: 600;">Projection</div>
-      <div style="color: #64748b;">Read model built by processing events</div>
-    </div>
-  </div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 13px;">
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px;">
+<div style="color: #1e293b; font-weight: 600;">Event Store</div>
+<div style="color: #64748b;">Immutable, append-only log of all events</div>
+</div>
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px;">
+<div style="color: #1e293b; font-weight: 600;">Aggregate</div>
+<div style="color: #64748b;">Domain entity that produces and applies events</div>
+</div>
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px;">
+<div style="color: #1e293b; font-weight: 600;">Projection</div>
+<div style="color: #64748b;">Read model built by processing events</div>
+</div>
+</div>
 </div>
 
 ### Event Flow
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Processing a Command</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Processing a Command</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #eff6ff; border-radius: 8px;">
-      <div style="background: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">1</div>
-      <div style="color: #1e40af;"><strong>Load Events:</strong> Retrieve all events for the aggregate from the event store</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f5f3ff; border-radius: 8px;">
-      <div style="background: #8b5cf6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">2</div>
-      <div style="color: #5b21b6;"><strong>Replay Events:</strong> Apply each event to rebuild current state</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px;">
-      <div style="background: #10b981; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">3</div>
-      <div style="color: #065f46;"><strong>Validate Command:</strong> Check if command is valid against current state</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fef3c7; border-radius: 8px;">
-      <div style="background: #f59e0b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">4</div>
-      <div style="color: #92400e;"><strong>Produce Events:</strong> Generate new events representing state changes</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fce7f3; border-radius: 8px;">
-      <div style="background: #ec4899; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">5</div>
-      <div style="color: #9d174d;"><strong>Persist Events:</strong> Append new events to event store (with optimistic concurrency)</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f1f5f9; border-radius: 8px;">
-      <div style="background: #64748b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">6</div>
-      <div style="color: #334155;"><strong>Update Projections:</strong> Asynchronously update read models</div>
-    </div>
-  </div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #eff6ff; border-radius: 8px;">
+<div style="background: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">1</div>
+<div style="color: #1e40af;"><strong>Load Events:</strong> Retrieve all events for the aggregate from the event store</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f5f3ff; border-radius: 8px;">
+<div style="background: #8b5cf6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">2</div>
+<div style="color: #5b21b6;"><strong>Replay Events:</strong> Apply each event to rebuild current state</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px;">
+<div style="background: #10b981; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">3</div>
+<div style="color: #065f46;"><strong>Validate Command:</strong> Check if command is valid against current state</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fef3c7; border-radius: 8px;">
+<div style="background: #f59e0b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">4</div>
+<div style="color: #92400e;"><strong>Produce Events:</strong> Generate new events representing state changes</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fce7f3; border-radius: 8px;">
+<div style="background: #ec4899; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">5</div>
+<div style="color: #9d174d;"><strong>Persist Events:</strong> Append new events to event store (with optimistic concurrency)</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f1f5f9; border-radius: 8px;">
+<div style="background: #64748b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">6</div>
+<div style="color: #334155;"><strong>Update Projections:</strong> Asynchronously update read models</div>
+</div>
+</div>
 </div>
 
 ---
@@ -654,42 +654,42 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
 ### LMAX Exchange Architecture Evolution
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">How Event Sourcing Solved a Performance Crisis</h4>
+<h4 style="color: #1e293b; margin-top: 0;">How Event Sourcing Solved a Performance Crisis</h4>
 
-  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #991b1b; font-weight: 600;">The Challenge</div>
-    <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #991b1b; font-weight: 600;">The Challenge</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
       LMAX, a financial exchange, needed to process 6 million orders per second with microsecond latency. Traditional database-backed systems couldn't handle the throughput requirements, and they needed complete audit trails for regulatory compliance.
-    </div>
-  </div>
-
-  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #1e293b; font-weight: 600;">Traditional Approach Problems</div>
-    <div style="color: #475569; font-size: 14px; margin-top: 8px;">
-      <div style="padding: 4px 0;">Database writes: 1-10ms latency (too slow)</div>
-      <div style="padding: 4px 0;">Audit logging: Separate system, consistency issues</div>
-      <div style="padding: 4px 0;">Recovery: Complex, incomplete state restoration</div>
-      <div style="padding: 4px 0;">Debugging: No way to replay production issues</div>
-    </div>
-  </div>
-
-  <div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
-    <div style="color: #065f46; font-weight: 600;">Event Sourcing Solution</div>
-    <div style="color: #047857; font-size: 14px; margin-top: 8px;">
-      <div>1. All state changes stored as events in an append-only journal</div>
-      <div>2. In-memory processing with journal replay for recovery</div>
-      <div>3. Complete audit trail built into the architecture</div>
-      <div>4. Can replay any day's events to reproduce issues</div>
-      <div style="margin-top: 8px; font-weight: 600;">Result: 6 million transactions/second with less than 1ms latency</div>
-    </div>
-  </div>
+</div>
 </div>
 
----
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #1e293b; font-weight: 600;">Traditional Approach Problems</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">
+<div style="padding: 4px 0;">Database writes: 1-10ms latency (too slow)</div>
+<div style="padding: 4px 0;">Audit logging: Separate system, consistency issues</div>
+<div style="padding: 4px 0;">Recovery: Complex, incomplete state restoration</div>
+<div style="padding: 4px 0;">Debugging: No way to replay production issues</div>
+</div>
+</div>
 
-## Implementation
+<div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
+<div style="color: #065f46; font-weight: 600;">Event Sourcing Solution</div>
+<div style="color: #047857; font-size: 14px; margin-top: 8px;">
+<div>1. All state changes stored as events in an append-only journal</div>
+  <div>2. In-memory processing with journal replay for recovery</div>
+    <div>3. Complete audit trail built into the architecture</div>
+      <div>4. Can replay any day's events to reproduce issues</div>
+        <div style="margin-top: 8px; font-weight: 600;">Result: 6 million transactions/second with less than 1ms latency</div>
+      </div>
+    </div>
+  </div>
 
-### Complete Event Sourcing System
+  ---
+
+  ## Implementation
+
+  ### Complete Event Sourcing System
 
 ```python
 from dataclasses import dataclass, field
@@ -1146,7 +1146,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### Event Schema Evolution
+  ### Event Schema Evolution
 
 ```python
 class EventUpcaster:
@@ -1203,13 +1203,13 @@ upcaster.register("AccountOpened", 1, upcast_account_opened_v1_to_v2)
 upcaster.register("AccountOpened", 2, upcast_account_opened_v2_to_v3)
 ```
 
----
+  ---
 
-## 3-Level Recursive Interview Questions
+  ## 3-Level Recursive Interview Questions
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border-radius: 16px; padding: 32px; margin: 24px 0; color: white;">
-  <h3 style="margin-top: 0; color: #60a5fa;">Deep Interview Q&A: Event Sourcing Mastery</h3>
-  <p style="color: #94a3b8;">3-level recursive questions that demonstrate deep understanding</p>
+  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #93c5fd;">
+  <h3 style="margin-top: 0; color: #1e40af;">Deep Interview Q&A: Event Sourcing Mastery</h3>
+  <p style="color: #475569;">3-level recursive questions that demonstrate deep understanding</p>
 </div>
 
 ### Q1: When should you use Event Sourcing vs traditional CRUD?
@@ -2005,49 +2005,49 @@ TestBankAccount = BankAccountStateMachine.TestCase
 ## Common Mistakes
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Event Sourcing Anti-Patterns</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Event Sourcing Anti-Patterns</h4>
 
-  <div style="display: grid; gap: 12px;">
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Storing CRUD operations as events</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Events should represent domain facts ("OrderPlaced"), not database operations ("OrderRowInserted"). Capture business intent, not technical actions.</div>
-    </div>
+<div style="display: grid; gap: 12px;">
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Storing CRUD operations as events</div>
+<div style="color: #7f1d1d; font-size: 14px;">Events should represent domain facts ("OrderPlaced"), not database operations ("OrderRowInserted"). Capture business intent, not technical actions.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Large aggregates with too many events</div>
-      <div style="color: #7f1d1d; font-size: 14px;">If an aggregate has thousands of events, loading becomes slow. Use snapshots, or redesign aggregates to be smaller and more focused.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Large aggregates with too many events</div>
+<div style="color: #7f1d1d; font-size: 14px;">If an aggregate has thousands of events, loading becomes slow. Use snapshots, or redesign aggregates to be smaller and more focused.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Modifying stored events</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Events are immutable historical facts. Use upcasting to transform old schemas on read, never modify the stored event data.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Modifying stored events</div>
+<div style="color: #7f1d1d; font-size: 14px;">Events are immutable historical facts. Use upcasting to transform old schemas on read, never modify the stored event data.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Non-idempotent projection handlers</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Projections may receive duplicate events during replays or failures. Handlers must produce the same result when applied multiple times.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Non-idempotent projection handlers</div>
+<div style="color: #7f1d1d; font-size: 14px;">Projections may receive duplicate events during replays or failures. Handlers must produce the same result when applied multiple times.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Querying the event store directly</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Event stores are optimized for append and replay, not ad-hoc queries. Build projections for query needs instead of scanning events.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Querying the event store directly</div>
+<div style="color: #7f1d1d; font-size: 14px;">Event stores are optimized for append and replay, not ad-hoc queries. Build projections for query needs instead of scanning events.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Ignoring eventual consistency in UX</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Projections lag behind writes. Design UI to handle this - show optimistic updates, indicate "syncing" state, or use read-your-writes consistency.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Ignoring eventual consistency in UX</div>
+<div style="color: #7f1d1d; font-size: 14px;">Projections lag behind writes. Design UI to handle this - show optimistic updates, indicate "syncing" state, or use read-your-writes consistency.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Coupling aggregates through events</div>
-      <div style="color: #7f1d1d; font-size: 14px;">One aggregate should not directly consume another's events. Use sagas or process managers to coordinate across boundaries. See [[Saga Pattern]](/topic/design-patterns/saga).</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Coupling aggregates through events</div>
+<div style="color: #7f1d1d; font-size: 14px;">One aggregate should not directly consume another's events. Use sagas or process managers to coordinate across boundaries. See [[Saga Pattern]](/topic/design-patterns/saga).</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Missing correlation/causation IDs</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Without tracking which command caused which events, debugging distributed flows becomes nearly impossible. Always include correlation_id in event metadata.</div>
-    </div>
-  </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Missing correlation/causation IDs</div>
+<div style="color: #7f1d1d; font-size: 14px;">Without tracking which command caused which events, debugging distributed flows becomes nearly impossible. Always include correlation_id in event metadata.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -2055,52 +2055,52 @@ TestBankAccount = BankAccountStateMachine.TestCase
 ## Event Store Technologies Comparison
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Choosing an Event Store</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Choosing an Event Store</h4>
 
-  <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <thead>
-        <tr style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af;">
-          <th style="padding: 12px; text-align: left; border-radius: 8px 0 0 0;">Technology</th>
-          <th style="padding: 12px; text-align: left;">Best For</th>
-          <th style="padding: 12px; text-align: left;">Strengths</th>
-          <th style="padding: 12px; text-align: left; border-radius: 0 8px 0 0;">Limitations</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="background: #f1f5f9;">
-          <td style="padding: 12px; font-weight: 600; color: #3b82f6;">EventStoreDB</td>
-          <td style="padding: 12px;">Purpose-built ES</td>
-          <td style="padding: 12px;">Projections built-in, optimized for ES patterns</td>
-          <td style="padding: 12px;">Specialized knowledge required</td>
-        </tr>
-        <tr style="background: white;">
-          <td style="padding: 12px; font-weight: 600; color: #22c55e;">PostgreSQL</td>
-          <td style="padding: 12px;">Teams with SQL expertise</td>
-          <td style="padding: 12px;">Familiar, transactional, JSONB support</td>
-          <td style="padding: 12px;">Manual optimistic concurrency</td>
-        </tr>
-        <tr style="background: #f1f5f9;">
-          <td style="padding: 12px; font-weight: 600; color: #f59e0b;">Apache Kafka</td>
-          <td style="padding: 12px;">High-throughput streaming</td>
-          <td style="padding: 12px;">Scalable, built-in pub/sub</td>
-          <td style="padding: 12px;">No per-aggregate ordering guarantee</td>
-        </tr>
-        <tr style="background: white;">
-          <td style="padding: 12px; font-weight: 600; color: #8b5cf6;">DynamoDB</td>
-          <td style="padding: 12px;">Serverless, AWS ecosystem</td>
-          <td style="padding: 12px;">Managed, scalable, streams for projections</td>
-          <td style="padding: 12px;">25 item transaction limit</td>
-        </tr>
-        <tr style="background: #f1f5f9;">
-          <td style="padding: 12px; font-weight: 600; color: #ec4899;">Marten (.NET)</td>
-          <td style="padding: 12px;">.NET applications</td>
-          <td style="padding: 12px;">PostgreSQL-backed, strong tooling</td>
-          <td style="padding: 12px;">.NET specific</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<thead>
+  <tr style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af;">
+  <th style="padding: 12px; text-align: left; border-radius: 8px 0 0 0;">Technology</th>
+  <th style="padding: 12px; text-align: left;">Best For</th>
+  <th style="padding: 12px; text-align: left;">Strengths</th>
+  <th style="padding: 12px; text-align: left; border-radius: 0 8px 0 0;">Limitations</th>
+  </tr>
+</thead>
+<tbody>
+  <tr style="background: #f1f5f9;">
+  <td style="padding: 12px; font-weight: 600; color: #3b82f6;">EventStoreDB</td>
+  <td style="padding: 12px;">Purpose-built ES</td>
+  <td style="padding: 12px;">Projections built-in, optimized for ES patterns</td>
+  <td style="padding: 12px;">Specialized knowledge required</td>
+  </tr>
+  <tr style="background: white;">
+  <td style="padding: 12px; font-weight: 600; color: #22c55e;">PostgreSQL</td>
+  <td style="padding: 12px;">Teams with SQL expertise</td>
+  <td style="padding: 12px;">Familiar, transactional, JSONB support</td>
+  <td style="padding: 12px;">Manual optimistic concurrency</td>
+  </tr>
+  <tr style="background: #f1f5f9;">
+  <td style="padding: 12px; font-weight: 600; color: #f59e0b;">Apache Kafka</td>
+  <td style="padding: 12px;">High-throughput streaming</td>
+  <td style="padding: 12px;">Scalable, built-in pub/sub</td>
+  <td style="padding: 12px;">No per-aggregate ordering guarantee</td>
+  </tr>
+  <tr style="background: white;">
+  <td style="padding: 12px; font-weight: 600; color: #8b5cf6;">DynamoDB</td>
+  <td style="padding: 12px;">Serverless, AWS ecosystem</td>
+  <td style="padding: 12px;">Managed, scalable, streams for projections</td>
+  <td style="padding: 12px;">25 item transaction limit</td>
+  </tr>
+  <tr style="background: #f1f5f9;">
+  <td style="padding: 12px; font-weight: 600; color: #ec4899;">Marten (.NET)</td>
+  <td style="padding: 12px;">.NET applications</td>
+  <td style="padding: 12px;">PostgreSQL-backed, strong tooling</td>
+  <td style="padding: 12px;">.NET specific</td>
+  </tr>
+</tbody>
+</table>
+</div>
 </div>
 
 ---
@@ -2108,49 +2108,49 @@ TestBankAccount = BankAccountStateMachine.TestCase
 ## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Event Sourcing Cheat Sheet</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Event Sourcing Cheat Sheet</h4>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Event Design Principles</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;">Events are past tense facts (OrderPlaced)</div>
-        <div style="padding: 4px 0;">Include all data needed to understand the change</div>
-        <div style="padding: 4px 0;">Events are immutable - never modify</div>
-        <div style="padding: 4px 0;">Use domain language, not technical terms</div>
-      </div>
-    </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Event Design Principles</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;">Events are past tense facts (OrderPlaced)</div>
+  <div style="padding: 4px 0;">Include all data needed to understand the change</div>
+  <div style="padding: 4px 0;">Events are immutable - never modify</div>
+  <div style="padding: 4px 0;">Use domain language, not technical terms</div>
+</div>
+</div>
 
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Event Store Technologies</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>EventStoreDB:</strong> Purpose-built for ES</div>
-        <div style="padding: 4px 0;"><strong>PostgreSQL:</strong> With append-only table</div>
-        <div style="padding: 4px 0;"><strong>Kafka:</strong> As an event log</div>
-        <div style="padding: 4px 0;"><strong>DynamoDB:</strong> With version attribute</div>
-      </div>
-    </div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Event Store Technologies</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>EventStoreDB:</strong> Purpose-built for ES</div>
+  <div style="padding: 4px 0;"><strong>PostgreSQL:</strong> With append-only table</div>
+  <div style="padding: 4px 0;"><strong>Kafka:</strong> As an event log</div>
+  <div style="padding: 4px 0;"><strong>DynamoDB:</strong> With version attribute</div>
+</div>
+</div>
 
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Performance Strategies</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;">Snapshots every N events (50-100)</div>
-        <div style="padding: 4px 0;">Keep aggregates small</div>
-        <div style="padding: 4px 0;">Parallel projection rebuilds</div>
-        <div style="padding: 4px 0;">Archive old events to cold storage</div>
-      </div>
-    </div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Performance Strategies</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;">Snapshots every N events (50-100)</div>
+  <div style="padding: 4px 0;">Keep aggregates small</div>
+  <div style="padding: 4px 0;">Parallel projection rebuilds</div>
+  <div style="padding: 4px 0;">Archive old events to cold storage</div>
+</div>
+</div>
 
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Consistency Patterns</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>Optimistic concurrency:</strong> Version checks</div>
-        <div style="padding: 4px 0;"><strong>Projections:</strong> Eventually consistent</div>
-        <div style="padding: 4px 0;"><strong>Outbox pattern:</strong> Reliable publishing</div>
-        <div style="padding: 4px 0;"><strong>Idempotency:</strong> Safe replay</div>
-      </div>
-    </div>
-  </div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Consistency Patterns</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>Optimistic concurrency:</strong> Version checks</div>
+  <div style="padding: 4px 0;"><strong>Projections:</strong> Eventually consistent</div>
+  <div style="padding: 4px 0;"><strong>Outbox pattern:</strong> Reliable publishing</div>
+  <div style="padding: 4px 0;"><strong>Idempotency:</strong> Safe replay</div>
+</div>
+</div>
+</div>
 </div>
 
 ---

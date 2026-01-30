@@ -9,8 +9,8 @@ The Memento pattern captures and externalizes an object's internal state so that
 **Also Known As:** Snapshot, Token, Checkpoint
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; margin: 24px 0; border-left: 4px solid #f59e0b;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">Critical Insight</div>
-  <div style="color: #78350f;">The Memento pattern is NOT just "save and restore." It is a carefully designed encapsulation-preserving protocol where the Caretaker can hold state it cannot inspect, the Memento exposes different interfaces to different clients (narrow to Caretaker, wide to Originator), and the Originator maintains sole authority over its internal representation.</div>
+<div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">Critical Insight</div>
+<div style="color: #78350f;">The Memento pattern is NOT just "save and restore." It is a carefully designed encapsulation-preserving protocol where the Caretaker can hold state it cannot inspect, the Memento exposes different interfaces to different clients (narrow to Caretaker, wide to Originator), and the Originator maintains sole authority over its internal representation.</div>
 </div>
 
 ---
@@ -18,52 +18,52 @@ The Memento pattern captures and externalizes an object's internal state so that
 ## Conceptual Foundation: The Video Game Save Point
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
-  <div style="font-size: 2.5rem; text-align: center; margin-bottom: 16px;">&#127918;</div>
-  <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px;">The Video Game Save Point Analogy</div>
-  <div style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<div style="font-size: 2.5rem; text-align: center; margin-bottom: 16px;">&#127918;</div>
+<div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px;">The Video Game Save Point Analogy</div>
+<div style="color: #334155; font-size: 1rem; line-height: 1.7;">
     When you save a video game, you create a snapshot capturing everything: character position, health, inventory, quest progress, and world state. The save file does not understand the game's internal logic; it merely stores opaque data. The game engine (Originator) creates these save files and can later restore from them. Your save slot manager (Caretaker) holds these files without interpreting their contents. This separation is fundamental: the save slot manager works identically whether you are playing an RPG or a racing game because it never needs to understand what is inside.
-  </div>
-  <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
-    <div style="background: #dbeafe; padding: 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #1e40af; font-weight: 600;">Game State</div>
-      <div style="color: #3b82f6; font-size: 0.85rem;">Originator</div>
-      <div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">Owns and understands state</div>
-    </div>
-    <div style="background: #dcfce7; padding: 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #166534; font-weight: 600;">Save File</div>
-      <div style="color: #22c55e; font-size: 0.85rem;">Memento</div>
-      <div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">Opaque state container</div>
-    </div>
-    <div style="background: #fef3c7; padding: 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #92400e; font-weight: 600;">Save Slots</div>
-      <div style="color: #f59e0b; font-size: 0.85rem;">Caretaker</div>
-      <div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">Stores without inspecting</div>
-    </div>
-    <div style="background: #fce7f3; padding: 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #9d174d; font-weight: 600;">Load Game</div>
-      <div style="color: #ec4899; font-size: 0.85rem;">Restore Operation</div>
-      <div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">State reconstitution</div>
-    </div>
-  </div>
+</div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+<div style="background: #dbeafe; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600;">Game State</div>
+<div style="color: #3b82f6; font-size: 0.85rem;">Originator</div>
+<div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">Owns and understands state</div>
+</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: 600;">Save File</div>
+<div style="color: #22c55e; font-size: 0.85rem;">Memento</div>
+<div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">Opaque state container</div>
+</div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #92400e; font-weight: 600;">Save Slots</div>
+<div style="color: #f59e0b; font-size: 0.85rem;">Caretaker</div>
+<div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">Stores without inspecting</div>
+</div>
+<div style="background: #fce7f3; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #9d174d; font-weight: 600;">Load Game</div>
+<div style="color: #ec4899; font-size: 0.85rem;">Restore Operation</div>
+<div style="color: #64748b; font-size: 0.75rem; margin-top: 4px;">State reconstitution</div>
+</div>
+</div>
 </div>
 
 ### Expert vs Novice Understanding
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 24px 0;">
-  <div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 2px solid #fecaca;">
-    <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Novice Misconception</div>
-    <div style="color: #7f1d1d;">"Memento is just serialization - save the object to JSON and load it back."</div>
-    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fecaca; color: #b91c1c; font-size: 0.9rem;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 2px solid #fecaca;">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Novice Misconception</div>
+<div style="color: #7f1d1d;">"Memento is just serialization - save the object to JSON and load it back."</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fecaca; color: #b91c1c; font-size: 0.9rem;">
       This misses the encapsulation guarantee, polymorphic memento support, and the critical separation of concerns between components.
-    </div>
-  </div>
-  <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #bbf7d0;">
-    <div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Expert Understanding</div>
-    <div style="color: #14532d;">"Memento preserves encapsulation through interface segregation. The Caretaker stores state without knowing what is inside. This enables polymorphism, security, and incremental storage strategies."</div>
-    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #bbf7d0; color: #15803d; font-size: 0.9rem;">
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #bbf7d0;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Expert Understanding</div>
+<div style="color: #14532d;">"Memento preserves encapsulation through interface segregation. The Caretaker stores state without knowing what is inside. This enables polymorphism, security, and incremental storage strategies."</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #bbf7d0; color: #15803d; font-size: 0.9rem;">
       Different Originators can have different Memento structures. The Caretaker code remains unchanged.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ---
@@ -73,55 +73,55 @@ The Memento pattern captures and externalizes an object's internal state so that
 ### The Three Participants and Their Contracts
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Memento Pattern Architecture</div>
-  <div style="display: flex; justify-content: center; align-items: stretch; gap: 20px; flex-wrap: wrap;">
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
-      <div style="font-weight: 700; color: #1e40af; font-size: 1.1rem;">Originator</div>
-      <div style="font-size: 0.8rem; color: #3b82f6; margin-top: 12px; font-family: monospace; text-align: left;">
+<div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Memento Pattern Architecture</div>
+<div style="display: flex; justify-content: center; align-items: stretch; gap: 20px; flex-wrap: wrap;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
+<div style="font-weight: 700; color: #1e40af; font-size: 1.1rem;">Originator</div>
+<div style="font-size: 0.8rem; color: #3b82f6; margin-top: 12px; font-family: monospace; text-align: left;">
         - internalState<br/>
         - privateData<br/>
         + createMemento(): Memento<br/>
         + restore(m: Memento): void<br/>
         + businessOperation(): void
-      </div>
-      <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #93c5fd; font-size: 0.75rem; color: #1e40af;">
+</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #93c5fd; font-size: 0.75rem; color: #1e40af;">
         Sole authority over state semantics
-      </div>
-    </div>
-    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
-      <div style="font-weight: 700; color: #166534; font-size: 1.1rem;">Memento</div>
-      <div style="font-size: 0.8rem; color: #15803d; margin-top: 12px; font-family: monospace; text-align: left;">
+</div>
+</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
+<div style="font-weight: 700; color: #166534; font-size: 1.1rem;">Memento</div>
+<div style="font-size: 0.8rem; color: #15803d; margin-top: 12px; font-family: monospace; text-align: left;">
         - state (private/frozen)<br/>
         + getMetadata(): info<br/>
         # getState(): state *<br/>
-        <span style="font-size: 0.7rem;">* package-private or friend</span>
-      </div>
-      <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #86efac; font-size: 0.75rem; color: #166534;">
+<span style="font-size: 0.7rem;">* package-private or friend</span>
+</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #86efac; font-size: 0.75rem; color: #166534;">
         Dual interface: narrow (public), wide (to Originator)
-      </div>
-    </div>
-    <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
-      <div style="font-weight: 700; color: #92400e; font-size: 1.1rem;">Caretaker</div>
-      <div style="font-size: 0.8rem; color: #b45309; margin-top: 12px; font-family: monospace; text-align: left;">
+</div>
+</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; text-align: center; min-width: 200px; flex: 1;">
+<div style="font-weight: 700; color: #92400e; font-size: 1.1rem;">Caretaker</div>
+<div style="font-size: 0.8rem; color: #b45309; margin-top: 12px; font-family: monospace; text-align: left;">
         - mementoHistory: List<br/>
         - currentIndex: int<br/>
         + save(m: Memento): void<br/>
         + undo(): Memento<br/>
         + redo(): Memento
-      </div>
-      <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fcd34d; font-size: 0.75rem; color: #92400e;">
+</div>
+<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fcd34d; font-size: 0.75rem; color: #92400e;">
         Never inspects memento contents
-      </div>
-    </div>
-  </div>
-  <div style="margin-top: 24px; background: #e0e7ff; border-radius: 8px; padding: 16px;">
-    <div style="font-weight: 600; color: #3730a3; margin-bottom: 8px;">Information Flow</div>
-    <div style="color: #4338ca; font-size: 0.9rem;">
+</div>
+</div>
+</div>
+<div style="margin-top: 24px; background: #e0e7ff; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #3730a3; margin-bottom: 8px;">Information Flow</div>
+<div style="color: #4338ca; font-size: 0.9rem;">
       Originator --[creates]--> Memento --[stores in]--> Caretaker<br/>
       Caretaker --[returns]--> Memento --[restored by]--> Originator<br/>
-      <strong>Key invariant:</strong> Caretaker never calls Memento.getState()
-    </div>
-  </div>
+<strong>Key invariant:</strong> Caretaker never calls Memento.getState()
+</div>
+</div>
 </div>
 
 ### Encapsulation Preservation Mechanisms
@@ -129,46 +129,46 @@ The Memento pattern captures and externalizes an object's internal state so that
 The pattern preserves encapsulation through several language-specific techniques:
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Language-Specific Encapsulation Strategies</div>
-  <div style="display: grid; gap: 16px;">
-    <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
-      <div style="font-weight: 600; color: #1e40af;">Java / C#: Nested Classes</div>
-      <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Language-Specific Encapsulation Strategies</div>
+<div style="display: grid; gap: 16px;">
+<div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="font-weight: 600; color: #1e40af;">Java / C#: Nested Classes</div>
+<div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
         Memento as private inner class of Originator. The Caretaker receives the Memento through an interface that exposes only metadata methods. The actual state accessor is package-private or internal.
-      </div>
-    </div>
-    <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #22c55e;">
-      <div style="font-weight: 600; color: #166534;">C++: Friend Classes</div>
-      <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
+</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #22c55e;">
+<div style="font-weight: 600; color: #166534;">C++: Friend Classes</div>
+<div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
         Originator declared as friend of Memento. Only the Originator can access private state retrieval methods. External code sees only public metadata interface.
-      </div>
-    </div>
-    <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
-      <div style="font-weight: 600; color: #92400e;">Python: Convention + Module Privacy</div>
-      <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
+</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+<div style="font-weight: 600; color: #92400e;">Python: Convention + Module Privacy</div>
+<div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
         Underscore prefix convention (_getState) signals private access. Module-level organization can enforce that only Originator imports the private accessor. Frozen dataclasses ensure immutability.
-      </div>
-    </div>
-    <div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6;">
-      <div style="font-weight: 600; color: #6d28d9;">TypeScript: Symbol Keys</div>
-      <div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
+</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 16px; border-left: 4px solid #8b5cf6;">
+<div style="font-weight: 600; color: #6d28d9;">TypeScript: Symbol Keys</div>
+<div style="color: #334155; margin-top: 8px; font-size: 0.9rem;">
         Use Symbol() as property key for internal state. Only code with reference to the symbol can access the state. The symbol is shared only between Originator and Memento through module closure.
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 2px solid #fecaca;">
-  <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Critical Assumption</div>
-  <div style="color: #7f1d1d;">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Critical Assumption</div>
+<div style="color: #7f1d1d;">
     The Memento pattern assumes that <strong>state can be fully captured</strong> as a value. This breaks down when:
-    <ul style="margin-top: 12px; padding-left: 20px;">
-      <li>State includes external resource handles (file descriptors, network connections)</li>
-      <li>State references objects with identity semantics (restoring creates a different object)</li>
-      <li>State involves time-sensitive data (timestamps, TTLs that expire)</li>
-      <li>State has invariants with external systems (database foreign keys, distributed locks)</li>
-    </ul>
-  </div>
+<ul style="margin-top: 12px; padding-left: 20px;">
+<li>State includes external resource handles (file descriptors, network connections)</li>
+<li>State references objects with identity semantics (restoring creates a different object)</li>
+<li>State involves time-sensitive data (timestamps, TTLs that expire)</li>
+<li>State has invariants with external systems (database foreign keys, distributed locks)</li>
+</ul>
+</div>
 </div>
 
 ---
@@ -178,43 +178,43 @@ The pattern preserves encapsulation through several language-specific techniques
 ### Deep Copy vs Shallow Copy
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Copy Strategy Trade-offs</div>
-  <table style="width: 100%; border-collapse: collapse; color: #334155;">
-    <thead>
-      <tr style="background: #e2e8f0;">
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Strategy</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Mechanism</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">When Safe</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Danger Zone</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Shallow Copy</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Copy references only</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Immutable nested objects</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Mutable objects shared between memento and originator</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Deep Copy</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Recursively copy entire graph</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Mutable nested objects</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Circular references, resource handles</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Copy-on-Write</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Share until mutation</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Read-heavy workloads</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Complex mutation tracking overhead</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Structural Sharing</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Immutable data structures</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Functional paradigm</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Performance overhead on small objects</td>
-      </tr>
-    </tbody>
-  </table>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Copy Strategy Trade-offs</div>
+<table style="width: 100%; border-collapse: collapse; color: #334155;">
+<thead>
+  <tr style="background: #e2e8f0;">
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Strategy</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Mechanism</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">When Safe</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Danger Zone</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Shallow Copy</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Copy references only</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Immutable nested objects</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Mutable objects shared between memento and originator</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Deep Copy</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Recursively copy entire graph</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Mutable nested objects</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Circular references, resource handles</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Copy-on-Write</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Share until mutation</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Read-heavy workloads</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Complex mutation tracking overhead</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Structural Sharing</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Immutable data structures</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Functional paradigm</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Performance overhead on small objects</td>
+  </tr>
+</tbody>
+</table>
 </div>
 
 ### Incremental Snapshots (Delta Encoding)
@@ -337,12 +337,12 @@ class DeltaManager:
 ```
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 2px solid #3b82f6;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Design Trade-off: Checkpoint Frequency</div>
-  <div style="color: #1e3a8a;">
-    <strong>More frequent checkpoints:</strong> Faster restoration (shorter delta chains), higher memory usage<br/>
-    <strong>Less frequent checkpoints:</strong> Lower memory usage, slower restoration (longer replay)<br/><br/>
-    <strong>Optimal strategy:</strong> Adaptive checkpointing based on delta size. When cumulative delta size exceeds threshold (e.g., 50% of full state size), create a new checkpoint.
-  </div>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Design Trade-off: Checkpoint Frequency</div>
+<div style="color: #1e3a8a;">
+<strong>More frequent checkpoints:</strong> Faster restoration (shorter delta chains), higher memory usage<br/>
+<strong>Less frequent checkpoints:</strong> Lower memory usage, slower restoration (longer replay)<br/><br/>
+<strong>Optimal strategy:</strong> Adaptive checkpointing based on delta size. When cumulative delta size exceeds threshold (e.g., 50% of full state size), create a new checkpoint.
+</div>
 </div>
 
 ---
@@ -352,27 +352,27 @@ class DeltaManager:
 ### Linear Undo Stack Model
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Linear Undo/Redo State Machine</div>
-  <div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
-    <div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #4338ca;">S0</div>
-    <div style="color: #6366f1; font-size: 1.2rem;">--edit--></div>
-    <div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #4338ca;">S1</div>
-    <div style="color: #6366f1; font-size: 1.2rem;">--edit--></div>
-    <div style="background: #dbeafe; border: 3px solid #3b82f6; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1e40af;">S2*</div>
-    <div style="color: #94a3b8; font-size: 1.2rem;">- - - -></div>
-    <div style="background: #f1f5f9; border: 2px dashed #94a3b8; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #64748b;">S3?</div>
-  </div>
-  <div style="text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 16px;">
+<div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Linear Undo/Redo State Machine</div>
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
+<div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #4338ca;">S0</div>
+<div style="color: #6366f1; font-size: 1.2rem;">--edit--></div>
+<div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #4338ca;">S1</div>
+<div style="color: #6366f1; font-size: 1.2rem;">--edit--></div>
+<div style="background: #dbeafe; border: 3px solid #3b82f6; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1e40af;">S2*</div>
+<div style="color: #94a3b8; font-size: 1.2rem;">- - - -></div>
+<div style="background: #f1f5f9; border: 2px dashed #94a3b8; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #64748b;">S3?</div>
+</div>
+<div style="text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 16px;">
     * = current state | dashed = potential redo state
-  </div>
-  <div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;">
-    <div style="font-weight: 600; color: #1e293b; margin-bottom: 8px;">State Transition Rules</div>
-    <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-      <li><strong>Edit:</strong> Push current state to undo stack, clear redo stack, apply edit</li>
-      <li><strong>Undo:</strong> Push current state to redo stack, pop and restore from undo stack</li>
-      <li><strong>Redo:</strong> Push current state to undo stack, pop and restore from redo stack</li>
-    </ul>
-  </div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;">
+<div style="font-weight: 600; color: #1e293b; margin-bottom: 8px;">State Transition Rules</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+<li><strong>Edit:</strong> Push current state to undo stack, clear redo stack, apply edit</li>
+<li><strong>Undo:</strong> Push current state to redo stack, pop and restore from undo stack</li>
+<li><strong>Redo:</strong> Push current state to undo stack, pop and restore from redo stack</li>
+</ul>
+</div>
 </div>
 
 ```python
@@ -555,35 +555,35 @@ class TextEditor:
 Linear undo discards redo states on new edits. Some applications (e.g., Emacs, Vim) preserve all states in a tree structure:
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #22c55e;">
-  <div style="font-weight: 700; color: #166534; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Branching History Tree</div>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-    <div style="background: #bbf7d0; border: 2px solid #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S0 (root)</div>
-    <div style="color: #22c55e;">|</div>
-    <div style="background: #bbf7d0; border: 2px solid #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S1</div>
-    <div style="display: flex; gap: 40px; align-items: flex-start;">
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="color: #22c55e;">/</div>
-        <div style="background: #bbf7d0; border: 2px solid #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S2a</div>
-        <div style="color: #22c55e;">|</div>
-        <div style="background: #86efac; border: 3px solid #16a34a; border-radius: 8px; padding: 8px 16px; font-weight: 700; color: #166534;">S3a *</div>
-      </div>
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="color: #22c55e;">\</div>
-        <div style="background: #d1fae5; border: 2px dashed #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S2b</div>
-      </div>
-    </div>
-  </div>
-  <div style="margin-top: 20px; text-align: center; color: #15803d; font-size: 0.9rem;">
+<div style="font-weight: 700; color: #166534; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Branching History Tree</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="background: #bbf7d0; border: 2px solid #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S0 (root)</div>
+<div style="color: #22c55e;">|</div>
+<div style="background: #bbf7d0; border: 2px solid #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S1</div>
+<div style="display: flex; gap: 40px; align-items: flex-start;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #22c55e;">/</div>
+<div style="background: #bbf7d0; border: 2px solid #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S2a</div>
+<div style="color: #22c55e;">|</div>
+<div style="background: #86efac; border: 3px solid #16a34a; border-radius: 8px; padding: 8px 16px; font-weight: 700; color: #166534;">S3a *</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #22c55e;">\</div>
+<div style="background: #d1fae5; border: 2px dashed #22c55e; border-radius: 8px; padding: 8px 16px; font-weight: 600; color: #166534;">S2b</div>
+</div>
+</div>
+</div>
+<div style="margin-top: 20px; text-align: center; color: #15803d; font-size: 0.9rem;">
     * = current position | Branching preserves S2b even after navigating to S3a
-  </div>
+</div>
 </div>
 
 <div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 12px;">Trade-off Analysis</div>
-  <div style="color: #78350f;">
-    <strong>Linear undo:</strong> Simple mental model, lower memory, matches user expectations in most apps<br/>
-    <strong>Branching undo:</strong> Never lose work, complex navigation UI needed, higher memory, better for exploratory tasks (art, code experimentation)
-  </div>
+<div style="font-weight: 700; color: #92400e; margin-bottom: 12px;">Trade-off Analysis</div>
+<div style="color: #78350f;">
+<strong>Linear undo:</strong> Simple mental model, lower memory, matches user expectations in most apps<br/>
+<strong>Branching undo:</strong> Never lose work, complex navigation UI needed, higher memory, better for exploratory tasks (art, code experimentation)
+</div>
 </div>
 
 ---
@@ -593,31 +593,31 @@ Linear undo discards redo states on new edits. Some applications (e.g., Emacs, V
 ### Responsibility Boundaries
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Caretaker Responsibilities</div>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
-    <div style="background: #dcfce7; border-radius: 8px; padding: 16px;">
-      <div style="font-weight: 600; color: #166534; margin-bottom: 8px;">Should Do</div>
-      <ul style="color: #15803d; margin: 0; padding-left: 16px; font-size: 0.9rem;">
-        <li>Store and retrieve mementos</li>
-        <li>Manage history size limits</li>
-        <li>Provide navigation (undo/redo)</li>
-        <li>Read metadata (timestamps, descriptions)</li>
-        <li>Serialize mementos for persistence</li>
-        <li>Handle memory pressure (eviction)</li>
-      </ul>
-    </div>
-    <div style="background: #fef2f2; border-radius: 8px; padding: 16px;">
-      <div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Must Not Do</div>
-      <ul style="color: #b91c1c; margin: 0; padding-left: 16px; font-size: 0.9rem;">
-        <li>Inspect memento state contents</li>
-        <li>Modify memento state</li>
-        <li>Make decisions based on state values</li>
-        <li>Validate state contents</li>
-        <li>Merge or transform mementos</li>
-        <li>Know Originator's internal structure</li>
-      </ul>
-    </div>
-  </div>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Caretaker Responsibilities</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+<div style="background: #dcfce7; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #166534; margin-bottom: 8px;">Should Do</div>
+<ul style="color: #15803d; margin: 0; padding-left: 16px; font-size: 0.9rem;">
+<li>Store and retrieve mementos</li>
+<li>Manage history size limits</li>
+<li>Provide navigation (undo/redo)</li>
+<li>Read metadata (timestamps, descriptions)</li>
+<li>Serialize mementos for persistence</li>
+<li>Handle memory pressure (eviction)</li>
+</ul>
+</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 8px;">Must Not Do</div>
+<ul style="color: #b91c1c; margin: 0; padding-left: 16px; font-size: 0.9rem;">
+<li>Inspect memento state contents</li>
+<li>Modify memento state</li>
+<li>Make decisions based on state values</li>
+<li>Validate state contents</li>
+<li>Merge or transform mementos</li>
+<li>Know Originator's internal structure</li>
+</ul>
+</div>
+</div>
 </div>
 
 ### Advanced Caretaker Patterns
@@ -816,17 +816,17 @@ class AdvancedCaretaker(Generic[T]):
 ## Real-World Applications and Implications
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 12px;">Industry Applications</div>
-  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 2;">
-    <li><strong>Microsoft Word / Google Docs:</strong> Document version history with collaborative conflict resolution</li>
-    <li><strong>Git:</strong> Commits as mementos; branches as parallel history lines</li>
-    <li><strong>Database Transactions:</strong> Savepoints and rollback using write-ahead log entries as mementos</li>
-    <li><strong>Adobe Creative Suite:</strong> History panel stores mementos; smart objects preserve source state</li>
-    <li><strong>Redux DevTools:</strong> Time-travel debugging via immutable state snapshots</li>
-    <li><strong>VMware/Docker:</strong> VM/container snapshots capture entire machine state for rollback</li>
-    <li><strong>Figma/Sketch:</strong> Design version history with named versions and auto-save</li>
-    <li><strong>Gaming (Braid, Prince of Persia):</strong> Time-rewind mechanics using frame-by-frame mementos</li>
-  </ul>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 12px;">Industry Applications</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 2;">
+<li><strong>Microsoft Word / Google Docs:</strong> Document version history with collaborative conflict resolution</li>
+<li><strong>Git:</strong> Commits as mementos; branches as parallel history lines</li>
+<li><strong>Database Transactions:</strong> Savepoints and rollback using write-ahead log entries as mementos</li>
+<li><strong>Adobe Creative Suite:</strong> History panel stores mementos; smart objects preserve source state</li>
+<li><strong>Redux DevTools:</strong> Time-travel debugging via immutable state snapshots</li>
+<li><strong>VMware/Docker:</strong> VM/container snapshots capture entire machine state for rollback</li>
+<li><strong>Figma/Sketch:</strong> Design version history with named versions and auto-save</li>
+<li><strong>Gaming (Braid, Prince of Persia):</strong> Time-rewind mechanics using frame-by-frame mementos</li>
+</ul>
 </div>
 
 ### Cross-References to Related Patterns
@@ -842,60 +842,60 @@ class AdvancedCaretaker(Generic[T]):
 ## Memento vs Command: Deep Comparison
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Architectural Comparison</div>
-  <table style="width: 100%; border-collapse: collapse; color: #334155;">
-    <thead>
-      <tr style="background: #e2e8f0;">
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Dimension</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Memento</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Command</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>What is stored</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Complete state snapshot</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Operation + parameters + undo logic</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Undo mechanism</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Restore previous snapshot</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Execute inverse operation</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Memory cost</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">O(state_size) per snapshot</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">O(params_size) per command</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Implementation complexity</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Simple: just copy state</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Complex: must implement unexecute()</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Undo correctness</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Guaranteed (snapshot is truth)</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Depends on inverse correctness</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Best fit</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Small state, complex operations</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Large state, simple invertible operations</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Time-travel capability</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Jump to any snapshot directly</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Must replay/unreplay sequentially</td>
-      </tr>
-    </tbody>
-  </table>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Architectural Comparison</div>
+<table style="width: 100%; border-collapse: collapse; color: #334155;">
+<thead>
+  <tr style="background: #e2e8f0;">
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Dimension</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Memento</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Command</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>What is stored</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Complete state snapshot</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Operation + parameters + undo logic</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Undo mechanism</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Restore previous snapshot</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Execute inverse operation</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Memory cost</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">O(state_size) per snapshot</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">O(params_size) per command</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Implementation complexity</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Simple: just copy state</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Complex: must implement unexecute()</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Undo correctness</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Guaranteed (snapshot is truth)</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Depends on inverse correctness</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Best fit</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Small state, complex operations</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Large state, simple invertible operations</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Time-travel capability</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Jump to any snapshot directly</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Must replay/unreplay sequentially</td>
+  </tr>
+</tbody>
+</table>
 </div>
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 2px solid #3b82f6;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Hybrid Approach: Command + Memento</div>
-  <div style="color: #1e3a8a;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Hybrid Approach: Command + Memento</div>
+<div style="color: #1e3a8a;">
     Production systems often combine both patterns: Commands store operations with Mementos of affected state subsets. This enables efficient undo (only restore what changed) while maintaining correctness (guaranteed snapshot for affected portion).
-  </div>
+</div>
 </div>
 
 ---
@@ -1424,41 +1424,41 @@ class DocumentEditor {
 ## Best Practices Summary
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 16px; font-size: 1.1rem;">Production Checklist</div>
-  <div style="display: grid; gap: 12px;">
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">1</div>
-      <div><strong>Immutable mementos:</strong> Use frozen dataclasses, Object.freeze(), or immutable data structures</div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">2</div>
-      <div><strong>Deep copy verification:</strong> Test with nested mutable objects to ensure isolation</div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">3</div>
-      <div><strong>Bounded history:</strong> Always set max_history limit; implement eviction policy</div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">4</div>
-      <div><strong>Metadata for UX:</strong> Timestamps and descriptions enable meaningful history display</div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">5</div>
-      <div><strong>Version for persistence:</strong> Schema versioning enables forward-compatible storage</div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">6</div>
-      <div><strong>External resource handling:</strong> Document how to handle file handles, connections, etc.</div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">7</div>
-      <div><strong>Thread safety:</strong> Document synchronization requirements; implement if needed</div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 12px;">
-      <div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">8</div>
-      <div><strong>Restore validation:</strong> Verify state integrity after restore; handle corrupt mementos gracefully</div>
-    </div>
-  </div>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 16px; font-size: 1.1rem;">Production Checklist</div>
+<div style="display: grid; gap: 12px;">
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">1</div>
+<div><strong>Immutable mementos:</strong> Use frozen dataclasses, Object.freeze(), or immutable data structures</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">2</div>
+<div><strong>Deep copy verification:</strong> Test with nested mutable objects to ensure isolation</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">3</div>
+<div><strong>Bounded history:</strong> Always set max_history limit; implement eviction policy</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">4</div>
+<div><strong>Metadata for UX:</strong> Timestamps and descriptions enable meaningful history display</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">5</div>
+<div><strong>Version for persistence:</strong> Schema versioning enables forward-compatible storage</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">6</div>
+<div><strong>External resource handling:</strong> Document how to handle file handles, connections, etc.</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">7</div>
+<div><strong>Thread safety:</strong> Document synchronization requirements; implement if needed</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="background: #1e40af; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0;">8</div>
+<div><strong>Restore validation:</strong> Verify state integrity after restore; handle corrupt mementos gracefully</div>
+</div>
+</div>
 </div>
 
 ---

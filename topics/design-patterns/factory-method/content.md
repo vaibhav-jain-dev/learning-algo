@@ -4,11 +4,11 @@
 
 The Factory Method pattern defines an interface for creating objects, but lets subclasses decide which class to instantiate. It promotes loose coupling by eliminating the need to bind application-specific classes into your code.
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border-radius: 12px; padding: 20px; margin: 20px 0; color: #fff;">
-  <h4 style="margin: 0 0 12px 0; color: #7dd3fc;">Core Insight</h4>
-  <p style="margin: 0; font-size: 15px; line-height: 1.6;">
-    Factory Method is fundamentally about <span style="color: #4ade80; font-weight: 600;">deferring instantiation to subclasses</span>. The superclass defines the algorithm (template), and the factory method is the "hook" that subclasses override to customize object creation. This creates a powerful extension mechanism that follows the <span style="color: #4ade80; font-weight: 600;">Open/Closed Principle</span>.
-  </p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="margin: 0 0 12px 0; color: #1e40af;">Core Insight</h4>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #475569;">
+    Factory Method is fundamentally about <span style="color: #166534; font-weight: 600;">deferring instantiation to subclasses</span>. The superclass defines the algorithm (template), and the factory method is the "hook" that subclasses override to customize object creation. This creates a powerful extension mechanism that follows the <span style="color: #166534; font-weight: 600;">Open/Closed Principle</span>.
+</p>
 </div>
 
 **Difficulty:** Intermediate
@@ -140,57 +140,57 @@ ProductB
 Understanding the difference between Factory Method and [[Abstract Factory]](/topics/design-patterns/abstract-factory) is one of the most common interview questions. They solve different problems despite similar names.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Structural Comparison</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Structural Comparison</h4>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 16px;">
-      <h5 style="color: #1e40af; margin: 0 0 12px 0; text-align: center;">Factory Method</h5>
-      <div style="font-size: 13px; color: #1e3a5f;">
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Structure:</span> Single method in a class</div>
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Creates:</span> ONE product type</div>
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Extension:</span> Subclass overrides method</div>
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Relationship:</span> IS-A (inheritance)</div>
-        <div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-top: 12px;">
-          <code style="font-size: 11px;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 16px;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0; text-align: center;">Factory Method</h5>
+<div style="font-size: 13px; color: #1e3a5f;">
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Structure:</span> Single method in a class</div>
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Creates:</span> ONE product type</div>
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Extension:</span> Subclass overrides method</div>
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Relationship:</span> IS-A (inheritance)</div>
+<div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-top: 12px;">
+<code style="font-size: 11px;">
 class Dialog:<br/>
 &nbsp;&nbsp;def create_button(self) -> Button:<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;return DefaultButton()
-          </code>
-        </div>
-      </div>
-    </div>
+</code>
+</div>
+</div>
+</div>
 
-    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 10px; padding: 16px;">
-      <h5 style="color: #166534; margin: 0 0 12px 0; text-align: center;">Abstract Factory</h5>
-      <div style="font-size: 13px; color: #14532d;">
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Structure:</span> Interface with multiple methods</div>
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Creates:</span> FAMILY of related products</div>
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Extension:</span> New factory class</div>
-        <div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Relationship:</span> HAS-A (composition)</div>
-        <div style="background: #bbf7d0; padding: 8px; border-radius: 4px; margin-top: 12px;">
-          <code style="font-size: 11px;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 10px; padding: 16px;">
+<h5 style="color: #166534; margin: 0 0 12px 0; text-align: center;">Abstract Factory</h5>
+<div style="font-size: 13px; color: #14532d;">
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Structure:</span> Interface with multiple methods</div>
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Creates:</span> FAMILY of related products</div>
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Extension:</span> New factory class</div>
+<div style="margin-bottom: 8px;"><span style="color: #166534; font-weight: 600;">Relationship:</span> HAS-A (composition)</div>
+<div style="background: #bbf7d0; padding: 8px; border-radius: 4px; margin-top: 12px;">
+<code style="font-size: 11px;">
 class WidgetFactory:<br/>
 &nbsp;&nbsp;def create_button(self) -> Button<br/>
 &nbsp;&nbsp;def create_scroll(self) -> Scrollbar<br/>
 &nbsp;&nbsp;def create_menu(self) -> Menu
-          </code>
-        </div>
-      </div>
-    </div>
+</code>
+</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### 1.1 The Fundamental Difference
 
 <div style="background: #fefce8; border-left: 4px solid #eab308; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #a16207;">Key Distinction</h4>
-  <p style="margin: 0; color: #713f12; font-size: 14px;">
-    <span style="color: #166534; font-weight: 600;">Factory Method</span> uses <strong>inheritance</strong> to decide what object to create. The subclass IS the factory.
-    <br><br>
-    <span style="color: #166534; font-weight: 600;">Abstract Factory</span> uses <strong>composition</strong> to delegate creation to a factory object. The class HAS a factory.
-  </p>
+<h4 style="margin: 0 0 8px 0; color: #a16207;">Key Distinction</h4>
+<p style="margin: 0; color: #713f12; font-size: 14px;">
+<span style="color: #166534; font-weight: 600;">Factory Method</span> uses <strong>inheritance</strong> to decide what object to create. The subclass IS the factory.
+<br><br>
+<span style="color: #166534; font-weight: 600;">Abstract Factory</span> uses <strong>composition</strong> to delegate creation to a factory object. The class HAS a factory.
+</p>
 </div>
 
 ```python
@@ -227,31 +227,31 @@ class Application:
 ### 1.2 When to Choose Which
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Decision Framework</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Decision Framework</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
 
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px;">
-      <div style="font-weight: 700; color: #1e40af; margin-bottom: 8px;">Use Factory Method When:</div>
-      <ul style="margin: 0; padding-left: 20px; color: #1e3a5f; font-size: 14px;">
-        <li>You have a <span style="color: #166534; font-weight: 600;">single product</span> with variations</li>
-        <li>Subclasses should control instantiation</li>
-        <li>You're building a <span style="color: #166534; font-weight: 600;">framework</span> where users extend your classes</li>
-        <li>The algorithm is fixed but the objects used vary</li>
-      </ul>
-    </div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 8px;">Use Factory Method When:</div>
+<ul style="margin: 0; padding-left: 20px; color: #1e3a5f; font-size: 14px;">
+<li>You have a <span style="color: #166534; font-weight: 600;">single product</span> with variations</li>
+<li>Subclasses should control instantiation</li>
+<li>You're building a <span style="color: #166534; font-weight: 600;">framework</span> where users extend your classes</li>
+<li>The algorithm is fixed but the objects used vary</li>
+</ul>
+</div>
 
-    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 16px;">
-      <div style="font-weight: 700; color: #166534; margin-bottom: 8px;">Use Abstract Factory When:</div>
-      <ul style="margin: 0; padding-left: 20px; color: #14532d; font-size: 14px;">
-        <li>You need <span style="color: #166534; font-weight: 600;">multiple related products</span> that work together</li>
-        <li>Products from different families should never mix</li>
-        <li>You want to <span style="color: #166534; font-weight: 600;">swap entire product families</span> at runtime</li>
-        <li>Platform/environment determines all product types</li>
-      </ul>
-    </div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 16px;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 8px;">Use Abstract Factory When:</div>
+<ul style="margin: 0; padding-left: 20px; color: #14532d; font-size: 14px;">
+<li>You need <span style="color: #166534; font-weight: 600;">multiple related products</span> that work together</li>
+<li>Products from different families should never mix</li>
+<li>You want to <span style="color: #166534; font-weight: 600;">swap entire product families</span> at runtime</li>
+<li>Platform/environment determines all product types</li>
+</ul>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### Interview Questions: Factory Method vs Abstract Factory (3 Levels Deep)
@@ -330,26 +330,26 @@ class Application:
 ### 2.1 Simple Parameterized Factory
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Parameterized Factory Decision Flow</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Parameterized Factory Decision Flow</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
-      <div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Input Parameter
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">type="email" | "sms" | "push"</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">type="email" | "sms" | "push"</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Factory Method
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">create_notification(type)</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">create_notification(type)</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Product Instance
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">EmailNotification()</div>
-      </div>
-    </div>
-  </div>
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">EmailNotification()</div>
+</div>
+</div>
+</div>
 </div>
 
 ```python
@@ -493,10 +493,10 @@ notification = NotificationFactory.create("webhook", endpoint="https://api.examp
 ```
 
 <div style="background: #dcfce7; border-left: 4px solid #22c55e; padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #166534;">Design Benefit</h4>
-  <p style="margin: 0; color: #14532d; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #166534;">Design Benefit</h4>
+<p style="margin: 0; color: #14532d; font-size: 14px;">
     Registry-based factories enable <span style="color: #166534; font-weight: 600;">plugin architectures</span>. New product types can be registered by external modules without modifying core factory code. This is how frameworks like Django register middleware and Flask registers extensions.
-  </p>
+</p>
 </div>
 
 ### 2.3 Parameterized Factory with Configuration
@@ -688,26 +688,26 @@ Factory Method integrates naturally with [[Dependency Injection]](/topics/design
 ### 3.1 Factory as an Injected Dependency
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">DI + Factory Integration</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">DI + Factory Integration</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
-      <div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         DI Container
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Configures factory binding</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Configures factory binding</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Injects Factory
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Into service constructor</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Into service constructor</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Service Creates Products
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">When needed at runtime</div>
-      </div>
-    </div>
-  </div>
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">When needed at runtime</div>
+</div>
+</div>
+</div>
 </div>
 
 ```python
@@ -866,10 +866,10 @@ class ModernContainer:
 ```
 
 <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #1e40af;">Why Use Factory Providers?</h4>
-  <p style="margin: 0; color: #1e3a8a; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #1e40af;">Why Use Factory Providers?</h4>
+<p style="margin: 0; color: #1e3a8a; font-size: 14px;">
     Standard DI creates one instance per injection. Factory providers let you create <span style="color: #166534; font-weight: 600;">multiple instances on demand</span> while still keeping the creation logic external to the consumer. Common in: HTTP client creation, database connection factories, worker pool managers.
-  </p>
+</p>
 </div>
 
 ### 3.3 Scoped Factories
@@ -1261,36 +1261,36 @@ logger.info("Application started", version="1.0.0", environment="production")
 ### 4.2 Database Connection Factory
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Database Factory Architecture</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Database Factory Architecture</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 16px; text-align: center;">
-        <div style="font-weight: 700; color: #1e40af; font-size: 13px;">DatabaseFactory</div>
-        <div style="font-size: 10px; color: #3b82f6; margin-top: 4px;">interface</div>
-        <div style="font-family: monospace; font-size: 10px; color: #1e3a5f; margin-top: 6px;">+create_connection()</div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-weight: 700; color: #1e40af; font-size: 13px;">DatabaseFactory</div>
+<div style="font-size: 10px; color: #3b82f6; margin-top: 4px;">interface</div>
+<div style="font-family: monospace; font-size: 10px; color: #1e3a5f; margin-top: 6px;">+create_connection()</div>
+</div>
+</div>
 
-    <div style="display: flex; justify-content: center;">
-      <div style="color: #64748b; font-size: 12px;">implements</div>
-    </div>
+<div style="display: flex; justify-content: center;">
+<div style="color: #64748b; font-size: 12px;">implements</div>
+</div>
 
-    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 120px;">
-        <div style="font-weight: 600; color: #166534; font-size: 12px;">PostgresFactory</div>
-        <div style="font-size: 9px; color: #15803d; margin-top: 4px;">psycopg2 driver</div>
-      </div>
-      <div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 120px;">
-        <div style="font-weight: 600; color: #3730a3; font-size: 12px;">MySQLFactory</div>
-        <div style="font-size: 9px; color: #4338ca; margin-top: 4px;">mysql-connector</div>
-      </div>
-      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 120px;">
-        <div style="font-weight: 600; color: #92400e; font-size: 12px;">SQLiteFactory</div>
-        <div style="font-size: 9px; color: #b45309; margin-top: 4px;">sqlite3 built-in</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600; color: #166534; font-size: 12px;">PostgresFactory</div>
+<div style="font-size: 9px; color: #15803d; margin-top: 4px;">psycopg2 driver</div>
+</div>
+<div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600; color: #3730a3; font-size: 12px;">MySQLFactory</div>
+<div style="font-size: 9px; color: #4338ca; margin-top: 4px;">mysql-connector</div>
+</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600; color: #92400e; font-size: 12px;">SQLiteFactory</div>
+<div style="font-size: 9px; color: #b45309; margin-top: 4px;">sqlite3 built-in</div>
+</div>
+</div>
+</div>
 </div>
 
 ```python
@@ -2134,10 +2134,10 @@ class PDFParserFactory(ParserFactory):
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 Key considerations:
 <ul>
-<li>Use thread-safe data structures (e.g., threading.Lock in Python)</li>
-<li>Consider double-checked locking for singleton instances</li>
-<li>Make factory methods idempotent</li>
-<li>Use atomic operations for registry updates</li>
+  <li>Use thread-safe data structures (e.g., threading.Lock in Python)</li>
+  <li>Consider double-checked locking for singleton instances</li>
+  <li>Make factory methods idempotent</li>
+  <li>Use atomic operations for registry updates</li>
 </ul>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
 import threading
@@ -2217,10 +2217,10 @@ PluginFactory.discover_plugins("myapp.plugins")
 
 <strong>Key considerations:</strong>
 <ul>
-<li><span style="color: #166534; font-weight: 600;">Isolation:</span> Plugins should be sandboxed to prevent interference</li>
-<li><span style="color: #166534; font-weight: 600;">Versioning:</span> Handle plugin API versioning for compatibility</li>
-<li><span style="color: #166534; font-weight: 600;">Hot-reload:</span> Consider supporting plugin updates without restart</li>
-<li><span style="color: #166534; font-weight: 600;">Dependency injection:</span> Plugins may need access to core services</li>
+  <li><span style="color: #166534; font-weight: 600;">Isolation:</span> Plugins should be sandboxed to prevent interference</li>
+  <li><span style="color: #166534; font-weight: 600;">Versioning:</span> Handle plugin API versioning for compatibility</li>
+  <li><span style="color: #166534; font-weight: 600;">Hot-reload:</span> Consider supporting plugin updates without restart</li>
+  <li><span style="color: #166534; font-weight: 600;">Dependency injection:</span> Plugins may need access to core services</li>
 </ul>
 </div>
 </details>
@@ -2269,10 +2269,10 @@ func (s *NotificationService) NotifyUser(userID, message string) error {
 
 <strong>Trade-offs vs inheritance-based approach:</strong>
 <ul>
-<li><span style="color: #166534; font-weight: 600;">Pro:</span> More explicit, easier to test (just pass different function)</li>
-<li><span style="color: #166534; font-weight: 600;">Pro:</span> No inheritance hierarchy to understand</li>
-<li><span style="color: #166534; font-weight: 600;">Con:</span> Less discoverable - factory is a function, not a method</li>
-<li><span style="color: #166534; font-weight: 600;">Con:</span> Cannot enforce that subclasses implement factory (no abstract classes)</li>
+  <li><span style="color: #166534; font-weight: 600;">Pro:</span> More explicit, easier to test (just pass different function)</li>
+  <li><span style="color: #166534; font-weight: 600;">Pro:</span> No inheritance hierarchy to understand</li>
+  <li><span style="color: #166534; font-weight: 600;">Con:</span> Less discoverable - factory is a function, not a method</li>
+  <li><span style="color: #166534; font-weight: 600;">Con:</span> Cannot enforce that subclasses implement factory (no abstract classes)</li>
 </ul>
 </div>
 </details>
@@ -2367,12 +2367,16 @@ class ConnectionFactory:
 
 ## Quick Reference Card
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 24px; margin: 20px 0; color: #f8fafc;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 
 ### Pattern Essence
+<div style="color: #475569;">
+
 - **Intent**: Define interface for creation, let subclasses decide the class
 - **Key Benefit**: Extensible without modifying existing code
 - **Category**: Creational Pattern (GoF)
+
+</div>
 
 ### Decision Checklist
 

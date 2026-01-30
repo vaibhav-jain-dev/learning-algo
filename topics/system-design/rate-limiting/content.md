@@ -13,21 +13,21 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 ### Real Company Examples
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Companies Using Rate Limiting</h4>
-  <div style="display: grid; gap: 16px;">
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e293b; font-weight: 600;">Twitter/X - API Access</div>
-      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Twitter's API has strict rate limits (15-900 requests per 15-minute window depending on endpoint). This prevents bots from scraping all tweets and ensures fair access for legitimate developers.</div>
-    </div>
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
-      <div style="color: #1e293b; font-weight: 600;">Stripe - Payment APIs</div>
-      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Stripe rate limits API requests to protect against runaway scripts that could create thousands of charges. Different endpoints have different limits based on cost and risk.</div>
-    </div>
-    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
-      <div style="color: #1e293b; font-weight: 600;">GitHub - API and Git Operations</div>
-      <div style="color: #475569; font-size: 14px; margin-top: 8px;">GitHub limits authenticated users to 5,000 requests/hour. During CI/CD spikes, this prevents a single user's pipeline from overwhelming shared infrastructure.</div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Companies Using Rate Limiting</h4>
+<div style="display: grid; gap: 16px;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e293b; font-weight: 600;">Twitter/X - API Access</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">Twitter's API has strict rate limits (15-900 requests per 15-minute window depending on endpoint). This prevents bots from scraping all tweets and ensures fair access for legitimate developers.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+<div style="color: #1e293b; font-weight: 600;">Stripe - Payment APIs</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">Stripe rate limits API requests to protect against runaway scripts that could create thousands of charges. Different endpoints have different limits based on cost and risk.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+<div style="color: #1e293b; font-weight: 600;">GitHub - API and Git Operations</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">GitHub limits authenticated users to 5,000 requests/hour. During CI/CD spikes, this prevents a single user's pipeline from overwhelming shared infrastructure.</div>
+</div>
+</div>
 </div>
 
 **Why Rate Limit?**
@@ -44,58 +44,58 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 ### Rate Limiting Flow
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Request Processing with Rate Limiting</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Request Processing with Rate Limiting</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 12px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">1</div>
-      <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
-        <div style="color: #1e40af; font-weight: 600;">Identify Client</div>
-        <div style="color: #3730a3; font-size: 13px;">Extract identifier: API key, user ID, IP address, or combination</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">2</div>
-      <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
-        <div style="color: #1e40af; font-weight: 600;">Check Limit</div>
-        <div style="color: #3730a3; font-size: 13px;">Query rate limiter for current usage against allowed limit</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #10b981; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">3a</div>
-      <div style="flex: 1; background: #ecfdf5; border-radius: 8px; padding: 12px;">
-        <div style="color: #065f46; font-weight: 600;">Under Limit: Allow</div>
-        <div style="color: #047857; font-size: 13px;">Increment counter, process request, return response with rate headers</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">3b</div>
-      <div style="flex: 1; background: #fef2f2; border-radius: 8px; padding: 12px;">
-        <div style="color: #991b1b; font-weight: 600;">Over Limit: Reject</div>
-        <div style="color: #7f1d1d; font-size: 13px;">Return 429 Too Many Requests with Retry-After header</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">1</div>
+<div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
+<div style="color: #1e40af; font-weight: 600;">Identify Client</div>
+<div style="color: #3730a3; font-size: 13px;">Extract identifier: API key, user ID, IP address, or combination</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">2</div>
+<div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 12px;">
+<div style="color: #1e40af; font-weight: 600;">Check Limit</div>
+<div style="color: #3730a3; font-size: 13px;">Query rate limiter for current usage against allowed limit</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #10b981; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">3a</div>
+<div style="flex: 1; background: #ecfdf5; border-radius: 8px; padding: 12px;">
+<div style="color: #065f46; font-weight: 600;">Under Limit: Allow</div>
+<div style="color: #047857; font-size: 13px;">Increment counter, process request, return response with rate headers</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">3b</div>
+<div style="flex: 1; background: #fef2f2; border-radius: 8px; padding: 12px;">
+<div style="color: #991b1b; font-weight: 600;">Over Limit: Reject</div>
+<div style="color: #7f1d1d; font-size: 13px;">Return 429 Too Many Requests with Retry-After header</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Rate Limit Response Headers
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Standard Rate Limit Headers</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Standard Rate Limit Headers</h4>
 
-  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px;">
-    <div style="color: #1e293b;"><span style="color: #3b82f6;">X-RateLimit-Limit:</span> 100</div>
-    <div style="color: #475569; font-size: 12px; margin-bottom: 8px;">Maximum requests allowed in window</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px;">
+<div style="color: #1e293b;"><span style="color: #3b82f6;">X-RateLimit-Limit:</span> 100</div>
+<div style="color: #475569; font-size: 12px; margin-bottom: 8px;">Maximum requests allowed in window</div>
 
-    <div style="color: #1e293b;"><span style="color: #3b82f6;">X-RateLimit-Remaining:</span> 45</div>
-    <div style="color: #475569; font-size: 12px; margin-bottom: 8px;">Requests remaining in current window</div>
+<div style="color: #1e293b;"><span style="color: #3b82f6;">X-RateLimit-Remaining:</span> 45</div>
+<div style="color: #475569; font-size: 12px; margin-bottom: 8px;">Requests remaining in current window</div>
 
-    <div style="color: #1e293b;"><span style="color: #3b82f6;">X-RateLimit-Reset:</span> 1642089600</div>
-    <div style="color: #475569; font-size: 12px; margin-bottom: 8px;">Unix timestamp when window resets</div>
+<div style="color: #1e293b;"><span style="color: #3b82f6;">X-RateLimit-Reset:</span> 1642089600</div>
+<div style="color: #475569; font-size: 12px; margin-bottom: 8px;">Unix timestamp when window resets</div>
 
-    <div style="color: #1e293b;"><span style="color: #ef4444;">Retry-After:</span> 30</div>
-    <div style="color: #475569; font-size: 12px;">Seconds until client can retry (only on 429)</div>
-  </div>
+<div style="color: #1e293b;"><span style="color: #ef4444;">Retry-After:</span> 30</div>
+<div style="color: #475569; font-size: 12px;">Seconds until client can retry (only on 429)</div>
+</div>
 </div>
 
 ---
@@ -103,88 +103,88 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 ## Rate Limiting Algorithms
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Algorithm Comparison</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Algorithm Comparison</h4>
 
-  <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <tr style="background: #f1f5f9;">
-        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Algorithm</th>
-        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Allows Bursts</th>
-        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Memory</th>
-        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Accuracy</th>
-        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Best For</th>
-      </tr>
-      <tr style="border-bottom: 1px solid #e2e8f0;">
-        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Token Bucket</td>
-        <td style="padding: 12px; color: #10b981;">Yes (controlled)</td>
-        <td style="padding: 12px; color: #475569;">O(1)</td>
-        <td style="padding: 12px; color: #475569;">Good</td>
-        <td style="padding: 12px; color: #475569;">APIs with burst tolerance</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #e2e8f0;">
-        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Leaky Bucket</td>
-        <td style="padding: 12px; color: #ef4444;">No</td>
-        <td style="padding: 12px; color: #475569;">O(n)</td>
-        <td style="padding: 12px; color: #475569;">Good</td>
-        <td style="padding: 12px; color: #475569;">Smooth output rate</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #e2e8f0;">
-        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Fixed Window</td>
-        <td style="padding: 12px; color: #f59e0b;">Edge bursts</td>
-        <td style="padding: 12px; color: #475569;">O(1)</td>
-        <td style="padding: 12px; color: #475569;">Low</td>
-        <td style="padding: 12px; color: #475569;">Simple use cases</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #e2e8f0;">
-        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Sliding Window Log</td>
-        <td style="padding: 12px; color: #ef4444;">No</td>
-        <td style="padding: 12px; color: #475569;">O(n)</td>
-        <td style="padding: 12px; color: #475569;">High</td>
-        <td style="padding: 12px; color: #475569;">Precise tracking</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Sliding Window Counter</td>
-        <td style="padding: 12px; color: #f59e0b;">Weighted</td>
-        <td style="padding: 12px; color: #475569;">O(1)</td>
-        <td style="padding: 12px; color: #475569;">High</td>
-        <td style="padding: 12px; color: #475569;">Production APIs</td>
-      </tr>
-    </table>
-  </div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<tr style="background: #f1f5f9;">
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Algorithm</th>
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Allows Bursts</th>
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Memory</th>
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Accuracy</th>
+<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Best For</th>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #1e293b; font-weight: 600;">Token Bucket</td>
+<td style="padding: 12px; color: #10b981;">Yes (controlled)</td>
+<td style="padding: 12px; color: #475569;">O(1)</td>
+<td style="padding: 12px; color: #475569;">Good</td>
+<td style="padding: 12px; color: #475569;">APIs with burst tolerance</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #1e293b; font-weight: 600;">Leaky Bucket</td>
+<td style="padding: 12px; color: #ef4444;">No</td>
+<td style="padding: 12px; color: #475569;">O(n)</td>
+<td style="padding: 12px; color: #475569;">Good</td>
+<td style="padding: 12px; color: #475569;">Smooth output rate</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #1e293b; font-weight: 600;">Fixed Window</td>
+<td style="padding: 12px; color: #f59e0b;">Edge bursts</td>
+<td style="padding: 12px; color: #475569;">O(1)</td>
+<td style="padding: 12px; color: #475569;">Low</td>
+<td style="padding: 12px; color: #475569;">Simple use cases</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #1e293b; font-weight: 600;">Sliding Window Log</td>
+<td style="padding: 12px; color: #ef4444;">No</td>
+<td style="padding: 12px; color: #475569;">O(n)</td>
+<td style="padding: 12px; color: #475569;">High</td>
+<td style="padding: 12px; color: #475569;">Precise tracking</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; font-weight: 600;">Sliding Window Counter</td>
+<td style="padding: 12px; color: #f59e0b;">Weighted</td>
+<td style="padding: 12px; color: #475569;">O(1)</td>
+<td style="padding: 12px; color: #475569;">High</td>
+<td style="padding: 12px; color: #475569;">Production APIs</td>
+</tr>
+</table>
+</div>
 </div>
 
 ### Fixed Window Problem
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Why Fixed Windows Have Edge Burst Problems</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Why Fixed Windows Have Edge Burst Problems</h4>
 
-  <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">The Problem</div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 13px;">
-      <div style="background: #fee2e2; padding: 12px; border-radius: 4px 0 0 4px; text-align: center;">
-        <div style="color: #7f1d1d; font-weight: 600;">Window 1 (0:00-1:00)</div>
-        <div style="color: #991b1b; margin-top: 8px;">90 requests at 0:59</div>
-      </div>
-      <div style="background: #fee2e2; padding: 12px; border-radius: 0 4px 4px 0; text-align: center;">
-        <div style="color: #7f1d1d; font-weight: 600;">Window 2 (1:00-2:00)</div>
-        <div style="color: #991b1b; margin-top: 8px;">100 requests at 1:01</div>
-      </div>
-    </div>
-    <div style="background: #fecaca; padding: 12px; border-radius: 8px; margin-top: 12px; text-align: center;">
-      <div style="color: #991b1b; font-weight: 600;">190 requests in 2 seconds - nearly 2x the intended limit!</div>
-    </div>
-  </div>
+<div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">The Problem</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 13px;">
+<div style="background: #fee2e2; padding: 12px; border-radius: 4px 0 0 4px; text-align: center;">
+<div style="color: #7f1d1d; font-weight: 600;">Window 1 (0:00-1:00)</div>
+<div style="color: #991b1b; margin-top: 8px;">90 requests at 0:59</div>
+</div>
+<div style="background: #fee2e2; padding: 12px; border-radius: 0 4px 4px 0; text-align: center;">
+<div style="color: #7f1d1d; font-weight: 600;">Window 2 (1:00-2:00)</div>
+<div style="color: #991b1b; margin-top: 8px;">100 requests at 1:01</div>
+</div>
+</div>
+<div style="background: #fecaca; padding: 12px; border-radius: 8px; margin-top: 12px; text-align: center;">
+<div style="color: #991b1b; font-weight: 600;">190 requests in 2 seconds - nearly 2x the intended limit!</div>
+</div>
+</div>
 
-  <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
-    <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Solution: Sliding Window Counter</div>
-    <div style="color: #047857; font-size: 13px;">
+<div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Solution: Sliding Window Counter</div>
+<div style="color: #047857; font-size: 13px;">
       Weight the previous window based on how much of it overlaps with the current sliding window.
-      <div style="margin-top: 8px; font-family: monospace; background: #d1fae5; padding: 8px; border-radius: 4px;">
+<div style="margin-top: 8px; font-family: monospace; background: #d1fae5; padding: 8px; border-radius: 4px;">
         count = prev_window * (1 - progress) + curr_window<br>
         count = 90 * 0.75 + 10 = 77.5 (under 100 limit)
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -194,41 +194,41 @@ When a client exceeds their limit, the server responds with HTTP 429 (Too Many R
 ### The Cloudflare Rate Limiting Incident (2020)
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">What Happened</h4>
+<h4 style="color: #1e293b; margin-top: 0;">What Happened</h4>
 
-  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #991b1b; font-weight: 600;">The Incident</div>
-    <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #991b1b; font-weight: 600;">The Incident</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
       A misconfigured rate limiter caused Cloudflare to reject legitimate traffic during a major DDoS attack. The rate limiting rules were too aggressive and didn't distinguish between attack traffic and legitimate users, causing a 27-minute outage affecting millions of websites.
-    </div>
-  </div>
-
-  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #1e293b; font-weight: 600;">Root Cause</div>
-    <div style="color: #475569; font-size: 14px; margin-top: 8px;">
-      <div style="padding: 4px 0;">Rate limiting was applied at IP level only</div>
-      <div style="padding: 4px 0;">Many legitimate users share IPs (corporate NAT, mobile carriers)</div>
-      <div style="padding: 4px 0;">Attack traffic triggered limits that blocked legitimate users</div>
-      <div style="padding: 4px 0;">No fallback mechanism or graceful degradation</div>
-    </div>
-  </div>
-
-  <div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
-    <div style="color: #065f46; font-weight: 600;">How They Fixed It</div>
-    <div style="color: #047857; font-size: 14px; margin-top: 8px;">
-      <div>1. Multi-dimensional rate limiting (IP + User-Agent + behavior patterns)</div>
-      <div>2. Implemented "fail open" mode for rate limiter failures</div>
-      <div>3. Added progressive rate limiting (warn, slow, then block)</div>
-      <div>4. Better monitoring with alerts on high rejection rates</div>
-    </div>
-  </div>
+</div>
 </div>
 
----
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #1e293b; font-weight: 600;">Root Cause</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px;">
+<div style="padding: 4px 0;">Rate limiting was applied at IP level only</div>
+<div style="padding: 4px 0;">Many legitimate users share IPs (corporate NAT, mobile carriers)</div>
+<div style="padding: 4px 0;">Attack traffic triggered limits that blocked legitimate users</div>
+<div style="padding: 4px 0;">No fallback mechanism or graceful degradation</div>
+</div>
+</div>
 
-## Implementation
+<div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
+<div style="color: #065f46; font-weight: 600;">How They Fixed It</div>
+<div style="color: #047857; font-size: 14px; margin-top: 8px;">
+<div>1. Multi-dimensional rate limiting (IP + User-Agent + behavior patterns)</div>
+  <div>2. Implemented "fail open" mode for rate limiter failures</div>
+    <div>3. Added progressive rate limiting (warn, slow, then block)</div>
+      <div>4. Better monitoring with alerts on high rejection rates</div>
+      </div>
+    </div>
+  </div>
 
-### Token Bucket Algorithm
+  ---
+
+  ## Implementation
+
+  ### Token Bucket Algorithm
 
 ```python
 import time
@@ -332,7 +332,7 @@ class TokenBucketRateLimiter:
                 del self.buckets[cid]
 ```
 
-### Sliding Window Counter
+  ### Sliding Window Counter
 
 ```python
 import time
@@ -407,7 +407,7 @@ class SlidingWindowCounter:
             }
 ```
 
-### Distributed Rate Limiter with Redis
+  ### Distributed Rate Limiter with Redis
 
 ```python
 import redis
@@ -556,7 +556,7 @@ class RedisTokenBucket:
         return allowed, metadata
 ```
 
-### HTTP Middleware
+  ### HTTP Middleware
 
 ```python
 from functools import wraps
@@ -643,21 +643,21 @@ def expensive_operation():
     return {'result': 'expensive computation'}
 ```
 
----
+  ---
 
-## Interview Questions
+  ## Interview Questions
 
-<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-### Q1: How would you implement rate limiting in a distributed system?
+  ### Q1: How would you implement rate limiting in a distributed system?
 
-**Answer:** Use a centralized store (Redis) with atomic operations to ensure consistency across multiple application instances.
+  **Answer:** Use a centralized store (Redis) with atomic operations to ensure consistency across multiple application instances.
 
-Key considerations:
-1. **Atomic operations**: Use Lua scripts in Redis to check and increment atomically
-2. **Clock synchronization**: Use server time from Redis, not application servers
-3. **Failover strategy**: Decide between "fail open" (allow on Redis failure) or "fail closed"
-4. **Local caching**: Cache rate limit state locally for performance, sync periodically
+  Key considerations:
+  1. **Atomic operations**: Use Lua scripts in Redis to check and increment atomically
+  2. **Clock synchronization**: Use server time from Redis, not application servers
+  3. **Failover strategy**: Decide between "fail open" (allow on Redis failure) or "fail closed"
+  4. **Local caching**: Cache rate limit state locally for performance, sync periodically
 
 ```python
 # Hybrid approach: local + Redis
@@ -671,29 +671,29 @@ class HybridRateLimiter:
         return self.redis_limiter.allow(client_id)
 ```
 
-### Q2: Token bucket vs sliding window - when to use each?
+  ### Q2: Token bucket vs sliding window - when to use each?
 
-**Answer:**
+  **Answer:**
 
-**Token Bucket:**
-- Allows controlled bursts (users can make many requests quickly, then wait)
-- Good for APIs where burst behavior is acceptable
-- Memory efficient (just stores token count and timestamp)
-- Example: Twitter API allows bursts during viral tweets
+  **Token Bucket:**
+  - Allows controlled bursts (users can make many requests quickly, then wait)
+  - Good for APIs where burst behavior is acceptable
+  - Memory efficient (just stores token count and timestamp)
+  - Example: Twitter API allows bursts during viral tweets
 
-**Sliding Window Counter:**
-- Stricter limiting, prevents bursts
-- Better for protecting resources with hard capacity limits
-- More accurate rate enforcement
-- Example: Payment APIs where you truly want X requests per minute max
+  **Sliding Window Counter:**
+  - Stricter limiting, prevents bursts
+  - Better for protecting resources with hard capacity limits
+  - More accurate rate enforcement
+  - Example: Payment APIs where you truly want X requests per minute max
 
-### Q3: How do you handle rate limiting for users behind shared IPs (NAT)?
+  ### Q3: How do you handle rate limiting for users behind shared IPs (NAT)?
 
-**Answer:** Use multiple identification dimensions:
+  **Answer:** Use multiple identification dimensions:
 
-1. **Primary**: API key or user ID (authenticated requests)
-2. **Secondary**: IP address + User-Agent hash
-3. **Behavioral**: Request patterns, endpoints accessed
+  1. **Primary**: API key or user ID (authenticated requests)
+  2. **Secondary**: IP address + User-Agent hash
+  3. **Behavioral**: Request patterns, endpoints accessed
 
 ```python
 def get_client_id(request):
@@ -708,29 +708,29 @@ def get_client_id(request):
     return f"anon:{request.remote_addr}:{ua_hash}"
 ```
 
-Also consider higher limits for known shared IPs (corporate proxies, cloud providers).
+  Also consider higher limits for known shared IPs (corporate proxies, cloud providers).
 
-### Q4: What happens when your rate limiter fails?
+  ### Q4: What happens when your rate limiter fails?
 
-**Answer:** Design for failure with a clear strategy:
+  **Answer:** Design for failure with a clear strategy:
 
-**Fail Open (Allow):**
-- Requests proceed when rate limiter is unavailable
-- Protects user experience
-- Risk: Potential overload during outages
-- Use for: Non-critical rate limits
+  **Fail Open (Allow):**
+  - Requests proceed when rate limiter is unavailable
+  - Protects user experience
+  - Risk: Potential overload during outages
+  - Use for: Non-critical rate limits
 
-**Fail Closed (Block):**
-- Reject requests when rate limiter fails
-- Protects backend systems
-- Risk: Availability impact
-- Use for: Critical protection (DDoS, expensive operations)
+  **Fail Closed (Block):**
+  - Reject requests when rate limiter fails
+  - Protects backend systems
+  - Risk: Availability impact
+  - Use for: Critical protection (DDoS, expensive operations)
 
-**Best Practice:** Implement circuit breaker pattern with fallback to local rate limiting.
+  **Best Practice:** Implement circuit breaker pattern with fallback to local rate limiting.
 
-### Q5: How would you design rate limiting for different pricing tiers?
+  ### Q5: How would you design rate limiting for different pricing tiers?
 
-**Answer:**
+  **Answer:**
 
 ```python
 TIER_LIMITS = {
@@ -760,7 +760,7 @@ class TieredRateLimiter:
         return limiter.allow()
 ```
 
-Also consider: endpoint-specific limits, daily/monthly quotas, and overage billing.
+  Also consider: endpoint-specific limits, daily/monthly quotas, and overage billing.
 
 </div>
 
@@ -769,39 +769,39 @@ Also consider: endpoint-specific limits, daily/monthly quotas, and overage billi
 ## Common Mistakes
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Rate Limiting Anti-Patterns</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Rate Limiting Anti-Patterns</h4>
 
-  <div style="display: grid; gap: 12px;">
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Rate limiting only by IP address</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Many users share IPs (corporate networks, mobile carriers). Use multiple identifiers or authenticated user IDs when possible.</div>
-    </div>
+<div style="display: grid; gap: 12px;">
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Rate limiting only by IP address</div>
+<div style="color: #7f1d1d; font-size: 14px;">Many users share IPs (corporate networks, mobile carriers). Use multiple identifiers or authenticated user IDs when possible.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Not returning rate limit headers</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Clients need to know their limits to implement proper backoff. Always include X-RateLimit-* and Retry-After headers.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Not returning rate limit headers</div>
+<div style="color: #7f1d1d; font-size: 14px;">Clients need to know their limits to implement proper backoff. Always include X-RateLimit-* and Retry-After headers.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Hard-coded limits without configuration</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Rate limits should be configurable per-endpoint, per-tier, and adjustable without deployment. Use configuration service.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Hard-coded limits without configuration</div>
+<div style="color: #7f1d1d; font-size: 14px;">Rate limits should be configurable per-endpoint, per-tier, and adjustable without deployment. Use configuration service.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">No monitoring or alerting</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Track rejection rates, top limited clients, and limiter latency. Alert on unusual patterns that might indicate attacks or misconfigurations.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">No monitoring or alerting</div>
+<div style="color: #7f1d1d; font-size: 14px;">Track rejection rates, top limited clients, and limiter latency. Alert on unusual patterns that might indicate attacks or misconfigurations.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Applying rate limits after expensive operations</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Check rate limits BEFORE processing requests. Place rate limiting middleware at the earliest point in the request pipeline.</div>
-    </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Applying rate limits after expensive operations</div>
+<div style="color: #7f1d1d; font-size: 14px;">Check rate limits BEFORE processing requests. Place rate limiting middleware at the earliest point in the request pipeline.</div>
+</div>
 
-    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Same limits for all endpoints</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Expensive operations (AI inference, reports) need stricter limits than cheap ones (health checks). Differentiate by endpoint cost.</div>
-    </div>
-  </div>
+<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Same limits for all endpoints</div>
+<div style="color: #7f1d1d; font-size: 14px;">Expensive operations (AI inference, reports) need stricter limits than cheap ones (health checks). Differentiate by endpoint cost.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -809,49 +809,49 @@ Also consider: endpoint-specific limits, daily/monthly quotas, and overage billi
 ## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Rate Limiting Cheat Sheet</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Rate Limiting Cheat Sheet</h4>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Algorithm Selection</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>Token Bucket:</strong> Allow bursts, smooth average</div>
-        <div style="padding: 4px 0;"><strong>Sliding Window:</strong> Strict limits, no bursts</div>
-        <div style="padding: 4px 0;"><strong>Fixed Window:</strong> Simple, edge burst problem</div>
-        <div style="padding: 4px 0;"><strong>Leaky Bucket:</strong> Smooth output rate</div>
-      </div>
-    </div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Algorithm Selection</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>Token Bucket:</strong> Allow bursts, smooth average</div>
+  <div style="padding: 4px 0;"><strong>Sliding Window:</strong> Strict limits, no bursts</div>
+  <div style="padding: 4px 0;"><strong>Fixed Window:</strong> Simple, edge burst problem</div>
+  <div style="padding: 4px 0;"><strong>Leaky Bucket:</strong> Smooth output rate</div>
+</div>
+</div>
 
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Standard Headers</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>X-RateLimit-Limit:</strong> Maximum allowed</div>
-        <div style="padding: 4px 0;"><strong>X-RateLimit-Remaining:</strong> Remaining</div>
-        <div style="padding: 4px 0;"><strong>X-RateLimit-Reset:</strong> Reset timestamp</div>
-        <div style="padding: 4px 0;"><strong>Retry-After:</strong> Seconds to wait</div>
-      </div>
-    </div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Standard Headers</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>X-RateLimit-Limit:</strong> Maximum allowed</div>
+  <div style="padding: 4px 0;"><strong>X-RateLimit-Remaining:</strong> Remaining</div>
+  <div style="padding: 4px 0;"><strong>X-RateLimit-Reset:</strong> Reset timestamp</div>
+  <div style="padding: 4px 0;"><strong>Retry-After:</strong> Seconds to wait</div>
+</div>
+</div>
 
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Client Identification</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;">1. API key (best)</div>
-        <div style="padding: 4px 0;">2. User ID (authenticated)</div>
-        <div style="padding: 4px 0;">3. IP + User-Agent (anonymous)</div>
-        <div style="padding: 4px 0;">4. Behavioral fingerprinting</div>
-      </div>
-    </div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Client Identification</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;">1. API key (best)</div>
+  <div style="padding: 4px 0;">2. User ID (authenticated)</div>
+  <div style="padding: 4px 0;">3. IP + User-Agent (anonymous)</div>
+  <div style="padding: 4px 0;">4. Behavioral fingerprinting</div>
+</div>
+</div>
 
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Failure Strategies</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>Fail Open:</strong> Allow on failure (UX)</div>
-        <div style="padding: 4px 0;"><strong>Fail Closed:</strong> Block on failure (safety)</div>
-        <div style="padding: 4px 0;"><strong>Local Fallback:</strong> Use local cache</div>
-        <div style="padding: 4px 0;"><strong>Circuit Breaker:</strong> Graceful degradation</div>
-      </div>
-    </div>
-  </div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Failure Strategies</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>Fail Open:</strong> Allow on failure (UX)</div>
+  <div style="padding: 4px 0;"><strong>Fail Closed:</strong> Block on failure (safety)</div>
+  <div style="padding: 4px 0;"><strong>Local Fallback:</strong> Use local cache</div>
+  <div style="padding: 4px 0;"><strong>Circuit Breaker:</strong> Graceful degradation</div>
+</div>
+</div>
+</div>
 </div>
 
 ---

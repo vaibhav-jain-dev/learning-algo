@@ -24,38 +24,38 @@ Every major enterprise framework is built around DI: Spring (Java), ASP.NET Core
 
 ## Constructor Injection vs Setter Injection
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; box-shadow: 0 4px 24px rgba(0,0,0,0.2);">
-  <div style="text-align: center; margin-bottom: 24px;">
-    <span style="font-size: 1.4rem; font-weight: 700; color: #f8fafc; letter-spacing: -0.5px;">Injection Method Comparison</span>
-  </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<div style="text-align: center; margin-bottom: 24px;">
+<span style="font-size: 1.4rem; font-weight: 700; color: #1e293b; letter-spacing: -0.5px;">Injection Method Comparison</span>
+</div>
 
-  <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #065f46 0%, #047857 100%); border-radius: 12px; padding: 20px;">
-      <div style="font-weight: 700; color: #ecfdf5; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-        <span style="background: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">PREFERRED</span>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #065f46 0%, #047857 100%); border-radius: 12px; padding: 20px;">
+<div style="font-weight: 700; color: #ecfdf5; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">PREFERRED</span>
         Constructor Injection
-      </div>
-      <div style="color: #d1fae5; font-size: 0.9rem; line-height: 1.6;">
-        <div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Invariant:</strong> Object cannot exist in invalid state</div>
-        <div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Immutability:</strong> Dependencies set once, never change</div>
-        <div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Explicit Contract:</strong> Constructor signature documents requirements</div>
-        <div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Thread Safety:</strong> No synchronization needed after construction</div>
-      </div>
-    </div>
+</div>
+<div style="color: #d1fae5; font-size: 0.9rem; line-height: 1.6;">
+<div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Invariant:</strong> Object cannot exist in invalid state</div>
+<div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Immutability:</strong> Dependencies set once, never change</div>
+<div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Explicit Contract:</strong> Constructor signature documents requirements</div>
+<div style="margin-bottom: 8px;"><strong style="color: #6ee7b7;">Thread Safety:</strong> No synchronization needed after construction</div>
+</div>
+</div>
 
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #92400e 0%, #b45309 100%); border-radius: 12px; padding: 20px;">
-      <div style="font-weight: 700; color: #fef3c7; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-        <span style="background: #f59e0b; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: #451a03;">SITUATIONAL</span>
+<div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #92400e 0%, #b45309 100%); border-radius: 12px; padding: 20px;">
+<div style="font-weight: 700; color: #fef3c7; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+<span style="background: #f59e0b; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: #451a03;">SITUATIONAL</span>
         Setter Injection
-      </div>
-      <div style="color: #fef3c7; font-size: 0.9rem; line-height: 1.6;">
-        <div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Optional Dependencies:</strong> Object works without them</div>
-        <div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Reconfiguration:</strong> Change dependencies at runtime</div>
-        <div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Circular Dependencies:</strong> Can break cycles (workaround)</div>
-        <div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Legacy Integration:</strong> When constructors cannot change</div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="color: #fef3c7; font-size: 0.9rem; line-height: 1.6;">
+<div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Optional Dependencies:</strong> Object works without them</div>
+<div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Reconfiguration:</strong> Change dependencies at runtime</div>
+<div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Circular Dependencies:</strong> Can break cycles (workaround)</div>
+<div style="margin-bottom: 8px;"><strong style="color: #fcd34d;">Legacy Integration:</strong> When constructors cannot change</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Constructor Injection: Deep Mechanics
@@ -90,8 +90,8 @@ class PaymentProcessor:
 ```
 
 <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">Key Assumption</div>
-  <div style="color: #78350f;">Constructor injection assumes dependencies are available at object creation time. In scenarios with complex initialization order or async dependency resolution, this assumption may not hold, requiring alternative patterns like lazy proxies or provider functions.</div>
+<div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">Key Assumption</div>
+<div style="color: #78350f;">Constructor injection assumes dependencies are available at object creation time. In scenarios with complex initialization order or async dependency resolution, this assumption may not hold, requiring alternative patterns like lazy proxies or provider functions.</div>
 </div>
 
 ### Setter Injection: When and Why
@@ -135,8 +135,8 @@ class ReportGenerator:
 ```
 
 <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #991b1b; margin-bottom: 8px;">Trade-off Alert</div>
-  <div style="color: #7f1d1d;">Setter injection introduces temporal coupling: the order in which setters are called may matter. It also creates mutable objects, complicating thread safety. Every setter is a potential source of bugs if dependencies are changed mid-operation.</div>
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 8px;">Trade-off Alert</div>
+<div style="color: #7f1d1d;">Setter injection introduces temporal coupling: the order in which setters are called may matter. It also creates mutable objects, complicating thread safety. Every setter is a potential source of bugs if dependencies are changed mid-operation.</div>
 </div>
 
 ### Interface Injection (Historical Context)
@@ -232,48 +232,48 @@ The goal is not to hide dependencies but to properly distribute responsibilities
 
 A DI Container (also called IoC Container) automates dependency resolution by maintaining a registry of types and their implementations, building object graphs automatically.
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 28px; margin: 24px 0; box-shadow: 0 4px 24px rgba(0,0,0,0.3);">
-  <div style="text-align: center; margin-bottom: 24px;">
-    <span style="font-size: 1.3rem; font-weight: 700; color: #e2e8f0;">DI Container Resolution Pipeline</span>
-  </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<div style="text-align: center; margin-bottom: 24px;">
+<span style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">DI Container Resolution Pipeline</span>
+</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
-      <div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Request Type
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">container.resolve(UserService)</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">container.resolve(UserService)</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Check Registry
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Find registered implementation</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #0891b2; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Find registered implementation</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #0891b2; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Analyze Constructor
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Inspect parameter types</div>
-      </div>
-    </div>
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Inspect parameter types</div>
+</div>
+</div>
 
-    <div style="color: #64748b; font-size: 1.5rem;">|</div>
+<div style="color: #64748b; font-size: 1.5rem;">|</div>
 
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
-      <div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Resolve Dependencies
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Recursively build each param</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #ca8a04; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Recursively build each param</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #ca8a04; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Apply Lifecycle
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Singleton? Scoped? Transient?</div>
-      </div>
-      <div style="color: #64748b; font-size: 1.5rem;">-></div>
-      <div style="background: #dc2626; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Singleton? Scoped? Transient?</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem;">-></div>
+<div style="background: #dc2626; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center;">
         Return Instance
-        <div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Fully constructed object</div>
-      </div>
-    </div>
-  </div>
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9;">Fully constructed object</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Lifecycle Management
@@ -363,8 +363,8 @@ class DIContainer:
 ```
 
 <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 8px;">Design Choice</div>
-  <div style="color: #1e3a8a;">Scoped lifecycle requires explicit scope boundaries. In web frameworks, this typically aligns with HTTP request lifetime. In background workers, you must manually create and dispose scopes. Forgetting to dispose scopes causes memory leaks as scoped instances accumulate.</div>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 8px;">Design Choice</div>
+<div style="color: #1e3a8a;">Scoped lifecycle requires explicit scope boundaries. In web frameworks, this typically aligns with HTTP request lifetime. In background workers, you must manually create and dispose scopes. Forgetting to dispose scopes causes memory leaks as scoped instances accumulate.</div>
 </div>
 
 ### Registration Strategies
@@ -487,39 +487,39 @@ user_service = container.resolve(IUserService)  # May fail at runtime
 
 The Service Locator pattern provides a global registry that any class can query for dependencies. While superficially similar to DI, it inverts control in the wrong direction.
 
-<div style="background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%); border-radius: 16px; padding: 28px; margin: 24px 0; box-shadow: 0 4px 24px rgba(0,0,0,0.3);">
-  <div style="text-align: center; margin-bottom: 20px;">
-    <span style="font-size: 1.3rem; font-weight: 700; color: #fecaca;">Service Locator: Why It's Problematic</span>
-  </div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #fecaca;">
+<div style="text-align: center; margin-bottom: 20px;">
+<span style="font-size: 1.3rem; font-weight: 700; color: #991b1b;">Service Locator: Why It's Problematic</span>
+</div>
 
-  <div style="display: flex; gap: 24px; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 260px;">
-      <div style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 16px;">
-        <div style="color: #f87171; font-weight: 600; margin-bottom: 12px;">Hidden Dependencies</div>
-        <div style="color: #fecaca; font-size: 0.9rem; line-height: 1.5;">
+<div style="display: flex; gap: 24px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 260px;">
+<div style="background: #fee2e2; border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Hidden Dependencies</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
           Class signature does not reveal what it needs. You must read every method to discover dependencies, making code reviews and refactoring dangerous.
-        </div>
-      </div>
-    </div>
+</div>
+</div>
+</div>
 
-    <div style="flex: 1; min-width: 260px;">
-      <div style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 16px;">
-        <div style="color: #f87171; font-weight: 600; margin-bottom: 12px;">Testing Nightmare</div>
-        <div style="color: #fecaca; font-size: 0.9rem; line-height: 1.5;">
+<div style="flex: 1; min-width: 260px;">
+<div style="background: #fee2e2; border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Testing Nightmare</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
           Tests must configure global state before each test and clean up after. Parallel tests become impossible without careful isolation. Forgotten setup causes cryptic failures.
-        </div>
-      </div>
-    </div>
+</div>
+</div>
+</div>
 
-    <div style="flex: 1; min-width: 260px;">
-      <div style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 16px;">
-        <div style="color: #f87171; font-weight: 600; margin-bottom: 12px;">Runtime Coupling</div>
-        <div style="color: #fecaca; font-size: 0.9rem; line-height: 1.5;">
+<div style="flex: 1; min-width: 260px;">
+<div style="background: #fee2e2; border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Runtime Coupling</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
           Every class depends on the locator. Changing the locator API breaks everything. You've traded explicit dependencies for implicit coupling to infrastructure.
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Service Locator vs Dependency Injection
@@ -570,8 +570,8 @@ Despite being an anti-pattern, service locators appear in production code becaus
 4. **Plugin systems**: Dynamically loaded plugins may not know their dependencies at compile time
 
 <div style="background: #fef9c3; border-left: 4px solid #eab308; padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #854d0e; margin-bottom: 8px;">Nuanced Perspective</div>
-  <div style="color: #713f12;">In rare cases, a constrained service locator scoped to a specific bounded context may be acceptable. The key is minimizing its reach and treating it as a pragmatic compromise, not a design choice. Document why it exists and plan for its eventual removal.</div>
+<div style="font-weight: 700; color: #854d0e; margin-bottom: 8px;">Nuanced Perspective</div>
+<div style="color: #713f12;">In rare cases, a constrained service locator scoped to a specific bounded context may be acceptable. The key is minimizing its reach and treating it as a pragmatic compromise, not a design choice. Document why it exists and plan for its eventual removal.</div>
 </div>
 
 ### Interview Deep Dive: Service Locator
@@ -661,23 +661,23 @@ def test_calculator():
 
 DI transforms testing from painful integration exercises to fast, deterministic unit tests.
 
-<div style="background: linear-gradient(135deg, #022c22 0%, #064e3b 100%); border-radius: 16px; padding: 28px; margin: 24px 0; box-shadow: 0 4px 24px rgba(0,0,0,0.3);">
-  <div style="text-align: center; margin-bottom: 24px;">
-    <span style="font-size: 1.3rem; font-weight: 700; color: #d1fae5;">Testing Transformation with DI</span>
-  </div>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #86efac;">
+<div style="text-align: center; margin-bottom: 24px;">
+<span style="font-size: 1.3rem; font-weight: 700; color: #166534;">Testing Transformation with DI</span>
+</div>
 
-  <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-    <div style="flex: 1; min-width: 300px;">
-      <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
-        <div style="color: #f87171; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px;">Without DI</div>
-        <div style="color: #fecaca; font-size: 0.9rem; line-height: 1.8;">
-          <div>1. Spin up database container</div>
-          <div>2. Run migrations</div>
-          <div>3. Configure email server mock</div>
-          <div>4. Set up payment sandbox</div>
-          <div>5. Run single test (30+ seconds)</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+<div style="flex: 1; min-width: 300px;">
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px;">Without DI</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.8;">
+<div>1. Spin up database container</div>
+  <div>2. Run migrations</div>
+    <div>3. Configure email server mock</div>
+      <div>4. Set up payment sandbox</div>
+        <div>5. Run single test (30+ seconds)</div>
           <div>6. Tear down everything</div>
-          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2);">
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fca5a5;">
             <strong>Result:</strong> 100 tests = 50+ minutes
           </div>
         </div>
@@ -685,19 +685,19 @@ DI transforms testing from painful integration exercises to fast, deterministic 
     </div>
 
     <div style="flex: 1; min-width: 300px;">
-      <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
-        <div style="color: #4ade80; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px;">With DI</div>
-        <div style="color: #bbf7d0; font-size: 0.9rem; line-height: 1.8;">
-          <div>1. Create mock objects</div>
-          <div>2. Inject into class under test</div>
-          <div>3. Run test (&lt;1ms)</div>
-          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2);">
-            <strong>Result:</strong> 100 tests = &lt;1 second
-          </div>
+    <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+    <div style="color: #166534; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px;">With DI</div>
+    <div style="color: #15803d; font-size: 0.9rem; line-height: 1.8;">
+    <div>1. Create mock objects</div>
+      <div>2. Inject into class under test</div>
+        <div>3. Run test (&lt;1ms)</div>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #86efac;">
+          <strong>Result:</strong> 100 tests = &lt;1 second
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 
 ### Testing Patterns Enabled by DI
@@ -1350,64 +1350,64 @@ if __name__ == "__main__":
 
 ## Common Anti-Patterns and Solutions
 
-<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-radius: 16px; padding: 28px; margin: 24px 0; box-shadow: 0 4px 24px rgba(0,0,0,0.3);">
-  <div style="text-align: center; margin-bottom: 24px;">
-    <span style="font-size: 1.3rem; font-weight: 700; color: #e0e7ff;">DI Anti-Pattern Recognition Guide</span>
-  </div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #93c5fd;">
+<div style="text-align: center; margin-bottom: 24px;">
+<span style="font-size: 1.3rem; font-weight: 700; color: #1e40af;">DI Anti-Pattern Recognition Guide</span>
+</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
-        <div style="flex: 1; min-width: 200px;">
-          <div style="color: #fca5a5; font-weight: 700; margin-bottom: 4px;">Container Injection</div>
-          <code style="color: #fecaca; font-size: 0.85rem;">__init__(self, container: Container)</code>
-        </div>
-        <div style="flex: 2; min-width: 250px; color: #e0e7ff; font-size: 0.9rem;">
-          <strong>Problem:</strong> Hides actual dependencies, defeats DI purpose<br>
-          <strong>Fix:</strong> Inject specific dependencies, not the container
-        </div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: #fee2e2; border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px;">Container Injection</div>
+<code style="color: #7f1d1d; font-size: 0.85rem;">__init__(self, container: Container)</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem;">
+<strong>Problem:</strong> Hides actual dependencies, defeats DI purpose<br>
+<strong>Fix:</strong> Inject specific dependencies, not the container
+</div>
+</div>
+</div>
 
-    <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
-        <div style="flex: 1; min-width: 200px;">
-          <div style="color: #fca5a5; font-weight: 700; margin-bottom: 4px;">Constructor Over-Injection</div>
-          <code style="color: #fecaca; font-size: 0.85rem;">__init__(a, b, c, d, e, f, g, h)</code>
-        </div>
-        <div style="flex: 2; min-width: 250px; color: #e0e7ff; font-size: 0.9rem;">
-          <strong>Problem:</strong> Class has too many responsibilities<br>
-          <strong>Fix:</strong> Split class, use facade services
-        </div>
-      </div>
-    </div>
+<div style="background: #fee2e2; border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px;">Constructor Over-Injection</div>
+<code style="color: #7f1d1d; font-size: 0.85rem;">__init__(a, b, c, d, e, f, g, h)</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem;">
+<strong>Problem:</strong> Class has too many responsibilities<br>
+<strong>Fix:</strong> Split class, use facade services
+</div>
+</div>
+</div>
 
-    <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
-        <div style="flex: 1; min-width: 200px;">
-          <div style="color: #fca5a5; font-weight: 700; margin-bottom: 4px;">Ambient Context</div>
-          <code style="color: #fecaca; font-size: 0.85rem;">Logger.Current.Info(...)</code>
-        </div>
-        <div style="flex: 2; min-width: 250px; color: #e0e7ff; font-size: 0.9rem;">
-          <strong>Problem:</strong> Global state, hidden dependency<br>
-          <strong>Fix:</strong> Inject logger explicitly
-        </div>
-      </div>
-    </div>
+<div style="background: #fee2e2; border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px;">Ambient Context</div>
+<code style="color: #7f1d1d; font-size: 0.85rem;">Logger.Current.Info(...)</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem;">
+<strong>Problem:</strong> Global state, hidden dependency<br>
+<strong>Fix:</strong> Inject logger explicitly
+</div>
+</div>
+</div>
 
-    <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
-        <div style="flex: 1; min-width: 200px;">
-          <div style="color: #fca5a5; font-weight: 700; margin-bottom: 4px;">Control Freak</div>
-          <code style="color: #fecaca; font-size: 0.85rem;">new ConcreteClass() inside methods</code>
-        </div>
-        <div style="flex: 2; min-width: 250px; color: #e0e7ff; font-size: 0.9rem;">
-          <strong>Problem:</strong> Tight coupling, untestable<br>
-          <strong>Fix:</strong> Inject via constructor or use factory
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="background: #fee2e2; border: 1px solid #ef4444; border-radius: 10px; padding: 16px;">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px;">
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px;">Control Freak</div>
+<code style="color: #7f1d1d; font-size: 0.85rem;">new ConcreteClass() inside methods</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem;">
+<strong>Problem:</strong> Tight coupling, untestable<br>
+<strong>Fix:</strong> Inject via constructor or use factory
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ---

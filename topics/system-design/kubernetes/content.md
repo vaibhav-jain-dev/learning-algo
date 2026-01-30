@@ -5,26 +5,26 @@
 Kubernetes is an open-source container orchestration platform that automates deployment, scaling, and management of containerized applications. <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Understanding K8s is essential for modern system design interviews as it's the de-facto standard for container orchestration</span>.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Kubernetes Architecture</h4>
-  <div style="display: flex; gap: 24px; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 280px;">
-      <div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">Control Plane</div>
-      <div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px; font-size: 14px;">
-        <div style="padding: 6px 0; border-bottom: 1px solid #bfdbfe;"><strong>API Server:</strong> Frontend for K8s control plane</div>
-        <div style="padding: 6px 0; border-bottom: 1px solid #bfdbfe;"><strong>etcd:</strong> Distributed key-value store for cluster state</div>
-        <div style="padding: 6px 0; border-bottom: 1px solid #bfdbfe;"><strong>Scheduler:</strong> Assigns pods to nodes</div>
-        <div style="padding: 6px 0;"><strong>Controller Manager:</strong> Runs controller processes</div>
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 280px;">
-      <div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">Worker Nodes</div>
-      <div style="background: #f0fdf4; padding: 16px; border-radius: 0 0 8px 8px; font-size: 14px;">
-        <div style="padding: 6px 0; border-bottom: 1px solid #bbf7d0;"><strong>kubelet:</strong> Agent ensuring containers run in pods</div>
-        <div style="padding: 6px 0; border-bottom: 1px solid #bbf7d0;"><strong>kube-proxy:</strong> Network proxy for service networking</div>
-        <div style="padding: 6px 0;"><strong>Container Runtime:</strong> Docker, containerd, CRI-O</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Kubernetes Architecture</h4>
+<div style="display: flex; gap: 24px; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 280px;">
+<div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">Control Plane</div>
+<div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px; font-size: 14px;">
+<div style="padding: 6px 0; border-bottom: 1px solid #bfdbfe;"><strong>API Server:</strong> Frontend for K8s control plane</div>
+<div style="padding: 6px 0; border-bottom: 1px solid #bfdbfe;"><strong>etcd:</strong> Distributed key-value store for cluster state</div>
+<div style="padding: 6px 0; border-bottom: 1px solid #bfdbfe;"><strong>Scheduler:</strong> Assigns pods to nodes</div>
+<div style="padding: 6px 0;"><strong>Controller Manager:</strong> Runs controller processes</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px;">
+<div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px 8px 0 0; font-weight: 600;">Worker Nodes</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 0 0 8px 8px; font-size: 14px;">
+<div style="padding: 6px 0; border-bottom: 1px solid #bbf7d0;"><strong>kubelet:</strong> Agent ensuring containers run in pods</div>
+<div style="padding: 6px 0; border-bottom: 1px solid #bbf7d0;"><strong>kube-proxy:</strong> Network proxy for service networking</div>
+<div style="padding: 6px 0;"><strong>Container Runtime:</strong> Docker, containerd, CRI-O</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -36,21 +36,21 @@ Kubernetes is an open-source container orchestration platform that automates dep
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">A Pod is the smallest deployable unit in Kubernetes - one or more containers that share storage and network</span>.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Pod Structure</h4>
-  <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
-    <div style="background: white; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px;">
-      <div style="color: #3b82f6; font-weight: 600; margin-bottom: 12px;">Pod</div>
-      <div style="display: flex; gap: 12px;">
-        <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 4px; padding: 8px 12px; font-size: 13px;">Container 1</div>
-        <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 4px; padding: 8px 12px; font-size: 13px;">Container 2 (sidecar)</div>
-      </div>
-      <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
-        <div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px;">Shared Network (localhost)</div>
-        <div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px;">Shared Volumes</div>
-        <div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px;">Same IP Address</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Pod Structure</h4>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+<div style="background: white; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px;">
+<div style="color: #3b82f6; font-weight: 600; margin-bottom: 12px;">Pod</div>
+<div style="display: flex; gap: 12px;">
+<div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 4px; padding: 8px 12px; font-size: 13px;">Container 1</div>
+<div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 4px; padding: 8px 12px; font-size: 13px;">Container 2 (sidecar)</div>
+</div>
+<div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+<div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px;">Shared Network (localhost)</div>
+<div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px;">Shared Volumes</div>
+<div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px;">Same IP Address</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Deployments
@@ -72,7 +72,7 @@ Store configuration data and sensitive information separately from container ima
 ### Cluster Information
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Cluster Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Cluster Commands</h4>
 
 ```bash
 # View cluster info
@@ -102,7 +102,7 @@ kubectl api-versions
 ### Working with Pods
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Pod Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Pod Commands</h4>
 
 ```bash
 # List pods
@@ -145,7 +145,7 @@ kubectl cp ./local-file <pod-name>:/path/to/file
 ### Pod Logs
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Log Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Log Commands</h4>
 
 ```bash
 # View logs
@@ -167,7 +167,7 @@ kubectl logs -f deployment/<deployment-name> --all-containers=true
 ### Working with Deployments
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Deployment Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Deployment Commands</h4>
 
 ```bash
 # List deployments
@@ -207,7 +207,7 @@ kubectl delete deployment <name>
 ### Working with Services
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Service Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Service Commands</h4>
 
 ```bash
 # List services
@@ -237,7 +237,7 @@ kubectl delete service <name>
 ### Working with ConfigMaps & Secrets
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">ConfigMap & Secret Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">ConfigMap & Secret Commands</h4>
 
 ```bash
 # ConfigMaps
@@ -269,7 +269,7 @@ kubectl get secret <name> -o jsonpath='{.data.password}' | base64 -d  # Decode
 ### Namespaces
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Namespace Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Namespace Commands</h4>
 
 ```bash
 # List namespaces
@@ -295,7 +295,7 @@ kubectl get pods,svc,deploy -A
 ### Resource Management
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Resource Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Resource Commands</h4>
 
 ```bash
 # View resource usage (requires metrics-server)
@@ -322,7 +322,7 @@ kubectl delete hpa <name>
 ### Debugging & Troubleshooting
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Debug Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Debug Commands</h4>
 
 ```bash
 # Debug pod issues
@@ -357,7 +357,7 @@ kubectl get pod <name> -o jsonpath='{.spec.containers[*].resources}'
 ### YAML Output & Editing
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">YAML Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">YAML Commands</h4>
 
 ```bash
 # Output as YAML
@@ -389,7 +389,7 @@ kubectl diff -f deployment.yaml
 ### Labels & Selectors
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Label Commands</h4>
+<h4 style="color: #1e293b; margin-top: 0;">Label Commands</h4>
 
 ```bash
 # Add/update labels
@@ -657,51 +657,51 @@ spec:
 ## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">kubectl Cheat Sheet</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Most Used Commands</div>
-      <div style="font-size: 13px; color: #475569; font-family: monospace;">
-        <div style="padding: 4px 0;">kubectl get pods -A</div>
-        <div style="padding: 4px 0;">kubectl describe pod &lt;name&gt;</div>
-        <div style="padding: 4px 0;">kubectl logs -f &lt;pod&gt;</div>
-        <div style="padding: 4px 0;">kubectl exec -it &lt;pod&gt; -- /bin/sh</div>
-        <div style="padding: 4px 0;">kubectl apply -f &lt;file&gt;</div>
-        <div style="padding: 4px 0;">kubectl delete &lt;resource&gt; &lt;name&gt;</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Resource Shortcuts</div>
-      <div style="font-size: 13px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>po</strong> = pods</div>
-        <div style="padding: 4px 0;"><strong>deploy</strong> = deployments</div>
-        <div style="padding: 4px 0;"><strong>svc</strong> = services</div>
-        <div style="padding: 4px 0;"><strong>ns</strong> = namespaces</div>
-        <div style="padding: 4px 0;"><strong>cm</strong> = configmaps</div>
-        <div style="padding: 4px 0;"><strong>pv/pvc</strong> = persistentvolumes/claims</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Output Formats</div>
-      <div style="font-size: 13px; color: #475569; font-family: monospace;">
-        <div style="padding: 4px 0;">-o wide (more columns)</div>
-        <div style="padding: 4px 0;">-o yaml (YAML output)</div>
-        <div style="padding: 4px 0;">-o json (JSON output)</div>
-        <div style="padding: 4px 0;">-o name (resource names only)</div>
-        <div style="padding: 4px 0;">-o jsonpath='{...}'</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Common Flags</div>
-      <div style="font-size: 13px; color: #475569; font-family: monospace;">
-        <div style="padding: 4px 0;">-n &lt;namespace&gt;</div>
-        <div style="padding: 4px 0;">-A (all namespaces)</div>
-        <div style="padding: 4px 0;">-l &lt;label&gt; (label selector)</div>
-        <div style="padding: 4px 0;">-w (watch)</div>
-        <div style="padding: 4px 0;">--dry-run=client -o yaml</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">kubectl Cheat Sheet</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Most Used Commands</div>
+  <div style="font-size: 13px; color: #475569; font-family: monospace;">
+  <div style="padding: 4px 0;">kubectl get pods -A</div>
+  <div style="padding: 4px 0;">kubectl describe pod &lt;name&gt;</div>
+  <div style="padding: 4px 0;">kubectl logs -f &lt;pod&gt;</div>
+  <div style="padding: 4px 0;">kubectl exec -it &lt;pod&gt; -- /bin/sh</div>
+  <div style="padding: 4px 0;">kubectl apply -f &lt;file&gt;</div>
+  <div style="padding: 4px 0;">kubectl delete &lt;resource&gt; &lt;name&gt;</div>
+</div>
+</div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Resource Shortcuts</div>
+  <div style="font-size: 13px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>po</strong> = pods</div>
+  <div style="padding: 4px 0;"><strong>deploy</strong> = deployments</div>
+  <div style="padding: 4px 0;"><strong>svc</strong> = services</div>
+  <div style="padding: 4px 0;"><strong>ns</strong> = namespaces</div>
+  <div style="padding: 4px 0;"><strong>cm</strong> = configmaps</div>
+  <div style="padding: 4px 0;"><strong>pv/pvc</strong> = persistentvolumes/claims</div>
+</div>
+</div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Output Formats</div>
+  <div style="font-size: 13px; color: #475569; font-family: monospace;">
+  <div style="padding: 4px 0;">-o wide (more columns)</div>
+  <div style="padding: 4px 0;">-o yaml (YAML output)</div>
+  <div style="padding: 4px 0;">-o json (JSON output)</div>
+  <div style="padding: 4px 0;">-o name (resource names only)</div>
+  <div style="padding: 4px 0;">-o jsonpath='{...}'</div>
+</div>
+</div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Common Flags</div>
+  <div style="font-size: 13px; color: #475569; font-family: monospace;">
+  <div style="padding: 4px 0;">-n &lt;namespace&gt;</div>
+  <div style="padding: 4px 0;">-A (all namespaces)</div>
+  <div style="padding: 4px 0;">-l &lt;label&gt; (label selector)</div>
+  <div style="padding: 4px 0;">-w (watch)</div>
+  <div style="padding: 4px 0;">--dry-run=client -o yaml</div>
+</div>
+</div>
+</div>
 </div>
 
 ---

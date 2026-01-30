@@ -347,39 +347,39 @@ At 1 billion codes: Bloom filter uses ~1.2GB RAM, saves billions of DB lookups.
 <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Linear Probing (Rehash)</div>
 <div style="color: #d1f5d3; font-size: 13px; line-height: 1.6;">
 <div>hash(url) -> collision</div>
-<div>hash(url + "1") -> collision</div>
-<div>hash(url + "2") -> success</div>
-</div>
-<div style="color: #fff; font-size: 12px; margin-top: 12px;">
-Pros: Simple, deterministic<br/>
-Cons: Clustering, predictable
-</div>
+  <div>hash(url + "1") -> collision</div>
+    <div>hash(url + "2") -> success</div>
+    </div>
+    <div style="color: #fff; font-size: 12px; margin-top: 12px;">
+    Pros: Simple, deterministic<br/>
+    Cons: Clustering, predictable
+  </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
 <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Random Probing</div>
 <div style="color: #dbeafe; font-size: 13px; line-height: 1.6;">
 <div>hash(url) -> collision</div>
-<div>random_code() -> collision</div>
-<div>random_code() -> success</div>
-</div>
-<div style="color: #fff; font-size: 12px; margin-top: 12px;">
-Pros: No clustering, unpredictable<br/>
-Cons: Non-deterministic, can't dedupe
-</div>
+  <div>random_code() -> collision</div>
+    <div>random_code() -> success</div>
+    </div>
+    <div style="color: #fff; font-size: 12px; margin-top: 12px;">
+    Pros: No clustering, unpredictable<br/>
+    Cons: Non-deterministic, can't dedupe
+  </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px;">
 <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Hierarchical Fallback</div>
 <div style="color: #e9d5ff; font-size: 13px; line-height: 1.6;">
 <div>7-char hash -> collision</div>
-<div>8-char hash -> success</div>
-<div>(increases code length)</div>
-</div>
-<div style="color: #fff; font-size: 12px; margin-top: 12px;">
-Pros: Eventually succeeds<br/>
-Cons: Inconsistent code lengths
-</div>
+  <div>8-char hash -> success</div>
+    <div>(increases code length)</div>
+    </div>
+    <div style="color: #fff; font-size: 12px; margin-top: 12px;">
+    Pros: Eventually succeeds<br/>
+    Cons: Inconsistent code lengths
+  </div>
 </div>
 
 </div>
@@ -474,10 +474,10 @@ This is a manifestation of the [[CAP theorem]](/topics/system-design/cap-theorem
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Capacity Analysis:</div>
 <div style="color: #c9d1d9; font-size: 12px;">
 <div>32 datacenters x 32 workers = 1,024 total ID generators</div>
-<div>4,096 IDs per millisecond per worker = 4.1M IDs/sec per worker</div>
-<div>Total system capacity: 4.2 billion IDs per second</div>
-</div>
-</div>
+  <div>4,096 IDs per millisecond per worker = 4.1M IDs/sec per worker</div>
+    <div>Total system capacity: 4.2 billion IDs per second</div>
+    </div>
+  </div>
 
 </div>
 
@@ -888,33 +888,33 @@ class ULIDGenerator:
 <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Namespace Collision</div>
 <div style="color: #fee2e2; font-size: 12px; line-height: 1.6;">
 <div>Custom codes may conflict with auto-generated codes</div>
-<div>Reserved words (admin, api, help)</div>
-<div>Offensive/inappropriate words</div>
-</div>
-</div>
+  <div>Reserved words (admin, api, help)</div>
+    <div>Offensive/inappropriate words</div>
+    </div>
+  </div>
 
-<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
-<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Squatting Prevention</div>
-<div style="color: #fef3c7; font-size: 12px; line-height: 1.6;">
-<div>Users registering valuable names speculatively</div>
-<div>Trademark infringement risks</div>
-<div>Resource exhaustion attacks</div>
-</div>
-</div>
+  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+  <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Squatting Prevention</div>
+  <div style="color: #fef3c7; font-size: 12px; line-height: 1.6;">
+  <div>Users registering valuable names speculatively</div>
+    <div>Trademark infringement risks</div>
+      <div>Resource exhaustion attacks</div>
+      </div>
+    </div>
 
-<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
-<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Validation Complexity</div>
-<div style="color: #d1fae5; font-size: 12px; line-height: 1.6;">
-<div>Character restrictions (URL-safe only)</div>
-<div>Length limits and minimums</div>
-<div>Case sensitivity decisions</div>
-</div>
-</div>
+    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px;">
+    <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Validation Complexity</div>
+    <div style="color: #d1fae5; font-size: 12px; line-height: 1.6;">
+    <div>Character restrictions (URL-safe only)</div>
+      <div>Length limits and minimums</div>
+        <div>Case sensitivity decisions</div>
+        </div>
+      </div>
 
-</div>
-</div>
+    </div>
+  </div>
 
-### Implementation: Custom Alias Validator
+  ### Implementation: Custom Alias Validator
 
 ```python
 import re
@@ -1037,13 +1037,13 @@ class CustomAliasValidator:
         return False
 ```
 
-### Namespace Separation Strategy
+  ### Namespace Separation Strategy
 
-<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
+  <div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
-**The Namespace Problem**:
+  **The Namespace Problem**:
 
-If auto-generated codes use Base62 and produce `abc123`, but a user wants custom alias `abc123`, you have a collision. Three strategies to resolve this:
+  If auto-generated codes use Base62 and produce `abc123`, but a user wants custom alias `abc123`, you have a collision. Three strategies to resolve this:
 
 </div>
 
@@ -1057,30 +1057,30 @@ If auto-generated codes use Base62 and produce `abc123`, but a user wants custom
 <div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 1: Prefix Differentiation</div>
 <div style="color: #d1f5d3; font-size: 13px; line-height: 1.6;">
 <div><code>short.url/~abc123</code> (custom, prefix ~)</div>
-<div><code>short.url/7x9Kp2m</code> (auto-generated, no prefix)</div>
-<div style="margin-top: 8px; font-size: 11px;">Pros: Clear separation, simple lookup</div>
-<div style="font-size: 11px;">Cons: URLs look different, ~ needs encoding</div>
-</div>
+  <div><code>short.url/7x9Kp2m</code> (auto-generated, no prefix)</div>
+    <div style="margin-top: 8px; font-size: 11px;">Pros: Clear separation, simple lookup</div>
+    <div style="font-size: 11px;">Cons: URLs look different, ~ needs encoding</div>
+  </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px;">
 <div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 2: Length Differentiation</div>
 <div style="color: #dbeafe; font-size: 13px; line-height: 1.6;">
 <div><code>short.url/my-custom-alias</code> (custom, 4+ chars with hyphens)</div>
-<div><code>short.url/7x9Kp2</code> (auto-generated, exactly 6 alphanumeric)</div>
-<div style="margin-top: 8px; font-size: 11px;">Pros: Natural URLs, implicit separation</div>
-<div style="font-size: 11px;">Cons: Limits auto-generated code format</div>
-</div>
+  <div><code>short.url/7x9Kp2</code> (auto-generated, exactly 6 alphanumeric)</div>
+    <div style="margin-top: 8px; font-size: 11px;">Pros: Natural URLs, implicit separation</div>
+    <div style="font-size: 11px;">Cons: Limits auto-generated code format</div>
+  </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px;">
 <div style="color: #fff; font-weight: bold; margin-bottom: 8px;">Strategy 3: Unified Namespace with Blocking</div>
 <div style="color: #e9d5ff; font-size: 13px; line-height: 1.6;">
 <div>Block custom aliases that could be auto-generated</div>
-<div>Reserve auto-generated keyspace from custom use</div>
-<div style="margin-top: 8px; font-size: 11px;">Pros: Cleanest URLs, single lookup</div>
-<div style="font-size: 11px;">Cons: Complex validation, keyspace waste</div>
-</div>
+  <div>Reserve auto-generated keyspace from custom use</div>
+    <div style="margin-top: 8px; font-size: 11px;">Pros: Cleanest URLs, single lookup</div>
+    <div style="font-size: 11px;">Cons: Complex validation, keyspace waste</div>
+  </div>
 </div>
 
 </div>
@@ -1180,13 +1180,13 @@ class NamespaceManager:
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SSL/TLS Considerations:</div>
 <div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
 <div>1. Customer adds CNAME record pointing to your infrastructure</div>
-<div>2. You provision SSL certificate for their domain (Let's Encrypt / ACM)</div>
-<div>3. Load balancer uses SNI to route to correct certificate</div>
-<div>4. Application identifies tenant by Host header</div>
-</div>
-</div>
+  <div>2. You provision SSL certificate for their domain (Let's Encrypt / ACM)</div>
+    <div>3. Load balancer uses SNI to route to correct certificate</div>
+      <div>4. Application identifies tenant by Host header</div>
+      </div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ```python
@@ -1615,38 +1615,38 @@ Redirect status codes fundamentally affect your analytics capabilities.
 <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">301 Moved Permanently</div>
 <div style="color: #d1f5d3; font-size: 12px; line-height: 1.8;">
 <div>Browser caches redirect</div>
-<div>Future requests skip your server</div>
-<div>SEO: Link juice transfers</div>
-<div>Lower server load</div>
-<div>Analytics: First click only</div>
-</div>
-</div>
+  <div>Future requests skip your server</div>
+    <div>SEO: Link juice transfers</div>
+      <div>Lower server load</div>
+        <div>Analytics: First click only</div>
+        </div>
+      </div>
 
-<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px;">
-<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">302 Found (Temporary)</div>
-<div style="color: #fed7aa; font-size: 12px; line-height: 1.8;">
-<div>Browser doesn't cache</div>
-<div>Every request hits your server</div>
-<div>SEO: Original URL retains value</div>
-<div>Higher server load</div>
-<div>Analytics: Every click tracked</div>
-</div>
-</div>
+      <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px;">
+      <div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px;">302 Found (Temporary)</div>
+      <div style="color: #fed7aa; font-size: 12px; line-height: 1.8;">
+      <div>Browser doesn't cache</div>
+        <div>Every request hits your server</div>
+          <div>SEO: Original URL retains value</div>
+            <div>Higher server load</div>
+              <div>Analytics: Every click tracked</div>
+              </div>
+            </div>
 
-</div>
+          </div>
 
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Real-World Choices:</div>
-<div style="color: #c9d1d9; font-size: 11px;">
-<div>bit.ly: 301 + tracking pixel (best of both worlds)</div>
-<div>TinyURL: 301 (prioritizes performance)</div>
-<div>Marketing platforms: 302 (prioritizes analytics)</div>
-</div>
-</div>
+          <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px;">
+          <div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Real-World Choices:</div>
+          <div style="color: #c9d1d9; font-size: 11px;">
+          <div>bit.ly: 301 + tracking pixel (best of both worlds)</div>
+            <div>TinyURL: 301 (prioritizes performance)</div>
+              <div>Marketing platforms: 302 (prioritizes analytics)</div>
+              </div>
+            </div>
 
-</div>
+          </div>
 
-### Multi-Dimensional Analytics Data Model
+          ### Multi-Dimensional Analytics Data Model
 
 ```python
 from dataclasses import dataclass, field
@@ -1732,32 +1732,32 @@ class URLAnalytics:
     hourly_clicks: List[int] = field(default_factory=list)
 ```
 
-### Real-Time vs. Batch Analytics Pipeline
+          ### Real-Time vs. Batch Analytics Pipeline
 
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+          <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
-<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Lambda Architecture for Analytics</div>
+          <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Lambda Architecture for Analytics</div>
 
-<div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
 
-<div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 20px; border-radius: 12px;">
-<div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Speed Layer (Real-Time)</div>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-<div style="color: #fff; font-size: 11px;">Click Event</div>
-</div>
-<div style="color: #fff;">-></div>
-<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-<div style="color: #fff; font-size: 11px;">Kafka</div>
-</div>
-<div style="color: #fff;">-></div>
-<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-<div style="color: #fff; font-size: 11px;">Flink/Spark Streaming</div>
-</div>
-<div style="color: #fff;">-></div>
-<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
-<div style="color: #fff; font-size: 11px;">Redis Counters</div>
-</div>
+          <div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 20px; border-radius: 12px;">
+          <div style="color: #fff; font-weight: bold; margin-bottom: 12px;">Speed Layer (Real-Time)</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+          <div style="color: #fff; font-size: 11px;">Click Event</div>
+        </div>
+        <div style="color: #fff;">-></div>
+        <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+        <div style="color: #fff; font-size: 11px;">Kafka</div>
+      </div>
+      <div style="color: #fff;">-></div>
+      <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+      <div style="color: #fff; font-size: 11px;">Flink/Spark Streaming</div>
+    </div>
+    <div style="color: #fff;">-></div>
+    <div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px;">
+    <div style="color: #fff; font-size: 11px;">Redis Counters</div>
+  </div>
 </div>
 <div style="color: #fef3c7; font-size: 11px; margin-top: 12px;">Latency: ~seconds | Accuracy: Approximate | Retention: Hours</div>
 </div>
@@ -2043,29 +2043,29 @@ URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), maki
 <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 8px;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
 <div>
-<div style="color: #22c55e; font-weight: bold; font-size: 11px;">Browser Cache</div>
-<div style="color: #9ca3af; font-size: 10px;">0ms latency</div>
-<div style="color: #9ca3af; font-size: 10px;">No server cost</div>
+  <div style="color: #22c55e; font-weight: bold; font-size: 11px;">Browser Cache</div>
+  <div style="color: #9ca3af; font-size: 10px;">0ms latency</div>
+  <div style="color: #9ca3af; font-size: 10px;">No server cost</div>
 </div>
 <div>
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px;">CDN Edge</div>
-<div style="color: #9ca3af; font-size: 10px;">5-20ms latency</div>
-<div style="color: #9ca3af; font-size: 10px;">~80% hit rate</div>
+  <div style="color: #3b82f6; font-weight: bold; font-size: 11px;">CDN Edge</div>
+  <div style="color: #9ca3af; font-size: 10px;">5-20ms latency</div>
+  <div style="color: #9ca3af; font-size: 10px;">~80% hit rate</div>
 </div>
 <div>
-<div style="color: #f59e0b; font-weight: bold; font-size: 11px;">Local LRU</div>
-<div style="color: #9ca3af; font-size: 10px;">0.1ms latency</div>
-<div style="color: #9ca3af; font-size: 10px;">~50% hit rate</div>
+  <div style="color: #f59e0b; font-weight: bold; font-size: 11px;">Local LRU</div>
+  <div style="color: #9ca3af; font-size: 10px;">0.1ms latency</div>
+  <div style="color: #9ca3af; font-size: 10px;">~50% hit rate</div>
 </div>
 <div>
-<div style="color: #ef4444; font-weight: bold; font-size: 11px;">Redis</div>
-<div style="color: #9ca3af; font-size: 10px;">1-5ms latency</div>
-<div style="color: #9ca3af; font-size: 10px;">~95% hit rate</div>
+  <div style="color: #ef4444; font-weight: bold; font-size: 11px;">Redis</div>
+  <div style="color: #9ca3af; font-size: 10px;">1-5ms latency</div>
+  <div style="color: #9ca3af; font-size: 10px;">~95% hit rate</div>
 </div>
 <div>
-<div style="color: #8b5cf6; font-weight: bold; font-size: 11px;">Database</div>
-<div style="color: #9ca3af; font-size: 10px;">10-50ms latency</div>
-<div style="color: #9ca3af; font-size: 10px;">Always available</div>
+  <div style="color: #8b5cf6; font-weight: bold; font-size: 11px;">Database</div>
+  <div style="color: #9ca3af; font-size: 10px;">10-50ms latency</div>
+  <div style="color: #9ca3af; font-size: 10px;">Always available</div>
 </div>
 </div>
 </div>

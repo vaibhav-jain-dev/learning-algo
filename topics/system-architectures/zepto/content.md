@@ -96,7 +96,7 @@ Quick commerce fundamentally inverts traditional retail economics. Instead of op
 
 ### The 10-Minute Promise: Latency Budget Breakdown
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">10-MINUTE DELIVERY LATENCY BUDGET</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
@@ -216,7 +216,7 @@ Quick commerce fundamentally inverts traditional retail economics. Instead of op
 
 A dark store is a micro-fulfillment center designed exclusively for online order fulfillment - no walk-in customers. The "dark" refers to the absence of a retail storefront, not the lighting.
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">DARK STORE PHYSICAL LAYOUT</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
@@ -340,7 +340,7 @@ class DarkStorePlacementOptimizer:
 
 ### Store Operations System Design
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
 <h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DARK STORE OPERATIONS SYSTEM</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
@@ -532,7 +532,7 @@ class DarkStorePlacementOptimizer:
 
 The "last mile" is actually the "last 50 meters" problem. Getting to the neighborhood is straightforward with Google Maps. Getting into the building, finding the right apartment, and completing the handover - that's where 40% of delivery time variability originates.
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #ef4444;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #ef4444;">
 <h4 style="color: #f87171; margin: 0 0 20px 0; text-align: center;">DELIVERY TIME VARIABILITY SOURCES</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
@@ -671,7 +671,7 @@ class RiderAssignmentService:
 
 ### Order Batching Strategy
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
 <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">ORDER BATCHING DECISION MATRIX</h4>
 
 <div style="background: #0f172a; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
@@ -971,7 +971,7 @@ class RiderTrackingService:
 
 Inventory accuracy is the silent killer of quick commerce. A customer adds items to cart, completes checkout, and then receives a "sorry, out of stock" message because the system showed availability that didn't exist physically. This destroys trust and conversion.
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
 <h4 style="color: #fbbf24; margin: 0 0 20px 0; text-align: center;">INVENTORY ACCURACY SOURCES OF ERROR</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
@@ -1168,7 +1168,7 @@ class InventoryService:
 
 ### Inventory Events and State Machine
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">INVENTORY STATE TRANSITIONS</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
@@ -1471,7 +1471,7 @@ class CycleCountService:
 In quick commerce, the cost of being wrong about demand is asymmetric and severe:
 
 <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
-<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
 <h4 style="color: #fca5a5; margin: 0 0 12px 0;">Understock (Stockout)</h4>
 
 - Lost sale (INR 450 average)
@@ -1512,7 +1512,7 @@ Quick commerce forecasting is harder than traditional retail because:
 
 ### Forecasting Architecture
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
 <h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">DEMAND FORECASTING SYSTEM</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
@@ -1730,7 +1730,7 @@ class DemandForecastingService:
 
 ### Handling Demand Anomalies
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
 <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">DEMAND ANOMALY DETECTION AND HANDLING</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
@@ -2019,7 +2019,7 @@ class DemandForecastingService:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">ZEPTO SYSTEM ARCHITECTURE</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
@@ -2140,7 +2140,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 ### Technology Stack Rationale
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
 <h4 style="color: #4ade80; margin: 0 0 20px 0; text-align: center;">TECHNOLOGY DECISIONS AND ALTERNATIVES</h4>
 
 | Component | Choice | Why This | Alternative | When Alternative Is Better |
@@ -2251,7 +2251,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #f59e0b;">
 <h4 style="color: #fbbf24; margin: 0 0 20px 0; text-align: center;">CRITICAL DESIGN TRADE-OFFS</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">

@@ -1586,37 +1586,37 @@ ORDER BY total_revenue DESC;
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">Subquery Types</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
-<strong>Scalar:</strong> Returns single value<br/>
-<strong>Row:</strong> Returns single row<br/>
-<strong>Table:</strong> Returns multiple rows<br/>
-<strong>Correlated:</strong> References outer query
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">Subquery Types</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  <strong>Scalar:</strong> Returns single value<br/>
+  <strong>Row:</strong> Returns single row<br/>
+  <strong>Table:</strong> Returns multiple rows<br/>
+  <strong>Correlated:</strong> References outer query
 </div>
 </div>
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">CTE Syntax</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
-<code>WITH name AS (SELECT ...)</code><br/>
-<code>WITH RECURSIVE name AS (...)</code><br/>
-<code>WITH a AS (...), b AS (...)</code>
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">CTE Syntax</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  <code>WITH name AS (SELECT ...)</code><br/>
+  <code>WITH RECURSIVE name AS (...)</code><br/>
+  <code>WITH a AS (...), b AS (...)</code>
 </div>
 </div>
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">Key Operators</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
-<code>IN / NOT IN</code> - Value in list<br/>
-<code>EXISTS / NOT EXISTS</code> - Row exists<br/>
-<code>ANY / ALL</code> - Compare to set
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">Key Operators</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  <code>IN / NOT IN</code> - Value in list<br/>
+  <code>EXISTS / NOT EXISTS</code> - Row exists<br/>
+  <code>ANY / ALL</code> - Compare to set
 </div>
 </div>
 <div>
-<h4 style="color: #1e293b; margin: 0 0 12px 0;">Critical Gotchas</h4>
-<div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
-<strong style="color: #ef4444;">NOT IN + NULL = No rows!</strong><br/>
-EXISTS is often faster than IN<br/>
-CTEs can be referenced multiple times<br/>
-Recursive CTEs need termination
+  <h4 style="color: #1e293b; margin: 0 0 12px 0;">Critical Gotchas</h4>
+  <div style="background: #ffffff; padding: 16px; border-radius: 10px; font-size: 13px; color: #1e293b; line-height: 1.8;">
+  <strong style="color: #ef4444;">NOT IN + NULL = No rows!</strong><br/>
+  EXISTS is often faster than IN<br/>
+  CTEs can be referenced multiple times<br/>
+  Recursive CTEs need termination
 </div>
 </div>
 </div>

@@ -1182,20 +1182,20 @@ class DAGScheduler:
 <div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Downstream Failure Handling Strategies</div>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
 <div>
-<div style="color: #166534; font-size: 11px; font-weight: bold;">all_success (default)</div>
-<div style="color: #64748b; font-size: 10px;">Run only if ALL upstream succeeded</div>
+  <div style="color: #166534; font-size: 11px; font-weight: bold;">all_success (default)</div>
+  <div style="color: #64748b; font-size: 10px;">Run only if ALL upstream succeeded</div>
 </div>
 <div>
-<div style="color: #1e40af; font-size: 11px; font-weight: bold;">all_done</div>
-<div style="color: #64748b; font-size: 10px;">Run when all upstream completed (success or fail)</div>
+  <div style="color: #1e40af; font-size: 11px; font-weight: bold;">all_done</div>
+  <div style="color: #64748b; font-size: 10px;">Run when all upstream completed (success or fail)</div>
 </div>
 <div>
-<div style="color: #5b21b6; font-size: 11px; font-weight: bold;">one_success</div>
-<div style="color: #64748b; font-size: 10px;">Run if ANY upstream succeeded</div>
+  <div style="color: #5b21b6; font-size: 11px; font-weight: bold;">one_success</div>
+  <div style="color: #64748b; font-size: 10px;">Run if ANY upstream succeeded</div>
 </div>
 <div>
-<div style="color: #c2410c; font-size: 11px; font-weight: bold;">none_failed</div>
-<div style="color: #64748b; font-size: 10px;">Run if no upstream failed (skipped is OK)</div>
+  <div style="color: #c2410c; font-size: 11px; font-weight: bold;">none_failed</div>
+  <div style="color: #64748b; font-size: 10px;">Run if no upstream failed (skipped is OK)</div>
 </div>
 </div>
 </div>

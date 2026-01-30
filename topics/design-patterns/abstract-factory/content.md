@@ -4,11 +4,11 @@
 
 The Abstract Factory pattern provides an interface for creating **families of related or dependent objects** without specifying their concrete classes. Unlike [[Factory Method]](/topics/design-patterns/factory-method) which creates a single product, Abstract Factory orchestrates the creation of multiple products that must work together coherently.
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border-radius: 12px; padding: 20px; margin: 20px 0; color: #fff;">
-  <h4 style="margin: 0 0 12px 0; color: #7dd3fc;">Core Insight</h4>
-  <p style="margin: 0; font-size: 15px; line-height: 1.6;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="margin: 0 0 12px 0; color: #1e40af;">Core Insight</h4>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #475569;">
     Abstract Factory enforces a <strong>product family constraint</strong>: all products created by a single factory instance are guaranteed to be compatible. This is the pattern's defining characteristic and primary value proposition.
-  </p>
+</p>
 </div>
 
 **The fundamental problem it solves**: When your system needs to create objects that belong together (a "family"), and mixing objects from different families would cause subtle bugs or visual inconsistencies, you need a mechanism to guarantee family coherence at the architectural level.
@@ -25,10 +25,10 @@ A **factory family** consists of:
 3. An **invariant** - The guarantee that all products from one factory are mutually compatible
 
 <div style="background: #fefce8; border-left: 4px solid #eab308; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #a16207;">Key Assumption</h4>
-  <p style="margin: 0; color: #713f12; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #a16207;">Key Assumption</h4>
+<p style="margin: 0; color: #713f12; font-size: 14px;">
     The pattern assumes that <strong>all products within a family share enough common interface</strong> that they can be substituted for products from another family. If MacButton and WindowsButton have fundamentally different behaviors (not just appearance), the abstraction breaks down.
-  </p>
+</p>
 </div>
 
 ### 1.2 The Family Invariant Deep Dive
@@ -52,18 +52,18 @@ class UIFactory(ABC):
 ### 1.3 Family Consistency vs. Product Consistency
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
-  <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #166534;">Family Consistency (Abstract Factory)</h5>
-    <p style="margin: 0; font-size: 13px; color: #15803d;">
+<div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #166534;">Family Consistency (Abstract Factory)</h5>
+<p style="margin: 0; font-size: 13px; color: #15803d;">
       All products created by MacFactory work together. All products created by WindowsFactory work together. You cannot mix.
-    </p>
-  </div>
-  <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #991b1b;">Product Consistency (Factory Method)</h5>
-    <p style="margin: 0; font-size: 13px; color: #b91c1c;">
+</p>
+</div>
+<div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #991b1b;">Product Consistency (Factory Method)</h5>
+<p style="margin: 0; font-size: 13px; color: #b91c1c;">
       Each factory method creates one product type. No guarantee about relationships between different products.
-    </p>
-  </div>
+</p>
+</div>
 </div>
 
 ### Interview Questions: Factory Families (3 Levels Deep)
@@ -124,55 +124,55 @@ UI toolkits demonstrate Abstract Factory's value because:
 ### 2.2 Anatomy of a Cross-Platform UI Factory
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Cross-Platform UI Factory Architecture</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Cross-Platform UI Factory Architecture</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
-    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 20px; text-align: center;">
-        <div style="font-weight: 700; color: #1e40af; font-size: 14px;">WidgetFactory</div>
-        <div style="font-size: 11px; color: #3b82f6; margin-top: 4px;">interface</div>
-        <div style="font-family: monospace; font-size: 11px; color: #1e3a5f; margin-top: 8px; text-align: left;">
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 20px; text-align: center;">
+<div style="font-weight: 700; color: #1e40af; font-size: 14px;">WidgetFactory</div>
+<div style="font-size: 11px; color: #3b82f6; margin-top: 4px;">interface</div>
+<div style="font-family: monospace; font-size: 11px; color: #1e3a5f; margin-top: 8px; text-align: left;">
           +createButton()<br/>
           +createScrollbar()<br/>
           +createTextInput()<br/>
           +createMenu()<br/>
           +getEventLoop()
-        </div>
-      </div>
-    </div>
+</div>
+</div>
+</div>
 
-    <div style="display: flex; justify-content: center;">
-      <div style="color: #64748b; font-size: 12px;">implements</div>
-    </div>
+<div style="display: flex; justify-content: center;">
+<div style="color: #64748b; font-size: 12px;">implements</div>
+</div>
 
-    <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px;">
-        <div style="font-weight: 600; color: #166534; font-size: 13px;">MacWidgetFactory</div>
-        <div style="font-size: 10px; color: #15803d; margin-top: 4px;">Cocoa/AppKit backend</div>
-      </div>
-      <div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px;">
-        <div style="font-weight: 600; color: #3730a3; font-size: 13px;">WinWidgetFactory</div>
-        <div style="font-size: 10px; color: #4338ca; margin-top: 4px;">Win32/WinRT backend</div>
-      </div>
-      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px;">
-        <div style="font-weight: 600; color: #92400e; font-size: 13px;">LinuxWidgetFactory</div>
-        <div style="font-size: 10px; color: #b45309; margin-top: 4px;">GTK/Qt backend</div>
-      </div>
-    </div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px;">
+<div style="font-weight: 600; color: #166534; font-size: 13px;">MacWidgetFactory</div>
+<div style="font-size: 10px; color: #15803d; margin-top: 4px;">Cocoa/AppKit backend</div>
+</div>
+<div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px;">
+<div style="font-weight: 600; color: #3730a3; font-size: 13px;">WinWidgetFactory</div>
+<div style="font-size: 10px; color: #4338ca; margin-top: 4px;">Win32/WinRT backend</div>
+</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px;">
+<div style="font-weight: 600; color: #92400e; font-size: 13px;">LinuxWidgetFactory</div>
+<div style="font-size: 10px; color: #b45309; margin-top: 4px;">GTK/Qt backend</div>
+</div>
+</div>
 
-    <div style="border-top: 2px dashed #cbd5e1; padding-top: 16px; margin-top: 8px;">
-      <div style="text-align: center; color: #64748b; font-size: 12px; margin-bottom: 12px;">Each factory creates a complete, coherent product family</div>
-      <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
-        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534;">MacButton</div>
-        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534;">MacScrollbar</div>
-        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534;">MacEventLoop</div>
-        <div style="background: #eef2ff; border: 1px solid #a5b4fc; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3;">WinButton</div>
-        <div style="background: #eef2ff; border: 1px solid #a5b4fc; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3;">WinScrollbar</div>
-        <div style="background: #eef2ff; border: 1px solid #a5b4fc; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3;">WinEventLoop</div>
-      </div>
-    </div>
-  </div>
+<div style="border-top: 2px dashed #cbd5e1; padding-top: 16px; margin-top: 8px;">
+<div style="text-align: center; color: #64748b; font-size: 12px; margin-bottom: 12px;">Each factory creates a complete, coherent product family</div>
+<div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+<div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534;">MacButton</div>
+<div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534;">MacScrollbar</div>
+<div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534;">MacEventLoop</div>
+<div style="background: #eef2ff; border: 1px solid #a5b4fc; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3;">WinButton</div>
+<div style="background: #eef2ff; border: 1px solid #a5b4fc; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3;">WinScrollbar</div>
+<div style="background: #eef2ff; border: 1px solid #a5b4fc; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3;">WinEventLoop</div>
+</div>
+</div>
+</div>
 </div>
 
 ### 2.3 Hidden Complexity: Event System Coupling
@@ -197,10 +197,10 @@ class Button(ABC):
 ```
 
 <div style="background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #991b1b;">Edge Case: Mixed Event Systems</h4>
-  <p style="margin: 0; color: #7f1d1d; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #991b1b;">Edge Case: Mixed Event Systems</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px;">
     If you create a MacButton but run it with a Windows event loop, the button will never receive click events. The event loop doesn't know how to translate Windows messages into Mac responder chain calls. <strong>This is why the factory must also provide the event loop</strong> - it's part of the family.
-  </p>
+</p>
 </div>
 
 ### 2.4 Real Implementation: Java Swing's Pluggable Look and Feel
@@ -290,50 +290,50 @@ public abstract class LookAndFeel {
 Abstract Factory excels at creating **Platform Abstraction Layers (PALs)**:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Platform Abstraction Layer Architecture</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Platform Abstraction Layer Architecture</h4>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
 
-    <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px; text-align: center;">
-      <div style="font-weight: 700; color: #92400e;">Application Layer</div>
-      <div style="font-size: 12px; color: #b45309;">Business logic - uses only abstract interfaces</div>
-    </div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-weight: 700; color: #92400e;">Application Layer</div>
+<div style="font-size: 12px; color: #b45309;">Business logic - uses only abstract interfaces</div>
+</div>
 
-    <div style="display: flex; justify-content: center;">
-      <div style="width: 2px; height: 20px; background: #94a3b8;"></div>
-    </div>
+<div style="display: flex; justify-content: center;">
+<div style="width: 2px; height: 20px; background: #94a3b8;"></div>
+</div>
 
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center;">
-      <div style="font-weight: 700; color: #1e40af;">PlatformFactory Interface</div>
-      <div style="font-size: 12px; color: #3b82f6; margin-top: 8px;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-weight: 700; color: #1e40af;">PlatformFactory Interface</div>
+<div style="font-size: 12px; color: #3b82f6; margin-top: 8px;">
         createFileSystem() | createNetwork() | createThreading() | createGraphics()
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="display: flex; justify-content: center;">
-      <div style="width: 2px; height: 20px; background: #94a3b8;"></div>
-    </div>
+<div style="display: flex; justify-content: center;">
+<div style="width: 2px; height: 20px; background: #94a3b8;"></div>
+</div>
 
-    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
-        <div style="font-weight: 600; color: #166534; font-size: 13px;">POSIXFactory</div>
-        <div style="font-size: 10px; color: #15803d;">Linux, macOS, BSD</div>
-      </div>
-      <div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
-        <div style="font-weight: 600; color: #3730a3; font-size: 13px;">Win32Factory</div>
-        <div style="font-size: 10px; color: #4338ca;">Windows desktop</div>
-      </div>
-      <div style="background: #fce7f3; border: 2px solid #ec4899; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
-        <div style="font-weight: 600; color: #9d174d; font-size: 13px;">WebFactory</div>
-        <div style="font-size: 10px; color: #be185d;">Browser/WASM</div>
-      </div>
-      <div style="background: #fef9c3; border: 2px solid #facc15; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
-        <div style="font-weight: 600; color: #854d0e; font-size: 13px;">EmbeddedFactory</div>
-        <div style="font-size: 10px; color: #a16207;">RTOS, bare metal</div>
-      </div>
-    </div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
+<div style="font-weight: 600; color: #166534; font-size: 13px;">POSIXFactory</div>
+<div style="font-size: 10px; color: #15803d;">Linux, macOS, BSD</div>
+</div>
+<div style="background: #e0e7ff; border: 2px solid #6366f1; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
+<div style="font-weight: 600; color: #3730a3; font-size: 13px;">Win32Factory</div>
+<div style="font-size: 10px; color: #4338ca;">Windows desktop</div>
+</div>
+<div style="background: #fce7f3; border: 2px solid #ec4899; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
+<div style="font-weight: 600; color: #9d174d; font-size: 13px;">WebFactory</div>
+<div style="font-size: 10px; color: #be185d;">Browser/WASM</div>
+</div>
+<div style="background: #fef9c3; border: 2px solid #facc15; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px;">
+<div style="font-weight: 600; color: #854d0e; font-size: 13px;">EmbeddedFactory</div>
+<div style="font-size: 10px; color: #a16207;">RTOS, bare metal</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### 3.2 The Cross-Cutting Concerns Problem
@@ -363,10 +363,10 @@ class WindowsFactory(PlatformFactory):
 ```
 
 <div style="background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #1e40af;">Design Choice: Factory as Service Locator</h4>
-  <p style="margin: 0; color: #1e3a5f; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #1e40af;">Design Choice: Factory as Service Locator</h4>
+<p style="margin: 0; color: #1e3a5f; font-size: 14px;">
     One solution is to make the factory itself a parameter to product constructors. The logger receives the factory and lazily retrieves dependencies. This is controversial - it resembles Service Locator, which hides dependencies. The trade-off is explicit: cross-cutting concerns require either dependency hiding or complex initialization ordering.
-  </p>
+</p>
 </div>
 
 ### 3.3 Conditional Compilation vs. Abstract Factory
@@ -467,10 +467,10 @@ class AzureFactory(CloudInfrastructureFactory):
 ```
 
 <div style="background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #991b1b;">Real-World Edge Case: Service Parity</h4>
-  <p style="margin: 0; color: #7f1d1d; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #991b1b;">Real-World Edge Case: Service Parity</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px;">
     Cloud providers don't have perfect feature parity. AWS Lambda has different cold start characteristics than Azure Functions. S3 has eventual consistency properties that GCS doesn't. <strong>The abstraction leaks</strong>. Solutions: 1) Lowest common denominator API, 2) Provider-specific extension interfaces, 3) Feature flags in the abstract interface.
-  </p>
+</p>
 </div>
 
 ### Interview Questions: Cross-Platform Development (3 Levels Deep)
@@ -561,66 +561,66 @@ class AzureFactory(CloudInfrastructureFactory):
 ### 4.1 Structural Comparison
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Factory Method vs Abstract Factory</h4>
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center;">Factory Method vs Abstract Factory</h4>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 16px;">
-      <h5 style="color: #1e40af; margin: 0 0 12px 0; text-align: center;">Factory Method</h5>
-      <div style="font-size: 13px; color: #1e3a5f;">
-        <div style="margin-bottom: 8px;"><strong>Structure:</strong> Single method in a class</div>
-        <div style="margin-bottom: 8px;"><strong>Creates:</strong> One product type</div>
-        <div style="margin-bottom: 8px;"><strong>Extension:</strong> Subclass overrides method</div>
-        <div style="margin-bottom: 8px;"><strong>Relationship:</strong> IS-A (inheritance)</div>
-        <div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-top: 12px;">
-          <code style="font-size: 11px;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 16px;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0; text-align: center;">Factory Method</h5>
+<div style="font-size: 13px; color: #1e3a5f;">
+<div style="margin-bottom: 8px;"><strong>Structure:</strong> Single method in a class</div>
+<div style="margin-bottom: 8px;"><strong>Creates:</strong> One product type</div>
+<div style="margin-bottom: 8px;"><strong>Extension:</strong> Subclass overrides method</div>
+<div style="margin-bottom: 8px;"><strong>Relationship:</strong> IS-A (inheritance)</div>
+<div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-top: 12px;">
+<code style="font-size: 11px;">
 class Dialog:<br/>
 &nbsp;&nbsp;def create_button(self) -> Button:<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;return DefaultButton()
-          </code>
-        </div>
-      </div>
-    </div>
+</code>
+</div>
+</div>
+</div>
 
-    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 10px; padding: 16px;">
-      <h5 style="color: #166534; margin: 0 0 12px 0; text-align: center;">Abstract Factory</h5>
-      <div style="font-size: 13px; color: #14532d;">
-        <div style="margin-bottom: 8px;"><strong>Structure:</strong> Interface with multiple methods</div>
-        <div style="margin-bottom: 8px;"><strong>Creates:</strong> Family of related products</div>
-        <div style="margin-bottom: 8px;"><strong>Extension:</strong> New factory class</div>
-        <div style="margin-bottom: 8px;"><strong>Relationship:</strong> HAS-A (composition)</div>
-        <div style="background: #bbf7d0; padding: 8px; border-radius: 4px; margin-top: 12px;">
-          <code style="font-size: 11px;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 10px; padding: 16px;">
+<h5 style="color: #166534; margin: 0 0 12px 0; text-align: center;">Abstract Factory</h5>
+<div style="font-size: 13px; color: #14532d;">
+<div style="margin-bottom: 8px;"><strong>Structure:</strong> Interface with multiple methods</div>
+<div style="margin-bottom: 8px;"><strong>Creates:</strong> Family of related products</div>
+<div style="margin-bottom: 8px;"><strong>Extension:</strong> New factory class</div>
+<div style="margin-bottom: 8px;"><strong>Relationship:</strong> HAS-A (composition)</div>
+<div style="background: #bbf7d0; padding: 8px; border-radius: 4px; margin-top: 12px;">
+<code style="font-size: 11px;">
 class WidgetFactory:<br/>
 &nbsp;&nbsp;def create_button(self) -> Button<br/>
 &nbsp;&nbsp;def create_scroll(self) -> Scrollbar<br/>
 &nbsp;&nbsp;def create_menu(self) -> Menu
-          </code>
-        </div>
-      </div>
-    </div>
+</code>
+</div>
+</div>
+</div>
 
-  </div>
+</div>
 </div>
 
 ### 4.2 When to Use Which
 
 <div style="background: #fefce8; border-left: 4px solid #eab308; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #a16207;">Decision Framework</h4>
-  <div style="color: #713f12; font-size: 14px;">
-    <p><strong>Use Factory Method when:</strong></p>
-    <ul style="margin: 8px 0;">
-      <li>You need to create ONE type of object with variations</li>
-      <li>Subclasses should decide which class to instantiate</li>
-      <li>You want to defer instantiation to derived classes</li>
-    </ul>
-    <p><strong>Use Abstract Factory when:</strong></p>
-    <ul style="margin: 8px 0;">
-      <li>You need to create MULTIPLE related objects that must work together</li>
-      <li>System should be independent of how products are created</li>
-      <li>You need to enforce family constraints (no mixing)</li>
-    </ul>
-  </div>
+<h4 style="margin: 0 0 8px 0; color: #a16207;">Decision Framework</h4>
+<div style="color: #713f12; font-size: 14px;">
+<p><strong>Use Factory Method when:</strong></p>
+<ul style="margin: 8px 0;">
+<li>You need to create ONE type of object with variations</li>
+<li>Subclasses should decide which class to instantiate</li>
+<li>You want to defer instantiation to derived classes</li>
+</ul>
+<p><strong>Use Abstract Factory when:</strong></p>
+<ul style="margin: 8px 0;">
+<li>You need to create MULTIPLE related objects that must work together</li>
+<li>System should be independent of how products are created</li>
+<li>You need to enforce family constraints (no mixing)</li>
+</ul>
+</div>
 </div>
 
 ### 4.3 The Composition Relationship
@@ -650,46 +650,46 @@ class WidgetFactory(ABC):
 Systems often evolve from Factory Method to Abstract Factory:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #334155; margin: 0 0 16px 0; text-align: center;">Pattern Evolution</h4>
+<h4 style="color: #334155; margin: 0 0 16px 0; text-align: center;">Pattern Evolution</h4>
 
-  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
 
-    <div style="background: #f1f5f9; border: 2px solid #94a3b8; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px;">
-      <div style="font-weight: 600; color: #475569; font-size: 12px;">Stage 1</div>
-      <div style="font-size: 11px; color: #64748b;">Constructor</div>
-      <div style="font-family: monospace; font-size: 10px; margin-top: 4px;">new Button()</div>
-    </div>
+<div style="background: #f1f5f9; border: 2px solid #94a3b8; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px;">
+<div style="font-weight: 600; color: #475569; font-size: 12px;">Stage 1</div>
+<div style="font-size: 11px; color: #64748b;">Constructor</div>
+<div style="font-family: monospace; font-size: 10px; margin-top: 4px;">new Button()</div>
+</div>
 
-    <div style="color: #94a3b8; font-size: 20px;">-></div>
+<div style="color: #94a3b8; font-size: 20px;">-></div>
 
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px;">
-      <div style="font-weight: 600; color: #1e40af; font-size: 12px;">Stage 2</div>
-      <div style="font-size: 11px; color: #3b82f6;">Factory Method</div>
-      <div style="font-family: monospace; font-size: 10px; margin-top: 4px;">createButton()</div>
-    </div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px;">
+<div style="font-weight: 600; color: #1e40af; font-size: 12px;">Stage 2</div>
+<div style="font-size: 11px; color: #3b82f6;">Factory Method</div>
+<div style="font-family: monospace; font-size: 10px; margin-top: 4px;">createButton()</div>
+</div>
 
-    <div style="color: #94a3b8; font-size: 20px;">-></div>
+<div style="color: #94a3b8; font-size: 20px;">-></div>
 
-    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px;">
-      <div style="font-weight: 600; color: #166534; font-size: 12px;">Stage 3</div>
-      <div style="font-size: 11px; color: #15803d;">Abstract Factory</div>
-      <div style="font-family: monospace; font-size: 10px; margin-top: 4px;">factory.createX()</div>
-    </div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px;">
+<div style="font-weight: 600; color: #166534; font-size: 12px;">Stage 3</div>
+<div style="font-size: 11px; color: #15803d;">Abstract Factory</div>
+<div style="font-family: monospace; font-size: 10px; margin-top: 4px;">factory.createX()</div>
+</div>
 
-  </div>
+</div>
 
-  <div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #cbd5e1; font-size: 12px; color: #64748b; text-align: center;">
+<div style="margin-top: 16px; padding-top: 12px; border-top: 1px dashed #cbd5e1; font-size: 12px; color: #64748b; text-align: center;">
     Evolve when: single product becomes family, OR platform variations emerge
-  </div>
+</div>
 </div>
 
 ### 4.5 Anti-Pattern: Premature Abstract Factory
 
 <div style="background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #991b1b;">Common Mistake: Over-Engineering</h4>
-  <p style="margin: 0; color: #7f1d1d; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #991b1b;">Common Mistake: Over-Engineering</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px;">
     Creating an Abstract Factory when you only have one product family and no plans for more is over-engineering. The indirection adds complexity without benefit. <strong>YAGNI</strong> (You Aren't Gonna Need It) applies. Start with direct construction or Factory Method; refactor to Abstract Factory when the second family appears.
-  </p>
+</p>
 </div>
 
 ### Interview Questions: Factory Method vs Abstract Factory (3 Levels Deep)
@@ -2001,10 +2001,10 @@ class CompositeCloudFactory:
 ```
 
 <div style="background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 8px 0; color: #991b1b;">Design Trade-off: Composite Factories</h4>
-  <p style="margin: 0; color: #7f1d1d; font-size: 14px;">
+<h4 style="margin: 0 0 8px 0; color: #991b1b;">Design Trade-off: Composite Factories</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px;">
     Composite factories sacrifice family consistency for flexibility. Use only when: (1) Products are truly independent, (2) Cross-provider communication is handled explicitly, (3) The performance/cost benefits outweigh the complexity. Document the "allowed combinations" clearly.
-  </p>
+</p>
 </div>
 
 ### 6.2 Factory Caching and Singleton Integration
@@ -2093,10 +2093,10 @@ class MockDatabaseFactory(DatabaseFactory[MockFamily]):
 ### 7.1 The "God Factory" Anti-Pattern
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 10px; padding: 20px; margin: 20px 0;">
-  <h4 style="margin: 0 0 12px 0; color: #991b1b;">Anti-Pattern: God Factory</h4>
-  <div style="color: #7f1d1d; font-size: 14px;">
-    <p><strong>Problem:</strong> Factory that creates too many unrelated products:</p>
-    <pre style="background: #fee2e2; padding: 12px; border-radius: 4px; overflow-x: auto;">
+<h4 style="margin: 0 0 12px 0; color: #991b1b;">Anti-Pattern: God Factory</h4>
+<div style="color: #7f1d1d; font-size: 14px;">
+<p><strong>Problem:</strong> Factory that creates too many unrelated products:</p>
+<pre style="background: #fee2e2; padding: 12px; border-radius: 4px; overflow-x: auto;">
 class ApplicationFactory:
     def create_database(self): ...
     def create_cache(self): ...
@@ -2104,9 +2104,9 @@ class ApplicationFactory:
     def create_pdf_generator(self): ... # Unrelated!
     def create_logger(self): ...
     def create_metrics(self): ...
-    </pre>
-    <p style="margin-top: 12px;"><strong>Solution:</strong> Split into multiple focused factories. Use [[Interface Segregation]](/topics/design-patterns/solid) principle.</p>
-  </div>
+</pre>
+<p style="margin-top: 12px;"><strong>Solution:</strong> Split into multiple focused factories. Use [[Interface Segregation]](/topics/design-patterns/solid) principle.</p>
+</div>
 </div>
 
 ### 7.2 Violating Liskov Substitution
@@ -2167,47 +2167,47 @@ factory = (PostgresFactoryBuilder()
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0;">
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #334155;">[[Factory Method]](/topics/design-patterns/factory-method)</h5>
-    <p style="margin: 0; font-size: 13px; color: #64748b;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #334155;">[[Factory Method]](/topics/design-patterns/factory-method)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b;">
       Single product creation via inheritance. Abstract Factory often composed of multiple Factory Methods.
-    </p>
-  </div>
+</p>
+</div>
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #334155;">[[Builder]](/topics/design-patterns/builder)</h5>
-    <p style="margin: 0; font-size: 13px; color: #64748b;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #334155;">[[Builder]](/topics/design-patterns/builder)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b;">
       Step-by-step construction. Use when products require complex configuration before creation.
-    </p>
-  </div>
+</p>
+</div>
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #334155;">[[Prototype]](/topics/design-patterns/prototype)</h5>
-    <p style="margin: 0; font-size: 13px; color: #64748b;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #334155;">[[Prototype]](/topics/design-patterns/prototype)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b;">
       Clone-based creation. Alternative when products are expensive to create from scratch.
-    </p>
-  </div>
+</p>
+</div>
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #334155;">[[Singleton]](/topics/design-patterns/singleton)</h5>
-    <p style="margin: 0; font-size: 13px; color: #64748b;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #334155;">[[Singleton]](/topics/design-patterns/singleton)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b;">
       Factories are often singletons. Ensures consistent factory instance across application.
-    </p>
-  </div>
+</p>
+</div>
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #334155;">[[Dependency Injection]](/topics/design-patterns/dependency-injection)</h5>
-    <p style="margin: 0; font-size: 13px; color: #64748b;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #334155;">[[Dependency Injection]](/topics/design-patterns/dependency-injection)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b;">
       Factories are injected into clients. Enables testing and configuration flexibility.
-    </p>
-  </div>
+</p>
+</div>
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
-    <h5 style="margin: 0 0 8px 0; color: #334155;">[[Strategy]](/topics/design-patterns/strategy)</h5>
-    <p style="margin: 0; font-size: 13px; color: #64748b;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 16px;">
+<h5 style="margin: 0 0 8px 0; color: #334155;">[[Strategy]](/topics/design-patterns/strategy)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b;">
       Factory selection itself can be a strategy. Runtime factory switching based on context.
-    </p>
-  </div>
+</p>
+</div>
 
 </div>
 
@@ -2215,12 +2215,16 @@ factory = (PostgresFactoryBuilder()
 
 ## Quick Reference Card
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 24px; margin: 20px 0; color: #f8fafc;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 
 ### Pattern Essence
+<div style="color: #475569;">
+
 - **Intent**: Create families of related objects without specifying concrete classes
 - **Key Benefit**: Guarantees product family consistency by construction
 - **Category**: Creational Pattern (GoF)
+
+</div>
 
 ### Decision Checklist
 

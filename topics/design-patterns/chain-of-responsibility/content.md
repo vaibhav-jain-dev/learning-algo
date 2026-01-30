@@ -136,13 +136,13 @@ return self._next.handle(request)
 
 <!-- Request Flow -->
 <div>
-<div style="color: #22c55e; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">REQUEST FLOW (Inbound)</div>
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Client</div>
-<div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
-<div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 12px 16px; border-radius: 10px;">
-<div style="color: #4ecdc4; font-weight: 600; font-size: 0.85rem;">Logging</div>
-<div style="color: #888; font-size: 0.7rem;">log request</div>
+  <div style="color: #22c55e; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">REQUEST FLOW (Inbound)</div>
+  <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Client</div>
+  <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
+  <div style="background: #1e3a5f; border: 2px solid #4ecdc4; padding: 12px 16px; border-radius: 10px;">
+  <div style="color: #4ecdc4; font-weight: 600; font-size: 0.85rem;">Logging</div>
+  <div style="color: #888; font-size: 0.7rem;">log request</div>
 </div>
 <div style="color: #22c55e; font-size: 1.5rem;">&#8594;</div>
 <div style="background: #1e3a5f; border: 2px solid #f093fb; padding: 12px 16px; border-radius: 10px;">
@@ -166,13 +166,13 @@ return self._next.handle(request)
 
 <!-- Response Flow -->
 <div>
-<div style="color: #f093fb; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">RESPONSE FLOW (Outbound)</div>
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Handler</div>
-<div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
-<div style="background: #1e3a5f; border: 2px solid #74b9ff; padding: 12px 16px; border-radius: 10px;">
-<div style="color: #74b9ff; font-weight: 600; font-size: 0.85rem;">Validation</div>
-<div style="color: #888; font-size: 0.7rem;">pass-through</div>
+  <div style="color: #f093fb; font-weight: 700; font-size: 0.9rem; margin-bottom: 12px;">RESPONSE FLOW (Outbound)</div>
+  <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 12px 20px; border-radius: 10px; color: white; font-weight: 600;">Handler</div>
+  <div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
+  <div style="background: #1e3a5f; border: 2px solid #74b9ff; padding: 12px 16px; border-radius: 10px;">
+  <div style="color: #74b9ff; font-weight: 600; font-size: 0.85rem;">Validation</div>
+  <div style="color: #888; font-size: 0.7rem;">pass-through</div>
 </div>
 <div style="color: #f093fb; font-size: 1.5rem;">&#8594;</div>
 <div style="background: #1e3a5f; border: 2px solid #ffd93d; padding: 12px 16px; border-radius: 10px;">
@@ -271,10 +271,10 @@ return self._next.handle(request)</code></pre>
 
 ### Middleware Architecture Diagram
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 32px; margin: 24px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 
 <div style="text-align: center; margin-bottom: 24px;">
-<span style="color: #94a3b8; font-size: 0.9rem;">The "Onion" Model of Middleware</span>
+<span style="color: #475569; font-size: 0.9rem; font-weight: 600;">The "Onion" Model of Middleware</span>
 </div>
 
 <div style="display: flex; justify-content: center; align-items: center;">

@@ -8,11 +8,11 @@ The Iterator pattern provides a way to access elements of a collection sequentia
 **Category:** Behavioral Pattern
 **Also Known As:** Cursor
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; color: #f8fafc;">
-  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #475569; padding-bottom: 0.75rem;">Core Insight</div>
-  <div style="line-height: 1.7;">
-    The Iterator pattern separates the <span style="color:#22c55e"><strong>traversal algorithm</strong></span> from the <span style="color:#22c55e"><strong>collection structure</strong></span>. This enables multiple simultaneous traversals, different traversal strategies on the same collection, and lazy evaluation that processes elements on-demand without loading entire datasets into memory.
-  </div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
+<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 0.75rem; color: #1e293b;">Core Insight</div>
+<div style="line-height: 1.7; color: #475569;">
+    The Iterator pattern separates the <span style="color:#166534"><strong>traversal algorithm</strong></span> from the <span style="color:#166534"><strong>collection structure</strong></span>. This enables multiple simultaneous traversals, different traversal strategies on the same collection, and lazy evaluation that processes elements on-demand without loading entire datasets into memory.
+</div>
 </div>
 
 ---
@@ -20,29 +20,29 @@ The Iterator pattern provides a way to access elements of a collection sequentia
 ## Simple Explanation: The Spotify Playlist Analogy
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
-  <div style="font-size: 2.5rem; text-align: center; margin-bottom: 16px;">🎵</div>
-  <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px;">Think of a Music Playlist</div>
-  <div style="color: #334155; font-size: 1rem; line-height: 1.7;">
+<div style="font-size: 2.5rem; text-align: center; margin-bottom: 16px;">🎵</div>
+<div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 12px;">Think of a Music Playlist</div>
+<div style="color: #334155; font-size: 1rem; line-height: 1.7;">
     When you listen to Spotify, you don't care whether your playlist is stored as an array, linked list, or fetched from a database. You just press "Next" to get the next song. The playlist gives you an iterator - a cursor that knows how to traverse songs one by one. You can have multiple people listening to the same playlist at different positions, each with their own iterator. The iterator handles all the complexity of navigation while you just enjoy the music.
-  </div>
-  <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-    <div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #1e40af; font-weight: 600;">Playlist</div>
-      <div style="color: #3b82f6; font-size: 0.85rem;">Collection (Aggregate)</div>
-    </div>
-    <div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #166534; font-weight: 600;">Play Controls</div>
-      <div style="color: #22c55e; font-size: 0.85rem;">Iterator Interface</div>
-    </div>
-    <div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #92400e; font-weight: 600;">Current Position</div>
-      <div style="color: #f59e0b; font-size: 0.85rem;">Iterator State</div>
-    </div>
-    <div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; text-align: center;">
-      <div style="color: #9d174d; font-weight: 600;">Next/Previous</div>
-      <div style="color: #ec4899; font-size: 0.85rem;">Traversal Methods</div>
-    </div>
-  </div>
+</div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600;">Playlist</div>
+<div style="color: #3b82f6; font-size: 0.85rem;">Collection (Aggregate)</div>
+</div>
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #166534; font-weight: 600;">Play Controls</div>
+<div style="color: #22c55e; font-size: 0.85rem;">Iterator Interface</div>
+</div>
+<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #92400e; font-weight: 600;">Current Position</div>
+<div style="color: #f59e0b; font-size: 0.85rem;">Iterator State</div>
+</div>
+<div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="color: #9d174d; font-weight: 600;">Next/Previous</div>
+<div style="color: #ec4899; font-size: 0.85rem;">Traversal Methods</div>
+</div>
+</div>
 </div>
 
 ### The Expert Insight
@@ -58,33 +58,33 @@ The Iterator pattern provides a way to access elements of a collection sequentia
 A critical design decision when implementing the Iterator pattern is choosing between <span style="color:#22c55e">**internal**</span> and <span style="color:#22c55e">**external**</span> iterators. This choice fundamentally affects control flow, flexibility, and API design.
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Iterator Control Models</div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-    <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border: 2px solid #3b82f6;">
-      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-        <span style="background: #3b82f6; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">E</span>
+<div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Iterator Control Models</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+<div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border: 2px solid #3b82f6;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+<span style="background: #3b82f6; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">E</span>
         External Iterator
-      </div>
-      <div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6;">
-        <div style="margin-bottom: 0.5rem;"><strong>Client controls</strong> the iteration</div>
-        <div style="margin-bottom: 0.5rem;"><strong>Pull-based:</strong> Client calls next()</div>
-        <div style="margin-bottom: 0.5rem;"><strong>More flexible:</strong> Early termination, interleaving</div>
-        <div><strong>Example:</strong> Java Iterator, Python __iter__/__next__</div>
-      </div>
-    </div>
-    <div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border: 2px solid #22c55e;">
-      <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-        <span style="background: #22c55e; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">I</span>
+</div>
+<div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6;">
+<div style="margin-bottom: 0.5rem;"><strong>Client controls</strong> the iteration</div>
+<div style="margin-bottom: 0.5rem;"><strong>Pull-based:</strong> Client calls next()</div>
+<div style="margin-bottom: 0.5rem;"><strong>More flexible:</strong> Early termination, interleaving</div>
+<div><strong>Example:</strong> Java Iterator, Python __iter__/__next__</div>
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border: 2px solid #22c55e;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+<span style="background: #22c55e; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">I</span>
         Internal Iterator
-      </div>
-      <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
-        <div style="margin-bottom: 0.5rem;"><strong>Collection controls</strong> the iteration</div>
-        <div style="margin-bottom: 0.5rem;"><strong>Push-based:</strong> Collection calls callback</div>
-        <div style="margin-bottom: 0.5rem;"><strong>Simpler API:</strong> forEach, map, filter</div>
-        <div><strong>Example:</strong> Ruby each, JavaScript forEach</div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
+<div style="margin-bottom: 0.5rem;"><strong>Collection controls</strong> the iteration</div>
+<div style="margin-bottom: 0.5rem;"><strong>Push-based:</strong> Collection calls callback</div>
+<div style="margin-bottom: 0.5rem;"><strong>Simpler API:</strong> forEach, map, filter</div>
+<div><strong>Example:</strong> Ruby each, JavaScript forEach</div>
+</div>
+</div>
+</div>
 </div>
 
 ### External Iterator: Client in Control
@@ -210,62 +210,62 @@ print(f"Result: {result}")  # 12 (2*2 + 4*2)
 ### Comparison and Trade-offs
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">When to Use Each Approach</div>
-  <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-    <tr style="background: #e2e8f0;">
-      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Scenario</th>
-      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">External</th>
-      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Internal</th>
-    </tr>
-    <tr>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Early termination needed</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Preferred</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Harder (exceptions)</td>
-    </tr>
-    <tr style="background: #f8fafc;">
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Parallel iteration (zip)</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Natural</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Very difficult</td>
-    </tr>
-    <tr>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Simple processing</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Verbose</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Concise</td>
-    </tr>
-    <tr style="background: #f8fafc;">
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Parallelization</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Client manages</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Easy (Java streams)</td>
-    </tr>
-    <tr>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Complex state during iteration</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Natural</td>
-      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Closures needed</td>
-    </tr>
-  </table>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">When to Use Each Approach</div>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+<tr style="background: #e2e8f0;">
+<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Scenario</th>
+<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">External</th>
+<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Internal</th>
+</tr>
+<tr>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Early termination needed</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Preferred</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Harder (exceptions)</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Parallel iteration (zip)</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Natural</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Very difficult</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Simple processing</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Verbose</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Concise</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Parallelization</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Client manages</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Easy (Java streams)</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Complex state during iteration</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534; font-weight: 600;">Natural</td>
+<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #92400e;">Closures needed</td>
+</tr>
+</table>
 </div>
 
 ### Interview Deep Dive: Internal vs External Iterators
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is the difference between internal and external iterators?</div>
-  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
-    <span style="color:#22c55e"><strong>External iterators</strong></span> give control to the client - the client explicitly calls <code>next()</code> to get each element. <span style="color:#22c55e"><strong>Internal iterators</strong></span> give control to the collection - you pass a function and the collection applies it to each element. External is like a pull model; internal is like a push model.
-  </div>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is the difference between internal and external iterators?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<span style="color:#22c55e"><strong>External iterators</strong></span> give control to the client - the client explicitly calls <code>next()</code> to get each element. <span style="color:#22c55e"><strong>Internal iterators</strong></span> give control to the collection - you pass a function and the collection applies it to each element. External is like a pull model; internal is like a push model.
+</div>
 
-  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: Why can't you easily interleave two internal iterators like you can with external iterators?</div>
-    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: Why can't you easily interleave two internal iterators like you can with external iterators?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
       Internal iterators run the entire traversal when called - there's no way to pause mid-iteration. With <code>collection.forEach(fn)</code>, the forEach completes before returning. You can't say "give me one element, now give me one from another collection, repeat." External iterators maintain state between calls, so you can alternate: <code>iter1.next()</code>, <code>iter2.next()</code>, <code>iter1.next()</code>, etc.
-    </div>
+</div>
 
-    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How do generators/coroutines blur the line between internal and external iterators?</div>
-      <div style="color: #1e3a8a; line-height: 1.7;">
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How do generators/coroutines blur the line between internal and external iterators?</div>
+<div style="color: #1e3a8a; line-height: 1.7;">
         Generators combine both models. They're <strong>written</strong> like internal iterators (single function with <code>yield</code>) but <strong>behave</strong> like external iterators (caller controls advancement). When you call a generator, it returns an iterator. Each <code>next()</code> runs until the next <code>yield</code>, then suspends. This gives you the clean syntax of internal iteration with the control of external iteration. Python's <code>yield</code>, JavaScript's <code>function*</code>, and C#'s <code>yield return</code> all provide this. It's called <strong>semi-coroutine</strong> or <strong>asymmetric coroutine</strong> - the generator yields to caller, but caller decides when to resume.
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -275,23 +275,23 @@ print(f"Result: {result}")  # 12 (2*2 + 4*2)
 <span style="color:#22c55e">**Lazy evaluation**</span> is one of the most powerful capabilities of the Iterator pattern. Instead of computing all elements upfront, elements are generated on-demand when requested.
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Eager vs Lazy Evaluation</div>
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #fef2f2; color: #991b1b; border-radius: 8px; padding: 0.5rem 1rem; font-weight: 600; min-width: 80px; text-align: center;">Eager</div>
-      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
-        <div style="font-weight: 600; color: #991b1b;">Compute all elements immediately</div>
-        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Memory: O(n) | Time to first element: O(n) | Infinite: Impossible</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #dcfce7; color: #166534; border-radius: 8px; padding: 0.5rem 1rem; font-weight: 600; min-width: 80px; text-align: center;">Lazy</div>
-      <div style="background: #dcfce7; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #86efac;">
-        <div style="font-weight: 600; color: #166534;">Compute elements on-demand</div>
-        <div style="color: #14532d; font-size: 0.9rem; margin-top: 0.25rem;">Memory: O(1) | Time to first element: O(1) | Infinite: Possible</div>
-      </div>
-    </div>
-  </div>
+<div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Eager vs Lazy Evaluation</div>
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div style="background: #fef2f2; color: #991b1b; border-radius: 8px; padding: 0.5rem 1rem; font-weight: 600; min-width: 80px; text-align: center;">Eager</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b;">Compute all elements immediately</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Memory: O(n) | Time to first element: O(n) | Infinite: Impossible</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div style="background: #dcfce7; color: #166534; border-radius: 8px; padding: 0.5rem 1rem; font-weight: 600; min-width: 80px; text-align: center;">Lazy</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #86efac;">
+<div style="font-weight: 600; color: #166534;">Compute elements on-demand</div>
+<div style="color: #14532d; font-size: 0.9rem; margin-top: 0.25rem;">Memory: O(1) | Time to first element: O(1) | Infinite: Possible</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Infinite Sequence Iterators
@@ -540,24 +540,24 @@ lazy_pipeline_example()
 ### Interview Deep Dive: Lazy Evaluation
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is lazy evaluation and why is it useful in iterators?</div>
-  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
-    <span style="color:#22c55e"><strong>Lazy evaluation</strong></span> means computing values only when they're actually needed, not in advance. In iterators, this means each element is generated when <code>next()</code> is called, not when the iterator is created. Benefits: constant memory usage regardless of collection size, ability to represent infinite sequences, faster time-to-first-result, and short-circuit optimization when you don't need all elements.
-  </div>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is lazy evaluation and why is it useful in iterators?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<span style="color:#22c55e"><strong>Lazy evaluation</strong></span> means computing values only when they're actually needed, not in advance. In iterators, this means each element is generated when <code>next()</code> is called, not when the iterator is created. Benefits: constant memory usage regardless of collection size, ability to represent infinite sequences, faster time-to-first-result, and short-circuit optimization when you don't need all elements.
+</div>
 
-  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you implement lazy evaluation for database query results?</div>
-    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you implement lazy evaluation for database query results?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
       Use <strong>cursor-based iteration</strong> with buffering. The iterator maintains a connection and cursor to the database. When the buffer empties, fetch the next batch (e.g., 1000 rows). This gives you constant memory usage even for millions of rows. Key considerations: connection lifecycle management (who closes it?), transaction isolation (what if data changes?), and network efficiency (batch size tuning). Database-specific: PostgreSQL uses <code>DECLARE CURSOR</code>, MySQL uses streaming result sets with <code>useCursorFetch=true</code>.
-    </div>
+</div>
 
-    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: What are the challenges of lazy evaluation in distributed systems?</div>
-      <div style="color: #1e3a8a; line-height: 1.7;">
-        <strong>Serialization:</strong> Can't serialize a lazy iterator's computation state across network boundaries - must materialize or use continuation tokens. <strong>Fault tolerance:</strong> If a node fails mid-iteration, how do you resume? Need checkpointing or idempotent reprocessing. <strong>Resource leaks:</strong> Lazy iterators hold resources (connections, file handles) - in distributed context, forgotten iterators cause resource exhaustion on remote nodes. <strong>Backpressure:</strong> Producer may generate faster than consumer can process - need flow control mechanisms. <strong>Consistency:</strong> Data may change between pages - use snapshot isolation or accept eventual consistency. Systems like Kafka solve this with commit offsets, Elasticsearch uses scroll contexts with point-in-time snapshots.
-      </div>
-    </div>
-  </div>
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: What are the challenges of lazy evaluation in distributed systems?</div>
+<div style="color: #1e3a8a; line-height: 1.7;">
+<strong>Serialization:</strong> Can't serialize a lazy iterator's computation state across network boundaries - must materialize or use continuation tokens. <strong>Fault tolerance:</strong> If a node fails mid-iteration, how do you resume? Need checkpointing or idempotent reprocessing. <strong>Resource leaks:</strong> Lazy iterators hold resources (connections, file handles) - in distributed context, forgotten iterators cause resource exhaustion on remote nodes. <strong>Backpressure:</strong> Producer may generate faster than consumer can process - need flow control mechanisms. <strong>Consistency:</strong> Data may change between pages - use snapshot isolation or accept eventual consistency. Systems like Kafka solve this with commit offsets, Elasticsearch uses scroll contexts with point-in-time snapshots.
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -567,39 +567,39 @@ lazy_pipeline_example()
 One of the most critical challenges with iterators is handling modifications to the underlying collection during iteration. This is known as the <span style="color:#22c55e">**concurrent modification problem**</span>.
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ef4444;">
-  <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">The Core Problem</div>
-  <div style="color: #7f1d1d; line-height: 1.7;">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">The Core Problem</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
     When you modify a collection while iterating over it, the iterator's internal state (index, pointers) may become invalid. This can cause skipped elements, duplicate processing, crashes, or undefined behavior. This affects both single-threaded modifications and multi-threaded access.
-  </div>
+</div>
 </div>
 
 ### What Goes Wrong
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Concurrent Modification Scenarios</div>
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">1</div>
-      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
-        <div style="font-weight: 600; color: #991b1b;">Removal During Iteration</div>
-        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Removing current element shifts indices, causing next element to be skipped</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">2</div>
-      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
-        <div style="font-weight: 600; color: #991b1b;">Insertion During Iteration</div>
-        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Adding elements may cause some to be visited twice or iterator to loop forever</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">3</div>
-      <div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
-        <div style="font-weight: 600; color: #991b1b;">Concurrent Thread Modification</div>
-        <div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Another thread modifies collection while iteration is in progress - race condition</div>
-      </div>
-    </div>
-  </div>
+<div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Concurrent Modification Scenarios</div>
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">1</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b;">Removal During Iteration</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Removing current element shifts indices, causing next element to be skipped</div>
+</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">2</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b;">Insertion During Iteration</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Adding elements may cause some to be visited twice or iterator to loop forever</div>
+</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #ef4444; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;">3</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b;">Concurrent Thread Modification</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 0.25rem;">Another thread modifies collection while iteration is in progress - race condition</div>
+</div>
+</div>
+</div>
 </div>
 
 ```python
@@ -838,24 +838,24 @@ print(f"After modifications: {items}")  # [1, 3, 5, 30]
 ### Interview Deep Dive: Concurrent Modification
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What causes ConcurrentModificationException in Java?</div>
-  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What causes ConcurrentModificationException in Java?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
     Java's fail-fast iterators track a <span style="color:#22c55e"><strong>modification count</strong></span>. When an iterator is created, it records the collection's current mod count. On each <code>next()</code> or <code>hasNext()</code> call, it compares the expected count to the actual count. If they differ, the collection was modified outside the iterator, so it throws <code>ConcurrentModificationException</code>. Note: This is a best-effort detection, not a guarantee - it can miss some modifications.
-  </div>
+</div>
 
-  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: Compare CopyOnWriteArrayList vs Collections.synchronizedList for concurrent iteration.</div>
-    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
-      <strong>CopyOnWriteArrayList:</strong> Creates a new array copy on every write. Iterators see a snapshot - never throws CME, no locking during iteration. Best for read-heavy workloads with infrequent writes. <strong>synchronizedList:</strong> Uses mutex for all operations. Iteration still requires external locking to prevent CME. <code>synchronized(list) { for item in list { ... } }</code>. Better for write-heavy workloads. <strong>Key difference:</strong> COWAL trades write performance for iteration safety; synchronizedList requires manual locking for safe iteration.
-    </div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: Compare CopyOnWriteArrayList vs Collections.synchronizedList for concurrent iteration.</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<strong>CopyOnWriteArrayList:</strong> Creates a new array copy on every write. Iterators see a snapshot - never throws CME, no locking during iteration. Best for read-heavy workloads with infrequent writes. <strong>synchronizedList:</strong> Uses mutex for all operations. Iteration still requires external locking to prevent CME. <code>synchronized(list) { for item in list { ... } }</code>. Better for write-heavy workloads. <strong>Key difference:</strong> COWAL trades write performance for iteration safety; synchronizedList requires manual locking for safe iteration.
+</div>
 
-    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you implement a lock-free concurrent iterator for a skip list?</div>
-      <div style="color: #1e3a8a; line-height: 1.7;">
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you implement a lock-free concurrent iterator for a skip list?</div>
+<div style="color: #1e3a8a; line-height: 1.7;">
         Use <strong>hazard pointers</strong> or <strong>epoch-based reclamation</strong> to prevent nodes from being freed while any iterator references them. Iterator stores current node pointer. On <code>next()</code>: (1) Read current node's next pointer using atomic load, (2) If next is marked deleted (using pointer tagging), skip to next-next, (3) Use CAS to update any traversal state. <strong>Key insight:</strong> Never dereference a pointer that might be freed. Either use RAII with shared ownership (like <code>Arc</code> in Rust) or manual memory reclamation schemes. Java's <code>ConcurrentSkipListMap</code> uses a different approach: deleted nodes remain linked with a marker node until cleanup. Lock-free iteration is complex because you must handle: node deletion during traversal, ABA problems, and memory reclamation.
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -1361,24 +1361,24 @@ class SkipListRangeIterator(Generic[K, V]):
 ### Interview Deep Dive: Custom Collection Iteration
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What methods must a custom iterator implement?</div>
-  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What methods must a custom iterator implement?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
     At minimum: <code>has_next()</code> (or <code>hasNext()</code>) to check if more elements exist, and <code>next()</code> to retrieve the next element. In Python, implement <code>__iter__()</code> returning self and <code>__next__()</code> which raises <code>StopIteration</code> when exhausted. Optional but common: <code>reset()</code> to restart iteration, <code>remove()</code> for safe removal, <code>peek()</code> to look ahead without advancing.
-  </div>
+</div>
 
-  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you implement an efficient range iterator for a B-tree?</div>
-    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you implement an efficient range iterator for a B-tree?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
       B-tree range iteration: (1) Navigate to leaf containing start key in O(log n), (2) Store path from root to current leaf on a stack for backtracking, (3) Iterate through keys in current leaf, (4) When leaf exhausted, pop stack to find next leaf - follow right sibling pointers if available, otherwise backtrack and descend. <strong>Key optimization:</strong> B-trees often have leaf-level linked lists (B+ trees), making range scans O(k) where k = result count after initial O(log n) seek. Store only the path, not all nodes - O(log n) space.
-    </div>
+</div>
 
-    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: Design an iterator that merges k sorted iterators in O(log k) time per element.</div>
-      <div style="color: #1e3a8a; line-height: 1.7;">
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: Design an iterator that merges k sorted iterators in O(log k) time per element.</div>
+<div style="color: #1e3a8a; line-height: 1.7;">
         Use a <strong>min-heap of (value, iterator_index)</strong> pairs. Initialize by calling <code>next()</code> on each iterator and pushing to heap - O(k log k). On each <code>next()</code> call: (1) Pop minimum from heap - O(log k), (2) Record the value and which iterator it came from, (3) If that iterator has more elements, call its <code>next()</code> and push new value to heap - O(log k), (4) Return recorded value. Total: O(log k) per element. <strong>For very large k:</strong> Consider tournament trees or cascade merging. <strong>With different-sized iterators:</strong> Priority queue naturally handles exhaustion. <strong>Edge case:</strong> Handle empty iterators at initialization by not adding to heap.
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -1386,17 +1386,17 @@ class SkipListRangeIterator(Generic[K, V]):
 ## Real-World Company Usage
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 12px;">Industry Applications</div>
-  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-    <li><strong>Database Cursors (PostgreSQL, MySQL):</strong> Iterate through millions of rows without loading all into memory</li>
-    <li><strong>Apache Kafka:</strong> Consumer iterators traverse message partitions with offset tracking</li>
-    <li><strong>Python/NumPy:</strong> nditer provides efficient multi-dimensional array iteration</li>
-    <li><strong>React/Vue:</strong> Virtual DOM diffing iterates through component trees</li>
-    <li><strong>Elasticsearch:</strong> Scroll API provides iterator-like access to large result sets</li>
-    <li><strong>AWS S3:</strong> List objects pagination uses continuation tokens (iterator pattern)</li>
-    <li><strong>Google BigQuery:</strong> Page tokens for iterating through query results</li>
-    <li><strong>Redis SCAN:</strong> Cursor-based iteration for large keyspaces without blocking</li>
-  </ul>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 12px;">Industry Applications</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+<li><strong>Database Cursors (PostgreSQL, MySQL):</strong> Iterate through millions of rows without loading all into memory</li>
+<li><strong>Apache Kafka:</strong> Consumer iterators traverse message partitions with offset tracking</li>
+<li><strong>Python/NumPy:</strong> nditer provides efficient multi-dimensional array iteration</li>
+<li><strong>React/Vue:</strong> Virtual DOM diffing iterates through component trees</li>
+<li><strong>Elasticsearch:</strong> Scroll API provides iterator-like access to large result sets</li>
+<li><strong>AWS S3:</strong> List objects pagination uses continuation tokens (iterator pattern)</li>
+<li><strong>Google BigQuery:</strong> Page tokens for iterating through query results</li>
+<li><strong>Redis SCAN:</strong> Cursor-based iteration for large keyspaces without blocking</li>
+</ul>
 </div>
 
 ---
@@ -1404,36 +1404,36 @@ class SkipListRangeIterator(Generic[K, V]):
 ## Pattern Structure
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Iterator Pattern Architecture</div>
-  <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-      <div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 24px; text-align: center;">
-        <div style="font-weight: 600; color: #475569; font-style: italic;">Iterable (interface)</div>
-        <div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace;">+ createIterator()</div>
-      </div>
-      <div style="color: #64748b;">implements</div>
-      <div style="color: #64748b; font-size: 1.5rem;">&#8595;</div>
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px 24px; text-align: center;">
-        <div style="font-weight: 700; color: #1e40af;">ConcreteCollection</div>
-        <div style="font-size: 0.8rem; color: #3b82f6; margin-top: 8px; font-family: monospace;">- elements[]<br/>+ createIterator()</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; color: #64748b; font-size: 1.5rem;">
+<div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem;">Iterator Pattern Architecture</div>
+<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 24px; text-align: center;">
+<div style="font-weight: 600; color: #475569; font-style: italic;">Iterable (interface)</div>
+<div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace;">+ createIterator()</div>
+</div>
+<div style="color: #64748b;">implements</div>
+<div style="color: #64748b; font-size: 1.5rem;">&#8595;</div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px 24px; text-align: center;">
+<div style="font-weight: 700; color: #1e40af;">ConcreteCollection</div>
+<div style="font-size: 0.8rem; color: #3b82f6; margin-top: 8px; font-family: monospace;">- elements[]<br/>+ createIterator()</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; color: #64748b; font-size: 1.5rem;">
       creates &#8594;
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-      <div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 24px; text-align: center;">
-        <div style="font-weight: 600; color: #475569; font-style: italic;">Iterator (interface)</div>
-        <div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace;">+ hasNext()<br/>+ next()<br/>+ reset()</div>
-      </div>
-      <div style="color: #64748b;">implements</div>
-      <div style="color: #64748b; font-size: 1.5rem;">&#8595;</div>
-      <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px 24px; text-align: center;">
-        <div style="font-weight: 700; color: #166534;">ConcreteIterator</div>
-        <div style="font-size: 0.8rem; color: #15803d; margin-top: 8px; font-family: monospace;">- collection<br/>- currentIndex<br/>+ hasNext()<br/>+ next()</div>
-      </div>
-    </div>
-  </div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="background: #f1f5f9; border: 2px dashed #64748b; border-radius: 12px; padding: 16px 24px; text-align: center;">
+<div style="font-weight: 600; color: #475569; font-style: italic;">Iterator (interface)</div>
+<div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace;">+ hasNext()<br/>+ next()<br/>+ reset()</div>
+</div>
+<div style="color: #64748b;">implements</div>
+<div style="color: #64748b; font-size: 1.5rem;">&#8595;</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 16px 24px; text-align: center;">
+<div style="font-weight: 700; color: #166534;">ConcreteIterator</div>
+<div style="font-size: 0.8rem; color: #15803d; margin-top: 8px; font-family: monospace;">- collection<br/>- currentIndex<br/>+ hasNext()<br/>+ next()</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -1441,16 +1441,16 @@ class SkipListRangeIterator(Generic[K, V]):
 ## When to Use Iterator Pattern
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #22c55e;">
-  <div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Perfect Use Cases</div>
-  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-    <li><strong>Hide collection internals:</strong> Client doesn't need to know if it's a list, tree, or graph</li>
-    <li><strong>Multiple traversal methods:</strong> In-order, pre-order, breadth-first on same structure</li>
-    <li><strong>Lazy evaluation:</strong> Generate elements on-demand without loading all into memory</li>
-    <li><strong>Infinite sequences:</strong> Fibonacci numbers, random generators, event streams</li>
-    <li><strong>Paginated APIs:</strong> Iterate through pages of results transparently</li>
-    <li><strong>[[Composite]](/topic/design-patterns/composite) structures:</strong> Uniform traversal of tree hierarchies</li>
-    <li><strong>Filter/Transform chains:</strong> Build processing pipelines</li>
-  </ul>
+<div style="font-weight: 700; color: #166534; margin-bottom: 12px;">Perfect Use Cases</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+<li><strong>Hide collection internals:</strong> Client doesn't need to know if it's a list, tree, or graph</li>
+<li><strong>Multiple traversal methods:</strong> In-order, pre-order, breadth-first on same structure</li>
+<li><strong>Lazy evaluation:</strong> Generate elements on-demand without loading all into memory</li>
+<li><strong>Infinite sequences:</strong> Fibonacci numbers, random generators, event streams</li>
+<li><strong>Paginated APIs:</strong> Iterate through pages of results transparently</li>
+<li><strong>[[Composite]](/topic/design-patterns/composite) structures:</strong> Uniform traversal of tree hierarchies</li>
+<li><strong>Filter/Transform chains:</strong> Build processing pipelines</li>
+</ul>
 </div>
 
 ---
@@ -1458,14 +1458,14 @@ class SkipListRangeIterator(Generic[K, V]):
 ## Anti-Patterns: When NOT to Use
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Common Mistakes</div>
-  <ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
-    <li><strong>Over-abstraction:</strong> Simple arrays don't need custom iterators - use native loops</li>
-    <li><strong>Stateful iterators in concurrent code:</strong> Multiple threads sharing one iterator causes race conditions</li>
-    <li><strong>Modifying collection during iteration:</strong> Can cause ConcurrentModificationException or skipped elements</li>
-    <li><strong>Memory-heavy iterators:</strong> Storing too much state defeats the lazy evaluation purpose</li>
-    <li><strong>Ignoring iterator invalidation:</strong> Collection changes may invalidate active iterators</li>
-  </ul>
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 12px;">Common Mistakes</div>
+<ul style="color: #334155; margin: 0; padding-left: 20px; line-height: 1.8;">
+<li><strong>Over-abstraction:</strong> Simple arrays don't need custom iterators - use native loops</li>
+<li><strong>Stateful iterators in concurrent code:</strong> Multiple threads sharing one iterator causes race conditions</li>
+<li><strong>Modifying collection during iteration:</strong> Can cause ConcurrentModificationException or skipped elements</li>
+<li><strong>Memory-heavy iterators:</strong> Storing too much state defeats the lazy evaluation purpose</li>
+<li><strong>Ignoring iterator invalidation:</strong> Collection changes may invalidate active iterators</li>
+</ul>
 </div>
 
 ---
@@ -1473,10 +1473,10 @@ class SkipListRangeIterator(Generic[K, V]):
 ## Python Generators: Modern Iterator Pattern
 
 <div style="background: #dbeafe; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Python's Built-in Support</div>
-  <div style="color: #334155; line-height: 1.7;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Python's Built-in Support</div>
+<div style="color: #334155; line-height: 1.7;">
     Python's generator functions (using <code>yield</code>) implement the Iterator pattern implicitly. They're more concise and handle state automatically. Use generators when possible; use explicit iterator classes when you need complex state management or multiple traversal methods.
-  </div>
+</div>
 </div>
 
 ```python
@@ -1539,43 +1539,43 @@ print("First 5 even Fibonacci:", result)  # [0, 2, 8, 34, 144]
 ## Iterator vs Iterable: Interview Distinction
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Common Interview Question</div>
-  <table style="width: 100%; border-collapse: collapse; color: #334155;">
-    <thead>
-      <tr style="background: #e2e8f0;">
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Concept</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Iterable</th>
-        <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Iterator</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Definition</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Can produce an iterator</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Knows how to traverse</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Python Method</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">__iter__()</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">__next__()</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>State</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Stateless (collection)</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Stateful (position)</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Reusable</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">Yes, create new iterators</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">No, exhausted after one pass</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Example</strong></td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">list, dict, set</td>
-        <td style="padding: 12px; border: 1px solid #cbd5e1;">list_iterator, generator</td>
-      </tr>
-    </tbody>
-  </table>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 16px;">Common Interview Question</div>
+<table style="width: 100%; border-collapse: collapse; color: #334155;">
+<thead>
+  <tr style="background: #e2e8f0;">
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Concept</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Iterable</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Iterator</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Definition</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Can produce an iterator</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Knows how to traverse</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Python Method</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">__iter__()</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">__next__()</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>State</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Stateless (collection)</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Stateful (position)</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Reusable</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">Yes, create new iterators</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">No, exhausted after one pass</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;"><strong>Example</strong></td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">list, dict, set</td>
+  <td style="padding: 12px; border: 1px solid #cbd5e1;">list_iterator, generator</td>
+  </tr>
+</tbody>
+</table>
 </div>
 
 ---
@@ -1761,34 +1761,34 @@ class FeedMergeIterator:
 ## Best Practices
 
 <div style="background: #dbeafe; border-radius: 12px; padding: 20px; margin: 20px 0;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Production Guidelines</div>
-  <ol style="color: #334155; margin: 0; padding-left: 20px; line-height: 2;">
-    <li><strong>Prefer generators:</strong> Use Python generators for simple cases - less boilerplate</li>
-    <li><strong>Implement __iter__ and __next__:</strong> Follow Python protocols for native loop support</li>
-    <li><strong>Keep iterators lightweight:</strong> Don't store the entire collection in the iterator</li>
-    <li><strong>Handle exhaustion gracefully:</strong> Raise StopIteration, not return None</li>
-    <li><strong>Consider thread safety:</strong> Document if iterator is thread-safe or not</li>
-    <li><strong>Support reset when needed:</strong> Allow restarting iteration without recreating</li>
-    <li><strong>Use type hints:</strong> Generic typing helps catch errors early</li>
-    <li><strong>Document mutation behavior:</strong> Be clear about concurrent modification handling</li>
-  </ol>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Production Guidelines</div>
+<ol style="color: #334155; margin: 0; padding-left: 20px; line-height: 2;">
+<li><strong>Prefer generators:</strong> Use Python generators for simple cases - less boilerplate</li>
+<li><strong>Implement __iter__ and __next__:</strong> Follow Python protocols for native loop support</li>
+<li><strong>Keep iterators lightweight:</strong> Don't store the entire collection in the iterator</li>
+<li><strong>Handle exhaustion gracefully:</strong> Raise StopIteration, not return None</li>
+<li><strong>Consider thread safety:</strong> Document if iterator is thread-safe or not</li>
+<li><strong>Support reset when needed:</strong> Allow restarting iteration without recreating</li>
+<li><strong>Use type hints:</strong> Generic typing helps catch errors early</li>
+<li><strong>Document mutation behavior:</strong> Be clear about concurrent modification handling</li>
+</ol>
 </div>
 
 ---
 
 ## Summary: Key Interview Points
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; color: #f8fafc;">
-  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid #475569; padding-bottom: 0.75rem;">Memorize These</div>
-  <ul style="margin: 0; padding-left: 1.25rem; line-height: 2;">
-    <li><strong>Core concept:</strong> Separate traversal from collection structure</li>
-    <li><strong>Internal vs External:</strong> Who controls iteration - collection or client?</li>
-    <li><strong>Lazy evaluation:</strong> Compute elements on-demand, enables infinite sequences</li>
-    <li><strong>Concurrent modification:</strong> Fail-fast, snapshot, or copy-on-write solutions</li>
-    <li><strong>Python protocol:</strong> __iter__ returns iterator, __next__ returns next element</li>
-    <li><strong>Generator advantage:</strong> Implicit state management, cleaner syntax</li>
-    <li><strong>Related patterns:</strong> [[Composite]](/topic/design-patterns/composite), [[Visitor]](/topic/design-patterns/visitor), [[Factory Method]](/topic/design-patterns/factory-method)</li>
-  </ul>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
+<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 0.75rem; color: #1e293b;">Memorize These</div>
+<ul style="margin: 0; padding-left: 1.25rem; line-height: 2; color: #475569;">
+<li><strong>Core concept:</strong> Separate traversal from collection structure</li>
+<li><strong>Internal vs External:</strong> Who controls iteration - collection or client?</li>
+<li><strong>Lazy evaluation:</strong> Compute elements on-demand, enables infinite sequences</li>
+<li><strong>Concurrent modification:</strong> Fail-fast, snapshot, or copy-on-write solutions</li>
+<li><strong>Python protocol:</strong> __iter__ returns iterator, __next__ returns next element</li>
+<li><strong>Generator advantage:</strong> Implicit state management, cleaner syntax</li>
+<li><strong>Related patterns:</strong> [[Composite]](/topic/design-patterns/composite), [[Visitor]](/topic/design-patterns/visitor), [[Factory Method]](/topic/design-patterns/factory-method)</li>
+</ul>
 </div>
 
 ---

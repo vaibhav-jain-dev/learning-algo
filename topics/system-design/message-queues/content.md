@@ -493,50 +493,50 @@ class MessageProcessor:
 <div style="display: flex; flex-direction: column; gap: 16px; color: #1e293b;">
 
 <div>
-<strong>1. How do you ensure exactly-once processing?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li>Use idempotent consumers with deduplication</li>
-<li>Store message ID before processing, check before each operation</li>
-<li>Use transactional outbox pattern for database + queue atomicity</li>
-<li>Leverage Kafka transactions or similar built-in features</li>
+  <strong>1. How do you ensure exactly-once processing?</strong>
+  <ul style="margin: 8px 0 0 0; color: #475569;">
+  <li>Use idempotent consumers with deduplication</li>
+  <li>Store message ID before processing, check before each operation</li>
+  <li>Use transactional outbox pattern for database + queue atomicity</li>
+  <li>Leverage Kafka transactions or similar built-in features</li>
 </ul>
 </div>
 
 <div>
-<strong>2. How do you handle message ordering?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li>Use partition keys to route related messages to same partition</li>
-<li>Single consumer per partition guarantees order</li>
-<li>Include sequence numbers for verification</li>
-<li>Accept eventual consistency where possible</li>
+  <strong>2. How do you handle message ordering?</strong>
+  <ul style="margin: 8px 0 0 0; color: #475569;">
+  <li>Use partition keys to route related messages to same partition</li>
+  <li>Single consumer per partition guarantees order</li>
+  <li>Include sequence numbers for verification</li>
+  <li>Accept eventual consistency where possible</li>
 </ul>
 </div>
 
 <div>
-<strong>3. What happens if a consumer crashes mid-processing?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li>Message remains unacknowledged in queue</li>
-<li>After visibility timeout, message becomes visible again</li>
-<li>Another consumer (or same one after restart) picks it up</li>
-<li>Idempotency ensures safe reprocessing</li>
+  <strong>3. What happens if a consumer crashes mid-processing?</strong>
+  <ul style="margin: 8px 0 0 0; color: #475569;">
+  <li>Message remains unacknowledged in queue</li>
+  <li>After visibility timeout, message becomes visible again</li>
+  <li>Another consumer (or same one after restart) picks it up</li>
+  <li>Idempotency ensures safe reprocessing</li>
 </ul>
 </div>
 
 <div>
-<strong>4. How do you scale message consumers?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li>Add more partitions to increase parallelism</li>
-<li>Consumer groups share partitions automatically</li>
-<li>Each partition assigned to one consumer in the group</li>
-<li>Monitor lag and scale based on queue depth</li>
+  <strong>4. How do you scale message consumers?</strong>
+  <ul style="margin: 8px 0 0 0; color: #475569;">
+  <li>Add more partitions to increase parallelism</li>
+  <li>Consumer groups share partitions automatically</li>
+  <li>Each partition assigned to one consumer in the group</li>
+  <li>Monitor lag and scale based on queue depth</li>
 </ul>
 </div>
 
 <div>
-<strong>5. Kafka vs RabbitMQ - when to use each?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li><strong>Kafka:</strong> High throughput, event streaming, replay capability, log aggregation</li>
-<li><strong>RabbitMQ:</strong> Complex routing, request-reply, lower latency, traditional messaging</li>
+  <strong>5. Kafka vs RabbitMQ - when to use each?</strong>
+  <ul style="margin: 8px 0 0 0; color: #475569;">
+  <li><strong>Kafka:</strong> High throughput, event streaming, replay capability, log aggregation</li>
+  <li><strong>RabbitMQ:</strong> Complex routing, request-reply, lower latency, traditional messaging</li>
 </ul>
 </div>
 
@@ -784,35 +784,35 @@ func main() {
 <h4 style="color: #166534; margin-top: 0;">Production Checklist</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; color: #1e293b;">
 <div>
-<strong style="color: #166534;">Reliability</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Make consumers idempotent</li>
-<li>Use dead letter queues</li>
-<li>Implement retry with backoff</li>
+  <strong style="color: #166534;">Reliability</strong>
+  <ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+  <li>Make consumers idempotent</li>
+  <li>Use dead letter queues</li>
+  <li>Implement retry with backoff</li>
 </ul>
 </div>
 <div>
-<strong style="color: #166534;">Performance</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Use batching for throughput</li>
-<li>Set appropriate timeouts</li>
-<li>Implement backpressure</li>
+  <strong style="color: #166534;">Performance</strong>
+  <ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+  <li>Use batching for throughput</li>
+  <li>Set appropriate timeouts</li>
+  <li>Implement backpressure</li>
 </ul>
 </div>
 <div>
-<strong style="color: #166534;">Monitoring</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Track queue depth</li>
-<li>Alert on consumer lag</li>
-<li>Monitor DLQ size</li>
+  <strong style="color: #166534;">Monitoring</strong>
+  <ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+  <li>Track queue depth</li>
+  <li>Alert on consumer lag</li>
+  <li>Monitor DLQ size</li>
 </ul>
 </div>
 <div>
-<strong style="color: #166534;">Operations</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Plan for replay scenarios</li>
-<li>Document message schemas</li>
-<li>Version your messages</li>
+  <strong style="color: #166534;">Operations</strong>
+  <ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
+  <li>Plan for replay scenarios</li>
+  <li>Document message schemas</li>
+  <li>Version your messages</li>
 </ul>
 </div>
 </div>

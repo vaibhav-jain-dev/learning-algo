@@ -5,8 +5,8 @@
 The Composite pattern structures objects into tree hierarchies where individual objects (leaves) and compositions (composites) implement a uniform interface. This enables clients to treat atomic elements and complex aggregations identically through polymorphism, eliminating conditional logic that would otherwise distinguish between single items and collections.
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%); border-radius: 12px; padding: 1.25rem; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Core Insight</div>
-  <div style="color: #78350f;">The Composite pattern's power lies in <strong>structural recursion</strong>: a composite contains components, which may themselves be composites. This self-similar structure enables operations to propagate through arbitrarily deep hierarchies with zero knowledge of the actual depth.</div>
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Core Insight</div>
+<div style="color: #78350f;">The Composite pattern's power lies in <strong>structural recursion</strong>: a composite contains components, which may themselves be composites. This self-similar structure enables operations to propagate through arbitrarily deep hierarchies with zero knowledge of the actual depth.</div>
 </div>
 
 ## Internal Mechanisms and Memory Layout
@@ -16,35 +16,35 @@ The Composite pattern structures objects into tree hierarchies where individual 
 When implementing a composite, the internal data structure for storing children significantly impacts performance characteristics:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #cbd5e1;">
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
-    <div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">ArrayList/Dynamic Array</div>
-      <div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(1)</strong> indexed access, <strong>O(n)</strong> removal</div>
-      <div style="font-size: 0.85rem; color: #64748b;">Best when: order matters, frequent iteration, rare removals. Used by React's children array.</div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">LinkedList</div>
-      <div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(1)</strong> insertion/removal, <strong>O(n)</strong> access</div>
-      <div style="font-size: 0.85rem; color: #64748b;">Best when: frequent structural modifications, rare random access. Used in DOM implementations.</div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">HashMap by Name/ID</div>
-      <div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(1)</strong> lookup by key, unordered</div>
-      <div style="font-size: 0.85rem; color: #64748b;">Best when: children have unique identifiers, frequent lookup by name. Used in file systems.</div>
-    </div>
-    <div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">TreeMap/Sorted Structure</div>
-      <div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(log n)</strong> operations, sorted iteration</div>
-      <div style="font-size: 0.85rem; color: #64748b;">Best when: children need ordering, range queries needed. Used in database indexes.</div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+<div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">ArrayList/Dynamic Array</div>
+<div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(1)</strong> indexed access, <strong>O(n)</strong> removal</div>
+<div style="font-size: 0.85rem; color: #64748b;">Best when: order matters, frequent iteration, rare removals. Used by React's children array.</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">LinkedList</div>
+<div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(1)</strong> insertion/removal, <strong>O(n)</strong> access</div>
+<div style="font-size: 0.85rem; color: #64748b;">Best when: frequent structural modifications, rare random access. Used in DOM implementations.</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">HashMap by Name/ID</div>
+<div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(1)</strong> lookup by key, unordered</div>
+<div style="font-size: 0.85rem; color: #64748b;">Best when: children have unique identifiers, frequent lookup by name. Used in file systems.</div>
+</div>
+<div style="background: white; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">TreeMap/Sorted Structure</div>
+<div style="font-size: 0.9rem; color: #475569; margin-bottom: 0.5rem;"><strong>O(log n)</strong> operations, sorted iteration</div>
+<div style="font-size: 0.85rem; color: #64748b;">Best when: children need ordering, range queries needed. Used in database indexes.</div>
+</div>
+</div>
 </div>
 
 ### Parent Reference Management
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; border-left: 4px solid #ef4444;">
-  <div style="font-weight: 700; color: #dc2626; margin-bottom: 0.5rem;">Critical Design Decision</div>
-  <div style="color: #7f1d1d;">Whether to maintain parent references is a fundamental trade-off. Parent references enable upward traversal and path computation but create bidirectional coupling, complicating memory management and requiring careful synchronization during structural modifications.</div>
+<div style="font-weight: 700; color: #dc2626; margin-bottom: 0.5rem;">Critical Design Decision</div>
+<div style="color: #7f1d1d;">Whether to maintain parent references is a fundamental trade-off. Parent references enable upward traversal and path computation but create bidirectional coupling, complicating memory management and requiring careful synchronization during structural modifications.</div>
 </div>
 
 **With Parent References:**
@@ -168,36 +168,36 @@ Trade-offs:
 The Composite pattern creates an [[tree]](/topic/data-structures/tree) structure with specific properties:
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
-      <div>
-        <div style="font-weight: 700; color: #166534;">Rooted Tree</div>
-        <div style="font-size: 0.9rem; color: #15803d;">Every composite tree has a single root node. Operations typically begin at the root and propagate downward. Some implementations allow forest structures (multiple roots).</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
-      <div>
-        <div style="font-weight: 700; color: #166534;">N-ary Branching</div>
-        <div style="font-size: 0.9rem; color: #15803d;">Unlike binary trees, composites can have any number of children. Some domains constrain this (e.g., binary expression trees), but the pattern allows unlimited branching.</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
-      <div>
-        <div style="font-weight: 700; color: #166534;">Acyclic Constraint</div>
-        <div style="font-size: 0.9rem; color: #15803d;">The structure must remain acyclic. A composite cannot directly or indirectly contain itself. Violating this causes infinite recursion during traversal.</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-      <div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
-      <div>
-        <div style="font-weight: 700; color: #166534;">Heterogeneous Nodes</div>
-        <div style="font-size: 0.9rem; color: #15803d;">Different concrete types can coexist in the same tree (files, directories, symlinks), unified by the Component interface.</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+<div>
+  <div style="font-weight: 700; color: #166534;">Rooted Tree</div>
+  <div style="font-size: 0.9rem; color: #15803d;">Every composite tree has a single root node. Operations typically begin at the root and propagate downward. Some implementations allow forest structures (multiple roots).</div>
+</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+<div>
+  <div style="font-weight: 700; color: #166534;">N-ary Branching</div>
+  <div style="font-size: 0.9rem; color: #15803d;">Unlike binary trees, composites can have any number of children. Some domains constrain this (e.g., binary expression trees), but the pattern allows unlimited branching.</div>
+</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+<div>
+  <div style="font-weight: 700; color: #166534;">Acyclic Constraint</div>
+  <div style="font-size: 0.9rem; color: #15803d;">The structure must remain acyclic. A composite cannot directly or indirectly contain itself. Violating this causes infinite recursion during traversal.</div>
+</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 1rem;">
+<div style="background: #166534; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
+<div>
+  <div style="font-weight: 700; color: #166534;">Heterogeneous Nodes</div>
+  <div style="font-size: 0.9rem; color: #15803d;">Different concrete types can coexist in the same tree (files, directories, symlinks), unified by the Component interface.</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Tree Traversal Strategies
@@ -378,40 +378,40 @@ class LCAComposite:
 ### Behavioral Differences
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #dbeafe 100%); border-radius: 16px; padding: 2rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-  <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 1.5rem;">
-      <div style="font-weight: 700; color: #166534; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Leaf</div>
-      <div style="font-size: 0.9rem; color: #15803d;">
-        <div style="margin-bottom: 0.75rem;"><strong>Structure:</strong> No children, terminal node</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Operations:</strong> Directly implements behavior</div>
-        <div style="margin-bottom: 0.75rem;"><strong>add()/remove():</strong> Throws exception or no-op</div>
-        <div style="margin-bottom: 0.75rem;"><strong>getChildren():</strong> Returns empty or throws</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Memory:</strong> Minimal overhead</div>
-        <div><strong>Examples:</strong> File, MenuItem, PrimitiveShape</div>
-      </div>
-    </div>
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 1.5rem;">
-      <div style="font-weight: 700; color: #92400e; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Composite</div>
-      <div style="font-size: 0.9rem; color: #78350f;">
-        <div style="margin-bottom: 0.75rem;"><strong>Structure:</strong> Contains children, internal node</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Operations:</strong> Delegates to children, aggregates</div>
-        <div style="margin-bottom: 0.75rem;"><strong>add()/remove():</strong> Modifies child collection</div>
-        <div style="margin-bottom: 0.75rem;"><strong>getChildren():</strong> Returns child collection</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Memory:</strong> Collection overhead + children</div>
-        <div><strong>Examples:</strong> Directory, Menu, GroupShape</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 1.5rem;">
+<div style="font-weight: 700; color: #166534; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Leaf</div>
+<div style="font-size: 0.9rem; color: #15803d;">
+<div style="margin-bottom: 0.75rem;"><strong>Structure:</strong> No children, terminal node</div>
+<div style="margin-bottom: 0.75rem;"><strong>Operations:</strong> Directly implements behavior</div>
+<div style="margin-bottom: 0.75rem;"><strong>add()/remove():</strong> Throws exception or no-op</div>
+<div style="margin-bottom: 0.75rem;"><strong>getChildren():</strong> Returns empty or throws</div>
+<div style="margin-bottom: 0.75rem;"><strong>Memory:</strong> Minimal overhead</div>
+<div><strong>Examples:</strong> File, MenuItem, PrimitiveShape</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 1.5rem;">
+<div style="font-weight: 700; color: #92400e; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Composite</div>
+<div style="font-size: 0.9rem; color: #78350f;">
+<div style="margin-bottom: 0.75rem;"><strong>Structure:</strong> Contains children, internal node</div>
+<div style="margin-bottom: 0.75rem;"><strong>Operations:</strong> Delegates to children, aggregates</div>
+<div style="margin-bottom: 0.75rem;"><strong>add()/remove():</strong> Modifies child collection</div>
+<div style="margin-bottom: 0.75rem;"><strong>getChildren():</strong> Returns child collection</div>
+<div style="margin-bottom: 0.75rem;"><strong>Memory:</strong> Collection overhead + children</div>
+<div><strong>Examples:</strong> Directory, Menu, GroupShape</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Design Tension: Transparency vs Safety
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; border-left: 4px solid #ef4444;">
-  <div style="font-weight: 700; color: #dc2626; margin-bottom: 0.75rem;">Fundamental Trade-off</div>
-  <div style="color: #7f1d1d;">
-    <strong>Transparency Design:</strong> Component interface includes all operations (add, remove, getChildren). Leaves throw UnsupportedOperationException. Maximizes polymorphism but risks runtime errors.<br><br>
-    <strong>Safety Design:</strong> Component interface contains only common operations. Child management only in Composite. Type-safe but requires downcasting or type checks.
-  </div>
+<div style="font-weight: 700; color: #dc2626; margin-bottom: 0.75rem;">Fundamental Trade-off</div>
+<div style="color: #7f1d1d;">
+<strong>Transparency Design:</strong> Component interface includes all operations (add, remove, getChildren). Leaves throw UnsupportedOperationException. Maximizes polymorphism but risks runtime errors.<br><br>
+<strong>Safety Design:</strong> Component interface contains only common operations. Child management only in Composite. Type-safe but requires downcasting or type checks.
+</div>
 </div>
 
 **Transparency Approach (Gang of Four default):**
@@ -613,25 +613,25 @@ Each approach trades off ergonomics, compile-time safety, and expressiveness dif
 Understanding how actual file systems implement composite-like structures illuminates design decisions:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #cbd5e1;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem; font-size: 1.1rem;">Unix Inode Architecture</div>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
-    <div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #3b82f6;">
-      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.5rem;">Inode (Component)</div>
-      <div style="font-size: 0.85rem; color: #475569;">Metadata structure containing permissions, timestamps, size, and data block pointers. Both files and directories have inodes.</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #22c55e;">
-      <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Regular File (Leaf)</div>
-      <div style="font-size: 0.85rem; color: #475569;">Inode points to data blocks containing file content. No child references. Size is actual content size.</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #f59e0b;">
-      <div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">Directory (Composite)</div>
-      <div style="font-size: 0.85rem; color: #475569;">Inode points to data blocks containing directory entries (name -> inode mappings). Children are inode references, not embedded data.</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #8b5cf6;">
-      <div style="font-weight: 600; color: #6d28d9; margin-bottom: 0.5rem;">Symbolic Link (Special Leaf)</div>
-      <div style="font-size: 0.85rem; color: #475569;">Inode contains path string. Creates DAG-like structure. Must handle in traversal to avoid infinite loops.</div>
-    </div>
-  </div>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem; font-size: 1.1rem;">Unix Inode Architecture</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+<div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #3b82f6;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.5rem;">Inode (Component)</div>
+<div style="font-size: 0.85rem; color: #475569;">Metadata structure containing permissions, timestamps, size, and data block pointers. Both files and directories have inodes.</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #22c55e;">
+<div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Regular File (Leaf)</div>
+<div style="font-size: 0.85rem; color: #475569;">Inode points to data blocks containing file content. No child references. Size is actual content size.</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #f59e0b;">
+<div style="font-weight: 600; color: #92400e; margin-bottom: 0.5rem;">Directory (Composite)</div>
+<div style="font-size: 0.85rem; color: #475569;">Inode points to data blocks containing directory entries (name -> inode mappings). Children are inode references, not embedded data.</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem; border-left: 3px solid #8b5cf6;">
+<div style="font-weight: 600; color: #6d28d9; margin-bottom: 0.5rem;">Symbolic Link (Special Leaf)</div>
+<div style="font-size: 0.85rem; color: #475569;">Inode contains path string. Creates DAG-like structure. Must handle in traversal to avoid infinite loops.</div>
+</div>
+</div>
 </div>
 
 ### Complete File System Implementation
@@ -1335,25 +1335,25 @@ class DistributedFileSystem:
 React's component model is a sophisticated Composite implementation:
 
 <div style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #93c5fd;">
-  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem; font-size: 1.1rem;">React Element Structure</div>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #3b82f6; margin-bottom: 0.5rem;">Element (Component)</div>
-      <div style="font-size: 0.85rem; color: #475569; font-family: monospace;">{ type, props, key, ref }</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #22c55e; margin-bottom: 0.5rem;">DOM Element (Leaf)</div>
-      <div style="font-size: 0.85rem; color: #475569; font-family: monospace;">type: 'div' | 'span' | ...</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #f59e0b; margin-bottom: 0.5rem;">Component (Composite)</div>
-      <div style="font-size: 0.85rem; color: #475569; font-family: monospace;">type: Function | Class</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 0.5rem;">Fragment (Virtual Composite)</div>
-      <div style="font-size: 0.85rem; color: #475569; font-family: monospace;">type: Symbol(react.fragment)</div>
-    </div>
-  </div>
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem; font-size: 1.1rem;">React Element Structure</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #3b82f6; margin-bottom: 0.5rem;">Element (Component)</div>
+<div style="font-size: 0.85rem; color: #475569; font-family: monospace;">{ type, props, key, ref }</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #22c55e; margin-bottom: 0.5rem;">DOM Element (Leaf)</div>
+<div style="font-size: 0.85rem; color: #475569; font-family: monospace;">type: 'div' | 'span' | ...</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #f59e0b; margin-bottom: 0.5rem;">Component (Composite)</div>
+<div style="font-size: 0.85rem; color: #475569; font-family: monospace;">type: Function | Class</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #8b5cf6; margin-bottom: 0.5rem;">Fragment (Virtual Composite)</div>
+<div style="font-size: 0.85rem; color: #475569; font-family: monospace;">type: Symbol(react.fragment)</div>
+</div>
+</div>
 </div>
 
 ### UI Component Implementation
@@ -2055,29 +2055,29 @@ class ConstrainedComponent(UIComponent):
 ### Operation Propagation Patterns
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
-  <div style="font-weight: 700; color: #166534; margin-bottom: 1rem; font-size: 1.1rem;">Types of Recursive Operations</div>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Aggregation</div>
-      <div style="font-size: 0.85rem; color: #475569;">Combine child results: <code>sum()</code>, <code>max()</code>, <code>all()</code></div>
-      <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: getSize(), getTotalPrice(), countNodes()</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Collection</div>
-      <div style="font-size: 0.85rem; color: #475569;">Gather results from subtree: <code>flatten</code>, <code>filter</code></div>
-      <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: search(), findAll(), getLeaves()</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Propagation</div>
-      <div style="font-size: 0.85rem; color: #475569;">Apply action to all descendants</div>
-      <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: render(), delete(), setEnabled()</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem;">
-      <div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Transformation</div>
-      <div style="font-size: 0.85rem; color: #475569;">Create new tree from existing: <code>map</code>, <code>clone</code></div>
-      <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: deepClone(), transform(), serialize()</div>
-    </div>
-  </div>
+<div style="font-weight: 700; color: #166534; margin-bottom: 1rem; font-size: 1.1rem;">Types of Recursive Operations</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Aggregation</div>
+<div style="font-size: 0.85rem; color: #475569;">Combine child results: <code>sum()</code>, <code>max()</code>, <code>all()</code></div>
+<div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: getSize(), getTotalPrice(), countNodes()</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Collection</div>
+<div style="font-size: 0.85rem; color: #475569;">Gather results from subtree: <code>flatten</code>, <code>filter</code></div>
+<div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: search(), findAll(), getLeaves()</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Propagation</div>
+<div style="font-size: 0.85rem; color: #475569;">Apply action to all descendants</div>
+<div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: render(), delete(), setEnabled()</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem;">
+<div style="font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Transformation</div>
+<div style="font-size: 0.85rem; color: #475569;">Create new tree from existing: <code>map</code>, <code>clone</code></div>
+<div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Examples: deepClone(), transform(), serialize()</div>
+</div>
+</div>
 </div>
 
 ### Stack Overflow Prevention
@@ -2992,37 +2992,37 @@ func main() {
 ## Design Trade-offs Summary
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fcd34d;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 1rem; font-size: 1.1rem;">Critical Design Decisions</div>
-  <div style="display: grid; gap: 1rem;">
-    <div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-      <div>
-        <div style="font-weight: 600; color: #b45309;">Transparency vs Safety</div>
-        <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>Transparency</strong>: All operations in Component interface. Maximum polymorphism, runtime errors possible.</div>
-      </div>
-      <div style="font-size: 0.85rem; color: #78350f;"><strong>Safety</strong>: Child operations only in Composite. Type-safe, requires casting/checking.</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-      <div>
-        <div style="font-weight: 600; color: #b45309;">Parent References</div>
-        <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>With</strong>: O(d) path computation, upward traversal, complex invariants.</div>
-      </div>
-      <div style="font-size: 0.85rem; color: #78350f;"><strong>Without</strong>: Simpler model, better GC, immutable-friendly, O(n) path finding.</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-      <div>
-        <div style="font-weight: 600; color: #b45309;">Caching Strategy</div>
-        <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>No cache</strong>: Simple, always consistent, O(n) queries.</div>
-      </div>
-      <div style="font-size: 0.85rem; color: #78350f;"><strong>With cache</strong>: O(1) queries, O(d) invalidation, memory overhead.</div>
-    </div>
-    <div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-      <div>
-        <div style="font-weight: 600; color: #b45309;">Collection Type</div>
-        <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>List</strong>: Ordered, O(1) append, O(n) remove/lookup.</div>
-      </div>
-      <div style="font-size: 0.85rem; color: #78350f;"><strong>Map</strong>: O(1) lookup by key, no inherent order.</div>
-    </div>
-  </div>
+<div style="font-weight: 700; color: #92400e; margin-bottom: 1rem; font-size: 1.1rem;">Critical Design Decisions</div>
+<div style="display: grid; gap: 1rem;">
+<div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div>
+  <div style="font-weight: 600; color: #b45309;">Transparency vs Safety</div>
+  <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>Transparency</strong>: All operations in Component interface. Maximum polymorphism, runtime errors possible.</div>
+</div>
+<div style="font-size: 0.85rem; color: #78350f;"><strong>Safety</strong>: Child operations only in Composite. Type-safe, requires casting/checking.</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div>
+  <div style="font-weight: 600; color: #b45309;">Parent References</div>
+  <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>With</strong>: O(d) path computation, upward traversal, complex invariants.</div>
+</div>
+<div style="font-size: 0.85rem; color: #78350f;"><strong>Without</strong>: Simpler model, better GC, immutable-friendly, O(n) path finding.</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div>
+  <div style="font-weight: 600; color: #b45309;">Caching Strategy</div>
+  <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>No cache</strong>: Simple, always consistent, O(n) queries.</div>
+</div>
+<div style="font-size: 0.85rem; color: #78350f;"><strong>With cache</strong>: O(1) queries, O(d) invalidation, memory overhead.</div>
+</div>
+<div style="background: white; border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div>
+  <div style="font-weight: 600; color: #b45309;">Collection Type</div>
+  <div style="font-size: 0.85rem; color: #78350f; margin-top: 0.25rem;"><strong>List</strong>: Ordered, O(1) append, O(n) remove/lookup.</div>
+</div>
+<div style="font-size: 0.85rem; color: #78350f;"><strong>Map</strong>: O(1) lookup by key, no inherent order.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -3041,22 +3041,22 @@ func main() {
 ## Quick Reference
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #bbf7d0;">
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-    <div>
-      <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Intent</div>
-      <div style="font-size: 0.9rem; color: #15803d;">Compose objects into tree structures representing part-whole hierarchies with uniform treatment</div>
-    </div>
-    <div>
-      <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Participants</div>
-      <div style="font-size: 0.9rem; color: #15803d;">Component (interface), Leaf (no children), Composite (has children), Client (uses interface)</div>
-    </div>
-    <div>
-      <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Key Methods</div>
-      <div style="font-size: 0.9rem; color: #15803d; font-family: monospace;">operation(), add(), remove(), getChild(), getParent()</div>
-    </div>
-    <div>
-      <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Complexity</div>
-      <div style="font-size: 0.9rem; color: #15803d;">Traversal: O(n), Add/Remove: O(1), Path: O(depth)</div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+<div>
+  <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Intent</div>
+  <div style="font-size: 0.9rem; color: #15803d;">Compose objects into tree structures representing part-whole hierarchies with uniform treatment</div>
+</div>
+<div>
+  <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Participants</div>
+  <div style="font-size: 0.9rem; color: #15803d;">Component (interface), Leaf (no children), Composite (has children), Client (uses interface)</div>
+</div>
+<div>
+  <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Key Methods</div>
+  <div style="font-size: 0.9rem; color: #15803d; font-family: monospace;">operation(), add(), remove(), getChild(), getParent()</div>
+</div>
+<div>
+  <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Complexity</div>
+  <div style="font-size: 0.9rem; color: #15803d;">Traversal: O(n), Add/Remove: O(1), Path: O(depth)</div>
+</div>
+</div>
 </div>

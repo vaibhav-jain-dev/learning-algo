@@ -27,60 +27,60 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <!-- CDN Layer -->
 <div style="background: linear-gradient(135deg, #ff4500 0%, #dc2626 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-  <strong>CloudFront (CDN)</strong>
+<strong>CloudFront (CDN)</strong>
 </div>
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
 <!-- Client Apps -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>Web App</strong><br><span style="font-size: 11px;">(Next.js)</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>Mobile API</strong><br><span style="font-size: 11px;">Gateway</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>OAuth</strong><br><span style="font-size: 11px;">Server</span>
-  </div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Web App</strong><br><span style="font-size: 11px;">(Next.js)</span>
+</div>
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Mobile API</strong><br><span style="font-size: 11px;">Gateway</span>
+</div>
+<div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>OAuth</strong><br><span style="font-size: 11px;">Server</span>
+</div>
 </div>
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
 <!-- API Gateway -->
 <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-  <strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth</span>
+<strong>API Gateway</strong><br><span style="font-size: 12px;">Rate Limiting, Auth</span>
 </div>
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
 <!-- Services Layer -->
 <div style="background: #f1f5f9; border: 2px solid #3b82f6; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
-  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Post</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Comment</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Vote</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-  </div>
-  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Subreddit</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">User</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-    <div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Feed</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
-  </div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Post</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Comment</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #1d4ed8;">Vote</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Subreddit</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">User</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+<div style="background: #dcfce7; border: 1px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center;"><strong style="color: #16a34a;">Feed</strong><br><span style="font-size: 11px; color: #475569;">Service</span></div>
+</div>
 </div>
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
 <!-- Data Layer -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>PostgreSQL</strong><br><span style="font-size: 11px;">(Data)</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>Redis</strong><br><span style="font-size: 11px;">(Cache)</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>S3</strong><br><span style="font-size: 11px;">(Media)</span>
-  </div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>PostgreSQL</strong><br><span style="font-size: 11px;">(Data)</span>
+</div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Redis</strong><br><span style="font-size: 11px;">(Cache)</span>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>S3</strong><br><span style="font-size: 11px;">(Media)</span>
+</div>
 </div>
 
 </div>
@@ -108,44 +108,44 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <!-- Monolith Container -->
 <div style="background: #f1f5f9; border: 2px solid #ff4500; border-radius: 16px; padding: 20px; width: 100%; max-width: 600px;">
-  <h4 style="text-align: center; color: #dc2626; margin: 0 0 16px 0;">REDDIT MONOLITH</h4>
+<h4 style="text-align: center; color: #dc2626; margin: 0 0 16px 0;">REDDIT MONOLITH</h4>
 
-  <!-- Modules Layer -->
-  <div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
-    <div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 12px;">MODULES</div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Subreddits</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Posts</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Comments</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Votes</strong></div>
-    </div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Users</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Feeds</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Search</strong></div>
-      <div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Mods</strong></div>
-    </div>
-  </div>
+<!-- Modules Layer -->
+<div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+<div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 12px;">MODULES</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Subreddits</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Posts</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Comments</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Votes</strong></div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Users</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Feeds</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Search</strong></div>
+<div style="background: white; border-radius: 6px; padding: 6px 12px; text-align: center;"><strong style="color: #d97706; font-size: 12px;">Mods</strong></div>
+</div>
+</div>
 
-  <!-- Data Access Layer -->
-  <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
-    <strong style="color: #7c3aed;">DATA ACCESS</strong>
-  </div>
+<!-- Data Access Layer -->
+<div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 12px; text-align: center;">
+<strong style="color: #7c3aed;">DATA ACCESS</strong>
+</div>
 </div>
 
 <div style="color: #ff4500; font-size: 24px;">↓</div>
 
 <!-- Databases -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>PostgreSQL</strong>
-  </div>
-  <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>Redis</strong>
-  </div>
-  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>S3</strong>
-  </div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>PostgreSQL</strong>
+</div>
+<div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>Redis</strong>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>S3</strong>
+</div>
 </div>
 
 </div>

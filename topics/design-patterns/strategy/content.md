@@ -10,10 +10,10 @@ The Strategy pattern defines a family of algorithms, encapsulates each one in a 
 **Gang of Four Classification:** Object Behavioral
 
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; color: white;">
-  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Core Insight</div>
-  <div style="font-size: 0.95rem; line-height: 1.6;">
+<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Core Insight</div>
+<div style="font-size: 0.95rem; line-height: 1.6;">
     Strategy pattern transforms "what algorithm to use" from a compile-time decision into a runtime decision. The key mental model: instead of the context containing conditional logic to select behavior, you inject the behavior itself as a dependency.
-  </div>
+</div>
 </div>
 
 ---
@@ -25,40 +25,40 @@ The Strategy pattern defines a family of algorithms, encapsulates each one in a 
 Strategy pattern operates on three foundational components with specific responsibilities:
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-      <div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
-      <div style="flex: 1;">
-        <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.25rem;">Context (The Host)</div>
-        <div style="color: #475569; font-size: 0.9rem;">Maintains a reference to a Strategy object. Delegates algorithm execution to the current strategy. Does NOT know which concrete strategy it holds - only that it conforms to the interface.</div>
-      </div>
-    </div>
-    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-      <div style="background: #22c55e; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
-      <div style="flex: 1;">
-        <div style="font-weight: 700; color: #166534; margin-bottom: 0.25rem;">Strategy Interface (The Contract)</div>
-        <div style="color: #475569; font-size: 0.9rem;">Declares the method(s) that all concrete strategies must implement. This is the polymorphic boundary that enables substitutability. Can be an interface, abstract class, or in dynamic languages, a duck-typed protocol.</div>
-      </div>
-    </div>
-    <div style="display: flex; gap: 1rem; align-items: flex-start;">
-      <div style="background: #f59e0b; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
-      <div style="flex: 1;">
-        <div style="font-weight: 700; color: #92400e; margin-bottom: 0.25rem;">Concrete Strategies (The Implementations)</div>
-        <div style="color: #475569; font-size: 0.9rem;">Each implements the strategy interface with a specific algorithm. They are completely independent of each other and unaware of the context's internal state unless explicitly passed.</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; flex-direction: column; gap: 1.5rem;">
+<div style="display: flex; gap: 1rem; align-items: flex-start;">
+<div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+<div style="flex: 1;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.25rem;">Context (The Host)</div>
+<div style="color: #475569; font-size: 0.9rem;">Maintains a reference to a Strategy object. Delegates algorithm execution to the current strategy. Does NOT know which concrete strategy it holds - only that it conforms to the interface.</div>
+</div>
+</div>
+<div style="display: flex; gap: 1rem; align-items: flex-start;">
+<div style="background: #22c55e; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+<div style="flex: 1;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.25rem;">Strategy Interface (The Contract)</div>
+<div style="color: #475569; font-size: 0.9rem;">Declares the method(s) that all concrete strategies must implement. This is the polymorphic boundary that enables substitutability. Can be an interface, abstract class, or in dynamic languages, a duck-typed protocol.</div>
+</div>
+</div>
+<div style="display: flex; gap: 1rem; align-items: flex-start;">
+<div style="background: #f59e0b; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+<div style="flex: 1;">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.25rem;">Concrete Strategies (The Implementations)</div>
+<div style="color: #475569; font-size: 0.9rem;">Each implements the strategy interface with a specific algorithm. They are completely independent of each other and unaware of the context's internal state unless explicitly passed.</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Memory and Object Lifecycle Considerations
 
 <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Critical Design Decision: Stateless vs Stateful Strategies</div>
-  <div style="color: #78350f; font-size: 0.9rem; line-height: 1.6;">
-    <strong>Stateless strategies</strong> can be shared across multiple contexts (flyweight pattern), reducing memory footprint. A single PercentageDiscountStrategy(10%) instance can serve thousands of shopping carts.
-    <br/><br/>
-    <strong>Stateful strategies</strong> maintain per-execution state and require careful lifecycle management. Each context needs its own instance, and you must consider thread safety implications.
-  </div>
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Critical Design Decision: Stateless vs Stateful Strategies</div>
+<div style="color: #78350f; font-size: 0.9rem; line-height: 1.6;">
+<strong>Stateless strategies</strong> can be shared across multiple contexts (flyweight pattern), reducing memory footprint. A single PercentageDiscountStrategy(10%) instance can serve thousands of shopping carts.
+<br/><br/>
+<strong>Stateful strategies</strong> maintain per-execution state and require careful lifecycle management. Each context needs its own instance, and you must consider thread safety implications.
+</div>
 </div>
 
 **Assumption:** Most Strategy implementations assume strategies are stateless. If your strategy accumulates state between executions, you're likely conflating Strategy with [[State Pattern]](/topics/design-patterns/state) or should extract that state into explicit context parameters.
@@ -68,24 +68,24 @@ Strategy pattern operates on three foundational components with specific respons
 The context must provide strategies with the data they need. There are two fundamental approaches:
 
 <div style="display: flex; gap: 1.5rem; margin: 1.5rem 0; flex-wrap: wrap;">
-  <div style="flex: 1; min-width: 300px; background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 2px solid #3b82f6;">
-    <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Push Model (Explicit Parameters)</div>
-    <div style="font-size: 0.9rem; color: #1e40af; line-height: 1.6;">
-      <div style="margin-bottom: 0.5rem;"><code>strategy.execute(data, config)</code></div>
-      <strong>Pros:</strong> Clear dependencies, easily testable, strategies remain decoupled<br/>
-      <strong>Cons:</strong> May pass unused data, parameter lists can grow<br/>
-      <strong>Use when:</strong> Different strategies need different subsets of data
-    </div>
-  </div>
-  <div style="flex: 1; min-width: 300px; background: #dcfce7; border-radius: 12px; padding: 1.25rem; border: 2px solid #22c55e;">
-    <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Pull Model (Context Reference)</div>
-    <div style="font-size: 0.9rem; color: #166534; line-height: 1.6;">
-      <div style="margin-bottom: 0.5rem;"><code>strategy.execute(context)</code></div>
-      <strong>Pros:</strong> Strategies access exactly what they need, simpler signatures<br/>
-      <strong>Cons:</strong> Tight coupling to context interface, harder to test in isolation<br/>
-      <strong>Use when:</strong> All strategies need access to most context data
-    </div>
-  </div>
+<div style="flex: 1; min-width: 300px; background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 2px solid #3b82f6;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Push Model (Explicit Parameters)</div>
+<div style="font-size: 0.9rem; color: #1e40af; line-height: 1.6;">
+<div style="margin-bottom: 0.5rem;"><code>strategy.execute(data, config)</code></div>
+<strong>Pros:</strong> Clear dependencies, easily testable, strategies remain decoupled<br/>
+<strong>Cons:</strong> May pass unused data, parameter lists can grow<br/>
+<strong>Use when:</strong> Different strategies need different subsets of data
+</div>
+</div>
+<div style="flex: 1; min-width: 300px; background: #dcfce7; border-radius: 12px; padding: 1.25rem; border: 2px solid #22c55e;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Pull Model (Context Reference)</div>
+<div style="font-size: 0.9rem; color: #166534; line-height: 1.6;">
+<div style="margin-bottom: 0.5rem;"><code>strategy.execute(context)</code></div>
+<strong>Pros:</strong> Strategies access exactly what they need, simpler signatures<br/>
+<strong>Cons:</strong> Tight coupling to context interface, harder to test in isolation<br/>
+<strong>Use when:</strong> All strategies need access to most context data
+</div>
+</div>
 </div>
 
 **Trade-off:** The push model promotes better encapsulation and testability at the cost of potentially verbose method signatures. The pull model simplifies signatures but creates bidirectional coupling between strategy and context.
@@ -95,36 +95,36 @@ The context must provide strategies with the data they need. There are two funda
 ## Interview Deep-Dive: Internal Mechanisms
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-  <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Explain how the Strategy pattern achieves runtime algorithm selection.</div>
-  <div style="color: #0c4a6e; line-height: 1.7;">
-    <strong>Answer:</strong> The context holds a reference typed to the strategy interface, not a concrete implementation. When the context needs to execute the algorithm, it calls the interface method on whatever concrete strategy is currently assigned. Because the reference is polymorphic, the actual code executed is determined by the runtime type of the assigned strategy object, not by compile-time binding. This allows swapping algorithms by simply reassigning the strategy reference - no conditionals, no recompilation.
-  </div>
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Explain how the Strategy pattern achieves runtime algorithm selection.</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> The context holds a reference typed to the strategy interface, not a concrete implementation. When the context needs to execute the algorithm, it calls the interface method on whatever concrete strategy is currently assigned. Because the reference is polymorphic, the actual code executed is determined by the runtime type of the assigned strategy object, not by compile-time binding. This allows swapping algorithms by simply reassigning the strategy reference - no conditionals, no recompilation.
+</div>
 </div>
 
 <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-  <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: What happens at the virtual dispatch level when strategy.execute() is called?</div>
-  <div style="color: #701a75; line-height: 1.7;">
-    <strong>Answer:</strong> In languages with vtables (C++, Java, C#), calling an interface method triggers a vtable lookup. The runtime examines the object's vtable pointer, finds the function pointer for the called method, and jumps to that address. This adds one pointer indirection compared to direct function calls - typically 1-3 nanoseconds overhead.
-    <br/><br/>
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: What happens at the virtual dispatch level when strategy.execute() is called?</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> In languages with vtables (C++, Java, C#), calling an interface method triggers a vtable lookup. The runtime examines the object's vtable pointer, finds the function pointer for the called method, and jumps to that address. This adds one pointer indirection compared to direct function calls - typically 1-3 nanoseconds overhead.
+<br/><br/>
     In dynamic languages (Python, JavaScript), method resolution involves dictionary lookups on the object and its prototype chain, which is slower but still negligible for most applications. JIT compilers can often inline monomorphic call sites where only one strategy type is ever used.
-  </div>
+</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-  <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: How would you optimize Strategy pattern for a hot path called millions of times per second?</div>
-  <div style="color: #7f1d1d; line-height: 1.7;">
-    <strong>Answer:</strong> Several techniques:
-    <br/><br/>
-    <strong>1. Monomorphization:</strong> If you know strategies at compile time, use generics/templates to generate specialized code paths, eliminating virtual dispatch entirely.
-    <br/><br/>
-    <strong>2. Strategy caching:</strong> If strategy selection is based on repeating conditions, cache the selected strategy to avoid repeated selection logic.
-    <br/><br/>
-    <strong>3. Batch processing:</strong> Instead of calling strategy.execute() per item, pass batches: strategy.executeBatch(items). This amortizes the virtual call cost.
-    <br/><br/>
-    <strong>4. Branch prediction hints:</strong> If one strategy is used 95% of the time, structure code so the CPU's branch predictor can optimize for the common case.
-    <br/><br/>
-    <strong>5. Consider inlining:</strong> For truly critical paths, the Strategy pattern may be inappropriate - inline the algorithm and accept reduced flexibility.
-  </div>
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: How would you optimize Strategy pattern for a hot path called millions of times per second?</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> Several techniques:
+<br/><br/>
+<strong>1. Monomorphization:</strong> If you know strategies at compile time, use generics/templates to generate specialized code paths, eliminating virtual dispatch entirely.
+<br/><br/>
+<strong>2. Strategy caching:</strong> If strategy selection is based on repeating conditions, cache the selected strategy to avoid repeated selection logic.
+<br/><br/>
+<strong>3. Batch processing:</strong> Instead of calling strategy.execute() per item, pass batches: strategy.executeBatch(items). This amortizes the virtual call cost.
+<br/><br/>
+<strong>4. Branch prediction hints:</strong> If one strategy is used 95% of the time, structure code so the CPU's branch predictor can optimize for the common case.
+<br/><br/>
+<strong>5. Consider inlining:</strong> For truly critical paths, the Strategy pattern may be inappropriate - inline the algorithm and accept reduced flexibility.
+</div>
 </div>
 
 ---
@@ -134,31 +134,31 @@ The context must provide strategies with the data they need. There are two funda
 This comparison appears in virtually every design patterns interview. While structurally identical, the patterns differ fundamentally in intent and usage.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; font-size: 1.2rem; color: #1e293b; text-align: center; margin-bottom: 1.5rem;">Structural Identity, Semantic Difference</div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    <div style="background: #dbeafe; border-radius: 12px; padding: 1.5rem; border: 2px solid #3b82f6;">
-      <div style="font-weight: 700; color: #1e40af; font-size: 1.1rem; text-align: center; padding-bottom: 0.75rem; border-bottom: 2px solid #93c5fd; margin-bottom: 1rem;">STRATEGY</div>
-      <div style="font-size: 0.9rem; color: #1e40af; line-height: 1.8;">
-        <div style="margin-bottom: 0.75rem;"><strong>Who decides:</strong> External client chooses strategy</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Awareness:</strong> Strategies are unaware of each other</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Transitions:</strong> None - strategies don't trigger switches</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Question answered:</strong> "How should I do X?"</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Lifetime:</strong> Often set once, occasionally changed</div>
-        <div><strong>Mental model:</strong> Interchangeable algorithms</div>
-      </div>
-    </div>
-    <div style="background: #dcfce7; border-radius: 12px; padding: 1.5rem; border: 2px solid #22c55e;">
-      <div style="font-weight: 700; color: #166534; font-size: 1.1rem; text-align: center; padding-bottom: 0.75rem; border-bottom: 2px solid #86efac; margin-bottom: 1rem;">STATE</div>
-      <div style="font-size: 0.9rem; color: #166534; line-height: 1.8;">
-        <div style="margin-bottom: 0.75rem;"><strong>Who decides:</strong> Object itself or states trigger transitions</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Awareness:</strong> States often know about valid transitions</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Transitions:</strong> States can trigger state changes</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Question answered:</strong> "What can I do now?"</div>
-        <div style="margin-bottom: 0.75rem;"><strong>Lifetime:</strong> Changes frequently as object evolves</div>
-        <div><strong>Mental model:</strong> Finite state machine</div>
-      </div>
-    </div>
-  </div>
+<div style="font-weight: 700; font-size: 1.2rem; color: #1e293b; text-align: center; margin-bottom: 1.5rem;">Structural Identity, Semantic Difference</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+<div style="background: #dbeafe; border-radius: 12px; padding: 1.5rem; border: 2px solid #3b82f6;">
+<div style="font-weight: 700; color: #1e40af; font-size: 1.1rem; text-align: center; padding-bottom: 0.75rem; border-bottom: 2px solid #93c5fd; margin-bottom: 1rem;">STRATEGY</div>
+<div style="font-size: 0.9rem; color: #1e40af; line-height: 1.8;">
+<div style="margin-bottom: 0.75rem;"><strong>Who decides:</strong> External client chooses strategy</div>
+<div style="margin-bottom: 0.75rem;"><strong>Awareness:</strong> Strategies are unaware of each other</div>
+<div style="margin-bottom: 0.75rem;"><strong>Transitions:</strong> None - strategies don't trigger switches</div>
+<div style="margin-bottom: 0.75rem;"><strong>Question answered:</strong> "How should I do X?"</div>
+<div style="margin-bottom: 0.75rem;"><strong>Lifetime:</strong> Often set once, occasionally changed</div>
+<div><strong>Mental model:</strong> Interchangeable algorithms</div>
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 1.5rem; border: 2px solid #22c55e;">
+<div style="font-weight: 700; color: #166534; font-size: 1.1rem; text-align: center; padding-bottom: 0.75rem; border-bottom: 2px solid #86efac; margin-bottom: 1rem;">STATE</div>
+<div style="font-size: 0.9rem; color: #166534; line-height: 1.8;">
+<div style="margin-bottom: 0.75rem;"><strong>Who decides:</strong> Object itself or states trigger transitions</div>
+<div style="margin-bottom: 0.75rem;"><strong>Awareness:</strong> States often know about valid transitions</div>
+<div style="margin-bottom: 0.75rem;"><strong>Transitions:</strong> States can trigger state changes</div>
+<div style="margin-bottom: 0.75rem;"><strong>Question answered:</strong> "What can I do now?"</div>
+<div style="margin-bottom: 0.75rem;"><strong>Lifetime:</strong> Changes frequently as object evolves</div>
+<div><strong>Mental model:</strong> Finite state machine</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Concrete Example Comparison
@@ -194,41 +194,41 @@ order.ship()  # Paid -> Shipped (automatic transition)
 ```
 
 <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Interview Insight</div>
-  <div style="color: #78350f; font-size: 0.9rem; line-height: 1.6;">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Interview Insight</div>
+<div style="color: #78350f; font-size: 0.9rem; line-height: 1.6;">
     The key tell: if you're modeling "modes" or "algorithms" that a user/client selects, use Strategy. If you're modeling "lifecycle phases" or "conditions" that the object transitions through based on events, use [[State Pattern]](/topics/design-patterns/state).
-  </div>
+</div>
 </div>
 
 ### Interview Deep-Dive: Strategy vs State
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-  <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: When would refactoring from Strategy to State (or vice versa) be appropriate?</div>
-  <div style="color: #0c4a6e; line-height: 1.7;">
-    <strong>Answer:</strong> Refactor Strategy to State when you discover that "strategies" naturally transition to each other based on operations. For example, if a CompressionStrategy starts needing to switch from LZ4 to GZIP when data exceeds a threshold, you've discovered implicit state.
-    <br/><br/>
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: When would refactoring from Strategy to State (or vice versa) be appropriate?</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> Refactor Strategy to State when you discover that "strategies" naturally transition to each other based on operations. For example, if a CompressionStrategy starts needing to switch from LZ4 to GZIP when data exceeds a threshold, you've discovered implicit state.
+<br/><br/>
     Refactor State to Strategy when you realize states don't actually transition - they're just different modes that the client selects. If your "states" never call setState() internally, they're probably strategies.
-  </div>
+</div>
 </div>
 
 <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-  <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: Can Strategy and State patterns coexist in the same class? Give an example.</div>
-  <div style="color: #701a75; line-height: 1.7;">
-    <strong>Answer:</strong> Absolutely. Consider a video player:
-    <br/><br/>
-    <strong>State:</strong> PlayingState, PausedState, BufferingState (lifecycle transitions)
-    <br/>
-    <strong>Strategy:</strong> AudioCodecStrategy (AAC, MP3, FLAC), VideoScalingStrategy (fit, fill, crop)
-    <br/><br/>
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: Can Strategy and State patterns coexist in the same class? Give an example.</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> Absolutely. Consider a video player:
+<br/><br/>
+<strong>State:</strong> PlayingState, PausedState, BufferingState (lifecycle transitions)
+<br/>
+<strong>Strategy:</strong> AudioCodecStrategy (AAC, MP3, FLAC), VideoScalingStrategy (fit, fill, crop)
+<br/><br/>
     The player transitions through states based on user actions and network conditions. Independently, the user can select codec and scaling strategies. These are orthogonal concerns - state manages "what operations are valid now" while strategy manages "how to perform those operations."
-  </div>
+</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-  <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: How would you design a hybrid pattern where strategies can influence state transitions?</div>
-  <div style="color: #7f1d1d; line-height: 1.7;">
-    <strong>Answer:</strong> Use a result-based approach where strategy execution returns transition hints:
-    <br/><br/>
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: How would you design a hybrid pattern where strategies can influence state transitions?</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> Use a result-based approach where strategy execution returns transition hints:
+<br/><br/>
     ```python
     class StrategyResult:
         def __init__(self, value, suggested_state=None):
@@ -242,9 +242,9 @@ order.ship()  # Paid -> Shipped (automatic transition)
                 self._state = result.suggested_state
             return result.value
     ```
-    <br/>
+<br/>
     This maintains separation of concerns: strategies compute results and can suggest transitions, but the context (or its current state) decides whether to honor those suggestions. This avoids strategies directly manipulating context state while enabling strategy-influenced transitions.
-  </div>
+</div>
 </div>
 
 ---
@@ -254,25 +254,25 @@ order.ship()  # Paid -> Shipped (automatic transition)
 ### Dynamic Selection Mechanisms
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Strategy Selection Approaches</div>
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="background: #dbeafe; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #1e40af;">1. Direct Injection</div>
-      <div style="font-size: 0.9rem; color: #1e40af;">Client explicitly passes strategy. Most flexible, requires client knowledge.</div>
-    </div>
-    <div style="background: #dcfce7; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #166534;">2. Factory-Based Selection</div>
-      <div style="font-size: 0.9rem; color: #166534;">Factory examines context and returns appropriate strategy. Centralizes selection logic.</div>
-    </div>
-    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #92400e;">3. Registry/Plugin System</div>
-      <div style="font-size: 0.9rem; color: #92400e;">Strategies self-register with metadata. System matches request to registered strategies.</div>
-    </div>
-    <div style="background: #fce7f3; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #9d174d;">4. Configuration-Driven</div>
-      <div style="font-size: 0.9rem; color: #9d174d;">Strategy selected from config file, database, or feature flags. Enables runtime changes without deployment.</div>
-    </div>
-  </div>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Strategy Selection Approaches</div>
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="background: #dbeafe; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #1e40af;">1. Direct Injection</div>
+<div style="font-size: 0.9rem; color: #1e40af;">Client explicitly passes strategy. Most flexible, requires client knowledge.</div>
+</div>
+<div style="background: #dcfce7; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #166534;">2. Factory-Based Selection</div>
+<div style="font-size: 0.9rem; color: #166534;">Factory examines context and returns appropriate strategy. Centralizes selection logic.</div>
+</div>
+<div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #92400e;">3. Registry/Plugin System</div>
+<div style="font-size: 0.9rem; color: #92400e;">Strategies self-register with metadata. System matches request to registered strategies.</div>
+</div>
+<div style="background: #fce7f3; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #9d174d;">4. Configuration-Driven</div>
+<div style="font-size: 0.9rem; color: #9d174d;">Strategy selected from config file, database, or feature flags. Enables runtime changes without deployment.</div>
+</div>
+</div>
 </div>
 
 ### Strategy Registry Pattern
@@ -547,10 +547,10 @@ sorted_quick = sorter.sort(small_data)  # Forces quicksort
 ### Thread Safety in Strategy Switching
 
 <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">Critical Concurrency Consideration</div>
-  <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 0.5rem;">Critical Concurrency Consideration</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
     If the context is shared across threads and strategies can be swapped at runtime, you face a race condition: Thread A may read the strategy reference while Thread B is updating it, leading to torn reads or use of partially-constructed strategy objects.
-  </div>
+</div>
 </div>
 
 ```python
@@ -608,38 +608,38 @@ class CopyOnWriteContext:
 ### Interview Deep-Dive: Runtime Strategy Switching
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-  <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: What are the risks of changing strategies during execution?</div>
-  <div style="color: #0c4a6e; line-height: 1.7;">
-    <strong>Answer:</strong> Three main risks:
-    <br/><br/>
-    <strong>1. Inconsistent state:</strong> If an operation spans multiple strategy calls, switching mid-operation produces inconsistent results.
-    <br/><br/>
-    <strong>2. Resource leaks:</strong> If strategies hold resources (connections, file handles), switching without proper cleanup causes leaks.
-    <br/><br/>
-    <strong>3. Thread safety:</strong> Concurrent reads during a write can see torn references or partially-constructed objects.
-  </div>
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: What are the risks of changing strategies during execution?</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> Three main risks:
+<br/><br/>
+<strong>1. Inconsistent state:</strong> If an operation spans multiple strategy calls, switching mid-operation produces inconsistent results.
+<br/><br/>
+<strong>2. Resource leaks:</strong> If strategies hold resources (connections, file handles), switching without proper cleanup causes leaks.
+<br/><br/>
+<strong>3. Thread safety:</strong> Concurrent reads during a write can see torn references or partially-constructed objects.
+</div>
 </div>
 
 <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-  <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How would you implement strategy hot-reloading from a configuration file?</div>
-  <div style="color: #701a75; line-height: 1.7;">
-    <strong>Answer:</strong> Use a file watcher combined with a strategy factory:
-    <br/><br/>
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How would you implement strategy hot-reloading from a configuration file?</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> Use a file watcher combined with a strategy factory:
+<br/><br/>
     1. Watch config file for changes (inotify on Linux, FSEvents on macOS)
-    <br/>2. On change, parse new configuration
-    <br/>3. Use factory to instantiate new strategy from config
-    <br/>4. Atomically swap the strategy reference
-    <br/>5. If old strategy needs cleanup, do it after swap (not before)
-    <br/><br/>
+<br/>2. On change, parse new configuration
+<br/>3. Use factory to instantiate new strategy from config
+<br/>4. Atomically swap the strategy reference
+<br/>5. If old strategy needs cleanup, do it after swap (not before)
+<br/><br/>
     Key consideration: validate new configuration before swapping. If validation fails, keep the old strategy and log the error. Never leave the system without a valid strategy.
-  </div>
+</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-  <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a strategy versioning system that supports gradual rollouts and instant rollbacks.</div>
-  <div style="color: #7f1d1d; line-height: 1.7;">
-    <strong>Answer:</strong> Implement a versioned strategy registry with traffic splitting:
-    <br/><br/>
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a strategy versioning system that supports gradual rollouts and instant rollbacks.</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> Implement a versioned strategy registry with traffic splitting:
+<br/><br/>
     ```python
     class VersionedStrategyManager:
         def __init__(self):
@@ -681,9 +681,9 @@ class CopyOnWriteContext:
                     return self._versions[version]
             return self._versions[self._default_version]
     ```
-    <br/>
+<br/>
     This enables canary deployments, A/B testing, and instant rollback without deployment. The deterministic bucketing ensures consistent user experience across requests.
-  </div>
+</div>
 </div>
 
 ---
@@ -864,45 +864,45 @@ weekday_discount = conditional_strategy(
 ### When to Use Classes vs Functions
 
 <div style="display: flex; gap: 1.5rem; margin: 1.5rem 0; flex-wrap: wrap;">
-  <div style="flex: 1; min-width: 300px; background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 2px solid #3b82f6;">
-    <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Prefer Classes When:</div>
-    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #1e40af; line-height: 1.6;">
-      <li>Strategies need multiple methods</li>
-      <li>Strategies require shared state or resources</li>
-      <li>You need metadata (name, description, version)</li>
-      <li>Strategies are loaded dynamically (plugins)</li>
-      <li>Complex initialization or lifecycle management</li>
-      <li>IDE support for interface implementation</li>
-    </ul>
-  </div>
-  <div style="flex: 1; min-width: 300px; background: #dcfce7; border-radius: 12px; padding: 1.25rem; border: 2px solid #22c55e;">
-    <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Prefer Functions When:</div>
-    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #166534; line-height: 1.6;">
-      <li>Single-method strategies</li>
-      <li>Stateless algorithms</li>
-      <li>Heavy use of composition (map, filter, reduce)</li>
-      <li>Functional programming paradigm</li>
-      <li>Closures can capture all needed state</li>
-      <li>Simpler testing (no mocking needed)</li>
-    </ul>
-  </div>
+<div style="flex: 1; min-width: 300px; background: #dbeafe; border-radius: 12px; padding: 1.25rem; border: 2px solid #3b82f6;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Prefer Classes When:</div>
+<ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #1e40af; line-height: 1.6;">
+<li>Strategies need multiple methods</li>
+<li>Strategies require shared state or resources</li>
+<li>You need metadata (name, description, version)</li>
+<li>Strategies are loaded dynamically (plugins)</li>
+<li>Complex initialization or lifecycle management</li>
+<li>IDE support for interface implementation</li>
+</ul>
+</div>
+<div style="flex: 1; min-width: 300px; background: #dcfce7; border-radius: 12px; padding: 1.25rem; border: 2px solid #22c55e;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Prefer Functions When:</div>
+<ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: #166534; line-height: 1.6;">
+<li>Single-method strategies</li>
+<li>Stateless algorithms</li>
+<li>Heavy use of composition (map, filter, reduce)</li>
+<li>Functional programming paradigm</li>
+<li>Closures can capture all needed state</li>
+<li>Simpler testing (no mocking needed)</li>
+</ul>
+</div>
 </div>
 
 ### Interview Deep-Dive: Functional Alternatives
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-  <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Are lambdas and anonymous functions a valid implementation of Strategy pattern?</div>
-  <div style="color: #0c4a6e; line-height: 1.7;">
-    <strong>Answer:</strong> Yes. The Gang of Four Strategy pattern predates widespread first-class function support, but the essence is "encapsulate algorithm and make it interchangeable." A lambda <code>(x, ctx) => x * 0.9</code> for a 10% discount is a perfectly valid strategy. The pattern is about the concept of swappable behavior, not necessarily about classes and interfaces.
-  </div>
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Are lambdas and anonymous functions a valid implementation of Strategy pattern?</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> Yes. The Gang of Four Strategy pattern predates widespread first-class function support, but the essence is "encapsulate algorithm and make it interchangeable." A lambda <code>(x, ctx) => x * 0.9</code> for a 10% discount is a perfectly valid strategy. The pattern is about the concept of swappable behavior, not necessarily about classes and interfaces.
+</div>
 </div>
 
 <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-  <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How do you handle strategy metadata (name, description) in a functional approach?</div>
-  <div style="color: #701a75; line-height: 1.7;">
-    <strong>Answer:</strong> Several approaches:
-    <br/><br/>
-    <strong>1. Named tuples/dataclasses:</strong> Bundle function with metadata
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How do you handle strategy metadata (name, description) in a functional approach?</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> Several approaches:
+<br/><br/>
+<strong>1. Named tuples/dataclasses:</strong> Bundle function with metadata
     ```python
     @dataclass
     class Strategy:
@@ -910,27 +910,27 @@ weekday_discount = conditional_strategy(
         description: str
         execute: Callable
     ```
-    <br/>
-    <strong>2. Function attributes:</strong> Python allows setting attributes on functions
+<br/>
+<strong>2. Function attributes:</strong> Python allows setting attributes on functions
     ```python
     def my_strategy(x, ctx): ...
     my_strategy.name = "My Strategy"
     my_strategy.description = "Does something"
     ```
-    <br/>
-    <strong>3. Decorator pattern:</strong> Wrap functions with metadata
+<br/>
+<strong>3. Decorator pattern:</strong> Wrap functions with metadata
     ```python
     @strategy(name="Ten Percent", description="10% off")
     def ten_percent(x, ctx): ...
     ```
-  </div>
+</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-  <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: How would you implement a type-safe strategy pattern in TypeScript that supports both class and function strategies?</div>
-  <div style="color: #7f1d1d; line-height: 1.7;">
-    <strong>Answer:</strong> Use a union type that accepts both:
-    <br/><br/>
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: How would you implement a type-safe strategy pattern in TypeScript that supports both class and function strategies?</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> Use a union type that accepts both:
+<br/><br/>
     ```typescript
     // Strategy can be either a function or an object with execute method
     type StrategyFunction<T, R> = (input: T, context: Context) => R;
@@ -961,9 +961,9 @@ weekday_discount = conditional_strategy(
         }
     }
     ```
-    <br/>
+<br/>
     This provides flexibility while maintaining type safety. The context handles normalization, so clients can use whichever form is most convenient.
-  </div>
+</div>
 </div>
 
 ---
@@ -1530,19 +1530,19 @@ print(f"Net amount: ${result.net_amount}")
 ### Interview Deep-Dive: Payment Processing
 
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #0ea5e9;">
-  <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Why is idempotency important in payment strategies?</div>
-  <div style="color: #0c4a6e; line-height: 1.7;">
-    <strong>Answer:</strong> Network failures can cause clients to retry payment requests. Without idempotency, a retry could charge the customer twice. The idempotency key ensures that even if the same request is sent multiple times, the payment is only processed once.
-    <br/><br/>
+<div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 1: Why is idempotency important in payment strategies?</div>
+<div style="color: #0c4a6e; line-height: 1.7;">
+<strong>Answer:</strong> Network failures can cause clients to retry payment requests. Without idempotency, a retry could charge the customer twice. The idempotency key ensures that even if the same request is sent multiple times, the payment is only processed once.
+<br/><br/>
     Implementation: store the idempotency key with the transaction result. On subsequent requests with the same key, return the stored result instead of processing again.
-  </div>
+</div>
 </div>
 
 <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d946ef;">
-  <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How would you handle payment method failover (e.g., if credit card fails, try ACH)?</div>
-  <div style="color: #701a75; line-height: 1.7;">
-    <strong>Answer:</strong> Implement a fallback chain strategy:
-    <br/><br/>
+<div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 2: How would you handle payment method failover (e.g., if credit card fails, try ACH)?</div>
+<div style="color: #701a75; line-height: 1.7;">
+<strong>Answer:</strong> Implement a fallback chain strategy:
+<br/><br/>
     ```python
     class FallbackPaymentStrategy(PaymentStrategy):
         def __init__(self, primary: PaymentStrategy,
@@ -1568,16 +1568,16 @@ print(f"Net amount: ${result.net_amount}")
 
             return result  # Return last failure
     ```
-    <br/>
+<br/>
     Key consideration: you need details for each fallback method. Either collect them upfront or prompt the user when fallback triggers.
-  </div>
+</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #f87171;">
-  <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a payment system that handles currency conversion with strategies for different conversion providers.</div>
-  <div style="color: #7f1d1d; line-height: 1.7;">
-    <strong>Answer:</strong> Layer two strategy patterns - one for currency conversion, one for payment processing:
-    <br/><br/>
+<div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Level 3: Design a payment system that handles currency conversion with strategies for different conversion providers.</div>
+<div style="color: #7f1d1d; line-height: 1.7;">
+<strong>Answer:</strong> Layer two strategy patterns - one for currency conversion, one for payment processing:
+<br/><br/>
     ```python
     class CurrencyConversionStrategy(ABC):
         @abstractmethod
@@ -1618,9 +1618,9 @@ print(f"Net amount: ${result.net_amount}")
             return self._payments[payment_method].process(
                 request, details)
     ```
-    <br/>
+<br/>
     The conversion strategy can swap between providers (XE, Wise, bank rates) based on amount, currency pair, or time of day. This separation lets you optimize conversion rates independently of payment processing.
-  </div>
+</div>
 </div>
 
 ---
@@ -1628,68 +1628,68 @@ print(f"Net amount: ${result.net_amount}")
 ## Design Choices and Trade-offs
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; font-size: 1.2rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Key Design Decisions</div>
+<div style="font-weight: 700; font-size: 1.2rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Key Design Decisions</div>
 
-  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-    <div style="background: #dbeafe; border-radius: 12px; padding: 1.25rem;">
-      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.5rem;">Interface Granularity</div>
-      <div style="font-size: 0.9rem; color: #1e40af; line-height: 1.6;">
-        <strong>Single method:</strong> Simple, focused strategies (SRP). Risk: proliferation of strategy interfaces.
-        <br/>
-        <strong>Multiple methods:</strong> Related operations grouped together. Risk: strategies may not need all methods.
-        <br/>
-        <strong>Recommendation:</strong> Start with single-method interfaces. Combine only when methods are always used together.
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 1.5rem;">
+<div style="background: #dbeafe; border-radius: 12px; padding: 1.25rem;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.5rem;">Interface Granularity</div>
+<div style="font-size: 0.9rem; color: #1e40af; line-height: 1.6;">
+<strong>Single method:</strong> Simple, focused strategies (SRP). Risk: proliferation of strategy interfaces.
+<br/>
+<strong>Multiple methods:</strong> Related operations grouped together. Risk: strategies may not need all methods.
+<br/>
+<strong>Recommendation:</strong> Start with single-method interfaces. Combine only when methods are always used together.
+</div>
+</div>
 
-    <div style="background: #dcfce7; border-radius: 12px; padding: 1.25rem;">
-      <div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Constructor vs Setter Injection</div>
-      <div style="font-size: 0.9rem; color: #166534; line-height: 1.6;">
-        <strong>Constructor:</strong> Strategy is required, immutable after construction. Guarantees valid state.
-        <br/>
-        <strong>Setter:</strong> Strategy can be changed at runtime. Requires null checks or default strategy.
-        <br/>
-        <strong>Recommendation:</strong> Use constructor for mandatory strategies, setter for optional/changeable ones.
-      </div>
-    </div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 1.25rem;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.5rem;">Constructor vs Setter Injection</div>
+<div style="font-size: 0.9rem; color: #166534; line-height: 1.6;">
+<strong>Constructor:</strong> Strategy is required, immutable after construction. Guarantees valid state.
+<br/>
+<strong>Setter:</strong> Strategy can be changed at runtime. Requires null checks or default strategy.
+<br/>
+<strong>Recommendation:</strong> Use constructor for mandatory strategies, setter for optional/changeable ones.
+</div>
+</div>
 
-    <div style="background: #fef3c7; border-radius: 12px; padding: 1.25rem;">
-      <div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Strategy Lifecycle</div>
-      <div style="font-size: 0.9rem; color: #92400e; line-height: 1.6;">
-        <strong>Singleton strategies:</strong> Shared across contexts, must be stateless, memory efficient.
-        <br/>
-        <strong>Per-context strategies:</strong> Can maintain state, more memory overhead, simpler reasoning.
-        <br/>
-        <strong>Recommendation:</strong> Default to singletons. Use per-context only when state is truly needed.
-      </div>
-    </div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 1.25rem;">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.5rem;">Strategy Lifecycle</div>
+<div style="font-size: 0.9rem; color: #92400e; line-height: 1.6;">
+<strong>Singleton strategies:</strong> Shared across contexts, must be stateless, memory efficient.
+<br/>
+<strong>Per-context strategies:</strong> Can maintain state, more memory overhead, simpler reasoning.
+<br/>
+<strong>Recommendation:</strong> Default to singletons. Use per-context only when state is truly needed.
+</div>
+</div>
 
-    <div style="background: #fce7f3; border-radius: 12px; padding: 1.25rem;">
-      <div style="font-weight: 700; color: #9d174d; margin-bottom: 0.5rem;">Error Handling</div>
-      <div style="font-size: 0.9rem; color: #9d174d; line-height: 1.6;">
-        <strong>Exceptions:</strong> Natural error propagation, but requires try-catch everywhere.
-        <br/>
-        <strong>Result objects:</strong> Explicit error handling, self-documenting, enables pattern matching.
-        <br/>
-        <strong>Recommendation:</strong> Result objects for expected failures (validation), exceptions for unexpected errors.
-      </div>
-    </div>
-  </div>
+<div style="background: #fce7f3; border-radius: 12px; padding: 1.25rem;">
+<div style="font-weight: 700; color: #9d174d; margin-bottom: 0.5rem;">Error Handling</div>
+<div style="font-size: 0.9rem; color: #9d174d; line-height: 1.6;">
+<strong>Exceptions:</strong> Natural error propagation, but requires try-catch everywhere.
+<br/>
+<strong>Result objects:</strong> Explicit error handling, self-documenting, enables pattern matching.
+<br/>
+<strong>Recommendation:</strong> Result objects for expected failures (validation), exceptions for unexpected errors.
+</div>
+</div>
+</div>
 </div>
 
 ### Assumptions and Invariants
 
 <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;">
-  <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">Common Assumptions (Document These!)</div>
-  <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.8;">
-    <strong>1. Strategies are interchangeable:</strong> Any strategy should be substitutable for any other without breaking the context. Violated if strategies have different preconditions.
-    <br/>
-    <strong>2. Strategies are side-effect free:</strong> Calling a strategy shouldn't change global state. Violated by strategies that log, cache, or modify shared resources.
-    <br/>
-    <strong>3. Strategy selection is stable:</strong> Once selected, the strategy doesn't need to change mid-operation. Violated by long-running operations that should adapt.
-    <br/>
-    <strong>4. Context provides complete information:</strong> Strategies receive everything they need. Violated when strategies need to fetch additional data.
-  </div>
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">Common Assumptions (Document These!)</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.8;">
+<strong>1. Strategies are interchangeable:</strong> Any strategy should be substitutable for any other without breaking the context. Violated if strategies have different preconditions.
+<br/>
+<strong>2. Strategies are side-effect free:</strong> Calling a strategy shouldn't change global state. Violated by strategies that log, cache, or modify shared resources.
+<br/>
+<strong>3. Strategy selection is stable:</strong> Once selected, the strategy doesn't need to change mid-operation. Violated by long-running operations that should adapt.
+<br/>
+<strong>4. Context provides complete information:</strong> Strategies receive everything they need. Violated when strategies need to fetch additional data.
+</div>
 </div>
 
 ---
@@ -1697,52 +1697,52 @@ print(f"Net amount: ${result.net_amount}")
 ## Common Anti-Patterns and Solutions
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fecaca;">
-  <div style="color: #991b1b; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Anti-Patterns to Avoid</div>
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem;">Anti-Patterns to Avoid</div>
 
-  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">1. The God Strategy</div>
-    <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-      <strong>Problem:</strong> Strategy interface with 10+ methods because "they're all related."
-      <br/>
-      <strong>Solution:</strong> Split into focused interfaces. Use [[Interface Segregation]](/topics/solid/interface-segregation). A strategy should do one thing well.
-    </div>
-  </div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">1. The God Strategy</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
+<strong>Problem:</strong> Strategy interface with 10+ methods because "they're all related."
+<br/>
+<strong>Solution:</strong> Split into focused interfaces. Use [[Interface Segregation]](/topics/solid/interface-segregation). A strategy should do one thing well.
+</div>
+</div>
 
-  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">2. Context-Dependent Strategies</div>
-    <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-      <strong>Problem:</strong> Strategies call methods on context or access context's private state.
-      <br/>
-      <strong>Solution:</strong> Pass required data explicitly. Strategies should be testable in isolation without a real context.
-    </div>
-  </div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">2. Context-Dependent Strategies</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
+<strong>Problem:</strong> Strategies call methods on context or access context's private state.
+<br/>
+<strong>Solution:</strong> Pass required data explicitly. Strategies should be testable in isolation without a real context.
+</div>
+</div>
 
-  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">3. Strategy Selection Spaghetti</div>
-    <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-      <strong>Problem:</strong> Complex if-else chains in client code to select strategies.
-      <br/>
-      <strong>Solution:</strong> Extract selection logic into a factory or registry. Selection criteria become explicit and testable.
-    </div>
-  </div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">3. Strategy Selection Spaghetti</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
+<strong>Problem:</strong> Complex if-else chains in client code to select strategies.
+<br/>
+<strong>Solution:</strong> Extract selection logic into a factory or registry. Selection criteria become explicit and testable.
+</div>
+</div>
 
-  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">4. Leaky Abstractions</div>
-    <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-      <strong>Problem:</strong> Client code checks strategy type to handle special cases: <code>if isinstance(strategy, FastStrategy)</code>
-      <br/>
-      <strong>Solution:</strong> Add methods to interface for capability queries, or use [[Visitor Pattern]](/topics/design-patterns/visitor) for type-specific behavior.
-    </div>
-  </div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">4. Leaky Abstractions</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
+<strong>Problem:</strong> Client code checks strategy type to handle special cases: <code>if isinstance(strategy, FastStrategy)</code>
+<br/>
+<strong>Solution:</strong> Add methods to interface for capability queries, or use [[Visitor Pattern]](/topics/design-patterns/visitor) for type-specific behavior.
+</div>
+</div>
 
-  <div>
-    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">5. Premature Strategy-fication</div>
-    <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
-      <strong>Problem:</strong> Creating strategy infrastructure for a single algorithm "for future flexibility."
-      <br/>
-      <strong>Solution:</strong> YAGNI. Start with direct implementation. Refactor to Strategy when you actually have the second algorithm.
-    </div>
-  </div>
+<div>
+  <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">5. Premature Strategy-fication</div>
+  <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6;">
+  <strong>Problem:</strong> Creating strategy infrastructure for a single algorithm "for future flexibility."
+  <br/>
+  <strong>Solution:</strong> YAGNI. Start with direct implementation. Refactor to Strategy when you actually have the second algorithm.
+</div>
+</div>
 </div>
 
 ---
@@ -1855,39 +1855,39 @@ class TestStrategyMocking(unittest.TestCase):
 ## Related Patterns
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
-  <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Pattern Relationships</div>
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem;">Pattern Relationships</div>
 
-  <div style="display: grid; gap: 1rem;">
-    <div style="background: #dbeafe; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #1e40af;">[[State Pattern]](/topics/design-patterns/state)</div>
-      <div style="font-size: 0.9rem; color: #1e40af;">Same structure, different intent. State manages object lifecycle; Strategy provides algorithm alternatives.</div>
-    </div>
+<div style="display: grid; gap: 1rem;">
+<div style="background: #dbeafe; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #1e40af;">[[State Pattern]](/topics/design-patterns/state)</div>
+<div style="font-size: 0.9rem; color: #1e40af;">Same structure, different intent. State manages object lifecycle; Strategy provides algorithm alternatives.</div>
+</div>
 
-    <div style="background: #dcfce7; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #166534;">[[Template Method]](/topics/design-patterns/template-method)</div>
-      <div style="font-size: 0.9rem; color: #166534;">Alternative using inheritance. Template Method defines skeleton in base class; Strategy uses composition.</div>
-    </div>
+<div style="background: #dcfce7; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #166534;">[[Template Method]](/topics/design-patterns/template-method)</div>
+<div style="font-size: 0.9rem; color: #166534;">Alternative using inheritance. Template Method defines skeleton in base class; Strategy uses composition.</div>
+</div>
 
-    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #92400e;">[[Factory Method]](/topics/design-patterns/factory-method)</div>
-      <div style="font-size: 0.9rem; color: #92400e;">Often used together. Factory creates strategies; Strategy executes algorithms.</div>
-    </div>
+<div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #92400e;">[[Factory Method]](/topics/design-patterns/factory-method)</div>
+<div style="font-size: 0.9rem; color: #92400e;">Often used together. Factory creates strategies; Strategy executes algorithms.</div>
+</div>
 
-    <div style="background: #fce7f3; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #9d174d;">[[Decorator]](/topics/design-patterns/decorator)</div>
-      <div style="font-size: 0.9rem; color: #9d174d;">Can wrap strategies to add cross-cutting concerns (logging, caching, validation).</div>
-    </div>
+<div style="background: #fce7f3; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #9d174d;">[[Decorator]](/topics/design-patterns/decorator)</div>
+<div style="font-size: 0.9rem; color: #9d174d;">Can wrap strategies to add cross-cutting concerns (logging, caching, validation).</div>
+</div>
 
-    <div style="background: #e0e7ff; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #3730a3;">[[Command]](/topics/design-patterns/command)</div>
-      <div style="font-size: 0.9rem; color: #3730a3;">Both encapsulate behavior. Command encapsulates requests with undo/redo; Strategy encapsulates algorithms.</div>
-    </div>
+<div style="background: #e0e7ff; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #3730a3;">[[Command]](/topics/design-patterns/command)</div>
+<div style="font-size: 0.9rem; color: #3730a3;">Both encapsulate behavior. Command encapsulates requests with undo/redo; Strategy encapsulates algorithms.</div>
+</div>
 
-    <div style="background: #f3e8ff; padding: 1rem; border-radius: 8px;">
-      <div style="font-weight: 600; color: #7c3aed;">[[Flyweight]](/topics/design-patterns/flyweight)</div>
-      <div style="font-size: 0.9rem; color: #7c3aed;">Stateless strategies can be shared as flyweights to reduce memory usage.</div>
-    </div>
-  </div>
+<div style="background: #f3e8ff; padding: 1rem; border-radius: 8px;">
+<div style="font-weight: 600; color: #7c3aed;">[[Flyweight]](/topics/design-patterns/flyweight)</div>
+<div style="font-size: 0.9rem; color: #7c3aed;">Stateless strategies can be shared as flyweights to reduce memory usage.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -1895,15 +1895,15 @@ class TestStrategyMocking(unittest.TestCase):
 ## Summary: Interview Checklist
 
 <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; color: white;">
-  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Key Points for Interviews</div>
-  <ul style="margin: 0; padding-left: 1.5rem; line-height: 1.8;">
-    <li><strong>Definition:</strong> Encapsulate interchangeable algorithms in separate classes</li>
-    <li><strong>Intent:</strong> Let algorithms vary independently from clients that use them</li>
-    <li><strong>vs State:</strong> Strategy is externally selected; State transitions internally</li>
-    <li><strong>Functional equivalent:</strong> First-class functions with partial application</li>
-    <li><strong>Key benefit:</strong> Open/Closed Principle - add algorithms without changing context</li>
-    <li><strong>Key cost:</strong> Class explosion if overused; virtual dispatch overhead</li>
-    <li><strong>When to use:</strong> Multiple algorithms, runtime selection needed, testing flexibility</li>
-    <li><strong>When not to use:</strong> Single algorithm, trivial conditionals, performance-critical paths</li>
-  </ul>
+<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Key Points for Interviews</div>
+<ul style="margin: 0; padding-left: 1.5rem; line-height: 1.8;">
+<li><strong>Definition:</strong> Encapsulate interchangeable algorithms in separate classes</li>
+<li><strong>Intent:</strong> Let algorithms vary independently from clients that use them</li>
+<li><strong>vs State:</strong> Strategy is externally selected; State transitions internally</li>
+<li><strong>Functional equivalent:</strong> First-class functions with partial application</li>
+<li><strong>Key benefit:</strong> Open/Closed Principle - add algorithms without changing context</li>
+<li><strong>Key cost:</strong> Class explosion if overused; virtual dispatch overhead</li>
+<li><strong>When to use:</strong> Multiple algorithms, runtime selection needed, testing flexibility</li>
+<li><strong>When not to use:</strong> Single algorithm, trivial conditionals, performance-critical paths</li>
+</ul>
 </div>

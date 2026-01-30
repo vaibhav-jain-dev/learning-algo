@@ -5,21 +5,21 @@
 AWS provides a comprehensive suite of managed services that solve common distributed systems problems. Understanding these tools deeply is essential for system design interviews and real-world architecture decisions.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Core AWS Services for Distributed Systems</h4>
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-    <div style="background: #fff7ed; border-radius: 8px; padding: 16px; border-left: 4px solid #f97316;">
-      <div style="color: #c2410c; font-weight: 600;">Messaging</div>
-      <div style="color: #9a3412; font-size: 14px; margin-top: 8px;">SNS, SQS, EventBridge</div>
-    </div>
-    <div style="background: #f0fdf4; border-radius: 8px; padding: 16px; border-left: 4px solid #22c55e;">
-      <div style="color: #15803d; font-weight: 600;">Compute</div>
-      <div style="color: #166534; font-size: 14px; margin-top: 8px;">Lambda, ECS, EKS, EC2</div>
-    </div>
-    <div style="background: #eff6ff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1d4ed8; font-weight: 600;">Storage</div>
-      <div style="color: #1e40af; font-size: 14px; margin-top: 8px;">S3, DynamoDB, RDS, ElastiCache</div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Core AWS Services for Distributed Systems</h4>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div style="background: #fff7ed; border-radius: 8px; padding: 16px; border-left: 4px solid #f97316;">
+<div style="color: #c2410c; font-weight: 600;">Messaging</div>
+<div style="color: #9a3412; font-size: 14px; margin-top: 8px;">SNS, SQS, EventBridge</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 16px; border-left: 4px solid #22c55e;">
+<div style="color: #15803d; font-weight: 600;">Compute</div>
+<div style="color: #166534; font-size: 14px; margin-top: 8px;">Lambda, ECS, EKS, EC2</div>
+</div>
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #1d4ed8; font-weight: 600;">Storage</div>
+<div style="color: #1e40af; font-size: 14px; margin-top: 8px;">S3, DynamoDB, RDS, ElastiCache</div>
+</div>
+</div>
 </div>
 
 ---
@@ -31,89 +31,89 @@ AWS provides a comprehensive suite of managed services that solve common distrib
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">SQS is a fully managed message queuing service that enables decoupling of distributed systems</span>. It acts as a buffer between producers and consumers, allowing them to operate independently and at different rates.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">SQS Architecture Flow</h4>
-  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-    <div style="background: #3b82f6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 100px;">
-      <div style="font-weight: 600;">Producer</div>
-      <div style="font-size: 12px; opacity: 0.9;">Sends messages</div>
-    </div>
-    <div style="flex: 1; height: 4px; background: linear-gradient(90deg, #3b82f6, #f97316); position: relative;">
-      <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-size: 20px;">→</div>
-    </div>
-    <div style="background: #f97316; color: white; padding: 20px 32px; border-radius: 8px; text-align: center; min-width: 120px;">
-      <div style="font-weight: 600;">SQS Queue</div>
-      <div style="font-size: 12px; opacity: 0.9;">Stores & delivers</div>
-    </div>
-    <div style="flex: 1; height: 4px; background: linear-gradient(90deg, #f97316, #22c55e); position: relative;">
-      <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-size: 20px;">→</div>
-    </div>
-    <div style="background: #22c55e; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 100px;">
-      <div style="font-weight: 600;">Consumer</div>
-      <div style="font-size: 12px; opacity: 0.9;">Processes messages</div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">SQS Architecture Flow</h4>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+<div style="background: #3b82f6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="font-weight: 600;">Producer</div>
+<div style="font-size: 12px; opacity: 0.9;">Sends messages</div>
+</div>
+<div style="flex: 1; height: 4px; background: linear-gradient(90deg, #3b82f6, #f97316); position: relative;">
+<div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-size: 20px;">→</div>
+</div>
+<div style="background: #f97316; color: white; padding: 20px 32px; border-radius: 8px; text-align: center; min-width: 120px;">
+<div style="font-weight: 600;">SQS Queue</div>
+<div style="font-size: 12px; opacity: 0.9;">Stores & delivers</div>
+</div>
+<div style="flex: 1; height: 4px; background: linear-gradient(90deg, #f97316, #22c55e); position: relative;">
+<div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-size: 20px;">→</div>
+</div>
+<div style="background: #22c55e; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="font-weight: 600;">Consumer</div>
+<div style="font-size: 12px; opacity: 0.9;">Processes messages</div>
+</div>
+</div>
 </div>
 
 ### SQS Queue Types
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Standard vs FIFO Queues</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div style="background: #eff6ff; border-radius: 8px; padding: 20px;">
-      <div style="color: #1d4ed8; font-weight: 600; font-size: 18px; margin-bottom: 12px;">Standard Queue</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Throughput:</strong> Unlimited</div>
-        <div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Ordering:</strong> Best-effort (may be out of order)</div>
-        <div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Delivery:</strong> At-least-once (may have duplicates)</div>
-        <div style="padding: 6px 0;"><strong>Use Case:</strong> High throughput, order not critical</div>
-      </div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 8px; padding: 20px;">
-      <div style="color: #b45309; font-weight: 600; font-size: 18px; margin-bottom: 12px;">FIFO Queue</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Throughput:</strong> 3,000 msg/sec (with batching)</div>
-        <div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Ordering:</strong> Strictly preserved</div>
-        <div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Delivery:</strong> Exactly-once processing</div>
-        <div style="padding: 6px 0;"><strong>Use Case:</strong> Financial transactions, order processing</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Standard vs FIFO Queues</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #eff6ff; border-radius: 8px; padding: 20px;">
+<div style="color: #1d4ed8; font-weight: 600; font-size: 18px; margin-bottom: 12px;">Standard Queue</div>
+<div style="font-size: 14px; color: #475569;">
+<div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Throughput:</strong> Unlimited</div>
+<div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Ordering:</strong> Best-effort (may be out of order)</div>
+<div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Delivery:</strong> At-least-once (may have duplicates)</div>
+<div style="padding: 6px 0;"><strong>Use Case:</strong> High throughput, order not critical</div>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 20px;">
+<div style="color: #b45309; font-weight: 600; font-size: 18px; margin-bottom: 12px;">FIFO Queue</div>
+<div style="font-size: 14px; color: #475569;">
+<div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Throughput:</strong> 3,000 msg/sec (with batching)</div>
+<div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Ordering:</strong> Strictly preserved</div>
+<div style="padding: 6px 0; border-bottom: 1px solid #cbd5e1;"><strong>Delivery:</strong> Exactly-once processing</div>
+<div style="padding: 6px 0;"><strong>Use Case:</strong> Financial transactions, order processing</div>
+</div>
+</div>
+</div>
 </div>
 
 ### How SQS Works Internally
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Message Lifecycle</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">1</div>
-      <div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 16px;">
-        <div style="color: #1d4ed8; font-weight: 600;">Send Message</div>
-        <div style="color: #475569; font-size: 14px;">Producer sends message → SQS stores across multiple AZs for durability</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #f97316; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">2</div>
-      <div style="flex: 1; background: #fff7ed; border-radius: 8px; padding: 16px;">
-        <div style="color: #c2410c; font-weight: 600;">Receive Message</div>
-        <div style="color: #475569; font-size: 14px;">Consumer polls queue → Message becomes "in-flight" (invisible to others)</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #eab308; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">3</div>
-      <div style="flex: 1; background: #fef9c3; border-radius: 8px; padding: 16px;">
-        <div style="color: #a16207; font-weight: 600;">Visibility Timeout</div>
-        <div style="color: #475569; font-size: 14px;">Message hidden for configured time (default 30s) → Prevents duplicate processing</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">4</div>
-      <div style="flex: 1; background: #f0fdf4; border-radius: 8px; padding: 16px;">
-        <div style="color: #15803d; font-weight: 600;">Delete Message</div>
-        <div style="color: #475569; font-size: 14px;">After successful processing → Consumer explicitly deletes message from queue</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">Message Lifecycle</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">1</div>
+<div style="flex: 1; background: #eff6ff; border-radius: 8px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: 600;">Send Message</div>
+<div style="color: #475569; font-size: 14px;">Producer sends message → SQS stores across multiple AZs for durability</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #f97316; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">2</div>
+<div style="flex: 1; background: #fff7ed; border-radius: 8px; padding: 16px;">
+<div style="color: #c2410c; font-weight: 600;">Receive Message</div>
+<div style="color: #475569; font-size: 14px;">Consumer polls queue → Message becomes "in-flight" (invisible to others)</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #eab308; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">3</div>
+<div style="flex: 1; background: #fef9c3; border-radius: 8px; padding: 16px;">
+<div style="color: #a16207; font-weight: 600;">Visibility Timeout</div>
+<div style="color: #475569; font-size: 14px;">Message hidden for configured time (default 30s) → Prevents duplicate processing</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #22c55e; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">4</div>
+<div style="flex: 1; background: #f0fdf4; border-radius: 8px; padding: 16px;">
+<div style="color: #15803d; font-weight: 600;">Delete Message</div>
+<div style="color: #475569; font-size: 14px;">After successful processing → Consumer explicitly deletes message from queue</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Key SQS Concepts
@@ -173,26 +173,26 @@ for message in response.get('Messages', []):
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Design choice: DLQ captures messages that fail processing multiple times</span>. This prevents poison messages from blocking the queue.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">DLQ Flow</h4>
-  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-    <div style="background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">Main Queue</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center;">
-      <div style="font-size: 12px; color: #64748b;">Fail 3x</div>
-      <div style="font-size: 24px;">→</div>
-    </div>
-    <div style="background: #ef4444; color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">Dead Letter Queue</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center;">
-      <div style="font-size: 12px; color: #64748b;">Alert & Review</div>
-      <div style="font-size: 24px;">→</div>
-    </div>
-    <div style="background: #8b5cf6; color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">Manual Handling</div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">DLQ Flow</h4>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">Main Queue</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="font-size: 12px; color: #64748b;">Fail 3x</div>
+<div style="font-size: 24px;">→</div>
+</div>
+<div style="background: #ef4444; color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">Dead Letter Queue</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="font-size: 12px; color: #64748b;">Alert & Review</div>
+<div style="font-size: 24px;">→</div>
+</div>
+<div style="background: #8b5cf6; color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">Manual Handling</div>
+</div>
+</div>
 </div>
 
 ```python
@@ -208,34 +208,34 @@ dlq_config = {
 #### Long Polling vs Short Polling
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">Polling Comparison</h4>
-  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-    <tr style="background: #f1f5f9;">
-      <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Aspect</th>
-      <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Short Polling</th>
-      <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Long Polling</th>
-    </tr>
-    <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>Behavior</strong></td>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Returns immediately (even if empty)</td>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Waits up to 20 seconds for messages</td>
-    </tr>
-    <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>API Calls</strong></td>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Many (costly)</td>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Fewer (cost-effective)</td>
-    </tr>
-    <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>Empty Responses</strong></td>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Common</td>
-      <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Rare</td>
-    </tr>
-    <tr>
-      <td style="padding: 12px;"><strong>Best For</strong></td>
-      <td style="padding: 12px;">Immediate response needed</td>
-      <td style="padding: 12px;">Most use cases (recommended)</td>
-    </tr>
-  </table>
+<h4 style="color: #1e293b; margin-top: 0;">Polling Comparison</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<tr style="background: #f1f5f9;">
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Aspect</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Short Polling</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Long Polling</th>
+</tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>Behavior</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Returns immediately (even if empty)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Waits up to 20 seconds for messages</td>
+</tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>API Calls</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Many (costly)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Fewer (cost-effective)</td>
+</tr>
+<tr>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>Empty Responses</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Common</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Rare</td>
+</tr>
+<tr>
+<td style="padding: 12px;"><strong>Best For</strong></td>
+<td style="padding: 12px;">Immediate response needed</td>
+<td style="padding: 12px;">Most use cases (recommended)</td>
+</tr>
+</table>
 </div>
 
 ---
@@ -247,66 +247,66 @@ dlq_config = {
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">SNS is a fully managed pub/sub messaging service that enables fan-out messaging patterns</span>. Unlike SQS (point-to-point), SNS delivers messages to multiple subscribers simultaneously.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">SNS Fan-Out Architecture</h4>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-    <div style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">Publisher</div>
-      <div style="font-size: 12px; opacity: 0.9;">Sends message once</div>
-    </div>
-    <div style="font-size: 24px;">↓</div>
-    <div style="background: #f97316; color: white; padding: 20px 40px; border-radius: 8px; text-align: center;">
-      <div style="font-weight: 600;">SNS Topic</div>
-      <div style="font-size: 12px; opacity: 0.9;">Distributes to all subscribers</div>
-    </div>
-    <div style="display: flex; gap: 8px;">
-      <div style="font-size: 24px;">↓</div>
-      <div style="font-size: 24px;">↓</div>
-      <div style="font-size: 24px;">↓</div>
-      <div style="font-size: 24px;">↓</div>
-    </div>
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
-        <div style="font-weight: 600;">SQS Queue</div>
-      </div>
-      <div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
-        <div style="font-weight: 600;">Lambda</div>
-      </div>
-      <div style="background: #06b6d4; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
-        <div style="font-weight: 600;">HTTP/S</div>
-      </div>
-      <div style="background: #ec4899; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
-        <div style="font-weight: 600;">Email/SMS</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">SNS Fan-Out Architecture</h4>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+<div style="background: #8b5cf6; color: white; padding: 16px 32px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">Publisher</div>
+<div style="font-size: 12px; opacity: 0.9;">Sends message once</div>
+</div>
+<div style="font-size: 24px;">↓</div>
+<div style="background: #f97316; color: white; padding: 20px 40px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">SNS Topic</div>
+<div style="font-size: 12px; opacity: 0.9;">Distributes to all subscribers</div>
+</div>
+<div style="display: flex; gap: 8px;">
+<div style="font-size: 24px;">↓</div>
+<div style="font-size: 24px;">↓</div>
+<div style="font-size: 24px;">↓</div>
+<div style="font-size: 24px;">↓</div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
+<div style="font-weight: 600;">SQS Queue</div>
+</div>
+<div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
+<div style="font-weight: 600;">Lambda</div>
+</div>
+<div style="background: #06b6d4; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
+<div style="font-weight: 600;">HTTP/S</div>
+</div>
+<div style="background: #ec4899; color: white; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 13px;">
+<div style="font-weight: 600;">Email/SMS</div>
+</div>
+</div>
+</div>
 </div>
 
 ### SNS vs SQS - Key Differences
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">When to Use Each</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div style="background: #fef3c7; border-radius: 8px; padding: 20px;">
-      <div style="color: #b45309; font-weight: 600; font-size: 18px; margin-bottom: 12px;">SNS (Pub/Sub)</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 6px 0;">One-to-many messaging</div>
-        <div style="padding: 6px 0;">Push-based delivery</div>
-        <div style="padding: 6px 0;">No message persistence</div>
-        <div style="padding: 6px 0;">Multiple subscriber types</div>
-        <div style="padding: 6px 0; font-weight: 600; color: #b45309;">Use for: Notifications, alerts, fan-out</div>
-      </div>
-    </div>
-    <div style="background: #eff6ff; border-radius: 8px; padding: 20px;">
-      <div style="color: #1d4ed8; font-weight: 600; font-size: 18px; margin-bottom: 12px;">SQS (Queue)</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 6px 0;">One-to-one messaging</div>
-        <div style="padding: 6px 0;">Pull-based (polling)</div>
-        <div style="padding: 6px 0;">Messages persist until processed</div>
-        <div style="padding: 6px 0;">Single consumer type</div>
-        <div style="padding: 6px 0; font-weight: 600; color: #1d4ed8;">Use for: Work queues, decoupling, buffering</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">When to Use Each</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #fef3c7; border-radius: 8px; padding: 20px;">
+<div style="color: #b45309; font-weight: 600; font-size: 18px; margin-bottom: 12px;">SNS (Pub/Sub)</div>
+<div style="font-size: 14px; color: #475569;">
+<div style="padding: 6px 0;">One-to-many messaging</div>
+<div style="padding: 6px 0;">Push-based delivery</div>
+<div style="padding: 6px 0;">No message persistence</div>
+<div style="padding: 6px 0;">Multiple subscriber types</div>
+<div style="padding: 6px 0; font-weight: 600; color: #b45309;">Use for: Notifications, alerts, fan-out</div>
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 8px; padding: 20px;">
+<div style="color: #1d4ed8; font-weight: 600; font-size: 18px; margin-bottom: 12px;">SQS (Queue)</div>
+<div style="font-size: 14px; color: #475569;">
+<div style="padding: 6px 0;">One-to-one messaging</div>
+<div style="padding: 6px 0;">Pull-based (polling)</div>
+<div style="padding: 6px 0;">Messages persist until processed</div>
+<div style="padding: 6px 0;">Single consumer type</div>
+<div style="padding: 6px 0; font-weight: 600; color: #1d4ed8;">Use for: Work queues, decoupling, buffering</div>
+</div>
+</div>
+</div>
 </div>
 
 ### SNS + SQS Fan-Out Pattern
@@ -314,35 +314,35 @@ dlq_config = {
 <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;">Common pattern: Combine SNS with multiple SQS queues for reliable fan-out with persistence</span>.
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">SNS + SQS Fan-Out</h4>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-    <div style="background: #8b5cf6; color: white; padding: 12px 24px; border-radius: 8px;">
-      <strong>Order Service</strong>
-    </div>
-    <div>↓ Publish</div>
-    <div style="background: #f97316; color: white; padding: 16px 32px; border-radius: 8px;">
-      <strong>orders-topic (SNS)</strong>
-    </div>
-    <div style="display: flex; gap: 24px;">
-      <div>↓</div>
-      <div>↓</div>
-      <div>↓</div>
+<h4 style="color: #1e293b; margin-top: 0;">SNS + SQS Fan-Out</h4>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="background: #8b5cf6; color: white; padding: 12px 24px; border-radius: 8px;">
+<strong>Order Service</strong>
+</div>
+<div>↓ Publish</div>
+  <div style="background: #f97316; color: white; padding: 16px 32px; border-radius: 8px;">
+  <strong>orders-topic (SNS)</strong>
+</div>
+<div style="display: flex; gap: 24px;">
+<div>↓</div>
+  <div>↓</div>
+    <div>↓</div>
     </div>
     <div style="display: flex; gap: 16px;">
-      <div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
-        <div style="font-weight: 600;">inventory-queue</div>
-        <div style="font-size: 11px;">Update stock</div>
-      </div>
-      <div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
-        <div style="font-weight: 600;">shipping-queue</div>
-        <div style="font-size: 11px;">Create shipment</div>
-      </div>
-      <div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
-        <div style="font-weight: 600;">analytics-queue</div>
-        <div style="font-size: 11px;">Track metrics</div>
-      </div>
-    </div>
+    <div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+    <div style="font-weight: 600;">inventory-queue</div>
+    <div style="font-size: 11px;">Update stock</div>
   </div>
+  <div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+  <div style="font-weight: 600;">shipping-queue</div>
+  <div style="font-size: 11px;">Create shipment</div>
+</div>
+<div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+<div style="font-weight: 600;">analytics-queue</div>
+<div style="font-size: 11px;">Track metrics</div>
+</div>
+</div>
+</div>
 </div>
 
 ```python
@@ -576,28 +576,28 @@ Duplicates can arrive out of order. Solutions:
 Use SNS with message filtering and multiple SQS queues:
 
 <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 16px 0;">
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-    <div style="background: #8b5cf6; color: white; padding: 10px 20px; border-radius: 6px;">Notification Service</div>
-    <div>↓</div>
-    <div style="background: #f97316; color: white; padding: 10px 20px; border-radius: 6px;">notifications-topic (SNS)</div>
-    <div style="display: flex; gap: 8px;">
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="font-size: 12px; color: #64748b;">priority=high</div>
-        <div>↓</div>
-        <div style="background: #ef4444; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">high-priority-queue</div>
-      </div>
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="font-size: 12px; color: #64748b;">channel=email</div>
-        <div>↓</div>
-        <div style="background: #3b82f6; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">email-queue</div>
-      </div>
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="font-size: 12px; color: #64748b;">channel=sms</div>
-        <div>↓</div>
-        <div style="background: #22c55e; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">sms-queue</div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+<div style="background: #8b5cf6; color: white; padding: 10px 20px; border-radius: 6px;">Notification Service</div>
+<div>↓</div>
+  <div style="background: #f97316; color: white; padding: 10px 20px; border-radius: 6px;">notifications-topic (SNS)</div>
+  <div style="display: flex; gap: 8px;">
+  <div style="display: flex; flex-direction: column; align-items: center;">
+  <div style="font-size: 12px; color: #64748b;">priority=high</div>
+  <div>↓</div>
+    <div style="background: #ef4444; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">high-priority-queue</div>
   </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+  <div style="font-size: 12px; color: #64748b;">channel=email</div>
+  <div>↓</div>
+    <div style="background: #3b82f6; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">email-queue</div>
+  </div>
+  <div style="display: flex; flex-direction: column; align-items: center;">
+  <div style="font-size: 12px; color: #64748b;">channel=sms</div>
+  <div>↓</div>
+    <div style="background: #22c55e; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">sms-queue</div>
+  </div>
+</div>
+</div>
 </div>
 
 ```python
@@ -890,33 +890,33 @@ dynamodb.transact_write_items(
 ## Common Mistakes
 
 <div style="background: #fef2f2; border: 2px solid #fecaca; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #991b1b; margin-top: 0;">SQS/SNS Anti-Patterns</h4>
-  <div style="display: grid; gap: 12px;">
-    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Not using Long Polling</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Short polling wastes API calls and increases costs. Always use WaitTimeSeconds=20.</div>
-    </div>
-    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Ignoring Visibility Timeout</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Setting timeout too low causes duplicate processing. Set based on P99 processing time + buffer.</div>
-    </div>
-    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Not Configuring DLQ</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Poison messages can block queue indefinitely. Always configure DLQ with appropriate maxReceiveCount.</div>
-    </div>
-    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Assuming Exactly-Once with Standard Queue</div>
-      <div style="color: #7f1d1d; font-size: 14px;">Standard queues are at-least-once. Design consumers to be idempotent or use FIFO.</div>
-    </div>
-    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">Large Message Bodies</div>
-      <div style="color: #7f1d1d; font-size: 14px;">SQS max is 256KB. Use S3 for large payloads and pass reference in message.</div>
-    </div>
-    <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-      <div style="color: #991b1b; font-weight: 600;">SNS Without Persistence</div>
-      <div style="color: #7f1d1d; font-size: 14px;">SNS doesn't persist messages. If subscriber is down, messages are lost. Use SNS+SQS pattern.</div>
-    </div>
-  </div>
+<h4 style="color: #991b1b; margin-top: 0;">SQS/SNS Anti-Patterns</h4>
+<div style="display: grid; gap: 12px;">
+<div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Not using Long Polling</div>
+<div style="color: #7f1d1d; font-size: 14px;">Short polling wastes API calls and increases costs. Always use WaitTimeSeconds=20.</div>
+</div>
+<div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Ignoring Visibility Timeout</div>
+<div style="color: #7f1d1d; font-size: 14px;">Setting timeout too low causes duplicate processing. Set based on P99 processing time + buffer.</div>
+</div>
+<div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Not Configuring DLQ</div>
+<div style="color: #7f1d1d; font-size: 14px;">Poison messages can block queue indefinitely. Always configure DLQ with appropriate maxReceiveCount.</div>
+</div>
+<div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Assuming Exactly-Once with Standard Queue</div>
+<div style="color: #7f1d1d; font-size: 14px;">Standard queues are at-least-once. Design consumers to be idempotent or use FIFO.</div>
+</div>
+<div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">Large Message Bodies</div>
+<div style="color: #7f1d1d; font-size: 14px;">SQS max is 256KB. Use S3 for large payloads and pass reference in message.</div>
+</div>
+<div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<div style="color: #991b1b; font-weight: 600;">SNS Without Persistence</div>
+<div style="color: #7f1d1d; font-size: 14px;">SNS doesn't persist messages. If subscriber is down, messages are lost. Use SNS+SQS pattern.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -924,47 +924,47 @@ dynamodb.transact_write_items(
 ## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e293b; margin-top: 0;">SQS/SNS Cheat Sheet</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">SQS Limits</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>Message size:</strong> 256 KB</div>
-        <div style="padding: 4px 0;"><strong>Retention:</strong> 1 min - 14 days (default 4 days)</div>
-        <div style="padding: 4px 0;"><strong>Visibility timeout:</strong> 0 sec - 12 hours</div>
-        <div style="padding: 4px 0;"><strong>Long poll wait:</strong> 1-20 seconds</div>
-        <div style="padding: 4px 0;"><strong>FIFO throughput:</strong> 3,000 msg/sec (batched)</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">SNS Limits</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;"><strong>Message size:</strong> 256 KB</div>
-        <div style="padding: 4px 0;"><strong>Subscriptions/topic:</strong> 12.5 million</div>
-        <div style="padding: 4px 0;"><strong>Topics/account:</strong> 100,000</div>
-        <div style="padding: 4px 0;"><strong>Filter policies/sub:</strong> 1</div>
-        <div style="padding: 4px 0;"><strong>FIFO throughput:</strong> 300 msg/sec</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use SQS</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;">Work queues / job processing</div>
-        <div style="padding: 4px 0;">Decoupling microservices</div>
-        <div style="padding: 4px 0;">Buffering for rate limiting</div>
-        <div style="padding: 4px 0;">Guaranteed delivery needed</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use SNS</div>
-      <div style="font-size: 14px; color: #475569;">
-        <div style="padding: 4px 0;">Fan-out to multiple subscribers</div>
-        <div style="padding: 4px 0;">Push notifications</div>
-        <div style="padding: 4px 0;">Event broadcasting</div>
-        <div style="padding: 4px 0;">Multi-protocol delivery</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; margin-top: 0;">SQS/SNS Cheat Sheet</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">SQS Limits</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>Message size:</strong> 256 KB</div>
+  <div style="padding: 4px 0;"><strong>Retention:</strong> 1 min - 14 days (default 4 days)</div>
+  <div style="padding: 4px 0;"><strong>Visibility timeout:</strong> 0 sec - 12 hours</div>
+  <div style="padding: 4px 0;"><strong>Long poll wait:</strong> 1-20 seconds</div>
+  <div style="padding: 4px 0;"><strong>FIFO throughput:</strong> 3,000 msg/sec (batched)</div>
+</div>
+</div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">SNS Limits</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;"><strong>Message size:</strong> 256 KB</div>
+  <div style="padding: 4px 0;"><strong>Subscriptions/topic:</strong> 12.5 million</div>
+  <div style="padding: 4px 0;"><strong>Topics/account:</strong> 100,000</div>
+  <div style="padding: 4px 0;"><strong>Filter policies/sub:</strong> 1</div>
+  <div style="padding: 4px 0;"><strong>FIFO throughput:</strong> 300 msg/sec</div>
+</div>
+</div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use SQS</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;">Work queues / job processing</div>
+  <div style="padding: 4px 0;">Decoupling microservices</div>
+  <div style="padding: 4px 0;">Buffering for rate limiting</div>
+  <div style="padding: 4px 0;">Guaranteed delivery needed</div>
+</div>
+</div>
+<div>
+  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">When to Use SNS</div>
+  <div style="font-size: 14px; color: #475569;">
+  <div style="padding: 4px 0;">Fan-out to multiple subscribers</div>
+  <div style="padding: 4px 0;">Push notifications</div>
+  <div style="padding: 4px 0;">Event broadcasting</div>
+  <div style="padding: 4px 0;">Multi-protocol delivery</div>
+</div>
+</div>
+</div>
 </div>
 
 ---

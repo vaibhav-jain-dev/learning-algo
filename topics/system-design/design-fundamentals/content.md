@@ -499,44 +499,44 @@ Availability is the percentage of time a system is operational. Often expressed 
 <div style="overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 <thead>
-<tr style="background: #e2e8f0;">
-<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Availability</th>
-<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Downtime/Year</th>
-<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Downtime/Month</th>
-<th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Typical Use Case</th>
-</tr>
+  <tr style="background: #e2e8f0;">
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Availability</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Downtime/Year</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Downtime/Month</th>
+  <th style="padding: 12px; text-align: left; border: 1px solid #cbd5e1;">Typical Use Case</th>
+  </tr>
 </thead>
 <tbody>
-<tr>
-<td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99% (two nines)</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">3.65 days</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">7.3 hours</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">Internal tools, batch processing</td>
-</tr>
-<tr style="background: #f8fafc;">
-<td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.9% (three nines)</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">8.76 hours</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">43.8 minutes</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">SaaS products, B2B services</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.95%</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">4.38 hours</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">21.9 minutes</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">Cloud provider SLAs (AWS, GCP)</td>
-</tr>
-<tr style="background: #f8fafc;">
-<td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.99% (four nines)</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">52.6 minutes</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">4.4 minutes</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">E-commerce, financial services</td>
-</tr>
-<tr>
-<td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.999% (five nines)</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">5.26 minutes</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">26 seconds</td>
-<td style="padding: 12px; border: 1px solid #e2e8f0;">Telecom, emergency services</td>
-</tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99% (two nines)</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">3.65 days</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">7.3 hours</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">Internal tools, batch processing</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.9% (three nines)</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">8.76 hours</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">43.8 minutes</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">SaaS products, B2B services</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.95%</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">4.38 hours</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">21.9 minutes</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">Cloud provider SLAs (AWS, GCP)</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.99% (four nines)</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">52.6 minutes</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">4.4 minutes</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">E-commerce, financial services</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border: 1px solid #e2e8f0; font-weight: 600;">99.999% (five nines)</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">5.26 minutes</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">26 seconds</td>
+  <td style="padding: 12px; border: 1px solid #e2e8f0;">Telecom, emergency services</td>
+  </tr>
 </tbody>
 </table>
 </div>
@@ -1216,7 +1216,7 @@ Interviewer picks areas to explore. Discuss specific algorithms, data structures
 </div>
 
 <div>
-<strong>Not considering operations:</strong> Deployment, monitoring, debugging - these matter. Mention them even if you don't detail them.
+  <strong>Not considering operations:</strong> Deployment, monitoring, debugging - these matter. Mention them even if you don't detail them.
 </div>
 
 </div>

@@ -732,33 +732,33 @@ WebSocket provides full-duplex communication over a single TCP connection, upgra
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">WebSocket Handshake and Frame Format</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div>
-<h5 style="color: #166534; margin: 0 0 12px 0;">HTTP Upgrade Handshake</h5>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px;">
-<div style="color: #166534; margin-bottom: 8px;">Client Request:</div>
-GET /chat HTTP/1.1<br>
-Upgrade: websocket<br>
-Connection: Upgrade<br>
-Sec-WebSocket-Key: dGhlIHNhbXBsZQ==<br>
-Sec-WebSocket-Version: 13<br><br>
-<div style="color: #1e40af; margin-bottom: 8px;">Server Response:</div>
-HTTP/1.1 101 Switching Protocols<br>
-Upgrade: websocket<br>
-Connection: Upgrade<br>
-Sec-WebSocket-Accept: s3pPLMBiTxaQ9k...
+  <h5 style="color: #166534; margin: 0 0 12px 0;">HTTP Upgrade Handshake</h5>
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px;">
+  <div style="color: #166534; margin-bottom: 8px;">Client Request:</div>
+  GET /chat HTTP/1.1<br>
+  Upgrade: websocket<br>
+  Connection: Upgrade<br>
+  Sec-WebSocket-Key: dGhlIHNhbXBsZQ==<br>
+  Sec-WebSocket-Version: 13<br><br>
+  <div style="color: #1e40af; margin-bottom: 8px;">Server Response:</div>
+  HTTP/1.1 101 Switching Protocols<br>
+  Upgrade: websocket<br>
+  Connection: Upgrade<br>
+  Sec-WebSocket-Accept: s3pPLMBiTxaQ9k...
 </div>
 <div style="color: #64748b; font-size: 12px; margin-top: 8px;">
 Accept = Base64(SHA1(Key + GUID))
 </div>
 </div>
 <div>
-<h5 style="color: #1e40af; margin: 0 0 12px 0;">Frame Structure</h5>
-<div style="background: #eff6ff; border-radius: 8px; padding: 16px; font-size: 12px;">
-<div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; text-align: center; margin-bottom: 12px;">
-<div style="background: #dbeafe; padding: 6px 2px; border-radius: 2px; font-size: 9px;">FIN</div>
-<div style="background: #bfdbfe; padding: 6px 2px; border-radius: 2px; font-size: 9px;">RSV</div>
-<div style="background: #93c5fd; padding: 6px 2px; border-radius: 2px; font-size: 9px;" colspan="4">Opcode</div>
-<div style="background: #60a5fa; padding: 6px 2px; border-radius: 2px; font-size: 9px; color: white;">M</div>
-<div style="background: #3b82f6; padding: 6px 2px; border-radius: 2px; font-size: 9px; color: white;">Len</div>
+  <h5 style="color: #1e40af; margin: 0 0 12px 0;">Frame Structure</h5>
+  <div style="background: #eff6ff; border-radius: 8px; padding: 16px; font-size: 12px;">
+  <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; text-align: center; margin-bottom: 12px;">
+  <div style="background: #dbeafe; padding: 6px 2px; border-radius: 2px; font-size: 9px;">FIN</div>
+  <div style="background: #bfdbfe; padding: 6px 2px; border-radius: 2px; font-size: 9px;">RSV</div>
+  <div style="background: #93c5fd; padding: 6px 2px; border-radius: 2px; font-size: 9px;" colspan="4">Opcode</div>
+  <div style="background: #60a5fa; padding: 6px 2px; border-radius: 2px; font-size: 9px; color: white;">M</div>
+  <div style="background: #3b82f6; padding: 6px 2px; border-radius: 2px; font-size: 9px; color: white;">Len</div>
 </div>
 <div style="color: #475569; font-size: 11px;">
 <strong>Opcodes:</strong> 0x1=text, 0x2=binary, 0x8=close, 0x9=ping, 0xA=pong<br>
@@ -1247,9 +1247,9 @@ Connection appears healthy but server closed it (idle timeout). First query fail
 <h5 style="color: #b45309; margin: 0 0 12px 0;">Is it browser-to-server?</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
 <div>
-<strong style="color: #166534;">Real-time bidirectional:</strong> WebSocket or SSE<br>
-<strong style="color: #166534;">Standard request/response:</strong> REST over HTTP/2 or HTTP/3<br>
-<strong style="color: #166534;">Need gRPC backend:</strong> gRPC-Web with Envoy proxy
+  <strong style="color: #166534;">Real-time bidirectional:</strong> WebSocket or SSE<br>
+  <strong style="color: #166534;">Standard request/response:</strong> REST over HTTP/2 or HTTP/3<br>
+  <strong style="color: #166534;">Need gRPC backend:</strong> gRPC-Web with Envoy proxy
 </div>
 <div style="color: #64748b;">
 Browsers don't support arbitrary TCP/UDP. Limited to HTTP, WebSocket, WebRTC.
@@ -1260,10 +1260,10 @@ Browsers don't support arbitrary TCP/UDP. Limited to HTTP, WebSocket, WebRTC.
 <h5 style="color: #166534; margin: 0 0 12px 0;">Is it service-to-service (internal)?</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
 <div>
-<strong style="color: #166534;">High throughput, low latency:</strong> gRPC<br>
-<strong style="color: #166534;">Streaming:</strong> gRPC streaming<br>
-<strong style="color: #166534;">Simple integration:</strong> REST<br>
-<strong style="color: #166534;">Async processing:</strong> [[Message queues]](/topics/system-design/message-queues)
+  <strong style="color: #166534;">High throughput, low latency:</strong> gRPC<br>
+  <strong style="color: #166534;">Streaming:</strong> gRPC streaming<br>
+  <strong style="color: #166534;">Simple integration:</strong> REST<br>
+  <strong style="color: #166534;">Async processing:</strong> [[Message queues]](/topics/system-design/message-queues)
 </div>
 <div style="color: #64748b;">
 Internal APIs can use binary protocols. Prioritize performance and type safety.
@@ -1274,9 +1274,9 @@ Internal APIs can use binary protocols. Prioritize performance and type safety.
 <h5 style="color: #1e40af; margin: 0 0 12px 0;">Is latency critical (real-time)?</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
 <div>
-<strong style="color: #166534;">Audio/video:</strong> UDP with custom reliability (or WebRTC)<br>
-<strong style="color: #166534;">Gaming:</strong> UDP with app-level protocol<br>
-<strong style="color: #166534;">Financial data:</strong> Multicast UDP or dedicated lines
+  <strong style="color: #166534;">Audio/video:</strong> UDP with custom reliability (or WebRTC)<br>
+  <strong style="color: #166534;">Gaming:</strong> UDP with app-level protocol<br>
+  <strong style="color: #166534;">Financial data:</strong> Multicast UDP or dedicated lines
 </div>
 <div style="color: #64748b;">
 TCP's reliability adds latency. Accept some loss for lower latency.
@@ -1287,9 +1287,9 @@ TCP's reliability adds latency. Accept some loss for lower latency.
 <h5 style="color: #be185d; margin: 0 0 12px 0;">Is it public API?</h5>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
 <div>
-<strong style="color: #166534;">Standard:</strong> REST with OpenAPI<br>
-<strong style="color: #166534;">GraphQL for flexibility:</strong> Single endpoint, client-specified queries<br>
-<strong style="color: #166534;">High-performance clients:</strong> Offer both REST and gRPC
+  <strong style="color: #166534;">Standard:</strong> REST with OpenAPI<br>
+  <strong style="color: #166534;">GraphQL for flexibility:</strong> Single endpoint, client-specified queries<br>
+  <strong style="color: #166534;">High-performance clients:</strong> Offer both REST and gRPC
 </div>
 <div style="color: #64748b;">
 Public APIs prioritize usability, documentation, tooling support.
@@ -1306,30 +1306,30 @@ Public APIs prioritize usability, documentation, tooling support.
 <div style="background: #f1f5f9; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
 <div>
-<h5 style="color: #1e293b; margin: 0 0 12px 0;">Infrastructure</h5>
-<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
-<li>[[Load Balancing]](/topics/system-design/load-balancing)</li>
-<li>[[API Gateway]](/topics/system-design/api-gateway)</li>
-<li>[[Service Mesh]](/topics/system-design/service-mesh)</li>
-<li>[[CDN]](/topics/system-design/cdn)</li>
+  <h5 style="color: #1e293b; margin: 0 0 12px 0;">Infrastructure</h5>
+  <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+  <li>[[Load Balancing]](/topics/system-design/load-balancing)</li>
+  <li>[[API Gateway]](/topics/system-design/api-gateway)</li>
+  <li>[[Service Mesh]](/topics/system-design/service-mesh)</li>
+  <li>[[CDN]](/topics/system-design/cdn)</li>
 </ul>
 </div>
 <div>
-<h5 style="color: #1e293b; margin: 0 0 12px 0;">Reliability</h5>
-<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
-<li>[[Circuit Breaker]](/topics/system-design/circuit-breaker)</li>
-<li>[[Rate Limiting]](/topics/system-design/rate-limiting)</li>
-<li>[[Retry Strategies]](/topics/system-design/retry-strategies)</li>
-<li>[[Timeouts]](/topics/system-design/timeouts)</li>
+  <h5 style="color: #1e293b; margin: 0 0 12px 0;">Reliability</h5>
+  <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+  <li>[[Circuit Breaker]](/topics/system-design/circuit-breaker)</li>
+  <li>[[Rate Limiting]](/topics/system-design/rate-limiting)</li>
+  <li>[[Retry Strategies]](/topics/system-design/retry-strategies)</li>
+  <li>[[Timeouts]](/topics/system-design/timeouts)</li>
 </ul>
 </div>
 <div>
-<h5 style="color: #1e293b; margin: 0 0 12px 0;">Communication</h5>
-<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
-<li>[[Message Queues]](/topics/system-design/message-queues)</li>
-<li>[[Event-Driven Architecture]](/topics/system-design/event-driven)</li>
-<li>[[API Design]](/topics/system-design/api-design)</li>
-<li>[[Serialization]](/topics/system-design/serialization)</li>
+  <h5 style="color: #1e293b; margin: 0 0 12px 0;">Communication</h5>
+  <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+  <li>[[Message Queues]](/topics/system-design/message-queues)</li>
+  <li>[[Event-Driven Architecture]](/topics/system-design/event-driven)</li>
+  <li>[[API Design]](/topics/system-design/api-design)</li>
+  <li>[[Serialization]](/topics/system-design/serialization)</li>
 </ul>
 </div>
 </div>

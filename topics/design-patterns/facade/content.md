@@ -7,33 +7,33 @@ The Facade pattern provides a unified, simplified interface to a complex subsyst
 > **Core Insight**: A Facade does not add new functionality—it orchestrates existing capabilities into cohesive, use-case-driven operations that align with client mental models rather than implementation details.
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div style="text-align: center; margin-bottom: 1.5rem;">
-    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 2rem; border-radius: 8px; color: white; font-weight: 700; font-size: 1.1rem; display: inline-block;">Client</span>
-  </div>
-  <div style="text-align: center; color: #667eea; font-size: 1.5rem; margin: 1rem 0;">&#8595;</div>
-  <div style="text-align: center; margin-bottom: 1.5rem;">
-    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 1.25rem 2.5rem; border-radius: 12px; color: white; display: inline-block; box-shadow: 0 8px 32px rgba(17, 153, 142, 0.3);">
-      <div style="font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;">Facade</div>
-      <div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">Simplified API surface</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #38ef7d; font-size: 1rem; margin: 1rem 0;">orchestrates &#8595;</div>
-  <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1.5rem; border: 1px dashed rgba(255,255,255,0.2);">
-    <div style="text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">Complex Subsystem</div>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-      <div style="background: #2d3748; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4; font-size: 0.85rem;">ServiceA</div>
-      <div style="background: #2d3748; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1.25rem; color: #f093fb; font-size: 0.85rem;">ServiceB</div>
-      <div style="background: #2d3748; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.75rem 1.25rem; color: #ffd93d; font-size: 0.85rem;">ServiceC</div>
-      <div style="background: #2d3748; border: 2px solid #74b9ff; border-radius: 8px; padding: 0.75rem 1.25rem; color: #74b9ff; font-size: 0.85rem;">ServiceD</div>
-    </div>
-    <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap;">
-      <span style="color: #666; font-size: 0.75rem;">internal dependencies</span>
-      <span style="color: #4ecdc4;">&#8596;</span>
-      <span style="color: #666; font-size: 0.75rem;">initialization order</span>
-      <span style="color: #f093fb;">&#8596;</span>
-      <span style="color: #666; font-size: 0.75rem;">state management</span>
-    </div>
-  </div>
+<div style="text-align: center; margin-bottom: 1.5rem;">
+<span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 0.75rem 2rem; border-radius: 8px; color: white; font-weight: 700; font-size: 1.1rem; display: inline-block;">Client</span>
+</div>
+<div style="text-align: center; color: #667eea; font-size: 1.5rem; margin: 1rem 0;">&#8595;</div>
+<div style="text-align: center; margin-bottom: 1.5rem;">
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 1.25rem 2.5rem; border-radius: 12px; color: white; display: inline-block; box-shadow: 0 8px 32px rgba(17, 153, 142, 0.3);">
+<div style="font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;">Facade</div>
+<div style="font-size: 0.85rem; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 0.5rem;">Simplified API surface</div>
+</div>
+</div>
+<div style="text-align: center; color: #38ef7d; font-size: 1rem; margin: 1rem 0;">orchestrates &#8595;</div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 1.5rem; border: 1px dashed rgba(255,255,255,0.2);">
+<div style="text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">Complex Subsystem</div>
+<div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+<div style="background: #2d3748; border: 2px solid #4ecdc4; border-radius: 8px; padding: 0.75rem 1.25rem; color: #4ecdc4; font-size: 0.85rem;">ServiceA</div>
+<div style="background: #2d3748; border: 2px solid #f093fb; border-radius: 8px; padding: 0.75rem 1.25rem; color: #f093fb; font-size: 0.85rem;">ServiceB</div>
+<div style="background: #2d3748; border: 2px solid #ffd93d; border-radius: 8px; padding: 0.75rem 1.25rem; color: #ffd93d; font-size: 0.85rem;">ServiceC</div>
+<div style="background: #2d3748; border: 2px solid #74b9ff; border-radius: 8px; padding: 0.75rem 1.25rem; color: #74b9ff; font-size: 0.85rem;">ServiceD</div>
+</div>
+<div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap;">
+<span style="color: #666; font-size: 0.75rem;">internal dependencies</span>
+<span style="color: #4ecdc4;">&#8596;</span>
+<span style="color: #666; font-size: 0.75rem;">initialization order</span>
+<span style="color: #f093fb;">&#8596;</span>
+<span style="color: #666; font-size: 0.75rem;">state management</span>
+</div>
+</div>
 </div>
 
 ---
@@ -66,8 +66,8 @@ class PaymentFacade:
 ```
 
 <div style="background: linear-gradient(135deg, #ff6b6b22 0%, #ee5a2422 100%); border-left: 4px solid #ff6b6b; border-radius: 0 8px 8px 0; padding: 1.25rem 1.5rem; margin: 1.5rem 0;">
-  <div style="font-weight: 700; color: #ff6b6b; margin-bottom: 0.5rem;">Critical Assumption</div>
-  <div style="color: #ccc; font-size: 0.95rem;">Facades assume ownership of subsystem component lifecycles. If external code holds references to subsystem objects, the Facade cannot guarantee consistent state or proper cleanup. This becomes critical when implementing dispose/cleanup patterns.</div>
+<div style="font-weight: 700; color: #ff6b6b; margin-bottom: 0.5rem;">Critical Assumption</div>
+<div style="color: #ccc; font-size: 0.95rem;">Facades assume ownership of subsystem component lifecycles. If external code holds references to subsystem objects, the Facade cannot guarantee consistent state or proper cleanup. This becomes critical when implementing dispose/cleanup patterns.</div>
 </div>
 
 **Request Orchestration Patterns**
@@ -109,24 +109,24 @@ class OrderFacade:
 Encapsulation in Facades operates at multiple levels:
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #e74c3c; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Interface Level</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Hides method signatures, parameter complexity, return types of subsystem</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #e67e22; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Protocol Level</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Hides calling order, initialization sequences, state dependencies</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #f39c12; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Error Level</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Translates subsystem exceptions into domain-specific errors</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <div style="background: #27ae60; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Resource Level</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Manages connections, pooling, caching transparently</div>
-    </div>
-  </div>
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div style="background: #e74c3c; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Interface Level</div>
+<div style="color: #aaa; font-size: 0.9rem;">Hides method signatures, parameter complexity, return types of subsystem</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div style="background: #e67e22; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Protocol Level</div>
+<div style="color: #aaa; font-size: 0.9rem;">Hides calling order, initialization sequences, state dependencies</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div style="background: #f39c12; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Error Level</div>
+<div style="color: #aaa; font-size: 0.9rem;">Translates subsystem exceptions into domain-specific errors</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem;">
+<div style="background: #27ae60; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; min-width: 140px; text-align: center;">Resource Level</div>
+<div style="color: #aaa; font-size: 0.9rem;">Manages connections, pooling, caching transparently</div>
+</div>
+</div>
 </div>
 
 ```python
@@ -193,26 +193,26 @@ class DatabaseFacade:
 Understanding when to use Facade versus [[Adapter]](/topic/design-patterns/adapter) is a common interview topic. The distinction is subtle but important:
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-  <div style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%); border: 2px solid #667eea; border-radius: 12px; padding: 1.5rem;">
-    <div style="color: #667eea; font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Facade Pattern</div>
-    <div style="color: #bbb; font-size: 0.9rem; line-height: 1.6;">
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Intent:</strong> Simplify a complex interface</div>
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Direction:</strong> Many-to-One (multiple subsystems to single interface)</div>
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Interface:</strong> Creates NEW simplified interface</div>
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Coupling:</strong> Client knows only Facade</div>
-      <div><strong style="color: #667eea;">Functionality:</strong> Subset of subsystem capabilities</div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #11998e22 0%, #38ef7d22 100%); border: 2px solid #11998e; border-radius: 12px; padding: 1.5rem;">
-    <div style="color: #11998e; font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Adapter Pattern</div>
-    <div style="color: #bbb; font-size: 0.9rem; line-height: 1.6;">
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Intent:</strong> Make incompatible interface compatible</div>
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Direction:</strong> One-to-One (single adaptee to single target)</div>
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Interface:</strong> Conforms to EXISTING target interface</div>
-      <div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Coupling:</strong> Client knows target interface</div>
-      <div><strong style="color: #11998e;">Functionality:</strong> Complete translation of adaptee</div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%); border: 2px solid #667eea; border-radius: 12px; padding: 1.5rem;">
+<div style="color: #667eea; font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Facade Pattern</div>
+<div style="color: #bbb; font-size: 0.9rem; line-height: 1.6;">
+<div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Intent:</strong> Simplify a complex interface</div>
+<div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Direction:</strong> Many-to-One (multiple subsystems to single interface)</div>
+<div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Interface:</strong> Creates NEW simplified interface</div>
+<div style="margin-bottom: 0.75rem;"><strong style="color: #667eea;">Coupling:</strong> Client knows only Facade</div>
+<div><strong style="color: #667eea;">Functionality:</strong> Subset of subsystem capabilities</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #11998e22 0%, #38ef7d22 100%); border: 2px solid #11998e; border-radius: 12px; padding: 1.5rem;">
+<div style="color: #11998e; font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem; text-align: center;">Adapter Pattern</div>
+<div style="color: #bbb; font-size: 0.9rem; line-height: 1.6;">
+<div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Intent:</strong> Make incompatible interface compatible</div>
+<div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Direction:</strong> One-to-One (single adaptee to single target)</div>
+<div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Interface:</strong> Conforms to EXISTING target interface</div>
+<div style="margin-bottom: 0.75rem;"><strong style="color: #11998e;">Coupling:</strong> Client knows target interface</div>
+<div><strong style="color: #11998e;">Functionality:</strong> Complete translation of adaptee</div>
+</div>
+</div>
 </div>
 
 ### Combined Usage Pattern
@@ -279,8 +279,8 @@ class CheckoutFacade:
 ```
 
 <div style="background: linear-gradient(135deg, #3498db22 0%, #2980b922 100%); border-left: 4px solid #3498db; border-radius: 0 8px 8px 0; padding: 1.25rem 1.5rem; margin: 1.5rem 0;">
-  <div style="font-weight: 700; color: #3498db; margin-bottom: 0.5rem;">Trade-off Analysis</div>
-  <div style="color: #ccc; font-size: 0.95rem;">Using Adapters within a Facade adds a layer of indirection but enables swapping implementations (e.g., switching payment gateways) without changing the Facade. The cost is additional object allocation and method call overhead—typically negligible except in high-frequency paths.</div>
+<div style="font-weight: 700; color: #3498db; margin-bottom: 0.5rem;">Trade-off Analysis</div>
+<div style="color: #ccc; font-size: 0.95rem;">Using Adapters within a Facade adds a layer of indirection but enables swapping implementations (e.g., switching payment gateways) without changing the Facade. The cost is additional object allocation and method call overhead—typically negligible except in high-frequency paths.</div>
 </div>
 
 ---
@@ -438,47 +438,47 @@ class PaymentFacade:
 Complex systems often employ multiple Facade layers, each serving different abstraction levels:
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div style="text-align: center; margin-bottom: 0.5rem;">
-    <span style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">External Clients</span>
-  </div>
-  <div style="text-align: center; margin-bottom: 1.5rem;">
-    <div style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 1rem 2rem; border-radius: 10px; color: white; display: inline-block; box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);">
-      <div style="font-weight: 700; font-size: 1.1rem;">Public API Facade</div>
-      <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">REST/GraphQL endpoints, rate limiting, auth</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #e74c3c; margin: 0.75rem 0;">&#8595;</div>
-  <div style="text-align: center; margin-bottom: 1.5rem;">
-    <div style="background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); padding: 1rem 2rem; border-radius: 10px; color: white; display: inline-block; box-shadow: 0 4px 20px rgba(230, 126, 34, 0.3);">
-      <div style="font-weight: 700; font-size: 1.1rem;">Application Service Facade</div>
-      <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">Use-case orchestration, transactions, business rules</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #e67e22; margin: 0.75rem 0;">&#8595;</div>
-  <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-    <div style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); padding: 0.75rem 1.25rem; border-radius: 8px; color: #1a1a2e; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);">
-      <div style="font-weight: 700;">Domain Facade A</div>
-      <div style="font-size: 0.75rem; opacity: 0.8;">Orders</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); padding: 0.75rem 1.25rem; border-radius: 8px; color: #1a1a2e; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);">
-      <div style="font-weight: 700;">Domain Facade B</div>
-      <div style="font-size: 0.75rem; opacity: 0.8;">Payments</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); padding: 0.75rem 1.25rem; border-radius: 8px; color: #1a1a2e; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);">
-      <div style="font-weight: 700;">Domain Facade C</div>
-      <div style="font-size: 0.75rem; opacity: 0.8;">Inventory</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #f39c12; margin: 0.75rem 0;">&#8595;</div>
-  <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">
-    <div style="text-align: center; color: #666; font-size: 0.75rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Infrastructure Layer</div>
-    <div style="display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
-      <span style="background: #2d3748; color: #27ae60; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">Database</span>
-      <span style="background: #2d3748; color: #3498db; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">Cache</span>
-      <span style="background: #2d3748; color: #9b59b6; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">Message Queue</span>
-      <span style="background: #2d3748; color: #e74c3c; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">External APIs</span>
-    </div>
-  </div>
+<div style="text-align: center; margin-bottom: 0.5rem;">
+<span style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">External Clients</span>
+</div>
+<div style="text-align: center; margin-bottom: 1.5rem;">
+<div style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); padding: 1rem 2rem; border-radius: 10px; color: white; display: inline-block; box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);">
+<div style="font-weight: 700; font-size: 1.1rem;">Public API Facade</div>
+<div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">REST/GraphQL endpoints, rate limiting, auth</div>
+</div>
+</div>
+<div style="text-align: center; color: #e74c3c; margin: 0.75rem 0;">&#8595;</div>
+<div style="text-align: center; margin-bottom: 1.5rem;">
+<div style="background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); padding: 1rem 2rem; border-radius: 10px; color: white; display: inline-block; box-shadow: 0 4px 20px rgba(230, 126, 34, 0.3);">
+<div style="font-weight: 700; font-size: 1.1rem;">Application Service Facade</div>
+<div style="font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem;">Use-case orchestration, transactions, business rules</div>
+</div>
+</div>
+<div style="text-align: center; color: #e67e22; margin: 0.75rem 0;">&#8595;</div>
+<div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+<div style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); padding: 0.75rem 1.25rem; border-radius: 8px; color: #1a1a2e; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);">
+<div style="font-weight: 700;">Domain Facade A</div>
+<div style="font-size: 0.75rem; opacity: 0.8;">Orders</div>
+</div>
+<div style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); padding: 0.75rem 1.25rem; border-radius: 8px; color: #1a1a2e; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);">
+<div style="font-weight: 700;">Domain Facade B</div>
+<div style="font-size: 0.75rem; opacity: 0.8;">Payments</div>
+</div>
+<div style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); padding: 0.75rem 1.25rem; border-radius: 8px; color: #1a1a2e; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);">
+<div style="font-weight: 700;">Domain Facade C</div>
+<div style="font-size: 0.75rem; opacity: 0.8;">Inventory</div>
+</div>
+</div>
+<div style="text-align: center; color: #f39c12; margin: 0.75rem 0;">&#8595;</div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 1rem; border: 1px solid rgba(255,255,255,0.1);">
+<div style="text-align: center; color: #666; font-size: 0.75rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Infrastructure Layer</div>
+<div style="display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+<span style="background: #2d3748; color: #27ae60; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">Database</span>
+<span style="background: #2d3748; color: #3498db; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">Cache</span>
+<span style="background: #2d3748; color: #9b59b6; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">Message Queue</span>
+<span style="background: #2d3748; color: #e74c3c; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem;">External APIs</span>
+</div>
+</div>
 </div>
 
 ### Implementation of Layered Facades
@@ -627,8 +627,8 @@ class PublicAPIFacade:
 ```
 
 <div style="background: linear-gradient(135deg, #9b59b622 0%, #8e44ad22 100%); border-left: 4px solid #9b59b6; border-radius: 0 8px 8px 0; padding: 1.25rem 1.5rem; margin: 1.5rem 0;">
-  <div style="font-weight: 700; color: #9b59b6; margin-bottom: 0.5rem;">Design Choice: Layer Communication</div>
-  <div style="color: #ccc; font-size: 0.95rem;">Each layer should only communicate with the layer immediately below it. Skipping layers (e.g., API facade directly accessing database facade) violates the layered architecture and makes the system harder to reason about, test, and modify.</div>
+<div style="font-weight: 700; color: #9b59b6; margin-bottom: 0.5rem;">Design Choice: Layer Communication</div>
+<div style="color: #ccc; font-size: 0.95rem;">Each layer should only communicate with the layer immediately below it. Skipping layers (e.g., API facade directly accessing database facade) violates the layered architecture and makes the system harder to reason about, test, and modify.</div>
 </div>
 
 ---
@@ -1349,25 +1349,25 @@ class MediaProcessingError(Exception):
 ### Partial Failure Scenarios
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; margin: 2rem 0;">
-  <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Critical Edge Cases</div>
-  <div style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="background: rgba(231, 76, 60, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #e74c3c;">
-      <div style="color: #e74c3c; font-weight: 600; margin-bottom: 0.5rem;">Subsystem Timeout Mid-Operation</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Payment authorized but shipping service times out. Authorization will auto-expire in 7 days. Must track authorization IDs for manual void if shipment creation fails permanently.</div>
-    </div>
-    <div style="background: rgba(230, 126, 34, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #e67e22;">
-      <div style="color: #e67e22; font-weight: 600; margin-bottom: 0.5rem;">Compensation Failure</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Saga compensation step fails (e.g., inventory release fails). System enters inconsistent state. Requires: dead letter queue for failed compensations, manual intervention workflows, idempotent compensation operations.</div>
-    </div>
-    <div style="background: rgba(241, 196, 15, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #f1c40f;">
-      <div style="color: #f1c40f; font-weight: 600; margin-bottom: 0.5rem;">Subsystem State Divergence</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Network partition causes Facade to believe operation failed, but subsystem succeeded. Implement idempotency keys, exactly-once semantics, or compensating transactions with reconciliation.</div>
-    </div>
-    <div style="background: rgba(46, 204, 113, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #2ecc71;">
-      <div style="color: #2ecc71; font-weight: 600; margin-bottom: 0.5rem;">Circular Dependency</div>
-      <div style="color: #aaa; font-size: 0.9rem;">Subsystem A requires initialization data from Subsystem B, which requires A. Solution: lazy initialization, dependency injection containers, or two-phase initialization in Facade constructor.</div>
-    </div>
-  </div>
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Critical Edge Cases</div>
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="background: rgba(231, 76, 60, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #e74c3c;">
+<div style="color: #e74c3c; font-weight: 600; margin-bottom: 0.5rem;">Subsystem Timeout Mid-Operation</div>
+<div style="color: #aaa; font-size: 0.9rem;">Payment authorized but shipping service times out. Authorization will auto-expire in 7 days. Must track authorization IDs for manual void if shipment creation fails permanently.</div>
+</div>
+<div style="background: rgba(230, 126, 34, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #e67e22;">
+<div style="color: #e67e22; font-weight: 600; margin-bottom: 0.5rem;">Compensation Failure</div>
+<div style="color: #aaa; font-size: 0.9rem;">Saga compensation step fails (e.g., inventory release fails). System enters inconsistent state. Requires: dead letter queue for failed compensations, manual intervention workflows, idempotent compensation operations.</div>
+</div>
+<div style="background: rgba(241, 196, 15, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #f1c40f;">
+<div style="color: #f1c40f; font-weight: 600; margin-bottom: 0.5rem;">Subsystem State Divergence</div>
+<div style="color: #aaa; font-size: 0.9rem;">Network partition causes Facade to believe operation failed, but subsystem succeeded. Implement idempotency keys, exactly-once semantics, or compensating transactions with reconciliation.</div>
+</div>
+<div style="background: rgba(46, 204, 113, 0.1); border-radius: 8px; padding: 1rem; border-left: 3px solid #2ecc71;">
+<div style="color: #2ecc71; font-weight: 600; margin-bottom: 0.5rem;">Circular Dependency</div>
+<div style="color: #aaa; font-size: 0.9rem;">Subsystem A requires initialization data from Subsystem B, which requires A. Solution: lazy initialization, dependency injection containers, or two-phase initialization in Facade constructor.</div>
+</div>
+</div>
 </div>
 
 ### Idempotency in Facades
@@ -1887,8 +1887,8 @@ class DistributedOrderFacade:
 ```
 
 <div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border-left: 4px solid #e74c3c; border-radius: 0 8px 8px 0; padding: 1.25rem 1.5rem; margin: 1.5rem 0;">
-  <div style="font-weight: 700; color: #e74c3c; margin-bottom: 0.5rem;">Eventual Consistency Trade-off</div>
-  <div style="color: #ccc; font-size: 0.95rem;">Distributed Facades trade immediate consistency for availability and partition tolerance ([[CAP Theorem]](/topic/system-design/cap-theorem)). The Facade API must communicate this: return handles instead of results, provide status polling, and document staleness windows.</div>
+<div style="font-weight: 700; color: #e74c3c; margin-bottom: 0.5rem;">Eventual Consistency Trade-off</div>
+<div style="color: #ccc; font-size: 0.95rem;">Distributed Facades trade immediate consistency for availability and partition tolerance ([[CAP Theorem]](/topic/system-design/cap-theorem)). The Facade API must communicate this: return handles instead of results, provide status polling, and document staleness windows.</div>
 </div>
 
 ---
@@ -1898,43 +1898,43 @@ class DistributedOrderFacade:
 ### Best Practices
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-  <div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Provide Escape Hatches</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Expose underlying subsystems for power users who need fine-grained control. Don't force all access through Facade.</div>
-  </div>
-  <div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Design for Composition</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Accept dependencies through constructor (DI) rather than creating them internally. Enables testing and flexibility.</div>
-  </div>
-  <div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Translate Errors Consistently</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Convert subsystem exceptions to Facade-specific errors. Include retriability hints and correlation IDs.</div>
-  </div>
-  <div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Document Assumptions</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Clearly state thread-safety guarantees, transaction boundaries, and consistency models.</div>
-  </div>
+<div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Provide Escape Hatches</div>
+<div style="color: #bbb; font-size: 0.9rem;">Expose underlying subsystems for power users who need fine-grained control. Don't force all access through Facade.</div>
+</div>
+<div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Design for Composition</div>
+<div style="color: #bbb; font-size: 0.9rem;">Accept dependencies through constructor (DI) rather than creating them internally. Enables testing and flexibility.</div>
+</div>
+<div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Translate Errors Consistently</div>
+<div style="color: #bbb; font-size: 0.9rem;">Convert subsystem exceptions to Facade-specific errors. Include retriability hints and correlation IDs.</div>
+</div>
+<div style="background: linear-gradient(135deg, #27ae6022 0%, #2ecc7122 100%); border: 1px solid #27ae60; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #27ae60; font-weight: 700; margin-bottom: 0.75rem;">Document Assumptions</div>
+<div style="color: #bbb; font-size: 0.9rem;">Clearly state thread-safety guarantees, transaction boundaries, and consistency models.</div>
+</div>
 </div>
 
 ### Anti-Patterns
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-  <div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">God Facade</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Single Facade with 50+ methods covering unrelated functionality. Split into focused, cohesive Facades.</div>
-  </div>
-  <div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">Transparent Facade</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Facade methods that simply delegate to single subsystem method without adding value. Remove unnecessary indirection.</div>
-  </div>
-  <div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">Shared State Facade</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Facade holds mutable state between method calls. Keep Facades stateless; state belongs in subsystems.</div>
-  </div>
-  <div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
-    <div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">Facade Without Abstraction</div>
-    <div style="color: #bbb; font-size: 0.9rem;">Facade interface exposes implementation details (concrete types, config objects). Define clean, abstract contracts.</div>
-  </div>
+<div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">God Facade</div>
+<div style="color: #bbb; font-size: 0.9rem;">Single Facade with 50+ methods covering unrelated functionality. Split into focused, cohesive Facades.</div>
+</div>
+<div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">Transparent Facade</div>
+<div style="color: #bbb; font-size: 0.9rem;">Facade methods that simply delegate to single subsystem method without adding value. Remove unnecessary indirection.</div>
+</div>
+<div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">Shared State Facade</div>
+<div style="color: #bbb; font-size: 0.9rem;">Facade holds mutable state between method calls. Keep Facades stateless; state belongs in subsystems.</div>
+</div>
+<div style="background: linear-gradient(135deg, #e74c3c22 0%, #c0392b22 100%); border: 1px solid #e74c3c; border-radius: 10px; padding: 1.25rem;">
+<div style="color: #e74c3c; font-weight: 700; margin-bottom: 0.75rem;">Facade Without Abstraction</div>
+<div style="color: #bbb; font-size: 0.9rem;">Facade interface exposes implementation details (concrete types, config objects). Define clean, abstract contracts.</div>
+</div>
 </div>
 
 ---

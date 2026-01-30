@@ -372,27 +372,27 @@ class SagaExecutionCoordinator:
 
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin: 12px 0; font-family: monospace; font-size: 10px;">
 <div><span style="color: #8957e5;">-- T1: Create Order with lock</span></div>
-<div>INSERT INTO orders (id, status, saga_id) VALUES (?, 'PENDING', ?)</div>
-<div style="margin-top: 8px;"><span style="color: #8957e5;">-- Any concurrent operation checks:</span></div>
-<div>IF order.status = 'PENDING' THEN reject("Order locked by saga")</div>
-<div style="margin-top: 8px;"><span style="color: #8957e5;">-- C1 or final step: Release lock</span></div>
-<div>UPDATE orders SET status = 'COMPLETED', saga_id = NULL WHERE id = ?</div>
-</div>
+  <div>INSERT INTO orders (id, status, saga_id) VALUES (?, 'PENDING', ?)</div>
+    <div style="margin-top: 8px;"><span style="color: #8957e5;">-- Any concurrent operation checks:</span></div>
+    <div>IF order.status = 'PENDING' THEN reject("Order locked by saga")</div>
+      <div style="margin-top: 8px;"><span style="color: #8957e5;">-- C1 or final step: Release lock</span></div>
+      <div>UPDATE orders SET status = 'COMPLETED', saga_id = NULL WHERE id = ?</div>
+      </div>
 
-<p><strong>Why not database locks?</strong> Sagas may span seconds to days. Database locks would cause connection exhaustion, deadlocks, and prevent other database operations.</p>
-</div>
-</div>
+      <p><strong>Why not database locks?</strong> Sagas may span seconds to days. Database locks would cause connection exhaustion, deadlocks, and prevent other database operations.</p>
+    </div>
+  </div>
 
-### Pivot and Retriable Transactions
+  ### Pivot and Retriable Transactions
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">TRANSACTION CLASSIFICATION</h4>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; font-size: 11px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">TRANSACTION CLASSIFICATION</h4>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; font-size: 11px;">
 
-<div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Compensatable</div>
-<div style="color: #1e293b;">Can be undone by a compensating transaction. Must execute BEFORE the pivot transaction.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Reserve inventory (can release)</div>
+  <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 16px;">
+  <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Compensatable</div>
+  <div style="color: #1e293b;">Can be undone by a compensating transaction. Must execute BEFORE the pivot transaction.</div>
+  <div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Reserve inventory (can release)</div>
 </div>
 
 <div style="background: rgba(247,129,102,0.1); border-radius: 8px; padding: 16px;">
@@ -521,10 +521,10 @@ Event-driven systems must evolve over time: new fields are added, field types ch
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
 <div style="color: #64748b;">// Old event (v1)</div>
 <div>{"name": "John"}</div>
-<div style="color: #64748b; margin-top: 4px;">// New consumer expects</div>
-<div>{"name": "John", "age": <span style="color: #f78166;">null</span>}</div>
-</div>
-<div style="font-size: 9px; color: #7ee787;">New consumer handles missing fields</div>
+  <div style="color: #64748b; margin-top: 4px;">// New consumer expects</div>
+  <div>{"name": "John", "age": <span style="color: #f78166;">null</span>}</div>
+  </div>
+  <div style="font-size: 9px; color: #7ee787;">New consumer handles missing fields</div>
 </div>
 
 <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
@@ -533,10 +533,10 @@ Event-driven systems must evolve over time: new fields are added, field types ch
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
 <div style="color: #64748b;">// New event (v2)</div>
 <div>{"name": "John", "age": 30}</div>
-<div style="color: #64748b; margin-top: 4px;">// Old consumer sees</div>
-<div>{"name": "John"} <span style="color: #7ee787;">// ignores age</span></div>
-</div>
-<div style="font-size: 9px; color: #58a6ff;">Old consumer ignores unknown fields</div>
+  <div style="color: #64748b; margin-top: 4px;">// Old consumer sees</div>
+  <div>{"name": "John"} <span style="color: #7ee787;">// ignores age</span></div>
+  </div>
+  <div style="font-size: 9px; color: #58a6ff;">Old consumer ignores unknown fields</div>
 </div>
 
 <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
@@ -617,124 +617,124 @@ def consume(message):
 <div style="color: #1e293b; margin-bottom: 12px;">Include version in event type name:</div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
 <div>com.company.order.created.v1</div>
-<div>com.company.order.created.v2</div>
-</div>
-<div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-<div><span style="color: #7ee787;">+</span> Explicit version visible in message</div>
-<div><span style="color: #7ee787;">+</span> Easy to route different versions</div>
-<div><span style="color: #f85149;">-</span> Topic explosion (v1 topic, v2 topic)</div>
-<div><span style="color: #f85149;">-</span> Consumers must subscribe to all versions</div>
-</div>
-</div>
+  <div>com.company.order.created.v2</div>
+  </div>
+  <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+  <div><span style="color: #7ee787;">+</span> Explicit version visible in message</div>
+    <div><span style="color: #7ee787;">+</span> Easy to route different versions</div>
+      <div><span style="color: #f85149;">-</span> Topic explosion (v1 topic, v2 topic)</div>
+        <div><span style="color: #f85149;">-</span> Consumers must subscribe to all versions</div>
+        </div>
+      </div>
 
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">2. VERSION FIELD IN PAYLOAD</div>
-<div style="color: #1e293b; margin-bottom: 12px;">Single event type with version metadata:</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
-<div>{</div>
-<div>  "type": "OrderCreated",</div>
-<div>  "version": 2,</div>
-<div>  "data": { ... }</div>
-<div>}</div>
-</div>
-<div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-<div><span style="color: #7ee787;">+</span> Single topic per event type</div>
-<div><span style="color: #7ee787;">+</span> Consumer routes internally</div>
-<div><span style="color: #f85149;">-</span> Consumer must handle all versions</div>
-</div>
-</div>
+      <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">2. VERSION FIELD IN PAYLOAD</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">Single event type with version metadata:</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
+      <div>{</div>
+        <div>  "type": "OrderCreated",</div>
+          <div>  "version": 2,</div>
+            <div>  "data": { ... }</div>
+              <div>}</div>
+              </div>
+              <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+              <div><span style="color: #7ee787;">+</span> Single topic per event type</div>
+                <div><span style="color: #7ee787;">+</span> Consumer routes internally</div>
+                  <div><span style="color: #f85149;">-</span> Consumer must handle all versions</div>
+                  </div>
+                </div>
 
-<div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #f78166; font-weight: bold; margin-bottom: 12px;">3. UPCASTER/DOWNCASTER PATTERN</div>
-<div style="color: #1e293b; margin-bottom: 12px;">Transform events to latest version on read:</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
-<div><span style="color: #8957e5;">def</span> upcast(event):</div>
-<div>  <span style="color: #8957e5;">if</span> event.version == 1:</div>
-<div>    event.data['age'] = None</div>
-<div>    event.version = 2</div>
-<div>  <span style="color: #8957e5;">return</span> event</div>
-</div>
-<div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-<div><span style="color: #7ee787;">+</span> Consumers only handle latest version</div>
-<div><span style="color: #7ee787;">+</span> Centralized transformation logic</div>
-<div><span style="color: #f85149;">-</span> Upcast chain can grow long</div>
-</div>
-</div>
+                <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px;">
+                <div style="color: #f78166; font-weight: bold; margin-bottom: 12px;">3. UPCASTER/DOWNCASTER PATTERN</div>
+                <div style="color: #1e293b; margin-bottom: 12px;">Transform events to latest version on read:</div>
+                <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
+                <div><span style="color: #8957e5;">def</span> upcast(event):</div>
+                  <div>  <span style="color: #8957e5;">if</span> event.version == 1:</div>
+                    <div>    event.data['age'] = None</div>
+                      <div>    event.version = 2</div>
+                        <div>  <span style="color: #8957e5;">return</span> event</div>
+                        </div>
+                        <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+                        <div><span style="color: #7ee787;">+</span> Consumers only handle latest version</div>
+                          <div><span style="color: #7ee787;">+</span> Centralized transformation logic</div>
+                            <div><span style="color: #f85149;">-</span> Upcast chain can grow long</div>
+                            </div>
+                          </div>
 
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">4. COPY-AND-REPLACE MIGRATION</div>
-<div style="color: #1e293b; margin-bottom: 12px;">Migrate all events to new version:</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
-<div>1. Create new topic with v2 schema</div>
-<div>2. Migrate all v1 events to v2</div>
-<div>3. Switch consumers to new topic</div>
-<div>4. Deprecate old topic</div>
-</div>
-<div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-<div><span style="color: #7ee787;">+</span> Clean slate, no legacy handling</div>
-<div><span style="color: #f85149;">-</span> Expensive for large event stores</div>
-<div><span style="color: #f85149;">-</span> Requires coordinated cutover</div>
-</div>
-</div>
+                          <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
+                          <div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">4. COPY-AND-REPLACE MIGRATION</div>
+                          <div style="color: #1e293b; margin-bottom: 12px;">Migrate all events to new version:</div>
+                          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
+                          <div>1. Create new topic with v2 schema</div>
+                            <div>2. Migrate all v1 events to v2</div>
+                              <div>3. Switch consumers to new topic</div>
+                                <div>4. Deprecate old topic</div>
+                                </div>
+                                <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+                                <div><span style="color: #7ee787;">+</span> Clean slate, no legacy handling</div>
+                                  <div><span style="color: #f85149;">-</span> Expensive for large event stores</div>
+                                    <div><span style="color: #f85149;">-</span> Requires coordinated cutover</div>
+                                    </div>
+                                  </div>
 
-</div>
-</div>
+                                </div>
+                              </div>
 
-### Breaking vs Non-Breaking Changes
+                              ### Breaking vs Non-Breaking Changes
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">CHANGE CLASSIFICATION</h4>
+                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+                              <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">CHANGE CLASSIFICATION</h4>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
-<div>
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 12px; font-size: 12px;">NON-BREAKING CHANGES</div>
-<div style="font-size: 10px; color: #1e293b;">
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-<span style="color: #7ee787;">+</span> Add optional field with default
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-<span style="color: #7ee787;">+</span> Add new event type
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-<span style="color: #7ee787;">+</span> Add optional enum value (at end)
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
-<span style="color: #7ee787;">+</span> Expand numeric range
-</div>
-</div>
-</div>
+                              <div>
+                                <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px; font-size: 12px;">NON-BREAKING CHANGES</div>
+                                <div style="font-size: 10px; color: #1e293b;">
+                                <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+                                <span style="color: #7ee787;">+</span> Add optional field with default
+                              </div>
+                              <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+                              <span style="color: #7ee787;">+</span> Add new event type
+                            </div>
+                            <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+                            <span style="color: #7ee787;">+</span> Add optional enum value (at end)
+                          </div>
+                          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
+                          <span style="color: #7ee787;">+</span> Expand numeric range
+                        </div>
+                      </div>
+                    </div>
 
-<div>
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px; font-size: 12px;">BREAKING CHANGES</div>
-<div style="font-size: 10px; color: #1e293b;">
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-<span style="color: #f85149;">-</span> Remove field
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-<span style="color: #f85149;">-</span> Rename field
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-<span style="color: #f85149;">-</span> Change field type (int -> string)
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-<span style="color: #f85149;">-</span> Make optional field required
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
-<span style="color: #f85149;">-</span> Change semantic meaning
-</div>
-</div>
-</div>
+                    <div>
+                      <div style="color: #f85149; font-weight: bold; margin-bottom: 12px; font-size: 12px;">BREAKING CHANGES</div>
+                      <div style="font-size: 10px; color: #1e293b;">
+                      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+                      <span style="color: #f85149;">-</span> Remove field
+                    </div>
+                    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+                    <span style="color: #f85149;">-</span> Rename field
+                  </div>
+                  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+                  <span style="color: #f85149;">-</span> Change field type (int -> string)
+                </div>
+                <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+                <span style="color: #f85149;">-</span> Make optional field required
+              </div>
+              <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
+              <span style="color: #f85149;">-</span> Change semantic meaning
+            </div>
+          </div>
+        </div>
 
-</div>
-</div>
+      </div>
+    </div>
 
-<div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f78166;">
-<div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">THE SEMANTIC CHANGE TRAP</div>
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
-<p>The most insidious breaking change is semantic: the field name and type are unchanged, but the meaning shifts. Example: <code>price</code> field changes from cents to dollars, or <code>status</code> enum value "PENDING" previously meant "awaiting payment" but now means "awaiting review".</p>
-<p style="margin-top: 8px;"><strong style="color: #7ee787;">Prevention:</strong> Document field semantics in schema, use specific field names (price_cents vs price_dollars), treat semantic changes as new fields.</p>
-</div>
+    <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f78166;">
+    <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">THE SEMANTIC CHANGE TRAP</div>
+    <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
+    <p>The most insidious breaking change is semantic: the field name and type are unchanged, but the meaning shifts. Example: <code>price</code> field changes from cents to dollars, or <code>status</code> enum value "PENDING" previously meant "awaiting payment" but now means "awaiting review".</p>
+    <p style="margin-top: 8px;"><strong style="color: #7ee787;">Prevention:</strong> Document field semantics in schema, use specific field names (price_cents vs price_dollars), treat semantic changes as new fields.</p>
+  </div>
 </div>
 
 ### Interview Questions: Event Versioning
@@ -800,8 +800,8 @@ def consume(message):
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
 
 <div>
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6; margin-bottom: 16px;">
-A Dead Letter Queue is a holding area for messages that cannot be processed successfully. Instead of blocking the main queue or losing messages, unprocessable messages are moved to the DLQ for later inspection and remediation.
+  <div style="font-size: 11px; color: #1e293b; line-height: 1.6; margin-bottom: 16px;">
+  A Dead Letter Queue is a holding area for messages that cannot be processed successfully. Instead of blocking the main queue or losing messages, unprocessable messages are moved to the DLQ for later inspection and remediation.
 </div>
 
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px;">
@@ -845,26 +845,26 @@ A Dead Letter Queue is a holding area for messages that cannot be processed succ
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px;">
 
 <div>
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">POISON PILL MESSAGES</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
-<div style="margin-bottom: 8px;">Messages that will NEVER succeed:</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Malformed JSON/invalid schema</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Required field missing</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Business rule violation</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Referenced entity does not exist</div>
-<div style="padding-left: 12px;">- Consumer bug (for this message type)</div>
+  <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">POISON PILL MESSAGES</div>
+  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
+  <div style="margin-bottom: 8px;">Messages that will NEVER succeed:</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Malformed JSON/invalid schema</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Required field missing</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Business rule violation</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Referenced entity does not exist</div>
+  <div style="padding-left: 12px;">- Consumer bug (for this message type)</div>
 </div>
 </div>
 
 <div>
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">TRANSIENT FAILURES (after max retries)</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
-<div style="margin-bottom: 8px;">Messages that MIGHT succeed later:</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Downstream service unavailable</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Database connection timeout</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Rate limit exceeded</div>
-<div style="padding-left: 12px; margin-bottom: 4px;">- Resource temporarily locked</div>
-<div style="padding-left: 12px;">- Network partition</div>
+  <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">TRANSIENT FAILURES (after max retries)</div>
+  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
+  <div style="margin-bottom: 8px;">Messages that MIGHT succeed later:</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Downstream service unavailable</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Database connection timeout</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Rate limit exceeded</div>
+  <div style="padding-left: 12px; margin-bottom: 4px;">- Resource temporarily locked</div>
+  <div style="padding-left: 12px;">- Network partition</div>
 </div>
 </div>
 
@@ -929,73 +929,73 @@ class DeadLetterQueueHandler:
 <div style="color: #1e293b; margin-bottom: 12px;">Operator inspects message, fixes issue, triggers replay</div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
 <div>1. View message in DLQ UI</div>
-<div>2. Identify and fix root cause</div>
-<div>3. Click "Replay" button</div>
-<div>4. Monitor for success</div>
-</div>
-<div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Low volume, complex issues</div>
-</div>
+  <div>2. Identify and fix root cause</div>
+    <div>3. Click "Replay" button</div>
+      <div>4. Monitor for success</div>
+      </div>
+      <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Low volume, complex issues</div>
+    </div>
 
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">SCHEDULED RETRY</div>
-<div style="color: #1e293b; margin-bottom: 12px;">Periodically attempt to reprocess DLQ messages</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
-<div>Every hour:</div>
-<div>  - Read oldest N from DLQ</div>
-<div>  - Attempt reprocessing</div>
-<div>  - On success: delete from DLQ</div>
-<div>  - On failure: update retry metadata</div>
-</div>
-<div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Transient failures that self-heal</div>
-</div>
+    <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">SCHEDULED RETRY</div>
+    <div style="color: #1e293b; margin-bottom: 12px;">Periodically attempt to reprocess DLQ messages</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
+    <div>Every hour:</div>
+      <div>  - Read oldest N from DLQ</div>
+        <div>  - Attempt reprocessing</div>
+          <div>  - On success: delete from DLQ</div>
+            <div>  - On failure: update retry metadata</div>
+            </div>
+            <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Transient failures that self-heal</div>
+          </div>
 
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">BULK REPLAY WITH FILTER</div>
-<div style="color: #1e293b; margin-bottom: 12px;">After fixing a bug, replay affected messages</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
-<div>dlq-cli replay \</div>
-<div>  --filter "error LIKE '%NullPointer%'" \</div>
-<div>  --since 2024-01-15 \</div>
-<div>  --rate-limit 100/sec</div>
-</div>
-<div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Post-bugfix recovery</div>
-</div>
+          <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
+          <div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">BULK REPLAY WITH FILTER</div>
+          <div style="color: #1e293b; margin-bottom: 12px;">After fixing a bug, replay affected messages</div>
+          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
+          <div>dlq-cli replay \</div>
+            <div>  --filter "error LIKE '%NullPointer%'" \</div>
+              <div>  --since 2024-01-15 \</div>
+                <div>  --rate-limit 100/sec</div>
+                </div>
+                <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Post-bugfix recovery</div>
+              </div>
 
-</div>
-</div>
+            </div>
+          </div>
 
-### DLQ Monitoring and Alerting
+          ### DLQ Monitoring and Alerting
 
-<div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f85149;">
-<div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL METRICS TO MONITOR</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
+          <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f85149;">
+          <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL METRICS TO MONITOR</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
 
-<div style="color: #1e293b;">
-<div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Depth:</strong> Number of messages in DLQ</div>
-<div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Depth > threshold OR growing trend</div>
+          <div style="color: #1e293b;">
+          <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Depth:</strong> Number of messages in DLQ</div>
+          <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Depth > threshold OR growing trend</div>
 
-<div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Ingress Rate:</strong> Messages entering DLQ per minute</div>
-<div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Sudden spike indicates systemic issue</div>
-</div>
+          <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Ingress Rate:</strong> Messages entering DLQ per minute</div>
+          <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Sudden spike indicates systemic issue</div>
+        </div>
 
-<div style="color: #1e293b;">
-<div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Message Age:</strong> Oldest message in DLQ</div>
-<div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Messages older than SLA indicate stuck remediation</div>
+        <div style="color: #1e293b;">
+        <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Message Age:</strong> Oldest message in DLQ</div>
+        <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Messages older than SLA indicate stuck remediation</div>
 
-<div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Error Type Distribution:</strong> Breakdown by error category</div>
-<div style="color: #64748b; font-size: 10px;">Alert: New error type appears</div>
-</div>
+        <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Error Type Distribution:</strong> Breakdown by error category</div>
+        <div style="color: #64748b; font-size: 10px;">Alert: New error type appears</div>
+      </div>
 
-</div>
-</div>
+    </div>
+  </div>
 
-### DLQ vs Retry Topics
+  ### DLQ vs Retry Topics
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">RETRY TOPIC PATTERN (KAFKA)</h4>
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">RETRY TOPIC PATTERN (KAFKA)</h4>
 
-<div style="font-size: 11px; color: #1e293b; margin-bottom: 16px;">
-For systems like Kafka where re-delivery with delay is not native, implement a retry topic chain:
+  <div style="font-size: 11px; color: #1e293b; margin-bottom: 16px;">
+  For systems like Kafka where re-delivery with delay is not native, implement a retry topic chain:
 </div>
 
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px; font-size: 10px; color: #1e293b; text-align: center;">
@@ -1016,35 +1016,35 @@ For systems like Kafka where re-delivery with delay is not native, implement a r
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">RETRY TOPIC ADVANTAGES</div>
 <div style="color: #1e293b;">
 <div>+ Automatic exponential backoff</div>
-<div>+ Failed messages don't block healthy ones</div>
-<div>+ Separate consumer groups per retry level</div>
-<div>+ Visibility into retry progression</div>
-</div>
-</div>
+  <div>+ Failed messages don't block healthy ones</div>
+    <div>+ Separate consumer groups per retry level</div>
+      <div>+ Visibility into retry progression</div>
+      </div>
+    </div>
 
-<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; font-size: 10px;">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">IMPLEMENTATION CONCERNS</div>
-<div style="color: #1e293b;">
-<div>- Topic proliferation (N retry levels x M topics)</div>
-<div>- Ordering not preserved across retries</div>
-<div>- Consumer must handle republishing</div>
-<div>- Delay achieved via consumer pause, not native</div>
-</div>
-</div>
+    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; font-size: 10px;">
+    <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">IMPLEMENTATION CONCERNS</div>
+    <div style="color: #1e293b;">
+    <div>- Topic proliferation (N retry levels x M topics)</div>
+      <div>- Ordering not preserved across retries</div>
+        <div>- Consumer must handle republishing</div>
+          <div>- Delay achieved via consumer pause, not native</div>
+          </div>
+        </div>
 
-</div>
-</div>
+      </div>
+    </div>
 
-### Interview Questions: Dead Letter Queues
+    ### Interview Questions: Dead Letter Queues
 
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
-<h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
+    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
+    <h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is a dead letter queue and when should messages be sent there?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> A DLQ is a separate queue for messages that cannot be processed after exhausting retry attempts. Messages go to DLQ when: (1) They fail permanently - schema invalid, business rule violated, required data missing, (2) They fail transiently but max retries exceeded - downstream service remained unavailable. The key decision is: can this message EVER succeed? If no, send to DLQ immediately. If yes but it failed too many times, send to DLQ for later investigation.
-</div>
+    <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is a dead letter queue and when should messages be sent there?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+    <strong>Expected Answer:</strong> A DLQ is a separate queue for messages that cannot be processed after exhausting retry attempts. Messages go to DLQ when: (1) They fail permanently - schema invalid, business rule violated, required data missing, (2) They fail transiently but max retries exceeded - downstream service remained unavailable. The key decision is: can this message EVER succeed? If no, send to DLQ immediately. If yes but it failed too many times, send to DLQ for later investigation.
+  </div>
 </div>
 
 <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">

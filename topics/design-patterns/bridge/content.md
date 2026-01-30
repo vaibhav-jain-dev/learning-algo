@@ -781,21 +781,21 @@ with UserRepository(sqlite_driver, ":memory:") as user_repo:
 <br><br>
 With inheritance, if you have M abstractions and N implementations, you need M x N classes:
 <ul>
-<li>3 shapes x 4 colors = 12 classes</li>
-<li>Add 1 color = 3 more classes</li>
+  <li>3 shapes x 4 colors = 12 classes</li>
+  <li>Add 1 color = 3 more classes</li>
 </ul>
 
 With Bridge (composition), you need M + N classes:
 <ul>
-<li>3 shapes + 4 colors = 7 classes</li>
-<li>Add 1 color = 1 more class</li>
+  <li>3 shapes + 4 colors = 7 classes</li>
+  <li>Add 1 color = 1 more class</li>
 </ul>
 
 <strong>Additional benefits:</strong>
 <ul>
-<li>Can change implementation at runtime</li>
-<li>Abstraction and implementation can evolve independently</li>
-<li>Better adherence to Single Responsibility Principle</li>
+  <li>Can change implementation at runtime</li>
+  <li>Abstraction and implementation can evolve independently</li>
+  <li>Better adherence to Single Responsibility Principle</li>
 </ul>
 </div>
 </details>
@@ -830,16 +830,16 @@ Abstraction --has--> Implementor
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Bridge:</strong> Use during initial design
 <ul>
-<li>You anticipate multiple abstractions AND implementations</li>
-<li>You want to decouple two hierarchies from the start</li>
-<li>Both sides will evolve independently</li>
+  <li>You anticipate multiple abstractions AND implementations</li>
+  <li>You want to decouple two hierarchies from the start</li>
+  <li>Both sides will evolve independently</li>
 </ul>
 
 <strong>Adapter:</strong> Use after the fact
 <ul>
-<li>You have existing incompatible interfaces</li>
-<li>You're integrating legacy code or third-party libraries</li>
-<li>You want to make something work without modifying it</li>
+  <li>You have existing incompatible interfaces</li>
+  <li>You're integrating legacy code or third-party libraries</li>
+  <li>You want to make something work without modifying it</li>
 </ul>
 
 <strong>Key difference:</strong> Bridge is intentional separation; Adapter is a compatibility fix.
@@ -895,9 +895,9 @@ logger.log("Application started")
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 <strong>Testing strategies:</strong>
 <ol>
-<li><strong>Test abstractions with mock implementations:</strong> Verify abstraction calls implementation correctly</li>
-<li><strong>Test implementations independently:</strong> Unit test each concrete implementation</li>
-<li><strong>Integration tests:</strong> Test real abstraction + implementation combinations</li>
+  <li><strong>Test abstractions with mock implementations:</strong> Verify abstraction calls implementation correctly</li>
+  <li><strong>Test implementations independently:</strong> Unit test each concrete implementation</li>
+  <li><strong>Integration tests:</strong> Test real abstraction + implementation combinations</li>
 </ol>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px;">
 def test_alert_notification_formats_message():

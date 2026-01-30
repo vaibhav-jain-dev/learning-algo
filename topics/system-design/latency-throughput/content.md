@@ -5,11 +5,11 @@
 Latency and throughput represent the fundamental duality of system performance measurement. Latency quantifies the time dimension of individual operations, while throughput captures the capacity dimension of aggregate work. These metrics exhibit complex interdependencies governed by queuing theory, resource contention, and architectural choices. Mastering their internal mechanisms, measurement methodologies, and optimization strategies is essential for designing systems that meet stringent performance requirements under varying load conditions.
 
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; border-radius: 0 12px 12px 0; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #92400e; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-    <span style="background: #f59e0b; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">!</span>
+<h4 style="color: #92400e; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+<span style="background: #f59e0b; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">!</span>
     Core Assumption
-  </h4>
-  <p style="color: #78350f; margin-bottom: 0;">Latency and throughput are NOT inversely proportional by definition. They exhibit different relationships depending on system state: independent in the under-utilized region, negatively correlated in the saturation region, and positively correlated during cascading failures. Understanding which regime your system operates in determines which optimizations apply.</p>
+</h4>
+<p style="color: #78350f; margin-bottom: 0;">Latency and throughput are NOT inversely proportional by definition. They exhibit different relationships depending on system state: independent in the under-utilized region, negatively correlated in the saturation region, and positively correlated during cascading failures. Understanding which regime your system operates in determines which optimizations apply.</p>
 </div>
 
 ## Why This Matters (Real-World Context)
@@ -50,54 +50,54 @@ The architectural implication: Netflix runs different subsystems optimized for d
 Latency is not a monolithic measurement but a composition of discrete phases, each with distinct characteristics and optimization strategies.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Request Latency Decomposition</h4>
-  <div style="display: flex; flex-direction: column; gap: 4px;">
-    <div style="display: flex; align-items: stretch;">
-      <div style="background: #fee2e2; color: #991b1b; padding: 16px; border-radius: 8px 0 0 8px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
-        <div style="font-weight: 600;">Propagation Delay</div>
-        <div style="font-size: 0.85em; opacity: 0.9;">Physical signal travel</div>
-      </div>
-      <div style="background: #fecaca; flex: 1; padding: 16px; display: flex; align-items: center;">
-        <span style="color: #991b1b; font-size: 0.9em;"><strong>Formula:</strong> distance / (speed_of_light * 0.67) | <strong>NYC to London:</strong> ~28ms minimum</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: stretch;">
-      <div style="background: #fef3c7; color: #92400e; padding: 16px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
-        <div style="font-weight: 600;">Transmission Delay</div>
-        <div style="font-size: 0.85em; opacity: 0.9;">Bits onto wire</div>
-      </div>
-      <div style="background: #fef9c3; flex: 1; padding: 16px; display: flex; align-items: center;">
-        <span style="color: #92400e; font-size: 0.9em;"><strong>Formula:</strong> packet_size / bandwidth | <strong>1KB on 1Gbps:</strong> ~8us</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: stretch;">
-      <div style="background: #dbeafe; color: #1e40af; padding: 16px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
-        <div style="font-weight: 600;">Queuing Delay</div>
-        <div style="font-size: 0.85em; opacity: 0.9;">Waiting for resources</div>
-      </div>
-      <div style="background: #eff6ff; flex: 1; padding: 16px; display: flex; align-items: center;">
-        <span style="color: #1e40af; font-size: 0.9em;"><strong>Behavior:</strong> Exponential growth as utilization approaches 100% | <strong>Most variable component</strong></span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: stretch;">
-      <div style="background: #dcfce7; color: #166534; padding: 16px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
-        <div style="font-weight: 600;">Processing Delay</div>
-        <div style="font-size: 0.85em; opacity: 0.9;">Actual computation</div>
-      </div>
-      <div style="background: #f0fdf4; flex: 1; padding: 16px; display: flex; align-items: center;">
-        <span style="color: #166534; font-size: 0.9em;"><strong>Components:</strong> CPU cycles + memory access + I/O waits | <strong>Most controllable</strong></span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: stretch;">
-      <div style="background: #f3e8ff; color: #6b21a8; padding: 16px; border-radius: 0 0 8px 8px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
-        <div style="font-weight: 600;">Protocol Overhead</div>
-        <div style="font-size: 0.85em; opacity: 0.9;">Handshakes, headers</div>
-      </div>
-      <div style="background: #faf5ff; flex: 1; padding: 16px; border-radius: 0 0 8px 0; display: flex; align-items: center;">
-        <span style="color: #6b21a8; font-size: 0.9em;"><strong>TCP:</strong> 1 RTT | <strong>TLS 1.2:</strong> 2 RTT | <strong>TLS 1.3:</strong> 1 RTT | <strong>QUIC:</strong> 0 RTT (resumed)</span>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin-top: 0;">Request Latency Decomposition</h4>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: stretch;">
+<div style="background: #fee2e2; color: #991b1b; padding: 16px; border-radius: 8px 0 0 8px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-weight: 600;">Propagation Delay</div>
+<div style="font-size: 0.85em; opacity: 0.9;">Physical signal travel</div>
+</div>
+<div style="background: #fecaca; flex: 1; padding: 16px; display: flex; align-items: center;">
+<span style="color: #991b1b; font-size: 0.9em;"><strong>Formula:</strong> distance / (speed_of_light * 0.67) | <strong>NYC to London:</strong> ~28ms minimum</span>
+</div>
+</div>
+<div style="display: flex; align-items: stretch;">
+<div style="background: #fef3c7; color: #92400e; padding: 16px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-weight: 600;">Transmission Delay</div>
+<div style="font-size: 0.85em; opacity: 0.9;">Bits onto wire</div>
+</div>
+<div style="background: #fef9c3; flex: 1; padding: 16px; display: flex; align-items: center;">
+<span style="color: #92400e; font-size: 0.9em;"><strong>Formula:</strong> packet_size / bandwidth | <strong>1KB on 1Gbps:</strong> ~8us</span>
+</div>
+</div>
+<div style="display: flex; align-items: stretch;">
+<div style="background: #dbeafe; color: #1e40af; padding: 16px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-weight: 600;">Queuing Delay</div>
+<div style="font-size: 0.85em; opacity: 0.9;">Waiting for resources</div>
+</div>
+<div style="background: #eff6ff; flex: 1; padding: 16px; display: flex; align-items: center;">
+<span style="color: #1e40af; font-size: 0.9em;"><strong>Behavior:</strong> Exponential growth as utilization approaches 100% | <strong>Most variable component</strong></span>
+</div>
+</div>
+<div style="display: flex; align-items: stretch;">
+<div style="background: #dcfce7; color: #166534; padding: 16px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-weight: 600;">Processing Delay</div>
+<div style="font-size: 0.85em; opacity: 0.9;">Actual computation</div>
+</div>
+<div style="background: #f0fdf4; flex: 1; padding: 16px; display: flex; align-items: center;">
+<span style="color: #166534; font-size: 0.9em;"><strong>Components:</strong> CPU cycles + memory access + I/O waits | <strong>Most controllable</strong></span>
+</div>
+</div>
+<div style="display: flex; align-items: stretch;">
+<div style="background: #f3e8ff; color: #6b21a8; padding: 16px; border-radius: 0 0 8px 8px; min-width: 160px; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-weight: 600;">Protocol Overhead</div>
+<div style="font-size: 0.85em; opacity: 0.9;">Handshakes, headers</div>
+</div>
+<div style="background: #faf5ff; flex: 1; padding: 16px; border-radius: 0 0 8px 0; display: flex; align-items: center;">
+<span style="color: #6b21a8; font-size: 0.9em;"><strong>TCP:</strong> 1 RTT | <strong>TLS 1.2:</strong> 2 RTT | <strong>TLS 1.3:</strong> 1 RTT | <strong>QUIC:</strong> 0 RTT (resumed)</span>
+</div>
+</div>
+</div>
 </div>
 
 **Critical Insight**: Queuing delay is the only component that can grow unboundedly. All other components have physical or computational upper bounds. This is why queuing theory is central to understanding latency behavior under load.
@@ -105,11 +105,11 @@ Latency is not a monolithic measurement but a composition of discrete phases, ea
 ### Throughput: Capacity vs. Goodput
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-left: 4px solid #10b981; border-radius: 0 12px 12px 0; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #065f46; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-    <span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">D</span>
+<h4 style="color: #065f46; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+<span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">D</span>
     Design Choice
-  </h4>
-  <p style="color: #064e3b; margin-bottom: 0;"><strong>Throughput vs. Goodput</strong>: Raw throughput measures all operations completed. Goodput measures only successful, useful operations. A system with 10K RPS but 20% errors has 10K throughput but only 8K goodput. Always measure and alert on goodput, not just throughput.</p>
+</h4>
+<p style="color: #064e3b; margin-bottom: 0;"><strong>Throughput vs. Goodput</strong>: Raw throughput measures all operations completed. Goodput measures only successful, useful operations. A system with 10K RPS but 20% errors has 10K throughput but only 8K goodput. Always measure and alert on goodput, not just throughput.</p>
 </div>
 
 **Throughput Limiting Factors**:
@@ -137,27 +137,27 @@ Latency is not a monolithic measurement but a composition of discrete phases, ea
 ### Little's Law: The Universal Constraint
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0; font-size: 1.1em;">Little's Law: Fundamental Queuing Relationship</h4>
-  <div style="background: #1e40af; border-radius: 8px; padding: 24px; text-align: center; margin: 16px 0;">
-    <span style="color: white; font-size: 1.8em; font-family: 'Georgia', serif; font-weight: bold;">L = lambda * W</span>
-  </div>
-  <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 20px;">
-    <div style="background: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 180px; border: 2px solid #e2e8f0;">
-      <div style="color: #1e40af; font-weight: bold; font-size: 1.2em;">L (Concurrency)</div>
-      <div style="color: #64748b; font-size: 0.9em; margin-top: 4px;">Average items in system</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Includes queued + in-service</div>
-    </div>
-    <div style="background: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 180px; border: 2px solid #e2e8f0;">
-      <div style="color: #059669; font-weight: bold; font-size: 1.2em;">lambda (Throughput)</div>
-      <div style="color: #64748b; font-size: 0.9em; margin-top: 4px;">Arrival/departure rate</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Items per unit time</div>
-    </div>
-    <div style="background: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 180px; border: 2px solid #e2e8f0;">
-      <div style="color: #dc2626; font-weight: bold; font-size: 1.2em;">W (Latency)</div>
-      <div style="color: #64748b; font-size: 0.9em; margin-top: 4px;">Average time in system</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Wait time + service time</div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin-top: 0; font-size: 1.1em;">Little's Law: Fundamental Queuing Relationship</h4>
+<div style="background: #1e40af; border-radius: 8px; padding: 24px; text-align: center; margin: 16px 0;">
+<span style="color: white; font-size: 1.8em; font-family: 'Georgia', serif; font-weight: bold;">L = lambda * W</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 20px;">
+<div style="background: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 180px; border: 2px solid #e2e8f0;">
+<div style="color: #1e40af; font-weight: bold; font-size: 1.2em;">L (Concurrency)</div>
+<div style="color: #64748b; font-size: 0.9em; margin-top: 4px;">Average items in system</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Includes queued + in-service</div>
+</div>
+<div style="background: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 180px; border: 2px solid #e2e8f0;">
+<div style="color: #059669; font-weight: bold; font-size: 1.2em;">lambda (Throughput)</div>
+<div style="color: #64748b; font-size: 0.9em; margin-top: 4px;">Arrival/departure rate</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Items per unit time</div>
+</div>
+<div style="background: white; padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 180px; border: 2px solid #e2e8f0;">
+<div style="color: #dc2626; font-weight: bold; font-size: 1.2em;">W (Latency)</div>
+<div style="color: #64748b; font-size: 0.9em; margin-top: 4px;">Average time in system</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Wait time + service time</div>
+</div>
+</div>
 </div>
 
 **Little's Law Applications**:
@@ -175,93 +175,93 @@ Latency is not a monolithic measurement but a composition of discrete phases, ea
    - Example: 150 concurrent requests with 100 worker capacity = 50 queued
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 4px solid #ef4444; border-radius: 0 12px 12px 0; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #991b1b; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-    <span style="background: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">T</span>
+<h4 style="color: #991b1b; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+<span style="background: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">T</span>
     Trade-off Alert
-  </h4>
-  <p style="color: #7f1d1d; margin-bottom: 0;"><strong>Little's Law Caveat</strong>: The law holds for stable systems where arrival rate equals departure rate. During traffic spikes where arrival > departure, queue depth grows unboundedly. This is why [[load-shedding]](/topics/system-design/load-shedding) and [[backpressure]](/topics/system-design/backpressure) mechanisms are critical.</p>
+</h4>
+<p style="color: #7f1d1d; margin-bottom: 0;"><strong>Little's Law Caveat</strong>: The law holds for stable systems where arrival rate equals departure rate. During traffic spikes where arrival > departure, queue depth grows unboundedly. This is why [[load-shedding]](/topics/system-design/load-shedding) and [[backpressure]](/topics/system-design/backpressure) mechanisms are critical.</p>
 </div>
 
 ### Latency Numbers Every Engineer Must Know
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Memory and Storage Hierarchy (2024 Reference)</h4>
-  <div style="display: flex; flex-direction: column; gap: 6px;">
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f0fdf4; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #166534;">L1 Cache Reference</div>
-      <div style="min-width: 100px; font-weight: bold; color: #166534;">0.5 ns</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">~4 CPU cycles</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f0fdf4; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #166534;">Branch Mispredict</div>
-      <div style="min-width: 100px; font-weight: bold; color: #166534;">5 ns</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">~20 CPU cycles pipeline flush</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f0fdf4; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #166534;">L2 Cache Reference</div>
-      <div style="min-width: 100px; font-weight: bold; color: #166534;">7 ns</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">14x L1 latency</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fefce8; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #854d0e;">Mutex Lock/Unlock</div>
-      <div style="min-width: 100px; font-weight: bold; color: #854d0e;">25 ns</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">Uncontended; contended can be 1000x worse</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fefce8; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #854d0e;">Main Memory Reference</div>
-      <div style="min-width: 100px; font-weight: bold; color: #854d0e;">100 ns</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">200x L1; NUMA can add 50%</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fef2f2; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #991b1b;">NVMe SSD Random Read</div>
-      <div style="min-width: 100px; font-weight: bold; color: #991b1b;">20 us</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">40,000x L1; 4KB page</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fef2f2; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #991b1b;">SATA SSD Random Read</div>
-      <div style="min-width: 100px; font-weight: bold; color: #991b1b;">150 us</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">300,000x L1; 4KB page</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fef2f2; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #991b1b;">HDD Random Seek</div>
-      <div style="min-width: 100px; font-weight: bold; color: #991b1b;">10 ms</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">20,000,000x L1; mechanical movement</div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin-top: 0;">Memory and Storage Hierarchy (2024 Reference)</h4>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f0fdf4; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #166534;">L1 Cache Reference</div>
+<div style="min-width: 100px; font-weight: bold; color: #166534;">0.5 ns</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">~4 CPU cycles</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f0fdf4; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #166534;">Branch Mispredict</div>
+<div style="min-width: 100px; font-weight: bold; color: #166534;">5 ns</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">~20 CPU cycles pipeline flush</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f0fdf4; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #166534;">L2 Cache Reference</div>
+<div style="min-width: 100px; font-weight: bold; color: #166534;">7 ns</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">14x L1 latency</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fefce8; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #854d0e;">Mutex Lock/Unlock</div>
+<div style="min-width: 100px; font-weight: bold; color: #854d0e;">25 ns</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">Uncontended; contended can be 1000x worse</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fefce8; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #854d0e;">Main Memory Reference</div>
+<div style="min-width: 100px; font-weight: bold; color: #854d0e;">100 ns</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">200x L1; NUMA can add 50%</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fef2f2; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #991b1b;">NVMe SSD Random Read</div>
+<div style="min-width: 100px; font-weight: bold; color: #991b1b;">20 us</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">40,000x L1; 4KB page</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fef2f2; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #991b1b;">SATA SSD Random Read</div>
+<div style="min-width: 100px; font-weight: bold; color: #991b1b;">150 us</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">300,000x L1; 4KB page</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #fef2f2; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #991b1b;">HDD Random Seek</div>
+<div style="min-width: 100px; font-weight: bold; color: #991b1b;">10 ms</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">20,000,000x L1; mechanical movement</div>
+</div>
+</div>
 
-  <h4 style="color: #1e40af; margin-top: 24px;">Network Latencies</h4>
-  <div style="display: flex; flex-direction: column; gap: 6px;">
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f5f3ff; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #5b21b6;">Same Rack RTT</div>
-      <div style="min-width: 100px; font-weight: bold; color: #5b21b6;">0.1 ms</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">~100us with modern switches</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f5f3ff; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #5b21b6;">Same Datacenter RTT</div>
-      <div style="min-width: 100px; font-weight: bold; color: #5b21b6;">0.5 ms</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">Can vary 0.2-2ms depending on topology</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f5f3ff; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #5b21b6;">Same Region (multi-AZ)</div>
-      <div style="min-width: 100px; font-weight: bold; color: #5b21b6;">1-2 ms</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">AWS AZ to AZ typical</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #faf5ff; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #7c3aed;">US Coast to Coast</div>
-      <div style="min-width: 100px; font-weight: bold; color: #7c3aed;">40 ms</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">~4000km, speed of light limit ~27ms</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #faf5ff; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #7c3aed;">US to Europe</div>
-      <div style="min-width: 100px; font-weight: bold; color: #7c3aed;">75-90 ms</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">Transatlantic cable routes</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #faf5ff; border-radius: 6px;">
-      <div style="min-width: 200px; font-weight: 600; color: #7c3aed;">US to Asia</div>
-      <div style="min-width: 100px; font-weight: bold; color: #7c3aed;">150-200 ms</div>
-      <div style="flex: 1; color: #64748b; font-size: 0.9em;">Transpacific; fundamental limit</div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin-top: 24px;">Network Latencies</h4>
+<div style="display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f5f3ff; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #5b21b6;">Same Rack RTT</div>
+<div style="min-width: 100px; font-weight: bold; color: #5b21b6;">0.1 ms</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">~100us with modern switches</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f5f3ff; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #5b21b6;">Same Datacenter RTT</div>
+<div style="min-width: 100px; font-weight: bold; color: #5b21b6;">0.5 ms</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">Can vary 0.2-2ms depending on topology</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #f5f3ff; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #5b21b6;">Same Region (multi-AZ)</div>
+<div style="min-width: 100px; font-weight: bold; color: #5b21b6;">1-2 ms</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">AWS AZ to AZ typical</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #faf5ff; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #7c3aed;">US Coast to Coast</div>
+<div style="min-width: 100px; font-weight: bold; color: #7c3aed;">40 ms</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">~4000km, speed of light limit ~27ms</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #faf5ff; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #7c3aed;">US to Europe</div>
+<div style="min-width: 100px; font-weight: bold; color: #7c3aed;">75-90 ms</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">Transatlantic cable routes</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; background: #faf5ff; border-radius: 6px;">
+<div style="min-width: 200px; font-weight: 600; color: #7c3aed;">US to Asia</div>
+<div style="min-width: 100px; font-weight: bold; color: #7c3aed;">150-200 ms</div>
+<div style="flex: 1; color: #64748b; font-size: 0.9em;">Transpacific; fundamental limit</div>
+</div>
+</div>
 </div>
 
 ## Tail Latency: The Hidden Performance Killer
@@ -275,86 +275,86 @@ Latency distributions in real systems are almost never normal (Gaussian). They t
 3. **Heavy Tails**: Extreme outliers that dominate user experience
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Tail Latency Impact Visualization</h4>
-  <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 20px 0;">
-    <div style="background: #dcfce7; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #86efac;">
-      <div style="color: #166534; font-weight: bold; font-size: 1em;">P50 (Median)</div>
-      <div style="color: #166534; font-size: 2em; font-weight: bold;">15ms</div>
-      <div style="color: #15803d; font-size: 0.85em;">50% of requests</div>
-      <div style="color: #166534; font-size: 0.8em; margin-top: 8px;">Typical user experience</div>
-    </div>
-    <div style="background: #fef3c7; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #fcd34d;">
-      <div style="color: #92400e; font-weight: bold; font-size: 1em;">P95</div>
-      <div style="color: #92400e; font-size: 2em; font-weight: bold;">85ms</div>
-      <div style="color: #a16207; font-size: 0.85em;">95% of requests</div>
-      <div style="color: #92400e; font-size: 0.8em; margin-top: 8px;">5.7x median</div>
-    </div>
-    <div style="background: #fee2e2; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #fca5a5;">
-      <div style="color: #991b1b; font-weight: bold; font-size: 1em;">P99</div>
-      <div style="color: #991b1b; font-size: 2em; font-weight: bold;">350ms</div>
-      <div style="color: #b91c1c; font-size: 0.85em;">99% of requests</div>
-      <div style="color: #991b1b; font-size: 0.8em; margin-top: 8px;">23x median</div>
-    </div>
-    <div style="background: #fce7f3; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #f9a8d4;">
-      <div style="color: #9d174d; font-weight: bold; font-size: 1em;">P99.9</div>
-      <div style="color: #9d174d; font-size: 2em; font-weight: bold;">2.1s</div>
-      <div style="color: #be185d; font-size: 0.85em;">99.9% of requests</div>
-      <div style="color: #9d174d; font-size: 0.8em; margin-top: 8px;">140x median</div>
-    </div>
-  </div>
-  <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
-    <div style="color: #334155; font-size: 0.95em;">
-      <strong style="color: #1e40af;">Business Impact:</strong> With 1M daily users making 10 requests each, P99.9 = 2.1s means 10,000 requests per day experience 2+ second delays. These are often repeat visitors or power users.
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin-top: 0;">Tail Latency Impact Visualization</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 20px 0;">
+<div style="background: #dcfce7; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #86efac;">
+<div style="color: #166534; font-weight: bold; font-size: 1em;">P50 (Median)</div>
+<div style="color: #166534; font-size: 2em; font-weight: bold;">15ms</div>
+<div style="color: #15803d; font-size: 0.85em;">50% of requests</div>
+<div style="color: #166534; font-size: 0.8em; margin-top: 8px;">Typical user experience</div>
+</div>
+<div style="background: #fef3c7; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #fcd34d;">
+<div style="color: #92400e; font-weight: bold; font-size: 1em;">P95</div>
+<div style="color: #92400e; font-size: 2em; font-weight: bold;">85ms</div>
+<div style="color: #a16207; font-size: 0.85em;">95% of requests</div>
+<div style="color: #92400e; font-size: 0.8em; margin-top: 8px;">5.7x median</div>
+</div>
+<div style="background: #fee2e2; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: bold; font-size: 1em;">P99</div>
+<div style="color: #991b1b; font-size: 2em; font-weight: bold;">350ms</div>
+<div style="color: #b91c1c; font-size: 0.85em;">99% of requests</div>
+<div style="color: #991b1b; font-size: 0.8em; margin-top: 8px;">23x median</div>
+</div>
+<div style="background: #fce7f3; padding: 24px; border-radius: 12px; text-align: center; min-width: 140px; border: 2px solid #f9a8d4;">
+<div style="color: #9d174d; font-weight: bold; font-size: 1em;">P99.9</div>
+<div style="color: #9d174d; font-size: 2em; font-weight: bold;">2.1s</div>
+<div style="color: #be185d; font-size: 0.85em;">99.9% of requests</div>
+<div style="color: #9d174d; font-size: 0.8em; margin-top: 8px;">140x median</div>
+</div>
+</div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px;">
+<div style="color: #334155; font-size: 0.95em;">
+<strong style="color: #1e40af;">Business Impact:</strong> With 1M daily users making 10 requests each, P99.9 = 2.1s means 10,000 requests per day experience 2+ second delays. These are often repeat visitors or power users.
+</div>
+</div>
 </div>
 
 ### Sources of Tail Latency
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Tail Latency Root Causes</h4>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Garbage Collection Pauses</div>
-      <div style="color: #64748b; font-size: 0.9em;">JVM/Go/Python GC can cause 10-100ms+ stop-the-world pauses. Frequency increases with memory pressure.</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Tune GC, reduce allocation rate, use off-heap memory</div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Background Operations</div>
-      <div style="color: #64748b; font-size: 0.9em;">Compaction, log rotation, backup processes compete for I/O and CPU, causing latency spikes during execution windows.</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Rate limit background work, schedule off-peak</div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Cache Misses</div>
-      <div style="color: #64748b; font-size: 0.9em;">Cold cache requests take 10-100x longer. Cache expiration storms cause synchronized misses and thundering herds.</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Cache warming, jittered TTLs, request coalescing</div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Noisy Neighbors</div>
-      <div style="color: #64748b; font-size: 0.9em;">Multi-tenant environments (cloud VMs) experience variable performance from co-located workloads stealing CPU, memory bandwidth, or I/O.</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Dedicated instances, CPU pinning, resource isolation</div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Network Congestion</div>
-      <div style="color: #64748b; font-size: 0.9em;">Microbursts, TCP retransmits, and congestion-induced queuing cause unpredictable latency spikes, especially cross-AZ.</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Traffic shaping, redundant paths, ECN</div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Lock Contention</div>
-      <div style="color: #64748b; font-size: 0.9em;">Mutex contention under load causes exponential latency growth. A lock held for 1ms with 100 waiters creates 50ms average wait.</div>
-      <div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Lock-free structures, sharding, finer granularity</div>
-    </div>
-  </div>
+<h4 style="color: #1e40af; margin-top: 0;">Tail Latency Root Causes</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Garbage Collection Pauses</div>
+<div style="color: #64748b; font-size: 0.9em;">JVM/Go/Python GC can cause 10-100ms+ stop-the-world pauses. Frequency increases with memory pressure.</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Tune GC, reduce allocation rate, use off-heap memory</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Background Operations</div>
+<div style="color: #64748b; font-size: 0.9em;">Compaction, log rotation, backup processes compete for I/O and CPU, causing latency spikes during execution windows.</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Rate limit background work, schedule off-peak</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Cache Misses</div>
+<div style="color: #64748b; font-size: 0.9em;">Cold cache requests take 10-100x longer. Cache expiration storms cause synchronized misses and thundering herds.</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Cache warming, jittered TTLs, request coalescing</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Noisy Neighbors</div>
+<div style="color: #64748b; font-size: 0.9em;">Multi-tenant environments (cloud VMs) experience variable performance from co-located workloads stealing CPU, memory bandwidth, or I/O.</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Dedicated instances, CPU pinning, resource isolation</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Network Congestion</div>
+<div style="color: #64748b; font-size: 0.9em;">Microbursts, TCP retransmits, and congestion-induced queuing cause unpredictable latency spikes, especially cross-AZ.</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Traffic shaping, redundant paths, ECN</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px;">Lock Contention</div>
+<div style="color: #64748b; font-size: 0.9em;">Mutex contention under load causes exponential latency growth. A lock held for 1ms with 100 waiters creates 50ms average wait.</div>
+<div style="color: #334155; font-size: 0.85em; margin-top: 8px; font-style: italic;">Mitigation: Lock-free structures, sharding, finer granularity</div>
+</div>
+</div>
 </div>
 
 ### Tail Latency Amplification in Distributed Systems
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 4px solid #ef4444; border-radius: 0 12px 12px 0; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #991b1b; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-    <span style="background: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">!</span>
+<h4 style="color: #991b1b; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+<span style="background: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">!</span>
     Critical Concept: Tail Latency Amplification
-  </h4>
-  <p style="color: #7f1d1d; margin-bottom: 0;">When a request fans out to N parallel services and waits for ALL to respond, the overall latency is determined by the SLOWEST response. The probability of hitting at least one tail latency event grows dramatically with fan-out degree.</p>
+</h4>
+<p style="color: #7f1d1d; margin-bottom: 0;">When a request fans out to N parallel services and waits for ALL to respond, the overall latency is determined by the SLOWEST response. The probability of hitting at least one tail latency event grows dramatically with fan-out degree.</p>
 </div>
 
 **Mathematical Model**:
@@ -396,35 +396,35 @@ For N parallel calls:
 ### Why Averages Lie
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">The Problem with Averages</h4>
-  <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 20px 0;">
-    <div style="background: white; border: 2px solid #fee2e2; border-radius: 8px; padding: 20px; min-width: 280px;">
-      <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Scenario A: Bimodal Distribution</div>
-      <div style="color: #64748b; font-size: 0.9em;">
-        <div>50% of requests: 10ms</div>
-        <div>50% of requests: 1000ms</div>
-        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fee2e2;">
-          <strong>Average: 505ms</strong><br>
-          <strong>P50: 10ms</strong> (or 1000ms)<br>
-          <strong>P99: 1000ms</strong>
-        </div>
-        <div style="margin-top: 8px; color: #991b1b; font-style: italic;">Average hides that half your users have great experience, half have terrible.</div>
-      </div>
-    </div>
-    <div style="background: white; border: 2px solid #dcfce7; border-radius: 8px; padding: 20px; min-width: 280px;">
-      <div style="color: #166534; font-weight: 600; margin-bottom: 12px;">Scenario B: Normal Distribution</div>
-      <div style="color: #64748b; font-size: 0.9em;">
-        <div>Gaussian around mean 505ms</div>
-        <div>Standard deviation: 100ms</div>
-        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #dcfce7;">
-          <strong>Average: 505ms</strong><br>
-          <strong>P50: 505ms</strong><br>
-          <strong>P99: ~738ms</strong>
-        </div>
-        <div style="margin-top: 8px; color: #166534; font-style: italic;">Same average as Scenario A, but completely different user experience.</div>
-      </div>
-    </div>
+<h4 style="color: #1e40af; margin-top: 0;">The Problem with Averages</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin: 20px 0;">
+<div style="background: white; border: 2px solid #fee2e2; border-radius: 8px; padding: 20px; min-width: 280px;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Scenario A: Bimodal Distribution</div>
+<div style="color: #64748b; font-size: 0.9em;">
+<div>50% of requests: 10ms</div>
+  <div>50% of requests: 1000ms</div>
+    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #fee2e2;">
+    <strong>Average: 505ms</strong><br>
+    <strong>P50: 10ms</strong> (or 1000ms)<br>
+    <strong>P99: 1000ms</strong>
   </div>
+  <div style="margin-top: 8px; color: #991b1b; font-style: italic;">Average hides that half your users have great experience, half have terrible.</div>
+</div>
+</div>
+<div style="background: white; border: 2px solid #dcfce7; border-radius: 8px; padding: 20px; min-width: 280px;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 12px;">Scenario B: Normal Distribution</div>
+<div style="color: #64748b; font-size: 0.9em;">
+<div>Gaussian around mean 505ms</div>
+  <div>Standard deviation: 100ms</div>
+    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #dcfce7;">
+    <strong>Average: 505ms</strong><br>
+    <strong>P50: 505ms</strong><br>
+    <strong>P99: ~738ms</strong>
+  </div>
+  <div style="margin-top: 8px; color: #166534; font-style: italic;">Same average as Scenario A, but completely different user experience.</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Percentile Calculation Methods
@@ -452,11 +452,11 @@ For N parallel calls:
    - Accuracy: Depends on sketch size, generally lower than t-digest
 
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-left: 4px solid #10b981; border-radius: 0 12px 12px 0; padding: 20px; margin: 20px 0;">
-  <h4 style="color: #065f46; margin-top: 0; display: flex; align-items: center; gap: 8px;">
-    <span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">D</span>
+<h4 style="color: #065f46; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+<span style="background: #10b981; color: white; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">D</span>
     Design Choice: Percentile Aggregation
-  </h4>
-  <p style="color: #064e3b; margin-bottom: 0;"><strong>Percentiles are NOT additive</strong>. You cannot average P99 values across servers to get system P99. To aggregate percentiles correctly: (1) merge underlying histograms/sketches, then compute percentile, or (2) use reservoir sampling across the cluster. This is why tools like [[prometheus]](/topics/observability/prometheus) store histogram buckets, not pre-computed percentiles.</p>
+</h4>
+<p style="color: #064e3b; margin-bottom: 0;"><strong>Percentiles are NOT additive</strong>. You cannot average P99 values across servers to get system P99. To aggregate percentiles correctly: (1) merge underlying histograms/sketches, then compute percentile, or (2) use reservoir sampling across the cluster. This is why tools like [[prometheus]](/topics/observability/prometheus) store histogram buckets, not pre-computed percentiles.</p>
 </div>
 
 ### SLA/SLO Definition with Percentiles
@@ -479,130 +479,130 @@ For N parallel calls:
 ### The Fundamental Tension
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">System Behavior Under Load</h4>
-  <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: stretch;">
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; flex: 1; min-width: 280px;">
-      <div style="font-weight: 600; color: #1e40af; margin-bottom: 16px; text-align: center;">Latency-Throughput Curve</div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="background: #dcfce7; padding: 12px; border-radius: 6px; border-left: 4px solid #22c55e;">
-          <div style="color: #166534; font-weight: 600;">Zone A: Under-Utilized (0-40% capacity)</div>
-          <div style="color: #15803d; font-size: 0.9em;">Latency stable, throughput scales linearly. Adding load doesn't hurt latency.</div>
-        </div>
-        <div style="background: #fef3c7; padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b;">
-          <div style="color: #92400e; font-weight: 600;">Zone B: Optimal (40-70% capacity)</div>
-          <div style="color: #a16207; font-size: 0.9em;">Latency begins rising slowly. Throughput still scales but with diminishing returns.</div>
-        </div>
-        <div style="background: #fee2e2; padding: 12px; border-radius: 6px; border-left: 4px solid #ef4444;">
-          <div style="color: #991b1b; font-weight: 600;">Zone C: Saturated (70-100% capacity)</div>
-          <div style="color: #b91c1c; font-size: 0.9em;">Latency grows exponentially. Throughput plateaus. Queuing dominates.</div>
-        </div>
-        <div style="background: #fce7f3; padding: 12px; border-radius: 6px; border-left: 4px solid #ec4899;">
-          <div style="color: #9d174d; font-weight: 600;">Zone D: Overloaded (>100% capacity)</div>
-          <div style="color: #be185d; font-size: 0.9em;">Latency unbounded. Throughput DECREASES (thrashing, timeouts). System failure imminent.</div>
-        </div>
-      </div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; flex: 1; min-width: 280px;">
-      <div style="font-weight: 600; color: #1e40af; margin-bottom: 16px; text-align: center;">Queuing Theory (M/M/1 Model)</div>
-      <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-        <div style="font-family: monospace; text-align: center; color: #1e40af; font-size: 1.1em;">
+<h4 style="color: #1e40af; margin-top: 0;">System Behavior Under Load</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: stretch;">
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; flex: 1; min-width: 280px;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 16px; text-align: center;">Latency-Throughput Curve</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Zone A: Under-Utilized (0-40% capacity)</div>
+<div style="color: #15803d; font-size: 0.9em;">Latency stable, throughput scales linearly. Adding load doesn't hurt latency.</div>
+</div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 600;">Zone B: Optimal (40-70% capacity)</div>
+<div style="color: #a16207; font-size: 0.9em;">Latency begins rising slowly. Throughput still scales but with diminishing returns.</div>
+</div>
+<div style="background: #fee2e2; padding: 12px; border-radius: 6px; border-left: 4px solid #ef4444;">
+<div style="color: #991b1b; font-weight: 600;">Zone C: Saturated (70-100% capacity)</div>
+<div style="color: #b91c1c; font-size: 0.9em;">Latency grows exponentially. Throughput plateaus. Queuing dominates.</div>
+</div>
+<div style="background: #fce7f3; padding: 12px; border-radius: 6px; border-left: 4px solid #ec4899;">
+<div style="color: #9d174d; font-weight: 600;">Zone D: Overloaded (>100% capacity)</div>
+<div style="color: #be185d; font-size: 0.9em;">Latency unbounded. Throughput DECREASES (thrashing, timeouts). System failure imminent.</div>
+</div>
+</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; flex: 1; min-width: 280px;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 16px; text-align: center;">Queuing Theory (M/M/1 Model)</div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<div style="font-family: monospace; text-align: center; color: #1e40af; font-size: 1.1em;">
           W = 1 / (mu - lambda)
-        </div>
-        <div style="text-align: center; color: #64748b; font-size: 0.85em; margin-top: 8px;">
+</div>
+<div style="text-align: center; color: #64748b; font-size: 0.85em; margin-top: 8px;">
           W = wait time, mu = service rate, lambda = arrival rate
-        </div>
-      </div>
-      <div style="color: #64748b; font-size: 0.9em;">
-        <div><strong>At 50% utilization:</strong> W = 2x service time</div>
-        <div><strong>At 80% utilization:</strong> W = 5x service time</div>
-        <div><strong>At 90% utilization:</strong> W = 10x service time</div>
-        <div><strong>At 99% utilization:</strong> W = 100x service time</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 0.9em;">
+<div><strong>At 50% utilization:</strong> W = 2x service time</div>
+  <div><strong>At 80% utilization:</strong> W = 5x service time</div>
+    <div><strong>At 90% utilization:</strong> W = 10x service time</div>
+      <div><strong>At 99% utilization:</strong> W = 100x service time</div>
       </div>
       <div style="background: #fef3c7; padding: 12px; border-radius: 6px; margin-top: 12px;">
-        <span style="color: #92400e; font-size: 0.9em;"><strong>Key insight:</strong> Latency explodes hyperbolically as utilization approaches 100%, not linearly.</span>
-      </div>
+      <span style="color: #92400e; font-size: 0.9em;"><strong>Key insight:</strong> Latency explodes hyperbolically as utilization approaches 100%, not linearly.</span>
     </div>
   </div>
+</div>
 </div>
 
 ### Trade-off Patterns
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-  <h4 style="color: #1e40af; margin-top: 0;">Common Trade-off Decisions</h4>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Batching</div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Throughput gain:</strong> Amortizes fixed costs (network round trips, transaction overhead)
-      </div>
-      <div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Latency cost:</strong> First item waits for batch to fill or timeout
-      </div>
-      <div style="color: #64748b; font-size: 0.85em; font-style: italic;">
+<h4 style="color: #1e40af; margin-top: 0;">Common Trade-off Decisions</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Batching</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Throughput gain:</strong> Amortizes fixed costs (network round trips, transaction overhead)
+</div>
+<div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
+<strong>Latency cost:</strong> First item waits for batch to fill or timeout
+</div>
+<div style="color: #64748b; font-size: 0.85em; font-style: italic;">
         Example: Kafka producers batch messages; improves throughput 10x but adds P50 latency equal to linger.ms
-      </div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Caching</div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Latency gain:</strong> Cache hits 100-1000x faster than origin
-      </div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Throughput gain:</strong> Reduces load on expensive backends
-      </div>
-      <div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Trade-off:</strong> Consistency (stale reads), memory cost, cache invalidation complexity
-      </div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Connection Pooling</div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Latency gain:</strong> Avoids connection setup (TCP + TLS = 2-4 RTTs)
-      </div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Throughput gain:</strong> Higher concurrency without connection storms
-      </div>
-      <div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Trade-off:</strong> Pool sizing is critical; too small = queuing, too large = resource exhaustion
-      </div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Async Processing</div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Latency gain:</strong> Immediate response to user; work happens in background
-      </div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Throughput gain:</strong> Decouples intake from processing capacity
-      </div>
-      <div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Trade-off:</strong> Eventual consistency, complex error handling, queue monitoring needed
-      </div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Compression</div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Throughput gain:</strong> Smaller payloads = more requests per bandwidth unit
-      </div>
-      <div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Latency cost:</strong> CPU time for compression/decompression
-      </div>
-      <div style="color: #64748b; font-size: 0.85em; font-style: italic;">
+</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Caching</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Latency gain:</strong> Cache hits 100-1000x faster than origin
+</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Throughput gain:</strong> Reduces load on expensive backends
+</div>
+<div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
+<strong>Trade-off:</strong> Consistency (stale reads), memory cost, cache invalidation complexity
+</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Connection Pooling</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Latency gain:</strong> Avoids connection setup (TCP + TLS = 2-4 RTTs)
+</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Throughput gain:</strong> Higher concurrency without connection storms
+</div>
+<div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
+<strong>Trade-off:</strong> Pool sizing is critical; too small = queuing, too large = resource exhaustion
+</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Async Processing</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Latency gain:</strong> Immediate response to user; work happens in background
+</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Throughput gain:</strong> Decouples intake from processing capacity
+</div>
+<div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
+<strong>Trade-off:</strong> Eventual consistency, complex error handling, queue monitoring needed
+</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Compression</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Throughput gain:</strong> Smaller payloads = more requests per bandwidth unit
+</div>
+<div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
+<strong>Latency cost:</strong> CPU time for compression/decompression
+</div>
+<div style="color: #64748b; font-size: 0.85em; font-style: italic;">
         Break-even: When compression time < transmission time saved. Varies by algorithm and network speed.
-      </div>
-    </div>
-    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Replication</div>
-      <div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Throughput gain:</strong> Distribute read load across replicas
-      </div>
-      <div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
-        <strong>Latency cost (sync):</strong> Writes wait for replica acknowledgment
-      </div>
-      <div style="color: #64748b; font-size: 0.85em; font-style: italic;">
+</div>
+</div>
+<div style="background: white; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Replication</div>
+<div style="color: #166534; font-size: 0.9em; padding: 8px; background: #f0fdf4; border-radius: 4px; margin-bottom: 8px;">
+<strong>Throughput gain:</strong> Distribute read load across replicas
+</div>
+<div style="color: #991b1b; font-size: 0.9em; padding: 8px; background: #fef2f2; border-radius: 4px; margin-bottom: 8px;">
+<strong>Latency cost (sync):</strong> Writes wait for replica acknowledgment
+</div>
+<div style="color: #64748b; font-size: 0.85em; font-style: italic;">
         Choice: Sync replication (durability, latency cost) vs. async (risk data loss, lower latency)
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ## Optimization Strategies

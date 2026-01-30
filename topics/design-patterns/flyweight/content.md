@@ -1089,8 +1089,8 @@ if character1.type is character2.type:
 </div>
 
 <div>
-<h5 style="color: #fbbf24;">4. Unbounded Factory Growth</h5>
-<p style="color: #d6d3d1;">If flyweight keys come from user input, the factory can grow unbounded. Use LRU eviction or validate keys against a known set.</p>
+  <h5 style="color: #fbbf24;">4. Unbounded Factory Growth</h5>
+  <p style="color: #d6d3d1;">If flyweight keys come from user input, the factory can grow unbounded. Use LRU eviction or validate keys against a known set.</p>
 </div>
 </div>
 

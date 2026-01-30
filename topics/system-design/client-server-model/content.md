@@ -19,30 +19,30 @@ The <span style="color: #22c55e; font-weight: 600;">Client-Server Model</span> i
 </div>
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CLIENT-SERVER MODEL</h3>
-  <div style="display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;">
-    <div style="text-align: center;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; width: 140px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-        <span style="color: #166534; font-weight: 700; font-size: 16px;">CLIENT</span>
-      </div>
-      <div style="color: #64748b; font-size: 12px;">Initiates requests</div>
-      <div style="color: #22c55e; font-size: 11px; margin-top: 4px;">Browser, Mobile App</div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-      <div style="color: #3b82f6; font-size: 14px;">Request --></div>
-      <div style="background: #f1f5f9; padding: 8px 16px; border-radius: 6px; border: 1px solid #e2e8f0;">
-        <span style="color: #64748b; font-size: 12px;">Network</span>
-      </div>
-      <div style="color: #22c55e; font-size: 14px;"><-- Response</div>
-    </div>
-    <div style="text-align: center;">
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; width: 140px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-        <span style="color: #1e40af; font-weight: 700; font-size: 16px;">SERVER</span>
-      </div>
-      <div style="color: #64748b; font-size: 12px;">Provides services</div>
-      <div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">API, Database</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">CLIENT-SERVER MODEL</h3>
+<div style="display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;">
+<div style="text-align: center;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; width: 140px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+<span style="color: #166534; font-weight: 700; font-size: 16px;">CLIENT</span>
+</div>
+<div style="color: #64748b; font-size: 12px;">Initiates requests</div>
+<div style="color: #22c55e; font-size: 11px; margin-top: 4px;">Browser, Mobile App</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="color: #3b82f6; font-size: 14px;">Request --></div>
+<div style="background: #f1f5f9; padding: 8px 16px; border-radius: 6px; border: 1px solid #e2e8f0;">
+<span style="color: #64748b; font-size: 12px;">Network</span>
+</div>
+<div style="color: #22c55e; font-size: 14px;"><-- Response</div>
+</div>
+<div style="text-align: center;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; width: 140px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+<span style="color: #1e40af; font-weight: 700; font-size: 16px;">SERVER</span>
+</div>
+<div style="color: #64748b; font-size: 12px;">Provides services</div>
+<div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">API, Database</div>
+</div>
+</div>
 </div>
 
 **The Simple Explanation**: Think of it like a restaurant. You (the client) make requests ("I'll have the pasta"), and the kitchen (the server) processes your request and returns what you asked for. The waiter is like the network - carrying messages back and forth. You don't need to know how to cook; the kitchen doesn't need to know who you are beyond your order.
@@ -54,25 +54,25 @@ The <span style="color: #22c55e; font-weight: 600;">Client-Server Model</span> i
 The client-server model is so fundamental that every tech company uses it:
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CLIENT-SERVER IN THE REAL WORLD</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-    <div style="background: #ecfdf5; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
-      <div style="color: #065f46; font-weight: 700; margin-bottom: 8px;">Google Search</div>
-      <div style="color: #047857; font-size: 13px;">Your browser (client) sends a search query. Google's servers process billions of web pages and return ranked results in milliseconds.</div>
-    </div>
-    <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Instagram</div>
-      <div style="color: #1d4ed8; font-size: 13px;">Mobile app (thick client) stores images locally, communicates with servers for feed, likes, and comments. Servers handle storage and social graph.</div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Slack</div>
-      <div style="color: #b45309; font-size: 13px;">Desktop/mobile clients maintain WebSocket connections for real-time messaging. Servers coordinate message delivery across thousands of organizations.</div>
-    </div>
-    <div style="background: #f3e8ff; border-radius: 12px; padding: 20px; border-left: 4px solid #a855f7;">
-      <div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px;">Stripe</div>
-      <div style="color: #7c3aed; font-size: 13px;">Your application (client) calls Stripe's API (server) to process payments. Stripe handles PCI compliance, fraud detection, and bank connections.</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CLIENT-SERVER IN THE REAL WORLD</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: #ecfdf5; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #065f46; font-weight: 700; margin-bottom: 8px;">Google Search</div>
+<div style="color: #047857; font-size: 13px;">Your browser (client) sends a search query. Google's servers process billions of web pages and return ranked results in milliseconds.</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Instagram</div>
+<div style="color: #1d4ed8; font-size: 13px;">Mobile app (thick client) stores images locally, communicates with servers for feed, likes, and comments. Servers handle storage and social graph.</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Slack</div>
+<div style="color: #b45309; font-size: 13px;">Desktop/mobile clients maintain WebSocket connections for real-time messaging. Servers coordinate message delivery across thousands of organizations.</div>
+</div>
+<div style="background: #f3e8ff; border-radius: 12px; padding: 20px; border-left: 4px solid #a855f7;">
+<div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px;">Stripe</div>
+<div style="color: #7c3aed; font-size: 13px;">Your application (client) calls Stripe's API (server) to process payments. Stripe handles PCI compliance, fraud detection, and bank connections.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -82,51 +82,51 @@ The client-server model is so fundamental that every tech company uses it:
 The <span style="color: #22c55e; font-weight: 600;">request-response model</span> is the fundamental interaction pattern in client-server architectures. Understanding its mechanics is crucial for designing performant, reliable systems.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">REQUEST-RESPONSE LIFECYCLE</h3>
-  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
-      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #166534; font-weight: 600;">Client initiates request</div>
-        <div style="color: #64748b; font-size: 12px;">HTTP GET /api/users/123</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
-      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #1e40af; font-weight: 600;">DNS resolves hostname</div>
-        <div style="color: #64748b; font-size: 12px;">api.example.com -> 93.184.216.34</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #a855f7; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
-      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #6b21a8; font-weight: 600;">TCP connection established</div>
-        <div style="color: #64748b; font-size: 12px;">Three-way handshake (SYN, SYN-ACK, ACK)</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #f59e0b; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
-      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #92400e; font-weight: 600;">Server processes request</div>
-        <div style="color: #64748b; font-size: 12px;">Query database, apply business logic</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">5</div>
-      <div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #dc2626; font-weight: 600;">Server sends response</div>
-        <div style="color: #64748b; font-size: 12px;">HTTP 200 OK + JSON payload</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #166534; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">6</div>
-      <div style="flex: 1; background: #dcfce7; padding: 12px 16px; border-radius: 8px;">
-        <div style="color: #166534; font-weight: 600;">Client processes response</div>
-        <div style="color: #15803d; font-size: 12px;">Display data to user</div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">REQUEST-RESPONSE LIFECYCLE</h3>
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #22c55e; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600;">Client initiates request</div>
+<div style="color: #64748b; font-size: 12px;">HTTP GET /api/users/123</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600;">DNS resolves hostname</div>
+<div style="color: #64748b; font-size: 12px;">api.example.com -> 93.184.216.34</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #a855f7; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #6b21a8; font-weight: 600;">TCP connection established</div>
+<div style="color: #64748b; font-size: 12px;">Three-way handshake (SYN, SYN-ACK, ACK)</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #f59e0b; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">4</div>
+<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #92400e; font-weight: 600;">Server processes request</div>
+<div style="color: #64748b; font-size: 12px;">Query database, apply business logic</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">5</div>
+<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: 600;">Server sends response</div>
+<div style="color: #64748b; font-size: 12px;">HTTP 200 OK + JSON payload</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #166534; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">6</div>
+<div style="flex: 1; background: #dcfce7; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600;">Client processes response</div>
+<div style="color: #15803d; font-size: 12px;">Display data to user</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Latency Breakdown
@@ -134,81 +134,81 @@ The <span style="color: #22c55e; font-weight: 600;">request-response model</span
 Understanding where time is spent in a request helps optimize performance. See [[Latency and Throughput]](/topics/system-design/latency-throughput) for deeper analysis.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Request Latency Components</h4>
-  <div style="display: flex; flex-direction: column; gap: 8px;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">DNS Lookup</div>
-      <div style="background: #dbeafe; height: 24px; border-radius: 4px; width: 60px; display: flex; align-items: center; padding-left: 8px;">
-        <span style="color: #1e40af; font-size: 11px;">~50ms</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">TCP Handshake</div>
-      <div style="background: #fce7f3; height: 24px; border-radius: 4px; width: 80px; display: flex; align-items: center; padding-left: 8px;">
-        <span style="color: #be185d; font-size: 11px;">~1 RTT</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">TLS Handshake</div>
-      <div style="background: #fef3c7; height: 24px; border-radius: 4px; width: 100px; display: flex; align-items: center; padding-left: 8px;">
-        <span style="color: #b45309; font-size: 11px;">~2 RTT (TLS 1.2)</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">Request Transfer</div>
-      <div style="background: #dcfce7; height: 24px; border-radius: 4px; width: 50px; display: flex; align-items: center; padding-left: 8px;">
-        <span style="color: #166534; font-size: 11px;">~10ms</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">Server Processing</div>
-      <div style="background: #f3e8ff; height: 24px; border-radius: 4px; width: 120px; display: flex; align-items: center; padding-left: 8px;">
-        <span style="color: #7c3aed; font-size: 11px;">Variable (10-500ms)</span>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">Response Transfer</div>
-      <div style="background: #fee2e2; height: 24px; border-radius: 4px; width: 80px; display: flex; align-items: center; padding-left: 8px;">
-        <span style="color: #dc2626; font-size: 11px;">Size dependent</span>
-      </div>
-    </div>
-  </div>
-  <div style="background: #f0fdf4; border-radius: 8px; padding: 12px; margin-top: 16px;">
-    <div style="color: #166534; font-size: 13px;"><strong>Optimization:</strong> HTTP/2 multiplexing, TLS 1.3 (1 RTT), connection pooling, and CDN caching reduce these costs significantly.</div>
-  </div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Request Latency Components</h4>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">DNS Lookup</div>
+<div style="background: #dbeafe; height: 24px; border-radius: 4px; width: 60px; display: flex; align-items: center; padding-left: 8px;">
+<span style="color: #1e40af; font-size: 11px;">~50ms</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">TCP Handshake</div>
+<div style="background: #fce7f3; height: 24px; border-radius: 4px; width: 80px; display: flex; align-items: center; padding-left: 8px;">
+<span style="color: #be185d; font-size: 11px;">~1 RTT</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">TLS Handshake</div>
+<div style="background: #fef3c7; height: 24px; border-radius: 4px; width: 100px; display: flex; align-items: center; padding-left: 8px;">
+<span style="color: #b45309; font-size: 11px;">~2 RTT (TLS 1.2)</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">Request Transfer</div>
+<div style="background: #dcfce7; height: 24px; border-radius: 4px; width: 50px; display: flex; align-items: center; padding-left: 8px;">
+<span style="color: #166534; font-size: 11px;">~10ms</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">Server Processing</div>
+<div style="background: #f3e8ff; height: 24px; border-radius: 4px; width: 120px; display: flex; align-items: center; padding-left: 8px;">
+<span style="color: #7c3aed; font-size: 11px;">Variable (10-500ms)</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500;">Response Transfer</div>
+<div style="background: #fee2e2; height: 24px; border-radius: 4px; width: 80px; display: flex; align-items: center; padding-left: 8px;">
+<span style="color: #dc2626; font-size: 11px;">Size dependent</span>
+</div>
+</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; margin-top: 16px;">
+<div style="color: #166534; font-size: 13px;"><strong>Optimization:</strong> HTTP/2 multiplexing, TLS 1.3 (1 RTT), connection pooling, and CDN caching reduce these costs significantly.</div>
+</div>
 </div>
 
 ### Request Methods and Semantics
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP Methods Deep Dive</h4>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-    <div style="background: #dcfce7; border-radius: 8px; padding: 16px; border: 1px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 8px;">GET</div>
-      <div style="color: #15803d; font-size: 12px; margin-bottom: 8px;">Safe, Idempotent, Cacheable</div>
-      <div style="color: #166534; font-size: 11px; background: #f0fdf4; padding: 8px; border-radius: 4px;">Retrieve resource without side effects. Can be cached by browsers and CDNs.</div>
-    </div>
-    <div style="background: #dbeafe; border-radius: 8px; padding: 16px; border: 1px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">POST</div>
-      <div style="color: #1d4ed8; font-size: 12px; margin-bottom: 8px;">Not Safe, Not Idempotent</div>
-      <div style="color: #1e40af; font-size: 11px; background: #eff6ff; padding: 8px; border-radius: 4px;">Create new resources. Multiple calls create multiple resources.</div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 8px; padding: 16px; border: 1px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">PUT</div>
-      <div style="color: #b45309; font-size: 12px; margin-bottom: 8px;">Not Safe, Idempotent</div>
-      <div style="color: #92400e; font-size: 11px; background: #fefce8; padding: 8px; border-radius: 4px;">Replace entire resource. Same request yields same result.</div>
-    </div>
-    <div style="background: #f3e8ff; border-radius: 8px; padding: 16px; border: 1px solid #a855f7;">
-      <div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px;">PATCH</div>
-      <div style="color: #7c3aed; font-size: 12px; margin-bottom: 8px;">Not Safe, Not Idempotent*</div>
-      <div style="color: #6b21a8; font-size: 11px; background: #faf5ff; padding: 8px; border-radius: 4px;">Partial update. Semantics depend on implementation.</div>
-    </div>
-    <div style="background: #fee2e2; border-radius: 8px; padding: 16px; border: 1px solid #ef4444;">
-      <div style="color: #dc2626; font-weight: 700; margin-bottom: 8px;">DELETE</div>
-      <div style="color: #b91c1c; font-size: 12px; margin-bottom: 8px;">Not Safe, Idempotent</div>
-      <div style="color: #dc2626; font-size: 11px; background: #fef2f2; padding: 8px; border-radius: 4px;">Remove resource. Deleting twice should not fail.</div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP Methods Deep Dive</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+<div style="background: #dcfce7; border-radius: 8px; padding: 16px; border: 1px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 8px;">GET</div>
+<div style="color: #15803d; font-size: 12px; margin-bottom: 8px;">Safe, Idempotent, Cacheable</div>
+<div style="color: #166534; font-size: 11px; background: #f0fdf4; padding: 8px; border-radius: 4px;">Retrieve resource without side effects. Can be cached by browsers and CDNs.</div>
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 16px; border: 1px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">POST</div>
+<div style="color: #1d4ed8; font-size: 12px; margin-bottom: 8px;">Not Safe, Not Idempotent</div>
+<div style="color: #1e40af; font-size: 11px; background: #eff6ff; padding: 8px; border-radius: 4px;">Create new resources. Multiple calls create multiple resources.</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px; border: 1px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">PUT</div>
+<div style="color: #b45309; font-size: 12px; margin-bottom: 8px;">Not Safe, Idempotent</div>
+<div style="color: #92400e; font-size: 11px; background: #fefce8; padding: 8px; border-radius: 4px;">Replace entire resource. Same request yields same result.</div>
+</div>
+<div style="background: #f3e8ff; border-radius: 8px; padding: 16px; border: 1px solid #a855f7;">
+<div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px;">PATCH</div>
+<div style="color: #7c3aed; font-size: 12px; margin-bottom: 8px;">Not Safe, Not Idempotent*</div>
+<div style="color: #6b21a8; font-size: 11px; background: #faf5ff; padding: 8px; border-radius: 4px;">Partial update. Semantics depend on implementation.</div>
+</div>
+<div style="background: #fee2e2; border-radius: 8px; padding: 16px; border: 1px solid #ef4444;">
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 8px;">DELETE</div>
+<div style="color: #b91c1c; font-size: 12px; margin-bottom: 8px;">Not Safe, Idempotent</div>
+<div style="color: #dc2626; font-size: 11px; background: #fef2f2; padding: 8px; border-radius: 4px;">Remove resource. Deleting twice should not fail.</div>
+</div>
+</div>
 </div>
 
 ---
@@ -216,45 +216,45 @@ Understanding where time is spent in a request helps optimize performance. See [
 ## Client Types
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CLIENT TYPES</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
-    <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Thin Client</div>
-      <div style="color: #15803d; font-size: 13px; margin-bottom: 12px;">Minimal processing, relies on server for most logic</div>
-      <div style="background: #f0fdf4; border-radius: 6px; padding: 12px;">
-        <div style="color: #166534; font-size: 12px; font-weight: 600;">Examples:</div>
-        <ul style="color: #15803d; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px;">
-          <li>Traditional web browsers</li>
-          <li>Terminal clients</li>
-          <li>Streaming devices</li>
-        </ul>
-      </div>
-    </div>
-    <div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Thick Client</div>
-      <div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px;">Significant local processing and storage capabilities</div>
-      <div style="background: #eff6ff; border-radius: 6px; padding: 12px;">
-        <div style="color: #1e40af; font-size: 12px; font-weight: 600;">Examples:</div>
-        <ul style="color: #1d4ed8; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px;">
-          <li>Desktop applications</li>
-          <li>Mobile apps (offline-capable)</li>
-          <li>Gaming clients</li>
-        </ul>
-      </div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Hybrid Client (SPA)</div>
-      <div style="color: #b45309; font-size: 13px; margin-bottom: 12px;">Best of both worlds - rich UI with server data</div>
-      <div style="background: #fefce8; border-radius: 6px; padding: 12px;">
-        <div style="color: #92400e; font-size: 12px; font-weight: 600;">Examples:</div>
-        <ul style="color: #b45309; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px;">
-          <li>React/Vue applications</li>
-          <li>Progressive Web Apps</li>
-          <li>Electron apps</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CLIENT TYPES</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Thin Client</div>
+<div style="color: #15803d; font-size: 13px; margin-bottom: 12px;">Minimal processing, relies on server for most logic</div>
+<div style="background: #f0fdf4; border-radius: 6px; padding: 12px;">
+<div style="color: #166534; font-size: 12px; font-weight: 600;">Examples:</div>
+<ul style="color: #15803d; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px;">
+<li>Traditional web browsers</li>
+<li>Terminal clients</li>
+<li>Streaming devices</li>
+</ul>
+</div>
+</div>
+<div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Thick Client</div>
+<div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px;">Significant local processing and storage capabilities</div>
+<div style="background: #eff6ff; border-radius: 6px; padding: 12px;">
+<div style="color: #1e40af; font-size: 12px; font-weight: 600;">Examples:</div>
+<ul style="color: #1d4ed8; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px;">
+<li>Desktop applications</li>
+<li>Mobile apps (offline-capable)</li>
+<li>Gaming clients</li>
+</ul>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Hybrid Client (SPA)</div>
+<div style="color: #b45309; font-size: 13px; margin-bottom: 12px;">Best of both worlds - rich UI with server data</div>
+<div style="background: #fefce8; border-radius: 6px; padding: 12px;">
+<div style="color: #92400e; font-size: 12px; font-weight: 600;">Examples:</div>
+<ul style="color: #b45309; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px;">
+<li>React/Vue applications</li>
+<li>Progressive Web Apps</li>
+<li>Electron apps</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -262,26 +262,26 @@ Understanding where time is spent in a request helps optimize performance. See [
 ## Server Types and Multi-Tier Architecture
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">THREE-TIER ARCHITECTURE</h3>
-  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto;">
-    <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 20px; text-align: center;">
-      <div style="color: #166534; font-weight: 700; font-size: 16px;">PRESENTATION TIER</div>
-      <div style="color: #15803d; font-size: 12px; margin-top: 8px;">Client Interface (Browser, Mobile App)</div>
-      <div style="color: #22c55e; font-size: 11px; margin-top: 4px;">HTML, CSS, JavaScript, React, Flutter</div>
-    </div>
-    <div style="text-align: center; color: #64748b; font-size: 14px;">HTTP / HTTPS</div>
-    <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; text-align: center;">
-      <div style="color: #1e40af; font-weight: 700; font-size: 16px;">APPLICATION TIER</div>
-      <div style="color: #1d4ed8; font-size: 12px; margin-top: 8px;">Business Logic (API Server)</div>
-      <div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">Node.js, Python, Java, Go</div>
-    </div>
-    <div style="text-align: center; color: #64748b; font-size: 14px;">SQL / Internal APIs</div>
-    <div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 12px; padding: 20px; text-align: center;">
-      <div style="color: #6b21a8; font-weight: 700; font-size: 16px;">DATA TIER</div>
-      <div style="color: #7c3aed; font-size: 12px; margin-top: 8px;">Data Storage (Database)</div>
-      <div style="color: #a855f7; font-size: 11px; margin-top: 4px;">PostgreSQL, MongoDB, Redis</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">THREE-TIER ARCHITECTURE</h3>
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 12px; padding: 20px; text-align: center;">
+<div style="color: #166534; font-weight: 700; font-size: 16px;">PRESENTATION TIER</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 8px;">Client Interface (Browser, Mobile App)</div>
+<div style="color: #22c55e; font-size: 11px; margin-top: 4px;">HTML, CSS, JavaScript, React, Flutter</div>
+</div>
+<div style="text-align: center; color: #64748b; font-size: 14px;">HTTP / HTTPS</div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; text-align: center;">
+<div style="color: #1e40af; font-weight: 700; font-size: 16px;">APPLICATION TIER</div>
+<div style="color: #1d4ed8; font-size: 12px; margin-top: 8px;">Business Logic (API Server)</div>
+<div style="color: #3b82f6; font-size: 11px; margin-top: 4px;">Node.js, Python, Java, Go</div>
+</div>
+<div style="text-align: center; color: #64748b; font-size: 14px;">SQL / Internal APIs</div>
+<div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 12px; padding: 20px; text-align: center;">
+<div style="color: #6b21a8; font-weight: 700; font-size: 16px;">DATA TIER</div>
+<div style="color: #7c3aed; font-size: 12px; margin-top: 8px;">Data Storage (Database)</div>
+<div style="color: #a855f7; font-size: 11px; margin-top: 4px;">PostgreSQL, MongoDB, Redis</div>
+</div>
+</div>
 </div>
 
 ### Benefits of Multi-Tier Architecture
@@ -301,47 +301,47 @@ Understanding where time is spent in a request helps optimize performance. See [
 Understanding <span style="color: #22c55e; font-weight: 600;">stateless</span> vs <span style="color: #22c55e; font-weight: 600;">stateful</span> server design is crucial for building scalable systems. This directly impacts your ability to implement [[Load Balancing]](/topics/system-design/load-balancing) and horizontal scaling.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">STATELESS vs STATEFUL</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-    <div style="background: #dcfce7; border-radius: 12px; padding: 24px; border: 2px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 16px;">STATELESS SERVER (Recommended)</div>
-      <div style="color: #15803d; font-size: 13px; margin-bottom: 16px;">Each request contains all information needed. Server does not remember previous requests.</div>
-      <div style="background: #f0fdf4; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #166534; margin-bottom: 16px;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">STATELESS vs STATEFUL</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 24px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 16px;">STATELESS SERVER (Recommended)</div>
+<div style="color: #15803d; font-size: 13px; margin-bottom: 16px;">Each request contains all information needed. Server does not remember previous requests.</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #166534; margin-bottom: 16px;">
         GET /api/orders<br>
         Authorization: Bearer eyJhbG...<br>
-        <span style="color: #15803d;"># Token contains user identity</span>
-      </div>
-      <div style="color: #166534; font-size: 13px;">
-        <div>+ Easy to scale horizontally</div>
-        <div>+ Any server can handle any request</div>
-        <div>+ Simple load balancing</div>
-        <div>+ Better fault tolerance</div>
+<span style="color: #15803d;"># Token contains user identity</span>
+</div>
+<div style="color: #166534; font-size: 13px;">
+<div>+ Easy to scale horizontally</div>
+  <div>+ Any server can handle any request</div>
+    <div>+ Simple load balancing</div>
+      <div>+ Better fault tolerance</div>
       </div>
     </div>
     <div style="background: #fef2f2; border-radius: 12px; padding: 24px; border: 2px solid #ef4444;">
-      <div style="color: #dc2626; font-weight: 700; font-size: 16px; margin-bottom: 16px;">STATEFUL SERVER (Avoid)</div>
-      <div style="color: #b91c1c; font-size: 13px; margin-bottom: 16px;">Server maintains session data between requests. Client must connect to same server.</div>
-      <div style="background: #fef2f2; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #dc2626; margin-bottom: 16px;">
-        GET /api/orders<br>
-        Cookie: session_id=abc123<br>
-        <span style="color: #b91c1c;"># Server looks up session</span>
-      </div>
-      <div style="color: #dc2626; font-size: 13px;">
-        <div>- Harder to scale</div>
-        <div>- Requires sticky sessions</div>
-        <div>- Complex load balancing</div>
+    <div style="color: #dc2626; font-weight: 700; font-size: 16px; margin-bottom: 16px;">STATEFUL SERVER (Avoid)</div>
+    <div style="color: #b91c1c; font-size: 13px; margin-bottom: 16px;">Server maintains session data between requests. Client must connect to same server.</div>
+    <div style="background: #fef2f2; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #dc2626; margin-bottom: 16px;">
+    GET /api/orders<br>
+    Cookie: session_id=abc123<br>
+    <span style="color: #b91c1c;"># Server looks up session</span>
+  </div>
+  <div style="color: #dc2626; font-size: 13px;">
+  <div>- Harder to scale</div>
+    <div>- Requires sticky sessions</div>
+      <div>- Complex load balancing</div>
         <div>- Session replication needed</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-### Critical Assumption
+  ### Critical Assumption
 
-<div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
-<h4 style="color: #b45309; margin-top: 0;">When Stateful is Acceptable</h4>
-<div style="color: #1e293b;">
-Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-weight: 600;">Connection state is inherent</span> to the protocol (WebSockets, gaming servers), (2) <span style="color: #22c55e; font-weight: 600;">Session affinity</span> provides significant performance benefits (in-memory caching of user data), or (3) <span style="color: #22c55e; font-weight: 600;">Coordination overhead</span> of external state stores exceeds the complexity of sticky sessions.
+  <div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+  <h4 style="color: #b45309; margin-top: 0;">When Stateful is Acceptable</h4>
+  <div style="color: #1e293b;">
+  Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-weight: 600;">Connection state is inherent</span> to the protocol (WebSockets, gaming servers), (2) <span style="color: #22c55e; font-weight: 600;">Session affinity</span> provides significant performance benefits (in-memory caching of user data), or (3) <span style="color: #22c55e; font-weight: 600;">Coordination overhead</span> of external state stores exceeds the complexity of sticky sessions.
 </div>
 </div>
 
@@ -377,20 +377,20 @@ class StatelessServer:
 <h4 style="color: #166534; margin-top: 0;">State Externalization Strategies</h4>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 12px;">
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px;">Redis/Memcached</div>
-<div style="color: #15803d; font-size: 13px;">Session storage, caching</div>
+  <div style="color: #166534; font-weight: 600; margin-bottom: 4px;">Redis/Memcached</div>
+  <div style="color: #15803d; font-size: 13px;">Session storage, caching</div>
 </div>
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px;">JWT Tokens</div>
-<div style="color: #15803d; font-size: 13px;">Self-contained auth state</div>
+  <div style="color: #166534; font-weight: 600; margin-bottom: 4px;">JWT Tokens</div>
+  <div style="color: #15803d; font-size: 13px;">Self-contained auth state</div>
 </div>
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px;">Database</div>
-<div style="color: #15803d; font-size: 13px;">Persistent state storage</div>
+  <div style="color: #166534; font-weight: 600; margin-bottom: 4px;">Database</div>
+  <div style="color: #15803d; font-size: 13px;">Persistent state storage</div>
 </div>
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px;">Message Queues</div>
-<div style="color: #15803d; font-size: 13px;">Async state coordination</div>
+  <div style="color: #166534; font-weight: 600; margin-bottom: 4px;">Message Queues</div>
+  <div style="color: #15803d; font-size: 13px;">Async state coordination</div>
 </div>
 </div>
 </div>
@@ -402,69 +402,69 @@ class StatelessServer:
 <span style="color: #22c55e; font-weight: 600;">REST (Representational State Transfer)</span> is the dominant architectural style for web APIs. Understanding its constraints is essential for [[API Design]](/topics/system-design/api-design).
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">REST ARCHITECTURAL CONSTRAINTS</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-    <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 8px;">1. Client-Server Separation</div>
-      <div style="color: #15803d; font-size: 13px;">UI concerns separate from data storage. Enables independent evolution and improved scalability.</div>
-    </div>
-    <div style="background: #dbeafe; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">2. Statelessness</div>
-      <div style="color: #1d4ed8; font-size: 13px;">Each request contains all context needed. No session state on server. Enables horizontal scaling.</div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">3. Cacheability</div>
-      <div style="color: #b45309; font-size: 13px;">Responses must declare themselves cacheable or not. Enables CDNs and client caching.</div>
-    </div>
-    <div style="background: #f3e8ff; border-radius: 12px; padding: 20px; border-left: 4px solid #a855f7;">
-      <div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px;">4. Uniform Interface</div>
-      <div style="color: #7c3aed; font-size: 13px;">Standardized resource identification, manipulation through representations, self-descriptive messages.</div>
-    </div>
-    <div style="background: #fee2e2; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
-      <div style="color: #dc2626; font-weight: 700; margin-bottom: 8px;">5. Layered System</div>
-      <div style="color: #b91c1c; font-size: 13px;">Client cannot tell if connected directly to server or intermediary. Enables load balancers, proxies.</div>
-    </div>
-    <div style="background: #e0e7ff; border-radius: 12px; padding: 20px; border-left: 4px solid #6366f1;">
-      <div style="color: #4338ca; font-weight: 700; margin-bottom: 8px;">6. Code on Demand (Optional)</div>
-      <div style="color: #4f46e5; font-size: 13px;">Servers can extend client functionality by transferring executable code (JavaScript).</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">REST ARCHITECTURAL CONSTRAINTS</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 8px;">1. Client-Server Separation</div>
+<div style="color: #15803d; font-size: 13px;">UI concerns separate from data storage. Enables independent evolution and improved scalability.</div>
+</div>
+<div style="background: #dbeafe; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">2. Statelessness</div>
+<div style="color: #1d4ed8; font-size: 13px;">Each request contains all context needed. No session state on server. Enables horizontal scaling.</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">3. Cacheability</div>
+<div style="color: #b45309; font-size: 13px;">Responses must declare themselves cacheable or not. Enables CDNs and client caching.</div>
+</div>
+<div style="background: #f3e8ff; border-radius: 12px; padding: 20px; border-left: 4px solid #a855f7;">
+<div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px;">4. Uniform Interface</div>
+<div style="color: #7c3aed; font-size: 13px;">Standardized resource identification, manipulation through representations, self-descriptive messages.</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 8px;">5. Layered System</div>
+<div style="color: #b91c1c; font-size: 13px;">Client cannot tell if connected directly to server or intermediary. Enables load balancers, proxies.</div>
+</div>
+<div style="background: #e0e7ff; border-radius: 12px; padding: 20px; border-left: 4px solid #6366f1;">
+<div style="color: #4338ca; font-weight: 700; margin-bottom: 8px;">6. Code on Demand (Optional)</div>
+<div style="color: #4f46e5; font-size: 13px;">Servers can extend client functionality by transferring executable code (JavaScript).</div>
+</div>
+</div>
 </div>
 
 ### REST Maturity Model (Richardson)
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">REST Maturity Levels</h4>
-  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
-    <div style="display: flex; align-items: stretch; gap: 16px;">
-      <div style="background: #fee2e2; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #dc2626;">Level 0</div>
-      <div style="flex: 1; background: #fef2f2; padding: 16px; border-radius: 8px;">
-        <div style="color: #dc2626; font-weight: 600;">The Swamp of POX</div>
-        <div style="color: #7f1d1d; font-size: 12px;">Single endpoint, HTTP as transport only. POST /api with action in body.</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: stretch; gap: 16px;">
-      <div style="background: #fef3c7; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #b45309;">Level 1</div>
-      <div style="flex: 1; background: #fefce8; padding: 16px; border-radius: 8px;">
-        <div style="color: #92400e; font-weight: 600;">Resources</div>
-        <div style="color: #78350f; font-size: 12px;">Individual resources with unique URIs. POST /users, POST /orders.</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: stretch; gap: 16px;">
-      <div style="background: #dbeafe; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1e40af;">Level 2</div>
-      <div style="flex: 1; background: #eff6ff; padding: 16px; border-radius: 8px;">
-        <div style="color: #1e40af; font-weight: 600;">HTTP Verbs</div>
-        <div style="color: #1e3a8a; font-size: 12px;">Proper use of GET, POST, PUT, DELETE. Status codes for responses.</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: stretch; gap: 16px;">
-      <div style="background: #dcfce7; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #166534;">Level 3</div>
-      <div style="flex: 1; background: #f0fdf4; padding: 16px; border-radius: 8px;">
-        <div style="color: #166534; font-weight: 600;">Hypermedia Controls (HATEOAS)</div>
-        <div style="color: #14532d; font-size: 12px;">Responses include links to related actions. Self-documenting API.</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">REST Maturity Levels</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; align-items: stretch; gap: 16px;">
+<div style="background: #fee2e2; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #dc2626;">Level 0</div>
+<div style="flex: 1; background: #fef2f2; padding: 16px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: 600;">The Swamp of POX</div>
+<div style="color: #7f1d1d; font-size: 12px;">Single endpoint, HTTP as transport only. POST /api with action in body.</div>
+</div>
+</div>
+<div style="display: flex; align-items: stretch; gap: 16px;">
+<div style="background: #fef3c7; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #b45309;">Level 1</div>
+<div style="flex: 1; background: #fefce8; padding: 16px; border-radius: 8px;">
+<div style="color: #92400e; font-weight: 600;">Resources</div>
+<div style="color: #78350f; font-size: 12px;">Individual resources with unique URIs. POST /users, POST /orders.</div>
+</div>
+</div>
+<div style="display: flex; align-items: stretch; gap: 16px;">
+<div style="background: #dbeafe; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1e40af;">Level 2</div>
+<div style="flex: 1; background: #eff6ff; padding: 16px; border-radius: 8px;">
+<div style="color: #1e40af; font-weight: 600;">HTTP Verbs</div>
+<div style="color: #1e3a8a; font-size: 12px;">Proper use of GET, POST, PUT, DELETE. Status codes for responses.</div>
+</div>
+</div>
+<div style="display: flex; align-items: stretch; gap: 16px;">
+<div style="background: #dcfce7; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #166534;">Level 3</div>
+<div style="flex: 1; background: #f0fdf4; padding: 16px; border-radius: 8px;">
+<div style="color: #166534; font-weight: 600;">Hypermedia Controls (HATEOAS)</div>
+<div style="color: #14532d; font-size: 12px;">Responses include links to related actions. Self-documenting API.</div>
+</div>
+</div>
+</div>
 </div>
 
 ### REST API Example
@@ -571,39 +571,39 @@ def delete_user(user_id):
 <span style="color: #22c55e; font-weight: 600;">WebSockets</span> provide full-duplex communication channels over a single TCP connection. Unlike HTTP's request-response model, WebSockets allow both client and server to send messages independently at any time.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WEBSOCKET CONNECTION LIFECYCLE</h3>
-  <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; width: 100px; height: 200px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 12px;">
-        <span style="color: #166534; font-weight: 700; font-size: 14px;">CLIENT</span>
-      </div>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 50px;">
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="color: #3b82f6; font-size: 12px; width: 120px; text-align: center;">HTTP Upgrade --></span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="color: #22c55e; font-size: 12px; width: 120px; text-align: center;"><-- 101 Switching</span>
-      </div>
-      <div style="background: #f0fdf4; padding: 8px; border-radius: 6px; margin: 8px 0;">
-        <span style="color: #166534; font-size: 11px; font-weight: 600;">Persistent Connection</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="color: #a855f7; font-size: 12px; width: 120px; text-align: center;">Message <--></span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="color: #a855f7; font-size: 12px; width: 120px; text-align: center;">Message <--></span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="color: #ef4444; font-size: 12px; width: 120px; text-align: center;">Close --></span>
-      </div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; width: 100px; height: 200px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 12px;">
-        <span style="color: #1e40af; font-weight: 700; font-size: 14px;">SERVER</span>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">WEBSOCKET CONNECTION LIFECYCLE</h3>
+<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; width: 100px; height: 200px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 12px;">
+<span style="color: #166534; font-weight: 700; font-size: 14px;">CLIENT</span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 50px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="color: #3b82f6; font-size: 12px; width: 120px; text-align: center;">HTTP Upgrade --></span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="color: #22c55e; font-size: 12px; width: 120px; text-align: center;"><-- 101 Switching</span>
+</div>
+<div style="background: #f0fdf4; padding: 8px; border-radius: 6px; margin: 8px 0;">
+<span style="color: #166534; font-size: 11px; font-weight: 600;">Persistent Connection</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="color: #a855f7; font-size: 12px; width: 120px; text-align: center;">Message <--></span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="color: #a855f7; font-size: 12px; width: 120px; text-align: center;">Message <--></span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="color: #ef4444; font-size: 12px; width: 120px; text-align: center;">Close --></span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; width: 100px; height: 200px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 12px;">
+<span style="color: #1e40af; font-weight: 700; font-size: 14px;">SERVER</span>
+</div>
+</div>
+</div>
 </div>
 
 ### WebSocket Handshake
@@ -628,37 +628,37 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
 ### WebSocket vs HTTP Comparison
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP vs WebSocket</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 16px;">HTTP (Request-Response)</div>
-      <ul style="color: #1d4ed8; font-size: 13px; margin: 0; padding-left: 20px;">
-        <li>Half-duplex communication</li>
-        <li>New connection per request*</li>
-        <li>Headers sent with each request</li>
-        <li>Stateless by design</li>
-        <li>Easy to cache and scale</li>
-        <li>Works with CDNs, proxies</li>
-      </ul>
-      <div style="background: #eff6ff; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #1e40af;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP vs WebSocket</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 16px;">HTTP (Request-Response)</div>
+<ul style="color: #1d4ed8; font-size: 13px; margin: 0; padding-left: 20px;">
+<li>Half-duplex communication</li>
+<li>New connection per request*</li>
+<li>Headers sent with each request</li>
+<li>Stateless by design</li>
+<li>Easy to cache and scale</li>
+<li>Works with CDNs, proxies</li>
+</ul>
+<div style="background: #eff6ff; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #1e40af;">
         *HTTP/2 uses multiplexing over single connection
-      </div>
-    </div>
-    <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 16px;">WebSocket (Bidirectional)</div>
-      <ul style="color: #15803d; font-size: 13px; margin: 0; padding-left: 20px;">
-        <li>Full-duplex communication</li>
-        <li>Persistent connection</li>
-        <li>Minimal per-message overhead</li>
-        <li>Inherently stateful</li>
-        <li>Complex to scale horizontally</li>
-        <li>Requires sticky sessions or pub/sub</li>
-      </ul>
-      <div style="background: #f0fdf4; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #166534;">
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 16px;">WebSocket (Bidirectional)</div>
+<ul style="color: #15803d; font-size: 13px; margin: 0; padding-left: 20px;">
+<li>Full-duplex communication</li>
+<li>Persistent connection</li>
+<li>Minimal per-message overhead</li>
+<li>Inherently stateful</li>
+<li>Complex to scale horizontally</li>
+<li>Requires sticky sessions or pub/sub</li>
+</ul>
+<div style="background: #f0fdf4; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #166534;">
         Ideal for: chat, gaming, live data, collaborative editing
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ### WebSocket Server Implementation
@@ -854,41 +854,41 @@ ws.send({ type: 'direct', recipient_id: '456', content: 'Hello!' });
 ### Scaling WebSockets
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">WebSocket Scaling Architecture</h4>
-  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
-    <div style="display: flex; justify-content: center; gap: 12px;">
-      <div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
-        <span style="color: #166534; font-size: 12px;">Client 1</span>
-      </div>
-      <div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
-        <span style="color: #166534; font-size: 12px;">Client 2</span>
-      </div>
-      <div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
-        <span style="color: #166534; font-size: 12px;">Client 3</span>
-      </div>
-      <div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
-        <span style="color: #166534; font-size: 12px;">Client 4</span>
-      </div>
-    </div>
-    <div style="text-align: center; color: #64748b;">Persistent WS Connections</div>
-    <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; text-align: center;">
-      <span style="color: #92400e; font-weight: 600;">Load Balancer (Sticky Sessions / IP Hash)</span>
-    </div>
-    <div style="display: flex; justify-content: center; gap: 24px;">
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 16px; border-radius: 8px; text-align: center;">
-        <div style="color: #1e40af; font-weight: 600; font-size: 13px;">WS Server 1</div>
-        <div style="color: #3b82f6; font-size: 11px;">Clients 1,2</div>
-      </div>
-      <div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 16px; border-radius: 8px; text-align: center;">
-        <div style="color: #1e40af; font-weight: 600; font-size: 13px;">WS Server 2</div>
-        <div style="color: #3b82f6; font-size: 11px;">Clients 3,4</div>
-      </div>
-    </div>
-    <div style="text-align: center; color: #64748b;">Pub/Sub for Cross-Server Messaging</div>
-    <div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 12px; padding: 16px; text-align: center;">
-      <span style="color: #6b21a8; font-weight: 600;">Redis Pub/Sub</span>
-    </div>
-  </div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">WebSocket Scaling Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; justify-content: center; gap: 12px;">
+<div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
+<span style="color: #166534; font-size: 12px;">Client 1</span>
+</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
+<span style="color: #166534; font-size: 12px;">Client 2</span>
+</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
+<span style="color: #166534; font-size: 12px;">Client 3</span>
+</div>
+<div style="background: #dcfce7; border: 2px solid #22c55e; padding: 12px 16px; border-radius: 8px;">
+<span style="color: #166534; font-size: 12px;">Client 4</span>
+</div>
+</div>
+<div style="text-align: center; color: #64748b;">Persistent WS Connections</div>
+<div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; text-align: center;">
+<span style="color: #92400e; font-weight: 600;">Load Balancer (Sticky Sessions / IP Hash)</span>
+</div>
+<div style="display: flex; justify-content: center; gap: 24px;">
+<div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600; font-size: 13px;">WS Server 1</div>
+<div style="color: #3b82f6; font-size: 11px;">Clients 1,2</div>
+</div>
+<div style="background: #dbeafe; border: 2px solid #3b82f6; padding: 16px; border-radius: 8px; text-align: center;">
+<div style="color: #1e40af; font-weight: 600; font-size: 13px;">WS Server 2</div>
+<div style="color: #3b82f6; font-size: 11px;">Clients 3,4</div>
+</div>
+</div>
+<div style="text-align: center; color: #64748b;">Pub/Sub for Cross-Server Messaging</div>
+<div style="background: #f3e8ff; border: 2px solid #a855f7; border-radius: 12px; padding: 16px; text-align: center;">
+<span style="color: #6b21a8; font-weight: 600;">Redis Pub/Sub</span>
+</div>
+</div>
 </div>
 
 See [[Message Queues]](/topics/system-design/message-queues) for more on pub/sub patterns.
@@ -900,102 +900,102 @@ See [[Message Queues]](/topics/system-design/message-queues) for more on pub/sub
 <span style="color: #22c55e; font-weight: 600;">Server-Sent Events (SSE)</span> provide a lightweight mechanism for servers to push data to clients over HTTP. Unlike WebSockets, SSE is unidirectional (server to client only) but simpler to implement and works over standard HTTP.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">COMMUNICATION PATTERNS COMPARISON</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-    <div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">HTTP Polling</div>
-      <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
-          <span style="color: #166534; font-size: 12px;">--></span>
-          <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
-          <span style="color: #3b82f6; font-size: 12px;"><--</span>
-          <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
-        </div>
-      </div>
-      <div style="color: #15803d; font-size: 11px;">Repeated requests at intervals. Simple but inefficient.</div>
-    </div>
-    <div style="background: #fef3c7; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Long Polling</div>
-      <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
-          <span style="color: #166534; font-size: 12px;">--> (hold)</span>
-          <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
-          <span style="color: #3b82f6; font-size: 12px;"><-- (when ready)</span>
-          <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
-        </div>
-      </div>
-      <div style="color: #b45309; font-size: 11px;">Server holds request until data available. Fallback option.</div>
-    </div>
-    <div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">SSE</div>
-      <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
-          <span style="color: #166534; font-size: 12px;">--> (subscribe)</span>
-          <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
-          <span style="color: #3b82f6; font-size: 12px;"><-- stream</span>
-          <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
-        </div>
-      </div>
-      <div style="color: #1d4ed8; font-size: 11px;">Server pushes events. Auto-reconnect. Text-based.</div>
-    </div>
-    <div style="background: #f3e8ff; border-radius: 12px; padding: 20px; border: 2px solid #a855f7;">
-      <div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">WebSocket</div>
-      <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
-          <span style="color: #a855f7; font-size: 12px;"><--></span>
-          <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
-        </div>
-      </div>
-      <div style="color: #7c3aed; font-size: 11px;">Full duplex. Binary/text. Lowest latency.</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">COMMUNICATION PATTERNS COMPARISON</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 12px;">HTTP Polling</div>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
+<span style="color: #166534; font-size: 12px;">--></span>
+<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
+<span style="color: #3b82f6; font-size: 12px;"><--</span>
+<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
+</div>
+</div>
+<div style="color: #15803d; font-size: 11px;">Repeated requests at intervals. Simple but inefficient.</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">Long Polling</div>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
+<span style="color: #166534; font-size: 12px;">--> (hold)</span>
+<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
+<span style="color: #3b82f6; font-size: 12px;"><-- (when ready)</span>
+<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
+</div>
+</div>
+<div style="color: #b45309; font-size: 11px;">Server holds request until data available. Fallback option.</div>
+</div>
+<div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">SSE</div>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
+<span style="color: #166534; font-size: 12px;">--> (subscribe)</span>
+<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
+<span style="color: #3b82f6; font-size: 12px;"><-- stream</span>
+<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
+</div>
+</div>
+<div style="color: #1d4ed8; font-size: 11px;">Server pushes events. Auto-reconnect. Text-based.</div>
+</div>
+<div style="background: #f3e8ff; border-radius: 12px; padding: 20px; border: 2px solid #a855f7;">
+<div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">WebSocket</div>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">C</span>
+<span style="color: #a855f7; font-size: 12px;"><--></span>
+<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px;">S</span>
+</div>
+</div>
+<div style="color: #7c3aed; font-size: 11px;">Full duplex. Binary/text. Lowest latency.</div>
+</div>
+</div>
 </div>
 
 ### When to Use SSE vs WebSocket
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">SSE vs WebSocket Decision Guide</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div>
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Use SSE When:</div>
-      <ul style="color: #1d4ed8; font-size: 13px; margin: 0; padding-left: 20px;">
-        <li>Server-to-client only (notifications, feeds)</li>
-        <li>Need auto-reconnection with last-event-id</li>
-        <li>Want to use standard HTTP infrastructure</li>
-        <li>Text/JSON data only is sufficient</li>
-        <li>Simplicity is more important than features</li>
-      </ul>
-      <div style="background: #dbeafe; border-radius: 8px; padding: 12px; margin-top: 12px;">
-        <div style="color: #1e40af; font-size: 12px;"><strong>Examples:</strong> Live stock prices, social media feeds, notifications, live scores</div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">Use WebSocket When:</div>
-      <ul style="color: #7c3aed; font-size: 13px; margin: 0; padding-left: 20px;">
-        <li>Bidirectional communication needed</li>
-        <li>Binary data transfer required</li>
-        <li>Lowest possible latency critical</li>
-        <li>High message frequency (gaming)</li>
-        <li>Need custom protocols</li>
-      </ul>
-      <div style="background: #f3e8ff; border-radius: 8px; padding: 12px; margin-top: 12px;">
-        <div style="color: #6b21a8; font-size: 12px;"><strong>Examples:</strong> Chat apps, multiplayer games, collaborative editors, trading platforms</div>
-      </div>
-    </div>
-  </div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">SSE vs WebSocket Decision Guide</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+  <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Use SSE When:</div>
+  <ul style="color: #1d4ed8; font-size: 13px; margin: 0; padding-left: 20px;">
+  <li>Server-to-client only (notifications, feeds)</li>
+  <li>Need auto-reconnection with last-event-id</li>
+  <li>Want to use standard HTTP infrastructure</li>
+  <li>Text/JSON data only is sufficient</li>
+  <li>Simplicity is more important than features</li>
+</ul>
+<div style="background: #dbeafe; border-radius: 8px; padding: 12px; margin-top: 12px;">
+<div style="color: #1e40af; font-size: 12px;"><strong>Examples:</strong> Live stock prices, social media feeds, notifications, live scores</div>
+</div>
+</div>
+<div>
+  <div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">Use WebSocket When:</div>
+  <ul style="color: #7c3aed; font-size: 13px; margin: 0; padding-left: 20px;">
+  <li>Bidirectional communication needed</li>
+  <li>Binary data transfer required</li>
+  <li>Lowest possible latency critical</li>
+  <li>High message frequency (gaming)</li>
+  <li>Need custom protocols</li>
+</ul>
+<div style="background: #f3e8ff; border-radius: 8px; padding: 12px; margin-top: 12px;">
+<div style="color: #6b21a8; font-size: 12px;"><strong>Examples:</strong> Chat apps, multiplayer games, collaborative editors, trading platforms</div>
+</div>
+</div>
+</div>
 </div>
 
 ### SSE Server Implementation
@@ -1150,55 +1150,55 @@ sse.on('notification', (data) => {
 ## Communication Patterns Summary
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CHOOSING THE RIGHT PATTERN</h3>
-  <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
-    <thead>
-      <tr style="background: #e2e8f0;">
-        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Pattern</th>
-        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Direction</th>
-        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Latency</th>
-        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Complexity</th>
-        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Best For</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #166534;">REST</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Request-Response</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Medium</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">CRUD APIs, cacheable resources</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #1e40af;">HTTP Polling</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Client-initiated</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">High</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Infrequent updates, simplicity</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #92400e;">Long Polling</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Server-timed response</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Medium</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Medium</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Fallback when SSE/WS unavailable</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #6b21a8;">SSE</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Server-to-Client</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Live feeds, notifications</td>
-      </tr>
-      <tr style="background: #f8fafc;">
-        <td style="padding: 12px; font-weight: 600; color: #dc2626;">WebSocket</td>
-        <td style="padding: 12px;">Bidirectional</td>
-        <td style="padding: 12px;">Lowest</td>
-        <td style="padding: 12px;">High</td>
-        <td style="padding: 12px;">Chat, gaming, collaboration</td>
-      </tr>
-    </tbody>
-  </table>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">CHOOSING THE RIGHT PATTERN</h3>
+<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+<thead>
+  <tr style="background: #e2e8f0;">
+  <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Pattern</th>
+  <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Direction</th>
+  <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Latency</th>
+  <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Complexity</th>
+  <th style="padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1;">Best For</th>
+  </tr>
+</thead>
+<tbody>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #166534;">REST</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Request-Response</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Medium</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">CRUD APIs, cacheable resources</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #1e40af;">HTTP Polling</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Client-initiated</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">High</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Infrequent updates, simplicity</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #92400e;">Long Polling</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Server-timed response</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Medium</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Medium</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Fallback when SSE/WS unavailable</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #6b21a8;">SSE</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Server-to-Client</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
+  <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Live feeds, notifications</td>
+  </tr>
+  <tr style="background: #f8fafc;">
+  <td style="padding: 12px; font-weight: 600; color: #dc2626;">WebSocket</td>
+  <td style="padding: 12px;">Bidirectional</td>
+  <td style="padding: 12px;">Lowest</td>
+  <td style="padding: 12px;">High</td>
+  <td style="padding: 12px;">Chat, gaming, collaboration</td>
+  </tr>
+</tbody>
+</table>
 </div>
 
 ---
@@ -1206,33 +1206,33 @@ sse.on('notification', (data) => {
 ## Common Pitfalls
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Storing Session in Server Memory</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Storing sessions in server memory prevents horizontal scaling. When you add servers, sessions are not shared. Use external stores like Redis. See [[Caching]](/topics/system-design/caching) for session storage patterns.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Storing Session in Server Memory</div>
+<div style="color: #7f1d1d; font-size: 14px;">Storing sessions in server memory prevents horizontal scaling. When you add servers, sessions are not shared. Use external stores like Redis. See [[Caching]](/topics/system-design/caching) for session storage patterns.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">2. Tight Coupling Between Client and Server</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Changing server response structure breaks clients. Use API versioning (v1, v2) and maintain backward compatibility. Consider GraphQL for flexibility. See [[API Design]](/topics/system-design/api-design) for versioning strategies.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">2. Tight Coupling Between Client and Server</div>
+<div style="color: #7f1d1d; font-size: 14px;">Changing server response structure breaks clients. Use API versioning (v1, v2) and maintain backward compatibility. Consider GraphQL for flexibility. See [[API Design]](/topics/system-design/api-design) for versioning strategies.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">3. No Timeout Handling</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Clients should always set timeouts. Server may be slow or unresponsive. Without timeouts, clients hang indefinitely, degrading user experience. Implement [[Circuit Breaker]](/topics/system-design/circuit-breaker) patterns for resilience.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">3. No Timeout Handling</div>
+<div style="color: #7f1d1d; font-size: 14px;">Clients should always set timeouts. Server may be slow or unresponsive. Without timeouts, clients hang indefinitely, degrading user experience. Implement [[Circuit Breaker]](/topics/system-design/circuit-breaker) patterns for resilience.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">4. Ignoring Network Failures</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Network requests can fail. Clients should implement retry logic with exponential backoff. Show meaningful error messages to users.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">4. Ignoring Network Failures</div>
+<div style="color: #7f1d1d; font-size: 14px;">Network requests can fail. Clients should implement retry logic with exponential backoff. Show meaningful error messages to users.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">5. WebSocket Connection Leaks</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Not properly closing WebSocket connections leads to resource exhaustion. Implement heartbeats to detect dead connections and clean up resources on disconnect.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">5. WebSocket Connection Leaks</div>
+<div style="color: #7f1d1d; font-size: 14px;">Not properly closing WebSocket connections leads to resource exhaustion. Implement heartbeats to detect dead connections and clean up resources on disconnect.</div>
 </div>
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">6. SSE Without Heartbeats</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Proxies and load balancers may close idle SSE connections. Send periodic heartbeat events to keep connections alive.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">6. SSE Without Heartbeats</div>
+<div style="color: #7f1d1d; font-size: 14px;">Proxies and load balancers may close idle SSE connections. Send periodic heartbeat events to keep connections alive.</div>
 </div>
 
 ---

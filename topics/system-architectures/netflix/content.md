@@ -27,52 +27,52 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 <!-- DNS Layer -->
 <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-  <strong>DNS (Route53)</strong><br><span style="font-size: 12px;">GeoDNS Routing</span>
+<strong>DNS (Route53)</strong><br><span style="font-size: 12px;">GeoDNS Routing</span>
 </div>
 
 <div style="color: #3b82f6; font-size: 24px;">↓</div>
 
 <!-- Open Connect CDN Layer -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-  <div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">US-EAST</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">EU-WEST</span>
-  </div>
-  <div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
-    <strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">AP-SOUTH</span>
-  </div>
+<div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">US-EAST</span>
+</div>
+<div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">EU-WEST</span>
+</div>
+<div style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); border-radius: 10px; padding: 12px 20px; color: white; text-align: center; min-width: 100px;">
+<strong>OPEN CONNECT</strong><br><span style="font-size: 11px;">AP-SOUTH</span>
+</div>
 </div>
 
 <div style="background: #fef2f2; border: 1px solid #e50914; border-radius: 8px; padding: 8px 16px; text-align: center;">
-  <span style="color: #dc2626; font-size: 13px;">OPEN CONNECT CDN (ISP-Embedded Servers)</span>
+<span style="color: #dc2626; font-size: 13px;">OPEN CONNECT CDN (ISP-Embedded Servers)</span>
 </div>
 
 <div style="color: #f59e0b; font-size: 14px;">↓ Cache Miss?</div>
 
 <!-- AWS Region -->
 <div style="background: #fff7ed; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; max-width: 400px;">
-  <div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 16px;">AWS REGION</div>
+<div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 16px;">AWS REGION</div>
 
-  <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px; text-align: center; color: white; margin-bottom: 12px;">
-    <strong>API Gateway (Zuul)</strong>
-  </div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 10px; padding: 12px; text-align: center; color: white; margin-bottom: 12px;">
+<strong>API Gateway (Zuul)</strong>
+</div>
 
-  <div style="color: #3b82f6; font-size: 20px; text-align: center;">↓</div>
+<div style="color: #3b82f6; font-size: 20px; text-align: center;">↓</div>
 
-  <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 12px 0;">
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;">
-      <strong style="color: #1d4ed8;">Playback</strong><br><span style="font-size: 11px; color: #475569;">Service</span>
-    </div>
-    <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;">
-      <strong style="color: #1d4ed8;">Content</strong><br><span style="font-size: 11px; color: #475569;">Service</span>
-    </div>
-  </div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 12px 0;">
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;">
+<strong style="color: #1d4ed8;">Playback</strong><br><span style="font-size: 11px; color: #475569;">Service</span>
+</div>
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center;">
+<strong style="color: #1d4ed8;">Content</strong><br><span style="font-size: 11px; color: #475569;">Service</span>
+</div>
+</div>
 
-  <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px; text-align: center; color: white; margin-top: 12px;">
-    <strong>S3 (Video Storage)</strong>
-  </div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 10px; padding: 12px; text-align: center; color: white; margin-top: 12px;">
+<strong>S3 (Video Storage)</strong>
+</div>
 </div>
 
 </div>
@@ -90,70 +90,70 @@ Design a video streaming platform that serves millions of concurrent viewers wit
 
 <!-- Original Video -->
 <div style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); border-radius: 12px; padding: 16px 32px; text-align: center; color: white;">
-  <strong>Original Video (4K Master)</strong>
+<strong>Original Video (4K Master)</strong>
 </div>
 
 <div style="color: #7c3aed; font-size: 24px;">↓</div>
 
 <!-- Transcoding Pipeline -->
 <div style="background: #f1f5f9; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; width: 100%; max-width: 700px;">
-  <h4 style="text-align: center; color: #d97706; margin: 0 0 20px 0;">TRANSCODING PIPELINE</h4>
+<h4 style="text-align: center; color: #d97706; margin: 0 0 20px 0;">TRANSCODING PIPELINE</h4>
 
-  <!-- Step 1 -->
-  <div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Step 1: Ingest & Validate</div>
-    <ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
-      <li>Check codec compatibility</li>
-      <li>Validate audio tracks (5.1, stereo)</li>
-      <li>Extract subtitles</li>
-      <li>Generate thumbnail sprites</li>
-    </ul>
-  </div>
+<!-- Step 1 -->
+<div style="background: #dbeafe; border: 1px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Step 1: Ingest & Validate</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
+<li>Check codec compatibility</li>
+<li>Validate audio tracks (5.1, stereo)</li>
+<li>Extract subtitles</li>
+<li>Generate thumbnail sprites</li>
+</ul>
+</div>
 
-  <!-- Step 2 -->
-  <div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">Step 2: Encode Multiple Profiles</div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
-      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">4K HDR</strong><br><span style="font-size: 11px; color: #475569;">25 Mbps</span></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">1080p</strong><br><span style="font-size: 11px; color: #475569;">8 Mbps</span></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">720p</strong><br><span style="font-size: 11px; color: #475569;">4 Mbps</span></div>
-    </div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px;">
-      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">480p</strong><br><span style="font-size: 11px; color: #475569;">2 Mbps</span></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">360p</strong><br><span style="font-size: 11px; color: #475569;">1 Mbps</span></div>
-      <div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">240p</strong><br><span style="font-size: 11px; color: #475569;">0.5 Mbps</span></div>
-    </div>
-    <div style="color: #475569; font-size: 12px; text-align: center;">
-      <strong>Encoding:</strong> H.264, H.265, VP9, AV1<br>
-      <strong>Audio:</strong> AAC, Dolby Digital, Dolby Atmos
-    </div>
-  </div>
+<!-- Step 2 -->
+<div style="background: #f0fdf4; border: 1px solid #22c55e; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">Step 2: Encode Multiple Profiles</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px;">
+<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">4K HDR</strong><br><span style="font-size: 11px; color: #475569;">25 Mbps</span></div>
+<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">1080p</strong><br><span style="font-size: 11px; color: #475569;">8 Mbps</span></div>
+<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">720p</strong><br><span style="font-size: 11px; color: #475569;">4 Mbps</span></div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px;">
+<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">480p</strong><br><span style="font-size: 11px; color: #475569;">2 Mbps</span></div>
+<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">360p</strong><br><span style="font-size: 11px; color: #475569;">1 Mbps</span></div>
+<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px;"><strong style="color: #16a34a;">240p</strong><br><span style="font-size: 11px; color: #475569;">0.5 Mbps</span></div>
+</div>
+<div style="color: #475569; font-size: 12px; text-align: center;">
+<strong>Encoding:</strong> H.264, H.265, VP9, AV1<br>
+<strong>Audio:</strong> AAC, Dolby Digital, Dolby Atmos
+</div>
+</div>
 
-  <!-- Step 3 -->
-  <div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Step 3: Segment for Streaming</div>
-    <div style="color: #475569; font-size: 13px;">
+<!-- Step 3 -->
+<div style="background: #faf5ff; border: 1px solid #7c3aed; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Step 3: Segment for Streaming</div>
+<div style="color: #475569; font-size: 13px;">
       Split into 4-second chunks (MPEG-DASH / HLS)<br>
-      <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px;">segment_001.m4s segment_002.m4s segment_003.m4s ...</code><br><br>
+<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px;">segment_001.m4s segment_002.m4s segment_003.m4s ...</code><br><br>
       Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</code> (DASH)
-    </div>
-  </div>
+</div>
+</div>
 
-  <!-- Step 4 -->
-  <div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 12px; text-align: center;">
-    <div style="color: #d97706; font-weight: bold;">Step 4: Distribute to CDN</div>
-    <div style="color: #475569; font-size: 13px;">Push to S3 → Replicate to Open Connect appliances</div>
-  </div>
+<!-- Step 4 -->
+<div style="background: #fff7ed; border: 1px solid #f59e0b; border-radius: 12px; padding: 12px; text-align: center;">
+<div style="color: #d97706; font-weight: bold;">Step 4: Distribute to CDN</div>
+<div style="color: #475569; font-size: 13px;">Push to S3 → Replicate to Open Connect appliances</div>
+</div>
 </div>
 
 <!-- Stats -->
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-  <div style="background: #dbeafe; border-radius: 8px; padding: 10px 16px; text-align: center;">
-    <strong style="color: #1d4ed8;">Processing Time:</strong><br><span style="color: #475569;">~4 hours for 2-hour movie</span>
-  </div>
-  <div style="background: #dcfce7; border-radius: 8px; padding: 10px 16px; text-align: center;">
-    <strong style="color: #16a34a;">Storage:</strong><br><span style="color: #475569;">~50-100GB per title</span>
-  </div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 10px 16px; text-align: center;">
+<strong style="color: #1d4ed8;">Processing Time:</strong><br><span style="color: #475569;">~4 hours for 2-hour movie</span>
+</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 10px 16px; text-align: center;">
+<strong style="color: #16a34a;">Storage:</strong><br><span style="color: #475569;">~50-100GB per title</span>
+</div>
 </div>
 
 </div>

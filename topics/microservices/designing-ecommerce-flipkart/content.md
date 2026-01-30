@@ -161,37 +161,37 @@ CDN + WAF + DDoS Protection
 <div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">RESPONSIBILITIES:</div>
 <div style="color: #1e293b; font-size: 11px;">
 <div>- User registration & authentication</div>
-<div>- Profile management (name, email, phone)</div>
-<div>- Address book management</div>
-<div>- Session management</div>
-<div>- User preferences</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 200px;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">API ENDPOINTS:</div>
-<div style="font-family: monospace; font-size: 10px; color: #1e293b;">
-<div><span style="color: #22c55e;">POST</span> /api/users/register</div>
-<div><span style="color: #22c55e;">POST</span> /api/users/login</div>
-<div><span style="color: #3b82f6;">GET</span> /api/users/{id}</div>
-<div><span style="color: #f97316;">PUT</span> /api/users/{id}</div>
-<div><span style="color: #3b82f6;">GET</span> /api/users/{id}/addresses</div>
-</div>
-</div>
-</div>
-<div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DATABASE: PostgreSQL</div>
-<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
-<div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">users</div>
-<div style="font-size: 10px; color: #475569;">id (PK) | email | phone | password_hash | first_name | last_name | created_at</div>
-</div>
-<div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">addresses</div>
-<div style="font-size: 10px; color: #475569;">id (PK) | user_id (FK) | address_line1 | city | state | pincode | is_default | type</div>
-</div>
-</div>
-<div style="background: rgba(220,38,38,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #dc2626;">
-<span style="color: #dc2626; font-weight: bold; font-size: 11px;">CACHE:</span> <span style="color: #1e293b; font-size: 11px;">Redis (sessions, frequently accessed profiles)</span>
-</div>
+  <div>- Profile management (name, email, phone)</div>
+    <div>- Address book management</div>
+      <div>- Session management</div>
+        <div>- User preferences</div>
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 200px;">
+      <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">API ENDPOINTS:</div>
+      <div style="font-family: monospace; font-size: 10px; color: #1e293b;">
+      <div><span style="color: #22c55e;">POST</span> /api/users/register</div>
+        <div><span style="color: #22c55e;">POST</span> /api/users/login</div>
+          <div><span style="color: #3b82f6;">GET</span> /api/users/{id}</div>
+            <div><span style="color: #f97316;">PUT</span> /api/users/{id}</div>
+              <div><span style="color: #3b82f6;">GET</span> /api/users/{id}/addresses</div>
+              </div>
+            </div>
+          </div>
+          <div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DATABASE: PostgreSQL</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+          <div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+          <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">users</div>
+          <div style="font-size: 10px; color: #475569;">id (PK) | email | phone | password_hash | first_name | last_name | created_at</div>
+        </div>
+        <div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+        <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">addresses</div>
+        <div style="font-size: 10px; color: #475569;">id (PK) | user_id (FK) | address_line1 | city | state | pincode | is_default | type</div>
+      </div>
+    </div>
+    <div style="background: rgba(220,38,38,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #dc2626;">
+    <span style="color: #dc2626; font-weight: bold; font-size: 11px;">CACHE:</span> <span style="color: #1e293b; font-size: 11px;">Redis (sessions, frequently accessed profiles)</span>
+  </div>
 </div>
 
 #### 2. Product Service
@@ -203,58 +203,58 @@ CDN + WAF + DDoS Protection
 <div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">RESPONSIBILITIES:</div>
 <div style="color: #1e293b; font-size: 11px;">
 <div>- Product CRUD operations</div>
-<div>- Category management</div>
-<div>- Product attributes & variants</div>
-<div>- Product images & media</div>
-<div>- Product reviews & ratings</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 200px;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">API ENDPOINTS:</div>
-<div style="font-family: monospace; font-size: 10px; color: #1e293b;">
-<div><span style="color: #3b82f6;">GET</span> /api/products?category=&filters=</div>
-<div><span style="color: #3b82f6;">GET</span> /api/products/{id}</div>
-<div><span style="color: #3b82f6;">GET</span> /api/products/{id}/variants</div>
-<div><span style="color: #3b82f6;">GET</span> /api/products/{id}/reviews</div>
-<div><span style="color: #22c55e;">POST</span> /api/products/{id}/reviews</div>
-</div>
-</div>
-</div>
-<div style="color: #7c3aed; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DATABASE: MongoDB (flexible schema)</div>
-<div style="background: #1e293b; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 10px; color: #e2e8f0;">
-<div>{</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"_id"</span>: <span style="color: #93c5fd;">"prod_123"</span>,</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"name"</span>: <span style="color: #93c5fd;">"iPhone 15 Pro"</span>,</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"category"</span>: [<span style="color: #93c5fd;">"Electronics"</span>, <span style="color: #93c5fd;">"Mobiles"</span>, <span style="color: #93c5fd;">"Apple"</span>],</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"attributes"</span>: { <span style="color: #93c5fd;">"color"</span>: <span style="color: #93c5fd;">"Space Black"</span>, <span style="color: #93c5fd;">"storage"</span>: <span style="color: #93c5fd;">"256GB"</span> },</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"variants"</span>: [{ <span style="color: #93c5fd;">"sku"</span>: <span style="color: #93c5fd;">"IP15P-256-BLK"</span> }],</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"rating"</span>: { <span style="color: #93c5fd;">"avg"</span>: <span style="color: #f97316;">4.5</span>, <span style="color: #93c5fd;">"count"</span>: <span style="color: #f97316;">15234</span> }</div>
-<div>}</div>
-</div>
-</div>
+  <div>- Category management</div>
+    <div>- Product attributes & variants</div>
+      <div>- Product images & media</div>
+        <div>- Product reviews & ratings</div>
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 200px;">
+      <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">API ENDPOINTS:</div>
+      <div style="font-family: monospace; font-size: 10px; color: #1e293b;">
+      <div><span style="color: #3b82f6;">GET</span> /api/products?category=&filters=</div>
+        <div><span style="color: #3b82f6;">GET</span> /api/products/{id}</div>
+          <div><span style="color: #3b82f6;">GET</span> /api/products/{id}/variants</div>
+            <div><span style="color: #3b82f6;">GET</span> /api/products/{id}/reviews</div>
+              <div><span style="color: #22c55e;">POST</span> /api/products/{id}/reviews</div>
+              </div>
+            </div>
+          </div>
+          <div style="color: #7c3aed; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DATABASE: MongoDB (flexible schema)</div>
+          <div style="background: #1e293b; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 10px; color: #e2e8f0;">
+          <div>{</div>
+            <div style="margin-left: 12px;"><span style="color: #22c55e;">"_id"</span>: <span style="color: #93c5fd;">"prod_123"</span>,</div>
+            <div style="margin-left: 12px;"><span style="color: #22c55e;">"name"</span>: <span style="color: #93c5fd;">"iPhone 15 Pro"</span>,</div>
+            <div style="margin-left: 12px;"><span style="color: #22c55e;">"category"</span>: [<span style="color: #93c5fd;">"Electronics"</span>, <span style="color: #93c5fd;">"Mobiles"</span>, <span style="color: #93c5fd;">"Apple"</span>],</div>
+            <div style="margin-left: 12px;"><span style="color: #22c55e;">"attributes"</span>: { <span style="color: #93c5fd;">"color"</span>: <span style="color: #93c5fd;">"Space Black"</span>, <span style="color: #93c5fd;">"storage"</span>: <span style="color: #93c5fd;">"256GB"</span> },</div>
+            <div style="margin-left: 12px;"><span style="color: #22c55e;">"variants"</span>: [{ <span style="color: #93c5fd;">"sku"</span>: <span style="color: #93c5fd;">"IP15P-256-BLK"</span> }],</div>
+            <div style="margin-left: 12px;"><span style="color: #22c55e;">"rating"</span>: { <span style="color: #93c5fd;">"avg"</span>: <span style="color: #f97316;">4.5</span>, <span style="color: #93c5fd;">"count"</span>: <span style="color: #f97316;">15234</span> }</div>
+            <div>}</div>
+            </div>
+          </div>
 
-#### 3. Inventory Service
+          #### 3. Inventory Service
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #3b82f6; margin: 0 0 20px 0; font-size: 14px;">INVENTORY SERVICE</h4>
-<div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">RESPONSIBILITIES:</div>
-<div style="color: #1e293b; font-size: 11px; margin-bottom: 20px;">
-Track stock levels per SKU | Reserve inventory for orders | Release on cancellation | Low stock alerts
-</div>
-<div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL OPERATIONS (ACID):</div>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-<div style="flex: 1; min-width: 150px; background: rgba(34,197,94,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 11px; margin-bottom: 8px;">RESERVE</div>
-<div style="color: #475569; font-size: 10px;">1. Check available >= requested<br/>2. Decrement available_qty<br/>3. Increment reserved_qty<br/>4. Create reservation with TTL</div>
-</div>
-<div style="flex: 1; min-width: 150px; background: rgba(59,130,246,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #3b82f6;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">COMMIT</div>
-<div style="color: #475569; font-size: 10px;">1. Decrement reserved_qty<br/>2. Create shipment allocation</div>
-</div>
-<div style="flex: 1; min-width: 150px; background: rgba(220,38,38,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #dc2626;">
-<div style="color: #dc2626; font-weight: bold; font-size: 11px; margin-bottom: 8px;">RELEASE</div>
-<div style="color: #475569; font-size: 10px;">1. Increment available_qty<br/>2. Decrement reserved_qty<br/>3. Delete reservation</div>
-</div>
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+          <h4 style="color: #3b82f6; margin: 0 0 20px 0; font-size: 14px;">INVENTORY SERVICE</h4>
+          <div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">RESPONSIBILITIES:</div>
+          <div style="color: #1e293b; font-size: 11px; margin-bottom: 20px;">
+          Track stock levels per SKU | Reserve inventory for orders | Release on cancellation | Low stock alerts
+        </div>
+        <div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL OPERATIONS (ACID):</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+        <div style="flex: 1; min-width: 150px; background: rgba(34,197,94,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #22c55e;">
+        <div style="color: #22c55e; font-weight: bold; font-size: 11px; margin-bottom: 8px;">RESERVE</div>
+        <div style="color: #475569; font-size: 10px;">1. Check available >= requested<br/>2. Decrement available_qty<br/>3. Increment reserved_qty<br/>4. Create reservation with TTL</div>
+      </div>
+      <div style="flex: 1; min-width: 150px; background: rgba(59,130,246,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #3b82f6;">
+      <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">COMMIT</div>
+      <div style="color: #475569; font-size: 10px;">1. Decrement reserved_qty<br/>2. Create shipment allocation</div>
+    </div>
+    <div style="flex: 1; min-width: 150px; background: rgba(220,38,38,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #dc2626;">
+    <div style="color: #dc2626; font-weight: bold; font-size: 11px; margin-bottom: 8px;">RELEASE</div>
+    <div style="color: #475569; font-size: 10px;">1. Increment available_qty<br/>2. Decrement reserved_qty<br/>3. Delete reservation</div>
+  </div>
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 16px;">
 <div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
@@ -291,15 +291,15 @@ Add/remove items | Update quantities | Apply coupons | Calculate totals | Cart p
 <div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">DATA MODEL (Redis + PostgreSQL backup):</div>
 <div style="background: #1e293b; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 10px; color: #e2e8f0; margin-bottom: 16px;">
 <div><span style="color: #94a3b8;">cart:{user_id}</span> {</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"items"</span>: [{ <span style="color: #93c5fd;">"sku"</span>: <span style="color: #93c5fd;">"IP15P-256-BLK"</span>, <span style="color: #93c5fd;">"quantity"</span>: <span style="color: #f97316;">1</span>, <span style="color: #93c5fd;">"price"</span>: <span style="color: #f97316;">134900</span> }],</div>
-<div style="margin-left: 12px;"><span style="color: #22c55e;">"coupon_code"</span>: <span style="color: #93c5fd;">"SAVE10"</span></div>
-<div>}</div>
-</div>
-<div style="color: #7c3aed; font-weight: bold; font-size: 12px; margin-bottom: 8px;">EVENTS PUBLISHED:</div>
-<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-<span style="background: rgba(124,58,237,0.1); color: #7c3aed; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #c4b5fd;">cart.item.added</span>
-<span style="background: rgba(124,58,237,0.1); color: #7c3aed; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #c4b5fd;">cart.item.removed</span>
-<span style="background: rgba(124,58,237,0.1); color: #7c3aed; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #c4b5fd;">cart.abandoned (24h)</span>
+  <div style="margin-left: 12px;"><span style="color: #22c55e;">"items"</span>: [{ <span style="color: #93c5fd;">"sku"</span>: <span style="color: #93c5fd;">"IP15P-256-BLK"</span>, <span style="color: #93c5fd;">"quantity"</span>: <span style="color: #f97316;">1</span>, <span style="color: #93c5fd;">"price"</span>: <span style="color: #f97316;">134900</span> }],</div>
+  <div style="margin-left: 12px;"><span style="color: #22c55e;">"coupon_code"</span>: <span style="color: #93c5fd;">"SAVE10"</span></div>
+  <div>}</div>
+  </div>
+  <div style="color: #7c3aed; font-weight: bold; font-size: 12px; margin-bottom: 8px;">EVENTS PUBLISHED:</div>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+  <span style="background: rgba(124,58,237,0.1); color: #7c3aed; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #c4b5fd;">cart.item.added</span>
+  <span style="background: rgba(124,58,237,0.1); color: #7c3aed; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #c4b5fd;">cart.item.removed</span>
+  <span style="background: rgba(124,58,237,0.1); color: #7c3aed; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #c4b5fd;">cart.abandoned (24h)</span>
 </div>
 </div>
 
@@ -361,29 +361,29 @@ Payment processing (UPI, Cards, NetBanking, COD) | Gateway integration | Refund 
 <div style="background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
 <div style="display: flex; flex-direction: column; gap: 8px; font-size: 11px; color: #1e293b;">
 <div><span style="color: #22c55e;">1.</span> Order Service -> Payment Service: Initiate Payment</div>
-<div><span style="color: #22c55e;">2.</span> Payment Service -> Payment Gateway: Create Order</div>
-<div><span style="color: #22c55e;">3.</span> User -> Payment Gateway: Complete Payment</div>
-<div><span style="color: #22c55e;">4.</span> Payment Gateway -> Webhook -> Payment Service</div>
-<div><span style="color: #22c55e;">5.</span> Payment Service -> Kafka: <span style="color: #7c3aed;">payment.completed</span></div>
-<div><span style="color: #22c55e;">6.</span> Order Service -> Consume event -> Update order</div>
-</div>
-</div>
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">INTEGRATIONS:</div>
-<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
-<span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">Razorpay (UPI, Cards)</span>
-<span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">PayU (NetBanking)</span>
-<span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">Simpl (BNPL)</span>
-<span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">Internal Wallet</span>
-</div>
-<div style="display: flex; flex-wrap: wrap; gap: 16px;">
-<div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 6px;">payments</div>
-<div style="font-size: 10px; color: #475569;">id | order_id | amount | currency | method | gateway | gateway_txn_id | status</div>
-</div>
-<div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 6px;">refunds</div>
-<div style="font-size: 10px; color: #475569;">id | payment_id (FK) | amount | reason | status | created_at</div>
-</div>
+  <div><span style="color: #22c55e;">2.</span> Payment Service -> Payment Gateway: Create Order</div>
+    <div><span style="color: #22c55e;">3.</span> User -> Payment Gateway: Complete Payment</div>
+      <div><span style="color: #22c55e;">4.</span> Payment Gateway -> Webhook -> Payment Service</div>
+        <div><span style="color: #22c55e;">5.</span> Payment Service -> Kafka: <span style="color: #7c3aed;">payment.completed</span></div>
+          <div><span style="color: #22c55e;">6.</span> Order Service -> Consume event -> Update order</div>
+          </div>
+        </div>
+        <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">INTEGRATIONS:</div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+        <span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">Razorpay (UPI, Cards)</span>
+        <span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">PayU (NetBanking)</span>
+        <span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">Simpl (BNPL)</span>
+        <span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 4px; font-size: 10px; border: 1px solid #93c5fd;">Internal Wallet</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+      <div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+      <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 6px;">payments</div>
+      <div style="font-size: 10px; color: #475569;">id | order_id | amount | currency | method | gateway | gateway_txn_id | status</div>
+    </div>
+    <div style="flex: 1; min-width: 200px; background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+    <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 6px;">refunds</div>
+    <div style="font-size: 10px; color: #475569;">id | payment_id (FK) | amount | reason | status | created_at</div>
+  </div>
 </div>
 </div>
 
@@ -582,65 +582,65 @@ Search Results with Facets
 <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">2. FLASH SALE INVENTORY LOCKING</div>
 <div style="color: #1e293b; font-size: 10px; padding-left: 12px;">
 <div>- Pre-reserve inventory in Redis</div>
-<div>- Atomic decrement with Lua scripts</div>
-<div>- No database queries during flash</div>
-</div>
-</div>
-<!-- Static Page Caching -->
-<div>
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">3. STATIC PAGE CACHING</div>
-<div style="color: #1e293b; font-size: 10px; padding-left: 12px;">
-<div>- Pre-render product pages</div>
-<div>- CDN caching with 5-min TTL</div>
-<div>- Dynamic prices via API</div>
-</div>
-</div>
-</div>
-<!-- Infrastructure Scaling -->
-<div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 12px;">INFRASTRUCTURE SCALING:</div>
-<div style="background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; overflow-x: auto; border: 1px solid #e2e8f0;">
-<table style="width: 100%; border-collapse: collapse; font-size: 10px; color: #1e293b;">
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<th style="text-align: left; padding: 8px; color: #3b82f6;">Component</th>
-<th style="text-align: center; padding: 8px; color: #64748b;">Normal</th>
-<th style="text-align: center; padding: 8px; color: #22c55e;">BBD (10x)</th>
-</tr>
-<tr style="border-bottom: 1px solid #f1f5f9;">
-<td style="padding: 8px;">API Gateway</td>
-<td style="text-align: center; padding: 8px;">50 pods</td>
-<td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">500 pods</td>
-</tr>
-<tr style="border-bottom: 1px solid #f1f5f9;">
-<td style="padding: 8px;">Cart Service</td>
-<td style="text-align: center; padding: 8px;">30 pods</td>
-<td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">300 pods</td>
-</tr>
-<tr style="border-bottom: 1px solid #f1f5f9;">
-<td style="padding: 8px;">Order Service</td>
-<td style="text-align: center; padding: 8px;">20 pods</td>
-<td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">200 pods</td>
-</tr>
-<tr style="border-bottom: 1px solid #f1f5f9;">
-<td style="padding: 8px;">Payment Service</td>
-<td style="text-align: center; padding: 8px;">40 pods</td>
-<td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">400 pods</td>
-</tr>
-<tr style="border-bottom: 1px solid #f1f5f9;">
-<td style="padding: 8px;">Redis Cluster</td>
-<td style="text-align: center; padding: 8px;">6 nodes</td>
-<td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">30 nodes</td>
-</tr>
-<tr style="border-bottom: 1px solid #f1f5f9;">
-<td style="padding: 8px;">Kafka Brokers</td>
-<td style="text-align: center; padding: 8px;">9 brokers</td>
-<td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">27 brokers</td>
-</tr>
-<tr>
-<td style="padding: 8px;">PostgreSQL</td>
-<td style="text-align: center; padding: 8px;">3 replicas</td>
-<td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">10 replicas</td>
-</tr>
-</table>
+  <div>- Atomic decrement with Lua scripts</div>
+    <div>- No database queries during flash</div>
+    </div>
+  </div>
+  <!-- Static Page Caching -->
+  <div>
+    <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 8px;">3. STATIC PAGE CACHING</div>
+    <div style="color: #1e293b; font-size: 10px; padding-left: 12px;">
+    <div>- Pre-render product pages</div>
+      <div>- CDN caching with 5-min TTL</div>
+        <div>- Dynamic prices via API</div>
+        </div>
+      </div>
+    </div>
+    <!-- Infrastructure Scaling -->
+    <div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 12px;">INFRASTRUCTURE SCALING:</div>
+    <div style="background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; overflow-x: auto; border: 1px solid #e2e8f0;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 10px; color: #1e293b;">
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+    <th style="text-align: left; padding: 8px; color: #3b82f6;">Component</th>
+    <th style="text-align: center; padding: 8px; color: #64748b;">Normal</th>
+    <th style="text-align: center; padding: 8px; color: #22c55e;">BBD (10x)</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+    <td style="padding: 8px;">API Gateway</td>
+    <td style="text-align: center; padding: 8px;">50 pods</td>
+    <td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">500 pods</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+    <td style="padding: 8px;">Cart Service</td>
+    <td style="text-align: center; padding: 8px;">30 pods</td>
+    <td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">300 pods</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+    <td style="padding: 8px;">Order Service</td>
+    <td style="text-align: center; padding: 8px;">20 pods</td>
+    <td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">200 pods</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+    <td style="padding: 8px;">Payment Service</td>
+    <td style="text-align: center; padding: 8px;">40 pods</td>
+    <td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">400 pods</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+    <td style="padding: 8px;">Redis Cluster</td>
+    <td style="text-align: center; padding: 8px;">6 nodes</td>
+    <td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">30 nodes</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+    <td style="padding: 8px;">Kafka Brokers</td>
+    <td style="text-align: center; padding: 8px;">9 brokers</td>
+    <td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">27 brokers</td>
+    </tr>
+    <tr>
+    <td style="padding: 8px;">PostgreSQL</td>
+    <td style="text-align: center; padding: 8px;">3 replicas</td>
+    <td style="text-align: center; padding: 8px; color: #22c55e; font-weight: bold;">10 replicas</td>
+    </tr>
+  </table>
 </div>
 <!-- Graceful Degradation -->
 <div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px;">GRACEFUL DEGRADATION:</div>
@@ -649,50 +649,50 @@ Search Results with Facets
 <div style="color: #22c55e; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Priority 1 (Always)</div>
 <div style="color: #1e293b; font-size: 10px;">
 <div>- Checkout & Payment</div>
-<div>- Order status</div>
-<div>- Core search</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 150px; background: rgba(249,115,22,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #f97316;">
-<div style="color: #f97316; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Priority 2 (Degraded)</div>
-<div style="color: #1e293b; font-size: 10px;">
-<div>- Recommendations</div>
-<div>- Reviews</div>
-<div>- Wishlist</div>
-</div>
-</div>
-<div style="flex: 1; min-width: 150px; background: rgba(220,38,38,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #dc2626;">
-<div style="color: #dc2626; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Priority 3 (Disabled)</div>
-<div style="color: #1e293b; font-size: 10px;">
-<div>- Recently viewed</div>
-<div>- Price history</div>
-<div>- Similar products</div>
-</div>
-</div>
-</div>
-</div>
+  <div>- Order status</div>
+    <div>- Core search</div>
+    </div>
+  </div>
+  <div style="flex: 1; min-width: 150px; background: rgba(249,115,22,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #f97316;">
+  <div style="color: #f97316; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Priority 2 (Degraded)</div>
+  <div style="color: #1e293b; font-size: 10px;">
+  <div>- Recommendations</div>
+    <div>- Reviews</div>
+      <div>- Wishlist</div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 150px; background: rgba(220,38,38,0.1); border-radius: 8px; padding: 12px; border-left: 3px solid #dc2626;">
+    <div style="color: #dc2626; font-weight: bold; font-size: 11px; margin-bottom: 8px;">Priority 3 (Disabled)</div>
+    <div style="color: #1e293b; font-size: 10px;">
+    <div>- Recently viewed</div>
+      <div>- Price history</div>
+        <div>- Similar products</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
----
+  ---
 
-## Key Design Decisions
+  ## Key Design Decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| **Product DB** | MongoDB | Flexible schema for varied product attributes |
-| **User/Order DB** | PostgreSQL | ACID compliance for transactions |
-| **Cache** | Redis Cluster | High throughput, pub/sub, Lua scripts |
-| **Message Broker** | Kafka | High throughput, replay capability |
-| **Search** | Elasticsearch | Full-text search, faceted navigation |
-| **API Gateway** | Kong | Plugin ecosystem, Kubernetes native |
-| **Service Mesh** | Istio | mTLS, traffic management |
+  | Decision | Choice | Rationale |
+  |----------|--------|-----------|
+  | **Product DB** | MongoDB | Flexible schema for varied product attributes |
+  | **User/Order DB** | PostgreSQL | ACID compliance for transactions |
+  | **Cache** | Redis Cluster | High throughput, pub/sub, Lua scripts |
+  | **Message Broker** | Kafka | High throughput, replay capability |
+  | **Search** | Elasticsearch | Full-text search, faceted navigation |
+  | **API Gateway** | Kong | Plugin ecosystem, Kubernetes native |
+  | **Service Mesh** | Istio | mTLS, traffic management |
 
----
+  ---
 
-## Key Takeaways
+  ## Key Takeaways
 
-1. **Design for failure** - Every service can fail, plan for graceful degradation
-2. **Eventual consistency is OK** - Not everything needs ACID transactions
-3. **Cache aggressively** - Pre-compute and cache what you can
-4. **Async where possible** - Use events to decouple services
-5. **Test at scale** - Load test with production-like traffic before sales
-6. **Monitor everything** - You can't fix what you can't see
+  1. **Design for failure** - Every service can fail, plan for graceful degradation
+  2. **Eventual consistency is OK** - Not everything needs ACID transactions
+  3. **Cache aggressively** - Pre-compute and cache what you can
+  4. **Async where possible** - Use events to decouple services
+  5. **Test at scale** - Load test with production-like traffic before sales
+  6. **Monitor everything** - You can't fix what you can't see

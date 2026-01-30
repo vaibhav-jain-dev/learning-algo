@@ -21,33 +21,33 @@ The Single Responsibility Principle in microservices extends beyond code-level c
 <div style="color: #e94560; font-weight: bold; margin-bottom: 12px;">Cohesion Indicators (Keep Together)</div>
 <div style="color: #475569; font-size: 13px; line-height: 1.8;">
 <div>Data that changes together</div>
-<div>Features deployed together</div>
-<div>Functionality sharing transactions</div>
-<div>Same team ownership</div>
-<div>Common release cycles</div>
-</div>
-</div>
-<div style="background: rgba(0, 173, 181, 0.1); padding: 20px; border-radius: 12px; border-left: 4px solid #00adb5;">
-<div style="color: #00adb5; font-weight: bold; margin-bottom: 12px;">Coupling Indicators (Split Apart)</div>
-<div style="color: #475569; font-size: 13px; line-height: 1.8;">
-<div>Different rates of change</div>
-<div>Different scaling requirements</div>
-<div>Different security boundaries</div>
-<div>Different team expertise</div>
-<div>Independent business value</div>
-</div>
-</div>
-</div>
-<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-top: 20px;">
-<div style="color: #1e293b; font-size: 13px;"><span style="color: #e94560; font-weight: bold;">Critical Insight:</span> The boundary is correct when you can explain what the service does without using "and" - "This service manages order lifecycle" vs "This service manages orders and sends notifications and updates inventory"</div>
-</div>
-</div>
+  <div>Features deployed together</div>
+    <div>Functionality sharing transactions</div>
+      <div>Same team ownership</div>
+        <div>Common release cycles</div>
+        </div>
+      </div>
+      <div style="background: rgba(0, 173, 181, 0.1); padding: 20px; border-radius: 12px; border-left: 4px solid #00adb5;">
+      <div style="color: #00adb5; font-weight: bold; margin-bottom: 12px;">Coupling Indicators (Split Apart)</div>
+      <div style="color: #475569; font-size: 13px; line-height: 1.8;">
+      <div>Different rates of change</div>
+        <div>Different scaling requirements</div>
+          <div>Different security boundaries</div>
+            <div>Different team expertise</div>
+              <div>Independent business value</div>
+              </div>
+            </div>
+          </div>
+          <div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-top: 20px;">
+          <div style="color: #1e293b; font-size: 13px;"><span style="color: #e94560; font-weight: bold;">Critical Insight:</span> The boundary is correct when you can explain what the service does without using "and" - "This service manages order lifecycle" vs "This service manages orders and sends notifications and updates inventory"</div>
+        </div>
+      </div>
 
-**The Granularity Trap**: Services that are too fine-grained create a "distributed monolith" - the worst of both worlds. Signs include:
-- Every business operation requires orchestrating 5+ services
-- Circular dependencies between services
-- Cannot deploy one service without deploying others
-- Distributed transactions spanning multiple services
+      **The Granularity Trap**: Services that are too fine-grained create a "distributed monolith" - the worst of both worlds. Signs include:
+      - Every business operation requires orchestrating 5+ services
+      - Circular dependencies between services
+      - Cannot deploy one service without deploying others
+      - Distributed transactions spanning multiple services
 
 ```python
 # Anti-pattern: Nano-services creating tight coupling
@@ -79,23 +79,23 @@ class OrderService:
         return order
 ```
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
-<h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: Service Boundaries (3-Level Deep)</h4>
+      <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
+      <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: Service Boundaries (3-Level Deep)</h4>
 
-<div style="margin-bottom: 20px;">
-<div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: How do you determine service boundaries in a microservices architecture?</div>
-<div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
-Use Domain-Driven Design's bounded contexts. Identify distinct business capabilities with their own ubiquitous language, data ownership, and team alignment. Apply the "can explain without 'and'" test.
-</div>
+      <div style="margin-bottom: 20px;">
+      <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Level 1: How do you determine service boundaries in a microservices architecture?</div>
+      <div style="color: #475569; font-size: 13px; padding-left: 16px; border-left: 2px solid #cbd5e1; margin: 12px 0;">
+      Use Domain-Driven Design's bounded contexts. Identify distinct business capabilities with their own ubiquitous language, data ownership, and team alignment. Apply the "can explain without 'and'" test.
+    </div>
 
-<div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: What happens when you discover the boundary is wrong after deployment? How do you refactor?</div>
-<div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
-Refactoring requires the Strangler Fig pattern: create new service with correct boundary, route traffic gradually using feature flags, maintain backward compatibility through API versioning, use change data capture to sync during transition, deprecate old service only after full migration verification.
-</div>
+    <div style="color: #e94560; font-weight: bold; margin: 16px 0 8px 24px;">Level 2: What happens when you discover the boundary is wrong after deployment? How do you refactor?</div>
+    <div style="color: #475569; font-size: 13px; padding-left: 40px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 24px;">
+    Refactoring requires the Strangler Fig pattern: create new service with correct boundary, route traffic gradually using feature flags, maintain backward compatibility through API versioning, use change data capture to sync during transition, deprecate old service only after full migration verification.
+  </div>
 
-<div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: How do you handle data that was shared between the old services during the split? What about in-flight transactions?</div>
-<div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
-For shared data: establish data ownership first, then replicate needed data via events (eventual consistency) or API calls (synchronous). For in-flight transactions during cutover: implement dual-write during transition with reconciliation jobs, use distributed sagas with compensation for new flows, maintain audit logs with correlation IDs to trace and replay failed operations. Consider "freeze" windows for complex migrations.
+  <div style="color: #ffa500; font-weight: bold; margin: 16px 0 8px 48px;">Level 3: How do you handle data that was shared between the old services during the split? What about in-flight transactions?</div>
+  <div style="color: #475569; font-size: 13px; padding-left: 64px; border-left: 2px solid #cbd5e1; margin: 12px 0 12px 48px;">
+  For shared data: establish data ownership first, then replicate needed data via events (eventual consistency) or API calls (synchronous). For in-flight transactions during cutover: implement dual-write during transition with reconciliation jobs, use distributed sagas with compensation for new flows, maintain audit logs with correlation IDs to trace and replay failed operations. Consider "freeze" windows for complex migrations.
 </div>
 </div>
 </div>
@@ -918,8 +918,8 @@ Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by custo
 <div style="display: grid; gap: 16px;">
 <div style="background: rgba(233, 69, 96, 0.15); padding: 20px; border-radius: 12px; display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
 <div>
-<div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Distributed Monolith</div>
-<div style="color: #64748b; font-size: 12px;">Services are separated but still tightly coupled</div>
+  <div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Distributed Monolith</div>
+  <div style="color: #64748b; font-size: 12px;">Services are separated but still tightly coupled</div>
 </div>
 <div style="color: #475569; font-size: 13px;">
 <strong>Symptoms:</strong> Can't deploy one service without deploying others. Services share database. Synchronous call chains of 5+ services. All services must be up for system to work.<br/>
@@ -928,8 +928,8 @@ Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by custo
 </div>
 <div style="background: rgba(255, 165, 0, 0.15); padding: 20px; border-radius: 12px; display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
 <div>
-<div style="color: #ffa500; font-weight: bold; margin-bottom: 8px;">Shared Database</div>
-<div style="color: #64748b; font-size: 12px;">Multiple services accessing same database</div>
+  <div style="color: #ffa500; font-weight: bold; margin-bottom: 8px;">Shared Database</div>
+  <div style="color: #64748b; font-size: 12px;">Multiple services accessing same database</div>
 </div>
 <div style="color: #475569; font-size: 13px;">
 <strong>Symptoms:</strong> Schema changes require coordinating multiple teams. No clear data ownership. Performance issues affect all services. Can't choose optimal database per service.<br/>
@@ -938,8 +938,8 @@ Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by custo
 </div>
 <div style="background: rgba(0, 173, 181, 0.15); padding: 20px; border-radius: 12px; display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
 <div>
-<div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Chatty Services</div>
-<div style="color: #64748b; font-size: 12px;">Excessive inter-service communication</div>
+  <div style="color: #00adb5; font-weight: bold; margin-bottom: 8px;">Chatty Services</div>
+  <div style="color: #64748b; font-size: 12px;">Excessive inter-service communication</div>
 </div>
 <div style="color: #475569; font-size: 13px;">
 <strong>Symptoms:</strong> High latency due to network round trips. N+1 query patterns across services. Single user action triggers dozens of service calls.<br/>
@@ -948,8 +948,8 @@ Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by custo
 </div>
 <div style="background: rgba(143, 87, 229, 0.15); padding: 20px; border-radius: 12px; display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
 <div>
-<div style="color: #8957e5; font-weight: bold; margin-bottom: 8px;">Missing Observability</div>
-<div style="color: #64748b; font-size: 12px;">Can't trace requests across services</div>
+  <div style="color: #8957e5; font-weight: bold; margin-bottom: 8px;">Missing Observability</div>
+  <div style="color: #64748b; font-size: 12px;">Can't trace requests across services</div>
 </div>
 <div style="color: #475569; font-size: 13px;">
 <strong>Symptoms:</strong> Debugging requires checking logs in multiple places. Can't understand call patterns. No visibility into cross-service latency breakdown.<br/>
@@ -967,24 +967,24 @@ Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by custo
 <div style="color: #00adb5; font-weight: bold; font-size: 16px; margin-bottom: 16px;">Essential Principles to Remember</div>
 <div style="color: #475569; font-size: 14px; line-height: 2;">
 <div><strong style="color: #e94560;">1.</strong> Microservices solve organizational scaling problems first, technical problems second</div>
-<div><strong style="color: #e94560;">2.</strong> Conway's Law is a tool - design team structure to get desired architecture</div>
-<div><strong style="color: #e94560;">3.</strong> Start monolith, extract services when you have proven domain boundaries</div>
-<div><strong style="color: #e94560;">4.</strong> Each service owns its data completely - no shared databases</div>
-<div><strong style="color: #e94560;">5.</strong> Design for failure from day one - circuit breakers, bulkheads, timeouts</div>
-<div><strong style="color: #e94560;">6.</strong> Deployment strategy depends on risk tolerance and infrastructure capability</div>
-<div><strong style="color: #e94560;">7.</strong> Observability is not optional - distributed tracing, centralized logging, metrics</div>
-<div><strong style="color: #e94560;">8.</strong> The goal is independent deployability - if you can't deploy independently, you don't have microservices</div>
-</div>
-</div>
+  <div><strong style="color: #e94560;">2.</strong> Conway's Law is a tool - design team structure to get desired architecture</div>
+    <div><strong style="color: #e94560;">3.</strong> Start monolith, extract services when you have proven domain boundaries</div>
+      <div><strong style="color: #e94560;">4.</strong> Each service owns its data completely - no shared databases</div>
+        <div><strong style="color: #e94560;">5.</strong> Design for failure from day one - circuit breakers, bulkheads, timeouts</div>
+          <div><strong style="color: #e94560;">6.</strong> Deployment strategy depends on risk tolerance and infrastructure capability</div>
+            <div><strong style="color: #e94560;">7.</strong> Observability is not optional - distributed tracing, centralized logging, metrics</div>
+              <div><strong style="color: #e94560;">8.</strong> The goal is independent deployability - if you can't deploy independently, you don't have microservices</div>
+              </div>
+            </div>
 
----
+            ---
 
-## Related Topics
+            ## Related Topics
 
-- [[Service Mesh]](/microservices/patterns/service-mesh) - Infrastructure layer for service-to-service communication
-- [[Saga Pattern]](/microservices/patterns/saga) - Managing distributed transactions
-- [[API Gateway]](/system-design/api-gateway) - Entry point and cross-cutting concerns
-- [[Event-Driven Architecture]](/microservices/patterns/event-driven) - Async communication patterns
-- [[CQRS]](/microservices/patterns/cqrs) - Command Query Responsibility Segregation
-- [[Distributed Tracing]](/observability/distributed-tracing) - Request flow visibility
-- [[Domain-Driven Design]](/architecture/ddd) - Strategic design for service boundaries
+            - [[Service Mesh]](/microservices/patterns/service-mesh) - Infrastructure layer for service-to-service communication
+            - [[Saga Pattern]](/microservices/patterns/saga) - Managing distributed transactions
+            - [[API Gateway]](/system-design/api-gateway) - Entry point and cross-cutting concerns
+            - [[Event-Driven Architecture]](/microservices/patterns/event-driven) - Async communication patterns
+            - [[CQRS]](/microservices/patterns/cqrs) - Command Query Responsibility Segregation
+            - [[Distributed Tracing]](/observability/distributed-tracing) - Request flow visibility
+            - [[Domain-Driven Design]](/architecture/ddd) - Strategic design for service boundaries

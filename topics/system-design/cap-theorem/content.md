@@ -5,29 +5,29 @@
 The <span style="color: #16a34a; font-weight: 600;">CAP Theorem</span> is one of the most fundamental concepts in distributed systems design. Proposed by computer scientist Eric Brewer in 2000 and later proven by Seth Gilbert and Nancy Lynch, it states that a distributed data store can only provide two out of three guarantees simultaneously: <span style="color: #16a34a; font-weight: 600;">Consistency</span>, <span style="color: #16a34a; font-weight: 600;">Availability</span>, and <span style="color: #16a34a; font-weight: 600;">Partition Tolerance</span>.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">THE CAP THEOREM TRIANGLE</h3>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-    <div style="display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px;">
-        <div style="color: #166534; font-weight: 700; font-size: 16px;">Consistency (C)</div>
-        <div style="color: #15803d; font-size: 12px; margin-top: 4px;">All nodes see same data</div>
-        <div style="color: #15803d; font-size: 11px; margin-top: 2px;">at the same time</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px;">
-        <div style="color: #1e40af; font-weight: 700; font-size: 16px;">Availability (A)</div>
-        <div style="color: #1d4ed8; font-size: 12px; margin-top: 4px;">Every request receives</div>
-        <div style="color: #1d4ed8; font-size: 11px; margin-top: 2px;">a response</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border: 2px solid #a855f7; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px;">
-        <div style="color: #6b21a8; font-weight: 700; font-size: 16px;">Partition Tolerance (P)</div>
-        <div style="color: #7c3aed; font-size: 12px; margin-top: 4px;">System works despite</div>
-        <div style="color: #7c3aed; font-size: 11px; margin-top: 2px;">network failures</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 24px; margin-top: 8px;">
-      <span style="color: #92400e; font-weight: 600;">Key Insight: In distributed systems, you can only guarantee TWO!</span>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600;">THE CAP THEOREM TRIANGLE</h3>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+<div style="display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px;">
+<div style="color: #166534; font-weight: 700; font-size: 16px;">Consistency (C)</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px;">All nodes see same data</div>
+<div style="color: #15803d; font-size: 11px; margin-top: 2px;">at the same time</div>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px;">
+<div style="color: #1e40af; font-weight: 700; font-size: 16px;">Availability (A)</div>
+<div style="color: #1d4ed8; font-size: 12px; margin-top: 4px;">Every request receives</div>
+<div style="color: #1d4ed8; font-size: 11px; margin-top: 2px;">a response</div>
+</div>
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border: 2px solid #a855f7; border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px;">
+<div style="color: #6b21a8; font-weight: 700; font-size: 16px;">Partition Tolerance (P)</div>
+<div style="color: #7c3aed; font-size: 12px; margin-top: 4px;">System works despite</div>
+<div style="color: #7c3aed; font-size: 11px; margin-top: 2px;">network failures</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 24px; margin-top: 8px;">
+<span style="color: #92400e; font-weight: 600;">Key Insight: In distributed systems, you can only guarantee TWO!</span>
+</div>
+</div>
 </div>
 
 **The Simple Explanation**: Imagine you have data stored on multiple servers across the world. When a network cable gets cut between two data centers (a <span style="color: #16a34a; font-weight: 600;">partition</span>), you face a choice: either refuse some requests to keep data consistent, or accept requests but risk serving stale data. You cannot have both perfect consistency AND perfect availability when networks fail.
@@ -39,25 +39,25 @@ The <span style="color: #16a34a; font-weight: 600;">CAP Theorem</span> is one of
 Understanding CAP Theorem is crucial because it drives fundamental architecture decisions at every major tech company:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">REAL-WORLD CAP DECISIONS</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
-      <div style="color: #065f46; font-weight: 700; margin-bottom: 8px;">Amazon DynamoDB (AP)</div>
-      <div style="color: #047857; font-size: 13px;">Shopping carts prioritize availability - a customer should always be able to add items, even if it means briefly seeing stale inventory counts.</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Google Spanner (CP)</div>
-      <div style="color: #1d4ed8; font-size: 13px;">Bank transactions require strong consistency - you can never show incorrect balance, even if it means briefly rejecting requests.</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Netflix (AP)</div>
-      <div style="color: #b45309; font-size: 13px;">Video recommendations can be stale for a few seconds - availability matters more than showing the absolutely latest suggestions.</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ec4899;">
-      <div style="color: #9d174d; font-weight: 700; margin-bottom: 8px;">Stripe (CP)</div>
-      <div style="color: #be185d; font-size: 13px;">Payment processing demands consistency - double-charging a customer is unacceptable, so reject requests if uncertain.</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">REAL-WORLD CAP DECISIONS</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #065f46; font-weight: 700; margin-bottom: 8px;">Amazon DynamoDB (AP)</div>
+<div style="color: #047857; font-size: 13px;">Shopping carts prioritize availability - a customer should always be able to add items, even if it means briefly seeing stale inventory counts.</div>
+</div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Google Spanner (CP)</div>
+<div style="color: #1d4ed8; font-size: 13px;">Bank transactions require strong consistency - you can never show incorrect balance, even if it means briefly rejecting requests.</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Netflix (AP)</div>
+<div style="color: #b45309; font-size: 13px;">Video recommendations can be stale for a few seconds - availability matters more than showing the absolutely latest suggestions.</div>
+</div>
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ec4899;">
+<div style="color: #9d174d; font-weight: 700; margin-bottom: 8px;">Stripe (CP)</div>
+<div style="color: #be185d; font-size: 13px;">Payment processing demands consistency - double-charging a customer is unacceptable, so reject requests if uncertain.</div>
+</div>
+</div>
 </div>
 
 **Interview Insight**: Companies often ask "how would you design X?" The CAP theorem is usually the first design decision you need to articulate. Should your system prioritize never losing data (CP) or always being responsive (AP)?
@@ -71,42 +71,42 @@ Understanding CAP Theorem is crucial because it drives fundamental architecture 
 <span style="color: #16a34a; font-weight: 600;">Linearizable consistency</span> means all nodes see the same data at the same time. After a successful write, every subsequent read from any node returns that value. This is also called <span style="color: #16a34a; font-weight: 600;">strong consistency</span> or <span style="color: #16a34a; font-weight: 600;">atomic consistency</span>.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">STRONG CONSISTENCY IN ACTION</h3>
-  <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; text-align: center; border: 2px solid #3b82f6;">
-        <div style="color: #1e40af; font-weight: 600;">Client</div>
-        <div style="color: #3b82f6; font-size: 12px;">writes balance = $100</div>
-      </div>
-      <div style="color: #6366f1; font-size: 20px;">--></div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 20px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600;">Primary</div>
-        <div style="color: #15803d; font-size: 12px;">$100</div>
-      </div>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;">
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="color: #6366f1; font-size: 14px;">sync</div>
-        <div style="color: #6366f1; font-size: 20px;">|</div>
-        <div style="color: #6366f1; font-size: 20px;">v</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600;">Node A</div>
-        <div style="color: #15803d; font-size: 14px;">$100</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600;">Node B</div>
-        <div style="color: #15803d; font-size: 14px;">$100</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600;">Node C</div>
-        <div style="color: #15803d; font-size: 14px;">$100</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; margin-top: 8px; border: 1px solid #86efac;">
-      <span style="color: #166534; font-weight: 600;">Result: Any node you read from shows $100 immediately</span>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">STRONG CONSISTENCY IN ACTION</h3>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 20px; border-radius: 10px; text-align: center; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 600;">Client</div>
+<div style="color: #3b82f6; font-size: 12px;">writes balance = $100</div>
+</div>
+<div style="color: #6366f1; font-size: 20px;">--></div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 20px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Primary</div>
+<div style="color: #15803d; font-size: 12px;">$100</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #6366f1; font-size: 14px;">sync</div>
+<div style="color: #6366f1; font-size: 20px;">|</div>
+<div style="color: #6366f1; font-size: 20px;">v</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Node A</div>
+<div style="color: #15803d; font-size: 14px;">$100</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Node B</div>
+<div style="color: #15803d; font-size: 14px;">$100</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px 24px; border-radius: 10px; text-align: center; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Node C</div>
+<div style="color: #15803d; font-size: 14px;">$100</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; margin-top: 8px; border: 1px solid #86efac;">
+<span style="color: #166534; font-weight: 600;">Result: Any node you read from shows $100 immediately</span>
+</div>
+</div>
 </div>
 
 ### Availability (A)
@@ -114,33 +114,33 @@ Understanding CAP Theorem is crucial because it drives fundamental architecture 
 Every request to a non-failing node receives a response (success or failure), without guarantee that it contains the most recent write. The system is <span style="color: #16a34a; font-weight: 600;">always responsive</span>, even during network issues.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">HIGH AVAILABILITY PATTERN</h3>
-  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
-    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 10px 16px; border-radius: 8px; color: #1e40af; font-weight: 600; min-width: 80px; text-align: center; border: 1px solid #93c5fd;">Client 1</div>
-      <div style="color: #6366f1;">--></div>
-      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 10px 16px; border-radius: 8px; color: #475569; border: 1px solid #cbd5e1;">Node A</div>
-      <div style="color: #6366f1;">--></div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 16px; border-radius: 8px; color: #166534; font-weight: 600; border: 1px solid #86efac;">Response OK</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 10px 16px; border-radius: 8px; color: #1e40af; font-weight: 600; min-width: 80px; text-align: center; border: 1px solid #93c5fd;">Client 2</div>
-      <div style="color: #6366f1;">--></div>
-      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 10px 16px; border-radius: 8px; color: #475569; border: 1px solid #cbd5e1;">Node B</div>
-      <div style="color: #6366f1;">--></div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 16px; border-radius: 8px; color: #166534; font-weight: 600; border: 1px solid #86efac;">Response OK</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 10px 16px; border-radius: 8px; color: #1e40af; font-weight: 600; min-width: 80px; text-align: center; border: 1px solid #93c5fd;">Client 3</div>
-      <div style="color: #6366f1;">--></div>
-      <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 10px 16px; border-radius: 8px; color: #475569; border: 1px solid #cbd5e1;">Node C</div>
-      <div style="color: #6366f1;">--></div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 16px; border-radius: 8px; color: #166534; font-weight: 600; border: 1px solid #86efac;">Response OK</div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 8px; padding: 12px 20px; margin-top: 16px; text-align: center; border: 1px solid #93c5fd;">
-    <span style="color: #1e40af; font-weight: 600;">Result: Every request gets a response (may be stale data)</span>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">HIGH AVAILABILITY PATTERN</h3>
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 10px 16px; border-radius: 8px; color: #1e40af; font-weight: 600; min-width: 80px; text-align: center; border: 1px solid #93c5fd;">Client 1</div>
+<div style="color: #6366f1;">--></div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 10px 16px; border-radius: 8px; color: #475569; border: 1px solid #cbd5e1;">Node A</div>
+<div style="color: #6366f1;">--></div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 16px; border-radius: 8px; color: #166534; font-weight: 600; border: 1px solid #86efac;">Response OK</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 10px 16px; border-radius: 8px; color: #1e40af; font-weight: 600; min-width: 80px; text-align: center; border: 1px solid #93c5fd;">Client 2</div>
+<div style="color: #6366f1;">--></div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 10px 16px; border-radius: 8px; color: #475569; border: 1px solid #cbd5e1;">Node B</div>
+<div style="color: #6366f1;">--></div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 16px; border-radius: 8px; color: #166534; font-weight: 600; border: 1px solid #86efac;">Response OK</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 10px 16px; border-radius: 8px; color: #1e40af; font-weight: 600; min-width: 80px; text-align: center; border: 1px solid #93c5fd;">Client 3</div>
+<div style="color: #6366f1;">--></div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 10px 16px; border-radius: 8px; color: #475569; border: 1px solid #cbd5e1;">Node C</div>
+<div style="color: #6366f1;">--></div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 16px; border-radius: 8px; color: #166534; font-weight: 600; border: 1px solid #86efac;">Response OK</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 8px; padding: 12px 20px; margin-top: 16px; text-align: center; border: 1px solid #93c5fd;">
+<span style="color: #1e40af; font-weight: 600;">Result: Every request gets a response (may be stale data)</span>
+</div>
 </div>
 
 ### Partition Tolerance (P)
@@ -148,31 +148,31 @@ Every request to a non-failing node receives a response (success or failure), wi
 The system continues to operate despite arbitrary message loss or failure of part of the network. <span style="color: #16a34a; font-weight: 600;">Network partitions are inevitable</span> in distributed systems - cables get cut, routers fail, packets get lost.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">NETWORK PARTITION SCENARIO</h3>
-  <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 24px 32px; border-radius: 12px; text-align: center; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; font-size: 16px;">Data Center A</div>
-      <div style="color: #3b82f6; font-size: 13px; margin-top: 4px;">Nodes 1, 2, 3</div>
-      <div style="background: #eff6ff; border-radius: 6px; padding: 8px; margin-top: 12px;">
-        <div style="color: #1d4ed8; font-size: 12px;">3 healthy nodes</div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border: 3px dashed #ef4444; padding: 16px 24px; border-radius: 8px;">
-      <div style="color: #dc2626; font-weight: 700; font-size: 14px;">NETWORK SPLIT</div>
-      <div style="color: #b91c1c; font-size: 11px; margin-top: 4px;">Cannot communicate</div>
-      <div style="color: #dc2626; font-size: 20px; margin-top: 8px;">X</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 24px 32px; border-radius: 12px; text-align: center; border: 2px solid #a855f7;">
-      <div style="color: #6b21a8; font-weight: 700; font-size: 16px;">Data Center B</div>
-      <div style="color: #7c3aed; font-size: 13px; margin-top: 4px;">Nodes 4, 5, 6</div>
-      <div style="background: #faf5ff; border-radius: 6px; padding: 8px; margin-top: 12px;">
-        <div style="color: #7c3aed; font-size: 12px;">3 healthy nodes</div>
-      </div>
-    </div>
-  </div>
-  <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 8px; padding: 12px 20px; margin-top: 20px; text-align: center; border: 1px solid #fcd34d;">
-    <span style="color: #92400e; font-weight: 600;">Question: Should both sides keep serving requests?</span>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">NETWORK PARTITION SCENARIO</h3>
+<div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 24px 32px; border-radius: 12px; text-align: center; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; font-size: 16px;">Data Center A</div>
+<div style="color: #3b82f6; font-size: 13px; margin-top: 4px;">Nodes 1, 2, 3</div>
+<div style="background: #eff6ff; border-radius: 6px; padding: 8px; margin-top: 12px;">
+<div style="color: #1d4ed8; font-size: 12px;">3 healthy nodes</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border: 3px dashed #ef4444; padding: 16px 24px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: 700; font-size: 14px;">NETWORK SPLIT</div>
+<div style="color: #b91c1c; font-size: 11px; margin-top: 4px;">Cannot communicate</div>
+<div style="color: #dc2626; font-size: 20px; margin-top: 8px;">X</div>
+</div>
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 24px 32px; border-radius: 12px; text-align: center; border: 2px solid #a855f7;">
+<div style="color: #6b21a8; font-weight: 700; font-size: 16px;">Data Center B</div>
+<div style="color: #7c3aed; font-size: 13px; margin-top: 4px;">Nodes 4, 5, 6</div>
+<div style="background: #faf5ff; border-radius: 6px; padding: 8px; margin-top: 12px;">
+<div style="color: #7c3aed; font-size: 12px;">3 healthy nodes</div>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 8px; padding: 12px 20px; margin-top: 20px; text-align: center; border: 1px solid #fcd34d;">
+<span style="color: #92400e; font-weight: 600;">Question: Should both sides keep serving requests?</span>
+</div>
 </div>
 
 ---
@@ -182,35 +182,35 @@ The system continues to operate despite arbitrary message loss or failure of par
 In a distributed system, network partitions WILL happen. When they do, you face an impossible choice:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">THE PARTITION DILEMMA</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 24px; border: 2px solid #10b981;">
-      <div style="color: #065f46; font-weight: 700; font-size: 16px; margin-bottom: 12px;">OPTION 1: Choose Consistency (CP)</div>
-      <div style="color: #047857; font-size: 14px; margin-bottom: 16px;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">THE PARTITION DILEMMA</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 24px; border: 2px solid #10b981;">
+<div style="color: #065f46; font-weight: 700; font-size: 16px; margin-bottom: 12px;">OPTION 1: Choose Consistency (CP)</div>
+<div style="color: #047857; font-size: 14px; margin-bottom: 16px;">
         "I cannot confirm the other data center received this update..."<br><br>
-        <span style="font-weight: 600;">"REJECT the request to avoid inconsistency!"</span>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
-        <span style="color: #166534;">+ Data always consistent across nodes</span>
-        <span style="color: #166534;">+ No stale reads or conflicts</span>
-        <span style="color: #dc2626;">- Some requests will fail during partition</span>
-        <span style="color: #dc2626;">- Higher latency for coordination</span>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; border: 2px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; font-size: 16px; margin-bottom: 12px;">OPTION 2: Choose Availability (AP)</div>
-      <div style="color: #1d4ed8; font-size: 14px; margin-bottom: 16px;">
+<span style="font-weight: 600;">"REJECT the request to avoid inconsistency!"</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+<span style="color: #166534;">+ Data always consistent across nodes</span>
+<span style="color: #166534;">+ No stale reads or conflicts</span>
+<span style="color: #dc2626;">- Some requests will fail during partition</span>
+<span style="color: #dc2626;">- Higher latency for coordination</span>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; border: 2px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; font-size: 16px; margin-bottom: 12px;">OPTION 2: Choose Availability (AP)</div>
+<div style="color: #1d4ed8; font-size: 14px; margin-bottom: 16px;">
         "I'll accept the write locally and sync later..."<br><br>
-        <span style="font-weight: 600;">"ACCEPT the request, deal with conflicts later!"</span>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
-        <span style="color: #166534;">+ All requests succeed (always responsive)</span>
-        <span style="color: #166534;">+ Lower latency, no coordination wait</span>
-        <span style="color: #dc2626;">- May return stale data</span>
-        <span style="color: #dc2626;">- Requires conflict resolution strategy</span>
-      </div>
-    </div>
-  </div>
+<span style="font-weight: 600;">"ACCEPT the request, deal with conflicts later!"</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+<span style="color: #166534;">+ All requests succeed (always responsive)</span>
+<span style="color: #166534;">+ Lower latency, no coordination wait</span>
+<span style="color: #dc2626;">- May return stale data</span>
+<span style="color: #dc2626;">- Requires conflict resolution strategy</span>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -222,28 +222,28 @@ In a distributed system, network partitions WILL happen. When they do, you face 
 <span style="color: #16a34a; font-weight: 600;">CP systems</span> sacrifice availability during partitions. They use techniques like [[quorum consensus]](/topic/system-design/consensus-algorithms) to ensure data consistency, meaning some requests will be rejected when nodes cannot communicate.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">CP SYSTEM: QUORUM CONSENSUS</h3>
-  <div style="color: #64748b; text-align: center; margin-bottom: 20px; font-size: 13px;">5 nodes, quorum = 3 (majority required for any operation)</div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 20px; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 600; margin-bottom: 12px;">Normal Operation</div>
-      <div style="font-size: 13px; color: #15803d; line-height: 1.8;">
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">CP SYSTEM: QUORUM CONSENSUS</h3>
+<div style="color: #64748b; text-align: center; margin-bottom: 20px; font-size: 13px;">5 nodes, quorum = 3 (majority required for any operation)</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 20px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 12px;">Normal Operation</div>
+<div style="font-size: 13px; color: #15803d; line-height: 1.8;">
         Write to Node A: ACK<br>
         Write to Node B: ACK<br>
         Write to Node C: ACK<br>
-        <span style="font-weight: 600; background: rgba(34, 197, 94, 0.2); padding: 2px 6px; border-radius: 4px;">3/5 = Quorum reached = SUCCESS</span>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 10px; padding: 20px; border: 1px solid #fca5a5;">
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">During Partition</div>
-      <div style="font-size: 13px; color: #b91c1c; line-height: 1.8;">
+<span style="font-weight: 600; background: rgba(34, 197, 94, 0.2); padding: 2px 6px; border-radius: 4px;">3/5 = Quorum reached = SUCCESS</span>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 10px; padding: 20px; border: 1px solid #fca5a5;">
+<div style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">During Partition</div>
+<div style="font-size: 13px; color: #b91c1c; line-height: 1.8;">
         Write to Node A: ACK<br>
         Write to Node B: UNREACHABLE<br>
         Write to Node C: UNREACHABLE<br>
-        <span style="font-weight: 600; background: rgba(239, 68, 68, 0.2); padding: 2px 6px; border-radius: 4px;">1/5 &lt; Quorum = REQUEST REJECTED</span>
-      </div>
-    </div>
-  </div>
+<span style="font-weight: 600; background: rgba(239, 68, 68, 0.2); padding: 2px 6px; border-radius: 4px;">1/5 &lt; Quorum = REQUEST REJECTED</span>
+</div>
+</div>
+</div>
 </div>
 
 **CP System Examples:**
@@ -263,48 +263,48 @@ In a distributed system, network partitions WILL happen. When they do, you face 
 <span style="color: #16a34a; font-weight: 600;">AP systems</span> sacrifice consistency during partitions. They accept writes on any available node and reconcile later using [[eventual consistency]](/topic/system-design/event-sourcing) strategies.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">AP SYSTEM: EVENTUAL CONSISTENCY</h3>
-  <div style="display: flex; flex-direction: column; gap: 24px;">
-    <div>
-      <div style="color: #f59e0b; font-weight: 600; margin-bottom: 12px;">During Partition (Divergent State):</div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
-        <div style="text-align: center;">
-          <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #3b82f6;">
-            <div style="color: #1e40af; font-weight: 600;">Node A</div>
-            <div style="color: #3b82f6; font-size: 13px;">X = 10</div>
-          </div>
-          <div style="color: #166534; font-size: 12px; margin-top: 4px;">Write accepted!</div>
-        </div>
-        <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border: 2px dashed #ef4444; padding: 8px 16px; border-radius: 6px;">
-          <span style="color: #dc2626; font-weight: 600; font-size: 12px;">PARTITION</span>
-        </div>
-        <div style="text-align: center;">
-          <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #ef4444;">
-            <div style="color: #dc2626; font-weight: 600;">Node B</div>
-            <div style="color: #b91c1c; font-size: 13px;">X = 5 (stale)</div>
-          </div>
-          <div style="color: #b91c1c; font-size: 12px; margin-top: 4px;">Returns old value</div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #16a34a; font-weight: 600; margin-bottom: 12px;">After Partition Heals (Convergent State):</div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 24px;">
-        <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-weight: 600;">Node A</div>
-          <div style="color: #15803d; font-size: 13px;">X = 10</div>
-        </div>
-        <div style="display: flex; flex-direction: column; align-items: center;">
-          <div style="color: #22c55e; font-size: 14px;">anti-entropy</div>
-          <div style="color: #22c55e; font-size: 14px;">sync</div>
-        </div>
-        <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-weight: 600;">Node B</div>
-          <div style="color: #15803d; font-size: 13px;">X = 10</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 16px 0; font-size: 16px; font-weight: 600;">AP SYSTEM: EVENTUAL CONSISTENCY</h3>
+<div style="display: flex; flex-direction: column; gap: 24px;">
+<div>
+  <div style="color: #f59e0b; font-weight: 600; margin-bottom: 12px;">During Partition (Divergent State):</div>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
+  <div style="text-align: center;">
+  <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #3b82f6;">
+  <div style="color: #1e40af; font-weight: 600;">Node A</div>
+  <div style="color: #3b82f6; font-size: 13px;">X = 10</div>
+</div>
+<div style="color: #166534; font-size: 12px; margin-top: 4px;">Write accepted!</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border: 2px dashed #ef4444; padding: 8px 16px; border-radius: 6px;">
+<span style="color: #dc2626; font-weight: 600; font-size: 12px;">PARTITION</span>
+</div>
+<div style="text-align: center;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #ef4444;">
+<div style="color: #dc2626; font-weight: 600;">Node B</div>
+<div style="color: #b91c1c; font-size: 13px;">X = 5 (stale)</div>
+</div>
+<div style="color: #b91c1c; font-size: 12px; margin-top: 4px;">Returns old value</div>
+</div>
+</div>
+</div>
+<div>
+  <div style="color: #16a34a; font-weight: 600; margin-bottom: 12px;">After Partition Heals (Convergent State):</div>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 24px;">
+  <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #22c55e;">
+  <div style="color: #166534; font-weight: 600;">Node A</div>
+  <div style="color: #15803d; font-size: 13px;">X = 10</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<div style="color: #22c55e; font-size: 14px;">anti-entropy</div>
+<div style="color: #22c55e; font-size: 14px;">sync</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 14px 20px; border-radius: 8px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Node B</div>
+<div style="color: #15803d; font-size: 13px;">X = 10</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 **AP System Examples:**
@@ -327,39 +327,39 @@ The <span style="color: #16a34a; font-weight: 600;">PACELC theorem</span> extend
 > **P**artition? **A**vailability vs **C**onsistency, **E**lse **L**atency vs **C**onsistency
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">PACELC THEOREM</h3>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
-    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 20px; border: 2px solid #ef4444;">
-      <div style="color: #dc2626; font-weight: 700; font-size: 16px; margin-bottom: 12px; text-align: center;">IF PARTITION (P)</div>
-      <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 12px;">
-        <div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #fca5a5;">
-          <div style="color: #1e40af; font-weight: 600;">A</div>
-          <div style="color: #64748b; font-size: 11px;">Availability</div>
-        </div>
-        <div style="color: #dc2626; font-weight: 700; padding-top: 12px;">vs</div>
-        <div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #fca5a5;">
-          <div style="color: #16a34a; font-weight: 600;">C</div>
-          <div style="color: #64748b; font-size: 11px;">Consistency</div>
-        </div>
-      </div>
-      <div style="color: #991b1b; font-size: 12px; text-align: center;">Same as CAP: choose A or C</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 12px; text-align: center;">ELSE (Normal Operation)</div>
-      <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 12px;">
-        <div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #86efac;">
-          <div style="color: #f59e0b; font-weight: 600;">L</div>
-          <div style="color: #64748b; font-size: 11px;">Latency</div>
-        </div>
-        <div style="color: #166534; font-weight: 700; padding-top: 12px;">vs</div>
-        <div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #86efac;">
-          <div style="color: #16a34a; font-weight: 600;">C</div>
-          <div style="color: #64748b; font-size: 11px;">Consistency</div>
-        </div>
-      </div>
-      <div style="color: #166534; font-size: 12px; text-align: center;">New insight: coordination adds latency</div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">PACELC THEOREM</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 20px; border: 2px solid #ef4444;">
+<div style="color: #dc2626; font-weight: 700; font-size: 16px; margin-bottom: 12px; text-align: center;">IF PARTITION (P)</div>
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 12px;">
+<div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #fca5a5;">
+<div style="color: #1e40af; font-weight: 600;">A</div>
+<div style="color: #64748b; font-size: 11px;">Availability</div>
+</div>
+<div style="color: #dc2626; font-weight: 700; padding-top: 12px;">vs</div>
+<div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #fca5a5;">
+<div style="color: #16a34a; font-weight: 600;">C</div>
+<div style="color: #64748b; font-size: 11px;">Consistency</div>
+</div>
+</div>
+<div style="color: #991b1b; font-size: 12px; text-align: center;">Same as CAP: choose A or C</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 12px; text-align: center;">ELSE (Normal Operation)</div>
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 12px;">
+<div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #f59e0b; font-weight: 600;">L</div>
+<div style="color: #64748b; font-size: 11px;">Latency</div>
+</div>
+<div style="color: #166534; font-weight: 700; padding-top: 12px;">vs</div>
+<div style="background: #fff; padding: 10px 16px; border-radius: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #16a34a; font-weight: 600;">C</div>
+<div style="color: #64748b; font-size: 11px;">Consistency</div>
+</div>
+</div>
+<div style="color: #166534; font-size: 12px; text-align: center;">New insight: coordination adds latency</div>
+</div>
+</div>
 </div>
 
 ### PACELC Classifications
@@ -388,117 +388,117 @@ The <span style="color: #16a34a; font-weight: 600;">PACELC theorem</span> extend
 When a network partition occurs, systems use various strategies to handle it:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">PARTITION HANDLING STRATEGIES</h3>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600;">PARTITION HANDLING STRATEGIES</h3>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">1. Quorum-Based Decisions</div>
-      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">1. Quorum-Based Decisions</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
         Majority side continues operating. Minority side rejects writes.
-        <div style="margin-top: 8px; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 6px;">
-          <span style="color: #1e40af; font-size: 12px;">Used by: Raft, Paxos, MongoDB</span>
-        </div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">2. Last-Write-Wins (LWW)</div>
-      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+<div style="margin-top: 8px; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 6px;">
+<span style="color: #1e40af; font-size: 12px;">Used by: Raft, Paxos, MongoDB</span>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 12px;">2. Last-Write-Wins (LWW)</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
         Accept all writes, resolve conflicts using timestamps. Most recent timestamp wins.
-        <div style="margin-top: 8px; padding: 8px; background: rgba(34, 197, 94, 0.1); border-radius: 6px;">
-          <span style="color: #166534; font-size: 12px;">Used by: Cassandra, DynamoDB</span>
-        </div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 1px solid #fcd34d;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">3. Vector Clocks</div>
-      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+<div style="margin-top: 8px; padding: 8px; background: rgba(34, 197, 94, 0.1); border-radius: 6px;">
+<span style="color: #166534; font-size: 12px;">Used by: Cassandra, DynamoDB</span>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 1px solid #fcd34d;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 12px;">3. Vector Clocks</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
         Track causality to detect concurrent writes. Keep multiple versions (siblings) for manual resolution.
-        <div style="margin-top: 8px; padding: 8px; background: rgba(245, 158, 11, 0.1); border-radius: 6px;">
-          <span style="color: #92400e; font-size: 12px;">Used by: Riak, Voldemort</span>
-        </div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 20px; border: 1px solid #f9a8d4;">
-      <div style="color: #9d174d; font-weight: 700; margin-bottom: 12px;">4. CRDTs</div>
-      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+<div style="margin-top: 8px; padding: 8px; background: rgba(245, 158, 11, 0.1); border-radius: 6px;">
+<span style="color: #92400e; font-size: 12px;">Used by: Riak, Voldemort</span>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 20px; border: 1px solid #f9a8d4;">
+<div style="color: #9d174d; font-weight: 700; margin-bottom: 12px;">4. CRDTs</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
         Conflict-free Replicated Data Types. Data structures that automatically merge without conflicts.
-        <div style="margin-top: 8px; padding: 8px; background: rgba(236, 72, 153, 0.1); border-radius: 6px;">
-          <span style="color: #9d174d; font-size: 12px;">Used by: Redis (CRDB), Riak</span>
-        </div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 20px; border: 1px solid #c4b5fd;">
-      <div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">5. Sloppy Quorum + Hinted Handoff</div>
-      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+<div style="margin-top: 8px; padding: 8px; background: rgba(236, 72, 153, 0.1); border-radius: 6px;">
+<span style="color: #9d174d; font-size: 12px;">Used by: Redis (CRDB), Riak</span>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 20px; border: 1px solid #c4b5fd;">
+<div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px;">5. Sloppy Quorum + Hinted Handoff</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
         Write to any available nodes (even non-replica). Hand off to correct nodes when they recover.
-        <div style="margin-top: 8px; padding: 8px; background: rgba(139, 92, 246, 0.1); border-radius: 6px;">
-          <span style="color: #6b21a8; font-size: 12px;">Used by: DynamoDB, Cassandra</span>
-        </div>
-      </div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 20px; border: 1px solid #fca5a5;">
-      <div style="color: #991b1b; font-weight: 700; margin-bottom: 12px;">6. Read Repair + Anti-Entropy</div>
-      <div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
+<div style="margin-top: 8px; padding: 8px; background: rgba(139, 92, 246, 0.1); border-radius: 6px;">
+<span style="color: #6b21a8; font-size: 12px;">Used by: DynamoDB, Cassandra</span>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 20px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 12px;">6. Read Repair + Anti-Entropy</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.6;">
         On read, detect inconsistencies and repair them. Background process syncs all replicas.
-        <div style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 6px;">
-          <span style="color: #991b1b; font-size: 12px;">Used by: Cassandra, DynamoDB</span>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="margin-top: 8px; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 6px;">
+<span style="color: #991b1b; font-size: 12px;">Used by: Cassandra, DynamoDB</span>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Sloppy Quorum and Hinted Handoff Explained
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #cbd5e1;">
-  <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">SLOPPY QUORUM + HINTED HANDOFF</h3>
-  <div style="display: flex; flex-direction: column; gap: 24px;">
-    <div>
-      <div style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">Step 1: Partition occurs, preferred nodes unreachable</div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-        <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #3b82f6;">
-          <div style="color: #1e40af; font-weight: 600;">Client</div>
-          <div style="color: #3b82f6; font-size: 11px;">write key=K</div>
-        </div>
-        <div style="color: #6366f1;">--></div>
-        <div style="opacity: 0.4; background: linear-gradient(135deg, #fecaca 0%, #fee2e2 100%); padding: 12px 18px; border-radius: 8px; border: 2px dashed #ef4444;">
-          <div style="color: #991b1b; font-weight: 600;">Node A</div>
-          <div style="color: #dc2626; font-size: 11px;">UNREACHABLE</div>
-        </div>
-        <div style="opacity: 0.4; background: linear-gradient(135deg, #fecaca 0%, #fee2e2 100%); padding: 12px 18px; border-radius: 8px; border: 2px dashed #ef4444;">
-          <div style="color: #991b1b; font-weight: 600;">Node B</div>
-          <div style="color: #dc2626; font-size: 11px;">UNREACHABLE</div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #f59e0b; font-weight: 600; margin-bottom: 12px;">Step 2: Write to available nodes with hint</div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-        <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-weight: 600;">Node X</div>
-          <div style="color: #15803d; font-size: 11px;">hint: "for Node A"</div>
-        </div>
-        <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-weight: 600;">Node Y</div>
-          <div style="color: #15803d; font-size: 11px;">hint: "for Node B"</div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div style="color: #16a34a; font-weight: 600; margin-bottom: 12px;">Step 3: Partition heals, hints handed off</div>
-      <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
-        <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 18px; border-radius: 8px; border: 1px solid #cbd5e1;">
-          <div style="color: #475569; font-weight: 600;">Node X</div>
-          <div style="color: #64748b; font-size: 11px;">sends to A</div>
-        </div>
-        <div style="color: #22c55e; font-weight: 600;">--></div>
-        <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #22c55e;">
-          <div style="color: #166534; font-weight: 600;">Node A</div>
-          <div style="color: #15803d; font-size: 11px;">data restored</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600;">SLOPPY QUORUM + HINTED HANDOFF</h3>
+<div style="display: flex; flex-direction: column; gap: 24px;">
+<div>
+  <div style="color: #dc2626; font-weight: 600; margin-bottom: 12px;">Step 1: Partition occurs, preferred nodes unreachable</div>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #3b82f6;">
+  <div style="color: #1e40af; font-weight: 600;">Client</div>
+  <div style="color: #3b82f6; font-size: 11px;">write key=K</div>
+</div>
+<div style="color: #6366f1;">--></div>
+<div style="opacity: 0.4; background: linear-gradient(135deg, #fecaca 0%, #fee2e2 100%); padding: 12px 18px; border-radius: 8px; border: 2px dashed #ef4444;">
+<div style="color: #991b1b; font-weight: 600;">Node A</div>
+<div style="color: #dc2626; font-size: 11px;">UNREACHABLE</div>
+</div>
+<div style="opacity: 0.4; background: linear-gradient(135deg, #fecaca 0%, #fee2e2 100%); padding: 12px 18px; border-radius: 8px; border: 2px dashed #ef4444;">
+<div style="color: #991b1b; font-weight: 600;">Node B</div>
+<div style="color: #dc2626; font-size: 11px;">UNREACHABLE</div>
+</div>
+</div>
+</div>
+<div>
+  <div style="color: #f59e0b; font-weight: 600; margin-bottom: 12px;">Step 2: Write to available nodes with hint</div>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #22c55e;">
+  <div style="color: #166534; font-weight: 600;">Node X</div>
+  <div style="color: #15803d; font-size: 11px;">hint: "for Node A"</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Node Y</div>
+<div style="color: #15803d; font-size: 11px;">hint: "for Node B"</div>
+</div>
+</div>
+</div>
+<div>
+  <div style="color: #16a34a; font-weight: 600; margin-bottom: 12px;">Step 3: Partition heals, hints handed off</div>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+  <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 18px; border-radius: 8px; border: 1px solid #cbd5e1;">
+  <div style="color: #475569; font-weight: 600;">Node X</div>
+  <div style="color: #64748b; font-size: 11px;">sends to A</div>
+</div>
+<div style="color: #22c55e; font-weight: 600;">--></div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 18px; border-radius: 8px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Node A</div>
+<div style="color: #15803d; font-size: 11px;">data restored</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -872,28 +872,28 @@ func (pn *PNCounter) Merge(other *PNCounter) {
 ## Common Pitfalls
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Thinking CA is Possible in Distributed Systems</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Network partitions WILL happen. Any truly distributed system must be partition-tolerant. "CA systems" like single-node PostgreSQL are not distributed - they have no partitions because there is no network between nodes.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">1. Thinking CA is Possible in Distributed Systems</div>
+<div style="color: #7f1d1d; font-size: 14px;">Network partitions WILL happen. Any truly distributed system must be partition-tolerant. "CA systems" like single-node PostgreSQL are not distributed - they have no partitions because there is no network between nodes.</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">2. Confusing CAP Consistency with ACID Consistency</div>
-  <div style="color: #7f1d1d; font-size: 14px;">CAP consistency means all nodes see the same data (linearizability). ACID consistency means data satisfies integrity constraints (foreign keys, check constraints). A CP system can still have ACID violations if transactions are not properly implemented.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">2. Confusing CAP Consistency with ACID Consistency</div>
+<div style="color: #7f1d1d; font-size: 14px;">CAP consistency means all nodes see the same data (linearizability). ACID consistency means data satisfies integrity constraints (foreign keys, check constraints). A CP system can still have ACID violations if transactions are not properly implemented.</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">3. Treating CAP as Binary</div>
-  <div style="color: #7f1d1d; font-size: 14px;">Real systems exist on a spectrum. Many databases offer tunable consistency - you can choose different consistency levels per operation. DynamoDB, Cassandra, and MongoDB all offer this flexibility. You might use strong consistency for payments but eventual consistency for analytics.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">3. Treating CAP as Binary</div>
+<div style="color: #7f1d1d; font-size: 14px;">Real systems exist on a spectrum. Many databases offer tunable consistency - you can choose different consistency levels per operation. DynamoDB, Cassandra, and MongoDB all offer this flexibility. You might use strong consistency for payments but eventual consistency for analytics.</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">4. Ignoring Latency (PACELC)</div>
-  <div style="color: #7f1d1d; font-size: 14px;">CAP only describes behavior during partitions. The PACELC theorem extends this: even when no partition exists, you must choose between latency and consistency. Strong consistency requires coordination, which adds latency. A geo-distributed CP system might have 200ms write latency.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">4. Ignoring Latency (PACELC)</div>
+<div style="color: #7f1d1d; font-size: 14px;">CAP only describes behavior during partitions. The PACELC theorem extends this: even when no partition exists, you must choose between latency and consistency. Strong consistency requires coordination, which adds latency. A geo-distributed CP system might have 200ms write latency.</div>
 </div>
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
-  <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">5. Not Understanding What "Availability" Means in CAP</div>
-  <div style="color: #7f1d1d; font-size: 14px;">CAP availability is absolute: every non-failing node must respond. This is different from "five nines" availability (99.999% uptime). A CP system can have excellent uptime but sacrifice CAP availability during rare partitions.</div>
+<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px;">5. Not Understanding What "Availability" Means in CAP</div>
+<div style="color: #7f1d1d; font-size: 14px;">CAP availability is absolute: every non-failing node must respond. This is different from "five nines" availability (99.999% uptime). A CP system can have excellent uptime but sacrifice CAP availability during rare partitions.</div>
 </div>
 
 ---

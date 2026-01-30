@@ -5,10 +5,10 @@
 The Proxy pattern provides a surrogate or placeholder for another object to control access to it. Unlike simple wrappers, proxies implement the same interface as the target object, making them substitutable while intercepting all access to add cross-cutting concerns like lazy initialization, access control, logging, caching, or remote communication.
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #0f3460;">
-  <div style="color: #e94560; font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem;">Core Insight</div>
-  <div style="color: #eee; line-height: 1.7;">
+<div style="color: #e94560; font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem;">Core Insight</div>
+<div style="color: #eee; line-height: 1.7;">
     The proxy pattern embodies the principle of <strong style="color: #00d9ff;">indirection</strong>: by placing an intermediary between client and target, we gain a control point where behavior can be modified without changing either party. This is the foundation of many critical infrastructure patterns including RPC frameworks, ORM lazy loading, and security middleware.
-  </div>
+</div>
 </div>
 
 ### Fundamental Properties
@@ -24,46 +24,46 @@ The Proxy pattern provides a surrogate or placeholder for another object to cont
 ## Structural Architecture
 
 <div style="display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; font-family: system-ui, -apple-system, sans-serif;">
-  <div style="display: flex; justify-content: center;">
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.5rem 2.5rem; color: white; text-align: center; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);">
-      <div style="font-weight: 700; font-size: 1.15rem; letter-spacing: 0.5px;">Subject</div>
-      <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">interface</div>
-      <div style="border-top: 1px solid rgba(255,255,255,0.3); margin-top: 0.75rem; padding-top: 0.75rem; font-size: 0.85rem; font-family: 'Fira Code', monospace;">
+<div style="display: flex; justify-content: center;">
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 1.5rem 2.5rem; color: white; text-align: center; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);">
+<div style="font-weight: 700; font-size: 1.15rem; letter-spacing: 0.5px;">Subject</div>
+<div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">interface</div>
+<div style="border-top: 1px solid rgba(255,255,255,0.3); margin-top: 0.75rem; padding-top: 0.75rem; font-size: 0.85rem; font-family: 'Fira Code', monospace;">
         + request(): Response<br>
         + getState(): State
-      </div>
-    </div>
-  </div>
-  <div style="display: flex; justify-content: center; gap: 0.5rem; color: #667eea;">
-    <span style="font-size: 1.5rem;">&#9650;</span>
-    <span style="font-size: 0.9rem; align-self: center;">implements</span>
-    <span style="font-size: 1.5rem;">&#9650;</span>
-  </div>
-  <div style="display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;">
-    <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border: 2px solid #4ecdc4; border-radius: 12px; padding: 1.25rem 2rem; text-align: center; min-width: 180px;">
-      <div style="color: #4ecdc4; font-weight: 700; font-size: 1.05rem;">RealSubject</div>
-      <div style="color: #aaa; font-size: 0.75rem; margin-top: 0.25rem;">concrete implementation</div>
-      <div style="border-top: 1px solid #4ecdc4; margin-top: 0.75rem; padding-top: 0.75rem; color: #88d8d8; font-size: 0.85rem; font-family: 'Fira Code', monospace;">
+</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 0.5rem; color: #667eea;">
+<span style="font-size: 1.5rem;">&#9650;</span>
+<span style="font-size: 0.9rem; align-self: center;">implements</span>
+<span style="font-size: 1.5rem;">&#9650;</span>
+</div>
+<div style="display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border: 2px solid #4ecdc4; border-radius: 12px; padding: 1.25rem 2rem; text-align: center; min-width: 180px;">
+<div style="color: #4ecdc4; font-weight: 700; font-size: 1.05rem;">RealSubject</div>
+<div style="color: #aaa; font-size: 0.75rem; margin-top: 0.25rem;">concrete implementation</div>
+<div style="border-top: 1px solid #4ecdc4; margin-top: 0.75rem; padding-top: 0.75rem; color: #88d8d8; font-size: 0.85rem; font-family: 'Fira Code', monospace;">
         + request(): Response<br>
         + getState(): State
-      </div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-      <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 8px 32px rgba(240, 147, 251, 0.3); min-width: 200px;">
-        <div style="font-weight: 700; font-size: 1.05rem;">Proxy</div>
-        <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">controls access</div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.3); margin-top: 0.75rem; padding-top: 0.75rem; font-size: 0.85rem; font-family: 'Fira Code', monospace; text-align: left;">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+<div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; padding: 1.25rem 2rem; color: white; text-align: center; box-shadow: 0 8px 32px rgba(240, 147, 251, 0.3); min-width: 200px;">
+<div style="font-weight: 700; font-size: 1.05rem;">Proxy</div>
+<div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.25rem;">controls access</div>
+<div style="border-top: 1px solid rgba(255,255,255,0.3); margin-top: 0.75rem; padding-top: 0.75rem; font-size: 0.85rem; font-family: 'Fira Code', monospace; text-align: left;">
           - realSubject: Subject<br>
           + request(): Response<br>
           + getState(): State
-        </div>
-      </div>
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #f5576c;"></div>
-        <span style="color: #f5576c; font-size: 0.85rem; font-weight: 500;">delegates to RealSubject</span>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 0.5rem;">
+<div style="width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid #f5576c;"></div>
+<span style="color: #f5576c; font-size: 0.85rem; font-weight: 500;">delegates to RealSubject</span>
+</div>
+</div>
+</div>
 </div>
 
 ---
@@ -75,10 +75,10 @@ The Proxy pattern provides a surrogate or placeholder for another object to cont
 A Virtual Proxy defers the creation of expensive objects until they are actually needed. This is critical when object instantiation involves heavy I/O operations, significant memory allocation, or complex computation.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #00d9ff;">
-  <div style="color: #00d9ff; font-weight: 600; margin-bottom: 0.75rem;">Key Assumption</div>
-  <div style="color: #ddd; line-height: 1.6;">
+<div style="color: #00d9ff; font-weight: 600; margin-bottom: 0.75rem;">Key Assumption</div>
+<div style="color: #ddd; line-height: 1.6;">
     Virtual proxies assume that object creation cost significantly exceeds proxy creation cost, AND that there's a reasonable probability the object won't be needed. If objects are always used immediately, the proxy adds pure overhead.
-  </div>
+</div>
 </div>
 
 ### Internal Mechanisms
@@ -304,41 +304,41 @@ if __name__ == "__main__":
 ### Interview Questions - Virtual Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
-  <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
+<div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: When should you use a virtual proxy instead of direct instantiation?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong> Use virtual proxies when: (1) Object creation is expensive (heavy I/O, complex computation, large memory), (2) There's uncertainty whether the object will be used, (3) You need to present a collection of objects where only some will be accessed. Classic examples: ORM lazy loading of relationships, image thumbnails in galleries, document previews.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: When should you use a virtual proxy instead of direct instantiation?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong> Use virtual proxies when: (1) Object creation is expensive (heavy I/O, complex computation, large memory), (2) There's uncertainty whether the object will be used, (3) You need to present a collection of objects where only some will be accessed. Classic examples: ORM lazy loading of relationships, image thumbnails in galleries, document previews.
+</div>
+</div>
 
-  <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: What threading issues arise with virtual proxies and how do you solve them?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong> The primary issue is the <strong>check-then-act race condition</strong>. Two threads might both see the object as null and both create instances. Solutions:<br><br>
-      <strong>1. Double-Checked Locking (DCL):</strong> Check without lock, acquire lock, check again, initialize. Requires proper memory barriers (volatile in Java, memory_order in C++).<br><br>
-      <strong>2. Initialize-on-demand holder idiom:</strong> Use a nested class whose static field is initialized by class loader (thread-safe by JVM spec).<br><br>
-      <strong>3. Atomic reference with CAS:</strong> Use compareAndSet - if another thread wins, discard your instance and use theirs.<br><br>
-      <strong>Trade-off:</strong> DCL has complexity but allows lazy init with minimal contention. Atomic CAS may waste one initialization but is lock-free.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: What threading issues arise with virtual proxies and how do you solve them?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong> The primary issue is the <strong>check-then-act race condition</strong>. Two threads might both see the object as null and both create instances. Solutions:<br><br>
+<strong>1. Double-Checked Locking (DCL):</strong> Check without lock, acquire lock, check again, initialize. Requires proper memory barriers (volatile in Java, memory_order in C++).<br><br>
+<strong>2. Initialize-on-demand holder idiom:</strong> Use a nested class whose static field is initialized by class loader (thread-safe by JVM spec).<br><br>
+<strong>3. Atomic reference with CAS:</strong> Use compareAndSet - if another thread wins, discard your instance and use theirs.<br><br>
+<strong>Trade-off:</strong> DCL has complexity but allows lazy init with minimal contention. Atomic CAS may waste one initialization but is lock-free.
+</div>
+</div>
 
-  <div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
+<div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: How would you design a virtual proxy system that handles initialization failures, supports retry with backoff, and allows the proxy to be garbage collected while keeping the real object alive if other references exist?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong> This requires a sophisticated design:<br><br>
-      <strong>1. Failure Handling with State Machine:</strong> Track proxy state (UNINITIALIZED, INITIALIZING, READY, FAILED). On failure, store the exception and transition to FAILED. Support reset() to return to UNINITIALIZED for retry.<br><br>
-      <strong>2. Retry with Exponential Backoff:</strong> Wrap initialization in a retry policy. Use a RetryContext that tracks attempt count, last failure time, and computes next retry delay. Cap maximum retries and implement circuit breaker pattern if failures persist.<br><br>
-      <strong>3. GC-Safe Reference Management:</strong> Use <code>WeakReference</code> from proxy to real subject. The proxy checks if the weak reference is still valid; if cleared, it can re-initialize. For the reverse (keeping real object alive), use a <code>shared_ptr</code>-style reference counting or rely on the real object's own strong references.<br><br>
-      <strong>4. Cache Coordination:</strong> If multiple proxies can point to the same real object, use a WeakValueDictionary keyed by identity. New proxies check the cache first, reusing existing instances.<br><br>
-      <strong>Edge Case:</strong> What if initialization succeeds but returns null? Define explicit semantics - either this is valid (null object pattern) or throw IllegalStateException.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: How would you design a virtual proxy system that handles initialization failures, supports retry with backoff, and allows the proxy to be garbage collected while keeping the real object alive if other references exist?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong> This requires a sophisticated design:<br><br>
+<strong>1. Failure Handling with State Machine:</strong> Track proxy state (UNINITIALIZED, INITIALIZING, READY, FAILED). On failure, store the exception and transition to FAILED. Support reset() to return to UNINITIALIZED for retry.<br><br>
+<strong>2. Retry with Exponential Backoff:</strong> Wrap initialization in a retry policy. Use a RetryContext that tracks attempt count, last failure time, and computes next retry delay. Cap maximum retries and implement circuit breaker pattern if failures persist.<br><br>
+<strong>3. GC-Safe Reference Management:</strong> Use <code>WeakReference</code> from proxy to real subject. The proxy checks if the weak reference is still valid; if cleared, it can re-initialize. For the reverse (keeping real object alive), use a <code>shared_ptr</code>-style reference counting or rely on the real object's own strong references.<br><br>
+<strong>4. Cache Coordination:</strong> If multiple proxies can point to the same real object, use a WeakValueDictionary keyed by identity. New proxies check the cache first, reusing existing instances.<br><br>
+<strong>Edge Case:</strong> What if initialization succeeds but returns null? Define explicit semantics - either this is valid (null object pattern) or throw IllegalStateException.
+</div>
+</div>
 </div>
 
 ---
@@ -350,10 +350,10 @@ if __name__ == "__main__":
 A Protection Proxy controls access to the real subject based on access rights, implementing authorization logic at the object level. This enforces [[Principle of Least Privilege]](/topic/security/least-privilege) by ensuring clients can only perform operations they're authorized for.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #e74c3c;">
-  <div style="color: #e74c3c; font-weight: 600; margin-bottom: 0.75rem;">Security Assumption</div>
-  <div style="color: #ddd; line-height: 1.6;">
+<div style="color: #e74c3c; font-weight: 600; margin-bottom: 0.75rem;">Security Assumption</div>
+<div style="color: #ddd; line-height: 1.6;">
     Protection proxies assume the client cannot bypass the proxy to access the real subject directly. In languages with reflection or unsafe memory access, additional measures (like SecurityManager in Java or private constructors with factory methods) must prevent circumvention.
-  </div>
+</div>
 </div>
 
 ### Internal Mechanisms
@@ -707,44 +707,44 @@ if __name__ == "__main__":
 ### Interview Questions - Protection Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
-  <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
+<div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: How does a protection proxy differ from application-level security middleware?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong> Protection proxies provide <strong>object-level security</strong> while middleware typically provides <strong>request-level security</strong>.<br><br>
-      <strong>Middleware:</strong> Intercepts at API boundary, coarse-grained (entire endpoint), stateless per request, centralized configuration.<br><br>
-      <strong>Protection Proxy:</strong> Intercepts at object boundary, fine-grained (per method), can maintain state, distributed with objects.<br><br>
-      <strong>When to combine:</strong> Use middleware for authentication and coarse authorization, proxies for domain-specific fine-grained authorization that depends on object state.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: How does a protection proxy differ from application-level security middleware?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong> Protection proxies provide <strong>object-level security</strong> while middleware typically provides <strong>request-level security</strong>.<br><br>
+<strong>Middleware:</strong> Intercepts at API boundary, coarse-grained (entire endpoint), stateless per request, centralized configuration.<br><br>
+<strong>Protection Proxy:</strong> Intercepts at object boundary, fine-grained (per method), can maintain state, distributed with objects.<br><br>
+<strong>When to combine:</strong> Use middleware for authentication and coarse authorization, proxies for domain-specific fine-grained authorization that depends on object state.
+</div>
+</div>
 
-  <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: What are the security implications of using thread-local storage for security context in a protection proxy?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong> Thread-local security context has several vulnerabilities:<br><br>
-      <strong>1. Thread Pool Contamination:</strong> If a thread pool reuses threads, a previous request's context might leak to the next request if not explicitly cleared. Always clear context in finally blocks or use request-scoped containers.<br><br>
-      <strong>2. Async/Await Context Loss:</strong> In async code, continuations may run on different threads, losing the context. Solutions: explicit context propagation, AsyncLocal (C#), or contextvars (Python 3.7+).<br><br>
-      <strong>3. Nested Security Contexts:</strong> If code needs to temporarily elevate privileges (run-as), thread-local doesn't naturally support stacking. Implement a context stack or use explicit privilege escalation tokens.<br><br>
-      <strong>4. Testing Difficulty:</strong> Tests must remember to set/clear context. Consider dependency injection as alternative for testability.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: What are the security implications of using thread-local storage for security context in a protection proxy?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong> Thread-local security context has several vulnerabilities:<br><br>
+<strong>1. Thread Pool Contamination:</strong> If a thread pool reuses threads, a previous request's context might leak to the next request if not explicitly cleared. Always clear context in finally blocks or use request-scoped containers.<br><br>
+<strong>2. Async/Await Context Loss:</strong> In async code, continuations may run on different threads, losing the context. Solutions: explicit context propagation, AsyncLocal (C#), or contextvars (Python 3.7+).<br><br>
+<strong>3. Nested Security Contexts:</strong> If code needs to temporarily elevate privileges (run-as), thread-local doesn't naturally support stacking. Implement a context stack or use explicit privilege escalation tokens.<br><br>
+<strong>4. Testing Difficulty:</strong> Tests must remember to set/clear context. Consider dependency injection as alternative for testability.
+</div>
+</div>
 
-  <div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
+<div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: Design a protection proxy system that handles: (1) hierarchical permissions with inheritance, (2) time-based access windows, (3) rate limiting per user, and (4) delegated permissions that can be revoked mid-session.</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>1. Hierarchical Permissions:</strong> Model permissions as a DAG where higher-level permissions imply lower ones. Use a PermissionResolver that traverses the hierarchy. Cache resolved permissions but invalidate on role changes. Example: ADMIN > MANAGER > EDITOR > VIEWER.<br><br>
-      <strong>2. Time-Based Access:</strong> Extend Permission to TemporalPermission with validFrom/validUntil. The proxy checks current time against window. For recurring windows (business hours only), use cron-like expressions. Store time in UTC, convert to user's timezone for comparison.<br><br>
-      <strong>3. Rate Limiting:</strong> Inject a RateLimiter into the proxy. Use token bucket or sliding window algorithm keyed by (user_id, operation). Rate limits can be permission-specific (admins get higher limits). Consider distributed rate limiting via Redis if horizontally scaled.<br><br>
-      <strong>4. Delegated Revocable Permissions:</strong> Issue delegation tokens with unique IDs stored in a revocation list (or use short-lived JWTs with refresh). On each access, proxy checks if token is revoked. For immediate revocation, use a distributed cache with pub/sub for propagation. Token should include delegator chain for audit trail.<br><br>
-      <strong>Edge Case - Revocation During Transaction:</strong> If permissions revoked mid-transaction, you have options: (a) fail immediately (consistent but disruptive), (b) allow transaction to complete (eventual consistency), (c) queue revocation for end of current operation. Choice depends on security requirements.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: Design a protection proxy system that handles: (1) hierarchical permissions with inheritance, (2) time-based access windows, (3) rate limiting per user, and (4) delegated permissions that can be revoked mid-session.</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>1. Hierarchical Permissions:</strong> Model permissions as a DAG where higher-level permissions imply lower ones. Use a PermissionResolver that traverses the hierarchy. Cache resolved permissions but invalidate on role changes. Example: ADMIN > MANAGER > EDITOR > VIEWER.<br><br>
+<strong>2. Time-Based Access:</strong> Extend Permission to TemporalPermission with validFrom/validUntil. The proxy checks current time against window. For recurring windows (business hours only), use cron-like expressions. Store time in UTC, convert to user's timezone for comparison.<br><br>
+<strong>3. Rate Limiting:</strong> Inject a RateLimiter into the proxy. Use token bucket or sliding window algorithm keyed by (user_id, operation). Rate limits can be permission-specific (admins get higher limits). Consider distributed rate limiting via Redis if horizontally scaled.<br><br>
+<strong>4. Delegated Revocable Permissions:</strong> Issue delegation tokens with unique IDs stored in a revocation list (or use short-lived JWTs with refresh). On each access, proxy checks if token is revoked. For immediate revocation, use a distributed cache with pub/sub for propagation. Token should include delegator chain for audit trail.<br><br>
+<strong>Edge Case - Revocation During Transaction:</strong> If permissions revoked mid-transaction, you have options: (a) fail immediately (consistent but disruptive), (b) allow transaction to complete (eventual consistency), (c) queue revocation for end of current operation. Choice depends on security requirements.
+</div>
+</div>
 </div>
 
 ---
@@ -756,10 +756,10 @@ if __name__ == "__main__":
 A Remote Proxy provides a local representative for an object that exists in a different address space - whether another process, machine, or data center. This enables [[Location Transparency]](/topic/distributed-systems/location-transparency), where clients interact with remote objects using the same interface as local ones.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #9b59b6;">
-  <div style="color: #9b59b6; font-weight: 600; margin-bottom: 0.75rem;">Distributed Computing Assumption</div>
-  <div style="color: #ddd; line-height: 1.6;">
+<div style="color: #9b59b6; font-weight: 600; margin-bottom: 0.75rem;">Distributed Computing Assumption</div>
+<div style="color: #ddd; line-height: 1.6;">
     Remote proxies assume network communication is fundamentally different from local calls: it can fail, has latency, may deliver messages out of order, and the remote object's state can change between calls. The <strong>Eight Fallacies of Distributed Computing</strong> all apply.
-  </div>
+</div>
 </div>
 
 ### Internal Mechanisms
@@ -773,44 +773,44 @@ A Remote Proxy provides a local representative for an object that exists in a di
 ### Architecture Diagram
 
 <div style="display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0; font-family: system-ui, sans-serif;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 2px solid #3498db;">
-      <div style="color: #3498db; font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Client Process</div>
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <div style="background: #2c3e50; border-radius: 8px; padding: 0.75rem; text-align: center;">
-          <div style="color: #ecf0f1; font-weight: 600;">Client Code</div>
-          <div style="color: #95a5a6; font-size: 0.8rem;">calls proxy.method()</div>
-        </div>
-        <div style="text-align: center; color: #3498db;">&#8595;</div>
-        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; padding: 0.75rem; text-align: center;">
-          <div style="color: white; font-weight: 600;">Remote Proxy (Stub)</div>
-          <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem;">serializes, sends request</div>
-        </div>
-      </div>
-    </div>
-    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem;">
-      <div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 0.5rem;">Network</div>
-      <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-        <div style="color: #2ecc71; font-size: 1.2rem;">&#8594; request &#8594;</div>
-        <div style="color: #e74c3c; font-size: 1.2rem;">&#8592; response &#8592;</div>
-      </div>
-      <div style="color: #7f8c8d; font-size: 0.75rem; margin-top: 0.5rem;">(HTTP, gRPC, etc.)</div>
-    </div>
-    <div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 2px solid #e74c3c;">
-      <div style="color: #e74c3c; font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Server Process</div>
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem; text-align: center;">
-          <div style="color: white; font-weight: 600;">Skeleton (Dispatcher)</div>
-          <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem;">deserializes, invokes</div>
-        </div>
-        <div style="text-align: center; color: #e74c3c;">&#8595;</div>
-        <div style="background: #2c3e50; border-radius: 8px; padding: 0.75rem; text-align: center;">
-          <div style="color: #4ecdc4; font-weight: 600;">Real Service</div>
-          <div style="color: #95a5a6; font-size: 0.8rem;">actual implementation</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 2px solid #3498db;">
+<div style="color: #3498db; font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Client Process</div>
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+<div style="background: #2c3e50; border-radius: 8px; padding: 0.75rem; text-align: center;">
+<div style="color: #ecf0f1; font-weight: 600;">Client Code</div>
+<div style="color: #95a5a6; font-size: 0.8rem;">calls proxy.method()</div>
+</div>
+<div style="text-align: center; color: #3498db;">&#8595;</div>
+<div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 8px; padding: 0.75rem; text-align: center;">
+<div style="color: white; font-weight: 600;">Remote Proxy (Stub)</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 0.75rem;">serializes, sends request</div>
+</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem;">
+<div style="color: #f39c12; font-size: 0.85rem; margin-bottom: 0.5rem;">Network</div>
+<div style="display: flex; flex-direction: column; gap: 0.5rem;">
+<div style="color: #2ecc71; font-size: 1.2rem;">&#8594; request &#8594;</div>
+<div style="color: #e74c3c; font-size: 1.2rem;">&#8592; response &#8592;</div>
+</div>
+<div style="color: #7f8c8d; font-size: 0.75rem; margin-top: 0.5rem;">(HTTP, gRPC, etc.)</div>
+</div>
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 2px solid #e74c3c;">
+<div style="color: #e74c3c; font-weight: 700; text-align: center; margin-bottom: 1rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Server Process</div>
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; padding: 0.75rem; text-align: center;">
+<div style="color: white; font-weight: 600;">Skeleton (Dispatcher)</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 0.75rem;">deserializes, invokes</div>
+</div>
+<div style="text-align: center; color: #e74c3c;">&#8595;</div>
+<div style="background: #2c3e50; border-radius: 8px; padding: 0.75rem; text-align: center;">
+<div style="color: #4ecdc4; font-weight: 600;">Real Service</div>
+<div style="color: #95a5a6; font-size: 0.8rem;">actual implementation</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ### Implementation - Go with gRPC-style Patterns
@@ -1139,64 +1139,64 @@ func main() {
 ### Interview Questions - Remote Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
-  <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
+<div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: What are the key differences between local method calls and remote calls that a remote proxy must handle?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong> Remote calls differ fundamentally:<br><br>
-      <strong>1. Latency:</strong> Network round-trip adds milliseconds to seconds vs. nanoseconds for local calls.<br>
-      <strong>2. Failure Modes:</strong> Network can fail, timeout, or return partial data. Local calls only fail on exceptions.<br>
-      <strong>3. Serialization:</strong> Arguments must be serializable; no passing of function pointers or open file handles.<br>
-      <strong>4. State Isolation:</strong> Remote object state is not visible locally; can change between calls.<br>
-      <strong>5. Security:</strong> Data crosses trust boundaries; needs authentication, encryption.<br>
-      <strong>6. Partial Failure:</strong> Request might succeed but response lost, leaving unknown state.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: What are the key differences between local method calls and remote calls that a remote proxy must handle?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong> Remote calls differ fundamentally:<br><br>
+<strong>1. Latency:</strong> Network round-trip adds milliseconds to seconds vs. nanoseconds for local calls.<br>
+<strong>2. Failure Modes:</strong> Network can fail, timeout, or return partial data. Local calls only fail on exceptions.<br>
+<strong>3. Serialization:</strong> Arguments must be serializable; no passing of function pointers or open file handles.<br>
+<strong>4. State Isolation:</strong> Remote object state is not visible locally; can change between calls.<br>
+<strong>5. Security:</strong> Data crosses trust boundaries; needs authentication, encryption.<br>
+<strong>6. Partial Failure:</strong> Request might succeed but response lost, leaving unknown state.
+</div>
+</div>
 
-  <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: Explain the trade-offs between different retry strategies in remote proxies and when to use each.</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>1. Immediate Retry:</strong> Retry instantly on failure. Good for transient network glitches. Risk: amplifies load during outages.<br><br>
-      <strong>2. Fixed Delay:</strong> Wait constant time between retries. Simple but not adaptive. May retry too fast during outage or too slow for transient errors.<br><br>
-      <strong>3. Exponential Backoff:</strong> Double delay each retry (100ms, 200ms, 400ms...). Reduces load during extended outages. Standard for cloud services.<br><br>
-      <strong>4. Exponential Backoff + Jitter:</strong> Add random jitter to prevent thundering herd when many clients retry simultaneously. Essential for distributed systems.<br><br>
-      <strong>5. Circuit Breaker + Retry:</strong> After N failures, stop retrying for a period. Prevents wasting resources on definitely-down services.<br><br>
-      <strong>Idempotency Requirement:</strong> Only safe to retry idempotent operations (GET, PUT with same value). Non-idempotent operations (POST creating resource) need idempotency keys to prevent duplicates.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: Explain the trade-offs between different retry strategies in remote proxies and when to use each.</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>1. Immediate Retry:</strong> Retry instantly on failure. Good for transient network glitches. Risk: amplifies load during outages.<br><br>
+<strong>2. Fixed Delay:</strong> Wait constant time between retries. Simple but not adaptive. May retry too fast during outage or too slow for transient errors.<br><br>
+<strong>3. Exponential Backoff:</strong> Double delay each retry (100ms, 200ms, 400ms...). Reduces load during extended outages. Standard for cloud services.<br><br>
+<strong>4. Exponential Backoff + Jitter:</strong> Add random jitter to prevent thundering herd when many clients retry simultaneously. Essential for distributed systems.<br><br>
+<strong>5. Circuit Breaker + Retry:</strong> After N failures, stop retrying for a period. Prevents wasting resources on definitely-down services.<br><br>
+<strong>Idempotency Requirement:</strong> Only safe to retry idempotent operations (GET, PUT with same value). Non-idempotent operations (POST creating resource) need idempotency keys to prevent duplicates.
+</div>
+</div>
 
-  <div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
+<div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: Design a remote proxy system for a stock trading platform that must handle: (1) sub-millisecond latency requirements, (2) exactly-once execution semantics for trades, (3) graceful degradation during partial outages, and (4) regulatory audit trail requirements.</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>1. Sub-millisecond Latency:</strong><br>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: Design a remote proxy system for a stock trading platform that must handle: (1) sub-millisecond latency requirements, (2) exactly-once execution semantics for trades, (3) graceful degradation during partial outages, and (4) regulatory audit trail requirements.</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>1. Sub-millisecond Latency:</strong><br>
       - Use binary protocol (not JSON/HTTP) - consider FIX protocol or custom binary format<br>
       - Pre-establish persistent connections (connection pooling)<br>
       - Use kernel bypass networking (DPDK) for critical paths<br>
       - Proxy should pre-serialize common messages; use object pooling to avoid GC<br>
       - Co-locate proxy close to exchange servers<br><br>
 
-      <strong>2. Exactly-Once Semantics:</strong><br>
+<strong>2. Exactly-Once Semantics:</strong><br>
       - Assign unique trade ID (idempotency key) before sending<br>
       - Store pending trades in local persistent log before network call<br>
       - If response lost, query trade status using trade ID<br>
       - Implement two-phase protocol: reserve then confirm<br>
       - Use distributed consensus (Raft) for proxy cluster to prevent duplicate submission<br><br>
 
-      <strong>3. Graceful Degradation:</strong><br>
+<strong>3. Graceful Degradation:</strong><br>
       - Multiple exchange connections with automatic failover<br>
       - Cache last known prices for read operations during write outage<br>
       - Queue orders locally during brief outages with timeout<br>
       - Circuit breaker per exchange; route to alternatives<br>
       - Reject new orders (fail-fast) rather than queue indefinitely<br><br>
 
-      <strong>4. Regulatory Audit Trail:</strong><br>
+<strong>4. Regulatory Audit Trail:</strong><br>
       - Log every request/response with microsecond timestamps before and after<br>
       - Include sequence numbers for ordering reconstruction<br>
       - Write audit log to append-only storage (separate from normal logs)<br>
@@ -1204,9 +1204,9 @@ func main() {
       - Synchronize clocks with exchange using PTP (Precision Time Protocol)<br>
       - Retain logs per regulatory requirements (7 years for SEC)<br><br>
 
-      <strong>Edge Case - Split Brain:</strong> If proxy cluster partitions, use fencing tokens to ensure only one proxy can submit orders. Invalid tokens rejected by exchange.
-    </div>
-  </div>
+<strong>Edge Case - Split Brain:</strong> If proxy cluster partitions, use fencing tokens to ensure only one proxy can submit orders. Invalid tokens rejected by exchange.
+</div>
+</div>
 </div>
 
 ---
@@ -1218,10 +1218,10 @@ func main() {
 A Caching Proxy stores the results of expensive operations and returns cached results for subsequent identical requests. This implements [[Memoization]](/topic/algorithms/memoization) at the service boundary, trading memory for performance.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #2ecc71;">
-  <div style="color: #2ecc71; font-weight: 600; margin-bottom: 0.75rem;">Caching Trade-off</div>
-  <div style="color: #ddd; line-height: 1.6;">
+<div style="color: #2ecc71; font-weight: 600; margin-bottom: 0.75rem;">Caching Trade-off</div>
+<div style="color: #ddd; line-height: 1.6;">
     Caching introduces the fundamental trade-off between <strong>freshness</strong> and <strong>performance</strong>. Cached data may be stale, and the cache itself consumes memory. The cache is only beneficial when: (hit_rate * fetch_cost) > (cache_overhead + staleness_cost).
-  </div>
+</div>
 </div>
 
 ### Internal Mechanisms
@@ -1628,63 +1628,63 @@ if __name__ == "__main__":
 ### Interview Questions - Caching Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
-  <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
+<div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: What are the main cache invalidation strategies and when would you use each?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>1. Time-based (TTL):</strong> Entries expire after fixed duration. Use when data changes predictably (weather updates every 5 min) or staleness is acceptable within bounds.<br><br>
-      <strong>2. Write-through:</strong> Update cache on every write to underlying data. Use when writes are infrequent and you need strong consistency.<br><br>
-      <strong>3. Write-behind (write-back):</strong> Update cache immediately, sync to storage asynchronously. Use for write-heavy workloads where temporary inconsistency is acceptable.<br><br>
-      <strong>4. Cache-aside (lazy loading):</strong> Application manages cache explicitly. Use when you need fine-grained control over what gets cached.<br><br>
-      <strong>5. Event-driven:</strong> Invalidate on events (message queue). Use in distributed systems where data sources can publish change events.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: What are the main cache invalidation strategies and when would you use each?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>1. Time-based (TTL):</strong> Entries expire after fixed duration. Use when data changes predictably (weather updates every 5 min) or staleness is acceptable within bounds.<br><br>
+<strong>2. Write-through:</strong> Update cache on every write to underlying data. Use when writes are infrequent and you need strong consistency.<br><br>
+<strong>3. Write-behind (write-back):</strong> Update cache immediately, sync to storage asynchronously. Use for write-heavy workloads where temporary inconsistency is acceptable.<br><br>
+<strong>4. Cache-aside (lazy loading):</strong> Application manages cache explicitly. Use when you need fine-grained control over what gets cached.<br><br>
+<strong>5. Event-driven:</strong> Invalidate on events (message queue). Use in distributed systems where data sources can publish change events.
+</div>
+</div>
 
-  <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: How do you handle the "thundering herd" problem in caching proxies?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong> Thundering herd occurs when a popular cache entry expires and many concurrent requests all try to regenerate it simultaneously, overwhelming the backend.<br><br>
-      <strong>Solutions:</strong><br><br>
-      <strong>1. Request Coalescing (Singleflight):</strong> Only one request fetches fresh data; others wait for result. Implement with a lock per key or a promise/future that others await.<br><br>
-      <strong>2. Probabilistic Early Expiration:</strong> Randomly expire entries slightly before TTL. Spreads regeneration over time. Implementation: if (now > expires - random(0, grace_period)) then refresh.<br><br>
-      <strong>3. Background Refresh:</strong> Refresh cache entries before they expire using background workers. Entries never actually expire from client perspective.<br><br>
-      <strong>4. Stale-While-Revalidate:</strong> Return stale data immediately while fetching fresh data in background. Client gets fast response; next request gets fresh data.<br><br>
-      <strong>5. Lock with Timeout:</strong> First requester gets lock to refresh; others either wait (bounded time) or get stale data. Prevents indefinite blocking.
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: How do you handle the "thundering herd" problem in caching proxies?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong> Thundering herd occurs when a popular cache entry expires and many concurrent requests all try to regenerate it simultaneously, overwhelming the backend.<br><br>
+<strong>Solutions:</strong><br><br>
+<strong>1. Request Coalescing (Singleflight):</strong> Only one request fetches fresh data; others wait for result. Implement with a lock per key or a promise/future that others await.<br><br>
+<strong>2. Probabilistic Early Expiration:</strong> Randomly expire entries slightly before TTL. Spreads regeneration over time. Implementation: if (now > expires - random(0, grace_period)) then refresh.<br><br>
+<strong>3. Background Refresh:</strong> Refresh cache entries before they expire using background workers. Entries never actually expire from client perspective.<br><br>
+<strong>4. Stale-While-Revalidate:</strong> Return stale data immediately while fetching fresh data in background. Client gets fast response; next request gets fresh data.<br><br>
+<strong>5. Lock with Timeout:</strong> First requester gets lock to refresh; others either wait (bounded time) or get stale data. Prevents indefinite blocking.
+</div>
+</div>
 
-  <div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
+<div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: Design a distributed caching proxy layer for a global e-commerce platform that handles: (1) inventory counts that must never oversell, (2) product catalog with millions of items, (3) user sessions across regions, and (4) flash sales with 100x traffic spikes.</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>1. Inventory (Strong Consistency Required):</strong><br>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: Design a distributed caching proxy layer for a global e-commerce platform that handles: (1) inventory counts that must never oversell, (2) product catalog with millions of items, (3) user sessions across regions, and (4) flash sales with 100x traffic spikes.</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>1. Inventory (Strong Consistency Required):</strong><br>
       - DON'T cache actual counts - cache only decrements with atomic operations<br>
       - Use Redis DECR with check: if result < 0, INCR back and reject<br>
       - Or: Reserve inventory in cache, confirm with DB async<br>
       - Write-through to DB for durability<br>
       - Single authoritative region per SKU (shard by product ID)<br><br>
 
-      <strong>2. Product Catalog (Read-Heavy):</strong><br>
+<strong>2. Product Catalog (Read-Heavy):</strong><br>
       - Multi-tier: L1 (local, 1 min TTL), L2 (regional Redis, 10 min), L3 (origin)<br>
       - Millions of items: Use consistent hashing to distribute across cache cluster<br>
       - Precompute popular items during off-peak; lazy-load long tail<br>
       - CDN edge caching for product images and static data<br>
       - Event-driven invalidation from catalog management system<br><br>
 
-      <strong>3. User Sessions (Geo-Distributed):</strong><br>
+<strong>3. User Sessions (Geo-Distributed):</strong><br>
       - Sticky sessions to one region (route by user ID hash)<br>
       - Or: Replicate session to all regions with eventual consistency<br>
       - Use session token to identify authoritative region<br>
       - Implement session handoff protocol for region changes<br>
       - TTL with sliding expiration; touch on every request<br><br>
 
-      <strong>4. Flash Sales (Traffic Spikes):</strong><br>
+<strong>4. Flash Sales (Traffic Spikes):</strong><br>
       - Pre-warm caches before sale starts<br>
       - Request coalescing to prevent thundering herd<br>
       - Rate limiting per user at edge<br>
@@ -1692,9 +1692,9 @@ if __name__ == "__main__":
       - Degrade gracefully: cache "sold out" status aggressively<br>
       - Auto-scale cache cluster based on metrics; pre-scale before known events<br><br>
 
-      <strong>Edge Case - Cache Stampede After Flash Sale:</strong> When sale ends and restrictions lift, cached "sold out" entries expire simultaneously. Solution: Use randomized TTL or keep "sold out" cached until explicit invalidation.
-    </div>
-  </div>
+<strong>Edge Case - Cache Stampede After Flash Sale:</strong> When sale ends and restrictions lift, cached "sold out" entries expire simultaneously. Solution: Use randomized TTL or keep "sold out" cached until explicit invalidation.
+</div>
+</div>
 </div>
 
 ---
@@ -1706,10 +1706,10 @@ if __name__ == "__main__":
 Dynamic Proxies are generated at runtime rather than compile time, allowing a single proxy implementation to handle any interface. This enables [[Aspect-Oriented Programming]](/topic/design-patterns/aop) patterns where cross-cutting concerns are applied uniformly across many classes.
 
 <div style="background: linear-gradient(135deg, #232526 0%, #414345 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #f39c12;">
-  <div style="color: #f39c12; font-weight: 600; margin-bottom: 0.75rem;">Metaprogramming Trade-off</div>
-  <div style="color: #ddd; line-height: 1.6;">
+<div style="color: #f39c12; font-weight: 600; margin-bottom: 0.75rem;">Metaprogramming Trade-off</div>
+<div style="color: #ddd; line-height: 1.6;">
     Dynamic proxies trade compile-time safety for runtime flexibility. Type errors that static proxies catch at compile time become runtime errors. The indirection also makes debugging and stack traces more complex.
-  </div>
+</div>
 </div>
 
 ### Internal Mechanisms
@@ -2090,34 +2090,34 @@ if __name__ == "__main__":
 ### Interview Questions - Dynamic Proxy
 
 <div style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
-  <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
+<div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">Level 1: Fundamentals</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: What are the advantages and disadvantages of dynamic proxies compared to static proxies?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>Advantages of Dynamic Proxies:</strong><br>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: What are the advantages and disadvantages of dynamic proxies compared to static proxies?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>Advantages of Dynamic Proxies:</strong><br>
       - Single implementation handles any interface (reduces boilerplate)<br>
       - Can add behavior to classes without source code access<br>
       - Enables runtime composition of behaviors<br>
       - Foundation for AOP frameworks<br><br>
 
-      <strong>Disadvantages:</strong><br>
+<strong>Disadvantages:</strong><br>
       - No compile-time type checking<br>
       - Runtime overhead from reflection<br>
       - More complex debugging (stack traces include proxy machinery)<br>
       - Cannot proxy final classes/methods in some languages<br>
       - Magic behavior can surprise developers
-    </div>
-  </div>
+</div>
+</div>
 
-  <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 2: Implementation Depth</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: How does Java's Proxy.newProxyInstance() work internally, and what are its limitations?</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>Internal Mechanism:</strong><br>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: How does Java's Proxy.newProxyInstance() work internally, and what are its limitations?</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>Internal Mechanism:</strong><br>
       1. Generates a new class at runtime implementing specified interfaces<br>
       2. Uses sun.misc.ProxyGenerator to emit bytecode<br>
       3. Generated class has a field holding the InvocationHandler<br>
@@ -2125,32 +2125,32 @@ if __name__ == "__main__":
       5. Class is loaded via specified ClassLoader<br>
       6. Instance is created and returned<br><br>
 
-      <strong>Limitations:</strong><br>
+<strong>Limitations:</strong><br>
       - <strong>Interfaces only:</strong> Cannot proxy concrete classes (need cglib/ByteBuddy)<br>
       - <strong>Final methods:</strong> Cannot intercept final methods<br>
       - <strong>Private methods:</strong> Not intercepted (not part of interface)<br>
       - <strong>Self-invocation:</strong> If proxied method calls another method on this, that call bypasses proxy<br>
       - <strong>ClassLoader issues:</strong> Proxy must be loaded by ClassLoader that can see all interfaces<br><br>
 
-      <strong>Self-invocation Example:</strong><br>
-      <code>void methodA() { methodB(); }</code> - call to methodB() goes directly to implementation, not through proxy. Solution: inject proxy reference and call through it.
-    </div>
-  </div>
+<strong>Self-invocation Example:</strong><br>
+<code>void methodA() { methodB(); }</code> - call to methodB() goes directly to implementation, not through proxy. Solution: inject proxy reference and call through it.
+</div>
+</div>
 
-  <div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
+<div style="color: #9b59b6; font-weight: 700; font-size: 1.1rem; margin: 1.5rem 0 1rem;">Level 3: Architecture and Edge Cases</div>
 
-  <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
-    <div style="color: #3498db; font-weight: 600;">Q: Design a dynamic proxy system for a microservices framework that provides: (1) automatic service discovery and load balancing, (2) circuit breaker with health checking, (3) distributed tracing correlation, and (4) automatic retries with idempotency detection.</div>
-    <div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
-      <strong style="color: #2ecc71;">A:</strong><br><br>
-      <strong>1. Service Discovery + Load Balancing Handler:</strong><br>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1rem;">
+<div style="color: #3498db; font-weight: 600;">Q: Design a dynamic proxy system for a microservices framework that provides: (1) automatic service discovery and load balancing, (2) circuit breaker with health checking, (3) distributed tracing correlation, and (4) automatic retries with idempotency detection.</div>
+<div style="color: #bbb; margin-top: 0.75rem; line-height: 1.6;">
+<strong style="color: #2ecc71;">A:</strong><br><br>
+<strong>1. Service Discovery + Load Balancing Handler:</strong><br>
       - Inject ServiceRegistry that returns list of endpoints<br>
       - On each call, resolve service name to endpoints<br>
       - Implement load balancing strategy (round-robin, least-connections, weighted)<br>
       - Cache resolution with short TTL; subscribe to registry updates<br>
       - Remove failed endpoints from rotation temporarily<br><br>
 
-      <strong>2. Circuit Breaker Handler:</strong><br>
+<strong>2. Circuit Breaker Handler:</strong><br>
       - Per-endpoint circuit breaker state (closed/open/half-open)<br>
       - Track success/failure rates in sliding window<br>
       - Open circuit after threshold failures; reject fast<br>
@@ -2158,7 +2158,7 @@ if __name__ == "__main__":
       - Health check endpoint: call /health in background to detect recovery<br>
       - Integrate with service discovery to mark unhealthy instances<br><br>
 
-      <strong>3. Distributed Tracing Handler:</strong><br>
+<strong>3. Distributed Tracing Handler:</strong><br>
       - Extract or create trace context (trace ID, span ID, parent span ID)<br>
       - Create new span for outgoing call<br>
       - Inject trace headers into request (B3 format or W3C TraceContext)<br>
@@ -2166,7 +2166,7 @@ if __name__ == "__main__":
       - Propagate baggage items (user ID, tenant ID)<br>
       - Report to collector (Jaeger, Zipkin) async<br><br>
 
-      <strong>4. Idempotency-Aware Retry:</strong><br>
+<strong>4. Idempotency-Aware Retry:</strong><br>
       - Inspect method annotations or naming convention for idempotency<br>
       - For non-idempotent methods, generate idempotency key from args<br>
       - Send key in header; server deduplicates<br>
@@ -2174,12 +2174,12 @@ if __name__ == "__main__":
       - For reads (GET): always safe to retry<br>
       - For writes: check response - 409 Conflict means already processed<br><br>
 
-      <strong>Handler Chain Order:</strong><br>
+<strong>Handler Chain Order:</strong><br>
       Tracing (outermost) -> Circuit Breaker -> Retry -> Load Balancer -> Network<br><br>
 
-      <strong>Edge Case - Retry After Partial Success:</strong> If request succeeds but response lost, retry might get "already exists" error. Handler should detect this (409 status, specific error code) and treat as success, potentially fetching the created resource to return.
-    </div>
-  </div>
+<strong>Edge Case - Retry After Partial Success:</strong> If request succeeds but response lost, retry might get "already exists" error. Handler should detect this (409 status, specific error code) and treat as success, potentially fetching the created resource to return.
+</div>
+</div>
 </div>
 
 ---
@@ -2187,48 +2187,48 @@ if __name__ == "__main__":
 ## Comparison Matrix
 
 <div style="overflow-x: auto; margin: 2rem 0;">
-  <table style="width: 100%; border-collapse: collapse; font-family: system-ui, sans-serif; font-size: 0.9rem;">
-    <thead>
-      <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Proxy Type</th>
-        <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Primary Purpose</th>
-        <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">When to Use</th>
-        <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Key Trade-off</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="background: #1a1a2e;">
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #4ecdc4; font-weight: 600;">Virtual</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Defer expensive initialization</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Heavy objects that may not be used</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Memory vs. latency on first access</td>
-      </tr>
-      <tr style="background: #16213e;">
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #e74c3c; font-weight: 600;">Protection</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Access control enforcement</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Fine-grained security at object level</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Security vs. performance overhead</td>
-      </tr>
-      <tr style="background: #1a1a2e;">
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #9b59b6; font-weight: 600;">Remote</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Location transparency</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Distributed systems, RPC</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Abstraction vs. hidden complexity</td>
-      </tr>
-      <tr style="background: #16213e;">
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #2ecc71; font-weight: 600;">Caching</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Store and reuse results</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Expensive, repeatable operations</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Freshness vs. performance</td>
-      </tr>
-      <tr style="background: #1a1a2e;">
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #f39c12; font-weight: 600;">Dynamic</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Runtime behavior injection</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">AOP, frameworks, generic handling</td>
-        <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Flexibility vs. type safety</td>
-      </tr>
-    </tbody>
-  </table>
+<table style="width: 100%; border-collapse: collapse; font-family: system-ui, sans-serif; font-size: 0.9rem;">
+<thead>
+  <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+  <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Proxy Type</th>
+  <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Primary Purpose</th>
+  <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">When to Use</th>
+  <th style="padding: 1rem; text-align: left; color: white; border: 1px solid #444;">Key Trade-off</th>
+  </tr>
+</thead>
+<tbody>
+  <tr style="background: #1a1a2e;">
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #4ecdc4; font-weight: 600;">Virtual</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Defer expensive initialization</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Heavy objects that may not be used</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Memory vs. latency on first access</td>
+  </tr>
+  <tr style="background: #16213e;">
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #e74c3c; font-weight: 600;">Protection</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Access control enforcement</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Fine-grained security at object level</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Security vs. performance overhead</td>
+  </tr>
+  <tr style="background: #1a1a2e;">
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #9b59b6; font-weight: 600;">Remote</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Location transparency</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Distributed systems, RPC</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Abstraction vs. hidden complexity</td>
+  </tr>
+  <tr style="background: #16213e;">
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #2ecc71; font-weight: 600;">Caching</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Store and reuse results</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Expensive, repeatable operations</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Freshness vs. performance</td>
+  </tr>
+  <tr style="background: #1a1a2e;">
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #f39c12; font-weight: 600;">Dynamic</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Runtime behavior injection</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">AOP, frameworks, generic handling</td>
+  <td style="padding: 0.75rem; border: 1px solid #444; color: #ddd;">Flexibility vs. type safety</td>
+  </tr>
+</tbody>
+</table>
 </div>
 
 ---
@@ -2236,48 +2236,48 @@ if __name__ == "__main__":
 ## Related Patterns
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #3498db;">
-    <div style="color: #3498db; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Decorator</div>
-    <div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
-      <strong>Similarity:</strong> Both wrap objects and implement same interface.<br>
-      <strong>Difference:</strong> Decorator adds functionality; Proxy controls access. Decorators are typically stackable; Proxies usually aren't.
-    </div>
-    <div style="margin-top: 0.75rem;">
-      <a href="/topic/design-patterns/decorator" style="color: #3498db; text-decoration: none;">[[Decorator Pattern]] &rarr;</a>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #3498db;">
+<div style="color: #3498db; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Decorator</div>
+<div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
+<strong>Similarity:</strong> Both wrap objects and implement same interface.<br>
+<strong>Difference:</strong> Decorator adds functionality; Proxy controls access. Decorators are typically stackable; Proxies usually aren't.
+</div>
+<div style="margin-top: 0.75rem;">
+<a href="/topic/design-patterns/decorator" style="color: #3498db; text-decoration: none;">[[Decorator Pattern]] &rarr;</a>
+</div>
+</div>
 
-  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #e74c3c;">
-    <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Adapter</div>
-    <div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
-      <strong>Similarity:</strong> Both wrap another object.<br>
-      <strong>Difference:</strong> Adapter changes interface; Proxy keeps same interface. Adapter enables incompatible classes to work together.
-    </div>
-    <div style="margin-top: 0.75rem;">
-      <a href="/topic/design-patterns/adapter" style="color: #e74c3c; text-decoration: none;">[[Adapter Pattern]] &rarr;</a>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #e74c3c;">
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Adapter</div>
+<div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
+<strong>Similarity:</strong> Both wrap another object.<br>
+<strong>Difference:</strong> Adapter changes interface; Proxy keeps same interface. Adapter enables incompatible classes to work together.
+</div>
+<div style="margin-top: 0.75rem;">
+<a href="/topic/design-patterns/adapter" style="color: #e74c3c; text-decoration: none;">[[Adapter Pattern]] &rarr;</a>
+</div>
+</div>
 
-  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #2ecc71;">
-    <div style="color: #2ecc71; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Facade</div>
-    <div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
-      <strong>Similarity:</strong> Both provide intermediary to other code.<br>
-      <strong>Difference:</strong> Facade simplifies complex subsystem; Proxy controls access to single object. Facade creates new interface.
-    </div>
-    <div style="margin-top: 0.75rem;">
-      <a href="/topic/design-patterns/facade" style="color: #2ecc71; text-decoration: none;">[[Facade Pattern]] &rarr;</a>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #2ecc71;">
+<div style="color: #2ecc71; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Facade</div>
+<div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
+<strong>Similarity:</strong> Both provide intermediary to other code.<br>
+<strong>Difference:</strong> Facade simplifies complex subsystem; Proxy controls access to single object. Facade creates new interface.
+</div>
+<div style="margin-top: 0.75rem;">
+<a href="/topic/design-patterns/facade" style="color: #2ecc71; text-decoration: none;">[[Facade Pattern]] &rarr;</a>
+</div>
+</div>
 
-  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #f39c12;">
-    <div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Flyweight</div>
-    <div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
-      <strong>Relationship:</strong> Virtual proxies can work with Flyweight to share common state across proxied objects while keeping unique state in proxies.
-    </div>
-    <div style="margin-top: 0.75rem;">
-      <a href="/topic/design-patterns/flyweight" style="color: #f39c12; text-decoration: none;">[[Flyweight Pattern]] &rarr;</a>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #f39c12;">
+<div style="color: #f39c12; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem;">Flyweight</div>
+<div style="color: #bbb; line-height: 1.6; font-size: 0.9rem;">
+<strong>Relationship:</strong> Virtual proxies can work with Flyweight to share common state across proxied objects while keeping unique state in proxies.
+</div>
+<div style="margin-top: 0.75rem;">
+<a href="/topic/design-patterns/flyweight" style="color: #f39c12; text-decoration: none;">[[Flyweight Pattern]] &rarr;</a>
+</div>
+</div>
 </div>
 
 ---
@@ -2285,29 +2285,29 @@ if __name__ == "__main__":
 ## Best Practices and Anti-Patterns
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-  <div style="background: linear-gradient(135deg, #1e3a2f 0%, #2d5a47 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #2ecc71;">
-    <div style="color: #2ecc71; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Best Practices</div>
-    <ul style="color: #bbb; line-height: 1.8; padding-left: 1.25rem; margin: 0;">
-      <li><strong>Single Responsibility:</strong> Each proxy should have one purpose</li>
-      <li><strong>Interface Fidelity:</strong> Proxy must exactly match subject interface</li>
-      <li><strong>Transparent Failures:</strong> Don't swallow exceptions silently</li>
-      <li><strong>Document Behavior:</strong> Make proxy semantics clear to users</li>
-      <li><strong>Allow Bypass:</strong> Provide access to unwrapped object when needed</li>
-      <li><strong>Consider Thread Safety:</strong> Especially for caching and lazy init</li>
-    </ul>
-  </div>
+<div style="background: linear-gradient(135deg, #1e3a2f 0%, #2d5a47 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #2ecc71;">
+<div style="color: #2ecc71; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Best Practices</div>
+<ul style="color: #bbb; line-height: 1.8; padding-left: 1.25rem; margin: 0;">
+<li><strong>Single Responsibility:</strong> Each proxy should have one purpose</li>
+<li><strong>Interface Fidelity:</strong> Proxy must exactly match subject interface</li>
+<li><strong>Transparent Failures:</strong> Don't swallow exceptions silently</li>
+<li><strong>Document Behavior:</strong> Make proxy semantics clear to users</li>
+<li><strong>Allow Bypass:</strong> Provide access to unwrapped object when needed</li>
+<li><strong>Consider Thread Safety:</strong> Especially for caching and lazy init</li>
+</ul>
+</div>
 
-  <div style="background: linear-gradient(135deg, #3a1e1e 0%, #5a2d2d 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #e74c3c;">
-    <div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Anti-Patterns</div>
-    <ul style="color: #bbb; line-height: 1.8; padding-left: 1.25rem; margin: 0;">
-      <li><strong>God Proxy:</strong> Proxy doing too many things (log + cache + auth + ...)</li>
-      <li><strong>Hidden Behavior:</strong> Proxy that changes semantics unexpectedly</li>
-      <li><strong>Infinite Proxy Chain:</strong> Too many layers of proxies</li>
-      <li><strong>Leaky Abstraction:</strong> Proxy-specific exceptions leaking to client</li>
-      <li><strong>Identity Confusion:</strong> proxy == realObject should be false</li>
-      <li><strong>Ignoring Self-Calls:</strong> Internal calls bypassing proxy logic</li>
-    </ul>
-  </div>
+<div style="background: linear-gradient(135deg, #3a1e1e 0%, #5a2d2d 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid #e74c3c;">
+<div style="color: #e74c3c; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Anti-Patterns</div>
+<ul style="color: #bbb; line-height: 1.8; padding-left: 1.25rem; margin: 0;">
+<li><strong>God Proxy:</strong> Proxy doing too many things (log + cache + auth + ...)</li>
+<li><strong>Hidden Behavior:</strong> Proxy that changes semantics unexpectedly</li>
+<li><strong>Infinite Proxy Chain:</strong> Too many layers of proxies</li>
+<li><strong>Leaky Abstraction:</strong> Proxy-specific exceptions leaking to client</li>
+<li><strong>Identity Confusion:</strong> proxy == realObject should be false</li>
+<li><strong>Ignoring Self-Calls:</strong> Internal calls bypassing proxy logic</li>
+</ul>
+</div>
 </div>
 
 ---
@@ -2315,32 +2315,32 @@ if __name__ == "__main__":
 ## Real-World Applications
 
 <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 1px solid #444;">
-  <div style="color: #f39c12; font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem;">Industry Examples</div>
+<div style="color: #f39c12; font-weight: 700; font-size: 1.2rem; margin-bottom: 1.5rem;">Industry Examples</div>
 
-  <div style="display: grid; gap: 1.5rem;">
-    <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
-      <div style="color: #3498db; font-weight: 600; margin-bottom: 0.5rem;">ORM Lazy Loading (Hibernate, SQLAlchemy)</div>
-      <div style="color: #bbb; line-height: 1.6;">Virtual proxies for entity relationships. <code>user.orders</code> returns proxy that loads from database on first access. Prevents N+1 query problem when used with batch fetching.</div>
-    </div>
+<div style="display: grid; gap: 1.5rem;">
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
+<div style="color: #3498db; font-weight: 600; margin-bottom: 0.5rem;">ORM Lazy Loading (Hibernate, SQLAlchemy)</div>
+<div style="color: #bbb; line-height: 1.6;">Virtual proxies for entity relationships. <code>user.orders</code> returns proxy that loads from database on first access. Prevents N+1 query problem when used with batch fetching.</div>
+</div>
 
-    <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
-      <div style="color: #e74c3c; font-weight: 600; margin-bottom: 0.5rem;">Spring AOP</div>
-      <div style="color: #bbb; line-height: 1.6;">Dynamic proxies for transactions, security, logging. <code>@Transactional</code> wraps methods with transaction management. Uses JDK proxies for interfaces, CGLIB for concrete classes.</div>
-    </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
+<div style="color: #e74c3c; font-weight: 600; margin-bottom: 0.5rem;">Spring AOP</div>
+<div style="color: #bbb; line-height: 1.6;">Dynamic proxies for transactions, security, logging. <code>@Transactional</code> wraps methods with transaction management. Uses JDK proxies for interfaces, CGLIB for concrete classes.</div>
+</div>
 
-    <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
-      <div style="color: #2ecc71; font-weight: 600; margin-bottom: 0.5rem;">gRPC Client Stubs</div>
-      <div style="color: #bbb; line-height: 1.6;">Remote proxies generated from Protocol Buffer definitions. Handles serialization, connection management, retries, load balancing transparently.</div>
-    </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
+<div style="color: #2ecc71; font-weight: 600; margin-bottom: 0.5rem;">gRPC Client Stubs</div>
+<div style="color: #bbb; line-height: 1.6;">Remote proxies generated from Protocol Buffer definitions. Handles serialization, connection management, retries, load balancing transparently.</div>
+</div>
 
-    <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
-      <div style="color: #9b59b6; font-weight: 600; margin-bottom: 0.5rem;">CDN Edge Caching (Cloudflare, Akamai)</div>
-      <div style="color: #bbb; line-height: 1.6;">Caching proxies at network edge. Intercept requests, serve cached content, forward cache misses to origin. Handle cache invalidation, vary headers, stale-while-revalidate.</div>
-    </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
+<div style="color: #9b59b6; font-weight: 600; margin-bottom: 0.5rem;">CDN Edge Caching (Cloudflare, Akamai)</div>
+<div style="color: #bbb; line-height: 1.6;">Caching proxies at network edge. Intercept requests, serve cached content, forward cache misses to origin. Handle cache invalidation, vary headers, stale-while-revalidate.</div>
+</div>
 
-    <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
-      <div style="color: #f39c12; font-weight: 600; margin-bottom: 0.5rem;">API Gateways (Kong, AWS API Gateway)</div>
-      <div style="color: #bbb; line-height: 1.6;">Combines multiple proxy types: protection (auth/rate limiting), remote (routing), caching, logging. Single entry point to microservices with cross-cutting concerns.</div>
-    </div>
-  </div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 1.25rem;">
+<div style="color: #f39c12; font-weight: 600; margin-bottom: 0.5rem;">API Gateways (Kong, AWS API Gateway)</div>
+<div style="color: #bbb; line-height: 1.6;">Combines multiple proxy types: protection (auth/rate limiting), remote (routing), caching, logging. Single entry point to microservices with cross-cutting concerns.</div>
+</div>
+</div>
 </div>

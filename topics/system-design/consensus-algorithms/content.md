@@ -7,40 +7,40 @@
 In distributed systems, consensus is the foundation for building reliable databases, [[leader election]](/topic/system-design/distributed-locking), and configuration management. Without consensus, you can't guarantee that all nodes in a cluster see the same data in the same order. It's tightly coupled with [[CAP theorem]](/topic/system-design/cap-theorem) trade-offs and [[database replication]](/topic/system-design/database-replication) strategies.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">THE CONSENSUS PROBLEM</div>
-  <div style="text-align: center; color: #475569; margin-bottom: 20px;">Multiple nodes must agree on a single value:</div>
-  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #93c5fd;">
-      <div style="color: #1e40af; font-weight: 600;">Node A</div>
-      <div style="color: #3b82f6; font-size: 12px; margin-top: 4px;">proposes X</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #f87171;">
-      <div style="color: #991b1b; font-weight: 600;">Node B</div>
-      <div style="color: #dc2626; font-size: 12px; margin-top: 4px;">proposes Y</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #93c5fd;">
-      <div style="color: #1e40af; font-weight: 600;">Node C</div>
-      <div style="color: #3b82f6; font-size: 12px; margin-top: 4px;">proposes X</div>
-    </div>
-  </div>
-  <div style="text-align: center; color: #6366f1; font-size: 24px; margin-bottom: 16px;">consensus protocol</div>
-  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 600;">Node A</div>
-      <div style="color: #22c55e; font-size: 12px; margin-top: 4px;">decides: X</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 600;">Node B</div>
-      <div style="color: #22c55e; font-size: 12px; margin-top: 4px;">decides: X</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 600;">Node C</div>
-      <div style="color: #22c55e; font-size: 12px; margin-top: 4px;">decides: X</div>
-    </div>
-  </div>
-  <div style="text-align: center; background: rgba(34, 197, 94, 0.15); border: 1px solid #22c55e; border-radius: 8px; padding: 12px;">
-    <span style="color: #166534;">All nodes agree on X (could have been Y, but MUST be same value)</span>
-  </div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">THE CONSENSUS PROBLEM</div>
+<div style="text-align: center; color: #475569; margin-bottom: 20px;">Multiple nodes must agree on a single value:</div>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 600;">Node A</div>
+<div style="color: #3b82f6; font-size: 12px; margin-top: 4px;">proposes X</div>
+</div>
+<div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #f87171;">
+<div style="color: #991b1b; font-weight: 600;">Node B</div>
+<div style="color: #dc2626; font-size: 12px; margin-top: 4px;">proposes Y</div>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 600;">Node C</div>
+<div style="color: #3b82f6; font-size: 12px; margin-top: 4px;">proposes X</div>
+</div>
+</div>
+<div style="text-align: center; color: #6366f1; font-size: 24px; margin-bottom: 16px;">consensus protocol</div>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600;">Node A</div>
+<div style="color: #22c55e; font-size: 12px; margin-top: 4px;">decides: X</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600;">Node B</div>
+<div style="color: #22c55e; font-size: 12px; margin-top: 4px;">decides: X</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; min-width: 110px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600;">Node C</div>
+<div style="color: #22c55e; font-size: 12px; margin-top: 4px;">decides: X</div>
+</div>
+</div>
+<div style="text-align: center; background: rgba(34, 197, 94, 0.15); border: 1px solid #22c55e; border-radius: 8px; padding: 12px;">
+<span style="color: #166534;">All nodes agree on X (could have been Y, but MUST be same value)</span>
+</div>
 </div>
 
 ## Why It Matters: Real Company Examples
@@ -83,85 +83,85 @@ In distributed systems, consensus is the foundation for building reliable databa
 <span style="color:#16a34a;">Quorum</span> is the minimum number of nodes that must participate in an operation for it to be valid. Understanding quorum is essential for all consensus algorithms.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">QUORUM MATHEMATICS</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">QUORUM MATHEMATICS</div>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
-      <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Crash Fault Tolerance</div>
-      <div style="background: #fff; border-radius: 8px; padding: 16px; text-align: center;">
-        <div style="font-size: 24px; color: #3b82f6; font-weight: 700;">n = 2f + 1</div>
-        <div style="color: #64748b; font-size: 13px; margin-top: 8px;">f = max failures tolerated</div>
-      </div>
-      <div style="margin-top: 12px; font-size: 13px; color: #1e40af;">
-        <div>5 nodes: tolerates 2 failures</div>
-        <div>3 nodes: tolerates 1 failure</div>
-        <div>Quorum = majority = (n/2)+1</div>
-      </div>
-    </div>
-
-    <div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 20px; border: 1px solid #f87171;">
-      <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Byzantine Fault Tolerance</div>
-      <div style="background: #fff; border-radius: 8px; padding: 16px; text-align: center;">
-        <div style="font-size: 24px; color: #dc2626; font-weight: 700;">n = 3f + 1</div>
-        <div style="color: #64748b; font-size: 13px; margin-top: 8px;">f = max Byzantine failures</div>
-      </div>
-      <div style="margin-top: 12px; font-size: 13px; color: #991b1b;">
-        <div>7 nodes: tolerates 2 Byzantine</div>
-        <div>4 nodes: tolerates 1 Byzantine</div>
-        <div>Quorum = 2f+1 (super-majority)</div>
-      </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Crash Fault Tolerance</div>
+<div style="background: #fff; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="font-size: 24px; color: #3b82f6; font-weight: 700;">n = 2f + 1</div>
+<div style="color: #64748b; font-size: 13px; margin-top: 8px;">f = max failures tolerated</div>
+</div>
+<div style="margin-top: 12px; font-size: 13px; color: #1e40af;">
+<div>5 nodes: tolerates 2 failures</div>
+  <div>3 nodes: tolerates 1 failure</div>
+    <div>Quorum = majority = (n/2)+1</div>
     </div>
   </div>
 
-  <div style="background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
-    <div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">Why These Numbers?</div>
-    <div style="color: #475569; font-size: 14px; line-height: 1.8;">
-      <div><strong>Crash (2f+1):</strong> Need overlapping majorities - any two majorities share at least one node</div>
-      <div><strong>Byzantine (3f+1):</strong> Need 2f+1 honest responses out of 3f+1 total to outvote f liars</div>
+  <div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 20px; border: 1px solid #f87171;">
+  <div style="color: #991b1b; font-weight: 600; margin-bottom: 12px;">Byzantine Fault Tolerance</div>
+  <div style="background: #fff; border-radius: 8px; padding: 16px; text-align: center;">
+  <div style="font-size: 24px; color: #dc2626; font-weight: 700;">n = 3f + 1</div>
+  <div style="color: #64748b; font-size: 13px; margin-top: 8px;">f = max Byzantine failures</div>
+</div>
+<div style="margin-top: 12px; font-size: 13px; color: #991b1b;">
+<div>7 nodes: tolerates 2 Byzantine</div>
+  <div>4 nodes: tolerates 1 Byzantine</div>
+    <div>Quorum = 2f+1 (super-majority)</div>
     </div>
   </div>
+</div>
+
+<div style="background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
+<div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">Why These Numbers?</div>
+<div style="color: #475569; font-size: 14px; line-height: 1.8;">
+<div><strong>Crash (2f+1):</strong> Need overlapping majorities - any two majorities share at least one node</div>
+  <div><strong>Byzantine (3f+1):</strong> Need 2f+1 honest responses out of 3f+1 total to outvote f liars</div>
+  </div>
+</div>
 </div>
 
 ### Quorum Intersection Property
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">QUORUM INTERSECTION ENSURES CONSISTENCY</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">QUORUM INTERSECTION ENSURES CONSISTENCY</div>
 
-  <div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; margin-bottom: 24px;">
-    <div style="position: relative; width: 200px; height: 150px;">
-      <div style="position: absolute; left: 0; top: 20px; width: 120px; height: 120px; background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <span style="color: #1e40af; font-size: 12px; position: absolute; left: 15px;">Write<br/>Quorum</span>
-      </div>
-      <div style="position: absolute; right: 0; top: 20px; width: 120px; height: 120px; background: rgba(34, 197, 94, 0.2); border: 2px solid #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <span style="color: #166534; font-size: 12px; position: absolute; right: 15px;">Read<br/>Quorum</span>
-      </div>
-      <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-        <span style="color: #92400e; font-size: 10px; text-align: center;">Shared<br/>Node</span>
-      </div>
-    </div>
+<div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; margin-bottom: 24px;">
+<div style="position: relative; width: 200px; height: 150px;">
+<div style="position: absolute; left: 0; top: 20px; width: 120px; height: 120px; background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+<span style="color: #1e40af; font-size: 12px; position: absolute; left: 15px;">Write<br/>Quorum</span>
+</div>
+<div style="position: absolute; right: 0; top: 20px; width: 120px; height: 120px; background: rgba(34, 197, 94, 0.2); border: 2px solid #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+<span style="color: #166534; font-size: 12px; position: absolute; right: 15px;">Read<br/>Quorum</span>
+</div>
+<div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+<span style="color: #92400e; font-size: 10px; text-align: center;">Shared<br/>Node</span>
+</div>
+</div>
 
-    <div style="background: rgba(34, 197, 94, 0.15); border-radius: 10px; padding: 16px; max-width: 280px;">
-      <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">The Key Insight</div>
-      <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        If W + R > N, any read quorum overlaps with any write quorum. The shared node(s) have the latest write, ensuring reads see fresh data.
-      </div>
-    </div>
-  </div>
+<div style="background: rgba(34, 197, 94, 0.15); border-radius: 10px; padding: 16px; max-width: 280px;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">The Key Insight</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
+    If W + R > N, any read quorum overlaps with any write quorum. The shared node(s) have the latest write, ensuring reads see fresh data.
+</div>
+</div>
+</div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center;">
-    <div style="background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-      <div style="color: #3b82f6; font-weight: 600;">W=3, R=3, N=5</div>
-      <div style="color: #64748b; font-size: 12px;">Strong consistency</div>
-    </div>
-    <div style="background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-      <div style="color: #f59e0b; font-weight: 600;">W=1, R=5, N=5</div>
-      <div style="color: #64748b; font-size: 12px;">Fast writes, slow reads</div>
-    </div>
-    <div style="background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-      <div style="color: #22c55e; font-weight: 600;">W=5, R=1, N=5</div>
-      <div style="color: #64748b; font-size: 12px;">Slow writes, fast reads</div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center;">
+<div style="background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+<div style="color: #3b82f6; font-weight: 600;">W=3, R=3, N=5</div>
+<div style="color: #64748b; font-size: 12px;">Strong consistency</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+<div style="color: #f59e0b; font-weight: 600;">W=1, R=5, N=5</div>
+<div style="color: #64748b; font-size: 12px;">Fast writes, slow reads</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+<div style="color: #22c55e; font-weight: 600;">W=5, R=1, N=5</div>
+<div style="color: #64748b; font-size: 12px;">Slow writes, fast reads</div>
+</div>
+</div>
 </div>
 
 ---
@@ -169,74 +169,74 @@ In distributed systems, consensus is the foundation for building reliable databa
 ## Algorithm Comparison
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">CONSENSUS ALGORITHM COMPARISON</div>
-  <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <thead>
-        <tr style="border-bottom: 2px solid #cbd5e1;">
-          <th style="padding: 12px; text-align: left; color: #1e40af;">Algorithm</th>
-          <th style="padding: 12px; text-align: center; color: #1e40af;">Fault Model</th>
-          <th style="padding: 12px; text-align: center; color: #1e40af;">Nodes for f faults</th>
-          <th style="padding: 12px; text-align: center; color: #1e40af;">Message Complexity</th>
-          <th style="padding: 12px; text-align: left; color: #1e40af;">Used In</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Paxos</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
-          <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
-          <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
-          <td style="padding: 12px; color: #64748b;">Chubby, Spanner, Megastore</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Multi-Paxos</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
-          <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
-          <td style="padding: 12px; text-align: center; color: #1e293b;">O(n) amortized</td>
-          <td style="padding: 12px; color: #64748b;">Spanner, Chubby</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Raft</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
-          <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
-          <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
-          <td style="padding: 12px; color: #64748b;">etcd, CockroachDB, Consul, TiKV</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b; font-weight: 500;">PBFT</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #dc2626;">Byzantine</span></td>
-          <td style="padding: 12px; text-align: center; color: #d97706;">3f + 1</td>
-          <td style="padding: 12px; text-align: center; color: #1e293b;">O(n^2)</td>
-          <td style="padding: 12px; color: #64748b;">Hyperledger Fabric</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Zab</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
-          <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
-          <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
-          <td style="padding: 12px; color: #64748b;">ZooKeeper, Kafka</td>
-        </tr>
-        <tr>
-          <td style="padding: 12px; color: #1e293b; font-weight: 500;">Viewstamped Replication</td>
-          <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
-          <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
-          <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
-          <td style="padding: 12px; color: #64748b;">PBFT basis</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-    <div style="background: rgba(34, 197, 94, 0.15); border-radius: 8px; padding: 12px;">
-      <span style="color: #166534; font-weight: 600;">Crash fault:</span>
-      <span style="color: #1e293b;"> Node stops responding (fail-stop model)</span>
-    </div>
-    <div style="background: rgba(239, 68, 68, 0.15); border-radius: 8px; padding: 12px;">
-      <span style="color: #991b1b; font-weight: 600;">Byzantine:</span>
-      <span style="color: #1e293b;"> Node may behave maliciously or arbitrarily</span>
-    </div>
-  </div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">CONSENSUS ALGORITHM COMPARISON</div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<thead>
+  <tr style="border-bottom: 2px solid #cbd5e1;">
+  <th style="padding: 12px; text-align: left; color: #1e40af;">Algorithm</th>
+  <th style="padding: 12px; text-align: center; color: #1e40af;">Fault Model</th>
+  <th style="padding: 12px; text-align: center; color: #1e40af;">Nodes for f faults</th>
+  <th style="padding: 12px; text-align: center; color: #1e40af;">Message Complexity</th>
+  <th style="padding: 12px; text-align: left; color: #1e40af;">Used In</th>
+  </tr>
+</thead>
+<tbody>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b; font-weight: 500;">Paxos</td>
+  <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
+  <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
+  <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
+  <td style="padding: 12px; color: #64748b;">Chubby, Spanner, Megastore</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b; font-weight: 500;">Multi-Paxos</td>
+  <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
+  <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
+  <td style="padding: 12px; text-align: center; color: #1e293b;">O(n) amortized</td>
+  <td style="padding: 12px; color: #64748b;">Spanner, Chubby</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b; font-weight: 500;">Raft</td>
+  <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
+  <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
+  <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
+  <td style="padding: 12px; color: #64748b;">etcd, CockroachDB, Consul, TiKV</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b; font-weight: 500;">PBFT</td>
+  <td style="padding: 12px; text-align: center;"><span style="color: #dc2626;">Byzantine</span></td>
+  <td style="padding: 12px; text-align: center; color: #d97706;">3f + 1</td>
+  <td style="padding: 12px; text-align: center; color: #1e293b;">O(n^2)</td>
+  <td style="padding: 12px; color: #64748b;">Hyperledger Fabric</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b; font-weight: 500;">Zab</td>
+  <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
+  <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
+  <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
+  <td style="padding: 12px; color: #64748b;">ZooKeeper, Kafka</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; color: #1e293b; font-weight: 500;">Viewstamped Replication</td>
+  <td style="padding: 12px; text-align: center;"><span style="color: #16a34a;">Crash</span></td>
+  <td style="padding: 12px; text-align: center; color: #d97706;">2f + 1</td>
+  <td style="padding: 12px; text-align: center; color: #1e293b;">O(n)</td>
+  <td style="padding: 12px; color: #64748b;">PBFT basis</td>
+  </tr>
+</tbody>
+</table>
+</div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+<div style="background: rgba(34, 197, 94, 0.15); border-radius: 8px; padding: 12px;">
+<span style="color: #166534; font-weight: 600;">Crash fault:</span>
+<span style="color: #1e293b;"> Node stops responding (fail-stop model)</span>
+</div>
+<div style="background: rgba(239, 68, 68, 0.15); border-radius: 8px; padding: 12px;">
+<span style="color: #991b1b; font-weight: 600;">Byzantine:</span>
+<span style="color: #1e293b;"> Node may behave maliciously or arbitrarily</span>
+</div>
+</div>
 </div>
 
 ---
@@ -248,116 +248,116 @@ In distributed systems, consensus is the foundation for building reliable databa
 ### Paxos Roles
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">PAXOS ROLES</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">PAXOS ROLES</div>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
-      <div style="color: #1e40af; font-weight: 700; font-size: 16px; margin-bottom: 12px;">Proposer</div>
-      <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        <div>Proposes values to be agreed upon</div>
-        <div style="margin-top: 8px; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 6px;">
-          <strong>Actions:</strong> Prepare, Propose
-        </div>
-      </div>
-    </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 700; font-size: 16px; margin-bottom: 12px;">Proposer</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
+<div>Proposes values to be agreed upon</div>
+  <div style="margin-top: 8px; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 6px;">
+  <strong>Actions:</strong> Prepare, Propose
+</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 12px;">Acceptor</div>
-      <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        <div>Votes on proposals (the "memory")</div>
-        <div style="margin-top: 8px; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 6px;">
-          <strong>Actions:</strong> Promise, Accept
-        </div>
-      </div>
-    </div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 12px;">Acceptor</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
+<div>Votes on proposals (the "memory")</div>
+  <div style="margin-top: 8px; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 6px;">
+  <strong>Actions:</strong> Promise, Accept
+</div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 1px solid #fcd34d;">
-      <div style="color: #92400e; font-weight: 700; font-size: 16px; margin-bottom: 12px;">Learner</div>
-      <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        <div>Learns the decided value</div>
-        <div style="margin-top: 8px; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 6px;">
-          <strong>Actions:</strong> Learn accepted value
-        </div>
-      </div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 1px solid #fcd34d;">
+<div style="color: #92400e; font-weight: 700; font-size: 16px; margin-bottom: 12px;">Learner</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
+<div>Learns the decided value</div>
+  <div style="margin-top: 8px; background: rgba(255,255,255,0.7); padding: 8px; border-radius: 6px;">
+  <strong>Actions:</strong> Learn accepted value
+</div>
+</div>
+</div>
+</div>
 
-  <div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
-    <div style="color: #4338ca; font-size: 13px;">
-      <strong>Note:</strong> In practice, a single node often plays all three roles simultaneously. The separation is conceptual.
-    </div>
-  </div>
+<div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
+<div style="color: #4338ca; font-size: 13px;">
+<strong>Note:</strong> In practice, a single node often plays all three roles simultaneously. The separation is conceptual.
+</div>
+</div>
 </div>
 
 ### Basic Paxos: Two Phases
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">BASIC PAXOS PROTOCOL</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">BASIC PAXOS PROTOCOL</div>
 
-  <div style="margin-bottom: 32px;">
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Phase 1: Prepare</div>
-      <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-        <div style="background: #fff; border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #93c5fd;">
-          <div style="color: #1e40af; font-weight: 600;">Proposer</div>
-          <div style="color: #64748b; font-size: 11px;">n = 1</div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <div style="color: #3b82f6; font-size: 13px;">Prepare(n=1)</div>
-          <div style="color: #3b82f6;">---------------></div>
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <div style="background: #fff; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
-            <div style="color: #166534; font-size: 12px;">A1</div>
-          </div>
-          <div style="background: #fff; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
-            <div style="color: #166534; font-size: 12px;">A2</div>
-          </div>
-          <div style="background: #fff; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
-            <div style="color: #166534; font-size: 12px;">A3</div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top: 12px; color: #475569; font-size: 13px; line-height: 1.6;">
-        <strong>Acceptor response:</strong> Promise to not accept proposals &lt; n. Return any previously accepted (n', v').
-      </div>
-    </div>
+<div style="margin-bottom: 32px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px;">Phase 1: Prepare</div>
+<div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+<div style="background: #fff; border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 600;">Proposer</div>
+<div style="color: #64748b; font-size: 11px;">n = 1</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="color: #3b82f6; font-size: 13px;">Prepare(n=1)</div>
+<div style="color: #3b82f6;">---------------></div>
+</div>
+<div style="display: flex; gap: 8px;">
+<div style="background: #fff; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-size: 12px;">A1</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-size: 12px;">A2</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-size: 12px;">A3</div>
+</div>
+</div>
+</div>
+<div style="margin-top: 12px; color: #475569; font-size: 13px; line-height: 1.6;">
+<strong>Acceptor response:</strong> Promise to not accept proposals &lt; n. Return any previously accepted (n', v').
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Phase 2: Accept</div>
-      <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-        <div style="background: #fff; border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #93c5fd;">
-          <div style="color: #1e40af; font-weight: 600;">Proposer</div>
-          <div style="color: #64748b; font-size: 11px;">v = "X"</div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <div style="color: #22c55e; font-size: 13px;">Accept(n=1, v="X")</div>
-          <div style="color: #22c55e;">---------------></div>
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
-            <div style="color: #166534; font-size: 12px;">A1: X</div>
-          </div>
-          <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
-            <div style="color: #166534; font-size: 12px;">A2: X</div>
-          </div>
-          <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
-            <div style="color: #166534; font-size: 12px;">A3: X</div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top: 12px; color: #475569; font-size: 13px; line-height: 1.6;">
-        <strong>Acceptor response:</strong> Accept if no promise to higher proposal. Value "X" is now <span style="color:#16a34a;">chosen</span> (majority accepted).
-      </div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Phase 2: Accept</div>
+<div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+<div style="background: #fff; border-radius: 8px; padding: 12px; min-width: 100px; text-align: center; border: 1px solid #93c5fd;">
+<div style="color: #1e40af; font-weight: 600;">Proposer</div>
+<div style="color: #64748b; font-size: 11px;">v = "X"</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="color: #22c55e; font-size: 13px;">Accept(n=1, v="X")</div>
+<div style="color: #22c55e;">---------------></div>
+</div>
+<div style="display: flex; gap: 8px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-size: 12px;">A1: X</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-size: 12px;">A2: X</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 8px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #166534; font-size: 12px;">A3: X</div>
+</div>
+</div>
+</div>
+<div style="margin-top: 12px; color: #475569; font-size: 13px; line-height: 1.6;">
+<strong>Acceptor response:</strong> Accept if no promise to higher proposal. Value "X" is now <span style="color:#16a34a;">chosen</span> (majority accepted).
+</div>
+</div>
+</div>
 
-  <div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
-    <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Critical Rule: Value Selection</div>
-    <div style="color: #475569; font-size: 13px;">
+<div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Critical Rule: Value Selection</div>
+<div style="color: #475569; font-size: 13px;">
       If any acceptor returns a previously accepted value in Phase 1, the proposer <strong>MUST</strong> propose that value (with highest proposal number) in Phase 2. This ensures safety even with concurrent proposers.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ### Multi-Paxos Optimization
@@ -365,37 +365,37 @@ In distributed systems, consensus is the foundation for building reliable databa
 Basic Paxos requires two round trips per value. <span style="color:#16a34a;">Multi-Paxos</span> optimizes this by establishing a stable leader.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">MULTI-PAXOS: AMORTIZED CONSENSUS</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">MULTI-PAXOS: AMORTIZED CONSENSUS</div>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-    <div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 20px; border: 1px solid #f87171;">
-      <div style="color: #991b1b; font-weight: 700; margin-bottom: 12px;">Basic Paxos (per value)</div>
-      <div style="background: #fff; border-radius: 8px; padding: 12px;">
-        <div style="color: #475569; font-size: 13px; line-height: 1.8;">
-          <div>1. Prepare -> Promises</div>
-          <div>2. Accept -> Accepted</div>
-          <div style="color: #dc2626; font-weight: 600; margin-top: 8px;">4 message delays per value</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Multi-Paxos (amortized)</div>
-      <div style="background: #fff; border-radius: 8px; padding: 12px;">
-        <div style="color: #475569; font-size: 13px; line-height: 1.8;">
-          <div>1. Prepare (once per leader)</div>
-          <div>2. Accept -> Accepted (per value)</div>
-          <div style="color: #16a34a; font-weight: 600; margin-top: 8px;">2 message delays per value</div>
-        </div>
-      </div>
-    </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+<div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 20px; border: 1px solid #f87171;">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 12px;">Basic Paxos (per value)</div>
+<div style="background: #fff; border-radius: 8px; padding: 12px;">
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<div>1. Prepare -> Promises</div>
+  <div>2. Accept -> Accepted</div>
+    <div style="color: #dc2626; font-weight: 600; margin-top: 8px;">4 message delays per value</div>
   </div>
+</div>
+</div>
 
-  <div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
-    <div style="color: #4338ca; font-size: 13px;">
-      <strong>Leader lease:</strong> The leader "owns" a range of proposal numbers. Until it fails or a higher proposal appears, it skips Phase 1 for subsequent values.
-    </div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 12px;">Multi-Paxos (amortized)</div>
+<div style="background: #fff; border-radius: 8px; padding: 12px;">
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<div>1. Prepare (once per leader)</div>
+  <div>2. Accept -> Accepted (per value)</div>
+    <div style="color: #16a34a; font-weight: 600; margin-top: 8px;">2 message delays per value</div>
   </div>
+</div>
+</div>
+</div>
+
+<div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
+<div style="color: #4338ca; font-size: 13px;">
+<strong>Leader lease:</strong> The leader "owns" a range of proposal numbers. Until it fails or a higher proposal appears, it skips Phase 1 for subsequent values.
+</div>
+</div>
 </div>
 
 ---
@@ -407,219 +407,219 @@ Basic Paxos requires two round trips per value. <span style="color:#16a34a;">Mul
 ### Raft's Three Sub-Problems
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT DECOMPOSITION</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT DECOMPOSITION</div>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b; text-align: center;">
-      <div style="font-size: 32px; margin-bottom: 8px;">1</div>
-      <div style="color: #92400e; font-weight: 700; font-size: 16px;">Leader Election</div>
-      <div style="color: #78350f; font-size: 12px; margin-top: 8px;">Choose one leader among nodes</div>
-    </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b; text-align: center;">
+<div style="font-size: 32px; margin-bottom: 8px;">1</div>
+<div style="color: #92400e; font-weight: 700; font-size: 16px;">Leader Election</div>
+<div style="color: #78350f; font-size: 12px; margin-top: 8px;">Choose one leader among nodes</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6; text-align: center;">
-      <div style="font-size: 32px; margin-bottom: 8px;">2</div>
-      <div style="color: #1e40af; font-weight: 700; font-size: 16px;">Log Replication</div>
-      <div style="color: #1e3a8a; font-size: 12px; margin-top: 8px;">Leader replicates log to followers</div>
-    </div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6; text-align: center;">
+<div style="font-size: 32px; margin-bottom: 8px;">2</div>
+<div style="color: #1e40af; font-weight: 700; font-size: 16px;">Log Replication</div>
+<div style="color: #1e3a8a; font-size: 12px; margin-top: 8px;">Leader replicates log to followers</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e; text-align: center;">
-      <div style="font-size: 32px; margin-bottom: 8px;">3</div>
-      <div style="color: #166534; font-weight: 700; font-size: 16px;">Safety</div>
-      <div style="color: #14532d; font-size: 12px; margin-top: 8px;">Guarantees for correctness</div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e; text-align: center;">
+<div style="font-size: 32px; margin-bottom: 8px;">3</div>
+<div style="color: #166534; font-weight: 700; font-size: 16px;">Safety</div>
+<div style="color: #14532d; font-size: 12px; margin-top: 8px;">Guarantees for correctness</div>
+</div>
+</div>
 </div>
 
 ### Leader Election Deep Dive
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT LEADER ELECTION STATE MACHINE</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT LEADER ELECTION STATE MACHINE</div>
 
-  <div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 3px solid #64748b; flex-direction: column;">
-      <div style="color: #475569; font-weight: 700;">FOLLOWER</div>
-      <div style="color: #94a3b8; font-size: 10px;">default state</div>
-    </div>
+<div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 3px solid #64748b; flex-direction: column;">
+<div style="color: #475569; font-weight: 700;">FOLLOWER</div>
+<div style="color: #94a3b8; font-size: 10px;">default state</div>
+</div>
 
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-      <div style="color: #f59e0b; font-size: 11px;">timeout</div>
-      <div style="color: #f59e0b; font-size: 20px;">---></div>
-    </div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+<div style="color: #f59e0b; font-size: 11px;">timeout</div>
+<div style="color: #f59e0b; font-size: 20px;">---></div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 3px solid #f59e0b; flex-direction: column;">
-      <div style="color: #92400e; font-weight: 700;">CANDIDATE</div>
-      <div style="color: #b45309; font-size: 10px;">seeking votes</div>
-    </div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 3px solid #f59e0b; flex-direction: column;">
+<div style="color: #92400e; font-weight: 700;">CANDIDATE</div>
+<div style="color: #b45309; font-size: 10px;">seeking votes</div>
+</div>
 
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-      <div style="color: #22c55e; font-size: 11px;">majority</div>
-      <div style="color: #22c55e; font-size: 20px;">---></div>
-    </div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+<div style="color: #22c55e; font-size: 11px;">majority</div>
+<div style="color: #22c55e; font-size: 20px;">---></div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 3px solid #22c55e; flex-direction: column;">
-      <div style="color: #166534; font-weight: 700;">LEADER</div>
-      <div style="color: #15803d; font-size: 10px;">sends heartbeats</div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 50%; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border: 3px solid #22c55e; flex-direction: column;">
+<div style="color: #166534; font-weight: 700;">LEADER</div>
+<div style="color: #15803d; font-size: 10px;">sends heartbeats</div>
+</div>
+</div>
 
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
-    <div style="background: rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 12px; border: 1px solid #fca5a5;">
-      <div style="color: #991b1b; font-size: 12px; font-weight: 600;">Candidate -> Follower</div>
-      <div style="color: #475569; font-size: 11px;">Higher term discovered</div>
-    </div>
-    <div style="background: rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 12px; border: 1px solid #fca5a5;">
-      <div style="color: #991b1b; font-size: 12px; font-weight: 600;">Leader -> Follower</div>
-      <div style="color: #475569; font-size: 11px;">Higher term discovered</div>
-    </div>
-    <div style="background: rgba(249, 115, 22, 0.1); border-radius: 8px; padding: 12px; border: 1px solid #fdba74;">
-      <div style="color: #c2410c; font-size: 12px; font-weight: 600;">Candidate -> Candidate</div>
-      <div style="color: #475569; font-size: 11px;">Split vote timeout</div>
-    </div>
-  </div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
+<div style="background: rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 12px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-size: 12px; font-weight: 600;">Candidate -> Follower</div>
+<div style="color: #475569; font-size: 11px;">Higher term discovered</div>
+</div>
+<div style="background: rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 12px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-size: 12px; font-weight: 600;">Leader -> Follower</div>
+<div style="color: #475569; font-size: 11px;">Higher term discovered</div>
+</div>
+<div style="background: rgba(249, 115, 22, 0.1); border-radius: 8px; padding: 12px; border: 1px solid #fdba74;">
+<div style="color: #c2410c; font-size: 12px; font-weight: 600;">Candidate -> Candidate</div>
+<div style="color: #475569; font-size: 11px;">Split vote timeout</div>
+</div>
+</div>
 
-  <div style="background: rgba(34, 197, 94, 0.15); border-radius: 10px; padding: 16px;">
-    <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Election Timeout Randomization</div>
-    <div style="color: #475569; font-size: 13px;">
+<div style="background: rgba(34, 197, 94, 0.15); border-radius: 10px; padding: 16px;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Election Timeout Randomization</div>
+<div style="color: #475569; font-size: 13px;">
       Timeouts are randomized (e.g., 150-300ms) to prevent <span style="color:#16a34a;">split votes</span>. If all nodes had identical timeouts, they'd all become candidates simultaneously.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ### Raft Terms and Log Structure
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT TERM AND LOG CONCEPTS</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT TERM AND LOG CONCEPTS</div>
 
-  <div style="margin-bottom: 24px;">
-    <div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Terms: Logical Clock</div>
-    <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #93c5fd;">
-        <div style="color: #64748b; font-size: 10px;">Term 1</div>
-        <div style="color: #1e40af; font-size: 14px; font-weight: 600;">Leader A</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #fcd34d;">
-        <div style="color: #64748b; font-size: 10px;">Term 2</div>
-        <div style="color: #92400e; font-size: 14px; font-weight: 600;">Election</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #86efac;">
-        <div style="color: #64748b; font-size: 10px;">Term 3</div>
-        <div style="color: #166534; font-size: 14px; font-weight: 600;">Leader B</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #86efac;">
-        <div style="color: #64748b; font-size: 10px;">Term 3</div>
-        <div style="color: #166534; font-size: 14px; font-weight: 600;">...</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #93c5fd;">
-        <div style="color: #64748b; font-size: 10px;">Term 4</div>
-        <div style="color: #1e40af; font-size: 14px; font-weight: 600;">Leader C</div>
-      </div>
-    </div>
-    <div style="color: #64748b; font-size: 13px;">Each term has at most one leader. Terms act as a logical clock to detect stale information.</div>
-  </div>
+<div style="margin-bottom: 24px;">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 12px;">Terms: Logical Clock</div>
+<div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #93c5fd;">
+<div style="color: #64748b; font-size: 10px;">Term 1</div>
+<div style="color: #1e40af; font-size: 14px; font-weight: 600;">Leader A</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #fcd34d;">
+<div style="color: #64748b; font-size: 10px;">Term 2</div>
+<div style="color: #92400e; font-size: 14px; font-weight: 600;">Election</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #64748b; font-size: 10px;">Term 3</div>
+<div style="color: #166534; font-size: 14px; font-weight: 600;">Leader B</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #64748b; font-size: 10px;">Term 3</div>
+<div style="color: #166534; font-size: 14px; font-weight: 600;">...</div>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 12px 24px; text-align: center; border: 1px solid #93c5fd;">
+<div style="color: #64748b; font-size: 10px;">Term 4</div>
+<div style="color: #1e40af; font-size: 14px; font-weight: 600;">Leader C</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 13px;">Each term has at most one leader. Terms act as a logical clock to detect stale information.</div>
+</div>
 
-  <div>
-    <div style="color: #166534; font-weight: 600; margin-bottom: 12px;">Log Structure</div>
-    <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px;">
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #93c5fd;">
-        <div style="color: #64748b; font-size: 10px;">idx 1</div>
-        <div style="color: #1e40af; font-size: 12px;">t1: x=1</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #93c5fd;">
-        <div style="color: #64748b; font-size: 10px;">idx 2</div>
-        <div style="color: #1e40af; font-size: 12px;">t1: y=2</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #86efac;">
-        <div style="color: #64748b; font-size: 10px;">idx 3</div>
-        <div style="color: #166534; font-size: 12px;">t3: x=3</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #86efac;">
-        <div style="color: #64748b; font-size: 10px;">idx 4</div>
-        <div style="color: #166534; font-size: 12px;">t3: z=5</div>
-      </div>
-      <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #fcd34d;">
-        <div style="color: #64748b; font-size: 10px;">idx 5</div>
-        <div style="color: #92400e; font-size: 12px;">t4: y=7</div>
-      </div>
-    </div>
-    <div style="color: #16a34a; font-size: 12px;">^ commitIndex = 4</div>
-  </div>
+<div>
+  <div style="color: #166534; font-weight: 600; margin-bottom: 12px;">Log Structure</div>
+  <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px;">
+  <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #93c5fd;">
+  <div style="color: #64748b; font-size: 10px;">idx 1</div>
+  <div style="color: #1e40af; font-size: 12px;">t1: x=1</div>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #93c5fd;">
+<div style="color: #64748b; font-size: 10px;">idx 2</div>
+<div style="color: #1e40af; font-size: 12px;">t1: y=2</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #64748b; font-size: 10px;">idx 3</div>
+<div style="color: #166534; font-size: 12px;">t3: x=3</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #86efac;">
+<div style="color: #64748b; font-size: 10px;">idx 4</div>
+<div style="color: #166534; font-size: 12px;">t3: z=5</div>
+</div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 6px; padding: 10px 16px; text-align: center; border: 1px solid #fcd34d;">
+<div style="color: #64748b; font-size: 10px;">idx 5</div>
+<div style="color: #92400e; font-size: 12px;">t4: y=7</div>
+</div>
+</div>
+<div style="color: #16a34a; font-size: 12px;">^ commitIndex = 4</div>
+</div>
 
-  <div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
-    <div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">Log Matching Property</div>
-    <div style="color: #475569; font-size: 13px; line-height: 1.6;">
+<div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
+<div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">Log Matching Property</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
       If two logs contain an entry with the same index and term, then:
-      <br/>1. They store the same command
-      <br/>2. All preceding entries are identical
-    </div>
-  </div>
+<br/>1. They store the same command
+<br/>2. All preceding entries are identical
+</div>
+</div>
 </div>
 
 ### Log Replication Flow
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT LOG REPLICATION</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">RAFT LOG REPLICATION</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #a5b4fc;">
-        <div style="color: #4338ca; font-weight: 600;">Client</div>
-      </div>
-      <div style="color: #6366f1;">--- SET x=5 ---></div>
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600;">Leader</div>
-        <div style="color: #15803d; font-size: 11px;">appends to log</div>
-      </div>
-    </div>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #a5b4fc;">
+<div style="color: #4338ca; font-weight: 600;">Client</div>
+</div>
+<div style="color: #6366f1;">--- SET x=5 ---></div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Leader</div>
+<div style="color: #15803d; font-size: 11px;">appends to log</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-left: 180px;">
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="color: #3b82f6; font-size: 12px;">AppendEntries</div>
-          <div style="color: #3b82f6;">----></div>
-          <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 8px; padding: 8px 16px; border: 1px solid #cbd5e1;">
-            <div style="color: #475569; font-size: 12px;">Follower 1</div>
-            <div style="color: #22c55e; font-size: 11px;">ACK</div>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="color: #3b82f6; font-size: 12px;">AppendEntries</div>
-          <div style="color: #3b82f6;">----></div>
-          <div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 8px; padding: 8px 16px; border: 1px solid #cbd5e1;">
-            <div style="color: #475569; font-size: 12px;">Follower 2</div>
-            <div style="color: #22c55e; font-size: 11px;">ACK</div>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="color: #3b82f6; font-size: 12px;">AppendEntries</div>
-          <div style="color: #3b82f6;">----></div>
-          <div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 8px; padding: 8px 16px; border: 1px solid #f87171;">
-            <div style="color: #991b1b; font-size: 12px;">Follower 3</div>
-            <div style="color: #dc2626; font-size: 11px;">TIMEOUT</div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div style="display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-left: 180px;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="color: #3b82f6; font-size: 12px;">AppendEntries</div>
+<div style="color: #3b82f6;">----></div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 8px; padding: 8px 16px; border: 1px solid #cbd5e1;">
+<div style="color: #475569; font-size: 12px;">Follower 1</div>
+<div style="color: #22c55e; font-size: 11px;">ACK</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="color: #3b82f6; font-size: 12px;">AppendEntries</div>
+<div style="color: #3b82f6;">----></div>
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 8px; padding: 8px 16px; border: 1px solid #cbd5e1;">
+<div style="color: #475569; font-size: 12px;">Follower 2</div>
+<div style="color: #22c55e; font-size: 11px;">ACK</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="color: #3b82f6; font-size: 12px;">AppendEntries</div>
+<div style="color: #3b82f6;">----></div>
+<div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 8px; padding: 8px 16px; border: 1px solid #f87171;">
+<div style="color: #991b1b; font-size: 12px;">Follower 3</div>
+<div style="color: #dc2626; font-size: 11px;">TIMEOUT</div>
+</div>
+</div>
+</div>
+</div>
 
-    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-      <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; border: 2px solid #22c55e;">
-        <div style="color: #166534; font-weight: 600;">Leader</div>
-        <div style="color: #15803d; font-size: 11px;">2/3 ACKs = majority</div>
-      </div>
-      <div style="color: #22c55e; font-weight: 600;">COMMIT!</div>
-      <div style="color: #6366f1;"><--- OK ---</div>
-      <div style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #a5b4fc;">
-        <div style="color: #4338ca; font-weight: 600;">Client</div>
-      </div>
-    </div>
-  </div>
+<div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 8px; padding: 12px 20px; border: 2px solid #22c55e;">
+<div style="color: #166534; font-weight: 600;">Leader</div>
+<div style="color: #15803d; font-size: 11px;">2/3 ACKs = majority</div>
+</div>
+<div style="color: #22c55e; font-weight: 600;">COMMIT!</div>
+<div style="color: #6366f1;"><--- OK ---</div>
+<div style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border-radius: 8px; padding: 12px 20px; border: 1px solid #a5b4fc;">
+<div style="color: #4338ca; font-weight: 600;">Client</div>
+</div>
+</div>
+</div>
 
-  <div style="margin-top: 24px; background: rgba(34, 197, 94, 0.15); border-radius: 10px; padding: 16px;">
-    <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Commit vs Applied</div>
-    <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-      <strong>Committed:</strong> Entry replicated on majority - guaranteed durable<br/>
-      <strong>Applied:</strong> Entry executed by state machine - produces side effects
-    </div>
-  </div>
+<div style="margin-top: 24px; background: rgba(34, 197, 94, 0.15); border-radius: 10px; padding: 16px;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Commit vs Applied</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
+<strong>Committed:</strong> Entry replicated on majority - guaranteed durable<br/>
+<strong>Applied:</strong> Entry executed by state machine - produces side effects
+</div>
+</div>
 </div>
 
 ---
@@ -629,72 +629,72 @@ Basic Paxos requires two round trips per value. <span style="color:#16a34a;">Mul
 <span style="color:#16a34a;">Split-brain</span> occurs when a network partition causes nodes to form multiple independent clusters, each believing it's the primary. This can lead to data inconsistency and corruption.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">SPLIT-BRAIN SCENARIO</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">SPLIT-BRAIN SCENARIO</div>
 
-  <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6; flex: 1; min-width: 150px;">
-      <div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 12px;">Partition A</div>
-      <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-        <div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #93c5fd;">
-          <div style="color: #166534; font-weight: 600; font-size: 12px;">Leader</div>
-        </div>
-        <div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #93c5fd;">
-          <div style="color: #475569; font-size: 12px;">Node 2</div>
-        </div>
-      </div>
-      <div style="color: #1e40af; font-size: 11px; text-align: center; margin-top: 8px;">2 nodes (minority)</div>
-    </div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px; border: 2px solid #3b82f6; flex: 1; min-width: 150px;">
+<div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 12px;">Partition A</div>
+<div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+<div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #93c5fd;">
+<div style="color: #166534; font-weight: 600; font-size: 12px;">Leader</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #93c5fd;">
+<div style="color: #475569; font-size: 12px;">Node 2</div>
+</div>
+</div>
+<div style="color: #1e40af; font-size: 11px; text-align: center; margin-top: 8px;">2 nodes (minority)</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 8px; padding: 12px; text-align: center;">
-      <div style="color: #991b1b; font-weight: 700;">NETWORK</div>
-      <div style="color: #dc2626; font-size: 12px;">PARTITION</div>
-      <div style="color: #dc2626; font-size: 20px;">X</div>
-    </div>
+<div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 8px; padding: 12px; text-align: center;">
+<div style="color: #991b1b; font-weight: 700;">NETWORK</div>
+<div style="color: #dc2626; font-size: 12px;">PARTITION</div>
+<div style="color: #dc2626; font-size: 20px;">X</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e; flex: 1; min-width: 150px;">
-      <div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 12px;">Partition B</div>
-      <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-        <div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #86efac;">
-          <div style="color: #475569; font-size: 12px;">Node 3</div>
-        </div>
-        <div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #86efac;">
-          <div style="color: #475569; font-size: 12px;">Node 4</div>
-        </div>
-        <div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #86efac;">
-          <div style="color: #475569; font-size: 12px;">Node 5</div>
-        </div>
-      </div>
-      <div style="color: #166534; font-size: 11px; text-align: center; margin-top: 8px;">3 nodes (majority)</div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; border: 2px solid #22c55e; flex: 1; min-width: 150px;">
+<div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 12px;">Partition B</div>
+<div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+<div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #86efac;">
+<div style="color: #475569; font-size: 12px;">Node 3</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #86efac;">
+<div style="color: #475569; font-size: 12px;">Node 4</div>
+</div>
+<div style="background: #fff; border-radius: 8px; padding: 8px 12px; border: 1px solid #86efac;">
+<div style="color: #475569; font-size: 12px;">Node 5</div>
+</div>
+</div>
+<div style="color: #166534; font-size: 11px; text-align: center; margin-top: 8px;">3 nodes (majority)</div>
+</div>
+</div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
-      <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Partition A (Old Leader)</div>
-      <div style="color: #475569; font-size: 13px; line-height: 1.6;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Partition A (Old Leader)</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
         Cannot commit new entries (no quorum)<br/>
         Existing leader becomes <strong>read-only</strong><br/>
         Eventually steps down when term increases
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Partition B (New Leader)</div>
-      <div style="color: #475569; font-size: 13px; line-height: 1.6;">
-        Election timeout triggers new election<br/>
-        New leader elected with higher term<br/>
-        Continues accepting writes normally
-      </div>
-    </div>
-  </div>
+<div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Partition B (New Leader)</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.6;">
+    Election timeout triggers new election<br/>
+    New leader elected with higher term<br/>
+    Continues accepting writes normally
+</div>
+</div>
+</div>
 
-  <div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
-    <div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">How Consensus Prevents Split-Brain</div>
-    <div style="color: #475569; font-size: 13px;">
-      <strong>Quorum requirement:</strong> Leader needs majority to commit. With 5 nodes, both partitions cannot have 3+ nodes.<br/>
-      <strong>Term numbers:</strong> Old leader's stale term is rejected when partition heals.
-    </div>
-  </div>
+<div style="margin-top: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #a5b4fc;">
+<div style="color: #4338ca; font-weight: 600; margin-bottom: 8px;">How Consensus Prevents Split-Brain</div>
+<div style="color: #475569; font-size: 13px;">
+<strong>Quorum requirement:</strong> Leader needs majority to commit. With 5 nodes, both partitions cannot have 3+ nodes.<br/>
+<strong>Term numbers:</strong> Old leader's stale term is rejected when partition heals.
+</div>
+</div>
 </div>
 
 ### Split-Brain Prevention Strategies
@@ -716,146 +716,146 @@ Basic Paxos requires two round trips per value. <span style="color:#16a34a;">Mul
 <span style="color:#16a34a;">Byzantine faults</span> are the most general class of failures where nodes can behave arbitrarily - including lying, sending conflicting information, or colluding maliciously.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">BYZANTINE GENERALS PROBLEM</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">BYZANTINE GENERALS PROBLEM</div>
 
-  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;">
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
-      <div style="font-size: 24px;">General A</div>
-      <div style="color: #166534; font-weight: 600;">ATTACK</div>
-      <div style="color: #22c55e; font-size: 12px;">Loyal</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #ef4444;">
-      <div style="font-size: 24px;">General B</div>
-      <div style="color: #991b1b; font-weight: 600;">RETREAT?</div>
-      <div style="color: #dc2626; font-size: 12px;">Traitor</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
-      <div style="font-size: 24px;">General C</div>
-      <div style="color: #166534; font-weight: 600;">ATTACK</div>
-      <div style="color: #22c55e; font-size: 12px;">Loyal</div>
-    </div>
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
-      <div style="font-size: 24px;">General D</div>
-      <div style="color: #166534; font-weight: 600;">ATTACK</div>
-      <div style="color: #22c55e; font-size: 12px;">Loyal</div>
-    </div>
-  </div>
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
+<div style="font-size: 24px;">General A</div>
+<div style="color: #166534; font-weight: 600;">ATTACK</div>
+<div style="color: #22c55e; font-size: 12px;">Loyal</div>
+</div>
+<div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #ef4444;">
+<div style="font-size: 24px;">General B</div>
+<div style="color: #991b1b; font-weight: 600;">RETREAT?</div>
+<div style="color: #dc2626; font-size: 12px;">Traitor</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
+<div style="font-size: 24px;">General C</div>
+<div style="color: #166534; font-weight: 600;">ATTACK</div>
+<div style="color: #22c55e; font-size: 12px;">Loyal</div>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 16px; text-align: center; border: 2px solid #22c55e;">
+<div style="font-size: 24px;">General D</div>
+<div style="color: #166534; font-weight: 600;">ATTACK</div>
+<div style="color: #22c55e; font-size: 12px;">Loyal</div>
+</div>
+</div>
 
-  <div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; margin-bottom: 20px; border: 1px solid #fca5a5;">
-    <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">The Problem</div>
-    <div style="color: #475569; font-size: 13px;">
+<div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; margin-bottom: 20px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">The Problem</div>
+<div style="color: #475569; font-size: 13px;">
       Traitor B tells A "I'll attack" but tells C "I'll retreat". How can loyal generals agree?
-    </div>
-  </div>
+</div>
+</div>
 
-  <div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
-    <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">BFT Solution (3f+1 nodes)</div>
-    <div style="color: #475569; font-size: 13px;">
+<div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">BFT Solution (3f+1 nodes)</div>
+<div style="color: #475569; font-size: 13px;">
       With 4 generals and 1 traitor: A, C, D share messages. Even if B lies differently to each, the 3 loyal generals see majority "ATTACK" and agree.
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 ### Practical BFT (PBFT)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">PBFT THREE-PHASE PROTOCOL</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">PBFT THREE-PHASE PROTOCOL</div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #3b82f6;">
-      <div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Phase 1: Pre-prepare</div>
-      <div style="color: #475569; font-size: 13px;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #3b82f6;">
+<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">Phase 1: Pre-prepare</div>
+<div style="color: #475569; font-size: 13px;">
         Primary (leader) broadcasts request to all replicas with sequence number
-      </div>
-      <div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #3b82f6;">
+</div>
+<div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #3b82f6;">
         Primary -> All: PRE-PREPARE(view, seq, request)
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #f59e0b;">
-      <div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Phase 2: Prepare</div>
-      <div style="color: #475569; font-size: 13px;">
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: 700; margin-bottom: 8px;">Phase 2: Prepare</div>
+<div style="color: #475569; font-size: 13px;">
         Each replica broadcasts PREPARE to all others. Wait for 2f+1 matching prepares.
-      </div>
-      <div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #b45309;">
+</div>
+<div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #b45309;">
         Replica i -> All: PREPARE(view, seq, digest, i)
-      </div>
-    </div>
+</div>
+</div>
 
-    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #22c55e;">
-      <div style="color: #166534; font-weight: 700; margin-bottom: 8px;">Phase 3: Commit</div>
-      <div style="color: #475569; font-size: 13px;">
-        Each replica broadcasts COMMIT. Wait for 2f+1 matching commits, then execute.
-      </div>
-      <div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #15803d;">
-        Replica i -> All: COMMIT(view, seq, i)
-      </div>
-    </div>
-  </div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #22c55e;">
+<div style="color: #166534; font-weight: 700; margin-bottom: 8px;">Phase 3: Commit</div>
+<div style="color: #475569; font-size: 13px;">
+    Each replica broadcasts COMMIT. Wait for 2f+1 matching commits, then execute.
+</div>
+<div style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #15803d;">
+    Replica i -> All: COMMIT(view, seq, i)
+</div>
+</div>
+</div>
 
-  <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-    <div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
-      <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Cost</div>
-      <div style="color: #475569; font-size: 13px;">
+<div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+<div style="background: rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #fca5a5;">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Cost</div>
+<div style="color: #475569; font-size: 13px;">
         O(n^2) messages per consensus<br/>
         Limited to ~20-100 nodes<br/>
         Higher latency than Raft/Paxos
-      </div>
-    </div>
-    <div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
-      <div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Benefit</div>
-      <div style="color: #475569; font-size: 13px;">
+</div>
+</div>
+<div style="background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 16px; border: 1px solid #86efac;">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px;">Benefit</div>
+<div style="color: #475569; font-size: 13px;">
         Tolerates malicious nodes<br/>
         Essential for blockchains<br/>
         Cryptographic guarantees
-      </div>
-    </div>
-  </div>
+</div>
+</div>
+</div>
 </div>
 
 ### When to Use BFT vs CFT
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #cbd5e1;">
-  <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">BFT vs CFT DECISION MATRIX</div>
+<div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #cbd5e1;">BFT vs CFT DECISION MATRIX</div>
 
-  <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-      <thead>
-        <tr style="border-bottom: 2px solid #cbd5e1;">
-          <th style="padding: 12px; text-align: left; color: #1e40af;">Scenario</th>
-          <th style="padding: 12px; text-align: center; color: #1e40af;">Recommendation</th>
-          <th style="padding: 12px; text-align: left; color: #1e40af;">Why</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b;">Internal microservices</td>
-          <td style="padding: 12px; text-align: center;"><span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px;">CFT (Raft)</span></td>
-          <td style="padding: 12px; color: #64748b;">Trust boundary within org</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b;">Public blockchain</td>
-          <td style="padding: 12px; text-align: center;"><span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px;">BFT</span></td>
-          <td style="padding: 12px; color: #64748b;">Untrusted participants</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b;">Consortium blockchain</td>
-          <td style="padding: 12px; text-align: center;"><span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px;">BFT</span></td>
-          <td style="padding: 12px; color: #64748b;">Partial trust between orgs</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #e2e8f0;">
-          <td style="padding: 12px; color: #1e293b;">Database replication</td>
-          <td style="padding: 12px; text-align: center;"><span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px;">CFT (Raft)</span></td>
-          <td style="padding: 12px; color: #64748b;">Performance critical, trusted</td>
-        </tr>
-        <tr>
-          <td style="padding: 12px; color: #1e293b;">Financial settlement</td>
-          <td style="padding: 12px; text-align: center;"><span style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px;">BFT or CFT+Audit</span></td>
-          <td style="padding: 12px; color: #64748b;">Depends on trust model</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<thead>
+  <tr style="border-bottom: 2px solid #cbd5e1;">
+  <th style="padding: 12px; text-align: left; color: #1e40af;">Scenario</th>
+  <th style="padding: 12px; text-align: center; color: #1e40af;">Recommendation</th>
+  <th style="padding: 12px; text-align: left; color: #1e40af;">Why</th>
+  </tr>
+</thead>
+<tbody>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b;">Internal microservices</td>
+  <td style="padding: 12px; text-align: center;"><span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px;">CFT (Raft)</span></td>
+  <td style="padding: 12px; color: #64748b;">Trust boundary within org</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b;">Public blockchain</td>
+  <td style="padding: 12px; text-align: center;"><span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px;">BFT</span></td>
+  <td style="padding: 12px; color: #64748b;">Untrusted participants</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b;">Consortium blockchain</td>
+  <td style="padding: 12px; text-align: center;"><span style="background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px;">BFT</span></td>
+  <td style="padding: 12px; color: #64748b;">Partial trust between orgs</td>
+  </tr>
+  <tr style="border-bottom: 1px solid #e2e8f0;">
+  <td style="padding: 12px; color: #1e293b;">Database replication</td>
+  <td style="padding: 12px; text-align: center;"><span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px;">CFT (Raft)</span></td>
+  <td style="padding: 12px; color: #64748b;">Performance critical, trusted</td>
+  </tr>
+  <tr>
+  <td style="padding: 12px; color: #1e293b;">Financial settlement</td>
+  <td style="padding: 12px; text-align: center;"><span style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px;">BFT or CFT+Audit</span></td>
+  <td style="padding: 12px; color: #64748b;">Depends on trust model</td>
+  </tr>
+</tbody>
+</table>
+</div>
 </div>
 
 ---

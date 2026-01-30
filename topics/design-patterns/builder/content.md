@@ -815,17 +815,17 @@ print(f"Form: {form_request.method.value} {form_request.url}")
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 Use Builder when:
 <ul>
-<li><strong>Many optional parameters:</strong> 4+ parameters become hard to remember</li>
-<li><strong>Complex validation:</strong> Builder can validate in build() before creating object</li>
-<li><strong>Immutable objects:</strong> Builder collects state, then creates frozen object</li>
-<li><strong>Readable code:</strong> <code>.timeout(30).retries(3)</code> is clearer than positional args</li>
-<li><strong>Different representations:</strong> Same process creates different products</li>
+  <li><strong>Many optional parameters:</strong> 4+ parameters become hard to remember</li>
+  <li><strong>Complex validation:</strong> Builder can validate in build() before creating object</li>
+  <li><strong>Immutable objects:</strong> Builder collects state, then creates frozen object</li>
+  <li><strong>Readable code:</strong> <code>.timeout(30).retries(3)</code> is clearer than positional args</li>
+  <li><strong>Different representations:</strong> Same process creates different products</li>
 </ul>
 Use constructor with defaults when:
 <ul>
-<li>Object has few parameters (2-3)</li>
-<li>Most parameters are required</li>
-<li>Simple objects with straightforward construction</li>
+  <li>Object has few parameters (2-3)</li>
+  <li>Most parameters are required</li>
+  <li>Simple objects with straightforward construction</li>
 </ul>
 </div>
 </details>
@@ -835,9 +835,9 @@ Use constructor with defaults when:
 <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155;">
 The Director encapsulates construction algorithms:
 <ul>
-<li><strong>Knows the steps:</strong> Which builder methods to call and in what order</li>
-<li><strong>Defines presets:</strong> build_gaming_pc(), build_office_pc()</li>
-<li><strong>Optional:</strong> Client can use builder directly without director</li>
+  <li><strong>Knows the steps:</strong> Which builder methods to call and in what order</li>
+  <li><strong>Defines presets:</strong> build_gaming_pc(), build_office_pc()</li>
+  <li><strong>Optional:</strong> Client can use builder directly without director</li>
 </ul>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
 # With Director - encapsulated knowledge
@@ -857,9 +857,9 @@ builder.set_cpu().set_gpu().set_ram().build()
 <br><br>
 <strong>If sharing is needed:</strong>
 <ul>
-<li>Make builder immutable (each method returns a new builder)</li>
-<li>Use locks (not recommended - defeats fluent purpose)</li>
-<li>Use thread-local storage</li>
+  <li>Make builder immutable (each method returns a new builder)</li>
+  <li>Use locks (not recommended - defeats fluent purpose)</li>
+  <li>Use thread-local storage</li>
 </ul>
 <pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 8px;">
 # Immutable builder approach

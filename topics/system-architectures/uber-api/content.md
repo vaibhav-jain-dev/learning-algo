@@ -180,21 +180,21 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Why H3 Over Geohash for Uber Scale</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 <div>
-<div style="color: #3fb950; font-size: 12px; margin-bottom: 8px;">H3 Advantages:</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
-&#8226; Uniform neighbor distances (no diagonal distortion)<br/>
-&#8226; Better circle approximation for radius queries<br/>
-&#8226; Efficient k-ring expansion algorithm<br/>
-&#8226; Smooth hierarchical aggregation for analytics
+  <div style="color: #3fb950; font-size: 12px; margin-bottom: 8px;">H3 Advantages:</div>
+  <div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
+  &#8226; Uniform neighbor distances (no diagonal distortion)<br/>
+  &#8226; Better circle approximation for radius queries<br/>
+  &#8226; Efficient k-ring expansion algorithm<br/>
+  &#8226; Smooth hierarchical aggregation for analytics
 </div>
 </div>
 <div>
-<div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">Geohash Edge Cases:</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
-&#8226; Neighbors at corners require 8-cell lookup<br/>
-&#8226; Grid cells vary in size by latitude<br/>
-&#8226; Boundary discontinuities at prime meridian<br/>
-&#8226; Diagonal neighbors are farther than adjacent
+  <div style="color: #f85149; font-size: 12px; margin-bottom: 8px;">Geohash Edge Cases:</div>
+  <div style="color: #c9d1d9; font-size: 11px; line-height: 1.8;">
+  &#8226; Neighbors at corners require 8-cell lookup<br/>
+  &#8226; Grid cells vary in size by latitude<br/>
+  &#8226; Boundary discontinuities at prime meridian<br/>
+  &#8226; Diagonal neighbors are farther than adjacent
 </div>
 </div>
 </div>
