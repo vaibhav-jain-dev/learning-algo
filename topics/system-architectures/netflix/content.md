@@ -244,7 +244,7 @@ class VideoService:
 
 ### Microservices Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 ```
                          ┌────────────────────┐
@@ -288,7 +288,7 @@ class VideoService:
 
 ### Adaptive Bitrate Streaming
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -347,7 +347,7 @@ class VideoService:
 
 ### Open Connect CDN
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 ```
                     OPEN CONNECT ARCHITECTURE
@@ -403,7 +403,7 @@ class VideoService:
 
 ### Recommendation System
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">PERSONALIZATION PIPELINE</h4>
 
 ```
@@ -592,7 +592,7 @@ class DRMService:
 
 ## Interview Deep Dive Questions
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 ### 1. "Why transcode to multiple bitrates upfront instead of on-demand?"
 

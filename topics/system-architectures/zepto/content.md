@@ -46,7 +46,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 Quick commerce fundamentally inverts traditional retail economics. Instead of optimizing for **selection breadth** (more SKUs = more customers), it optimizes for **fulfillment velocity** (faster delivery = higher willingness to pay).
 
 <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
-<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #2d1f3d 0%, #1a1a2e 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #8b5cf6;">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #8b5cf6;">
 <h4 style="color: #a78bfa; margin: 0 0 12px 0;">Traditional E-commerce</h4>
 
 - Large central warehouse (100,000+ sq ft)
@@ -72,7 +72,7 @@ Quick commerce fundamentally inverts traditional retail economics. Instead of op
 
 ### The Unit Economics Reality
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **Per-Order Economics (Mature Market)**:
 
@@ -261,7 +261,7 @@ A dark store is a micro-fulfillment center designed exclusively for online order
 
 ### Dark Store Placement Strategy
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **Location Selection Algorithm**:
 
@@ -573,7 +573,7 @@ The "last mile" is actually the "last 50 meters" problem. Getting to the neighbo
 
 ### Rider Assignment Algorithm
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **Multi-Objective Optimization Problem**:
 
@@ -705,7 +705,7 @@ class RiderAssignmentService:
 
 ### Real-Time Tracking System
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **Architecture for Live Rider Tracking**:
 
@@ -1011,7 +1011,7 @@ Inventory accuracy is the silent killer of quick commerce. A customer adds items
 
 ### Real-Time Inventory Architecture
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **Multi-Layer Inventory System**:
 
@@ -1212,7 +1212,7 @@ class InventoryService:
 
 ### Cycle Counting and Reconciliation
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **Continuous Cycle Count Strategy**:
 
@@ -1493,7 +1493,7 @@ In quick commerce, the cost of being wrong about demand is asymmetric and severe
 </div>
 </div>
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **The Forecasting Challenge**:
 
@@ -1570,7 +1570,7 @@ Quick commerce forecasting is harder than traditional retail because:
 
 ### Forecasting Model Implementation
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 ```python
 class DemandForecastingService:
@@ -2105,7 +2105,7 @@ class DemandForecastingService:
 
 ### City-Level Sharding Strategy
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 **Why City Sharding?**
 
@@ -2256,7 +2256,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">1. Consistency vs. Availability</h5>
 
 **Decision**: Eventual consistency for most operations, strong consistency for inventory
@@ -2273,7 +2273,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 </div>
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">2. Dedicated vs. Gig Riders</h5>
 
 **Decision**: Primarily dedicated fleet with gig overflow
@@ -2293,7 +2293,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 </div>
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">3. SKU Breadth vs. Fulfillment Speed</h5>
 
 **Decision**: Limited SKU count (2,000-3,000) per store
@@ -2314,7 +2314,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 </div>
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
 <h5 style="color: #fcd34d; margin: 0 0 12px 0;">4. Accuracy vs. Speed in ETA</h5>
 
 **Decision**: Conservative ETAs with occasional overdelivery
@@ -2380,7 +2380,7 @@ At scale (500+ stores, 1M+ orders/day), a single global database becomes a bottl
 
 ### The Structured Response Framework
 
-<div style="background: #1a1a2e; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
 When asked an open-ended question, structure your response:
 
