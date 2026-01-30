@@ -10,7 +10,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ## Fundamental Architectural Models
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 1.4em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ARCHITECTURAL TOPOLOGY</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 24px; border: 2px solid #f85149;">
@@ -65,7 +65,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Internal Mechanisms Deep Dive
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
   <h4 style="color: #7aa2f7; margin: 0 0 16px 0;">MONOLITH: IN-PROCESS COMMUNICATION</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <p><strong>Method Invocation Path:</strong> When Service A calls Service B within a monolith, the JVM (or equivalent runtime) performs a direct method invocation on the call stack. This involves:</p>
@@ -79,7 +79,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #9ece6a;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #9ece6a;">
   <h4 style="color: #9ece6a; margin: 0 0 16px 0;">MICROSERVICES: NETWORK COMMUNICATION</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <p><strong>Request Path (Synchronous HTTP):</strong></p>
@@ -105,7 +105,7 @@ The choice between monolithic and microservices architectures represents one of 
 | **Debugging** | Stack trace | [[Distributed tracing]](/topics/observability/distributed-tracing) |
 | **Resource isolation** | None (shared memory) | Complete (separate processes) |
 
-<div style="background: linear-gradient(135deg, #2d1b36 0%, #3d2347 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #bb9af7;">
+<div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #bb9af7;">
   <h4 style="color: #bb9af7; margin: 0 0 12px 0;">DESIGN CHOICE HIGHLIGHT</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <strong>The Latency Tax:</strong> Converting a monolith to microservices introduces the "network tax" on every inter-service call. A request that previously touched 10 modules with 100ns each (1 microsecond total) now potentially adds 10-1000ms of latency. This is why service boundaries must align with business boundaries, not technical layers.
@@ -114,7 +114,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Interview Questions: Communication Mechanisms
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: What are the fundamental differences in how monoliths and microservices communicate internally?</strong></p>
@@ -122,7 +122,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: You have a microservice making 50 downstream calls to complete a single request. How do you handle this without latency explosion?</strong></p>
@@ -138,7 +138,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: Service A calls Service B, which calls Service C. Service B's database commits, but the response to Service A is lost due to a network partition. How do you handle this?</strong></p>
@@ -159,7 +159,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### ACID vs BASE: The Fundamental Trade-off
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">CONSISTENCY MODEL COMPARISON</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
@@ -199,7 +199,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Distributed Transaction Patterns
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f7768e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f7768e;">
   <h4 style="color: #f7768e; margin: 0 0 16px 0;">TWO-PHASE COMMIT (2PC) - WHY IT'S AVOIDED</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <p><strong>How it works:</strong> Coordinator asks all participants to prepare, then asks all to commit.</p>
@@ -214,7 +214,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #9ece6a;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #9ece6a;">
   <h4 style="color: #9ece6a; margin: 0 0 16px 0;">SAGA PATTERN - THE MICROSERVICES ANSWER</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <p><strong>Core Concept:</strong> A saga is a sequence of local transactions where each transaction publishes an event that triggers the next transaction. If a transaction fails, compensating transactions undo the preceding successful transactions.</p>
@@ -234,7 +234,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Interview Questions: Data Consistency
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: Why can't microservices use traditional database transactions across services?</strong></p>
@@ -242,7 +242,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: Design a saga for an e-commerce order that involves: (1) reserving inventory, (2) charging payment, (3) creating shipment. What are the compensating transactions?</strong></p>
@@ -262,7 +262,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: In the saga above, what happens if: (1) Payment succeeds and emits PaymentCompleted, (2) Shipping service receives event and creates shipment, (3) Shipping service crashes before persisting or acknowledging the event, (4) Event is redelivered, (5) Shipment is created again. How do you prevent duplicate shipments?</strong></p>
@@ -283,7 +283,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### The Organizational Dimension
 
-<div style="background: linear-gradient(135deg, #2d1b36 0%, #3d2347 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #bb9af7;">
+<div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #bb9af7;">
   <h4 style="color: #bb9af7; margin: 0 0 12px 0;">CONWAY'S LAW IN PRACTICE</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <p><em>"Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations."</em> - Melvin Conway, 1967</p>
@@ -294,7 +294,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Team Topology Analysis
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">TEAM SIZE AND ARCHITECTURE FIT</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
@@ -344,7 +344,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Cognitive Load and Service Ownership
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
   <h4 style="color: #7aa2f7; margin: 0 0 16px 0;">THE TWO-PIZZA TEAM PRINCIPLE</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <p><strong>Amazon's heuristic:</strong> A service should be owned by a team that can be fed with two pizzas (~6-8 people).</p>
@@ -360,7 +360,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Interview Questions: Team Scaling
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: How does team size influence the choice between monolith and microservices?</strong></p>
@@ -368,7 +368,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: You're at a company with 50 developers working on a monolith. Deployments take 4 hours and happen weekly. How would you approach decomposition?</strong></p>
@@ -384,7 +384,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: After splitting into microservices, teams report that changes frequently require coordinated deployments across 3-4 services. Releases now take longer than with the monolith. What went wrong?</strong></p>
@@ -407,7 +407,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Deployment Topology
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">DEPLOYMENT INFRASTRUCTURE REQUIREMENTS</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border: 1px solid #f85149;">
@@ -452,7 +452,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Operational Complexity Comparison
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f7768e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f7768e;">
   <h4 style="color: #f7768e; margin: 0 0 16px 0;">THE HIDDEN COST OF MICROSERVICES</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
@@ -497,7 +497,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Interview Questions: Deployment Complexity
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: What operational capabilities are required before adopting microservices that aren't needed for a monolith?</strong></p>
@@ -515,7 +515,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: How do you implement a safe deployment strategy for a critical payment service that processes 10,000 TPS?</strong></p>
@@ -532,7 +532,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: Your microservices system has a cascading failure. Service A's latency increases from 50ms to 5s. Within 2 minutes, Services B, C, D, E are all failing. Post-mortem: what happened and how do you prevent it?</strong></p>
@@ -563,7 +563,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Decision Framework
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">ARCHITECTURE DECISION MATRIX</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
     <div style="background: linear-gradient(135deg, #f85149 0%, #da3633 100%); border-radius: 12px; padding: 24px;">
@@ -611,7 +611,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Real-World Evolution Patterns
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
   <h4 style="color: #7aa2f7; margin: 0 0 16px 0;">TYPICAL COMPANY EVOLUTION</h4>
   <div style="color: #a9b1d6; font-size: 0.95em; line-height: 1.7;">
     <p><strong>Stage 1 - Startup (1-10 engineers):</strong> Monolith. Fast iteration, product-market fit.</p>
@@ -625,7 +625,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Interview Questions: Architecture Decision
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: Under what circumstances would you recommend starting a new project as microservices rather than a monolith?</strong></p>
@@ -633,7 +633,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: You're rebuilding a legacy system. The old monolith is 500K lines, 15 years old, multiple technologies. Do you rewrite as microservices?</strong></p>
@@ -656,7 +656,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: Your company adopted microservices 2 years ago. You now have 150 services owned by 40 engineers. Developers complain they spend more time on infrastructure than features. On-call is brutal - 5+ incidents per day. What went wrong and how do you fix it?</strong></p>
@@ -685,7 +685,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Monolith to Microservices
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">EXTRACTION DECISION CRITERIA</h3>
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
     <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">
@@ -729,7 +729,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ### Interview Questions: Migration
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #58a6ff; margin: 0 0 16px 0;">LEVEL 1: Foundational Understanding</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: What is the Strangler Fig pattern and why is it preferred for monolith decomposition?</strong></p>
@@ -737,7 +737,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #d29922; margin: 0 0 16px 0;">LEVEL 2: Mechanism Deep-Dive</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: You're extracting the "notification" module from a monolith. It currently shares the users table with the main application. How do you handle the data?</strong></p>
@@ -752,7 +752,7 @@ The choice between monolithic and microservices architectures represents one of 
   </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #f85149; margin: 0 0 16px 0;">LEVEL 3: Edge Cases and Failure Modes</h4>
   <div style="color: #8b949e; font-size: 0.95em;">
     <p><strong>Q: Six months into migration, you discover the "order" module you extracted has a hidden dependency on the "pricing" module that wasn't documented. Orders are now occasionally priced incorrectly (race condition between services). How do you handle this?</strong></p>
@@ -784,7 +784,7 @@ The choice between monolithic and microservices architectures represents one of 
 
 ## Summary: Key Interview Insights
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h3 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">WHAT INTERVIEWERS ARE LOOKING FOR</h3>
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border: 1px solid #7ee787;">

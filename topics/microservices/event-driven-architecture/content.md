@@ -234,7 +234,7 @@ Event-Driven Architecture (EDA) is a software design pattern where the flow of t
 <div><span style="color: #7ee787;">"source"</span>: <span style="color: #a5d6ff;">"order-service"</span></div>
 <div><span style="color: #7ee787;">"spec_version"</span>: <span style="color: #a5d6ff;">"1.0"</span></div>
 <div><span style="color: #7ee787;">"time"</span>: <span style="color: #a5d6ff;">"2024-01-15T10:30:00Z"</span></div>
-<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #30363d;">
+<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;">
 <span style="color: #64748b;">// Correlation</span><br/>
 <span style="color: #7ee787;">"correlation_id"</span>: <span style="color: #a5d6ff;">"req-abc123"</span><br/>
 <span style="color: #7ee787;">"causation_id"</span>: <span style="color: #a5d6ff;">"evt-xyz789"</span>
@@ -441,31 +441,31 @@ Target: 100K msgs/sec | Single partition: ~10K msgs/sec | Need: 10 partitions | 
 <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">EVENT STORE:</div>
 <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px; margin-bottom: 20px; overflow-x: auto;">
 <table style="width: 100%; border-collapse: collapse; font-size: 10px; color: #1e293b;">
-<tr style="border-bottom: 1px solid #30363d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <th style="text-align: left; padding: 6px; color: #58a6ff;">stream_id</th>
 <th style="text-align: center; padding: 6px; color: #58a6ff;">version</th>
 <th style="text-align: left; padding: 6px; color: #58a6ff;">event_type</th>
 <th style="text-align: center; padding: 6px; color: #58a6ff;">ts</th>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 6px;">order-123</td>
 <td style="text-align: center; padding: 6px;">1</td>
 <td style="padding: 6px; color: #7ee787;">OrderCreated</td>
 <td style="text-align: center; padding: 6px;">t1</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 6px;">order-123</td>
 <td style="text-align: center; padding: 6px;">2</td>
 <td style="padding: 6px; color: #58a6ff;">ItemAdded</td>
 <td style="text-align: center; padding: 6px;">t2</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 6px;">order-123</td>
 <td style="text-align: center; padding: 6px;">3</td>
 <td style="padding: 6px; color: #8957e5;">PaymentReceived</td>
 <td style="text-align: center; padding: 6px;">t3</td>
 </tr>
-<tr style="border-bottom: 1px solid #21262d;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
 <td style="padding: 6px;">order-123</td>
 <td style="text-align: center; padding: 6px;">4</td>
 <td style="padding: 6px; color: #f78166;">OrderShipped</td>
