@@ -4353,6 +4353,8 @@
                             console.log('[ProblemLoader] Problem not in renderer after script load, using backend');
                             fallbackToBackend();
                         }
+                        // Refresh code template now that problem data is available
+                        refreshCodeTemplateIfNeeded(category, problemId);
                     }, 50);
                 };
                 script.onerror = function() {
@@ -4619,6 +4621,35 @@
     // Store full solutions separately for Solutions tab
     var fullSolutions = { python: '', go: '' };
 
+    /**
+     * Refresh code template if problem data is now available
+     * Called after problem JS script loads asynchronously
+     */
+    function refreshCodeTemplateIfNeeded(category, problemId) {
+        if (!window.ProblemRenderer) return;
+
+        var fullId = category + '/' + problemId;
+        var problem = window.ProblemRenderer.get(fullId);
+
+        if (problem && problem.examples && problem.examples.length > 0) {
+            console.log('[CodeLoader] Refreshing code template with problem data:', fullId);
+
+            // Generate new templates
+            var pyTemplate = generateTemplateFromProblem(problem, 'python', null);
+            var goTemplate = generateTemplateFromProblem(problem, 'go', null);
+
+            originalCode.python = pyTemplate;
+            originalCode.go = goTemplate;
+            currentCode.python = pyTemplate;
+            currentCode.go = goTemplate;
+
+            // Update editor if visible
+            if (editor) {
+                editor.setValue(currentLanguage === 'python' ? pyTemplate : goTemplate);
+            }
+        }
+    }
+
     function loadProblemCode(category, problemId, similarIdx) {
         // Build base path (supports similar problems)
         var basePath = '/problems/200-must-solve/' + category + '/' + problemId;
@@ -4707,6 +4738,7 @@
 
     /**
      * Generate a code template from problem configuration
+     * Shows ONLY the function definition - no main block
      * @param {Object} problem - Problem configuration
      * @param {string} lang - Language
      * @param {string} solutionCode - Original solution code (optional)
@@ -4728,31 +4760,23 @@
         // Get parameters from first example
         var firstInput = problem.examples[0].input;
         var paramNames = Object.keys(firstInput);
+        var expectedOutput = problem.examples[0].output;
 
         if (lang === 'python') {
             var paramList = paramNames.join(', ');
-            var template = 'def ' + funcName + '(' + paramList + '):\n';
-            template += '    """\n';
-            template += '    ' + problem.name + '\n\n';
-            if (problem.description) {
-                template += '    ' + problem.description.substring(0, 150).replace(/\n/g, '\n    ') + '...\n';
-            }
-            template += '    """\n';
+            var template = '# ' + problem.name + '\n';
+            template += '# \n';
+            template += '# Example Input: ' + window.ProblemRenderer.formatInput(firstInput) + '\n';
+            template += '# Expected Output: ' + window.ProblemRenderer.formatOutput(expectedOutput) + '\n';
+            template += '#\n';
+            template += '# Click "Run Code" to test with first example\n';
+            template += '# Click "Run Tests" to validate against all test cases\n\n';
+            template += 'def ' + funcName + '(' + paramList + '):\n';
             template += '    # TODO: Implement your solution\n';
-            template += '    pass\n\n\n';
-            template += '# Example usage:\n';
-            template += '# Input: ' + window.ProblemRenderer.formatInput(firstInput) + '\n';
-            template += '# Expected Output: ' + window.ProblemRenderer.formatOutput(problem.examples[0].output) + '\n';
-            template += 'if __name__ == "__main__":\n';
-            template += '    # Test with first example\n';
-            paramNames.forEach(function(p) {
-                template += '    ' + p + ' = ' + toPythonLiteral(firstInput[p]) + '\n';
-            });
-            template += '    result = ' + funcName + '(' + paramList + ')\n';
-            template += '    print("Result:", result)\n';
+            template += '    pass\n';
             return template;
         } else {
-            // Go template
+            // Go template - only show function, no main
             var params = paramNames.map(function(name) {
                 var val = firstInput[name];
                 var goType = 'interface{}';
@@ -4774,7 +4798,6 @@
             });
             var paramDecl = params.join(', ');
 
-            var expectedOutput = problem.examples[0].output;
             var returnType = 'interface{}';
             if (typeof expectedOutput === 'number') {
                 returnType = Number.isInteger(expectedOutput) ? 'int' : 'float64';
@@ -4790,9 +4813,13 @@
                 }
             }
 
-            var template = 'package main\n\n';
-            template += 'import "fmt"\n\n';
-            template += '// ' + funcName + ' - ' + problem.name + '\n';
+            var template = '// ' + problem.name + '\n';
+            template += '//\n';
+            template += '// Example Input: ' + window.ProblemRenderer.formatInput(firstInput) + '\n';
+            template += '// Expected Output: ' + window.ProblemRenderer.formatOutput(expectedOutput) + '\n';
+            template += '//\n';
+            template += '// Click "Run Code" to test with first example\n';
+            template += '// Click "Run Tests" to validate against all test cases\n\n';
             template += 'func ' + funcName + '(' + paramDecl + ') ' + returnType + ' {\n';
             template += '\t// TODO: Implement your solution\n';
             if (returnType === 'int') {
@@ -4808,17 +4835,6 @@
             } else {
                 template += '\treturn nil\n';
             }
-            template += '}\n\n';
-            template += '// Example usage:\n';
-            template += '// Input: ' + window.ProblemRenderer.formatInput(firstInput) + '\n';
-            template += '// Expected Output: ' + window.ProblemRenderer.formatOutput(expectedOutput) + '\n';
-            template += 'func main() {\n';
-            template += '\t// Test with first example\n';
-            paramNames.forEach(function(name) {
-                template += '\t' + name + ' := ' + toGoLiteral(firstInput[name]) + '\n';
-            });
-            template += '\tresult := ' + funcName + '(' + paramNames.join(', ') + ')\n';
-            template += '\tfmt.Println("Result:", result)\n';
             template += '}\n';
 
             return template;
@@ -4826,6 +4842,7 @@
     }
 
     // Extract function template from solution code (keeps signature, removes implementation)
+    // Shows ONLY the function - no main block
     function extractTemplate(code, lang, problemId) {
         if (!code) return getDefaultCode(lang, problemId);
 
@@ -4833,18 +4850,18 @@
             // Find the main function definition
             var funcMatch = code.match(/^(def\s+\w+\s*\([^)]*\)(?:\s*->\s*[^:]+)?:)/m);
             if (funcMatch) {
-                var funcName = funcMatch[1];
+                var funcSig = funcMatch[1];
                 // Get docstring if present
                 var docMatch = code.match(/^def\s+\w+[^:]+:\s*\n(\s+"""[\s\S]*?"""|\s+'''[\s\S]*?''')/m);
                 var docstring = docMatch ? '\n' + docMatch[1] : '';
-                return funcName + docstring + '\n    # Write your solution here\n    pass\n\nif __name__ == "__main__":\n    # Test your solution\n    pass';
+                return funcSig + docstring + '\n    # Write your solution here\n    pass\n';
             }
         } else if (lang === 'go') {
             // Find the main exported function (capitalized)
             var funcMatch = code.match(/^(func\s+[A-Z]\w*\s*\([^)]*\)\s*(?:\([^)]*\)|[^{]+)?)\s*\{/m);
             if (funcMatch) {
                 var funcSignature = funcMatch[1].trim();
-                return 'package main\n\nimport "fmt"\n\n// ' + funcSignature.replace(/^func\s+/, '') + '\n' + funcSignature + ' {\n\t// Write your solution here\n\treturn nil\n}\n\nfunc main() {\n\t// Test your solution\n\tfmt.Println("Test")\n}';
+                return '// ' + funcSignature.replace(/^func\s+/, '') + '\n' + funcSignature + ' {\n\t// Write your solution here\n\treturn nil\n}\n';
             }
         }
 
@@ -4853,13 +4870,13 @@
 
     function getDefaultCode(lang, problemId) {
         var funcName = problemId ? problemId.replace(/^\d+-/, '').replace(/-/g, '_') : 'solution';
-        // Convert to appropriate case
+        // Convert to appropriate case - NO main block, only function
         if (lang === 'python') {
-            return 'def ' + funcName + '():\n    """\n    Write your solution here.\n    """\n    pass\n\nif __name__ == "__main__":\n    result = ' + funcName + '()\n    print(result)';
+            return 'def ' + funcName + '():\n    """\n    Write your solution here.\n    """\n    pass\n';
         } else {
-            // Go uses PascalCase
+            // Go uses PascalCase - NO main block, only function
             var goFuncName = funcName.split('_').map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join('');
-            return 'package main\n\nimport "fmt"\n\nfunc ' + goFuncName + '() interface{} {\n\t// Write your solution here\n\treturn nil\n}\n\nfunc main() {\n\tresult := ' + goFuncName + '()\n\tfmt.Println(result)\n}';
+            return 'func ' + goFuncName + '() interface{} {\n\t// Write your solution here\n\treturn nil\n}\n';
         }
     }
 
@@ -5084,23 +5101,25 @@
     };
 
     window.runCode = function() {
-        var code = editor ? editor.getValue() : (document.getElementById('code-fallback') || {}).value || '';
+        var userCode = editor ? editor.getValue() : (document.getElementById('code-fallback') || {}).value || '';
         var output = document.getElementById('output-content');
 
         if (output) output.innerHTML = '<div style="color:#888;">Running...</div>';
 
         // Update run button to show loading state
         var runBtn = document.getElementById('run-btn');
-        var runTestsBtn = document.getElementById('run-tests-btn');
         if (runBtn) {
             runBtn.disabled = true;
             runBtn.innerHTML = '<span class="spinner"></span> Running...';
         }
 
+        // Inject main block behind the scenes for execution
+        var execCode = injectMainForExecution(userCode, currentLanguage);
+
         fetch('/htmx/execute', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'code=' + encodeURIComponent(code) + '&language=' + currentLanguage
+            body: 'code=' + encodeURIComponent(execCode) + '&language=' + currentLanguage
         })
         .then(function(r) { return r.text(); })
         .then(function(html) {
@@ -5123,6 +5142,150 @@
             }
         });
     };
+
+    /**
+     * Inject main function for code execution
+     * Takes user's function-only code and adds proper main block with first test case
+     * @param {string} userCode - User's code (function only)
+     * @param {string} lang - Language
+     * @returns {string} Complete executable code
+     */
+    function injectMainForExecution(userCode, lang) {
+        // If code already has main, don't inject
+        if (lang === 'python' && userCode.indexOf('if __name__') !== -1) {
+            return userCode;
+        }
+        if ((lang === 'go' || lang === 'golang') && userCode.indexOf('func main()') !== -1) {
+            return userCode;
+        }
+
+        // Get problem data for test case inputs
+        var problem = null;
+        if (currentProblem && window.ProblemRenderer) {
+            var fullId = currentProblem.category + '/' + currentProblem.id;
+            problem = window.ProblemRenderer.get(fullId);
+        }
+
+        if (lang === 'python') {
+            return injectPythonMain(userCode, problem);
+        } else if (lang === 'go' || lang === 'golang') {
+            return injectGoMain(userCode, problem);
+        }
+
+        return userCode;
+    }
+
+    /**
+     * Inject Python main block
+     */
+    function injectPythonMain(userCode, problem) {
+        var code = userCode.trim() + '\n\n';
+
+        // Extract function name from user code
+        var funcMatch = userCode.match(/def\s+(\w+)\s*\(/);
+        if (!funcMatch) {
+            // No function found, just return as-is
+            return userCode;
+        }
+        var funcName = funcMatch[1];
+
+        // Get parameters from problem or from function signature
+        var paramMatch = userCode.match(/def\s+\w+\s*\(([^)]*)\)/);
+        var params = paramMatch && paramMatch[1] ? paramMatch[1].split(',').map(function(p) {
+            return p.trim().split(':')[0].split('=')[0].trim();
+        }).filter(function(p) { return p.length > 0; }) : [];
+
+        code += 'if __name__ == "__main__":\n';
+
+        if (problem && problem.examples && problem.examples.length > 0) {
+            var firstInput = problem.examples[0].input;
+            var expectedOutput = problem.examples[0].output;
+            var paramNames = Object.keys(firstInput);
+
+            // Set up test inputs
+            paramNames.forEach(function(p) {
+                code += '    ' + p + ' = ' + toPythonLiteral(firstInput[p]) + '\n';
+            });
+
+            code += '    result = ' + funcName + '(' + paramNames.join(', ') + ')\n';
+            code += '    expected = ' + toPythonLiteral(expectedOutput) + '\n';
+            code += '    print("Input:", ' + toPythonLiteral(firstInput) + ')\n';
+            code += '    print("Expected:", expected)\n';
+            code += '    print("Output:", result)\n';
+            code += '    print("PASS" if result == expected else "FAIL")\n';
+        } else if (params.length > 0) {
+            // No problem data, but has parameters - call with placeholders
+            code += '    # TODO: Add test inputs\n';
+            code += '    result = ' + funcName + '()\n';
+            code += '    print("Result:", result)\n';
+        } else {
+            // No parameters
+            code += '    result = ' + funcName + '()\n';
+            code += '    print("Result:", result)\n';
+        }
+
+        return code;
+    }
+
+    /**
+     * Inject Go main function
+     */
+    function injectGoMain(userCode, problem) {
+        // Check if package main exists
+        var hasPackage = /^\s*package\s+main/m.test(userCode);
+        var code = '';
+
+        if (!hasPackage) {
+            code += 'package main\n\n';
+        }
+
+        // Check if fmt is imported
+        var hasFmtImport = /import\s+[\s\S]*?"fmt"/.test(userCode) || /import\s+"fmt"/.test(userCode);
+        if (!hasFmtImport) {
+            code += 'import "fmt"\n\n';
+        }
+
+        code += userCode.trim() + '\n\n';
+
+        // Extract function name from user code
+        var funcMatch = userCode.match(/func\s+([A-Z]\w*)\s*\(/);
+        if (!funcMatch) {
+            // No exported function found, add minimal main
+            code += 'func main() {\n\tfmt.Println("No exported function found")\n}\n';
+            return code;
+        }
+        var funcName = funcMatch[1];
+
+        // Get parameter types from function signature
+        var sigMatch = userCode.match(/func\s+[A-Z]\w*\s*\(([^)]*)\)/);
+        var paramSig = sigMatch ? sigMatch[1] : '';
+
+        code += 'func main() {\n';
+
+        if (problem && problem.examples && problem.examples.length > 0) {
+            var firstInput = problem.examples[0].input;
+            var expectedOutput = problem.examples[0].output;
+            var paramNames = Object.keys(firstInput);
+
+            // Set up test inputs
+            paramNames.forEach(function(name) {
+                code += '\t' + name + ' := ' + toGoLiteral(firstInput[name]) + '\n';
+            });
+
+            code += '\tresult := ' + funcName + '(' + paramNames.join(', ') + ')\n';
+            code += '\tfmt.Println("Input:", ' + toGoLiteral(firstInput) + ')\n';
+            code += '\tfmt.Println("Expected:", ' + toGoLiteral(expectedOutput) + ')\n';
+            code += '\tfmt.Println("Output:", result)\n';
+        } else {
+            // No problem data - call with no args
+            code += '\tresult := ' + funcName + '()\n';
+            code += '\tfmt.Println("Result:", result)\n';
+        }
+
+        code += '}\n';
+
+        return code;
+    }
 
     /**
      * Render test results in a nice format
