@@ -23,31 +23,98 @@
             time: 'O(n)',
             space: 'O(1)'
         },
+        timeLimit: 500, // 500ms per test case
         examples: [
-    {
-        input: {
-        "array": [5, 1, 22, 25, 6, -1, 8, 10],
-        "sequence": [1, 6, -1, 10]
-        },
-        output: true,
-        explanation: 'Starting with pointers at index 0 for both arrays: Skip 5, match 1 (seq pointer moves), skip 22 and 25, match 6 (seq pointer moves), match -1 (seq pointer moves), skip 8, match 10. All sequence elements found in order.'
-    },
-    {
-        input: {
-        "array": [5, 1, 22, 25, 6, -1, 8, 10],
-        "sequence": [5, 1, 22, 25, 6, -1, 8, 10]
-        },
-        output: true,
-        explanation: 'The sequence is identical to the array itself. Every array is a subsequence of itself since all elements appear in the same order.'
-    },
-    {
-        input: {
-        "array": [5, 1, 22, 25, 6, -1, 8, 10],
-        "sequence": [1, 6, 10, -1]
-        },
-        output: false,
-        explanation: 'After matching 1, 6, and 10, we need to find -1. But -1 appears at index 5 in the array, which is before 10 at index 7. Since 10 was already matched, -1 cannot come after it. Order is violated.'
-    }
+            // Basic test case - valid subsequence
+            {
+                input: {
+                    "array": [5, 1, 22, 25, 6, -1, 8, 10],
+                    "sequence": [1, 6, -1, 10]
+                },
+                output: true,
+                explanation: 'Starting with pointers at index 0 for both arrays: Skip 5, match 1 (seq pointer moves), skip 22 and 25, match 6 (seq pointer moves), match -1 (seq pointer moves), skip 8, match 10. All sequence elements found in order.'
+            },
+            // Edge case: sequence equals array
+            {
+                input: {
+                    "array": [5, 1, 22, 25, 6, -1, 8, 10],
+                    "sequence": [5, 1, 22, 25, 6, -1, 8, 10]
+                },
+                output: true,
+                explanation: 'The sequence is identical to the array itself. Every array is a subsequence of itself since all elements appear in the same order.'
+            },
+            // Test case: invalid order
+            {
+                input: {
+                    "array": [5, 1, 22, 25, 6, -1, 8, 10],
+                    "sequence": [1, 6, 10, -1]
+                },
+                output: false,
+                explanation: 'After matching 1, 6, and 10, we need to find -1. But -1 appears at index 5 in the array, which is before 10 at index 7. Since 10 was already matched, -1 cannot come after it. Order is violated.'
+            },
+            // Edge case: single element - valid
+            {
+                input: {
+                    "array": [1, 2, 3, 4],
+                    "sequence": [2]
+                },
+                output: true,
+                explanation: 'Single element sequence that exists in array.'
+            },
+            // Edge case: single element - invalid
+            {
+                input: {
+                    "array": [1, 2, 3, 4],
+                    "sequence": [5]
+                },
+                output: false,
+                explanation: 'Single element that does not exist in array.'
+            },
+            // Edge case: first and last elements only
+            {
+                input: {
+                    "array": [1, 2, 3, 4, 5],
+                    "sequence": [1, 5]
+                },
+                output: true,
+                explanation: 'First and last elements form a valid subsequence.'
+            },
+            // Edge case: with duplicates in array
+            {
+                input: {
+                    "array": [1, 1, 1, 1, 1],
+                    "sequence": [1, 1]
+                },
+                output: true,
+                explanation: 'Array with duplicates - first two 1s match the sequence.'
+            },
+            // Edge case: negative numbers
+            {
+                input: {
+                    "array": [-5, -1, -10, 2, 10],
+                    "sequence": [-5, -10, 10]
+                },
+                output: true,
+                explanation: 'Array and sequence with negative numbers.'
+            },
+            // Edge case: sequence not found at all
+            {
+                input: {
+                    "array": [1, 2, 3, 4],
+                    "sequence": [1, 2, 5]
+                },
+                output: false,
+                explanation: 'Sequence element 5 not found in array.'
+            },
+            // Large input test for time complexity
+            {
+                input: {
+                    "array": Array.from({length: 1000}, (_, i) => i),
+                    "sequence": [0, 250, 500, 750, 999]
+                },
+                output: true,
+                explanation: 'Large array (1000 elements) - testing O(n) time complexity.'
+            }
         ],
         similar: [
             { id: '01-validate-subsequence/01-longest-common-subsequence', name: 'Longest Common Subsequence', difficulty: 'Medium' },
