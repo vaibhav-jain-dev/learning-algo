@@ -5104,7 +5104,7 @@
         var userCode = editor ? editor.getValue() : (document.getElementById('code-fallback') || {}).value || '';
         var output = document.getElementById('output-content');
 
-        if (output) output.innerHTML = '<div style="color:#888;">Running...</div>';
+        if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#888;">Running...</div>';
 
         // Update run button to show loading state
         var runBtn = document.getElementById('run-btn');
@@ -5128,11 +5128,11 @@
             if (testResults) {
                 if (output) output.innerHTML = renderTestResults(testResults, html);
             } else {
-                if (output) output.innerHTML = html;
+                if (output) output.innerHTML = '<span class="output-label">Output</span>' + html;
             }
         })
         .catch(function(err) {
-            if (output) output.innerHTML = '<div style="color:#f44;">Error: ' + err.message + '</div>';
+            if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#f44;">Error: ' + err.message + '</div>';
         })
         .finally(function() {
             // Reset run button
@@ -5184,18 +5184,13 @@
         // Extract function name from user code
         var funcMatch = userCode.match(/def\s+(\w+)\s*\(/);
         if (!funcMatch) {
-            // No function found, just return as-is
-            return userCode;
+            // No function found, wrap in main that returns None
+            return userCode + '\n\ndef main():\n    return None\n';
         }
         var funcName = funcMatch[1];
 
-        // Get parameters from problem or from function signature
-        var paramMatch = userCode.match(/def\s+\w+\s*\(([^)]*)\)/);
-        var params = paramMatch && paramMatch[1] ? paramMatch[1].split(',').map(function(p) {
-            return p.trim().split(':')[0].split('=')[0].trim();
-        }).filter(function(p) { return p.length > 0; }) : [];
-
-        code += 'if __name__ == "__main__":\n';
+        // The backend requires a main() function that RETURNS a value
+        code += 'def main():\n';
 
         if (problem && problem.examples && problem.examples.length > 0) {
             var firstInput = problem.examples[0].input;
@@ -5213,15 +5208,12 @@
             code += '    print("Expected:", expected)\n';
             code += '    print("Output:", result)\n';
             code += '    print("PASS" if result == expected else "FAIL")\n';
-        } else if (params.length > 0) {
-            // No problem data, but has parameters - call with placeholders
-            code += '    # TODO: Add test inputs\n';
-            code += '    result = ' + funcName + '()\n';
-            code += '    print("Result:", result)\n';
+            code += '    return result\n';
         } else {
-            // No parameters
+            // No problem data
             code += '    result = ' + funcName + '()\n';
             code += '    print("Result:", result)\n';
+            code += '    return result\n';
         }
 
         return code;
@@ -5294,9 +5286,9 @@
      * @returns {string} HTML string
      */
     function renderTestResults(results, rawOutput) {
-        if (!results) return rawOutput;
+        if (!results) return '<span class="output-label">Output</span>' + rawOutput;
 
-        var html = '<div class="test-results">';
+        var html = '<span class="output-label">Output</span><div class="test-results">';
 
         // Summary header
         var allPassed = results.failed === 0;
@@ -5372,7 +5364,7 @@
     window.runTests = function() {
         if (!currentProblem || !window.ProblemRenderer) {
             var output = document.getElementById('output-content');
-            if (output) output.innerHTML = '<div style="color:#f44;">No problem loaded or ProblemRenderer not available.</div>';
+            if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#f44;">No problem loaded or ProblemRenderer not available.</div>';
             return;
         }
 
@@ -5381,7 +5373,7 @@
 
         if (!problem || !problem.examples || problem.examples.length === 0) {
             var output = document.getElementById('output-content');
-            if (output) output.innerHTML = '<div style="color:#f59e0b;">No test cases available for this problem.</div>';
+            if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#f59e0b;">No test cases available for this problem.</div>';
             return;
         }
 
@@ -5392,7 +5384,7 @@
         var testCode = generateTestCodeWithUserSolution(problem, currentLanguage, userCode);
 
         var output = document.getElementById('output-content');
-        if (output) output.innerHTML = '<div style="color:#888;">Running ' + problem.examples.length + ' test cases...</div>';
+        if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#888;">Running ' + problem.examples.length + ' test cases...</div>';
 
         // Update button states
         var runTestsBtn = document.getElementById('run-tests-btn');
@@ -5414,11 +5406,11 @@
                 if (output) output.innerHTML = renderTestResults(testResults, html);
             } else {
                 // No test results found, show raw output
-                if (output) output.innerHTML = html;
+                if (output) output.innerHTML = '<span class="output-label">Output</span>' + html;
             }
         })
         .catch(function(err) {
-            if (output) output.innerHTML = '<div style="color:#f44;">Error: ' + err.message + '</div>';
+            if (output) output.innerHTML = '<span class="output-label">Output</span><div style="color:#f44;">Error: ' + err.message + '</div>';
         })
         .finally(function() {
             // Reset button states
@@ -5535,9 +5527,11 @@
         code += '    }\n';
         code += '    print("__TEST_RESULTS__")\n';
         code += '    print(json.dumps(output, default=str))\n';
-        code += '    print("__END_TEST_RESULTS__")\n\n';
-        code += 'if __name__ == "__main__":\n';
-        code += '    run_tests()\n';
+        code += '    print("__END_TEST_RESULTS__")\n';
+        code += '    return output\n\n';
+        code += '# main() function required by backend\n';
+        code += 'def main():\n';
+        code += '    return run_tests()\n';
 
         return code;
     }
@@ -5639,12 +5633,11 @@
             code += 'package main\n\n';
         }
 
-        // Add necessary imports if not present
+        // Add necessary imports - NO reflect package (security blocked)
         if (cleanUserCode.indexOf('"encoding/json"') === -1) {
             code += 'import (\n';
             code += '\t"encoding/json"\n';
             code += '\t"fmt"\n';
-            code += '\t"reflect"\n';
             code += '\t"sort"\n';
             code += ')\n\n';
         }
@@ -5664,22 +5657,36 @@
         code += '\tFailed  int          `json:"failed"`\n';
         code += '\tResults []TestResult `json:"results"`\n';
         code += '}\n\n';
-        code += 'func compareOutputTest(actual, expected interface{}) bool {\n';
-        code += '\tactualSlice, actualIsSlice := actual.([]int)\n';
-        code += '\texpectedSlice, expectedIsSlice := expected.([]int)\n';
-        code += '\tif actualIsSlice && expectedIsSlice {\n';
-        code += '\t\tif len(actualSlice) != len(expectedSlice) {\n';
-        code += '\t\t\treturn false\n';
-        code += '\t\t}\n';
-        code += '\t\taCopy := make([]int, len(actualSlice))\n';
-        code += '\t\teCopy := make([]int, len(expectedSlice))\n';
-        code += '\t\tcopy(aCopy, actualSlice)\n';
-        code += '\t\tcopy(eCopy, expectedSlice)\n';
-        code += '\t\tsort.Ints(aCopy)\n';
-        code += '\t\tsort.Ints(eCopy)\n';
-        code += '\t\treturn reflect.DeepEqual(aCopy, eCopy)\n';
+        code += 'func intSlicesEqual(a, b []int) bool {\n';
+        code += '\tif len(a) != len(b) { return false }\n';
+        code += '\tfor i := range a {\n';
+        code += '\t\tif a[i] != b[i] { return false }\n';
         code += '\t}\n';
-        code += '\treturn reflect.DeepEqual(actual, expected)\n';
+        code += '\treturn true\n';
+        code += '}\n\n';
+        code += 'func compareOutputTest(actual, expected ' + returnType + ') bool {\n';
+
+        // Generate type-specific comparison based on return type
+        if (returnType === '[]int') {
+            code += '\tif len(actual) != len(expected) { return false }\n';
+            code += '\t// Try exact match\n';
+            code += '\tif intSlicesEqual(actual, expected) { return true }\n';
+            code += '\t// Try sorted match\n';
+            code += '\taCopy := make([]int, len(actual))\n';
+            code += '\teCopy := make([]int, len(expected))\n';
+            code += '\tcopy(aCopy, actual)\n';
+            code += '\tcopy(eCopy, expected)\n';
+            code += '\tsort.Ints(aCopy)\n';
+            code += '\tsort.Ints(eCopy)\n';
+            code += '\treturn intSlicesEqual(aCopy, eCopy)\n';
+        } else if (returnType === 'bool' || returnType === 'int' || returnType === 'float64' || returnType === 'string') {
+            code += '\treturn actual == expected\n';
+        } else {
+            // For other types, use JSON comparison
+            code += '\taJSON, _ := json.Marshal(actual)\n';
+            code += '\teJSON, _ := json.Marshal(expected)\n';
+            code += '\treturn string(aJSON) == string(eJSON)\n';
+        }
         code += '}\n\n';
         code += 'func main() {\n';
         code += '\ttestCases := []struct {\n';
@@ -5774,7 +5781,7 @@
 
     window.clearOutput = function() {
         var output = document.getElementById('output-content');
-        if (output) output.innerHTML = '<div class="output-placeholder">Run your code to see output here</div>';
+        if (output) output.innerHTML = '<span class="output-label">Output</span><div class="output-placeholder">Run your code to see output here</div>';
     };
 
     // Font size controls
@@ -5817,15 +5824,18 @@
         // Switch to the correct language
         window.setLanguage(lang);
 
+        // Extract just the function from the solution (remove main/test code)
+        var cleanCode = extractFunctionOnly(code, lang);
+
         // Set the code in editor
         if (editor) {
-            editor.setValue(code);
-            currentCode[lang] = code;
+            editor.setValue(cleanCode);
+            currentCode[lang] = cleanCode;
         } else {
             var fallback = document.getElementById('code-fallback');
             if (fallback) {
-                fallback.value = code;
-                currentCode[lang] = code;
+                fallback.value = cleanCode;
+                currentCode[lang] = cleanCode;
             }
         }
 
@@ -5835,9 +5845,163 @@
         // Show feedback
         var output = document.getElementById('output-content');
         if (output) {
-            output.innerHTML = '<div style="color:#3fb950;padding:0.5rem;">✓ ' + (lang === 'python' ? 'Python' : 'Go') + ' solution copied to editor. Press Run to execute!</div>';
+            output.innerHTML = '<span class="output-label">Output</span><div style="color:#3fb950;padding:0.5rem;">✓ ' + (lang === 'python' ? 'Python' : 'Go') + ' solution copied. Press "Run Code" or "Run Tests" to verify!</div>';
         }
     };
+
+    /**
+     * Extract only the function definition from solution code
+     * Removes main(), test code, etc.
+     */
+    function extractFunctionOnly(code, lang) {
+        if (lang === 'python') {
+            // Find the main function and extract it (stop at if __name__ or def main or test code)
+            var lines = code.split('\n');
+            var result = [];
+            var inMainFunc = false;
+            var funcIndent = 0;
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+
+                // Stop at if __name__ or def main(): or test runner
+                if (/^if\s+__name__/.test(line) ||
+                    /^def\s+main\s*\(/.test(line) ||
+                    /^#\s*=+\s*TEST/.test(line) ||
+                    /^def\s+run_tests/.test(line) ||
+                    /^def\s+compare_output/.test(line)) {
+                    break;
+                }
+
+                result.push(line);
+            }
+
+            // Trim trailing empty lines
+            while (result.length > 0 && result[result.length - 1].trim() === '') {
+                result.pop();
+            }
+
+            return result.join('\n') + '\n';
+        } else if (lang === 'go' || lang === 'golang') {
+            // For Go, extract just the main function (exported, capitalized)
+            var lines = code.split('\n');
+            var result = [];
+            var inFunc = false;
+            var braceCount = 0;
+            var foundFunc = false;
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+
+                // Skip package and import statements, we'll add our own header
+                if (/^\s*package\s+main/.test(line)) continue;
+                if (/^\s*import\s/.test(line)) {
+                    // Skip import block
+                    if (line.indexOf('(') !== -1) {
+                        while (i < lines.length && lines[i].indexOf(')') === -1) {
+                            i++;
+                        }
+                    }
+                    continue;
+                }
+
+                // Stop at func main() or test runner
+                if (/^func\s+main\s*\(/.test(line) ||
+                    /^\/\/\s*=+\s*TEST/.test(line) ||
+                    /^type\s+TestResult/.test(line) ||
+                    /^func\s+compareOutput/.test(line) ||
+                    /^func\s+intSlicesEqual/.test(line)) {
+                    break;
+                }
+
+                // Found an exported function (starts with capital letter)
+                if (/^func\s+[A-Z]/.test(line)) {
+                    foundFunc = true;
+                }
+
+                if (foundFunc || line.trim() === '' || /^\/\//.test(line)) {
+                    result.push(line);
+                }
+            }
+
+            // Trim trailing empty lines
+            while (result.length > 0 && result[result.length - 1].trim() === '') {
+                result.pop();
+            }
+
+            return result.join('\n') + '\n';
+        }
+
+        return code;
+    }
+
+    // Initialize output panel resize functionality
+    function initOutputResize() {
+        var outputPanel = document.getElementById('output-panel');
+        var resizeHandle = document.getElementById('output-resize-handle');
+
+        if (!outputPanel || !resizeHandle) return;
+
+        var isResizing = false;
+        var startY = 0;
+        var startHeight = 0;
+
+        resizeHandle.addEventListener('mousedown', function(e) {
+            isResizing = true;
+            startY = e.clientY;
+            startHeight = outputPanel.offsetHeight;
+            document.body.style.cursor = 'ns-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isResizing) return;
+
+            var deltaY = startY - e.clientY;
+            var newHeight = startHeight + deltaY;
+
+            // Clamp height
+            newHeight = Math.max(80, Math.min(window.innerHeight * 0.5, newHeight));
+            outputPanel.style.height = newHeight + 'px';
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+        });
+
+        // Touch support
+        resizeHandle.addEventListener('touchstart', function(e) {
+            isResizing = true;
+            startY = e.touches[0].clientY;
+            startHeight = outputPanel.offsetHeight;
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!isResizing) return;
+
+            var deltaY = startY - e.touches[0].clientY;
+            var newHeight = startHeight + deltaY;
+            newHeight = Math.max(80, Math.min(window.innerHeight * 0.5, newHeight));
+            outputPanel.style.height = newHeight + 'px';
+        }, { passive: true });
+
+        document.addEventListener('touchend', function() {
+            isResizing = false;
+        });
+    }
+
+    // Initialize resize on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initOutputResize);
+    } else {
+        initOutputResize();
+    }
 
     // Store original description content for filtering
     var originalDescription = '';

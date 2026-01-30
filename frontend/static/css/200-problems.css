@@ -899,44 +899,60 @@
 
 /* Output Panel */
 .output-panel {
-    height: 120px;
+    height: 180px;
+    min-height: 80px;
+    max-height: 50vh;
     border-top: 1px solid var(--color-border, #e2e8f0);
     display: flex;
     flex-direction: column;
     background: var(--color-bg-primary, #ffffff);
+    position: relative;
+}
+
+.output-resize-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: transparent;
+    cursor: ns-resize;
+    z-index: 10;
+}
+
+.output-resize-handle:hover {
+    background: linear-gradient(to bottom, var(--color-brand-primary, #3b82f6), transparent);
+    opacity: 0.3;
+}
+
+.output-resize-handle:active {
+    background: var(--color-brand-primary, #3b82f6);
+    opacity: 0.5;
+}
+
+.output-label {
+    position: absolute;
+    top: 6px;
+    left: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted, #94a3b8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 5;
+    pointer-events: none;
 }
 
 .output-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
-    background: var(--color-bg-secondary, #f8fafc);
-    font-weight: var(--font-semibold, 600);
-    font-size: var(--text-sm, 0.875rem);
-}
-
-.clear-btn {
-    padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
-    background: var(--color-error-bg, rgba(239, 68, 68, 0.1));
-    color: var(--color-error, #ef4444);
-    border: 1px solid var(--color-error-border, rgba(239, 68, 68, 0.3));
-    border-radius: var(--radius-sm, 4px);
-    cursor: pointer;
-    font-size: var(--text-xs, 0.75rem);
-    font-family: var(--font-sans);
-    transition: all var(--transition-fast, 150ms ease);
-}
-
-.clear-btn:hover {
-    background: rgba(239, 68, 68, 0.15);
+    display: none;
 }
 
 .output-controls {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
+    display: none;
+}
+
+.clear-btn {
+    display: none;
 }
 
 .font-btn {
@@ -967,11 +983,13 @@
 .output-content {
     flex: 1;
     overflow-y: auto;
-    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    padding: var(--space-4, 1rem) var(--space-4, 1rem);
+    padding-top: 24px;
     font-family: var(--font-mono);
     font-size: var(--text-sm, 0.875rem);
     background: var(--color-bg-primary, #ffffff);
     color: var(--color-text-primary, #0f172a);
+    position: relative;
 }
 
 .output-placeholder {
@@ -1076,7 +1094,7 @@ li.CodeMirror-hint-active {
     }
 
     .output-panel {
-        height: 100px;
+        height: 150px;
     }
 }
 
@@ -1276,17 +1294,19 @@ li.CodeMirror-hint-active {
     }
 
     .output-panel {
-        height: 80px;
-    }
-
-    .output-header {
-        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
-        font-size: var(--text-xs, 0.75rem);
+        height: 120px;
     }
 
     .output-content {
         padding: var(--space-2, 0.5rem);
+        padding-top: 20px;
         font-size: var(--text-xs, 0.75rem);
+    }
+
+    .output-label {
+        font-size: 9px;
+        top: 4px;
+        left: 8px;
     }
 
     .font-btn {
@@ -1376,7 +1396,7 @@ li.CodeMirror-hint-active {
     }
 
     .output-panel {
-        height: 70px;
+        height: 100px;
     }
 
     /* CodeMirror mobile font */
