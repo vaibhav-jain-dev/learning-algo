@@ -882,10 +882,10 @@ A modular monolith is an architecture that provides the organizational benefits 
     </div>
 
     <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 16px;">
-      <div style="width: 20px; height: 20px; border-left: 2px solid #30363d; border-bottom: 2px solid #e2e8f0;"></div>
+      <div style="width: 20px; height: 20px; border-left: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0;"></div>
       <div style="width: 20px; height: 20px; border-bottom: 2px solid #e2e8f0;"></div>
       <div style="width: 20px; height: 20px; border-bottom: 2px solid #e2e8f0;"></div>
-      <div style="width: 20px; height: 20px; border-right: 2px solid #30363d; border-bottom: 2px solid #e2e8f0;"></div>
+      <div style="width: 20px; height: 20px; border-right: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0;"></div>
     </div>
 
     <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 10px; padding: 20px; text-align: center;">
