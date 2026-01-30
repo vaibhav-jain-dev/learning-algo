@@ -117,7 +117,7 @@ const orderLoader = new DataLoader(async (userIds) => {
   <h4 style="color: #92400e; margin: 0 0 16px 0;">Critical Trade-off: Query Complexity Control</h4>
   <div style="color: #1e293b; font-size: 14px; line-height: 1.6;">
     <p><strong>The Problem:</strong> GraphQL allows arbitrarily deep queries. A malicious or naive client can request:</p>
-    <pre style="background: #1e293b; color: #f8fafc; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">query Evil {
+    <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;">query Evil {
   user(id: "1") {
     friends { friends { friends { friends { friends {
       posts { comments { author { posts { comments { ... } } } } }
@@ -272,7 +272,7 @@ Pagination solves the challenge of efficiently retrieving large datasets in mana
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
         <div>
           <div style="color: #b91c1c; font-weight: 600; font-size: 16px;">Offset Pagination</div>
-          <code style="background: #1e293b; color: #f8fafc; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items LIMIT 20 OFFSET 1000</code>
+          <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items LIMIT 20 OFFSET 1000</code>
         </div>
         <div style="text-align: right;">
           <div style="color: #b91c1c; font-weight: 600;">O(offset + limit)</div>
@@ -285,7 +285,7 @@ Pagination solves the challenge of efficiently retrieving large datasets in mana
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
         <div>
           <div style="color: #15803d; font-weight: 600; font-size: 16px;">Cursor/Keyset Pagination</div>
-          <code style="background: #1e293b; color: #f8fafc; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items WHERE id > 1000 LIMIT 20</code>
+          <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">SELECT * FROM items WHERE id > 1000 LIMIT 20</code>
         </div>
         <div style="text-align: right;">
           <div style="color: #15803d; font-weight: 600;">O(limit)</div>
@@ -298,7 +298,7 @@ Pagination solves the challenge of efficiently retrieving large datasets in mana
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
         <div>
           <div style="color: #1e40af; font-weight: 600; font-size: 16px;">Seek Pagination (Composite Keys)</div>
-          <code style="background: #1e293b; color: #f8fafc; padding: 4px 8px; border-radius: 4px; font-size: 12px;">WHERE (date, id) > ('2024-01-15', 500) LIMIT 20</code>
+          <code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px;">WHERE (date, id) > ('2024-01-15', 500) LIMIT 20</code>
         </div>
         <div style="text-align: right;">
           <div style="color: #1e40af; font-weight: 600;">O(limit)</div>

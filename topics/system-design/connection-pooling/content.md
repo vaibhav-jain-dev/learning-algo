@@ -466,7 +466,7 @@ Connections can become "half-open" - the client believes the connection is alive
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
     <div>
       <strong style="color: #334155;">TCP Keepalive (OS Level)</strong>
-      <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">
+      <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
 # Linux - in /etc/sysctl.conf
 net.ipv4.tcp_keepalive_time = 60
 net.ipv4.tcp_keepalive_intvl = 10
@@ -475,7 +475,7 @@ net.ipv4.tcp_keepalive_probes = 6</pre>
     </div>
     <div>
       <strong style="color: #334155;">Application Keepalive (Pool Level)</strong>
-      <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">
+      <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
 # HikariCP configuration
 keepaliveTime: 30000  # 30 seconds
 validationTimeout: 5000  # 5 seconds
@@ -607,7 +607,7 @@ Pool exhaustion occurs when all connections are checked out and new requests can
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
     <div>
       <strong style="color: #334155;">HikariCP Leak Detection</strong>
-      <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">
+      <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
 # Warn if connection held > 60 seconds
 leakDetectionThreshold: 60000
 
@@ -619,7 +619,7 @@ leakDetectionThreshold: 60000
     </div>
     <div>
       <strong style="color: #334155;">Application-Level Tracking</strong>
-      <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">
+      <pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; border: 1px solid #cbd5e1;">
 # Store checkout location
 checkout_info = {
     'thread': threading.current_thread(),
@@ -677,7 +677,7 @@ active_checkouts[conn.id] = checkout_info</pre>
       <li><strong>Review async code</strong>: CompletableFuture chains, callbacks, and reactive streams often lose connection context</li>
       <li><strong>Database-side verification</strong>: Query pg_stat_activity/information_schema.processlist to see actual connection states</li>
     </ol>
-    <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 12px; margin-top: 12px; overflow-x: auto;">
+    <pre style="background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 12px; margin-top: 12px; overflow-x: auto;">
 -- PostgreSQL: Find long-running idle connections
 SELECT pid, usename, application_name, state,
        query_start, now() - query_start as duration
@@ -898,7 +898,7 @@ int waitingThreads = poolMXBean.getThreadsAwaitingConnection();
         </div>
         <div>
           <strong style="color: #1e293b;">Implementation Sketch:</strong>
-          <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 12px; overflow-x: auto;">
+          <pre style="background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-size: 12px; overflow-x: auto;">
 public class TenantAwareDataSource extends AbstractRoutingDataSource {
     @Override
     protected Object determineCurrentLookupKey() {
@@ -1557,7 +1557,7 @@ with pool.connection() as conn:
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px;">
     <div>
       <h5 style="color: #334155; margin-bottom: 12px;">Pool Sizing Formula</h5>
-      <div style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 14px;">
+      <div style="background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 14px;">
         pool_size = (cpu_cores * 2) + 1
       </div>
       <p style="color: #64748b; font-size: 13px; margin-top: 8px;">Example: 8-core database = 17 connections optimal</p>

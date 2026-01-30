@@ -185,9 +185,9 @@ Horizontal scaling trades operational complexity for capacity. Each additional n
 
 Reliability is the ability of a system to function correctly even when things go wrong. A reliable system continues to work correctly, even when hardware fails, software has bugs, and humans make mistakes.
 
-<div style="background: #0f172a; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #334155;">
-<h4 style="color: #22d3ee; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
-<div style="color: #e2e8f0; font-size: 14px; line-height: 1.8;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 Reliability is not "things won't fail" but "things will fail and we handle it gracefully." Design assumes Murphy's Law: anything that can go wrong will go wrong. The question is: how does your system respond?
 </div>
 </div>
@@ -636,9 +636,9 @@ The database is the bottleneck. Solutions:
 
 Maintainability is about making the system easy to operate, understand, and evolve. Over a system's lifetime, the majority of cost is in ongoing maintenance, not initial development.
 
-<div style="background: #0f172a; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #334155;">
-<h4 style="color: #22d3ee; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
-<div style="color: #e2e8f0; font-size: 14px; line-height: 1.8;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 You are not writing code for yourself today; you are writing code for a stranger six months from now (who might be future you). That stranger is debugging at 3 AM during an outage. Every design decision should consider: "How easy is this to understand, modify, and troubleshoot?"
 </div>
 </div>
@@ -908,9 +908,9 @@ The ability to quickly estimate system capacity requirements is essential for bo
 
 ### 4.2 Estimation Framework
 
-<div style="background: #0f172a; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #334155;">
-<h4 style="color: #22d3ee; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
-<div style="color: #e2e8f0; font-size: 14px; line-height: 1.8;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">KEY ASSUMPTION</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 The goal of back-of-envelope calculations is not precision but order-of-magnitude correctness. A 2x error is fine; a 100x error indicates flawed reasoning. Always round to powers of 10 to simplify arithmetic and make errors obvious.
 </div>
 </div>
@@ -1125,7 +1125,7 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <div style="display: flex; gap: 16px; align-items: stretch; flex-wrap: wrap;">
-<div style="background: #059669; color: #ffffff; padding: 16px 24px; border-radius: 8px; min-width: 200px; flex: 1;">
+<div style="background: #22c55e; color: #ffffff; padding: 16px 24px; border-radius: 8px; min-width: 200px; flex: 1;">
 <div style="font-weight: 700; font-size: 15px; margin-bottom: 8px;">Phase 1: Requirements (5-10 min)</div>
 <div style="font-size: 13px; line-height: 1.6;">
 Clarify scope and constraints. Ask about users, scale, features. Define functional and non-functional requirements. Establish success metrics.

@@ -42,10 +42,10 @@ Topic-based routing determines which subscribers receive which messages. This se
 <div style="background: #22c55e; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #fff; font-size: 12px;">orders.eu.created</span>
 </div>
-<div style="background: #1f6feb; padding: 8px 14px; border-radius: 6px;">
+<div style="background: #3b82f6; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #fff; font-size: 12px;">orders.us.shipped</span>
 </div>
-<div style="background: #8957e5; padding: 8px 14px; border-radius: 6px;">
+<div style="background: #8b5cf6; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #fff; font-size: 12px;">payments.processed</span>
 </div>
 </div>

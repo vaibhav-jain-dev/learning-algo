@@ -4,7 +4,7 @@
 
 Design a smart parking management system for multi-level parking lots with real-time availability, reservations, and payments.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #00bcd4;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #00bcd4;">
 
 ### Core Requirements
 - **Spot Management**: Track available/occupied spots
@@ -20,7 +20,7 @@ Design a smart parking management system for multi-level parking lots with real-
 
 ## Core Concepts Overview
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 28px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 20px 0;">
 <h4 style="color: #58a6ff; margin-top: 0;">Fundamental Parking System Equation</h4>
 <div style="font-family: 'Courier New', monospace; font-size: 15px; background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; text-align: center; color: #e6edf3;">
 Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span style="color: #4ade80;">Sensor Integration</span> + <span style="color: #4ade80;">Payment Processing</span> + <span style="color: #4ade80;">Real-time Availability</span> + <span style="color: #4ade80;">Dynamic Pricing</span>
@@ -35,28 +35,28 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 
 ## High-Level Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">PARKING SYSTEM ARCHITECTURE</h3>
 
 <!-- Entry/Exit Gates Layer -->
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #00bcd4; font-weight: bold; text-align: center; margin-bottom: 16px; font-size: 14px;">ENTRY/EXIT GATES</div>
 <div style="display: flex; justify-content: space-around; gap: 24px;">
 <div style="flex: 1; text-align: center;">
-<div style="background: #2d333b; border: 2px solid #7c3aed; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+<div style="background: #f1f5f9; border: 2px solid #7c3aed; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
 <div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Camera/LPR</div>
 </div>
 <div style="color: #7c3aed; font-size: 20px;">&#8595;</div>
-<div style="background: #2d333b; border: 2px solid #22c55e; border-radius: 8px; padding: 12px;">
+<div style="background: #f1f5f9; border: 2px solid #22c55e; border-radius: 8px; padding: 12px;">
 <div style="color: #4ade80; font-weight: bold; font-size: 12px;">Entry Kiosk</div>
 </div>
 </div>
 <div style="flex: 1; text-align: center;">
-<div style="background: #2d333b; border: 2px solid #7c3aed; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+<div style="background: #f1f5f9; border: 2px solid #7c3aed; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
 <div style="color: #a78bfa; font-weight: bold; font-size: 12px;">Camera/LPR</div>
 </div>
 <div style="color: #7c3aed; font-size: 20px;">&#8595;</div>
-<div style="background: #2d333b; border: 2px solid #ef4444; border-radius: 8px; padding: 12px;">
+<div style="background: #f1f5f9; border: 2px solid #ef4444; border-radius: 8px; padding: 12px;">
 <div style="color: #f87171; font-weight: bold; font-size: 12px;">Exit Kiosk</div>
 </div>
 </div>
@@ -138,7 +138,7 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 
 ### Spot Allocation Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #4ade80; text-align: center; margin: 0 0 24px 0;">SPOT ALLOCATION FLOW</h4>
 
 <!-- Vehicle Entry -->
@@ -152,7 +152,7 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 <div style="text-align: center; color: #a78bfa; font-size: 20px; margin: 8px 0;">&#8595;</div>
 
 <!-- Allocation Engine -->
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #4ade80; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #4ade80; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #4ade80; font-weight: bold; text-align: center; margin-bottom: 16px;">ALLOCATION ENGINE</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
 <div style="background: #0d1117; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; text-align: center;">
@@ -365,7 +365,7 @@ class SpotAllocationStrategy:
 
 ### Sensor Integration Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #a78bfa; text-align: center; margin: 0 0 24px 0;">SENSOR DATA PIPELINE</h4>
 
 <!-- Sensor Layer -->
@@ -576,7 +576,7 @@ class SensorEventProcessor:
 
 ### Payment Processing Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">PAYMENT PROCESSING FLOW</h4>
 
 <!-- Fee Calculation -->
@@ -590,7 +590,7 @@ class SensorEventProcessor:
 <div style="text-align: center; color: #a78bfa; font-size: 20px; margin: 8px 0;">&#8595;</div>
 
 <!-- Payment Methods -->
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 16px;">PAYMENT CHANNELS</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
 <div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
@@ -876,11 +876,11 @@ class PaymentService:
 
 ### Real-Time Availability Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #00bcd4; text-align: center; margin: 0 0 24px 0;">AVAILABILITY SYNC ARCHITECTURE</h4>
 
 <!-- Event Sources -->
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #7c3aed; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #7c3aed; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #a78bfa; font-weight: bold; text-align: center; margin-bottom: 16px;">EVENT SOURCES</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
 <div style="background: #0d1117; border: 1px solid #8b5cf6; border-radius: 8px; padding: 12px; text-align: center;">
@@ -926,7 +926,7 @@ lot:{id}:type:EV = 12
 <div style="text-align: center; color: #ef4444; font-size: 20px; margin: 8px 0;">&#8595;</div>
 
 <!-- Distribution Layer -->
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px;">
 <div style="color: #00bcd4; font-weight: bold; text-align: center; margin-bottom: 16px;">DISTRIBUTION CHANNELS</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
 <div style="background: #0d1117; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
@@ -1130,11 +1130,11 @@ class AvailabilityService:
 
 ### Dynamic Pricing Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #fbbf24; text-align: center; margin: 0 0 24px 0;">DYNAMIC PRICING ENGINE</h4>
 
 <!-- Input Signals -->
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #eab308; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #eab308; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #fbbf24; font-weight: bold; text-align: center; margin-bottom: 16px;">PRICING SIGNALS</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
 <div style="background: #0d1117; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
@@ -1384,11 +1384,11 @@ class DynamicPricingService:
 
 ## Data Model
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">PARKING LOT DATA MODEL</h4>
 
 <!-- Entity Relationships Diagram -->
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
 <div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 14px;">ENTITY RELATIONSHIPS</div>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
@@ -1488,7 +1488,7 @@ class DynamicPricingService:
 
 ## AWS Technologies & Alternatives
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 | Component | AWS Service | Alternative | Trade-offs |
 |-----------|-------------|-------------|------------|
@@ -1579,7 +1579,7 @@ class SimpleParking:
 
 ### Critical Trade-offs Matrix
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 <div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">PARKING SYSTEM TRADE-OFFS</div>
 
 <div style="display: flex; flex-direction: column; gap: 12px;">

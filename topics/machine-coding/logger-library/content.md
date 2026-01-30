@@ -12,9 +12,9 @@ This problem tests your understanding of concurrency patterns, I/O optimization,
 
 ### 1. Log Levels: Severity Classification System
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Log Level Hierarchy</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="background: #f8fafc; border-left: 4px solid #8b5cf6; border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Log Level Hierarchy</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 Log levels form a **severity hierarchy** where each level implies all levels above it. This design enables **level-based filtering** at multiple points in the logging pipeline: at the logger, at individual handlers, and through filter chains.
 
@@ -181,8 +181,8 @@ Include the sampling decision in the log record so downstream systems know a mes
 ### 2. Asynchronous Logging: Decoupling Production from I/O
 
 <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Why Async Logging Matters</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Why Async Logging Matters</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 Synchronous logging blocks the calling thread during I/O operations. A single slow network write to a log aggregator can cascade into request latency spikes. Async logging **decouples** log production (application threads) from log consumption (I/O threads), converting variable I/O latency into bounded queue insertion time.
 
@@ -432,8 +432,8 @@ The local buffer must be persistent (memory-mapped or WAL) to survive crashes. T
 ### 3. Structured Logging: From Text to Data
 
 <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Evolution from Printf to Structured Data</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Evolution from Printf to Structured Data</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 Traditional logging treats messages as opaque strings. Structured logging treats them as **queryable data**. The difference is transformative: instead of regex-parsing "User alice logged in from 192.168.1.1", you query `{"user": "alice", "ip": "192.168.1.1", "event": "login"}`. This enables log aggregation, metric extraction, and anomaly detection at scale.
 
@@ -738,8 +738,8 @@ The correlation envelope follows a strict schema; payloads are schema-free. Quer
 ### 4. Log Rotation: Managing Unbounded Growth
 
 <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Disk Space Paradox</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Disk Space Paradox</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 Logs grow without bound. A high-traffic service can generate gigabytes per hour. Without rotation, logs will eventually fill the disk, causing the application (and often the entire system) to fail. Log rotation transforms an unbounded resource consumption problem into a bounded one.
 
@@ -2312,8 +2312,8 @@ def basic_config(level: LogLevel = LogLevel.INFO,
 ## 6. Distributed Tracing Integration
 
 <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Connecting Logs Across Service Boundaries</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Connecting Logs Across Service Boundaries</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 <span style="color: #90EE90; font-weight: bold;">Distributed tracing</span> correlates logs, metrics, and traces across microservices by propagating context identifiers through the entire request lifecycle. When a user action triggers calls across 10+ services, tracing lets you reconstruct the full story from a single trace ID.
 
@@ -2782,8 +2782,8 @@ See [[saga-pattern]](/topics/distributed-systems/saga-pattern) for complex workf
 ## 7. Performance Optimization Deep Dive
 
 <div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Zero-Cost Abstraction Goals</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Zero-Cost Abstraction Goals</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 Production logging must be <span style="color: #90EE90; font-weight: bold;">effectively free</span> when disabled. A log call at DEBUG level in production (where INFO is the minimum) should cost nanoseconds, not microseconds. This section covers techniques to achieve near-zero overhead.
 
@@ -3068,9 +3068,9 @@ See [[microbenchmarking]](/topics/performance/microbenchmarking) for rigorous me
 
 ## 8. Testing Logging Systems
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Verifying Invisible Infrastructure</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="background: #f8fafc; border-left: 4px solid #8b5cf6; border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Verifying Invisible Infrastructure</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 Logging is <span style="color: #90EE90; font-weight: bold;">invisible infrastructure</span> - it doesn't affect business logic but is critical for operations. Testing logging ensures that when you need logs most (during incidents), they're actually there and useful.
 
@@ -3505,9 +3505,9 @@ See [[api-gateway]](/topics/system-design/api-gateway) for centralized correlati
 
 ## Summary: Key Interview Takeaways
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">What Interviewers Look For</div>
-<div style="color: #f0f0f0; font-size: 14px; line-height: 1.8;">
+<div style="background: #f8fafc; border-left: 4px solid #8b5cf6; border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">What Interviewers Look For</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 
 1. <span style="color: #90EE90; font-weight: bold;">Performance awareness</span>: Early level checking, lazy evaluation, async I/O
 2. <span style="color: #90EE90; font-weight: bold;">Reliability trade-offs</span>: Durability vs. latency, queue overflow policies
