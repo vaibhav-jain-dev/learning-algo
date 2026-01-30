@@ -653,12 +653,45 @@ func main() {
             }
         }
 
+        // Generate type-specific comparison code
+        let compareFunc = '';
+        if (returnType === '[]int') {
+            compareFunc = `func intSlicesEqual(a, b []int) bool {
+	if len(a) != len(b) { return false }
+	for i := range a {
+		if a[i] != b[i] { return false }
+	}
+	return true
+}
+
+func compareOutput(actual, expected []int) bool {
+	if len(actual) != len(expected) { return false }
+	if intSlicesEqual(actual, expected) { return true }
+	aCopy := make([]int, len(actual))
+	eCopy := make([]int, len(expected))
+	copy(aCopy, actual)
+	copy(eCopy, expected)
+	sort.Ints(aCopy)
+	sort.Ints(eCopy)
+	return intSlicesEqual(aCopy, eCopy)
+}`;
+        } else if (returnType === 'bool' || returnType === 'int' || returnType === 'float64' || returnType === 'string') {
+            compareFunc = `func compareOutput(actual, expected ${returnType}) bool {
+	return actual == expected
+}`;
+        } else {
+            compareFunc = `func compareOutput(actual, expected interface{}) bool {
+	aJSON, _ := json.Marshal(actual)
+	eJSON, _ := json.Marshal(expected)
+	return string(aJSON) == string(eJSON)
+}`;
+        }
+
         let code = `package main
 
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
 	"sort"
 )
 
@@ -687,25 +720,7 @@ type TestOutput struct {
 	Results []TestResult \`json:"results"\`
 }
 
-func compareOutput(actual, expected interface{}) bool {
-	// Handle slice comparisons
-	actualSlice, actualIsSlice := actual.([]int)
-	expectedSlice, expectedIsSlice := expected.([]int)
-	if actualIsSlice && expectedIsSlice {
-		if len(actualSlice) != len(expectedSlice) {
-			return false
-		}
-		// Try sorted comparison
-		aCopy := make([]int, len(actualSlice))
-		eCopy := make([]int, len(expectedSlice))
-		copy(aCopy, actualSlice)
-		copy(eCopy, expectedSlice)
-		sort.Ints(aCopy)
-		sort.Ints(eCopy)
-		return reflect.DeepEqual(aCopy, eCopy)
-	}
-	return reflect.DeepEqual(actual, expected)
-}
+${compareFunc}
 
 func main() {
 	testCases := []struct {

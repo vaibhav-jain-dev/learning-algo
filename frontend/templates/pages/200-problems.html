@@ -442,16 +442,10 @@
                     <textarea id="code-editor-fallback" style="display:none;"></textarea>
                     <div id="code-editor-wrapper"></div>
                 </div>
-                <div class="output-panel" id="output-panel" style="resize: vertical; overflow: auto; min-height: 100px;">
-                    <div class="output-header">
-                        <span>Output</span>
-                        <div class="output-controls">
-                            <button class="font-btn" onclick="window.changeFontSize('output', -1)" title="Decrease font size">A-</button>
-                            <button class="font-btn" onclick="window.changeFontSize('output', 1)" title="Increase font size">A+</button>
-                            <button class="clear-btn" onclick="window.clearOutput()">Clear</button>
-                        </div>
-                    </div>
+                <div class="output-panel" id="output-panel">
+                    <div class="output-resize-handle" id="output-resize-handle"></div>
                     <div class="output-content" id="output-content">
+                        <span class="output-label">Output</span>
                         <div class="output-placeholder">Run your code to see output here</div>
                     </div>
                 </div>
