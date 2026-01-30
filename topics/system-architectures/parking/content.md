@@ -70,16 +70,16 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #1d4ed8; font-weight: bold; text-align: center; margin-bottom: 16px;">PARKING SERVICE</div>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
 <span style="color: #8b949e;">Spot Management</span>
 </div>
-<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
 <span style="color: #8b949e;">Ticket/Session</span>
 </div>
-<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
 <span style="color: #8b949e;">Reservations</span>
 </div>
-<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #30363d; border-radius: 8px; padding: 12px; text-align: center;">
 <span style="color: #8b949e;">Payments</span>
 </div>
 </div>
@@ -155,15 +155,15 @@ Parking System = <span style="color: #4ade80;">Spot Allocation</span> + <span st
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #4ade80; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #4ade80; font-weight: bold; text-align: center; margin-bottom: 16px;">ALLOCATION ENGINE</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #4ade80; font-weight: bold; font-size: 12px;">Compatibility Check</div>
 <div style="color: #8b949e; font-size: 10px; margin-top: 4px;">Match vehicle to spot types</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #4ade80; font-weight: bold; font-size: 12px;">Availability Query</div>
 <div style="color: #8b949e; font-size: 10px; margin-top: 4px;">Redis cache + DB fallback</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #22c55e; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #4ade80; font-weight: bold; font-size: 12px;">Strategy Selection</div>
 <div style="color: #8b949e; font-size: 10px; margin-top: 4px;">Nearest/Spread/Compact-first</div>
 </div>
@@ -369,22 +369,22 @@ class SpotAllocationStrategy:
 <h4 style="color: #a78bfa; text-align: center; margin: 0 0 24px 0;">SENSOR DATA PIPELINE</h4>
 
 <!-- Sensor Layer -->
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #1a1a2e 100%); border: 2px solid #a78bfa; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 2px solid #a78bfa; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #a78bfa; font-weight: bold; text-align: center; margin-bottom: 16px;">PHYSICAL SENSORS</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
 <div style="color: #c4b5fd; font-weight: bold; font-size: 11px;">Entry Loop</div>
 <div style="color: #8b949e; font-size: 10px;">Inductive coil</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
 <div style="color: #c4b5fd; font-weight: bold; font-size: 11px;">Exit Loop</div>
 <div style="color: #8b949e; font-size: 10px;">Inductive coil</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
 <div style="color: #c4b5fd; font-weight: bold; font-size: 11px;">LPR Camera</div>
 <div style="color: #8b949e; font-size: 10px;">License plate OCR</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #7c3aed; border-radius: 8px; padding: 10px; text-align: center;">
 <div style="color: #c4b5fd; font-weight: bold; font-size: 11px;">Spot Sensors</div>
 <div style="color: #8b949e; font-size: 10px;">Ultrasonic/Magnetic</div>
 </div>
@@ -394,18 +394,18 @@ class SpotAllocationStrategy:
 <div style="text-align: center; color: #a78bfa; font-size: 20px; margin: 8px 0;">&#8595;</div>
 
 <!-- Edge Controller -->
-<div style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border: 2px solid #6b7280; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #6b7280; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #9ca3af; font-weight: bold; text-align: center; margin-bottom: 12px;">EDGE CONTROLLER (Local Processing)</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #4b5563; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #4b5563; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #d1d5db; font-weight: bold; font-size: 12px;">Signal Processing</div>
 <div style="color: #6b7280; font-size: 10px;">Debounce, filter noise</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #4b5563; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #4b5563; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #d1d5db; font-weight: bold; font-size: 12px;">Local State</div>
 <div style="color: #6b7280; font-size: 10px;">Offline operation</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #4b5563; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #4b5563; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #d1d5db; font-weight: bold; font-size: 12px;">Event Batching</div>
 <div style="color: #6b7280; font-size: 10px;">Reduce cloud traffic</div>
 </div>
@@ -593,19 +593,19 @@ class SensorEventProcessor:
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #f0883e; font-weight: bold; text-align: center; margin-bottom: 16px;">PAYMENT CHANNELS</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #f9826c; font-weight: bold; font-size: 12px;">Exit Kiosk</div>
 <div style="color: #8b949e; font-size: 10px;">Card/Cash</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #f9826c; font-weight: bold; font-size: 12px;">Mobile App</div>
 <div style="color: #8b949e; font-size: 10px;">Apple/Google Pay</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #f9826c; font-weight: bold; font-size: 12px;">Pre-Registration</div>
 <div style="color: #8b949e; font-size: 10px;">Saved card</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #f9826c; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #f9826c; font-weight: bold; font-size: 12px;">Validation</div>
 <div style="color: #8b949e; font-size: 10px;">Business pays</div>
 </div>
@@ -620,7 +620,7 @@ class SensorEventProcessor:
 <div style="color: #ffffff; font-weight: bold;">Stripe/Square</div>
 <div style="color: #93c5fd; font-size: 11px; margin-top: 4px;">Primary processor</div>
 </div>
-<div style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border: 2px solid #6b7280; border-radius: 12px; padding: 16px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #6b7280; border-radius: 12px; padding: 16px; text-align: center;">
 <div style="color: #d1d5db; font-weight: bold;">Local POS</div>
 <div style="color: #9ca3af; font-size: 11px; margin-top: 4px;">Offline fallback</div>
 </div>
@@ -883,15 +883,15 @@ class PaymentService:
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #7c3aed; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #a78bfa; font-weight: bold; text-align: center; margin-bottom: 16px;">EVENT SOURCES</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #8b5cf6; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #8b5cf6; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #c4b5fd; font-weight: bold; font-size: 12px;">Entry/Exit Events</div>
 <div style="color: #8b949e; font-size: 10px;">Counter increment/decrement</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #8b5cf6; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #8b5cf6; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #c4b5fd; font-weight: bold; font-size: 12px;">Spot Sensor Events</div>
 <div style="color: #8b949e; font-size: 10px;">Per-spot occupancy</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #8b5cf6; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #8b5cf6; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #c4b5fd; font-weight: bold; font-size: 12px;">Reservation Events</div>
 <div style="color: #8b949e; font-size: 10px;">Future capacity impact</div>
 </div>
@@ -904,7 +904,7 @@ class PaymentService:
 <div style="background: linear-gradient(135deg, #4a1d1d 0%, #2d1212 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #f87171; font-weight: bold; text-align: center; margin-bottom: 12px;">REDIS CACHE (Source of Truth for Reads)</div>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-<div style="background: #0d1117; border: 1px solid #dc2626; border-radius: 8px; padding: 14px;">
+<div style="background: #f8fafc; border: 1px solid #dc2626; border-radius: 8px; padding: 14px;">
 <div style="color: #fca5a5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Aggregate Counts</div>
 <div style="color: #8b949e; font-size: 11px; font-family: monospace; line-height: 1.6;">
 lot:{id}:available = 234<br/>
@@ -912,7 +912,7 @@ lot:{id}:total = 500<br/>
 lot:{id}:level:1:available = 45
 </div>
 </div>
-<div style="background: #0d1117; border: 1px solid #dc2626; border-radius: 8px; padding: 14px;">
+<div style="background: #f8fafc; border: 1px solid #dc2626; border-radius: 8px; padding: 14px;">
 <div style="color: #fca5a5; font-weight: bold; font-size: 12px; margin-bottom: 8px;">By Type Breakdown</div>
 <div style="color: #8b949e; font-size: 11px; font-family: monospace; line-height: 1.6;">
 lot:{id}:type:COMPACT = 78<br/>
@@ -929,19 +929,19 @@ lot:{id}:type:EV = 12
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #00bcd4; border-radius: 12px; padding: 20px;">
 <div style="color: #00bcd4; font-weight: bold; text-align: center; margin-bottom: 16px;">DISTRIBUTION CHANNELS</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #67e8f9; font-weight: bold; font-size: 12px;">WebSocket</div>
 <div style="color: #8b949e; font-size: 10px;">Mobile apps (real-time)</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #67e8f9; font-weight: bold; font-size: 12px;">REST API</div>
 <div style="color: #8b949e; font-size: 10px;">Third-party integrations</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #67e8f9; font-weight: bold; font-size: 12px;">Display Protocol</div>
 <div style="color: #8b949e; font-size: 10px;">LED boards (5s poll)</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #06b6d4; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #67e8f9; font-weight: bold; font-size: 12px;">Maps API</div>
 <div style="color: #8b949e; font-size: 10px;">Google/Apple integration</div>
 </div>
@@ -1137,19 +1137,19 @@ class AvailabilityService:
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #eab308; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #fbbf24; font-weight: bold; text-align: center; margin-bottom: 16px;">PRICING SIGNALS</div>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #fcd34d; font-weight: bold; font-size: 12px;">Current Occupancy</div>
 <div style="color: #8b949e; font-size: 10px;">Real-time from Redis</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #fcd34d; font-weight: bold; font-size: 12px;">Time of Day</div>
 <div style="color: #8b949e; font-size: 10px;">Scheduled rules</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #fcd34d; font-weight: bold; font-size: 12px;">Event Calendar</div>
 <div style="color: #8b949e; font-size: 10px;">External API</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #ca8a04; border-radius: 8px; padding: 12px; text-align: center;">
 <div style="color: #fcd34d; font-weight: bold; font-size: 12px;">Historical Data</div>
 <div style="color: #8b949e; font-size: 10px;">ML predictions</div>
 </div>
@@ -1162,15 +1162,15 @@ class AvailabilityService:
 <div style="background: linear-gradient(135deg, #422006 0%, #1c0a00 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #fbbf24; font-weight: bold; text-align: center; margin-bottom: 12px;">PRICING CALCULATION ENGINE</div>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-<div style="background: #0d1117; border: 1px solid #d97706; border-radius: 8px; padding: 14px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #d97706; border-radius: 8px; padding: 14px; text-align: center;">
 <div style="color: #fdba74; font-weight: bold; font-size: 12px;">Base Rate</div>
 <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">$3/hour</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #d97706; border-radius: 8px; padding: 14px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #d97706; border-radius: 8px; padding: 14px; text-align: center;">
 <div style="color: #fdba74; font-weight: bold; font-size: 12px;">Multipliers</div>
 <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">0.8x - 2.5x</div>
 </div>
-<div style="background: #0d1117; border: 1px solid #d97706; border-radius: 8px; padding: 14px; text-align: center;">
+<div style="background: #f8fafc; border: 1px solid #d97706; border-radius: 8px; padding: 14px; text-align: center;">
 <div style="color: #fdba74; font-weight: bold; font-size: 12px;">Caps</div>
 <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Daily max, surge limit</div>
 </div>
@@ -1507,7 +1507,7 @@ class DynamicPricingService:
 ## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### The "$100/Month Parking System"
 
@@ -1575,7 +1575,7 @@ class SimpleParking:
 ## Trade-off Analysis Summary
 
 <div style="background: linear-gradient(135deg, #f0883e 0%, #f9826c 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Critical Trade-offs Matrix
 
@@ -1592,35 +1592,35 @@ class SimpleParking:
 <div style="color: #a371f7; font-weight: bold; font-size: 12px;">Decision Factor</div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #0d1117; border-radius: 8px; padding: 12px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #f8fafc; border-radius: 8px; padding: 12px;">
 <div style="color: #8b949e; font-size: 12px;"><span style="color: #4ade80;">Sensor Granularity</span></div>
 <div style="color: #8b949e; font-size: 12px;">Per-spot sensors ($50-150/spot)</div>
 <div style="color: #8b949e; font-size: 12px;">Entry/exit counters ($500 total)</div>
 <div style="color: #8b949e; font-size: 12px;">Need "find my car" feature?</div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #0d1117; border-radius: 8px; padding: 12px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #f8fafc; border-radius: 8px; padding: 12px;">
 <div style="color: #8b949e; font-size: 12px;"><span style="color: #4ade80;">Concurrency Control</span></div>
 <div style="color: #8b949e; font-size: 12px;">Database locks (simple)</div>
 <div style="color: #8b949e; font-size: 12px;">Redis distributed locks (fast)</div>
 <div style="color: #8b949e; font-size: 12px;">>1000 TPS bookings?</div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #0d1117; border-radius: 8px; padding: 12px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #f8fafc; border-radius: 8px; padding: 12px;">
 <div style="color: #8b949e; font-size: 12px;"><span style="color: #4ade80;">Offline Capability</span></div>
 <div style="color: #8b949e; font-size: 12px;">Cloud-dependent (simpler)</div>
 <div style="color: #8b949e; font-size: 12px;">Edge-first (resilient)</div>
 <div style="color: #8b949e; font-size: 12px;">Internet reliability at location?</div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #0d1117; border-radius: 8px; padding: 12px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #f8fafc; border-radius: 8px; padding: 12px;">
 <div style="color: #8b949e; font-size: 12px;"><span style="color: #4ade80;">Pricing Model</span></div>
 <div style="color: #8b949e; font-size: 12px;">Static rates (predictable)</div>
 <div style="color: #8b949e; font-size: 12px;">Dynamic pricing (optimized)</div>
 <div style="color: #8b949e; font-size: 12px;">Variable demand patterns?</div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #0d1117; border-radius: 8px; padding: 12px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; background: #f8fafc; border-radius: 8px; padding: 12px;">
 <div style="color: #8b949e; font-size: 12px;"><span style="color: #4ade80;">Payment Timing</span></div>
 <div style="color: #8b949e; font-size: 12px;">Pay on exit (simple)</div>
 <div style="color: #8b949e; font-size: 12px;">Pre-registration (reduced exit time)</div>

@@ -90,7 +90,7 @@ The matching engine assumes **price-time priority** (also called FIFO): orders a
 
 The choice of data structure directly impacts matching latency. See [[data-structures]](/topics/data-structures) for fundamentals.
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 **For each price level:**
 - **Red-Black Tree / AVL Tree**: O(log n) insert, delete, lookup for price levels
@@ -329,15 +329,15 @@ Unlike order execution (which requires strong consistency), market data display 
 </div>
 
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: #21262d; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
 <div style="color: #7ee787; font-weight: 600;">Subscriber 1</div>
 <div style="color: #8b949e; font-size: 11px;">HFT Firm</div>
 </div>
-<div style="background: #21262d; border: 2px solid #58a6ff; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border: 2px solid #58a6ff; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
 <div style="color: #58a6ff; font-weight: 600;">Subscriber 2</div>
 <div style="color: #8b949e; font-size: 11px;">Retail Broker</div>
 </div>
-<div style="background: #21262d; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
 <div style="color: #f0883e; font-weight: 600;">Subscriber 3</div>
 <div style="color: #8b949e; font-size: 11px;">Data Vendor</div>
 </div>
@@ -366,7 +366,7 @@ Unlike order execution (which requires strong consistency), market data display 
 
 UDP is unreliable by design. Market data systems implement their own reliability layer:
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 ```python
 class MarketDataReceiver:
@@ -757,7 +757,7 @@ Each microsecond of improvement costs exponentially more to achieve. Going from 
 
 ### Optimization Techniques by Layer
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 **1. Physical Layer**
 - **Co-location**: Rent rack space in exchange's data center (~$10K-$100K/month)
@@ -1007,17 +1007,17 @@ Regulators assume that once a record is written to the audit trail, it cannot be
 </div>
 
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: #21262d; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
+<div style="background: #f8fafc; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
 <div style="color: #7ee787; font-weight: 600;">Hot Storage</div>
 <div style="color: #8b949e; font-size: 11px;">TimescaleDB</div>
 <div style="color: #8b949e; font-size: 11px;">90 days online</div>
 </div>
-<div style="background: #21262d; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
+<div style="background: #f8fafc; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
 <div style="color: #f0883e; font-weight: 600;">Warm Storage</div>
 <div style="color: #8b949e; font-size: 11px;">S3 + Athena</div>
 <div style="color: #8b949e; font-size: 11px;">7 years queryable</div>
 </div>
-<div style="background: #21262d; border: 2px solid #f85149; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
+<div style="background: #f8fafc; border: 2px solid #f85149; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
 <div style="color: #f85149; font-weight: 600;">Cold Archive</div>
 <div style="color: #8b949e; font-size: 11px;">Glacier Deep Archive</div>
 <div style="color: #8b949e; font-size: 11px;">Permanent retention</div>
@@ -1028,7 +1028,7 @@ Regulators assume that once a record is written to the audit trail, it cannot be
 
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 **Audit Record Schema (simplified)**:
 
@@ -1230,7 +1230,7 @@ External dependencies (exchange connections, payment gateways) wrapped in circui
 
 ### Technology Stack Summary
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 | Component | Technology | Rationale |
 |-----------|------------|-----------|

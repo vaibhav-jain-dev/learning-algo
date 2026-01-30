@@ -297,7 +297,7 @@ class WebSocketHandler:
 
 ### Microservices Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 
@@ -487,7 +487,7 @@ class PresenceService:
 
 ### Global Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">SLACK GLOBAL ARCHITECTURE</h4>
 

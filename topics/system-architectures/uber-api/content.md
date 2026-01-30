@@ -33,7 +33,7 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 
 <div style="display: flex; flex-direction: column; align-items: center; color: #8b949e;">
 <div style="width: 2px; height: 20px; background: #8b949e;"></div>
-<div style="font-size: 11px; padding: 4px 8px; background: #21262d; border-radius: 4px;">WebSocket + REST</div>
+<div style="font-size: 11px; padding: 4px 8px; background: #f8fafc; border-radius: 4px;">WebSocket + REST</div>
 <div style="width: 2px; height: 20px; background: #8b949e;"></div>
 </div>
 
@@ -143,7 +143,7 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <strong>6 chars:</strong> ~1.2km x 0.6km cell<br/>
 <strong>Query:</strong> Prefix matching in Redis
 </div>
-<div style="background: #161b22; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #1d4ed8;">
+<div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #1d4ed8;">
 "dr5ru7" = Times Square area
 </div>
 </div>
@@ -156,7 +156,7 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <strong>Hierarchy:</strong> 7 children per parent<br/>
 <strong>Resolution 9:</strong> ~174m edge length
 </div>
-<div style="background: #161b22; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #a371f7;">
+<div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #a371f7;">
 892a100d2c3ffff = hex cell ID
 </div>
 </div>
@@ -169,7 +169,7 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 <strong>Hierarchy:</strong> 4 children per parent<br/>
 <strong>Level 16:</strong> ~150m cell size
 </div>
-<div style="background: #161b22; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #3fb950;">
+<div style="background: #f1f5f9; border-radius: 6px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #3fb950;">
 89c2847c = S2 cell token
 </div>
 </div>
@@ -402,35 +402,35 @@ At any moment in Manhattan, there might be 500 pending ride requests and 300 ava
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 16px;">Matching Pipeline (Every 2 Seconds)</div>
 <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center;">
 
-<div style="background: #161b22; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #f0883e;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #f0883e;">
 <div style="color: #f0883e; font-size: 20px; font-weight: bold;">1</div>
 <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Collect Pending<br/>Requests</div>
 </div>
 
 <div style="color: #8b949e;">&#8594;</div>
 
-<div style="background: #161b22; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #58a6ff;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #58a6ff;">
 <div style="color: #1d4ed8; font-size: 20px; font-weight: bold;">2</div>
 <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Query Available<br/>Drivers</div>
 </div>
 
 <div style="color: #8b949e;">&#8594;</div>
 
-<div style="background: #161b22; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #3fb950;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #3fb950;">
 <div style="color: #3fb950; font-size: 20px; font-weight: bold;">3</div>
 <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Build Cost<br/>Matrix</div>
 </div>
 
 <div style="color: #8b949e;">&#8594;</div>
 
-<div style="background: #161b22; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #a371f7;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #a371f7;">
 <div style="color: #a371f7; font-size: 20px; font-weight: bold;">4</div>
 <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Hungarian<br/>Algorithm</div>
 </div>
 
 <div style="color: #8b949e;">&#8594;</div>
 
-<div style="background: #161b22; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #db61a2;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 14px 18px; text-align: center; border-top: 3px solid #db61a2;">
 <div style="color: #db61a2; font-size: 20px; font-weight: bold;">5</div>
 <div style="color: #c9d1d9; font-size: 11px; margin-top: 4px;">Dispatch<br/>Assignments</div>
 </div>
@@ -444,7 +444,7 @@ At any moment in Manhattan, there might be 500 pending ride requests and 300 ava
 
 Each cell (i, j) represents the "cost" of assigning driver j to rider i:
 
-<div style="background: #161b22; border-radius: 8px; padding: 16px; margin-top: 12px; font-family: monospace; font-size: 12px;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 12px; font-family: monospace; font-size: 12px;">
 cost[i][j] = (0.50 * pickup_eta_minutes) +<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.20 * driver_rating_penalty) +<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(0.15 * heading_misalignment) +<br/>
@@ -734,7 +734,7 @@ When demand exceeds supply, surge pricing serves two economic functions:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
 <div style="color: #3fb950; font-weight: bold; margin-bottom: 12px;">Surge Multiplier Calculation</div>
-<div style="background: #161b22; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; color: #c9d1d9;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px; color: #c9d1d9;">
 ratio = demand / max(supply, 1)<br/><br/>
 if ratio &lt; 1.0: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Oversupply<br/>
 if ratio 1.0-1.3: multiplier = 1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Balanced<br/>
@@ -750,7 +750,7 @@ if ratio &gt; 3.5: multiplier = 2.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# C
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Surge Smoothing</div>
 <div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
 Raw surge calculation can oscillate rapidly. Apply exponential moving average:
-<div style="background: #161b22; border-radius: 6px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px;">
+<div style="background: #f1f5f9; border-radius: 6px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px;">
 smoothed_surge = alpha * new_surge + (1 - alpha) * prev_surge<br/>
 where alpha = 0.3 (30% weight to new value)
 </div>
@@ -1402,42 +1402,42 @@ See also: [[Time Series Prediction]](/topics/ml/time-series), [[Routing Algorith
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
 
-<div style="background: #21262d; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #8b949e; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #8b949e; text-align: center; min-width: 100px;">
 <div style="color: #8b949e; font-size: 12px; font-weight: bold;">PENDING</div>
 <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Searching</div>
 </div>
 
 <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-<div style="background: #21262d; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #f0883e; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #f0883e; text-align: center; min-width: 100px;">
 <div style="color: #f0883e; font-size: 12px; font-weight: bold;">OFFERED</div>
 <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Sent to driver</div>
 </div>
 
 <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-<div style="background: #21262d; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #58a6ff; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #58a6ff; text-align: center; min-width: 100px;">
 <div style="color: #1d4ed8; font-size: 12px; font-weight: bold;">ACCEPTED</div>
 <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Driver en route</div>
 </div>
 
 <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-<div style="background: #21262d; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #a371f7; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #a371f7; text-align: center; min-width: 100px;">
 <div style="color: #a371f7; font-size: 12px; font-weight: bold;">ARRIVED</div>
 <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">At pickup</div>
 </div>
 
 <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-<div style="background: #21262d; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #3fb950; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #3fb950; text-align: center; min-width: 100px;">
 <div style="color: #3fb950; font-size: 12px; font-weight: bold;">IN_PROGRESS</div>
 <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">Trip active</div>
 </div>
 
 <div style="color: #8b949e; display: flex; align-items: center;">&#8594;</div>
 
-<div style="background: #21262d; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #db61a2; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px 16px; border-top: 3px solid #db61a2; text-align: center; min-width: 100px;">
 <div style="color: #db61a2; font-size: 12px; font-weight: bold;">COMPLETED</div>
 <div style="color: #6e7681; font-size: 10px; margin-top: 4px;">At destination</div>
 </div>

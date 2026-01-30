@@ -90,7 +90,7 @@ Design a location-based dating application that enables users to discover potent
 
 <!-- Event Bus -->
 <div style="display: flex; justify-content: center;">
-<div style="background: #21262d; border: 2px solid #484f58; border-radius: 10px; padding: 14px 60px; text-align: center;">
+<div style="background: #f8fafc; border: 2px solid #484f58; border-radius: 10px; padding: 14px 60px; text-align: center;">
 <div style="color: #58a6ff; font-weight: bold;">Apache Kafka</div>
 <div style="color: #8b949e; font-size: 11px;">Event Streaming | Swipe Events | Match Events | Analytics</div>
 </div>
@@ -1192,7 +1192,7 @@ def reconcile_orphaned_matches():
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <!-- Client Connection -->
-<div style="background: #21262d; border: 2px solid #fe3c72; border-radius: 8px; padding: 16px;">
+<div style="background: #f8fafc; border: 2px solid #fe3c72; border-radius: 8px; padding: 16px;">
 <div style="color: #fe3c72; font-weight: bold; margin-bottom: 8px;">Client Connection Layer</div>
 <div style="color: #1e293b; font-size: 13px;">
 WebSocket connections from mobile/web clients. Each connection authenticated via JWT and registered with a Connection Manager that tracks which server handles which user.
@@ -1216,7 +1216,7 @@ WebSocket connections from mobile/web clients. Each connection authenticated via
 </div>
 
 <!-- Redis Pub/Sub -->
-<div style="background: #21262d; border: 2px solid #da3633; border-radius: 8px; padding: 16px;">
+<div style="background: #f8fafc; border: 2px solid #da3633; border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Redis Pub/Sub (Message Fanout)</div>
 <div style="color: #1e293b; font-size: 13px;">
 When User A on Server 1 sends a message to User B on Server 3, the message is published to Redis channel <code>user:{user_b}</code>. Server 3 subscribes to that channel and delivers to User B's WebSocket.
@@ -1658,7 +1658,7 @@ class MessageModerator:
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
 <!-- Phase 1 -->
-<div style="background: #21262d; border: 2px solid #238636; border-radius: 12px; padding: 20px;">
+<div style="background: #f8fafc; border: 2px solid #238636; border-radius: 12px; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
 <div style="background: #238636; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold;">Phase 1: MVP</div>
 <span style="color: #8b949e;">< 50K users</span>
@@ -1683,7 +1683,7 @@ class MessageModerator:
 </div>
 
 <!-- Phase 2 -->
-<div style="background: #21262d; border: 2px solid #1f6feb; border-radius: 12px; padding: 20px;">
+<div style="background: #f8fafc; border: 2px solid #1f6feb; border-radius: 12px; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
 <div style="background: #1f6feb; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold;">Phase 2: Growth</div>
 <span style="color: #8b949e;">50K - 1M users</span>
@@ -1708,7 +1708,7 @@ class MessageModerator:
 </div>
 
 <!-- Phase 3 -->
-<div style="background: #21262d; border: 2px solid #8957e5; border-radius: 12px; padding: 20px;">
+<div style="background: #f8fafc; border: 2px solid #8957e5; border-radius: 12px; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
 <div style="background: #8957e5; color: white; padding: 8px 16px; border-radius: 6px; font-weight: bold;">Phase 3: Scale</div>
 <span style="color: #8b949e;">> 10M users</span>

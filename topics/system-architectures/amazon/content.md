@@ -403,7 +403,7 @@ Only split if you have VERY different scaling needs (e.g., image processing)
 
 ### Microservices Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">DOMAIN-DRIVEN MICROSERVICES</h4>
 
 ```
@@ -962,7 +962,7 @@ Interviewers use these probing questions to test your depth of understanding. He
 
 ## Why This Technology?
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 Understanding **why** specific technologies are chosen demonstrates architectural maturity. Interviewers want to see you can reason about trade-offs, not just list technologies.
 
@@ -970,7 +970,7 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 
 ### Decision Matrix
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0; overflow-x: auto;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; overflow-x: auto;">
 
 | Component | Technology | Why This? | Alternative | When Alternative Wins |
 |-----------|------------|-----------|-------------|----------------------|
@@ -988,7 +988,7 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px;">
 <h4 style="color: #1d4ed8; margin: 0 0 16px 0;">DynamoDB for Product Catalog</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
@@ -1017,7 +1017,7 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px;">
 <h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Aurora for Orders</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
@@ -1050,7 +1050,7 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px;">
 <h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Kafka for Event Streaming</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
@@ -1079,7 +1079,7 @@ Understanding **why** specific technologies are chosen demonstrates architectura
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px;">
 <h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Microservices Architecture</h4>
 
 <div style="background: rgba(126, 231, 135, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
