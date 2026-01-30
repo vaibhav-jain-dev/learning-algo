@@ -215,15 +215,31 @@ function closePdfModal() {
     }
 }
 
+// Fetch a single topic's content
+async function fetchTopicContent(topicPath) {
+    const response = await fetch(`/topic/${topicPath}`);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch topic: ${topicPath} (Status: ${response.status})`);
+    }
+    const html = await response.text();
+
+    // Parse the HTML
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Get the topic content
+    let content = doc.querySelector('.topic-content') || doc.querySelector('.topic-detail-page');
+
+    if (!content) {
+        throw new Error(`Could not find topic content for: ${topicPath}`);
+    }
+
+    return content.cloneNode(true);
+}
+
 // Generate PDF
 async function generatePdf() {
     if (selectedTopics.length === 0) return;
-
-    // For single topic, use the original flow
-    const selectedTopic = selectedTopics.length === 1 ? selectedTopics[0] : {
-        path: 'all',
-        name: selectedTopics.length === allTopics.length ? 'All Topics' : `${selectedTopics.length} Topics`
-    };
 
     const generateBtn = document.getElementById('generate-pdf-btn');
     const btnText = document.getElementById('pdf-btn-text');
@@ -237,23 +253,51 @@ async function generatePdf() {
     try {
         // Load html2pdf library first
         await loadHtml2PdfLib();
-        // Fetch the topic content
-        const response = await fetch(`/topic/${selectedTopic.path}`);
-        const html = await response.text();
 
-        // Parse the HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
+        // Fetch all selected topics content
+        console.log('Fetching content for', selectedTopics.length, 'topic(s)...');
+        const topicContents = [];
 
-        // Get the topic content
-        let content = doc.querySelector('.topic-content') || doc.querySelector('.topic-detail-page');
-
-        if (!content) {
-            throw new Error('Could not find topic content');
+        for (let i = 0; i < selectedTopics.length; i++) {
+            const topic = selectedTopics[i];
+            try {
+                console.log(`Fetching topic ${i + 1}/${selectedTopics.length}: ${topic.name}`);
+                const content = await fetchTopicContent(topic.path);
+                topicContents.push({
+                    name: topic.name,
+                    content: content
+                });
+            } catch (error) {
+                console.error(`Failed to fetch topic ${topic.name}:`, error);
+                throw new Error(`Failed to fetch "${topic.name}": ${error.message}`);
+            }
         }
 
-        // Clone the content for PDF processing
-        const pdfContent = content.cloneNode(true);
+        // Create a combined content container
+        const combinedContent = document.createElement('div');
+        combinedContent.className = 'pdf-combined-content';
+
+        topicContents.forEach((topicData, index) => {
+            // Add page break before each topic (except the first)
+            if (index > 0) {
+                const pageBreak = document.createElement('div');
+                pageBreak.className = 'page-break';
+                combinedContent.appendChild(pageBreak);
+            }
+
+            // Add topic heading if multiple topics
+            if (topicContents.length > 1) {
+                const topicHeading = document.createElement('div');
+                topicHeading.className = 'pdf-topic-heading';
+                topicHeading.innerHTML = `<h1>${topicData.name}</h1>`;
+                combinedContent.appendChild(topicHeading);
+            }
+
+            combinedContent.appendChild(topicData.content);
+        });
+
+        // Use the combined content for PDF processing
+        const pdfContent = combinedContent;
 
         // Remove elements not suitable for PDF
         const elementsToRemove = [
@@ -299,6 +343,16 @@ async function generatePdf() {
             }
         });
 
+        // Determine document title
+        let documentTitle;
+        if (selectedTopics.length === 1) {
+            documentTitle = selectedTopics[0].name;
+        } else if (selectedTopics.length === allTopics.length) {
+            documentTitle = 'All Topics';
+        } else {
+            documentTitle = `${selectedTopics.length} Selected Topics`;
+        }
+
         // Create PDF container with A4 dimensions
         // 794px width at 96 DPI = 210mm (A4 width)
         // Content area: 794 - 113 (margins) = 681px for 180mm content width
@@ -306,7 +360,7 @@ async function generatePdf() {
         pdfContainer.className = 'pdf-export-container';
         pdfContainer.innerHTML = `
             <div class="pdf-header">
-                <h1>${selectedTopic.name}</h1>
+                <h1>${documentTitle}</h1>
                 <p class="pdf-subtitle">DSAlgo Learning Platform</p>
             </div>
             <div class="pdf-body"></div>
@@ -348,6 +402,20 @@ async function generatePdf() {
                 color: #6c757d;
                 margin: 0;
                 font-size: 10pt;
+            }
+
+            /* Topic heading for multiple topics */
+            .pdf-topic-heading {
+                margin-top: 32px;
+                margin-bottom: 20px;
+                padding-top: 16px;
+                border-top: 2px solid #0d6efd;
+            }
+            .pdf-topic-heading h1 {
+                font-size: 20pt;
+                margin: 0;
+                color: #0d6efd;
+                font-weight: 600;
             }
 
             /* Body content */
@@ -569,10 +637,20 @@ async function generatePdf() {
         pdfContainer.style.top = '0';
         document.body.appendChild(pdfContainer);
 
+        // Generate filename
+        let filename;
+        if (selectedTopics.length === 1) {
+            filename = `${selectedTopics[0].name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.pdf`;
+        } else if (selectedTopics.length === allTopics.length) {
+            filename = 'dsalgo-all-topics.pdf';
+        } else {
+            filename = `dsalgo-${selectedTopics.length}-topics.pdf`;
+        }
+
         // PDF options optimized for A4
         const opt = {
             margin: [15, 15, 20, 15], // top, left, bottom, right - extra bottom for page number
-            filename: `${selectedTopic.name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.pdf`,
+            filename: filename,
             image: {
                 type: 'jpeg',
                 quality: 0.95
@@ -619,9 +697,10 @@ async function generatePdf() {
                 const xPos = (pageWidth - textWidth) / 2;
                 pdf.text(pageText, xPos, pageHeight - 10);
 
-                // Add topic name at bottom left (optional footer)
+                // Add document title at bottom left (optional footer)
                 pdf.setFontSize(8);
-                pdf.text(selectedTopic.name, 15, pageHeight - 10);
+                const leftText = documentTitle.length > 40 ? documentTitle.substring(0, 37) + '...' : documentTitle;
+                pdf.text(leftText, 15, pageHeight - 10);
 
                 // Add "DSAlgo" at bottom right
                 const rightText = 'DSAlgo Learning Platform';
@@ -638,7 +717,19 @@ async function generatePdf() {
 
     } catch (error) {
         console.error('PDF generation failed:', error);
-        alert('Failed to generate PDF. Please try again.');
+
+        // Show detailed error message to user
+        let errorMessage = 'Failed to generate PDF.\n\n';
+        if (error.message) {
+            errorMessage += `Error: ${error.message}\n\n`;
+        }
+        errorMessage += 'Please check:\n';
+        errorMessage += '- Your internet connection\n';
+        errorMessage += '- The selected topics are accessible\n';
+        errorMessage += '- Browser console for more details\n\n';
+        errorMessage += 'If the problem persists, try selecting fewer topics or a single topic.';
+
+        alert(errorMessage);
     } finally {
         // Reset button state
         if (btnText) btnText.classList.remove('hidden');
