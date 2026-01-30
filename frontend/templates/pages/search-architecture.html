@@ -1,0 +1,1101 @@
+<div class="search-arch-page">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Search Architecture</h2>
+            <p style="color: #9ca3af; font-size: 0.85rem; margin-top: 0.5rem;">Real-World Implementation Deep Dive</p>
+        </div>
+        <div class="lesson-tree">
+            <!-- Part 1: The Problem -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('problem')">
+                    <span class="icon">&#128293;</span>
+                    <span>1. The 200-300ms Problem</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="problem" class="category-content expanded">
+                    <a class="lesson-link active" onclick="loadSection('bottleneck')">Sequential I/O Bottleneck</a>
+                    <a class="lesson-link" onclick="loadSection('critical-path')">Critical Path Analysis</a>
+                    <a class="lesson-link" onclick="loadSection('queueing-theory')">Queueing Theory</a>
+                </div>
+            </div>
+
+            <!-- Part 2: Framework Selection -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('framework')">
+                    <span class="icon">&#9881;</span>
+                    <span>2. Framework Selection</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="framework" class="category-content">
+                    <a class="lesson-link" onclick="loadSection('flask-wsgi')">Why Flask Failed (WSGI)</a>
+                    <a class="lesson-link" onclick="loadSection('sanic-asgi')">Why Sanic Won (ASGI)</a>
+                    <a class="lesson-link" onclick="loadSection('fastapi-comparison')">FastAPI Comparison</a>
+                </div>
+            </div>
+
+            <!-- Part 3: Data Pipeline -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('pipeline')">
+                    <span class="icon">&#128202;</span>
+                    <span>3. Pydantic & ES Pipeline</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="pipeline" class="category-content">
+                    <a class="lesson-link" onclick="loadSection('pydantic')">Pydantic vs Dataclasses</a>
+                    <a class="lesson-link" onclick="loadSection('bulk-indexing')">Bulk Indexing Strategy</a>
+                    <a class="lesson-link" onclick="loadSection('cron-pipeline')">Hourly Cron Pipeline</a>
+                </div>
+            </div>
+
+            <!-- Part 4: Query Design -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('query')">
+                    <span class="icon">&#128269;</span>
+                    <span>4. Query Design</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="query" class="category-content">
+                    <a class="lesson-link" onclick="loadSection('multi-field-boost')">Multi-Field + Boost</a>
+                    <a class="lesson-link" onclick="loadSection('relevance-tuning')">Relevance Tuning</a>
+                    <a class="lesson-link" onclick="loadSection('hybrid-search')">Hybrid Retrieval</a>
+                </div>
+            </div>
+
+            <!-- Part 5: Frontend Architecture -->
+            <div class="lesson-category">
+                <div class="category-header" onclick="toggleCategory('frontend')">
+                    <span class="icon">&#128421;</span>
+                    <span>5. Frontend Architecture</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div id="frontend" class="category-content">
+                    <a class="lesson-link" onclick="loadSection('debounce-pattern')">Debounce After 3 Keystrokes</a>
+                    <a class="lesson-link" onclick="loadSection('search-ux')">Search UX Patterns</a>
+                    <a class="lesson-link" onclick="loadSection('caching-strategy')">Client-Side Caching</a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div id="section-content">
+            <!-- Default: Bottleneck Section -->
+            <div class="lesson">
+                <h1>Search Architecture Evolution</h1>
+                <p class="lesson-meta">
+                    <span class="category">From 200-300ms Latency to Production Excellence</span>
+                </p>
+                <p style="color: #9ca3af; font-style: italic;">Interview-grade deep dive: framework selection, async I/O patterns, and architectural optimization.</p>
+
+                <section class="lesson-section">
+                    <h2>1.1 The 200-300ms Bottleneck Problem</h2>
+
+                    <h3>Sequential I/O and Critical Path</h3>
+                    <p>The search feature consistently showed 200-300ms latency per request. The architecture was strictly sequential:</p>
+
+                    <!-- Architecture Flow Diagram -->
+                    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fca5a5;">
+                        <h4 style="color: #991b1b; margin-bottom: 1rem;">Original Sequential Architecture</h4>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem 1rem; border: 2px solid #fca5a5;">
+                                <div style="font-weight: 600; color: #991b1b;">Client</div>
+                            </div>
+                            <div style="color: #ef4444; font-size: 1.5rem;">→</div>
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem 1rem; border: 2px solid #fb923c;">
+                                <div style="font-weight: 600; color: #c2410c;">Service</div>
+                            </div>
+                            <div style="color: #f59e0b; font-size: 1.5rem;">→</div>
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem 1rem; border: 2px solid #fcd34d;">
+                                <div style="font-weight: 600; color: #a16207;">ES</div>
+                                <div style="font-size: 0.75rem; color: #ca8a04;">80-100ms</div>
+                            </div>
+                            <div style="color: #eab308; font-size: 1.5rem;">→</div>
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem 1rem; border: 2px solid #86efac;">
+                                <div style="font-weight: 600; color: #166534;">MySQL</div>
+                                <div style="font-size: 0.75rem; color: #16a34a;">80-150ms</div>
+                            </div>
+                            <div style="color: #22c55e; font-size: 1.5rem;">→</div>
+                            <div style="background: white; border-radius: 8px; padding: 0.75rem 1rem; border: 2px solid #93c5fd;">
+                                <div style="font-weight: 600; color: #1e40af;">Response</div>
+                                <div style="font-size: 0.75rem; color: #3b82f6;">10-20ms</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 1rem; padding: 0.75rem; background: white; border-radius: 8px;">
+                            <span style="color: #dc2626; font-weight: 600;">Total: 200-300ms</span>
+                            <span style="color: #6b7280;"> (each step waits for previous)</span>
+                        </div>
+                    </div>
+
+                    <p>Each operation <strong>waited</strong> for the previous one to finish. This strict sequencing made ES → MySQL the <strong>critical path</strong>: the longest chain of dependent operations that determines total latency.</p>
+
+                    <div class="concept-box">
+                        <h3>The Math Problem</h3>
+                        <pre><code class="language-text">With a single thread handling a single request:
+- Throughput ≈ 1000ms / 300ms ≈ 3.3 req/sec
+- At peak (100 users searching): last user sees ~30s response time
+
+Key insight: Latency is time for one request;
+             Throughput is requests per second.
+             Bad architecture breaks both at once.</code></pre>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interview Questions: Level 1</h2>
+
+                    <div class="concept-box">
+                        <h3>Q1: What's the difference between latency and throughput?</h3>
+                        <p><strong>Answer:</strong> Latency is the time from request entry to response exit (≈200-300ms for search). Throughput is requests per second; with 300ms per request on a single worker, that's ≈3.3 req/sec.</p>
+
+                        <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <strong>Follow-up: If you double workers, do you double throughput?</strong><br>
+                            Roughly yes: 2 workers × 3.3 req/sec = 6.6 req/sec. But you also double memory, increase context switching, and keep the same per-request latency.
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q2: Why couldn't Elasticsearch and MySQL be called in parallel?</h3>
+                        <p><strong>Answer:</strong> Data dependency. ES returns IDs (e.g., diagnosis_id list), and MySQL needs those specific IDs to fetch actual rows. Until ES completes, you don't know what to ask MySQL.</p>
+
+                        <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <strong>What could be parallelized:</strong>
+                            <ul style="margin: 0.5rem 0 0 1.5rem; color: #166534;">
+                                <li>Fetch user context from Redis</li>
+                                <li>Load feature flags</li>
+                                <li>Precompute "related diagnoses"</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q3: What optimizations are possible without changing architecture?</h3>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li><strong>Connection pooling</strong> for MySQL (avoid repeated setup)</li>
+                            <li><strong>Batch queries:</strong> SELECT ... WHERE id IN (...)</li>
+                            <li><strong>Caching</strong> hot diagnoses</li>
+                            <li><strong>ES query tuning</strong> and connection pooling</li>
+                            <li><strong>Co-locate services</strong> in same region/zone</li>
+                        </ul>
+                        <p style="color: #fbbf24; margin-top: 1rem;">These help, but don't break the fundamental ES→MySQL dependency.</p>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interview Questions: Level 2 (Advanced)</h2>
+
+                    <div class="concept-box">
+                        <h3>Q4: What is "critical path" and how did it apply?</h3>
+                        <p>The critical path is the longest chain of dependent steps that determines total latency:</p>
+
+                        <!-- Critical Path Diagram -->
+                        <div style="background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #fdba74;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; text-align: center;">
+                                    <div style="font-weight: 600; color: #9a3412;">ES Query</div>
+                                    <div style="font-size: 0.85rem; color: #ea580c;">~80ms</div>
+                                </div>
+                                <div style="color: #ea580c; font-size: 1.5rem;">→</div>
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; text-align: center;">
+                                    <div style="font-weight: 600; color: #9a3412;">MySQL Query</div>
+                                    <div style="font-size: 0.85rem; color: #ea580c;">~100ms</div>
+                                </div>
+                                <div style="color: #ea580c; font-size: 1.5rem;">→</div>
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; text-align: center;">
+                                    <div style="font-weight: 600; color: #9a3412;">Serialize</div>
+                                    <div style="font-size: 0.85rem; color: #ea580c;">~20ms</div>
+                                </div>
+                            </div>
+                            <div style="text-align: center; margin-top: 1rem; font-weight: 600; color: #9a3412;">
+                                Critical Path Total: ~200ms
+                            </div>
+                        </div>
+                        <p>Optimizing steps off this path (e.g., logging) doesn't significantly change end-to-end latency.</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q5: How does queueing theory explain throughput collapse?</h3>
+                        <p>Model the system as an M/M/1 queue:</p>
+                        <pre><code class="language-text">- Service rate μ ≈ 3.3 req/sec
+- Arrival rate λ ~ 10 req/sec at peak
+- Utilization ρ = λ / μ ≈ 3
+
+Since ρ > 1, the system is overloaded.
+Expected queue length and wait time → ∞</code></pre>
+
+                        <div style="background: #fef2f2; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <strong>Follow-up: Would M/M/c (multiple workers) fix it?</strong><br>
+                            Yes, c workers increase effective service rate to c·μ, but you pay in memory and context switching.
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q6: Theoretical max throughput if ES and MySQL ran in parallel?</h3>
+
+                        <!-- Parallel vs Sequential Comparison -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                            <div style="background: #fef2f2; padding: 1rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #dc2626; margin-bottom: 0.5rem;">Sequential</div>
+                                <div style="font-size: 0.9rem; color: #475569;">
+                                    ES: 80ms + MySQL: 100ms = 180ms<br>
+                                    Throughput: ~5.5 req/sec
+                                </div>
+                            </div>
+                            <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #16a34a; margin-bottom: 0.5rem;">Parallel</div>
+                                <div style="font-size: 0.9rem; color: #475569;">
+                                    max(80ms, 100ms) = 100ms<br>
+                                    Throughput: ~10 req/sec
+                                </div>
+                            </div>
+                        </div>
+                        <p style="color: #9ca3af;">Note: Can't parallelize due to data dependency (ES returns IDs needed by MySQL)</p>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interview Questions: Level 3 (Expert)</h2>
+
+                    <div class="concept-box">
+                        <h3>Q7: Why does thread-per-request lose to event loop at high concurrency?</h3>
+
+                        <!-- Thread vs Event Loop Comparison -->
+                        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; border: 1px solid #93c5fd;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div style="background: white; padding: 1rem; border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #dc2626; margin-bottom: 0.5rem;">Thread-per-Request</div>
+                                    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.85rem; color: #475569;">
+                                        <li>1000 concurrent → 1000 threads</li>
+                                        <li>Memory: 1-2 MB per thread</li>
+                                        <li>Context switches explode</li>
+                                        <li>CPU cache constantly invalidated</li>
+                                    </ul>
+                                </div>
+                                <div style="background: white; padding: 1rem; border-radius: 8px;">
+                                    <div style="font-weight: 600; color: #16a34a; margin-bottom: 0.5rem;">Event Loop (Async)</div>
+                                    <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.85rem; color: #475569;">
+                                        <li>1 thread handles many connections</li>
+                                        <li>Non-blocking I/O</li>
+                                        <li>Minimal context switches</li>
+                                        <li>Much lower memory</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <strong>Follow-up: When is thread-per-request still acceptable?</strong><br>
+                            At low concurrency and when simplicity matters more than peak efficiency.
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q8: How would you design a safe migration + rollback strategy?</h3>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li>Run new Sanic service in parallel with old Flask service</li>
+                            <li>Route small percentage (5%) via feature flag</li>
+                            <li>Gradually ramp up if metrics look good</li>
+                            <li>Rollback: flip feature flag to 0% → 100% legacy</li>
+                            <li>No data migration needed since business logic is identical</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <span></span>
+                    <a class="btn btn-primary" onclick="loadSection('flask-wsgi')">Next: Why Flask Failed →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.search-arch-page {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 60px);
+}
+
+.search-arch-page .sidebar {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    border-right: 1px solid rgba(99, 102, 241, 0.15);
+    overflow-y: auto;
+}
+
+.search-arch-page .sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    background: rgba(30, 41, 59, 0.5);
+}
+
+.search-arch-page .sidebar-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.search-arch-page .lesson-tree {
+    padding: 0.5rem;
+}
+
+.search-arch-page .lesson-category {
+    margin-bottom: 0.25rem;
+}
+
+.search-arch-page .category-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.search-arch-page .category-header:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.search-arch-page .category-header .icon {
+    font-size: 1.1rem;
+}
+
+.search-arch-page .category-header .arrow {
+    margin-left: auto;
+    transition: transform 0.2s;
+}
+
+.search-arch-page .category-content {
+    display: none;
+    padding-left: 1rem;
+}
+
+.search-arch-page .category-content.expanded {
+    display: block;
+}
+
+.search-arch-page .lesson-link {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-arch-page .lesson-link:hover {
+    color: #fff;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.search-arch-page .lesson-link.active {
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.15);
+    border-left: 3px solid #6366f1;
+    margin-left: -3px;
+}
+
+.search-arch-page .content {
+    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.search-arch-page .lesson {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.search-arch-page .lesson h1 {
+    margin: 0 0 1rem 0;
+    color: #fff;
+    font-size: 2rem;
+}
+
+.search-arch-page .lesson-meta {
+    color: #9ca3af;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.search-arch-page .lesson-section {
+    margin-bottom: 2.5rem;
+}
+
+.search-arch-page .lesson-section h2 {
+    color: #4ecdc4;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(78, 205, 196, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.search-arch-page .lesson-section h3 {
+    color: #a5b4fc;
+    font-size: 1.1rem;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.search-arch-page .lesson-section p {
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+.search-arch-page .concept-box {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+}
+
+.search-arch-page .concept-box h3 {
+    color: #fbbf24;
+    margin-top: 0;
+}
+
+.search-arch-page pre {
+    background: #0d1117;
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.search-arch-page code {
+    color: #e2e8f0;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.85rem;
+}
+
+.search-arch-page .lesson-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.search-arch-page .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.search-arch-page .btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+}
+
+.search-arch-page .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.search-arch-page .btn-outline {
+    background: transparent;
+    color: #6366f1;
+    border: 1px solid #6366f1;
+}
+
+.search-arch-page .btn-outline:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+</style>
+
+<script>
+const sections = {
+    'bottleneck': {
+        title: 'Sequential I/O Bottleneck',
+        content: document.getElementById('section-content').innerHTML
+    },
+    'flask-wsgi': {
+        title: 'Why Flask Failed (WSGI Limitations)',
+        content: `
+            <div class="lesson">
+                <h1>Why Flask Failed: WSGI Limitations</h1>
+                <p class="lesson-meta">
+                    <span class="category">Framework Selection</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>WSGI's Synchronous Contract</h2>
+                    <p>WSGI defines a <strong>synchronous</strong> interface:</p>
+
+                    <div class="concept-box">
+                        <h3>The WSGI Interface</h3>
+                        <pre><code class="language-python">def application(environ, start_response):
+    start_response("200 OK", [("Content-Type", "text/plain")])
+    return [b"Hello World"]</code></pre>
+                        <p style="margin-top: 1rem; color: #fca5a5;">The server calls application() and <strong>blocks</strong> until it returns. There is no concept of await at the protocol level.</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fca5a5;">
+                        <h4 style="color: #991b1b; margin-bottom: 1rem;">WSGI Blocking Model</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px; min-width: 120px; text-align: center;">Request 1</div>
+                                <div style="background: #fca5a5; height: 30px; flex: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #7f1d1d; font-size: 0.85rem;">Processing (blocks thread)</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.5rem 1rem; border-radius: 6px; min-width: 120px; text-align: center;">Request 2</div>
+                                <div style="background: #fef3c7; height: 30px; width: 40%; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #92400e; font-size: 0.85rem;">Waiting...</div>
+                                <div style="background: #fca5a5; height: 30px; flex: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #7f1d1d; font-size: 0.85rem;">Processing</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Key Interview Questions</h2>
+
+                    <div class="concept-box">
+                        <h3>Q: Why doesn't Flask + async fix cross-request concurrency?</h3>
+                        <p><strong>A:</strong> Because the outer WSGI call is still blocking; only per-request internals can overlap I/O. The worker process is still tied up for the entire request duration.</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: What would it take to make Flask truly async?</h3>
+                        <p><strong>A:</strong> Re-implement its core on ASGI (which is essentially writing a new framework, like Sanic/FastAPI).</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: When is Flask still a fine choice?</h3>
+                        <p><strong>A:</strong> For simple, low-concurrency services where dev speed matters more than extreme performance. Also good for internal tools and prototypes.</p>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <a class="btn btn-outline" onclick="loadSection('bottleneck')">← Previous: Bottleneck</a>
+                    <a class="btn btn-primary" onclick="loadSection('sanic-asgi')">Next: Why Sanic Won →</a>
+                </div>
+            </div>
+        `
+    },
+    'sanic-asgi': {
+        title: 'Why Sanic Won (ASGI)',
+        content: `
+            <div class="lesson">
+                <h1>Why Sanic Won: ASGI Native</h1>
+                <p class="lesson-meta">
+                    <span class="category">Framework Selection</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>ASGI-Native, Built-in Server</h2>
+                    <p>Sanic is <strong>ASGI-native</strong> and ships with its own ASGI server:</p>
+
+                    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
+                        <h4 style="color: #166534; margin-bottom: 1rem;">ASGI Non-Blocking Model</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="background: white; padding: 0.5rem; border-radius: 6px; min-width: 80px; text-align: center; font-size: 0.85rem;">Req 1</div>
+                                <div style="background: #86efac; height: 25px; width: 20%; border-radius: 4px;"></div>
+                                <div style="background: #fef3c7; height: 25px; width: 30%; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: #92400e;">I/O Wait</div>
+                                <div style="background: #86efac; height: 25px; width: 15%; border-radius: 4px;"></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="background: white; padding: 0.5rem; border-radius: 6px; min-width: 80px; text-align: center; font-size: 0.85rem;">Req 2</div>
+                                <div style="background: transparent; height: 25px; width: 20%;"></div>
+                                <div style="background: #86efac; height: 25px; width: 20%; border-radius: 4px;"></div>
+                                <div style="background: #fef3c7; height: 25px; width: 25%; border-radius: 4px;"></div>
+                                <div style="background: #86efac; height: 25px; width: 10%; border-radius: 4px;"></div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="background: white; padding: 0.5rem; border-radius: 6px; min-width: 80px; text-align: center; font-size: 0.85rem;">Req 3</div>
+                                <div style="background: transparent; height: 25px; width: 30%;"></div>
+                                <div style="background: #86efac; height: 25px; width: 15%; border-radius: 4px;"></div>
+                                <div style="background: #fef3c7; height: 25px; width: 20%; border-radius: 4px;"></div>
+                                <div style="background: #86efac; height: 25px; width: 10%; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: #166534;">
+                            During I/O wait, thread handles other requests!
+                        </div>
+                    </div>
+
+                    <div class="key-points">
+                        <h3>Sanic Advantages</h3>
+                        <ul>
+                            <li><strong>No separate Uvicorn:</strong> Built-in ASGI server</li>
+                            <li><strong>Simpler Docker:</strong> One process, one configuration</li>
+                            <li><strong>Direct context:</strong> app.ctx for global state</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Global Context vs Dependency Injection</h2>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 1rem; border-radius: 8px;">
+                            <div style="font-weight: 600; color: #4ecdc4; margin-bottom: 0.5rem;">Sanic (Direct Context)</div>
+                            <pre style="font-size: 0.8rem;"><code>app.ctx.es_client = AsyncES(...)
+app.ctx.db_pool = pool
+
+@app.get("/search")
+async def search(request):
+    es = request.app.ctx.es_client
+    db = request.app.ctx.db_pool</code></pre>
+                        </div>
+                        <div style="background: rgba(30, 41, 59, 0.5); padding: 1rem; border-radius: 8px;">
+                            <div style="font-weight: 600; color: #f093fb; margin-bottom: 0.5rem;">FastAPI (DI Resolution)</div>
+                            <pre style="font-size: 0.8rem;"><code>def get_es_client():
+    return es_client
+
+@app.get("/search")
+async def search(
+    q: str,
+    es = Depends(get_es_client)
+):</code></pre>
+                        </div>
+                    </div>
+                    <p>Sanic's direct context lookups are <strong>cheaper</strong> than DI resolution. At high scale, saving ~0.5-1ms per request matters.</p>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interview Questions</h2>
+
+                    <div class="concept-box">
+                        <h3>Q: Why did you pick Sanic over FastAPI?</h3>
+                        <p><strong>A:</strong> Built-in server, simpler ops, and lower per-request overhead (no DI resolution). FastAPI is great for APIs with complex validation needs, but for a search service, Sanic's simplicity won.</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: How did you keep yourself framework-agnostic?</h3>
+                        <p><strong>A:</strong> By isolating business logic into pure functions and having thin adapter layers for each framework. The ES/MySQL logic is the same regardless of web framework.</p>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <a class="btn btn-outline" onclick="loadSection('flask-wsgi')">← Previous: Why Flask Failed</a>
+                    <a class="btn btn-primary" onclick="loadSection('pydantic')">Next: Pydantic & Validation →</a>
+                </div>
+            </div>
+        `
+    },
+    'pydantic': {
+        title: 'Pydantic vs Dataclasses',
+        content: `
+            <div class="lesson">
+                <h1>Pydantic & Validation</h1>
+                <p class="lesson-meta">
+                    <span class="category">Data Pipeline</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>Why Pydantic (and not plain dataclasses)?</h2>
+
+                    <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #d8b4fe;">
+                        <h4 style="color: #7c3aed; margin-bottom: 1rem;">Ingestion Pipeline</h4>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">MySQL Rows</div>
+                            <div style="color: #7c3aed;">→</div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">Pydantic Models</div>
+                            <div style="color: #7c3aed;">→</div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">Validation</div>
+                            <div style="color: #7c3aed;">→</div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">ES Bulk Index</div>
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: Why did you choose Pydantic over dataclasses?</h3>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li>Pydantic gives <strong>runtime validation and type coercion</strong> out of the box</li>
+                            <li>Raises clear errors when data doesn't match schema</li>
+                            <li>Dataclasses only define structure; they don't validate</li>
+                        </ul>
+                        <p style="margin-top: 1rem; color: #4ecdc4;">For data flowing from DB into a search index that powers clinician workflows, <strong>data correctness was more important than raw instantiation speed</strong>.</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: What's the main performance trade-off?</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                            <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #166534;">Dataclasses</div>
+                                <div style="font-size: 0.9rem; color: #475569;">Simple __init__, almost zero overhead</div>
+                            </div>
+                            <div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #92400e;">Pydantic</div>
+                                <div style="font-size: 0.9rem; color: #475569;">Validation + coercion, 5-15× slower per instantiation</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 1rem; color: #9ca3af;">In this system, MySQL + ES I/O costs dominate. Pydantic overhead is not on the critical path.</p>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Advanced Questions</h2>
+
+                    <div class="concept-box">
+                        <h3>Q: Could you use Pydantic at boundaries and dataclasses internally?</h3>
+                        <p><strong>A:</strong> Yes, that's often the best of both worlds:</p>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li><strong>Pydantic models</strong> at edges (API, DB, message queue) to validate</li>
+                            <li><strong>Dataclasses</strong> for internal domain models where data is trusted</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: How do Pydantic v1 vs v2 affect this design?</h3>
+                        <p><strong>A:</strong> Pydantic v2 moved core logic to Rust, dramatically improving performance. The gap with dataclasses has narrowed, but the design decision remains: prefer Pydantic at boundaries where data is untrusted.</p>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <a class="btn btn-outline" onclick="loadSection('sanic-asgi')">← Previous: Sanic</a>
+                    <a class="btn btn-primary" onclick="loadSection('bulk-indexing')">Next: Bulk Indexing →</a>
+                </div>
+            </div>
+        `
+    },
+    'debounce-pattern': {
+        title: 'Frontend: Debounce After 3 Keystrokes',
+        content: `
+            <div class="lesson">
+                <h1>Frontend Search Architecture</h1>
+                <p class="lesson-meta">
+                    <span class="category">Frontend Patterns</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>Debounce After 3 Keystrokes Pattern</h2>
+                    <p>A common pattern for search-as-you-type: don't fire requests until the user has typed at least 3 characters, then debounce to avoid flooding the server.</p>
+
+                    <!-- Search Flow Diagram -->
+                    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #93c5fd;">
+                        <h4 style="color: #1e40af; margin-bottom: 1rem;">Search Request Flow</h4>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; min-width: 100px; text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #6b7280;">User Types</div>
+                                    <div style="font-weight: 600; color: #1e40af;">"b"</div>
+                                </div>
+                                <div style="color: #ef4444; font-size: 1.25rem;">✗</div>
+                                <div style="color: #6b7280; font-size: 0.9rem;">No request (< 3 chars)</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; min-width: 100px; text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #6b7280;">User Types</div>
+                                    <div style="font-weight: 600; color: #1e40af;">"bl"</div>
+                                </div>
+                                <div style="color: #ef4444; font-size: 1.25rem;">✗</div>
+                                <div style="color: #6b7280; font-size: 0.9rem;">No request (< 3 chars)</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; min-width: 100px; text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #6b7280;">User Types</div>
+                                    <div style="font-weight: 600; color: #1e40af;">"blo"</div>
+                                </div>
+                                <div style="color: #f59e0b; font-size: 1.25rem;">⏱</div>
+                                <div style="color: #6b7280; font-size: 0.9rem;">Start debounce timer (300ms)</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; min-width: 100px; text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #6b7280;">User Types</div>
+                                    <div style="font-weight: 600; color: #1e40af;">"blood"</div>
+                                </div>
+                                <div style="color: #f59e0b; font-size: 1.25rem;">⏱</div>
+                                <div style="color: #6b7280; font-size: 0.9rem;">Reset timer (300ms)</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: #dcfce7; padding: 0.75rem; border-radius: 8px; min-width: 100px; text-align: center;">
+                                    <div style="font-size: 0.8rem; color: #166534;">300ms passes</div>
+                                </div>
+                                <div style="color: #22c55e; font-size: 1.25rem;">✓</div>
+                                <div style="color: #166534; font-size: 0.9rem; font-weight: 600;">Fire search request for "blood"</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Architecture Components</h2>
+
+                    <!-- Frontend Architecture Diagram -->
+                    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
+                        <h4 style="color: #166534; margin-bottom: 1rem;">Frontend Search Architecture</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⌨️</div>
+                                <div style="font-weight: 600; color: #166534;">Input Handler</div>
+                                <ul style="text-align: left; font-size: 0.8rem; color: #475569; margin: 0.5rem 0 0 1rem;">
+                                    <li>Track keystroke count</li>
+                                    <li>Min 3 chars check</li>
+                                    <li>Trigger debounce</li>
+                                </ul>
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⏱️</div>
+                                <div style="font-weight: 600; color: #166534;">Debounce</div>
+                                <ul style="text-align: left; font-size: 0.8rem; color: #475569; margin: 0.5rem 0 0 1rem;">
+                                    <li>300ms default delay</li>
+                                    <li>Cancel on new input</li>
+                                    <li>Prevents request flood</li>
+                                </ul>
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📡</div>
+                                <div style="font-weight: 600; color: #166534;">Request Manager</div>
+                                <ul style="text-align: left; font-size: 0.8rem; color: #475569; margin: 0.5rem 0 0 1rem;">
+                                    <li>Cancel stale requests</li>
+                                    <li>Dedupe identical queries</li>
+                                    <li>Cache recent results</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Key Patterns</h2>
+
+                    <div class="concept-box">
+                        <h3>1. Request Cancellation</h3>
+                        <p>When user types fast, previous requests may still be in flight. Cancel them using AbortController to avoid showing stale results.</p>
+                        <pre><code class="language-javascript">// Pseudocode
+let controller = new AbortController();
+
+async function search(query) {
+    controller.abort(); // Cancel previous
+    controller = new AbortController();
+
+    const response = await fetch('/search', {
+        signal: controller.signal
+    });
+}</code></pre>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>2. Result Caching</h3>
+                        <p>Cache recent search results to avoid hitting the server for repeated queries:</p>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li><strong>LRU Cache:</strong> Keep last 50-100 queries</li>
+                            <li><strong>TTL:</strong> Expire after 5 minutes</li>
+                            <li><strong>Key:</strong> Normalized query string</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>3. Loading States</h3>
+                        <p>Show appropriate feedback:</p>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li>Skeleton loaders while fetching</li>
+                            <li>"Keep typing..." for < 3 chars</li>
+                            <li>"No results" vs "Error" states</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interview Questions</h2>
+
+                    <div class="concept-box">
+                        <h3>Q: Why 3 characters minimum?</h3>
+                        <p><strong>A:</strong> Single/double character queries return too many results and are expensive. 3 chars provides enough specificity while still feeling responsive.</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: Why 300ms debounce?</h3>
+                        <p><strong>A:</strong> Balance between responsiveness and server load. 300ms is fast enough to feel instant but slow enough to catch most typing bursts. Can be tuned based on analytics.</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: How do you handle race conditions?</h3>
+                        <p><strong>A:</strong> Each request gets a sequence number or uses AbortController. When response arrives, check if it's still the latest. Discard stale responses.</p>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <a class="btn btn-outline" onclick="loadSection('multi-field-boost')">← Previous</a>
+                    <a class="btn btn-primary" onclick="loadSection('bottleneck')">Back to Start →</a>
+                </div>
+            </div>
+        `
+    },
+    'multi-field-boost': {
+        title: 'Multi-Field + Boost Strategy',
+        content: `
+            <div class="lesson">
+                <h1>Query Design: Multi-Field + Boost</h1>
+                <p class="lesson-meta">
+                    <span class="category">Query Optimization</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>Multi-Field Search Strategy</h2>
+                    <p>Search across multiple fields with different weights to optimize relevance:</p>
+
+                    <!-- Multi-Field Boost Diagram -->
+                    <div style="background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fdba74;">
+                        <h4 style="color: #9a3412; margin-bottom: 1rem;">Field Boosting Strategy</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; min-width: 120px; text-align: center;">
+                                    <div style="font-weight: 600; color: #9a3412;">name^3</div>
+                                </div>
+                                <div style="background: #fed7aa; height: 30px; width: 100%; max-width: 300px; border-radius: 4px;"></div>
+                                <div style="font-size: 0.85rem; color: #9a3412;">Highest priority</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; min-width: 120px; text-align: center;">
+                                    <div style="font-weight: 600; color: #b45309;">synonyms^2</div>
+                                </div>
+                                <div style="background: #fed7aa; height: 30px; width: 66%; max-width: 200px; border-radius: 4px;"></div>
+                                <div style="font-size: 0.85rem; color: #b45309;">Medium priority</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="background: white; padding: 0.75rem; border-radius: 8px; min-width: 120px; text-align: center;">
+                                    <div style="font-weight: 600; color: #ca8a04;">description</div>
+                                </div>
+                                <div style="background: #fed7aa; height: 30px; width: 33%; max-width: 100px; border-radius: 4px;"></div>
+                                <div style="font-size: 0.85rem; color: #ca8a04;">Base weight</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Example ES Query</h3>
+                        <pre><code class="language-json">{
+  "multi_match": {
+    "query": "diabetes",
+    "fields": ["name^3", "synonyms^2", "description"],
+    "type": "most_fields"
+  }
+}</code></pre>
+                        <p style="margin-top: 1rem; color: #9ca3af;">Matches in name dominate ranking, but results still leverage synonyms and descriptions.</p>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interview Questions</h2>
+
+                    <div class="concept-box">
+                        <h3>Q: Why use multi-field queries instead of a single "catch-all" field?</h3>
+                        <p><strong>A:</strong></p>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li>Different fields represent different signals</li>
+                            <li>Multi-field queries let you weight these signals</li>
+                            <li>A catch-all field loses structure and makes tuning harder</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: How do you tune relevance over time?</h3>
+                        <p><strong>A:</strong></p>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li>Start with reasonable boosts (name^3, synonym^2)</li>
+                            <li>Collect click-through and "doctor corrected search" data</li>
+                            <li>Adjust boosts and analyzers based on feedback</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <a class="btn btn-outline" onclick="loadSection('bulk-indexing')">← Previous</a>
+                    <a class="btn btn-primary" onclick="loadSection('debounce-pattern')">Next: Frontend Architecture →</a>
+                </div>
+            </div>
+        `
+    },
+    'bulk-indexing': {
+        title: 'Bulk Indexing Strategy',
+        content: `
+            <div class="lesson">
+                <h1>ES Pipeline: Bulk Indexing</h1>
+                <p class="lesson-meta">
+                    <span class="category">Data Pipeline</span>
+                </p>
+
+                <section class="lesson-section">
+                    <h2>Initial Design: Hourly Cron</h2>
+                    <p>Because the product is diagnostic and data updates are low-frequency, a simple <strong>hourly cron job</strong> was enough initially.</p>
+
+                    <!-- Pipeline Diagram -->
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #6ee7b7;">
+                        <h4 style="color: #065f46; margin-bottom: 1rem;">Hourly Sync Pipeline</h4>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #065f46;">Cron Job</div>
+                                <div style="font-size: 0.75rem; color: #059669;">Every hour</div>
+                            </div>
+                            <div style="color: #059669; font-size: 1.25rem;">→</div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #065f46;">Query MySQL</div>
+                                <div style="font-size: 0.75rem; color: #059669;">WHERE updated_at > last_run</div>
+                            </div>
+                            <div style="color: #059669; font-size: 1.25rem;">→</div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #065f46;">Pydantic</div>
+                                <div style="font-size: 0.75rem; color: #059669;">Validate</div>
+                            </div>
+                            <div style="color: #059669; font-size: 1.25rem;">→</div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #065f46;">ES Bulk</div>
+                                <div style="font-size: 0.75rem; color: #059669;">Index</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="lesson-section">
+                    <h2>Interview Questions</h2>
+
+                    <div class="concept-box">
+                        <h3>Q: Why bulk instead of single-document indexing?</h3>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li>Each HTTP request has fixed overhead (network, parsing)</li>
+                            <li>Bulk API amortizes cost across many documents</li>
+                            <li>ES is optimized for bulk writes</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: How did you choose batch size?</h3>
+                        <p><strong>A:</strong> Start with 500-1000 docs per request. Monitor ES response times and heap pressure. Too large hits packet limits; too small wastes round-trips.</p>
+                    </div>
+
+                    <div class="concept-box">
+                        <h3>Q: How do you ensure idempotency?</h3>
+                        <ul style="color: #ccc; padding-left: 1.5rem;">
+                            <li>Use deterministic IDs based on MySQL primary key</li>
+                            <li>Use index or update operations in bulk</li>
+                            <li>Re-running same batch overwrites instead of duplicating</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <div class="lesson-nav">
+                    <a class="btn btn-outline" onclick="loadSection('pydantic')">← Previous: Pydantic</a>
+                    <a class="btn btn-primary" onclick="loadSection('multi-field-boost')">Next: Query Design →</a>
+                </div>
+            </div>
+        `
+    }
+};
+
+function loadSection(sectionId) {
+    const section = sections[sectionId];
+    if (section && section.content) {
+        document.getElementById('section-content').innerHTML = section.content;
+    }
+
+    // Update active state
+    document.querySelectorAll('.lesson-link').forEach(link => link.classList.remove('active'));
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+}
+
+function toggleCategory(id) {
+    const content = document.getElementById(id);
+    content.classList.toggle('expanded');
+}
+</script>
