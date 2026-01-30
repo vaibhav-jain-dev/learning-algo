@@ -151,10 +151,10 @@ func (h *SQLHandlers) GetERDiagram(c *fiber.Ctx) error {
 		columns := make([]fiber.Map, len(table.Columns))
 		for i, col := range table.Columns {
 			columns[i] = fiber.Map{
-				"name":       col.Name,
-				"type":       col.DataType,
-				"nullable":   col.IsNullable,
-				"primary":    col.IsPrimary,
+				"name":     col.Name,
+				"type":     col.DataType,
+				"nullable": col.IsNullable,
+				"primary":  col.IsPrimary,
 			}
 		}
 

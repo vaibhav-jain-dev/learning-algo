@@ -45,11 +45,11 @@ type KeyInfo struct {
 
 // ServerInfo represents Redis server information
 type ServerInfo struct {
-	Version       string `json:"version"`
-	Mode          string `json:"mode"`
-	UsedMemory    string `json:"used_memory"`
-	ConnectedClients int `json:"connected_clients"`
-	TotalKeys     int    `json:"total_keys"`
+	Version          string `json:"version"`
+	Mode             string `json:"mode"`
+	UsedMemory       string `json:"used_memory"`
+	ConnectedClients int    `json:"connected_clients"`
+	TotalKeys        int    `json:"total_keys"`
 }
 
 // ConfigFromEnv creates config from environment variables

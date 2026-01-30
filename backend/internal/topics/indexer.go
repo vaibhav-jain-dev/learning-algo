@@ -363,14 +363,14 @@ func containsTag(tags []string, tag string) bool {
 func generateDefaultTags(category, topic string) []string {
 	tagMap := map[string]map[string][]string{
 		"must-solve-problems": {
-			"arrays":             {"Arrays", "Two Pointers"},
+			"arrays":              {"Arrays", "Two Pointers"},
 			"binary-search-trees": {"BST", "Trees"},
-			"binary-trees":       {"Trees", "Traversal"},
+			"binary-trees":        {"Trees", "Traversal"},
 			"dynamic-programming": {"DP", "Optimization"},
-			"graphs":             {"Graphs", "BFS/DFS"},
-			"famous-algorithms":  {"Algorithms", "Classic"},
-			"linked-lists":       {"Linked Lists", "Pointers"},
-			"recursion":          {"Recursion", "Backtracking"},
+			"graphs":              {"Graphs", "BFS/DFS"},
+			"famous-algorithms":   {"Algorithms", "Classic"},
+			"linked-lists":        {"Linked Lists", "Pointers"},
+			"recursion":           {"Recursion", "Backtracking"},
 		},
 		"system-design": {
 			"load-balancing":       {"Scalability", "High Availability"},
