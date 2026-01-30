@@ -1,0 +1,493 @@
+<div class="roadmap-page">
+    <div class="roadmap-header">
+        <h1>7-Day Intensive Study Roadmap</h1>
+        <p class="page-description">Smart study plan: 10 hours daily covering DS/Algo, System Design, Design Patterns, and more</p>
+        <div class="roadmap-stats">
+            <div class="stat-box">
+                <span class="stat-value">70</span>
+                <span class="stat-label">Total Hours</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">7</span>
+                <span class="stat-label">Days</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">35</span>
+                <span class="stat-label">Sessions</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value">12+</span>
+                <span class="stat-label">Topics</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="roadmap-timeline">
+        {{range .Roadmap}}
+        <div class="day-section">
+            <div class="day-header">
+                <div class="day-number">Day {{.Day}}</div>
+                <div class="day-title">{{.Title}}</div>
+            </div>
+
+            <div class="sessions-container">
+                {{range .Sessions}}
+                <a href="{{.Link}}" class="session-card {{.Category}}">
+                    <div class="session-icon">{{.Icon}}</div>
+                    <div class="session-content">
+                        <div class="session-header">
+                            <h3>{{.Topic}}</h3>
+                            <span class="session-category {{.Category}}">{{.Category}}</span>
+                        </div>
+                        <p class="session-description">{{.Description}}</p>
+                        <div class="session-footer">
+                            <span class="session-time">⏱️ {{.Time}}</span>
+                            <span class="session-duration">⏰ {{.Duration}}</span>
+                        </div>
+                    </div>
+                </a>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+    </div>
+
+    <div class="roadmap-tips">
+        <h2>Study Tips for Success</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon">💪</div>
+                <h3>Stay Consistent</h3>
+                <p>Follow the schedule daily. Consistency is key to mastering all topics in 7 days.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🎯</div>
+                <h3>Focus on Understanding</h3>
+                <p>Don't just memorize. Understand the 'why' behind each concept and pattern.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">✍️</div>
+                <h3>Practice Coding</h3>
+                <p>Write code for every problem. Use the practice page to test your solutions.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🔄</div>
+                <h3>Review Regularly</h3>
+                <p>Each day includes review time. Use it to revisit difficult concepts.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🤝</div>
+                <h3>Mix Topics</h3>
+                <p>The plan mixes different topics to prevent fatigue and maintain engagement.</p>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">💡</div>
+                <h3>Take Breaks</h3>
+                <p>Use the 1-hour lunch break to rest, recharge, and consolidate learning.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="roadmap-footer">
+        <div class="footer-cta">
+            <h2>Ready to Start Your Journey?</h2>
+            <p>Begin with Day 1 and work through the roadmap systematically</p>
+            <div class="cta-buttons">
+                <a href="/200-problems" class="btn btn-primary">Start Day 1</a>
+                <a href="/" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.roadmap-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.roadmap-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.roadmap-header h1 {
+    font-size: 2.5rem;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+}
+
+.roadmap-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.stat-box {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.roadmap-timeline {
+    margin-bottom: 3rem;
+}
+
+.day-section {
+    margin-bottom: 3rem;
+    background: var(--color-card);
+    border: 2px solid var(--color-border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.day-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.day-number {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.day-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.sessions-container {
+    display: grid;
+    gap: 1rem;
+}
+
+.session-card {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.session-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: var(--color-primary);
+}
+
+.session-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--color-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.session-card:hover::before {
+    opacity: 1;
+}
+
+.session-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.session-content {
+    flex: 1;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.session-header h3 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--color-text);
+}
+
+.session-category {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.session-category.DSA {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.session-category.System {
+    background: #f3e5f5;
+    color: #6a1b9a;
+}
+
+.session-category.Design {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.session-category.Machine {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.session-category.Architecture {
+    background: #fce4ec;
+    color: #c2185b;
+}
+
+.session-category.Database {
+    background: #e0f2f1;
+    color: #00695c;
+}
+
+.session-category.Cache {
+    background: #fff9c4;
+    color: #f57f17;
+}
+
+.session-category.Search {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.session-category.Language {
+    background: #e1f5fe;
+    color: #0277bd;
+}
+
+.session-category.Review,
+.session-category.Complete {
+    background: #e8eaf6;
+    color: #3f51b5;
+}
+
+.session-description {
+    margin: 0.5rem 0;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+.session-footer {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.session-time,
+.session-duration {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.roadmap-tips {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: var(--color-card);
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+}
+
+.roadmap-tips h2 {
+    text-align: center;
+    color: var(--color-text);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.tip-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.tip-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.tip-card h3 {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.tip-card p {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.roadmap-footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border-radius: 16px;
+    color: white;
+}
+
+.footer-cta h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.footer-cta p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta-buttons .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cta-buttons .btn-primary {
+    background: white;
+    color: var(--color-primary);
+}
+
+.cta-buttons .btn-primary:hover {
+    background: var(--color-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.cta-buttons .btn-secondary {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid white;
+}
+
+.cta-buttons .btn-secondary:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .roadmap-page {
+        padding: 1rem;
+    }
+
+    .roadmap-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .day-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .day-title {
+        font-size: 1.2rem;
+    }
+
+    .session-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .session-icon {
+        font-size: 2rem;
+    }
+
+    .session-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    .cta-buttons .btn {
+        width: 100%;
+    }
+}
+</style>
