@@ -3109,6 +3109,479 @@ Examples:
                 <a class="btn btn-primary" onclick="loadLesson('terms-agg')">Next: Terms Aggregation &#8594;</a>
             </div>
         `
+    },
+    'api-basics': {
+        title: 'API Basics',
+        category: 'Fundamentals',
+        difficulty: 'Beginner',
+        content: `
+            <h1>Elasticsearch REST API Basics</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Understanding the REST API</h2>
+                <p>Elasticsearch exposes all functionality through a RESTful API. Every operation uses HTTP requests with JSON.</p>
+
+                <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #cbd5e1;">
+                    <h4 style="color: #1e293b; margin-bottom: 1rem;">REST API Request Structure</h4>
+                    <div style="background: white; border-radius: 8px; padding: 1rem; border-left: 4px solid #3b82f6;">
+                        <div style="font-family: monospace; color: #1e40af; font-size: 0.95rem;">
+                            <span style="background: #dbeafe; padding: 0.25rem 0.5rem; border-radius: 4px;">METHOD</span>
+                            <span style="color: #64748b; margin: 0 0.5rem;">/</span>
+                            <span style="background: #dcfce7; padding: 0.25rem 0.5rem; border-radius: 4px;">index</span>
+                            <span style="color: #64748b; margin: 0 0.5rem;">/</span>
+                            <span style="background: #fef3c7; padding: 0.25rem 0.5rem; border-radius: 4px;">_endpoint</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <h3>HTTP Methods</h3>
+                    <ul>
+                        <li><strong>GET:</strong> Retrieve data (documents, mappings)</li>
+                        <li><strong>POST:</strong> Create data or run queries</li>
+                        <li><strong>PUT:</strong> Create or update with specific ID</li>
+                        <li><strong>DELETE:</strong> Remove data</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Common Endpoints</h2>
+
+                <div class="example-query">
+                    <h4>Cluster Health</h4>
+                    <pre><code class="language-http">GET /_cluster/health</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/_cluster/health', '')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>List Indices</h4>
+                    <pre><code class="language-http">GET /_cat/indices?format=json</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/_cat/indices?format=json', '')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; ES uses RESTful HTTP API for all operations</li>
+                        <li>&#10003; GET, POST, PUT, DELETE methods</li>
+                        <li>&#10003; All data is JSON format</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('documents-indices')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('crud-operations')">Next: CRUD Operations &#8594;</a>
+            </div>
+        `
+    },
+    'crud-operations': {
+        title: 'CRUD Operations',
+        category: 'Fundamentals',
+        difficulty: 'Beginner',
+        content: `
+            <h1>CRUD Operations in Elasticsearch</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Beginner</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Create, Read, Update, Delete</h2>
+
+                <div style="background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fde047;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center; border: 2px solid #22c55e;">
+                            <div style="font-size: 1.5rem;">C</div>
+                            <div style="font-weight: 600; color: #166534;">CREATE</div>
+                            <div style="font-family: monospace; font-size: 0.75rem; color: #475569;">POST /_doc</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center; border: 2px solid #3b82f6;">
+                            <div style="font-size: 1.5rem;">R</div>
+                            <div style="font-weight: 600; color: #1e40af;">READ</div>
+                            <div style="font-family: monospace; font-size: 0.75rem; color: #475569;">GET /_doc/id</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center; border: 2px solid #f59e0b;">
+                            <div style="font-size: 1.5rem;">U</div>
+                            <div style="font-weight: 600; color: #b45309;">UPDATE</div>
+                            <div style="font-family: monospace; font-size: 0.75rem; color: #475569;">POST /_update/id</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center; border: 2px solid #ef4444;">
+                            <div style="font-size: 1.5rem;">D</div>
+                            <div style="font-weight: 600; color: #dc2626;">DELETE</div>
+                            <div style="font-family: monospace; font-size: 0.75rem; color: #475569;">DELETE /_doc/id</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Examples</h2>
+
+                <div class="example-query">
+                    <h4>Create Document</h4>
+                    <pre><code class="language-json">POST /tests/_doc
+{
+  "testName": "New Test",
+  "consumerPrice": 299
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_doc', '{&quot;testName&quot;:&quot;New Test&quot;,&quot;consumerPrice&quot;:299}')">Try it</button>
+                </div>
+
+                <div class="example-query">
+                    <h4>Read Document</h4>
+                    <pre><code class="language-json">GET /tests/_doc/40</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'GET', '/tests/_doc/40', '')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; POST /_doc: Create with auto-ID</li>
+                        <li>&#10003; GET /_doc/id: Retrieve document</li>
+                        <li>&#10003; POST /_update/id: Partial update</li>
+                        <li>&#10003; DELETE /_doc/id: Remove document</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('api-basics')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('bulk-api')">Next: Bulk API &#8594;</a>
+            </div>
+        `
+    },
+    'bulk-api': {
+        title: 'Bulk API',
+        category: 'Fundamentals',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Bulk API: High-Performance Batch Operations</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Fundamentals</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Why Bulk API?</h2>
+                <p>Perform multiple operations in a single request for dramatically better performance.</p>
+
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
+                    <h4 style="color: #166534; margin-bottom: 1rem;">Performance: Single vs Bulk</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem; border: 2px solid #fca5a5;">
+                            <div style="font-weight: 600; color: #dc2626;">Single (1000 docs)</div>
+                            <div style="color: #475569;">1000 requests → ~60 seconds</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem; border: 2px solid #86efac;">
+                            <div style="font-weight: 600; color: #16a34a;">Bulk (1000 docs)</div>
+                            <div style="color: #475569;">1-2 requests → ~2 seconds</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>NDJSON Format</h3>
+                    <pre><code class="language-json">{"index":{"_index":"tests","_id":"1"}}
+{"testName":"Test 1","price":100}
+{"index":{"_index":"tests","_id":"2"}}
+{"testName":"Test 2","price":200}</code></pre>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Bulk API dramatically improves indexing speed</li>
+                        <li>&#10003; Uses NDJSON format (action + optional body)</li>
+                        <li>&#10003; Target 500-5000 docs per request</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('crud-operations')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('mapping-basics')">Next: Mapping Basics &#8594;</a>
+            </div>
+        `
+    },
+    'nested-query': {
+        title: 'Nested Queries',
+        category: 'Advanced Search',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Nested Queries: Querying Nested Objects</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Advanced Search</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What are Nested Objects?</h2>
+                <p>Nested objects allow you to index arrays of objects and query them independently, maintaining their relationships.</p>
+
+                <div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fca5a5;">
+                    <h4 style="color: #991b1b; margin-bottom: 1rem;">The Problem with Object Arrays</h4>
+                    <div style="background: white; border-radius: 8px; padding: 1rem;">
+                        <pre style="margin: 0;"><code>{
+  "name": "Lab Package",
+  "tests": [
+    { "name": "CBC", "price": 200 },
+    { "name": "Lipid", "price": 500 }
+  ]
+}</code></pre>
+                        <p style="margin-top: 1rem; color: #dc2626;">Without nested: ES flattens to tests.name: ["CBC", "Lipid"], tests.price: [200, 500] - cross-object matching breaks!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Nested Mapping</h3>
+                    <pre><code class="language-json">{
+  "mappings": {
+    "properties": {
+      "tests": {
+        "type": "nested",
+        "properties": {
+          "name": { "type": "text" },
+          "price": { "type": "integer" }
+        }
+      }
+    }
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Nested Query Syntax</h2>
+                <div class="concept-box">
+                    <h3>Query Nested Objects</h3>
+                    <pre><code class="language-json">POST /packages/_search
+{
+  "query": {
+    "nested": {
+      "path": "tests",
+      "query": {
+        "bool": {
+          "must": [
+            { "match": { "tests.name": "CBC" } },
+            { "range": { "tests.price": { "lt": 300 } } }
+          ]
+        }
+      }
+    }
+  }
+}</code></pre>
+                    <p style="margin-top: 1rem;">Finds packages with a test named "CBC" that costs less than 300 (same nested object).</p>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Nested type preserves object array relationships</li>
+                        <li>&#10003; Must use nested query to search nested fields</li>
+                        <li>&#10003; Each nested doc is indexed separately (impacts performance)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('fuzzy-query')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('highlighting')">Next: Highlighting &#8594;</a>
+            </div>
+        `
+    },
+    'relevance-scoring': {
+        title: 'Relevance Scoring',
+        category: 'Scoring & Relevance',
+        difficulty: 'Intermediate',
+        content: `
+            <h1>Relevance Scoring: How ES Ranks Results</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Scoring & Relevance</span>
+                <span class="difficulty">Difficulty: Intermediate</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>What is Relevance Scoring?</h2>
+                <p>Elasticsearch calculates a _score for each matching document indicating how well it matches the query.</p>
+
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fcd34d;">
+                    <h4 style="color: #92400e; margin-bottom: 1rem;">BM25 Scoring Factors</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center;">
+                            <div style="font-weight: 600; color: #1e40af;">TF</div>
+                            <div style="font-size: 0.85rem; color: #475569;">Term Frequency</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">More occurrences = higher score</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center;">
+                            <div style="font-weight: 600; color: #7c3aed;">IDF</div>
+                            <div style="font-size: 0.85rem; color: #475569;">Inverse Doc Freq</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Rare terms = higher score</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem; text-align: center;">
+                            <div style="font-weight: 600; color: #059669;">Field Length</div>
+                            <div style="font-size: 0.85rem; color: #475569;">Normalization</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Shorter fields = higher score</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Score Explanation</h2>
+                <div class="example-query">
+                    <h4>Search with Score</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "match": { "testName": "blood" }
+  },
+  "_source": ["testName"],
+  "explain": false
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;match&quot;:{&quot;testName&quot;:&quot;blood&quot;}},&quot;_source&quot;:[&quot;testName&quot;],&quot;size&quot;:5}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; _score indicates match quality</li>
+                        <li>&#10003; BM25 considers TF, IDF, and field length</li>
+                        <li>&#10003; Use explain: true to debug scoring</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('terms-agg')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('tf-idf')">Next: TF-IDF & BM25 &#8594;</a>
+            </div>
+        `
+    },
+    'autocomplete': {
+        title: 'Autocomplete',
+        category: 'Complex Queries',
+        difficulty: 'Advanced',
+        content: `
+            <h1>Autocomplete: Search-As-You-Type</h1>
+            <p class="lesson-meta">
+                <span class="category">Category: Complex Queries</span>
+                <span class="difficulty">Difficulty: Advanced</span>
+            </p>
+
+            <section class="lesson-section">
+                <h2>Autocomplete Strategies</h2>
+
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #86efac;">
+                    <h4 style="color: #166534; margin-bottom: 1rem;">Three Approaches</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #166534;">Prefix Query</div>
+                            <div style="font-size: 0.85rem; color: #475569;">Simple but slow</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Good for small data</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #7c3aed;">Edge N-gram</div>
+                            <div style="font-size: 0.85rem; color: #475569;">Fast, pre-indexed</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Best for most cases</div>
+                        </div>
+                        <div style="background: white; border-radius: 8px; padding: 1rem;">
+                            <div style="font-weight: 600; color: #ea580c;">Completion</div>
+                            <div style="font-size: 0.85rem; color: #475569;">Fastest (FST)</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Special field type</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h2>Edge N-gram Approach</h2>
+                <div class="concept-box">
+                    <h3>How Edge N-gram Works</h3>
+                    <pre><code class="language-text">Input: "blood"
+
+Edge N-grams (min=1, max=10):
+"b" → "bl" → "blo" → "bloo" → "blood"
+
+Search "blo" matches because "blo" is indexed!</code></pre>
+                </div>
+
+                <div class="example-query">
+                    <h4>Prefix Search (Simple)</h4>
+                    <pre><code class="language-json">POST /tests/_search
+{
+  "query": {
+    "prefix": {
+      "testName": "blo"
+    }
+  },
+  "size": 5
+}</code></pre>
+                    <button class="btn btn-sm btn-primary" onclick="runESExample(this, 'POST', '/tests/_search', '{&quot;query&quot;:{&quot;prefix&quot;:{&quot;testName&quot;:&quot;blo&quot;}},&quot;size&quot;:5}')">Try it</button>
+                </div>
+            </section>
+
+            <div class="query-result-container" id="query-result" style="display:none;">
+                <h4>Result:</h4>
+                <pre id="query-result-content"></pre>
+            </div>
+
+            <section class="lesson-section">
+                <h2>Summary</h2>
+                <div class="summary-box">
+                    <ul>
+                        <li>&#10003; Edge n-gram: Best balance of speed and flexibility</li>
+                        <li>&#10003; Completion suggester: Fastest for simple cases</li>
+                        <li>&#10003; Index time vs query time trade-off</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="lesson-nav">
+                <a class="btn btn-outline" onclick="loadLesson('faceted-search')">&#8592; Previous</a>
+                <a class="btn btn-primary" onclick="loadLesson('geo-queries')">Next: Geo Queries &#8594;</a>
+            </div>
+        `
     }
 };
 
