@@ -683,11 +683,29 @@ async function generatePdf() {
         // Give browser time to render and calculate layout
         await new Promise(resolve => setTimeout(resolve, 300));
 
-        // DEBUG MODE: Uncomment to see content before PDF generation
-        // pdfContainer.style.opacity = '1';
-        // pdfContainer.style.zIndex = '10000';
-        // pdfContainer.style.transform = 'translateX(-50%)';
-        // return; // Stop here to inspect content
+        // TEMPORARY DEBUG: Make visible to check content
+        pdfContainer.style.opacity = '1';
+        pdfContainer.style.zIndex = '10000';
+
+        // Add a visible border to see the container
+        pdfContainer.style.border = '2px solid red';
+
+        console.log('DEBUG: Container is now visible on screen. Check if you can see the content.');
+        console.log('DEBUG: If content is visible, the issue is with html2pdf rendering.');
+        console.log('DEBUG: If content is NOT visible, the issue is with content fetching/parsing.');
+
+        // Wait 5 seconds so you can see the content
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        console.log('DEBUG: Proceeding with PDF generation...');
+
+        // Hide again for PDF generation (but keep on-screen with opacity)
+        pdfContainer.style.opacity = '0.01'; // Very low but not 0, so html2canvas can see it
+        pdfContainer.style.zIndex = '10000'; // Keep high z-index
+        pdfContainer.style.border = 'none';
+
+        // Wait a moment for style to apply
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         // Generate filename
         let filename;
