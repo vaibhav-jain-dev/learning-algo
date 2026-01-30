@@ -5441,11 +5441,24 @@
         })
         .then(function(r) { return r.text(); })
         .then(function(html) {
+            console.log('[RunTests] Raw response length:', html.length);
             var testResults = window.ProblemRenderer.parseTestResults(html);
+            console.log('[RunTests] Parsed results:', testResults);
+
             if (testResults) {
-                if (output) output.innerHTML = renderTestResults(testResults, html);
+                var renderedHtml = renderTestResults(testResults, html);
+                if (output) {
+                    output.innerHTML = renderedHtml;
+                    // Auto-expand output panel for test results
+                    var outputPanel = document.getElementById('output-panel');
+                    if (outputPanel) {
+                        var minHeight = Math.min(350, window.innerHeight * 0.4);
+                        outputPanel.style.height = Math.max(outputPanel.offsetHeight, minHeight) + 'px';
+                    }
+                }
             } else {
                 // No test results found, show raw output
+                console.log('[RunTests] No test results parsed, showing raw output');
                 if (output) output.innerHTML = '<span class="output-label">Output</span>' + html;
             }
         })
