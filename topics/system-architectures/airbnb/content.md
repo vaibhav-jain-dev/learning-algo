@@ -4,7 +4,7 @@
 
 Design a vacation rental marketplace that connects hosts with guests for property bookings.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff5a5f;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff5a5f;">
 
 ### Core Requirements
 - **Listings**: Property creation, photos, amenities, pricing
@@ -20,8 +20,8 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 ## High-Level Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">AIRBNB SYSTEM ARCHITECTURE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">AIRBNB SYSTEM ARCHITECTURE</h3>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
 
@@ -47,7 +47,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
   <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; width: 100%;">
 
     <!-- Listing Service -->
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
+    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #f0883e; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
       <div style="color: #f0883e; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">LISTING SERVICE</div>
       <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
         &#8226; CRUD Operations<br/>
@@ -57,8 +57,8 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     </div>
 
     <!-- Search Service -->
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
-      <div style="color: #58a6ff; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">SEARCH SERVICE</div>
+    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #58a6ff; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
+      <div style="color: #1d4ed8; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">SEARCH SERVICE</div>
       <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
         &#8226; Geo-spatial Queries<br/>
         &#8226; Faceted Filters<br/>
@@ -67,7 +67,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     </div>
 
     <!-- Booking Service -->
-    <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
+    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; flex: 1; min-width: 180px; max-width: 220px;">
       <div style="color: #a371f7; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">BOOKING SERVICE</div>
       <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
         &#8226; Reservations<br/>
@@ -79,7 +79,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
   </div>
 
   <!-- Pricing Service -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #3fb950; border-radius: 12px; padding: 16px; width: 200px; text-align: center;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #3fb950; border-radius: 12px; padding: 16px; width: 200px; text-align: center;">
     <div style="color: #3fb950; font-weight: bold; font-size: 13px; margin-bottom: 8px;">PRICING SERVICE</div>
     <div style="color: #8b949e; font-size: 11px;">Dynamic | Seasonal | Demand-based</div>
   </div>
@@ -101,7 +101,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 
 ## Search System
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">LISTING SEARCH PIPELINE</h4>
 
 <!-- Search Query Input -->
@@ -113,7 +113,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
   <!-- Step 1: Geo Filter -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #f0883e; border-radius: 0 12px 12px 0; padding: 16px 20px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #f0883e; border-radius: 0 12px 12px 0; padding: 16px 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
       <div style="color: #f0883e; font-weight: bold; font-size: 13px;">STEP 1: GEO FILTER</div>
       <div style="background: #f0883e; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">50,000 listings</div>
@@ -121,7 +121,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
     <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
       &#8226; Parse "Paris" to bounding box / polygon coordinates<br/>
       &#8226; Filter listings within geographic area using spatial index<br/>
-      &#8226; Use Elasticsearch <code style="background: #161b22; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">geo_shape</code> query
+      &#8226; Use Elasticsearch <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">geo_shape</code> query
     </div>
   </div>
 
@@ -129,9 +129,9 @@ Design a vacation rental marketplace that connects hosts with guests for propert
   <div style="text-align: center; color: #484f58;">&#8595;</div>
 
   <!-- Step 2: Availability Filter -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #58a6ff; border-radius: 0 12px 12px 0; padding: 16px 20px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #58a6ff; border-radius: 0 12px 12px 0; padding: 16px 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-      <div style="color: #58a6ff; font-weight: bold; font-size: 13px;">STEP 2: AVAILABILITY FILTER</div>
+      <div style="color: #1d4ed8; font-weight: bold; font-size: 13px;">STEP 2: AVAILABILITY FILTER</div>
       <div style="background: #58a6ff; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">15,000 listings</div>
     </div>
     <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
@@ -145,13 +145,13 @@ Design a vacation rental marketplace that connects hosts with guests for propert
   <div style="text-align: center; color: #484f58;">&#8595;</div>
 
   <!-- Step 3: Capacity + Filters -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #a371f7; border-radius: 0 12px 12px 0; padding: 16px 20px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #a371f7; border-radius: 0 12px 12px 0; padding: 16px 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
       <div style="color: #a371f7; font-weight: bold; font-size: 13px;">STEP 3: CAPACITY + FILTERS</div>
       <div style="background: #a371f7; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">5,000 listings</div>
     </div>
     <div style="color: #8b949e; font-size: 12px; line-height: 1.7;">
-      &#8226; Filter: <code style="background: #161b22; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">guests >= 2</code><br/>
+      &#8226; Filter: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #79c0ff;">guests >= 2</code><br/>
       &#8226; Apply price range, property type, amenities filters<br/>
       &#8226; Apply Instant Book, Superhost, accessibility filters
     </div>
@@ -161,13 +161,13 @@ Design a vacation rental marketplace that connects hosts with guests for propert
   <div style="text-align: center; color: #484f58;">&#8595;</div>
 
   <!-- Step 4: Ranking -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #3fb950; border-radius: 0 12px 12px 0; padding: 16px 20px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #3fb950; border-radius: 0 12px 12px 0; padding: 16px 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
       <div style="color: #3fb950; font-weight: bold; font-size: 13px;">STEP 4: RANKING</div>
       <div style="background: #3fb950; color: #000; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold;">Top 100 ranked</div>
     </div>
     <div style="color: #8b949e; font-size: 12px; line-height: 1.5;">
-      <div style="background: #161b22; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #c9d1d9;">
+      <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #c9d1d9;">
         Ranking Score = w1 * quality_score<br/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w2 * review_score<br/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w3 * response_rate<br/>
@@ -187,7 +187,7 @@ Design a vacation rental marketplace that connects hosts with guests for propert
 ## Phase 1: Starting Phase
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Listings**: 1,000 - 50,000
@@ -255,13 +255,13 @@ class BookingService:
 ## Phase 2: Medium Scale
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Availability Calendar
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-<h4 style="color: #58a6ff; margin: 0 0 16px 0;">Calendar Storage Strategy</h4>
+<h4 style="color: #1d4ed8; margin: 0 0 16px 0;">Calendar Storage Strategy</h4>
 
 <!-- Option 1: Date-based rows -->
 <div style="margin-bottom: 24px;">
@@ -269,7 +269,7 @@ class BookingService:
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
       <thead>
-        <tr style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%);">
+        <tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);">
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">listing_id</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">date</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">available</th>
@@ -278,21 +278,21 @@ class BookingService:
         </tr>
       </thead>
       <tbody>
-        <tr style="background: #161b22;">
+        <tr style="background: #f1f5f9;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-15</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #f85149;">false</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">$150</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2</td>
         </tr>
-        <tr style="background: #0d1117;">
+        <tr style="background: #f8fafc;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-16</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #f85149;">false</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">$150</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2</td>
         </tr>
-        <tr style="background: #161b22;">
+        <tr style="background: #f1f5f9;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-17</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #3fb950;">true</td>
@@ -310,7 +310,7 @@ class BookingService:
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
       <thead>
-        <tr style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%);">
+        <tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);">
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">listing_id</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">start_date</th>
           <th style="border: 1px solid #30363d; padding: 10px; color: #c9d1d9; text-align: left;">end_date</th>
@@ -319,14 +319,14 @@ class BookingService:
         </tr>
       </thead>
       <tbody>
-        <tr style="background: #161b22;">
+        <tr style="background: #f1f5f9;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-15</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-17</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #f85149;">booked</td>
-          <td style="border: 1px solid #30363d; padding: 10px; color: #58a6ff;">B123</td>
+          <td style="border: 1px solid #30363d; padding: 10px; color: #1d4ed8;">B123</td>
         </tr>
-        <tr style="background: #0d1117;">
+        <tr style="background: #f8fafc;">
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">L1</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-20</td>
           <td style="border: 1px solid #30363d; padding: 10px; color: #8b949e;">2024-12-25</td>
@@ -339,7 +339,7 @@ class BookingService:
 </div>
 
 <!-- Query Example -->
-<div style="background: #161b22; border-radius: 8px; padding: 16px;">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
   <div style="color: #a371f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Query: Available Dec 15-20?</div>
   <pre style="margin: 0; color: #c9d1d9; font-size: 11px; overflow-x: auto;"><code>SELECT NOT EXISTS(
     SELECT 1 FROM calendar_blocks
@@ -393,7 +393,7 @@ class PricingService:
 ## Phase 3: Airbnb Scale
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Listings**: 7M+ active
@@ -403,11 +403,11 @@ class PricingService:
 
 ### Booking Flow at Scale
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 <h4 style="color: #f85149; text-align: center; margin: 0 0 20px 0;">DOUBLE-BOOKING PREVENTION</h4>
 
-<div style="background: #21262d; border-radius: 10px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #f85149;">
   <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 8px;">Problem Statement</div>
   <div style="color: #8b949e; font-size: 12px;">Two guests try to book same listing for same dates simultaneously</div>
 </div>
@@ -428,7 +428,7 @@ class PricingService:
 <div style="text-align: center; color: #484f58; font-size: 20px; margin: 8px 0;">&#8595; &#8595;</div>
 
 <!-- Booking Service -->
-<div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px;">
   <div style="color: #a371f7; font-weight: bold; font-size: 14px;">BOOKING SERVICE</div>
 </div>
 
@@ -473,24 +473,24 @@ class PricingService:
 
 ### Search Sharding
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 16px 0;">
 
-<h4 style="color: #58a6ff; text-align: center; margin: 0 0 20px 0;">GEO-BASED SEARCH SHARDING</h4>
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0;">GEO-BASED SEARCH SHARDING</h4>
 
 <div style="color: #8b949e; font-size: 12px; text-align: center; margin-bottom: 20px;">Elasticsearch Cluster per Region</div>
 
 <!-- Regional Clusters -->
 <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 24px;">
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #1f6feb; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #1f6feb; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
     <div style="color: #1f6feb; font-weight: bold; font-size: 13px; margin-bottom: 8px;">US Cluster</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
       US listings<br/>
-      <span style="color: #58a6ff; font-weight: bold;">2M docs</span>
+      <span style="color: #1d4ed8; font-weight: bold;">2M docs</span>
     </div>
   </div>
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #238636; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #238636; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
     <div style="color: #238636; font-weight: bold; font-size: 13px; margin-bottom: 8px;">EU Cluster</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
       EU listings<br/>
@@ -498,7 +498,7 @@ class PricingService:
     </div>
   </div>
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 12px; padding: 16px; min-width: 150px; text-align: center;">
     <div style="color: #a371f7; font-weight: bold; font-size: 13px; margin-bottom: 8px;">APAC Cluster</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.6;">
       APAC listings<br/>
@@ -511,7 +511,7 @@ class PricingService:
 <!-- Query Routing & Benefits -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
-  <div style="background: #21262d; border-radius: 10px; padding: 16px;">
+  <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
     <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Query Routing</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; Parse search location from query<br/>
@@ -520,7 +520,7 @@ class PricingService:
     </div>
   </div>
 
-  <div style="background: #21262d; border-radius: 10px; padding: 16px;">
+  <div style="background: #f8fafc; border-radius: 10px; padding: 16px;">
     <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 10px;">Benefits</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; Reduced index size per cluster<br/>
@@ -540,7 +540,7 @@ class PricingService:
 
 ## AWS Technologies & Alternatives
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 | Component | AWS Service | Alternative | Trade-offs |
 |-----------|-------------|-------------|------------|
@@ -557,7 +557,7 @@ class PricingService:
 
 ## Distributed Systems Considerations
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### 1. Consistency for Bookings
 
@@ -629,7 +629,7 @@ class BookingService:
 
 ## Interview Deep Dive Questions
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff5a5f;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #ff5a5f;">
 
 ### 1. "How do you prevent double-booking?"
 
@@ -1138,7 +1138,7 @@ For < 10K listings, skip Kafka entirely. Direct database queries with proper ind
 
 ## Why This Technology?
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Technology Decision Matrix
 
@@ -1156,8 +1156,8 @@ For < 10K listings, skip Kafka entirely. Direct database queries with proper ind
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px;">
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #58a6ff; border-radius: 0 12px 12px 0; padding: 16px;">
-    <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Elasticsearch over PostgreSQL Full-Text</div>
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #58a6ff; border-radius: 0 12px 12px 0; padding: 16px;">
+    <div style="color: #1d4ed8; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Elasticsearch over PostgreSQL Full-Text</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
       &#9679; Geo-spatial + text + filters combined: ES wins<br/>
       &#9679; Custom relevance scoring: ES has function_score<br/>
@@ -1167,7 +1167,7 @@ For < 10K listings, skip Kafka entirely. Direct database queries with proper ind
     </div>
   </div>
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #f85149; border-radius: 0 12px 12px 0; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #f85149; border-radius: 0 12px 12px 0; padding: 16px;">
     <div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Redis for Locking over Database Locks</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
       &#9679; Multiple service instances: Redis required<br/>
@@ -1177,7 +1177,7 @@ For < 10K listings, skip Kafka entirely. Direct database queries with proper ind
     </div>
   </div>
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #3fb950; border-radius: 0 12px 12px 0; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #3fb950; border-radius: 0 12px 12px 0; padding: 16px;">
     <div style="color: #3fb950; font-weight: bold; font-size: 13px; margin-bottom: 12px;">Kafka over Simpler Queues</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
       &#9679; Event replay for debugging: Kafka required<br/>
@@ -1197,19 +1197,19 @@ For < 10K listings, skip Kafka entirely. Direct database queries with proper ind
 ## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### The "$400/month Rental Platform" Architecture
 
 For a regional vacation rental platform (think: "Cabins in Vermont" or "Beach houses in Outer Banks"):
 
-<div style="background: linear-gradient(135deg, #161b22 0%, #21262d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
 <h4 style="color: #8b949e; margin: 0 0 16px 0;">Reality Check</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;">
   <div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
-    <div style="color: #58a6ff; font-weight: bold; font-size: 18px;">500-5,000</div>
+    <div style="color: #1d4ed8; font-weight: bold; font-size: 18px;">500-5,000</div>
     <div style="color: #8b949e; font-size: 11px;">listings</div>
   </div>
   <div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
@@ -1231,7 +1231,7 @@ For a regional vacation rental platform (think: "Cabins in Vermont" or "Beach ho
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
   <!-- Vercel/Railway -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #1f6feb; border-radius: 10px; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #1f6feb; border-radius: 10px; padding: 16px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div>
         <div style="color: #1f6feb; font-weight: bold; font-size: 13px;">Vercel / Railway</div>
@@ -1245,7 +1245,7 @@ For a regional vacation rental platform (think: "Cabins in Vermont" or "Beach ho
   <div style="text-align: center; color: #484f58;">&#8595;</div>
 
   <!-- PostgreSQL -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #3fb950; border-radius: 10px; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #3fb950; border-radius: 10px; padding: 16px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
       <div>
         <div style="color: #3fb950; font-weight: bold; font-size: 13px;">PostgreSQL (Supabase)</div>
@@ -1264,7 +1264,7 @@ For a regional vacation rental platform (think: "Cabins in Vermont" or "Beach ho
   <div style="text-align: center; color: #484f58;">&#8595;</div>
 
   <!-- Stripe + Cloudflare -->
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border: 2px solid #a371f7; border-radius: 10px; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #a371f7; border-radius: 10px; padding: 16px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div>
         <div style="color: #a371f7; font-weight: bold; font-size: 13px;">Stripe + Cloudflare</div>
@@ -1306,7 +1306,7 @@ LIMIT 20;
 
 ### When You DON'T Need Distributed Locking
 
-<div style="background: linear-gradient(135deg, #161b22 0%, #21262d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
 <div style="color: #f0883e; font-weight: bold; font-size: 13px; margin-bottom: 16px;">Question: Do I need Redis for double-booking prevention?</div>
 
@@ -1362,7 +1362,7 @@ LIMIT 20;
 ## Trade-off Analysis & Mitigation
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Consistency vs. Availability Trade-offs
 
@@ -1376,9 +1376,9 @@ LIMIT 20;
 
 ### Search Latency vs. Accuracy Trade-offs
 
-<div style="background: linear-gradient(135deg, #161b22 0%, #21262d 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-<h4 style="color: #58a6ff; text-align: center; margin: 0 0 20px 0;">SEARCH FRESHNESS SPECTRUM</h4>
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0;">SEARCH FRESHNESS SPECTRUM</h4>
 
 <div style="display: flex; justify-content: space-between; align-items: stretch; gap: 16px; flex-wrap: wrap;">
 
@@ -1405,7 +1405,7 @@ LIMIT 20;
 
 </div>
 
-<div style="background: #21262d; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 16px;">
   <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Recommendation</div>
   <div style="color: #8b949e; font-size: 11px; line-height: 1.8;">
     &#8226; Search listing page: 30s Redis cache (acceptable stale)<br/>
@@ -1420,7 +1420,7 @@ LIMIT 20;
 
 <div style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;">
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #f85149; border-radius: 0 10px 10px 0; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #f85149; border-radius: 0 10px 10px 0; padding: 16px;">
     <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 1: Distributed Lock (Redis)</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; SETNX with TTL prevents concurrent attempts<br/>
@@ -1429,7 +1429,7 @@ LIMIT 20;
     </div>
   </div>
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #3fb950; border-radius: 0 10px 10px 0; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #3fb950; border-radius: 0 10px 10px 0; padding: 16px;">
     <div style="color: #3fb950; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 2: Database Constraints</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; UNIQUE constraint on (listing_id, date, type='booked')<br/>
@@ -1438,8 +1438,8 @@ LIMIT 20;
     </div>
   </div>
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #58a6ff; border-radius: 0 10px 10px 0; padding: 16px;">
-    <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 3: Optimistic Locking</div>
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #58a6ff; border-radius: 0 10px 10px 0; padding: 16px;">
+    <div style="color: #1d4ed8; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 3: Optimistic Locking</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; Version number on calendar, check-and-set<br/>
       &#8226; <span style="color: #f0883e;">Failure mode:</span> Retry on version mismatch<br/>
@@ -1447,7 +1447,7 @@ LIMIT 20;
     </div>
   </div>
 
-  <div style="background: linear-gradient(135deg, #21262d 0%, #30363d 100%); border-left: 4px solid #a371f7; border-radius: 0 10px 10px 0; padding: 16px;">
+  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #a371f7; border-radius: 0 10px 10px 0; padding: 16px;">
     <div style="color: #a371f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Layer 4: Idempotency Keys</div>
     <div style="color: #8b949e; font-size: 11px; line-height: 1.7;">
       &#8226; Client sends unique booking_request_id<br/>

@@ -4,7 +4,7 @@
 
 Design a hyperlocal delivery platform that enables pick-up and drop services, grocery delivery, and package delivery within a city.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #00c853;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #00c853;">
 
 ### Core Requirements
 - **Multi-category Delivery**: Groceries, food, packages, documents
@@ -20,13 +20,13 @@ Design a hyperlocal delivery platform that enables pick-up and drop services, gr
 
 ## High-Level Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">HYPERLOCAL DELIVERY ARCHITECTURE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">HYPERLOCAL DELIVERY ARCHITECTURE</h3>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
 
 <!-- Customer Layer -->
-<div style="background: linear-gradient(135deg, #2d5a27 0%, #3d7a37 100%); border-radius: 12px; padding: 16px 32px; border: 2px solid #4ade80; text-align: center;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 16px 32px; border: 2px solid #4ade80; text-align: center;">
 <div style="color: #4ade80; font-weight: bold; font-size: 14px;">CUSTOMERS</div>
 <div style="color: #d1fae5; font-size: 12px;">Mobile App</div>
 </div>
@@ -35,13 +35,13 @@ Design a hyperlocal delivery platform that enables pick-up and drop services, gr
 
 <!-- Three Apps Row -->
 <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #60a5fa; text-align: center; min-width: 100px;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #60a5fa; text-align: center; min-width: 100px;">
 <div style="color: #60a5fa; font-weight: bold; font-size: 13px;">Customer App</div>
 </div>
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #6b3d24 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #f97316; text-align: center; min-width: 100px;">
+<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #f97316; text-align: center; min-width: 100px;">
 <div style="color: #f97316; font-weight: bold; font-size: 13px;">Partner App</div>
 </div>
-<div style="background: linear-gradient(135deg, #3d1f5a 0%, #5a2d8a 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #a855f7; text-align: center; min-width: 100px;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #a855f7; text-align: center; min-width: 100px;">
 <div style="color: #a855f7; font-weight: bold; font-size: 13px;">Merchant App</div>
 </div>
 </div>
@@ -49,7 +49,7 @@ Design a hyperlocal delivery platform that enables pick-up and drop services, gr
 <div style="color: #6b7280; font-size: 24px;">|</div>
 
 <!-- API Gateway -->
-<div style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); border-radius: 12px; padding: 16px 48px; border: 2px solid #9ca3af; text-align: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 16px 48px; border: 2px solid #9ca3af; text-align: center;">
 <div style="color: #e5e7eb; font-weight: bold; font-size: 14px;">API GATEWAY</div>
 </div>
 
@@ -111,10 +111,10 @@ Design a hyperlocal delivery platform that enables pick-up and drop services, gr
 
 ## Order Flow
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">HYPERLOCAL DELIVERY FLOW</h4>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 24px; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; border: 2px solid #6b7280;">
 
 <div style="color: #e5e7eb; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #374151;">ORDER LIFECYCLE</div>
 
@@ -193,7 +193,7 @@ Find best partner based on:<br/>
 ## Phase 1: Starting Phase
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Cities**: 1-3
@@ -302,15 +302,15 @@ class DispatchService:
 ## Phase 2: Medium Scale
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Route Optimization
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-<div style="color: #58a6ff; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px;">MULTI-STOP ROUTE OPTIMIZATION</div>
+<div style="color: #1d4ed8; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px;">MULTI-STOP ROUTE OPTIMIZATION</div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280; margin-bottom: 20px;">
 
 <div style="color: #e5e7eb; font-weight: bold; margin-bottom: 12px;">Problem: Partner has multiple orders to deliver</div>
 
@@ -425,9 +425,9 @@ class BatchingService:
 
 ### Partner Location Tracking
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
 
 <div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">LOCATION TRACKING PIPELINE</div>
 
@@ -484,7 +484,7 @@ Topic: partner.locations<br/><br/>
 ## Phase 3: Dunzo Scale
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Assumptions
 - **Cities**: 25+
@@ -494,32 +494,32 @@ Topic: partner.locations<br/><br/>
 
 ### City-Based Microservices
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 <div style="color: #a855f7; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px;">DUNZO MULTI-CITY ARCHITECTURE</div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
 
 <!-- Global Layer -->
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 10px; padding: 16px; border: 2px solid #3b82f6; margin-bottom: 16px;">
 <div style="color: #3b82f6; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 12px;">GLOBAL LAYER</div>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #60a5fa;">
+<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #60a5fa;">
 <div style="color: #60a5fa; font-size: 11px; font-weight: bold;">User Service</div>
 </div>
-<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #22c55e;">
+<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #22c55e;">
 <div style="color: #22c55e; font-size: 11px; font-weight: bold;">Payment Service</div>
 </div>
-<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #f97316;">
+<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #f97316;">
 <div style="color: #f97316; font-size: 11px; font-weight: bold;">Marketing Service</div>
 </div>
-<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #ec4899;">
+<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #ec4899;">
 <div style="color: #ec4899; font-size: 11px; font-weight: bold;">Merchant Platform</div>
 </div>
-<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #eab308;">
+<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #eab308;">
 <div style="color: #eab308; font-size: 11px; font-weight: bold;">Partner Platform</div>
 </div>
-<div style="background: #0d1117; border-radius: 6px; padding: 8px 14px; border: 1px solid #a855f7;">
+<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #a855f7;">
 <div style="color: #a855f7; font-size: 11px; font-weight: bold;">Analytics Platform</div>
 </div>
 </div>
@@ -532,19 +532,19 @@ Topic: partner.locations<br/><br/>
 <div style="color: #a855f7; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 12px;">CITY CLUSTERS</div>
 <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
 
-<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #22c55e; min-width: 120px; text-align: center;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #22c55e; min-width: 120px; text-align: center;">
 <div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 6px;">BANGALORE</div>
 <div style="color: #bbf7d0; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
 <div style="color: #4ade80; font-size: 10px; margin-top: 6px; font-weight: bold;">15K partners</div>
 </div>
 
-<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #f97316; min-width: 120px; text-align: center;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #f97316; min-width: 120px; text-align: center;">
 <div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 6px;">MUMBAI</div>
 <div style="color: #fed7aa; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
 <div style="color: #fb923c; font-size: 10px; margin-top: 6px; font-weight: bold;">12K partners</div>
 </div>
 
-<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6; min-width: 120px; text-align: center;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6; min-width: 120px; text-align: center;">
 <div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 6px;">DELHI</div>
 <div style="color: #bfdbfe; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
 <div style="color: #60a5fa; font-size: 10px; margin-top: 6px; font-weight: bold;">10K partners</div>
@@ -615,7 +615,7 @@ class ETAService:
 
 ## AWS Technologies & Alternatives
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 | Component | AWS Service | Alternative | Trade-offs |
 |-----------|-------------|-------------|------------|
@@ -632,11 +632,11 @@ class ETAService:
 
 ## Distributed Systems Considerations
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### 1. Order Assignment Consistency
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
 <div style="color: #f97316; font-weight: bold; margin-bottom: 12px;">Challenge: Multiple dispatchers trying to assign same partner</div>
 <div style="color: #22c55e; font-weight: bold; margin-bottom: 16px;">Solution: Distributed lock on partner</div>
@@ -671,28 +671,28 @@ class ETAService:
 
 ### 2. Location Update at Scale
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
 <div style="color: #f97316; font-weight: bold; margin-bottom: 12px;">50K partners x 1 update/5s = 10K updates/second</div>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
 
-<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6;">
 <div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Ingestion</div>
 <div style="color: #bfdbfe; font-size: 10px;">Redis Streams for high-throughput writes</div>
 </div>
 
-<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #22c55e;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #22c55e;">
 <div style="color: #22c55e; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Persistence</div>
 <div style="color: #bbf7d0; font-size: 10px;">Batch writes to PostgreSQL every minute</div>
 </div>
 
-<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #f97316;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #f97316;">
 <div style="color: #f97316; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Real-time</div>
 <div style="color: #fed7aa; font-size: 10px;">Served from Redis only (hot data)</div>
 </div>
 
-<div style="background: #0d1117; border-radius: 8px; padding: 12px; border: 1px solid #a855f7;">
+<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #a855f7;">
 <div style="color: #a855f7; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Historical</div>
 <div style="color: #e9d5ff; font-size: 10px;">TimescaleDB for time-series analytics</div>
 </div>
@@ -707,7 +707,7 @@ class ETAService:
 
 ## Interview Deep Dive Questions
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f39c12;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f39c12;">
 
 ### 1. "How do you optimize multi-stop routes?"
 
@@ -1033,7 +1033,7 @@ class ETAService:
 
 ## Why This Technology?
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Technology Decision Matrix
 
@@ -1048,7 +1048,7 @@ class ETAService:
 
 ### When to Upgrade Technology
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
 <div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">TECHNOLOGY EVOLUTION TRIGGERS</div>
 
@@ -1105,11 +1105,11 @@ class ETAService:
 ## When Simpler Solutions Work
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
 ### Reality Check: You Probably Don't Need This Complexity
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #00c853;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #00c853;">
 
 **For < 50 orders/hour**: Manual assignment by dispatcher works fine
 - WhatsApp group with available riders
@@ -1139,7 +1139,7 @@ class ETAService:
 
 ### The "$300/Month Delivery Platform" Stack
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
 <div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">STARTUP STACK (Works up to 500 orders/day)</div>
 
@@ -1200,7 +1200,7 @@ class ETAService:
 
 ### Questions to Ask Before Building Complexity
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
 <div style="display: grid; gap: 16px;">
 
@@ -1251,7 +1251,7 @@ class ETAService:
 
 ## Trade-off Analysis & Mitigation
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Critical Trade-offs in Logistics Platform Design
 
@@ -1265,7 +1265,7 @@ class ETAService:
 
 ### Failure Mode Analysis
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
 <div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">FAILURE MODES AND MITIGATIONS</div>
 
@@ -1362,7 +1362,7 @@ class ETAService:
 
 ## Red Flags vs Impressive Statements
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Red Flags (What NOT to Say)
 
@@ -1402,7 +1402,7 @@ class ETAService:
 
 ### The "10x Engineer" Answer Pattern
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #1f2937 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
 
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
@@ -1446,7 +1446,7 @@ class ETAService:
 
 ## Quick Reference Card
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 ### Numbers to Remember
 

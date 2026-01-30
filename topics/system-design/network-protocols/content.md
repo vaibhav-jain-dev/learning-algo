@@ -2,811 +2,1299 @@
 
 ## Overview
 
-Network protocols are the rules and conventions that govern how devices communicate over a network. Think of them like languages - just as humans need a common language to communicate, computers need agreed-upon protocols to exchange data reliably.
+Network protocols are the foundational contracts that govern how distributed systems exchange data. Understanding their internal mechanisms, failure modes, and performance characteristics is essential for designing systems that operate correctly under real-world conditions.
 
-Understanding protocols is essential for system design because every distributed system relies on network communication. The protocol you choose affects latency, reliability, bandwidth usage, and complexity.
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Why Protocol Internals Matter in Interviews</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 24px;">
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #475569; font-size: 13px; margin-bottom: 8px;">Surface-level answer:</div>
+<div style="color: #1e293b; font-size: 14px;">"TCP is reliable, UDP is fast"</div>
+</div>
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #475569; font-size: 13px; margin-bottom: 8px;">Interview-winning answer:</div>
+<div style="color: #1e293b; font-size: 14px;">"TCP's congestion control uses AIMD, which causes throughput oscillation. For high-bandwidth transcontinental links, the BDP exceeds default buffer sizes, requiring tuning or protocols like QUIC."</div>
+</div>
+</div>
+</div>
 
 ---
 
-## Why Network Protocols Matter
+## TCP: Transmission Control Protocol
 
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
-<h4 style="color: #166534; margin-top: 0;">Real-World Impact</h4>
+### Internal Mechanisms
+
+TCP provides reliable, ordered, connection-oriented byte streams. Understanding its internals reveals why it behaves the way it does.
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">TCP Connection Lifecycle</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="display: flex; align-items: stretch; gap: 16px;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; flex: 1; border: 2px solid #22c55e;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Three-Way Handshake</h5>
+<div style="font-size: 13px; color: #1e293b;">
+<div style="margin-bottom: 8px;"><strong>SYN:</strong> Client sends ISN (Initial Sequence Number), randomly chosen to prevent session hijacking</div>
+<div style="margin-bottom: 8px;"><strong>SYN-ACK:</strong> Server responds with its own ISN and acknowledges client's ISN+1</div>
+<div><strong>ACK:</strong> Client acknowledges server's ISN+1 - connection established</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #166534;">
+<strong>Latency cost:</strong> 1.5 RTT before first data byte can be sent
+</div>
+</div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; flex: 1; border: 2px solid #ef4444;">
+<h5 style="color: #991b1b; margin: 0 0 12px 0;">Four-Way Termination</h5>
+<div style="font-size: 13px; color: #1e293b;">
+<div style="margin-bottom: 8px;"><strong>FIN:</strong> Initiator signals no more data to send</div>
+<div style="margin-bottom: 8px;"><strong>ACK:</strong> Receiver acknowledges</div>
+<div style="margin-bottom: 8px;"><strong>FIN:</strong> Receiver signals its completion</div>
+<div><strong>ACK:</strong> Initiator acknowledges - connection closed</div>
+</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #991b1b;">
+<strong>TIME_WAIT:</strong> 2*MSL (typically 60-120s) prevents old packets from corrupting new connections
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<h4 style="color: #b45309; margin-top: 0;">Critical Assumption</h4>
 <div style="color: #1e293b;">
+TCP assumes the network is a shared resource requiring <strong>cooperative congestion control</strong>. This assumption breaks in adversarial scenarios (e.g., competing flows intentionally ignoring congestion signals) or when RTT fairness becomes an issue (flows with lower RTT get disproportionate bandwidth).
+</div>
+</div>
 
-**Google** switched from HTTP/1.1 to HTTP/2 internally and saw 50% reduction in page load times. Protocol choice directly impacts user experience.
+### Congestion Control Deep Dive
 
-**Discord** uses UDP for voice chat because low latency matters more than perfect reliability - a slight audio glitch is better than delayed audio.
+TCP's congestion control algorithms determine throughput and fairness across the internet.
 
-**Stripe** uses gRPC between microservices for high-performance communication, achieving sub-millisecond latency for internal API calls while using REST for external APIs.
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">Congestion Control Algorithms</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Traditional: Reno/NewReno (AIMD)</h5>
+<div style="font-size: 13px; color: #475569;">
+<div style="margin-bottom: 8px;"><strong>Slow Start:</strong> Exponential growth (cwnd doubles each RTT) until ssthresh</div>
+<div style="margin-bottom: 8px;"><strong>Congestion Avoidance:</strong> Linear growth (cwnd += 1/cwnd per ACK)</div>
+<div style="margin-bottom: 8px;"><strong>Fast Retransmit:</strong> 3 duplicate ACKs trigger retransmit without timeout</div>
+<div><strong>Fast Recovery:</strong> Halve cwnd on loss, don't return to slow start</div>
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px;">
+<strong>Problem:</strong> Throughput = (MSS/RTT) * (1/sqrt(p)) - poor for high BDP networks
+</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Modern: BBR (Bottleneck Bandwidth and RTT)</h5>
+<div style="font-size: 13px; color: #475569;">
+<div style="margin-bottom: 8px;"><strong>Model-based:</strong> Estimates bottleneck bandwidth and min RTT</div>
+<div style="margin-bottom: 8px;"><strong>Pacing:</strong> Sends at estimated bandwidth rate, not bursty</div>
+<div style="margin-bottom: 8px;"><strong>ProbeRTT:</strong> Periodically drains queue to measure true RTT</div>
+<div><strong>No loss-based signals:</strong> Uses delay as primary congestion signal</div>
+</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px;">
+<strong>Benefit:</strong> 2-25x throughput improvement on lossy/high-BDP networks
+</div>
+</div>
+</div>
+</div>
 
+<div style="background: #faf5ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<h4 style="color: #7c3aed; margin-top: 0;">Design Trade-off: Loss vs Delay Signals</h4>
+<div style="color: #1e293b;">
+<strong>Loss-based (Reno, CUBIC):</strong> Simple, works everywhere, but causes bufferbloat and sawtooth throughput patterns.<br><br>
+<strong>Delay-based (Vegas, BBR):</strong> Can achieve near-optimal throughput, but vulnerable to competing loss-based flows that fill buffers and starve delay-sensitive flows. BBRv2 attempts to address fairness issues.
+</div>
+</div>
+
+### TCP Edge Cases and Failure Modes
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<h4 style="color: #991b1b; margin-top: 0;">Production Edge Cases</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>TIME_WAIT Exhaustion</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+High-volume servers creating many short connections exhaust ephemeral ports. Each closed connection holds a port for 2*MSL. Solutions: connection pooling, SO_REUSEADDR, tcp_tw_reuse (Linux), or move to long-lived connections.
+</div>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>Head-of-Line Blocking</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+A single lost packet blocks all subsequent data until retransmission completes. For multiplexed protocols (HTTP/2 over TCP), one slow stream blocks all streams. This motivated QUIC's move to UDP with per-stream reliability.
+</div>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>Receive Window Zero</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+Slow receiver fills its buffer, advertises zero window. Sender enters persist mode, sending window probes. If application is deadlocked waiting for data it can't read, connection stalls indefinitely. Monitor for connections stuck in persist state.
+</div>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>SYN Flood Attacks</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+Attackers send SYN packets with spoofed IPs, filling the SYN backlog. Server can't accept legitimate connections. Mitigations: SYN cookies (stateless until ACK), increased backlog, rate limiting, [[load-balancing]](/topics/system-design/load-balancing) with SYN proxy.
+</div>
+</div>
+</div>
+</div>
+
+### TCP Interview Questions (3-Level Deep)
+
+<div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Level 1: Explain the TCP three-way handshake</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> SYN, SYN-ACK, ACK sequence establishes connection. Client sends SYN with random sequence number, server responds with SYN-ACK acknowledging and providing its sequence number, client ACKs to complete.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: Why is the ISN random? What happens if it's predictable?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> Predictable ISNs enable TCP session hijacking. Attacker predicts the next ISN, sends spoofed packets that appear to be from legitimate client. Mirai botnet exploited this. Modern systems use RFC 6528 algorithm: ISN = Hash(local IP, local port, remote IP, remote port, secret key) + timestamp.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do SYN cookies work and what are their limitations?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Answer:</strong> SYN cookies encode connection state in the ISN itself: timestamp (5 bits), MSS index (3 bits), hash of connection tuple (24 bits). Server doesn't store state until ACK arrives with valid cookie.
+<br><br>
+<strong>Limitations:</strong> (1) Only 8 MSS values possible, losing precision; (2) TCP options in SYN are lost (no window scaling, SACK, timestamps); (3) Cannot detect duplicate SYNs; (4) Slight CPU overhead for crypto hash per SYN. Modern variant: TCP Fast Open with cookies for repeat clients.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: What is TCP congestion control?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> TCP adjusts sending rate based on network conditions using congestion window (cwnd). Starts slow, increases until detecting loss, then backs off. Prevents overwhelming the network.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: Why does TCP throughput collapse on high-latency lossy links?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> TCP Reno throughput = MSS * sqrt(3/2) / (RTT * sqrt(p)). For a 100ms RTT link with 1% loss and 1500-byte MSS, max throughput is ~1.5 Mbps regardless of available bandwidth. Loss-based congestion control treats all loss as congestion, halving cwnd even for random wireless loss.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How does BBR achieve better throughput and what are its fairness concerns?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Answer:</strong> BBR models the path: estimates bottleneck bandwidth (BtlBw) by tracking max delivery rate, estimates min RTT (RTprop) by tracking min RTT when not probing. Sends at BtlBw rate, targeting 2*BDP inflight.
+<br><br>
+<strong>Fairness issues:</strong> (1) BBRv1 is unfair to Reno/CUBIC - can take 40%+ of bandwidth in competition; (2) BBR vs BBR flows with different RTTs favor lower-RTT flows; (3) ProbeRTT phase causes synchronized throughput drops. BBRv2 adds loss-based signals for fairness, but sacrifices some throughput gains.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: What is the TCP receive window?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Flow control mechanism where receiver advertises available buffer space. Sender limits unacknowledged data to window size, preventing receiver buffer overflow.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: What is the bandwidth-delay product problem and how is it solved?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> BDP = bandwidth * RTT. For 1 Gbps link with 100ms RTT, BDP = 12.5 MB. Original TCP window field is 16 bits (max 64KB), limiting throughput to 64KB/100ms = 5 Mbps. Window scaling option (RFC 7323) provides 14-bit shift, allowing windows up to 1 GB.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you diagnose and fix TCP buffer tuning issues in production?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Diagnosis:</strong> Check net.ipv4.tcp_rmem/tcp_wmem settings. Use ss -i to see cwnd, rtt, delivery_rate. If cwnd is small but no retransmits, receive window is limiting. If retransmits are high, it's network loss not buffer issues.
+<br><br>
+<strong>Tuning:</strong> Set tcp_rmem/tcp_wmem max >= 2*BDP for expected paths. Enable tcp_window_scaling. For many connections, use tcp_moderate_rcvbuf for auto-tuning. <strong>Caution:</strong> Large buffers * many connections = memory exhaustion. Use tcp_mem limits.
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 
 ---
 
-## The OSI Model
+## UDP: User Datagram Protocol
+
+### Internal Mechanisms
+
+UDP provides minimal transport: just multiplexing (ports) and optional checksums. Everything else is the application's responsibility.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">OSI Model Layers</h4>
-<div style="display: flex; flex-direction: column; gap: 8px; max-width: 600px; margin: 0 auto;">
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #fef2f2; color: #991b1b; padding: 12px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold; border: 1px solid #fecaca;">7. Application</div>
-<div style="color: #475569; font-size: 13px;">HTTP, gRPC, WebSocket, SMTP</div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">UDP Header Structure</h4>
+<div style="display: flex; justify-content: center;">
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; border: 1px solid #bfdbfe; font-family: monospace; font-size: 13px;">
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; text-align: center;">
+<div style="background: #dbeafe; padding: 12px; border-radius: 4px;">Source Port<br><span style="color: #64748b; font-size: 11px;">16 bits</span></div>
+<div style="background: #dbeafe; padding: 12px; border-radius: 4px;">Dest Port<br><span style="color: #64748b; font-size: 11px;">16 bits</span></div>
+<div style="background: #dbeafe; padding: 12px; border-radius: 4px;">Length<br><span style="color: #64748b; font-size: 11px;">16 bits</span></div>
+<div style="background: #dbeafe; padding: 12px; border-radius: 4px;">Checksum<br><span style="color: #64748b; font-size: 11px;">16 bits</span></div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #fff7ed; color: #9a3412; padding: 12px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold; border: 1px solid #fed7aa;">6. Presentation</div>
-<div style="color: #475569; font-size: 13px;">SSL/TLS, Encryption, Compression</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #fefce8; color: #854d0e; padding: 12px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold; border: 1px solid #fef08a;">5. Session</div>
-<div style="color: #475569; font-size: 13px;">Connection management</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #f0fdf4; color: #166534; padding: 12px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold; border: 1px solid #bbf7d0;">4. Transport</div>
-<div style="color: #475569; font-size: 13px;">TCP, UDP - Reliability, ports</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #eff6ff; color: #1e40af; padding: 12px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold; border: 1px solid #bfdbfe;">3. Network</div>
-<div style="color: #475569; font-size: 13px;">IP - Routing, addressing</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #f3e8ff; color: #7c3aed; padding: 12px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold; border: 1px solid #d8b4fe;">2. Data Link</div>
-<div style="color: #475569; font-size: 13px;">Ethernet, MAC addresses</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #f1f5f9; color: #475569; padding: 12px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold; border: 1px solid #cbd5e1;">1. Physical</div>
-<div style="color: #475569; font-size: 13px;">Cables, signals, bits</div>
-</div>
-</div>
-<div style="text-align: center; margin-top: 16px; color: #64748b; font-size: 13px;">
-Higher layers = More abstraction | Lower layers = Closer to hardware
-</div>
-</div>
-
----
-
-## TCP vs UDP
-
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Transport Layer Protocols</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; border: 1px solid #bbf7d0;">
-<h5 style="color: #166534; margin: 0 0 16px 0;">TCP (Transmission Control Protocol)</h5>
-<div style="color: #475569; font-size: 13px; margin-bottom: 16px;">Connection-oriented, reliable delivery</div>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #166534; font-size: 12px; font-weight: bold; margin-bottom: 8px;">Three-Way Handshake:</div>
-<div style="font-family: monospace; font-size: 11px; color: #1e293b;">
-Client --> SYN --> Server<br>
-Client <-- SYN-ACK <-- Server<br>
-Client --> ACK --> Server<br>
-<span style="color: #166534;">Connection established!</span>
-</div>
-</div>
-<div style="font-size: 13px;">
-<div style="color: #166534; margin-bottom: 4px;">+ Guaranteed delivery</div>
-<div style="color: #166534; margin-bottom: 4px;">+ Ordered packets</div>
-<div style="color: #166534; margin-bottom: 4px;">+ Error checking</div>
-<div style="color: #166534; margin-bottom: 8px;">+ Flow control</div>
-<div style="color: #dc2626; margin-bottom: 4px;">- Higher latency</div>
-<div style="color: #dc2626;">- More overhead</div>
-</div>
-</div>
-<div style="background: #eff6ff; border-radius: 12px; padding: 24px; border: 1px solid #bfdbfe;">
-<h5 style="color: #1e40af; margin: 0 0 16px 0;">UDP (User Datagram Protocol)</h5>
-<div style="color: #475569; font-size: 13px; margin-bottom: 16px;">Connectionless, best-effort delivery</div>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #1e40af; font-size: 12px; font-weight: bold; margin-bottom: 8px;">No Handshake:</div>
-<div style="font-family: monospace; font-size: 11px; color: #1e293b;">
-Client --> Data --> Server<br>
-Client --> Data --> Server<br>
-Client --> Data --> Server<br>
-<span style="color: #1e40af;">Fire and forget!</span>
-</div>
-</div>
-<div style="font-size: 13px;">
-<div style="color: #166534; margin-bottom: 4px;">+ Low latency</div>
-<div style="color: #166534; margin-bottom: 4px;">+ Less overhead</div>
-<div style="color: #166534; margin-bottom: 4px;">+ Broadcast/multicast</div>
-<div style="color: #166534; margin-bottom: 8px;">+ Simple</div>
-<div style="color: #dc2626; margin-bottom: 4px;">- No delivery guarantee</div>
-<div style="color: #dc2626;">- No ordering</div>
-</div>
+<div style="text-align: center; margin-top: 12px; color: #1e40af; font-weight: bold;">Total: 8 bytes (vs TCP's 20-60 bytes)</div>
 </div>
 </div>
 </div>
 
-### When to Use Each
+<div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<h4 style="color: #b45309; margin-top: 0;">Critical Assumption</h4>
+<div style="color: #1e293b;">
+UDP assumes the <strong>application knows better than the transport layer</strong> what reliability semantics it needs. This is correct for real-time media (where old data is useless) but requires careful application design for anything needing reliability.
+</div>
+</div>
+
+### When UDP Outperforms TCP
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 <tr style="background: #f1f5f9;">
-<th style="padding: 12px; text-align: left; color: #1e293b;">Use Case</th>
-<th style="padding: 12px; text-align: center; color: #1e293b;">TCP</th>
-<th style="padding: 12px; text-align: center; color: #1e293b;">UDP</th>
-<th style="padding: 12px; text-align: left; color: #1e293b;">Why</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Scenario</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Why UDP Wins</th>
+<th style="padding: 12px; text-align: left; color: #1e293b;">Real-World Example</th>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Web browsing</td>
-<td style="padding: 12px; text-align: center; color: #166534; border-bottom: 1px solid #e2e8f0;">Yes</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"></td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Need complete, ordered data</td>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Real-time media</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Retransmitting old audio/video frame is pointless - it's already past playback time</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Zoom, Discord voice, Twitch ingest</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">File transfer</td>
-<td style="padding: 12px; text-align: center; color: #166534; border-bottom: 1px solid #e2e8f0;">Yes</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"></td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Cannot lose any bytes</td>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Small stateless queries</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Handshake overhead (1.5 RTT) exceeds query time. Single packet fits entire request.</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">DNS, NTP, DHCP</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Video streaming</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"></td>
-<td style="padding: 12px; text-align: center; color: #1e40af; border-bottom: 1px solid #e2e8f0;">Yes</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Latency matters more than perfection</td>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Broadcast/Multicast</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">TCP is point-to-point only. UDP supports one-to-many transmission.</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">IPTV, service discovery, mDNS</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Online gaming</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"></td>
-<td style="padding: 12px; text-align: center; color: #1e40af; border-bottom: 1px solid #e2e8f0;">Yes</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Real-time > reliability</td>
+<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>High fan-out telemetry</strong></td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Thousands of connections = massive TCP state overhead. UDP is stateless.</td>
+<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">StatsD, game server updates</td>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">VoIP calls</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"></td>
-<td style="padding: 12px; text-align: center; color: #1e40af; border-bottom: 1px solid #e2e8f0;">Yes</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Delayed audio is worse than glitchy</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b;">DNS queries</td>
-<td style="padding: 12px; text-align: center;"></td>
-<td style="padding: 12px; text-align: center; color: #1e40af;">Yes</td>
-<td style="padding: 12px; color: #475569;">Small, stateless lookups</td>
+<td style="padding: 12px; color: #1e293b;"><strong>Custom reliability</strong></td>
+<td style="padding: 12px; color: #475569;">Application needs partial reliability or FEC, not TCP's all-or-nothing retransmit</td>
+<td style="padding: 12px; color: #475569;">QUIC, WebRTC, game engines</td>
 </tr>
 </table>
 </div>
 
----
-
-## HTTP Protocol
-
-### HTTP Request/Response
+### Building Reliability on UDP
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP Request/Response</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div>
-<div style="color: #166534; font-weight: bold; margin-bottom: 12px;">REQUEST</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px;">
-<span style="color: #166534;">GET</span> <span style="color: #1e40af;">/api/users/123</span> <span style="color: #64748b;">HTTP/1.1</span><br>
-<span style="color: #ea580c;">Host:</span> api.example.com<br>
-<span style="color: #ea580c;">Authorization:</span> Bearer eyJhbG...<br>
-<span style="color: #ea580c;">Accept:</span> application/json<br>
-<br>
-<span style="color: #64748b;">{"name": "John"}</span>
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">Application-Layer Reliability Mechanisms</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Sequence Numbers + ACKs</h5>
+<div style="font-size: 13px; color: #475569;">
+Application adds sequence number to each packet. Receiver tracks gaps and requests retransmits. Allows selective reliability - only retransmit what matters.
 </div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #166534;">
+<strong>Used by:</strong> QUIC, game protocols
 </div>
-<div>
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px;">RESPONSE</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 12px;">
-<span style="color: #64748b;">HTTP/1.1</span> <span style="color: #166534;">200 OK</span><br>
-<span style="color: #ea580c;">Content-Type:</span> application/json<br>
-<span style="color: #ea580c;">Content-Length:</span> 82<br>
-<span style="color: #ea580c;">Cache-Control:</span> max-age=3600<br>
-<br>
-<span style="color: #64748b;">{"id": 123, "name": "John Doe"}</span>
-</div>
-</div>
-</div>
-</div>
-
-### HTTP Methods
-
-<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
-<div style="background: #f0fdf4; border-radius: 8px; padding: 16px; text-align: center; border: 1px solid #bbf7d0;">
-<div style="background: #22c55e; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; font-weight: bold; margin-bottom: 8px;">GET</div>
-<div style="color: #1e293b; font-size: 12px;">Read resource</div>
-<div style="color: #166534; font-size: 11px; margin-top: 4px;">Safe, Idempotent</div>
-</div>
-<div style="background: #eff6ff; border-radius: 8px; padding: 16px; text-align: center; border: 1px solid #bfdbfe;">
-<div style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; font-weight: bold; margin-bottom: 8px;">POST</div>
-<div style="color: #1e293b; font-size: 12px;">Create resource</div>
-<div style="color: #ea580c; font-size: 11px; margin-top: 4px;">Not idempotent</div>
-</div>
-<div style="background: #fff7ed; border-radius: 8px; padding: 16px; text-align: center; border: 1px solid #fed7aa;">
-<div style="background: #f97316; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; font-weight: bold; margin-bottom: 8px;">PUT</div>
-<div style="color: #1e293b; font-size: 12px;">Replace resource</div>
-<div style="color: #166534; font-size: 11px; margin-top: 4px;">Idempotent</div>
-</div>
-<div style="background: #fef2f2; border-radius: 8px; padding: 16px; text-align: center; border: 1px solid #fecaca;">
-<div style="background: #ef4444; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; font-weight: bold; margin-bottom: 8px;">DELETE</div>
-<div style="color: #1e293b; font-size: 12px;">Remove resource</div>
-<div style="color: #166534; font-size: 11px; margin-top: 4px;">Idempotent</div>
-</div>
-</div>
-</div>
-
-### HTTP Status Codes
-
-<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-<tr style="background: #f1f5f9;">
-<th style="padding: 12px; text-align: left; color: #1e293b;">Range</th>
-<th style="padding: 12px; text-align: left; color: #1e293b;">Category</th>
-<th style="padding: 12px; text-align: left; color: #1e293b;">Common Codes</th>
-</tr>
-<tr>
-<td style="padding: 12px; color: #64748b; border-bottom: 1px solid #e2e8f0;"><strong>1xx</strong></td>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Informational</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">100 Continue, 101 Switching Protocols</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #166534; border-bottom: 1px solid #e2e8f0;"><strong>2xx</strong></td>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Success</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">200 OK, 201 Created, 204 No Content</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e40af; border-bottom: 1px solid #e2e8f0;"><strong>3xx</strong></td>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Redirection</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">301 Moved Permanently, 304 Not Modified</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #ea580c; border-bottom: 1px solid #e2e8f0;"><strong>4xx</strong></td>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Client Error</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">400 Bad Request, 401 Unauthorized, 404 Not Found</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #dc2626;"><strong>5xx</strong></td>
-<td style="padding: 12px; color: #1e293b;">Server Error</td>
-<td style="padding: 12px; color: #475569;">500 Internal Error, 502 Bad Gateway, 503 Unavailable</td>
-</tr>
-</table>
-</div>
-
----
-
-## HTTP/1.1 vs HTTP/2 vs HTTP/3
-
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP Version Comparison</h4>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-<div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
-<h5 style="color: #9a3412; margin: 0 0 16px 0;">HTTP/1.1 (1997)</h5>
-<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
-<div style="background: #fdba74; height: 8px; border-radius: 2px;"></div>
-<div style="height: 8px; border-radius: 2px; border: 1px dashed #fdba74;"></div>
-<div style="background: #fdba74; height: 8px; border-radius: 2px;"></div>
-<div style="color: #64748b; font-size: 10px; text-align: center; margin-top: 4px;">Sequential requests</div>
-</div>
-<ul style="color: #475569; font-size: 12px; margin: 0; padding-left: 16px;">
-<li>One request at a time</li>
-<li>Head-of-line blocking</li>
-<li>Text-based headers</li>
-<li>No server push</li>
-</ul>
 </div>
 <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
-<h5 style="color: #1e40af; margin: 0 0 16px 0;">HTTP/2 (2015)</h5>
-<div style="display: flex; gap: 4px; margin-bottom: 12px;">
-<div style="display: flex; flex-direction: column; gap: 2px; flex: 1;">
-<div style="background: #60a5fa; height: 8px; border-radius: 2px;"></div>
-<div style="background: #4ade80; height: 8px; border-radius: 2px;"></div>
-<div style="background: #c084fc; height: 8px; border-radius: 2px;"></div>
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Forward Error Correction (FEC)</h5>
+<div style="font-size: 13px; color: #475569;">
+Send redundant packets using Reed-Solomon or similar codes. Receiver can reconstruct lost packets without retransmission. Trades bandwidth for latency.
 </div>
-<div style="color: #64748b; font-size: 10px; writing-mode: vertical-rl;">Multiplexed</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #1e40af;">
+<strong>Used by:</strong> QUIC (optional), WebRTC, video codecs
 </div>
-<ul style="color: #475569; font-size: 12px; margin: 0; padding-left: 16px;">
-<li>Multiple streams</li>
-<li>Binary framing</li>
-<li>Header compression</li>
-<li>Server push</li>
-</ul>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
-<h5 style="color: #166534; margin: 0 0 16px 0;">HTTP/3 (2022)</h5>
-<div style="display: flex; gap: 4px; margin-bottom: 12px;">
-<div style="display: flex; flex-direction: column; gap: 2px; flex: 1;">
-<div style="background: #4ade80; height: 8px; border-radius: 2px;"></div>
-<div style="background: #60a5fa; height: 8px; border-radius: 2px;"></div>
-<div style="background: #fb923c; height: 8px; border-radius: 2px;"></div>
+<div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
+<h5 style="color: #9a3412; margin: 0 0 12px 0;">Idempotent Operations</h5>
+<div style="font-size: 13px; color: #475569;">
+Design requests so duplicates and reordering don't matter. Include request ID for deduplication. Response can be safely retried.
 </div>
-<div style="color: #64748b; font-size: 10px; writing-mode: vertical-rl;">QUIC/UDP</div>
+<div style="background: #ffedd5; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #9a3412;">
+<strong>Used by:</strong> DNS, NTP, stateless RPCs
 </div>
-<ul style="color: #475569; font-size: 12px; margin: 0; padding-left: 16px;">
-<li>Built on QUIC (UDP)</li>
-<li>No HOL blocking</li>
-<li>Faster connection</li>
-<li>Better for mobile</li>
-</ul>
+</div>
+<div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff;">
+<h5 style="color: #7c3aed; margin: 0 0 12px 0;">Deadline-Based Delivery</h5>
+<div style="font-size: 13px; color: #475569;">
+Each packet has timestamp/deadline. Receiver drops packets past deadline rather than buffering. No retransmit of stale data.
+</div>
+<div style="background: #f3e8ff; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #7c3aed;">
+<strong>Used by:</strong> Real-time audio/video, gaming
+</div>
+</div>
+</div>
+</div>
+
+### UDP Interview Questions (3-Level Deep)
+
+<div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Level 1: When would you use UDP over TCP?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Real-time applications (voice, video, gaming) where latency matters more than reliability, or small stateless queries (DNS) where connection overhead is wasteful.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: How would you implement reliable delivery on UDP?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> Add sequence numbers, send ACKs or NACKs, implement retransmission with timeout. Can add selective acknowledgment (SACK) for efficiency. May add FEC for latency-sensitive paths. Implement congestion control to be network-friendly.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: Why did QUIC choose UDP? What obstacles does this create?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Why UDP:</strong> (1) Kernel TCP stacks ossified - can't deploy new algorithms without OS updates; (2) Middleboxes (NATs, firewalls) mangle unknown TCP options; (3) Per-stream reliability impossible in TCP; (4) Connection migration impossible with TCP's 4-tuple identity.
+<br><br>
+<strong>Obstacles:</strong> (1) NAT rebinding - UDP NAT mappings timeout faster (30s) than TCP; QUIC needs keepalives; (2) Firewalls blocking UDP/443; (3) No hardware offload initially; (4) Some networks rate-limit UDP; (5) Reimplementing congestion control correctly is hard.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: What are the risks of using UDP?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> No guaranteed delivery, packets can arrive out of order or duplicated, no congestion control means you can overwhelm the network.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: How are UDP amplification attacks performed and mitigated?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Attack:</strong> Attacker sends small requests with spoofed source IP (victim's IP) to servers that respond with large replies. DNS (70x), NTP (556x), Memcached (51000x) amplification factors. Victim flooded with traffic.
+<br><br>
+<strong>Mitigations:</strong> BCP38 source address validation, rate limiting responses, disabling unnecessary UDP services, response rate limiting (RRL) for DNS.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you design a UDP protocol that's amplification-resistant?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Design principles:</strong> (1) Response must not exceed request size until source IP verified; (2) Require proof-of-work or puzzle for expensive operations; (3) Use challenge-response before amplifying (like TCP SYN cookies); (4) Rate-limit by source IP at application layer.
+<br><br>
+<strong>QUIC's approach:</strong> Server sends Retry packet with address validation token before sending large handshake data. Client must echo token, proving it can receive at claimed IP. Initial packet minimum size (1200 bytes) limits amplification to 3x.
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 
 ---
 
-## WebSocket
+## HTTP/2: Binary Framing and Multiplexing
+
+### Internal Mechanisms
+
+HTTP/2 fundamentally restructures HTTP communication while maintaining semantic compatibility with HTTP/1.1.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">WebSocket vs HTTP</h4>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">HTTP/2 Frame Structure</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; width: 100%; max-width: 600px; border: 1px solid #bfdbfe;">
+<div style="display: grid; grid-template-columns: 3fr 1fr 1fr 1fr 4fr; gap: 2px; text-align: center; font-family: monospace; font-size: 12px;">
+<div style="background: #dbeafe; padding: 10px; border-radius: 4px;">Length<br><span style="color: #64748b; font-size: 10px;">24 bits</span></div>
+<div style="background: #bfdbfe; padding: 10px; border-radius: 4px;">Type<br><span style="color: #64748b; font-size: 10px;">8 bits</span></div>
+<div style="background: #93c5fd; padding: 10px; border-radius: 4px;">Flags<br><span style="color: #64748b; font-size: 10px;">8 bits</span></div>
+<div style="background: #60a5fa; padding: 10px; border-radius: 4px; color: white;">R<br><span style="font-size: 10px;">1 bit</span></div>
+<div style="background: #3b82f6; padding: 10px; border-radius: 4px; color: white;">Stream ID<br><span style="font-size: 10px;">31 bits</span></div>
+</div>
+<div style="background: #e0f2fe; padding: 16px; border-radius: 4px; margin-top: 8px; text-align: center;">
+Frame Payload (variable length)
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; max-width: 600px;">
+<div style="background: #dcfce7; padding: 12px; border-radius: 8px; text-align: center; font-size: 11px;">
+<strong>DATA</strong><br>Request/response body
+</div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px; text-align: center; font-size: 11px;">
+<strong>HEADERS</strong><br>HTTP headers (HPACK)
+</div>
+<div style="background: #fce7f3; padding: 12px; border-radius: 8px; text-align: center; font-size: 11px;">
+<strong>SETTINGS</strong><br>Connection params
+</div>
+<div style="background: #e0e7ff; padding: 12px; border-radius: 8px; text-align: center; font-size: 11px;">
+<strong>WINDOW_UPDATE</strong><br>Flow control
+</div>
+<div style="background: #fef2f2; padding: 12px; border-radius: 8px; text-align: center; font-size: 11px;">
+<strong>RST_STREAM</strong><br>Cancel stream
+</div>
+</div>
+</div>
+</div>
+
+### Multiplexing and Stream Prioritization
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">HTTP/1.1 vs HTTP/2 Connection Usage</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
-<h5 style="color: #9a3412; margin: 0 0 16px 0;">HTTP (Half-Duplex)</h5>
+<h5 style="color: #9a3412; margin: 0 0 16px 0;">HTTP/1.1: Multiple Connections</h5>
 <div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #22c55e; padding: 6px 12px; border-radius: 4px; color: white; font-size: 11px;">Client</div>
-<div style="color: #ea580c;">--> Request --></div>
-<div style="background: #3b82f6; padding: 6px 12px; border-radius: 4px; color: white; font-size: 11px;">Server</div>
+<div style="display: flex; gap: 8px;">
+<div style="background: #fdba74; height: 24px; flex: 3; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white;">GET /page.html</div>
+<div style="flex: 1;"></div>
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #22c55e; padding: 6px 12px; border-radius: 4px; color: white; font-size: 11px;">Client</div>
-<div style="color: #3b82f6;"><-- Response <--</div>
-<div style="background: #3b82f6; padding: 6px 12px; border-radius: 4px; color: white; font-size: 11px;">Server</div>
+<div style="display: flex; gap: 8px;">
+<div style="flex: 1;"></div>
+<div style="background: #fb923c; height: 24px; flex: 2; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white;">GET /style.css</div>
+<div style="flex: 1;"></div>
 </div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px; text-align: center;">New connection each time</div>
+<div style="display: flex; gap: 8px;">
+<div style="flex: 2;"></div>
+<div style="background: #f97316; height: 24px; flex: 2; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white;">GET /app.js</div>
 </div>
+</div>
+<div style="color: #9a3412; font-size: 12px; margin-top: 12px;">6 parallel connections (browser limit), head-of-line blocking per connection</div>
 </div>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
-<h5 style="color: #166534; margin: 0 0 16px 0;">WebSocket (Full-Duplex)</h5>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #22c55e; padding: 6px 12px; border-radius: 4px; color: white; font-size: 11px;">Client</div>
-<div style="color: #166534;"><--> Persistent <--></div>
-<div style="background: #3b82f6; padding: 6px 12px; border-radius: 4px; color: white; font-size: 11px;">Server</div>
+<h5 style="color: #166534; margin: 0 0 16px 0;">HTTP/2: Single Multiplexed Connection</h5>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; gap: 4px;">
+<div style="background: #4ade80; height: 20px; flex: 1; border-radius: 2px;"></div>
+<div style="background: #22c55e; height: 20px; flex: 1; border-radius: 2px;"></div>
+<div style="background: #4ade80; height: 20px; flex: 1; border-radius: 2px;"></div>
+<div style="background: #16a34a; height: 20px; flex: 1; border-radius: 2px;"></div>
 </div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px; text-align: center;">Single persistent connection<br>Both sides can send anytime</div>
+<div style="display: flex; gap: 4px;">
+<div style="background: #22c55e; height: 20px; flex: 1; border-radius: 2px;"></div>
+<div style="background: #16a34a; height: 20px; flex: 1; border-radius: 2px;"></div>
+<div style="background: #4ade80; height: 20px; flex: 1; border-radius: 2px;"></div>
+<div style="background: #22c55e; height: 20px; flex: 1; border-radius: 2px;"></div>
+</div>
+<div style="display: flex; gap: 4px; margin-top: 4px;">
+<div style="background: #bbf7d0; padding: 4px; border-radius: 2px; font-size: 9px;">Stream 1</div>
+<div style="background: #86efac; padding: 4px; border-radius: 2px; font-size: 9px;">Stream 3</div>
+<div style="background: #4ade80; padding: 4px; border-radius: 2px; font-size: 9px;">Stream 5</div>
+</div>
+</div>
+<div style="color: #166534; font-size: 12px; margin-top: 12px;">Interleaved frames from multiple streams, single TCP connection</div>
+</div>
+</div>
+</div>
+
+<div style="background: #faf5ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<h4 style="color: #7c3aed; margin-top: 0;">Design Trade-off: Stream Prioritization</h4>
+<div style="color: #1e293b;">
+HTTP/2 supports priority through dependency trees and weights. However, <strong>prioritization is advisory</strong> - servers may ignore it. Many CDNs and servers have poor or no priority support. Chrome deprecated complex priority trees in favor of simple urgency/incremental hints (Priority header) due to inconsistent implementation.
+<br><br>
+<strong>Implication:</strong> Don't rely on HTTP/2 priorities for correctness. Use them as optimization hints only.
+</div>
+</div>
+
+### HPACK Header Compression
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">HPACK Compression Mechanism</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Static Table</h5>
+<div style="font-size: 13px; color: #475569;">
+61 predefined header name-value pairs. Index 2 = ":method: GET", Index 7 = ":scheme: https". Single byte reference.
+</div>
+</div>
+<div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Dynamic Table</h5>
+<div style="font-size: 13px; color: #475569;">
+Connection-specific table built from headers seen. "Authorization: Bearer xyz" added on first use, referenced by index thereafter. FIFO eviction.
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; border: 1px solid #fde68a;">
+<h5 style="color: #b45309; margin: 0 0 12px 0;">Huffman Coding</h5>
+<div style="font-size: 13px; color: #475569;">
+Static Huffman table for literals. Optimized for HTTP header byte frequencies. ~30% savings on string values.
+</div>
+</div>
+</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<strong style="color: #991b1b;">Security consideration:</strong> Dynamic table is stateful. CRIME/BREACH attacks exploit compression ratio as side channel to extract secrets. Never compress headers containing secrets with attacker-controlled data.
+</div>
+</div>
+
+### HTTP/2 Interview Questions (3-Level Deep)
+
+<div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Level 1: How does HTTP/2 improve over HTTP/1.1?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Multiplexing (multiple requests on one connection), binary framing (efficient parsing), header compression (HPACK), server push, and stream prioritization.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: Why does HTTP/2 still suffer from head-of-line blocking?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> HTTP/2 eliminates HTTP-level HOL blocking via multiplexing, but runs over TCP. TCP delivers bytes in order - if packet N is lost, packets N+1 through M must wait for N's retransmission even if they belong to different HTTP/2 streams. With many multiplexed streams, loss probability increases, making this worse than HTTP/1.1's multiple connections.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How does HTTP/3 solve this, and what new problems does it introduce?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Solution:</strong> HTTP/3 uses QUIC over UDP. Each QUIC stream has independent reliability - loss in stream A doesn't block stream B. Only the affected stream waits for retransmission.
+<br><br>
+<strong>New problems:</strong> (1) UDP often blocked/rate-limited - needs TCP fallback; (2) No hardware offload initially - higher CPU; (3) User-space implementation means more syscalls; (4) NAT rebinding happens faster for UDP; (5) Kernel bypass (DPDK) needed for high performance, adding complexity; (6) QPACK header compression needs careful synchronization to avoid HOL blocking in the compression state.
+</div>
 </div>
 </div>
 </div>
 </div>
 
-### WebSocket Handshake
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: What is HTTP/2 Server Push?</h4>
 
-```http
-# Client Request (HTTP Upgrade)
-GET /chat HTTP/1.1
-Host: example.com
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
-Sec-WebSocket-Version: 13
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Server can proactively send resources before client requests them. When serving HTML, push CSS/JS the client will need. Saves round trip.
+</div>
 
-# Server Response
-HTTP/1.1 101 Switching Protocols
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
-```
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: Why has Server Push largely failed in practice?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> (1) Cache invalidation: pushed resources may already be in browser cache, wasting bandwidth; (2) Priority inversion: pushed low-priority resources compete with high-priority requests; (3) No client opt-out: client can RST_STREAM but data may already be sent; (4) Complexity: servers must track what to push; (5) CDN caching complications. Chrome removed Server Push support in 2022.
+</div>
 
-### WebSocket Use Cases
-
-<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-<tr style="background: #f1f5f9;">
-<th style="padding: 12px; text-align: left; color: #1e293b;">Use Case</th>
-<th style="padding: 12px; text-align: left; color: #1e293b;">Why WebSocket</th>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Chat applications</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Real-time message delivery, both ways</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Live sports scores</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Instant server-push updates</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Collaborative editing</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Sync changes between users instantly</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">Gaming</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Low-latency bidirectional communication</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b;">Stock tickers</td>
-<td style="padding: 12px; color: #475569;">Real-time price updates</td>
-</tr>
-</table>
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: What alternatives replaced Server Push?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>103 Early Hints:</strong> Server sends 103 response with Link headers hinting resources to preload. Client decides whether to fetch - respects cache. Simpler, cache-aware, widely supported.
+<br><br>
+<strong>Resource hints:</strong> Preload, prefetch, preconnect in HTML. Client-controlled, cache-aware.
+<br><br>
+<strong>Service Workers:</strong> Can prefetch/cache resources intelligently based on app knowledge.
+<br><br>
+<strong>Lesson:</strong> Server Push tried to optimize something the server doesn't have enough information about (client cache state). Better solutions give hints and let the client decide.
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 ---
 
-## gRPC Protocol
+## HTTP/3 and QUIC
+
+### QUIC Internal Architecture
+
+QUIC (Quick UDP Internet Connections) reimagines transport for the modern internet, combining ideas from TCP, TLS, and HTTP/2.
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">gRPC Architecture</h4>
-<div style="display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;">
-<div style="text-align: center;">
-<div style="background: #dcfce7; padding: 20px; border-radius: 12px; border: 1px solid #22c55e; min-width: 120px;">
-<div style="color: #166534; font-weight: bold;">gRPC Client</div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Generated Stub</div>
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">QUIC Protocol Stack</h4>
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 500px; margin: 0 auto;">
+<div style="background: #dbeafe; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #3b82f6;">
+<strong style="color: #1e40af;">HTTP/3</strong>
+<div style="color: #64748b; font-size: 12px;">Binary framing, header compression (QPACK)</div>
 </div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Python, Go, Java</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #22c55e;">
+<strong style="color: #166534;">QUIC Transport</strong>
+<div style="color: #64748b; font-size: 12px;">Streams, reliability, congestion control, encryption</div>
 </div>
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-<div style="color: #1e40af; font-size: 12px;">HTTP/2</div>
-<div style="display: flex; align-items: center; gap: 4px;">
-<div style="color: #64748b;">--></div>
-<div style="background: #f3e8ff; padding: 8px 16px; border-radius: 6px; color: #7c3aed; font-size: 11px; border: 1px solid #d8b4fe;">Protobuf</div>
-<div style="color: #64748b;">--></div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #f59e0b;">
+<strong style="color: #b45309;">TLS 1.3</strong>
+<div style="color: #64748b; font-size: 12px;">Integrated into QUIC, not layered above</div>
 </div>
-<div style="color: #64748b; font-size: 11px;">Binary serialization</div>
-</div>
-<div style="text-align: center;">
-<div style="background: #dbeafe; padding: 20px; border-radius: 12px; border: 1px solid #3b82f6; min-width: 120px;">
-<div style="color: #1e40af; font-weight: bold;">gRPC Server</div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Implementation</div>
-</div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Python, Go, Java</div>
+<div style="background: #e0e7ff; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #6366f1;">
+<strong style="color: #4338ca;">UDP</strong>
+<div style="color: #64748b; font-size: 12px;">Minimal transport - ports and checksums only</div>
 </div>
 </div>
 </div>
 
-### Protocol Buffers (Protobuf)
-
-```protobuf
-syntax = "proto3";
-package user;
-
-service UserService {
-  rpc GetUser (GetUserRequest) returns (User);
-  rpc ListUsers (ListUsersRequest) returns (stream User);
-  rpc CreateUser (User) returns (User);
-}
-
-message User {
-  int32 id = 1;
-  string name = 2;
-  string email = 3;
-  repeated string roles = 4;
-}
-
-message GetUserRequest {
-  int32 id = 1;
-}
-```
-
-### gRPC Streaming Types
+### QUIC Key Innovations
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">gRPC Communication Patterns</h4>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">0-RTT Connection Establishment</h5>
+<div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
+First connection: 1-RTT (vs TCP+TLS 3-RTT). Subsequent connections: 0-RTT using cached keys. Client sends encrypted data in first packet.
+</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 12px; font-size: 12px; color: #991b1b;">
+<strong>Risk:</strong> 0-RTT data can be replayed. Only safe for idempotent requests. Servers must track seen tickets or accept replay risk.
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Connection Migration</h5>
+<div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
+Connections identified by Connection ID, not 4-tuple. When IP changes (WiFi to cellular), connection survives. No re-handshake needed.
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 12px; font-size: 12px; color: #1e40af;">
+<strong>Implementation:</strong> Multiple Connection IDs per connection. Retire old IDs to prevent tracking. Path validation before migration.
+</div>
+</div>
+<div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff;">
+<h5 style="color: #7c3aed; margin: 0 0 12px 0;">Per-Stream Flow Control</h5>
+<div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
+Independent flow control windows per stream AND connection-level. Slow consumer on one stream doesn't block others. More granular than TCP.
+</div>
+<div style="background: #f3e8ff; border-radius: 8px; padding: 12px; font-size: 12px; color: #7c3aed;">
+<strong>Complexity:</strong> More state to track. Deadlock possible if stream windows exhausted while connection window available.
+</div>
+</div>
+<div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
+<h5 style="color: #9a3412; margin: 0 0 12px 0;">Integrated Encryption</h5>
+<div style="font-size: 13px; color: #475569; margin-bottom: 12px;">
+All QUIC packets encrypted (except initial handshake). Even packet numbers and ACK frames encrypted. Prevents ossification by middleboxes.
+</div>
+<div style="background: #ffedd5; border-radius: 8px; padding: 12px; font-size: 12px; color: #9a3412;">
+<strong>Trade-off:</strong> Network operators can't inspect traffic. Debugging harder. No selective ACK visibility for network diagnostics.
+</div>
+</div>
+</div>
+</div>
+
+<div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<h4 style="color: #b45309; margin-top: 0;">Critical Assumption</h4>
+<div style="color: #1e293b;">
+QUIC assumes <strong>middlebox ossification is the enemy</strong>. By encrypting everything and using UDP, QUIC can evolve without waiting for middlebox firmware updates. However, this creates operational challenges - network operators lose visibility, and some networks block UDP entirely.
+</div>
+</div>
+
+### HTTP/3 Interview Questions (3-Level Deep)
+
+<div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Level 1: What is QUIC and why was it created?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> QUIC is a transport protocol over UDP that provides reliable, multiplexed, encrypted connections. Created to reduce latency (fewer round trips), eliminate head-of-line blocking, and enable connection migration.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: How does QUIC achieve 0-RTT connection establishment?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> On first connection, QUIC completes TLS 1.3 handshake in 1 RTT. Server provides session ticket and transport parameters. On reconnection, client uses cached ticket to derive early data keys and sends encrypted data in first packet (before server responds).
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: What are the security implications of 0-RTT and how do you mitigate them?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Replay attacks:</strong> Attacker captures 0-RTT data and replays it. Server processes request twice. Catastrophic for non-idempotent operations (payments, votes).
+<br><br>
+<strong>Mitigations:</strong> (1) Single-use session tickets - server tracks used tickets (requires shared state); (2) Strike registers - probabilistic tracking of used tickets; (3) Time-bounded tickets - limit replay window; (4) Application-layer idempotency keys; (5) Only allow safe methods (GET) in 0-RTT.
+<br><br>
+<strong>Trade-off:</strong> Strict anti-replay requires server state sharing across replicas, negating some scalability benefits. Most deployments accept bounded replay window.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: Why does HTTP/3 use UDP instead of TCP?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> UDP allows implementing custom reliability and congestion control in user-space, enabling per-stream reliability (no HOL blocking) and connection migration (IP changes don't break connections).
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: What challenges does UDP-based transport face in enterprise networks?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Answer:</strong> (1) Firewalls often block UDP/443; (2) UDP rate-limited to prevent DDoS; (3) NAT mappings expire faster (30s vs TCP's minutes); (4) No deep packet inspection possible (encrypted); (5) QoS policies may not recognize QUIC; (6) Proxy infrastructure assumes TCP.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do browsers handle QUIC blocking, and what's the performance impact?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Happy Eyeballs for QUIC:</strong> Browser races QUIC and TCP connections. If QUIC fails/slow, TCP wins. Subsequent requests use winner. QUIC failures cached temporarily to avoid repeated probing overhead.
+<br><br>
+<strong>Performance impact:</strong> Racing adds ~1 connection worth of overhead. On networks blocking QUIC, adds RTT delay before TCP fallback. Chrome reports ~5-7% of connections fall back to TCP.
+<br><br>
+<strong>Alt-Svc learning:</strong> Server advertises QUIC support via Alt-Svc header. Browser caches this, tries QUIC on next visit. If blocked, falls back and clears cache. Results in good long-term behavior but suboptimal first visits.
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+---
+
+## WebSockets
+
+### Protocol Internals
+
+WebSocket provides full-duplex communication over a single TCP connection, upgrading from HTTP.
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">WebSocket Handshake and Frame Format</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+<div>
+<h5 style="color: #166534; margin: 0 0 12px 0;">HTTP Upgrade Handshake</h5>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 11px;">
+<div style="color: #166534; margin-bottom: 8px;">Client Request:</div>
+GET /chat HTTP/1.1<br>
+Upgrade: websocket<br>
+Connection: Upgrade<br>
+Sec-WebSocket-Key: dGhlIHNhbXBsZQ==<br>
+Sec-WebSocket-Version: 13<br><br>
+<div style="color: #1e40af; margin-bottom: 8px;">Server Response:</div>
+HTTP/1.1 101 Switching Protocols<br>
+Upgrade: websocket<br>
+Connection: Upgrade<br>
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9k...
+</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 8px;">
+Accept = Base64(SHA1(Key + GUID))
+</div>
+</div>
+<div>
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Frame Structure</h5>
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; font-size: 12px;">
+<div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; text-align: center; margin-bottom: 12px;">
+<div style="background: #dbeafe; padding: 6px 2px; border-radius: 2px; font-size: 9px;">FIN</div>
+<div style="background: #bfdbfe; padding: 6px 2px; border-radius: 2px; font-size: 9px;">RSV</div>
+<div style="background: #93c5fd; padding: 6px 2px; border-radius: 2px; font-size: 9px;" colspan="4">Opcode</div>
+<div style="background: #60a5fa; padding: 6px 2px; border-radius: 2px; font-size: 9px; color: white;">M</div>
+<div style="background: #3b82f6; padding: 6px 2px; border-radius: 2px; font-size: 9px; color: white;">Len</div>
+</div>
+<div style="color: #475569; font-size: 11px;">
+<strong>Opcodes:</strong> 0x1=text, 0x2=binary, 0x8=close, 0x9=ping, 0xA=pong<br>
+<strong>Mask:</strong> Client frames MUST be masked (XOR with 32-bit key)<br>
+<strong>Length:</strong> 7 bits, or 16/64 bits if 126/127
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<h4 style="color: #b45309; margin-top: 0;">Critical Assumption</h4>
+<div style="color: #1e293b;">
+WebSocket assumes <strong>infrastructure supports long-lived connections</strong>. This fails with: (1) Load balancers with short idle timeouts; (2) Proxies that buffer/batch; (3) Firewalls that drop idle connections; (4) [[auto-scaling]](/topics/system-design/auto-scaling) that terminates instances with active connections.
+</div>
+</div>
+
+### Scaling WebSocket Connections
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">WebSocket Scaling Challenges</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
+<h5 style="color: #991b1b; margin: 0 0 12px 0;">Connection State</h5>
+<div style="font-size: 13px; color: #475569;">
+Each connection consumes memory (~5-50KB per connection). 100K connections = 500MB-5GB just for connection state. File descriptors also limited (ulimit).
+</div>
+</div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
+<h5 style="color: #991b1b; margin: 0 0 12px 0;">Sticky Sessions</h5>
+<div style="font-size: 13px; color: #475569;">
+WebSocket requires routing to same server. Traditional round-robin load balancing breaks. Need IP hash, cookie-based, or connection ID routing.
+</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Pub/Sub Backend</h5>
+<div style="font-size: 13px; color: #475569;">
+Broadcasting to users on different servers requires [[message-queues]](/topics/system-design/message-queues) backend. Redis Pub/Sub, Kafka, or dedicated solutions like Socket.IO adapters.
+</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Graceful Shutdown</h5>
+<div style="font-size: 13px; color: #475569;">
+Deploy requires draining connections. Send close frame, wait for client reconnect to new server. Blue-green deployments need connection migration strategy.
+</div>
+</div>
+</div>
+</div>
+
+### WebSocket Interview Questions (3-Level Deep)
+
+<div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Level 1: When would you use WebSocket vs HTTP polling?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> WebSocket for real-time bidirectional communication (chat, gaming, live updates). HTTP polling for infrequent updates where simplicity matters. WebSocket eliminates polling overhead and provides lower latency.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: How do you handle WebSocket reconnection and message ordering?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Reconnection:</strong> Exponential backoff with jitter to avoid thundering herd. Client stores last message ID, server resends missed messages on reconnect. Handle connection state machine: CONNECTING, OPEN, CLOSING, CLOSED.
+<br><br>
+<strong>Ordering:</strong> Include sequence numbers. Client buffers out-of-order messages. Request retransmit for gaps. Or use server-side ordering with Lamport timestamps for distributed scenarios.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: Design a WebSocket system handling 1M concurrent connections across multiple servers</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Connection tier:</strong> Dedicated WebSocket servers (10 servers, 100K connections each). Use epoll/kqueue for efficient I/O multiplexing. Tune kernel: file descriptors, memory, TCP buffers.
+<br><br>
+<strong>Routing:</strong> Consistent hashing on user ID for sticky routing. Connection registry in Redis: user_id -> server_id. For geographic distribution, route to nearest region.
+<br><br>
+<strong>Pub/Sub:</strong> Redis Cluster or Kafka for cross-server messaging. Each server subscribes to relevant channels. Fan-out on each server to local connections.
+<br><br>
+<strong>Presence:</strong> Heartbeat every 30s. Server tracks last_seen. Distributed presence aggregation for "who's online" queries.
+<br><br>
+<strong>Deployment:</strong> Rolling deploys with connection draining. Send reconnect hints before shutdown. Client connects to new server with resume token.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: What's the purpose of WebSocket frame masking?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Client-to-server frames are XORed with a 32-bit mask. Prevents cache poisoning attacks where malicious JavaScript could craft frames that look like HTTP responses to proxies.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: Explain the cache poisoning attack that masking prevents</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Attack:</strong> Attacker's JS opens WebSocket to attacker.com. Sends crafted frame that looks like "GET /jquery.js HTTP/1.1" followed by fake response. Transparent proxy caches the fake response. Subsequent requests for jquery.js get poisoned content.
+<br><br>
+<strong>Masking solution:</strong> Client generates random 32-bit mask per frame. Proxy can't predict mask, so can't construct frames that decode to valid HTTP.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: Why is masking only required client-to-server, and what are the performance implications?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Direction:</strong> Attack requires attacker-controlled client. Server-to-client doesn't have this threat model - server is trusted. If server is compromised, they have worse attacks than cache poisoning.
+<br><br>
+<strong>Performance:</strong> Masking requires XOR of every byte - ~3-5% CPU overhead for client. Server must unmask, similar overhead. For high-throughput scenarios (binary data streaming), this matters. Some propose "permessage-deflate" extension which compresses before masking, reducing bytes to mask.
+<br><br>
+<strong>Alternative:</strong> If proxy isn't present (direct TLS connection), masking is security theater. But WebSocket spec requires it unconditionally for simplicity - can't reliably detect proxy presence.
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+---
+
+## gRPC
+
+### Protocol Internals
+
+gRPC is a high-performance RPC framework using HTTP/2 transport and Protocol Buffers serialization.
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">gRPC Protocol Layers</h4>
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 600px; margin: 0 auto;">
+<div style="background: #fef3c7; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #f59e0b;">
+<strong style="color: #b45309;">Application Code</strong>
+<div style="color: #64748b; font-size: 12px;">Generated stubs, business logic</div>
+</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #22c55e;">
+<strong style="color: #166534;">gRPC Core</strong>
+<div style="color: #64748b; font-size: 12px;">Call handling, interceptors, deadlines, cancellation</div>
+</div>
+<div style="background: #e0e7ff; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #6366f1;">
+<strong style="color: #4338ca;">Protocol Buffers</strong>
+<div style="color: #64748b; font-size: 12px;">Binary serialization, schema evolution</div>
+</div>
+<div style="background: #dbeafe; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #3b82f6;">
+<strong style="color: #1e40af;">HTTP/2</strong>
+<div style="color: #64748b; font-size: 12px;">Multiplexing, flow control, headers</div>
+</div>
+<div style="background: #fce7f3; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #ec4899;">
+<strong style="color: #be185d;">TLS</strong>
+<div style="color: #64748b; font-size: 12px;">Encryption, authentication</div>
+</div>
+</div>
+</div>
+
+### gRPC Streaming Patterns
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">Four Communication Patterns</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
 <h5 style="color: #166534; margin: 0 0 12px 0;">Unary RPC</h5>
-<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-<div style="background: #22c55e; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">C</div>
-<div style="color: #166534; font-size: 12px;">--> 1 Request --></div>
-<div style="background: #3b82f6; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">S</div>
+<div style="font-family: monospace; font-size: 12px; background: #dcfce7; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+rpc GetUser(GetUserRequest)<br>&nbsp;&nbsp;returns (User);
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #22c55e; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">C</div>
-<div style="color: #1e40af; font-size: 12px;"><-- 1 Response <--</div>
-<div style="background: #3b82f6; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">S</div>
+<div style="font-size: 13px; color: #475569;">
+Single request, single response. Like HTTP request/response. Most common pattern.
 </div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Single request, single response</div>
 </div>
 <div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
 <h5 style="color: #1e40af; margin: 0 0 12px 0;">Server Streaming</h5>
-<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-<div style="background: #22c55e; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">C</div>
-<div style="color: #166534; font-size: 12px;">--> 1 Request --></div>
-<div style="background: #3b82f6; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">S</div>
+<div style="font-family: monospace; font-size: 12px; background: #dbeafe; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+rpc ListUsers(ListRequest)<br>&nbsp;&nbsp;returns (stream User);
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #22c55e; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">C</div>
-<div style="color: #1e40af; font-size: 12px;"><-- N Responses <--</div>
-<div style="background: #3b82f6; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">S</div>
+<div style="font-size: 13px; color: #475569;">
+Single request, multiple responses. Good for large result sets, real-time updates.
 </div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Stream of responses from server</div>
 </div>
 <div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
 <h5 style="color: #9a3412; margin: 0 0 12px 0;">Client Streaming</h5>
-<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-<div style="background: #22c55e; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">C</div>
-<div style="color: #166534; font-size: 12px;">--> N Requests --></div>
-<div style="background: #3b82f6; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">S</div>
+<div style="font-family: monospace; font-size: 12px; background: #ffedd5; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+rpc UploadLogs(stream LogEntry)<br>&nbsp;&nbsp;returns (UploadResult);
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #22c55e; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">C</div>
-<div style="color: #1e40af; font-size: 12px;"><-- 1 Response <--</div>
-<div style="background: #3b82f6; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">S</div>
+<div style="font-size: 13px; color: #475569;">
+Multiple requests, single response. Good for uploads, aggregation.
 </div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Stream of requests from client</div>
 </div>
-<div style="background: #f3e8ff; border-radius: 12px; padding: 20px; border: 1px solid #d8b4fe;">
+<div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff;">
 <h5 style="color: #7c3aed; margin: 0 0 12px 0;">Bidirectional Streaming</h5>
-<div style="display: flex; align-items: center; gap: 8px;">
-<div style="background: #22c55e; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">C</div>
-<div style="color: #7c3aed; font-size: 12px;"><--> N Messages <--></div>
-<div style="background: #3b82f6; padding: 6px; border-radius: 4px; color: white; font-size: 10px;">S</div>
+<div style="font-family: monospace; font-size: 12px; background: #f3e8ff; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+rpc Chat(stream Message)<br>&nbsp;&nbsp;returns (stream Message);
 </div>
-<div style="color: #64748b; font-size: 11px; margin-top: 8px;">Both sides stream independently</div>
+<div style="font-size: 13px; color: #475569;">
+Both stream independently. Chat, real-time collaboration, game state sync.
 </div>
-</div>
-</div>
-
-### gRPC vs REST
-
-<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-<tr style="background: #f1f5f9;">
-<th style="padding: 12px; text-align: left; color: #1e293b;">Feature</th>
-<th style="padding: 12px; text-align: left; color: #1e293b;">gRPC</th>
-<th style="padding: 12px; text-align: left; color: #1e293b;">REST</th>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Protocol</strong></td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">HTTP/2</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">HTTP/1.1 or HTTP/2</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Format</strong></td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Protobuf (binary)</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">JSON (text)</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Contract</strong></td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Required (.proto)</td>
-<td style="padding: 12px; color: #475569; border-bottom: 1px solid #e2e8f0;">Optional (OpenAPI)</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Streaming</strong></td>
-<td style="padding: 12px; color: #166534; border-bottom: 1px solid #e2e8f0;">Native support</td>
-<td style="padding: 12px; color: #ea580c; border-bottom: 1px solid #e2e8f0;">Limited</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; border-bottom: 1px solid #e2e8f0;"><strong>Browser</strong></td>
-<td style="padding: 12px; color: #ea580c; border-bottom: 1px solid #e2e8f0;">Requires proxy</td>
-<td style="padding: 12px; color: #166534; border-bottom: 1px solid #e2e8f0;">Native</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b;"><strong>Performance</strong></td>
-<td style="padding: 12px; color: #166534;">Faster</td>
-<td style="padding: 12px; color: #ea580c;">Slower</td>
-</tr>
-</table>
-</div>
-
----
-
-## Common Pitfalls
-
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
-<h4 style="color: #991b1b; margin-top: 0;">Mistakes to Avoid</h4>
-<div style="display: flex; flex-direction: column; gap: 12px; color: #1e293b;">
-<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-<strong>Using TCP for Real-time:</strong> TCP's guaranteed delivery adds latency. For live video/gaming, UDP is often better even with some packet loss.
-</div>
-<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-<strong>HTTP Polling for Real-time:</strong> Polling wastes bandwidth and adds latency. Use WebSocket or SSE for real-time updates.
-</div>
-<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-<strong>gRPC for Public APIs:</strong> Browsers cannot natively call gRPC. Use REST or gRPC-Web for browser clients.
-</div>
-<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-<strong>Ignoring HTTP/2:</strong> Many benefits (multiplexing, header compression) come free with HTTP/2. Enable it where possible.
-</div>
-<div style="background: #fff; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
-<strong>Not Handling Connection Drops:</strong> WebSocket connections can drop. Implement reconnection logic with exponential backoff.
 </div>
 </div>
 </div>
 
----
-
-## Protocol Selection Guide
+### Protocol Buffers Schema Evolution
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Which Protocol to Use?</h4>
-<div style="display: flex; flex-direction: column; gap: 12px;">
-<div style="display: flex; align-items: center; gap: 16px; background: #f0fdf4; padding: 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
-<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center; font-weight: bold;">REST</div>
-<div style="color: #1e293b; font-size: 13px;">CRUD APIs, public APIs, browser clients, simple integrations</div>
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">Safe vs Breaking Changes</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Safe Changes</h5>
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+<li>Add new fields (with new field numbers)</li>
+<li>Remove fields (mark as reserved)</li>
+<li>Rename fields (wire format uses numbers)</li>
+<li>Change int32 to int64 (wire compatible)</li>
+<li>Add new enum values</li>
+<li>Add new RPC methods</li>
+</ul>
 </div>
-<div style="display: flex; align-items: center; gap: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; border: 1px solid #bfdbfe;">
-<div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center; font-weight: bold;">gRPC</div>
-<div style="color: #1e293b; font-size: 13px;">Microservices, high performance, streaming, polyglot systems</div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; border: 1px solid #fecaca;">
+<h5 style="color: #991b1b; margin: 0 0 12px 0;">Breaking Changes</h5>
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+<li>Change field numbers</li>
+<li>Change field types incompatibly</li>
+<li>Remove enum values (without reserved)</li>
+<li>Change message name in wire format</li>
+<li>Remove RPC methods</li>
+<li>Change streaming mode of RPC</li>
+</ul>
 </div>
-<div style="display: flex; align-items: center; gap: 16px; background: #f3e8ff; padding: 16px; border-radius: 8px; border: 1px solid #d8b4fe;">
-<div style="background: #a855f7; color: white; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center; font-weight: bold;">WebSocket</div>
-<div style="color: #1e293b; font-size: 13px;">Real-time bidirectional, chat, gaming, collaborative apps</div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px; background: #fff7ed; padding: 16px; border-radius: 8px; border: 1px solid #fed7aa;">
-<div style="background: #f97316; color: white; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center; font-weight: bold;">SSE</div>
-<div style="color: #1e293b; font-size: 13px;">Server push only, notifications, live feeds, simple streaming</div>
+<div style="background: #fffbeb; border-radius: 8px; padding: 16px; margin-top: 16px; font-size: 13px; color: #b45309;">
+<strong>Best practice:</strong> Use reserved to prevent reusing deleted field numbers. Unknown fields are preserved for forward compatibility. Always version your APIs.
 </div>
-<div style="display: flex; align-items: center; gap: 16px; background: #fef2f2; padding: 16px; border-radius: 8px; border: 1px solid #fecaca;">
-<div style="background: #ef4444; color: white; padding: 8px 16px; border-radius: 6px; min-width: 100px; text-align: center; font-weight: bold;">UDP</div>
-<div style="color: #1e293b; font-size: 13px;">Video streaming, gaming, VoIP, when some loss is acceptable</div>
+</div>
+
+<div style="background: #faf5ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<h4 style="color: #7c3aed; margin-top: 0;">Design Trade-off: gRPC vs REST</h4>
+<div style="color: #1e293b;">
+<strong>gRPC advantages:</strong> ~10x smaller payloads, ~10x faster serialization, strong typing, streaming, generated clients.
+<br><br>
+<strong>REST advantages:</strong> Browser-native, human-readable, easier debugging, universal tooling, cacheable by default, no generated code needed.
+<br><br>
+<strong>Recommendation:</strong> gRPC for service-to-service, REST for public APIs. Consider gRPC-Web or gRPC-gateway for browser clients needing gRPC backend.
+</div>
+</div>
+
+### gRPC Interview Questions (3-Level Deep)
+
+<div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Level 1: What are the benefits of gRPC over REST?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Binary Protocol Buffers (smaller, faster), HTTP/2 multiplexing, built-in streaming, strong typing with code generation, deadlines and cancellation.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: How do gRPC deadlines and cancellation propagate across services?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Deadlines:</strong> Client sets deadline (absolute time). Each hop reduces remaining time. If deadline expires, call returns DEADLINE_EXCEEDED. Deadline propagates automatically through call chain - service A calls B calls C, C's deadline reflects original minus transit time.
+<br><br>
+<strong>Cancellation:</strong> When client cancels, RST_STREAM sent. Server receives cancellation, can cancel downstream calls. Prevents wasted work.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: What happens when deadline propagation conflicts with retry policies?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Conflict:</strong> Original deadline is 5s. First attempt takes 3s and fails. Retry budget allows retry, but only 2s remaining. Should we retry with likely timeout, or fail immediately?
+<br><br>
+<strong>Solutions:</strong> (1) Hedging instead of retry - start parallel request before timeout; (2) Per-attempt deadline separate from overall deadline; (3) Deadline budget accounting - only retry if budget allows meaningful attempt; (4) Circuit breaker - if service consistently timing out, fail fast.
+<br><br>
+<strong>gRPC behavior:</strong> Service config can specify maxAttempts, retryableStatusCodes, and hedgingPolicy. Library handles budget tracking. But: deadlines are end-to-end, retries consume budget. Design for total latency including retries.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: How does gRPC handle errors?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> gRPC uses status codes (OK, INVALID_ARGUMENT, NOT_FOUND, etc.) with optional error messages and details. Richer than HTTP status codes with semantic meaning.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: How do you return structured error details with field-level validation errors?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Status + Details:</strong> gRPC Status includes repeated Any details field. Pack structured error messages (BadRequest, DebugInfo, etc.) from google.rpc.error_details.proto. Client unpacks and handles specific error types.
+<br><br>
+<strong>Example:</strong> INVALID_ARGUMENT status with BadRequest detail containing FieldViolation for each invalid field (field name, description).
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you handle partial failures in streaming RPCs?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Challenge:</strong> Client streams 100 records. 95 succeed, 5 fail validation. Stream must complete to get final status. How to report partial success?
+<br><br>
+<strong>Patterns:</strong> (1) Include status in each response message - client tracks failures as they stream; (2) Bidirectional stream - server immediately responds with per-item status; (3) Final status with details array listing failed items; (4) Atomic semantics - all or nothing with transaction.
+<br><br>
+<strong>Trade-offs:</strong> Per-message status adds overhead but enables early failure detection. Batched final status is simpler but client doesn't know until end. Atomic is safest but limits throughput. Choose based on failure probability and recovery needs.
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 
 ---
 
-## Interview Questions
+## Connection Pooling
 
-<div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #d8b4fe;">
-<h4 style="color: #7c3aed; margin-top: 0;">Common Interview Questions</h4>
-<div style="display: flex; flex-direction: column; gap: 16px; color: #1e293b;">
+### Why Connection Pooling Matters
 
-<div>
-<strong>1. TCP vs UDP - when would you use each?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li><strong>TCP:</strong> When you need guaranteed delivery and ordering (web, file transfer, databases)</li>
-<li><strong>UDP:</strong> When latency matters more than reliability (video, gaming, VoIP)</li>
-<li>Consider application-level reliability on top of UDP for best of both worlds</li>
-</ul>
+Connection establishment is expensive: TCP handshake (1 RTT), TLS handshake (1-2 RTT), protocol negotiation. Pooling amortizes this cost.
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Connection Lifecycle Costs</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto;">
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #fef3c7; padding: 12px 20px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: bold; color: #b45309;">TCP Handshake</div>
+<div style="background: #fef3c7; height: 8px; flex: 1; border-radius: 4px;"></div>
+<div style="color: #64748b; font-size: 12px; min-width: 60px;">1 RTT</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #e0e7ff; padding: 12px 20px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: bold; color: #4338ca;">TLS Handshake</div>
+<div style="background: #e0e7ff; height: 8px; flex: 2; border-radius: 4px;"></div>
+<div style="color: #64748b; font-size: 12px; min-width: 60px;">1-2 RTT</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px;">
+<div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; min-width: 160px; text-align: center; font-weight: bold; color: #166534;">Request/Response</div>
+<div style="background: #dcfce7; height: 8px; flex: 1; border-radius: 4px;"></div>
+<div style="color: #64748b; font-size: 12px; min-width: 60px;">1 RTT</div>
+</div>
+</div>
+<div style="text-align: center; margin-top: 20px; padding: 16px; background: #f1f5f9; border-radius: 8px;">
+<span style="color: #64748b;">New connection:</span> <strong style="color: #1e293b;">3-4 RTT</strong> &nbsp;|&nbsp;
+<span style="color: #64748b;">Pooled connection:</span> <strong style="color: #166534;">1 RTT</strong>
+</div>
 </div>
 
-<div>
-<strong>2. How does HTTP/2 improve over HTTP/1.1?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li>Multiplexing: Multiple requests on single connection</li>
-<li>Header compression: Reduces redundant header data</li>
-<li>Server push: Server can send resources proactively</li>
-<li>Binary framing: More efficient parsing</li>
-</ul>
+### Pool Configuration Parameters
+
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; margin: 0 0 24px 0;">Critical Pool Settings</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Pool Size</h5>
+<div style="font-size: 13px; color: #475569;">
+<strong>Min:</strong> Baseline connections kept open (avoids cold start)<br>
+<strong>Max:</strong> Upper limit to prevent resource exhaustion<br>
+<strong>Guidance:</strong> Max = (core_count * 2) + effective_spindle_count for DBs. For services: measure and tune.
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Timeouts</h5>
+<div style="font-size: 13px; color: #475569;">
+<strong>Connection timeout:</strong> Time to establish new connection<br>
+<strong>Idle timeout:</strong> Close connections unused for N seconds<br>
+<strong>Max lifetime:</strong> Close after N seconds regardless of use
+</div>
+</div>
+<div style="background: #fff7ed; border-radius: 12px; padding: 20px; border: 1px solid #fed7aa;">
+<h5 style="color: #9a3412; margin: 0 0 12px 0;">Health Checks</h5>
+<div style="font-size: 13px; color: #475569;">
+<strong>Validation query:</strong> SELECT 1 before use (adds latency)<br>
+<strong>Background validation:</strong> Async health check thread<br>
+<strong>Eviction policy:</strong> Remove stale/failed connections
+</div>
+</div>
+<div style="background: #faf5ff; border-radius: 12px; padding: 20px; border: 1px solid #e9d5ff;">
+<h5 style="color: #7c3aed; margin: 0 0 12px 0;">Queue Behavior</h5>
+<div style="font-size: 13px; color: #475569;">
+<strong>When full:</strong> Block, fail fast, or create overflow?<br>
+<strong>Queue timeout:</strong> Max time waiting for connection<br>
+<strong>Fair queuing:</strong> FIFO prevents starvation
+</div>
+</div>
+</div>
 </div>
 
-<div>
-<strong>3. When would you choose WebSocket over REST?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li>Real-time bidirectional communication needed</li>
-<li>Server needs to push updates to client</li>
-<li>High-frequency updates (more than 1-2/second)</li>
-<li>Low-latency is critical</li>
-</ul>
+### Connection Pool Anti-patterns
+
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
+<h4 style="color: #991b1b; margin-top: 0;">Common Mistakes</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>Pool per request</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+Creating new pool for each request defeats the purpose. Pool should be singleton/application-scoped. Often caused by wrong dependency injection scope.
+</div>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>Connection leaks</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+Not returning connections to pool (missing close/release). Pool exhausts, new requests block. Use try-with-resources or equivalent. Monitor pool metrics.
+</div>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>Ignoring server-side limits</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+100 app servers with 50-connection pools = 5000 connections to database. Database might support only 1000. Coordinate pool sizes with backend capacity.
+</div>
+</div>
+<div style="background: white; border-radius: 8px; padding: 16px; border-left: 3px solid #ef4444;">
+<strong>Stale connection usage</strong>
+<div style="color: #475569; font-size: 13px; margin-top: 8px;">
+Connection appears healthy but server closed it (idle timeout). First query fails. Solution: test-on-borrow, shorter idle timeout than server's, or maxLifetime.
+</div>
+</div>
+</div>
 </div>
 
-<div>
-<strong>4. gRPC vs REST - tradeoffs?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li><strong>gRPC:</strong> Better performance, type-safe, streaming - but harder to debug, no browser support</li>
-<li><strong>REST:</strong> Universal, easy to test/debug, browser-native - but slower, no built-in streaming</li>
-<li>Use gRPC internally, REST for public APIs</li>
-</ul>
+### Connection Pooling Interview Questions (3-Level Deep)
+
+<div style="background: #f3e8ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #d8b4fe;">
+<h4 style="color: #7c3aed; margin-top: 0;">Level 1: Why use connection pooling?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Connection establishment is expensive (TCP + TLS handshakes). Pooling reuses connections, reducing latency and resource usage. Typical 3-4x latency improvement for short requests.
 </div>
 
-<div>
-<strong>5. What is the three-way handshake?</strong>
-<ul style="margin: 8px 0 0 0; color: #475569;">
-<li>SYN: Client sends connection request</li>
-<li>SYN-ACK: Server acknowledges and sends its own request</li>
-<li>ACK: Client acknowledges - connection established</li>
-<li>Purpose: Ensure both sides are ready and agree on sequence numbers</li>
-</ul>
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: How do you size a connection pool correctly?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Formula:</strong> pool_size = throughput * avg_latency. If you need 1000 req/s and average latency is 10ms, you need 10 connections (plus buffer for variance).
+<br><br>
+<strong>For databases:</strong> connections = (core_count * 2) + effective_spindle_count. Most apps use pools far larger than optimal, causing contention.
 </div>
 
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: How do you handle connection pool exhaustion during traffic spikes?</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Detection:</strong> Monitor pool wait time, active connections, queue depth. Alert when approaching limits.
+<br><br>
+<strong>Short-term:</strong> Queue with timeout - fail fast rather than block indefinitely. Return 503 with Retry-After to enable client backoff.
+<br><br>
+<strong>Strategies:</strong> (1) Adaptive pool sizing - grow under load, shrink during calm; (2) [[rate-limiting]](/topics/system-design/rate-limiting) to prevent overload; (3) [[circuit-breaker]](/topics/system-design/circuit-breaker) to fail fast when backend overwhelmed; (4) Request prioritization - shed low-priority traffic first.
+<br><br>
+<strong>Prevention:</strong> [[load-testing]](/topics/system-design/load-testing) to find limits. Capacity planning with headroom. Autoscaling triggers before exhaustion.
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<h4 style="color: #7c3aed; margin-top: 24px;">Level 1: What is the connection pool idle timeout?</h4>
+
+<div style="margin-left: 20px; margin-top: 16px;">
+<div style="color: #1e293b; font-size: 14px; margin-bottom: 16px;">
+<strong>Answer:</strong> Connections unused for longer than idle timeout are closed, freeing resources. Balances keeping warm connections vs resource usage.
+</div>
+
+<div style="background: #ede9fe; border-radius: 12px; padding: 20px; border-left: 3px solid #8b5cf6;">
+<h5 style="color: #6d28d9; margin-top: 0;">Level 2: Why might connections become invalid even before idle timeout?</h5>
+<div style="margin-left: 16px; margin-top: 12px;">
+<div style="color: #1e293b; font-size: 13px; margin-bottom: 12px;">
+<strong>Server-side timeout:</strong> Server's idle timeout shorter than client's pool timeout. Client thinks connection valid, server already closed.
+<br><br>
+<strong>Network issues:</strong> Firewall drops idle connections. NAT rebinding. Network partition.
+<br><br>
+<strong>Server restart:</strong> Server process restarted, existing connections become half-open.
+</div>
+
+<div style="background: #ddd6fe; border-radius: 8px; padding: 16px; border-left: 3px solid #7c3aed;">
+<h6 style="color: #5b21b6; margin-top: 0;">Level 3: Design a connection validation strategy that balances reliability vs latency</h6>
+<div style="color: #1e293b; font-size: 12px; margin-top: 8px;">
+<strong>Naive approach:</strong> Validate every borrow (SELECT 1). Adds latency to every request.
+<br><br>
+<strong>Better approaches:</strong> (1) Validate if idle > N seconds - recent connections likely valid; (2) Background thread validates all connections periodically - moves latency off critical path; (3) Set maxLifetime slightly below server timeout - preemptive closure; (4) TCP keepalive - OS-level connection validation.
+<br><br>
+<strong>Hybrid strategy:</strong> Background validation every 30s. On borrow, validate only if idle > 10s. maxLifetime = server_timeout - 30s. This catches most stale connections with minimal latency impact. Accept occasional first-request failure with automatic retry.
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 
 ---
 
-## Code Examples
+## Protocol Selection Decision Tree
 
-### WebSocket Server (Node.js)
-
-```javascript
-const WebSocket = require('ws');
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', (ws) => {
-    console.log('Client connected');
-
-    ws.on('message', (message) => {
-        console.log(`Received: ${message}`);
-
-        // Broadcast to all clients
-        wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        });
-    });
-
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
-
-    // Send welcome message
-    ws.send(JSON.stringify({ type: 'welcome', message: 'Connected!' }));
-});
-
-console.log('WebSocket server running on ws://localhost:8080');
-```
-
-### gRPC Service (Go)
-
-```go
-package main
-
-import (
-    "context"
-    "log"
-    "net"
-
-    "google.golang.org/grpc"
-    pb "path/to/your/proto"
-)
-
-type userServer struct {
-    pb.UnimplementedUserServiceServer
-    users map[int32]*pb.User
-}
-
-func (s *userServer) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
-    if user, ok := s.users[req.Id]; ok {
-        return user, nil
-    }
-    return nil, status.Errorf(codes.NotFound, "user not found")
-}
-
-func (s *userServer) ListUsers(req *pb.ListUsersRequest, stream pb.UserService_ListUsersServer) error {
-    for _, user := range s.users {
-        if err := stream.Send(user); err != nil {
-            return err
-        }
-    }
-    return nil
-}
-
-func main() {
-    lis, err := net.Listen("tcp", ":50051")
-    if err != nil {
-        log.Fatalf("failed to listen: %v", err)
-    }
-
-    s := grpc.NewServer()
-    pb.RegisterUserServiceServer(s, &userServer{
-        users: make(map[int32]*pb.User),
-    })
-
-    log.Println("gRPC server running on :50051")
-    if err := s.Serve(lis); err != nil {
-        log.Fatalf("failed to serve: %v", err)
-    }
-}
-```
-
----
-
-## Best Practices
-
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #bbf7d0;">
-<h4 style="color: #166534; margin-top: 0;">Production Checklist</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; color: #1e293b;">
+<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Choosing the Right Protocol</h4>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; border: 1px solid #fde68a;">
+<h5 style="color: #b45309; margin: 0 0 12px 0;">Is it browser-to-server?</h5>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
 <div>
-<strong style="color: #166534;">HTTP APIs</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Use appropriate status codes</li>
-<li>Enable HTTP/2 where possible</li>
-<li>Implement proper caching headers</li>
-</ul>
+<strong style="color: #166534;">Real-time bidirectional:</strong> WebSocket or SSE<br>
+<strong style="color: #166534;">Standard request/response:</strong> REST over HTTP/2 or HTTP/3<br>
+<strong style="color: #166534;">Need gRPC backend:</strong> gRPC-Web with Envoy proxy
 </div>
-<div>
-<strong style="color: #166534;">WebSocket</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Implement heartbeat/ping-pong</li>
-<li>Handle reconnection gracefully</li>
-<li>Consider connection limits</li>
-</ul>
+<div style="color: #64748b;">
+Browsers don't support arbitrary TCP/UDP. Limited to HTTP, WebSocket, WebRTC.
 </div>
-<div>
-<strong style="color: #166534;">gRPC</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Use deadlines/timeouts</li>
-<li>Implement proper error handling</li>
-<li>Version your proto files</li>
-</ul>
 </div>
+</div>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; border: 1px solid #bbf7d0;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Is it service-to-service (internal)?</h5>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
 <div>
-<strong style="color: #166534;">General</strong>
-<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569;">
-<li>Always use TLS in production</li>
-<li>Implement retry with backoff</li>
-<li>Monitor latency and errors</li>
-</ul>
+<strong style="color: #166534;">High throughput, low latency:</strong> gRPC<br>
+<strong style="color: #166534;">Streaming:</strong> gRPC streaming<br>
+<strong style="color: #166534;">Simple integration:</strong> REST<br>
+<strong style="color: #166534;">Async processing:</strong> [[Message queues]](/topics/system-design/message-queues)
+</div>
+<div style="color: #64748b;">
+Internal APIs can use binary protocols. Prioritize performance and type safety.
+</div>
+</div>
+</div>
+<div style="background: #dbeafe; border-radius: 12px; padding: 20px; border: 1px solid #bfdbfe;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Is latency critical (real-time)?</h5>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
+<div>
+<strong style="color: #166534;">Audio/video:</strong> UDP with custom reliability (or WebRTC)<br>
+<strong style="color: #166534;">Gaming:</strong> UDP with app-level protocol<br>
+<strong style="color: #166534;">Financial data:</strong> Multicast UDP or dedicated lines
+</div>
+<div style="color: #64748b;">
+TCP's reliability adds latency. Accept some loss for lower latency.
+</div>
+</div>
+</div>
+<div style="background: #fce7f3; border-radius: 12px; padding: 20px; border: 1px solid #fbcfe8;">
+<h5 style="color: #be185d; margin: 0 0 12px 0;">Is it public API?</h5>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px;">
+<div>
+<strong style="color: #166534;">Standard:</strong> REST with OpenAPI<br>
+<strong style="color: #166534;">GraphQL for flexibility:</strong> Single endpoint, client-specified queries<br>
+<strong style="color: #166534;">High-performance clients:</strong> Offer both REST and gRPC
+</div>
+<div style="color: #64748b;">
+Public APIs prioritize usability, documentation, tooling support.
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -815,7 +1303,34 @@ func main() {
 
 ## Related Topics
 
-- [Client-Server Model](/topic/system-design/client-server-model)
-- [API Design](/topic/system-design/api-design)
-- [Load Balancing](/topic/system-design/load-balancing)
-- [Message Queues](/topic/system-design/message-queues)
+<div style="background: #f1f5f9; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+<div>
+<h5 style="color: #1e293b; margin: 0 0 12px 0;">Infrastructure</h5>
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+<li>[[Load Balancing]](/topics/system-design/load-balancing)</li>
+<li>[[API Gateway]](/topics/system-design/api-gateway)</li>
+<li>[[Service Mesh]](/topics/system-design/service-mesh)</li>
+<li>[[CDN]](/topics/system-design/cdn)</li>
+</ul>
+</div>
+<div>
+<h5 style="color: #1e293b; margin: 0 0 12px 0;">Reliability</h5>
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+<li>[[Circuit Breaker]](/topics/system-design/circuit-breaker)</li>
+<li>[[Rate Limiting]](/topics/system-design/rate-limiting)</li>
+<li>[[Retry Strategies]](/topics/system-design/retry-strategies)</li>
+<li>[[Timeouts]](/topics/system-design/timeouts)</li>
+</ul>
+</div>
+<div>
+<h5 style="color: #1e293b; margin: 0 0 12px 0;">Communication</h5>
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px;">
+<li>[[Message Queues]](/topics/system-design/message-queues)</li>
+<li>[[Event-Driven Architecture]](/topics/system-design/event-driven)</li>
+<li>[[API Design]](/topics/system-design/api-design)</li>
+<li>[[Serialization]](/topics/system-design/serialization)</li>
+</ul>
+</div>
+</div>
+</div>
