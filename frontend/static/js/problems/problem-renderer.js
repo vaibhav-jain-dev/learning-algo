@@ -792,8 +792,13 @@ ${testCases.map((tc, i) => {
         const startMarker = '__TEST_RESULTS__';
         const endMarker = '__END_TEST_RESULTS__';
 
+        if (!output || typeof output !== 'string') {
+            console.warn('[ProblemRenderer] parseTestResults: invalid output', typeof output);
+            return null;
+        }
+
         // Strip HTML tags first (server may wrap output in HTML)
-        let cleanOutput = output.replace(/<[^>]*>/g, '');
+        let cleanOutput = output.replace(/<[^>]*>/g, ' ');
 
         // Decode common HTML entities
         cleanOutput = cleanOutput
@@ -802,19 +807,35 @@ ${testCases.map((tc, i) => {
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
             .replace(/&#39;/g, "'")
-            .replace(/&nbsp;/g, ' ');
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&#x27;/g, "'")
+            .replace(/&#x2F;/g, '/');
 
         const startIdx = cleanOutput.indexOf(startMarker);
         const endIdx = cleanOutput.indexOf(endMarker);
 
-        if (startIdx === -1 || endIdx === -1) return null;
+        console.log('[ProblemRenderer] Markers found:', startIdx !== -1, endIdx !== -1);
 
-        const jsonStr = cleanOutput.substring(startIdx + startMarker.length, endIdx).trim();
+        if (startIdx === -1 || endIdx === -1) {
+            console.warn('[ProblemRenderer] Test result markers not found in output');
+            return null;
+        }
+
+        let jsonStr = cleanOutput.substring(startIdx + startMarker.length, endIdx).trim();
+
+        // Handle case where JSON might have newlines or extra whitespace
+        jsonStr = jsonStr.replace(/[\r\n]+/g, '').trim();
+
+        console.log('[ProblemRenderer] JSON string length:', jsonStr.length);
+        console.log('[ProblemRenderer] JSON preview:', jsonStr.substring(0, 100));
 
         try {
-            return JSON.parse(jsonStr);
+            const result = JSON.parse(jsonStr);
+            console.log('[ProblemRenderer] Successfully parsed test results:', result.total, 'tests');
+            return result;
         } catch (e) {
-            console.error('[ProblemRenderer] Failed to parse test results:', e, jsonStr);
+            console.error('[ProblemRenderer] Failed to parse test results:', e.message);
+            console.error('[ProblemRenderer] JSON string was:', jsonStr.substring(0, 500));
             return null;
         }
     }
