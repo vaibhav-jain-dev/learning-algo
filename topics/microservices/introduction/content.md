@@ -14,7 +14,7 @@
 
 The Single Responsibility Principle in microservices extends beyond code-level concerns to **business capability ownership**. A service should represent a single bounded context from Domain-Driven Design, not merely a single function.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #e94560; margin: 0 0 24px 0; font-size: 18px;">Service Boundary Decision Framework</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div style="background: rgba(233, 69, 96, 0.1); padding: 20px; border-radius: 12px; border-left: 4px solid #e94560;">
@@ -38,7 +38,7 @@ The Single Responsibility Principle in microservices extends beyond code-level c
 </div>
 </div>
 </div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-top: 20px;">
 <div style="color: #eee; font-size: 13px;"><span style="color: #e94560; font-weight: bold;">Critical Insight:</span> The boundary is correct when you can explain what the service does without using "and" - "This service manages order lifecycle" vs "This service manages orders and sends notifications and updates inventory"</div>
 </div>
 </div>
@@ -79,7 +79,7 @@ class OrderService:
         return order
 ```
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: Service Boundaries (3-Level Deep)</h4>
 
 <div style="margin-bottom: 20px;">
@@ -106,12 +106,12 @@ For shared data: establish data ownership first, then replicate needed data via 
 
 Each microservice must own its data exclusively. This principle has profound implications for consistency, querying, and operational complexity.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #00adb5; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Data Ownership Patterns</h4>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 <div style="background: rgba(0, 173, 181, 0.15); padding: 20px; border-radius: 12px; text-align: center;">
 <div style="color: #00adb5; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Database per Service</div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
 <div style="color: #eee; font-size: 12px;">Order Service</div>
 <div style="color: #666; font-size: 10px; margin-top: 4px;">PostgreSQL</div>
 </div>
@@ -119,7 +119,7 @@ Each microservice must own its data exclusively. This principle has profound imp
 </div>
 <div style="background: rgba(233, 69, 96, 0.15); padding: 20px; border-radius: 12px; text-align: center;">
 <div style="color: #e94560; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Schema per Service</div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
 <div style="color: #eee; font-size: 12px;">Shared PostgreSQL</div>
 <div style="color: #666; font-size: 10px; margin-top: 4px;">Separate schemas</div>
 </div>
@@ -127,7 +127,7 @@ Each microservice must own its data exclusively. This principle has profound imp
 </div>
 <div style="background: rgba(255, 165, 0, 0.15); padding: 20px; border-radius: 12px; text-align: center;">
 <div style="color: #ffa500; font-weight: bold; font-size: 14px; margin-bottom: 12px;">Private Tables</div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
 <div style="color: #eee; font-size: 12px;">Shared Schema</div>
 <div style="color: #666; font-size: 10px; margin-top: 4px;">Table ownership rules</div>
 </div>
@@ -191,7 +191,7 @@ class OrderService:
 | **Data Replication** | Frequently joined data | Stale data risk, storage overhead |
 | **Materialized Views** | Reporting, analytics | Build complexity, sync lag |
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: Data Management (3-Level Deep)</h4>
 
 <div style="margin-bottom: 20px;">
@@ -218,10 +218,10 @@ Compensating transaction failures require: (1) Retry with exponential backoff an
 
 In distributed systems, failure is not exceptional - it is the norm. Network partitions, service crashes, and slow dependencies will occur. The system must be designed to degrade gracefully rather than fail catastrophically.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #e94560; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Failure Handling Mechanisms</h4>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 12px;">Circuit Breaker States</div>
 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
 <div style="background: rgba(0, 255, 0, 0.2); padding: 8px 16px; border-radius: 20px; color: #7fff7f; font-size: 12px;">CLOSED: Normal operation</div>
@@ -230,7 +230,7 @@ In distributed systems, failure is not exceptional - it is the norm. Network par
 </div>
 <div style="color: #a0a0a0; font-size: 12px; margin-top: 12px;">Threshold: 50% failures in 10 requests triggers OPEN. Reset timeout: 30 seconds to HALF-OPEN.</div>
 </div>
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 12px;">Bulkhead Isolation</div>
 <div style="color: #a0a0a0; font-size: 12px; line-height: 1.6;">
 Isolate failures by partitioning resources:
@@ -242,7 +242,7 @@ Queue per operation type
 </div>
 </div>
 </div>
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #ffa500; font-weight: bold; margin-bottom: 12px;">Retry Strategy</div>
 <div style="color: #a0a0a0; font-size: 12px;">
 <div style="font-family: monospace; background: #1a1a2e; padding: 8px; border-radius: 4px; margin-top: 8px;">
@@ -252,7 +252,7 @@ delay += random(0, delay * 0.1)  # jitter
 <div style="margin-top: 8px;">Max 3 retries, base 100ms, max 10s, with jitter to prevent thundering herd</div>
 </div>
 </div>
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #00adb5; font-weight: bold; margin-bottom: 12px;">Timeout Hierarchy</div>
 <div style="color: #a0a0a0; font-size: 12px;">
 <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 8px;">
@@ -328,7 +328,7 @@ class ProductService:
         return {**product, **reviews}
 ```
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: Failure Handling (3-Level Deep)</h4>
 
 <div style="margin-bottom: 20px;">
@@ -355,25 +355,25 @@ Thundering herd prevention: (1) Allow only single probe request in HALF-OPEN, (2
 
 Microservices favor simple communication mechanisms (HTTP, message queues) with intelligent services. Avoid putting business logic in middleware, ESBs, or API gateways.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #00adb5; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Communication Philosophy Comparison</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div style="background: rgba(233, 69, 96, 0.15); padding: 24px; border-radius: 12px; border: 2px solid #e94560;">
 <div style="color: #e94560; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center;">ESB Anti-Pattern (Smart Pipes)</div>
 <div style="color: #a0a0a0; font-size: 13px; line-height: 1.8;">
-<div style="padding: 8px; background: #0f3460; border-radius: 4px; margin-bottom: 8px;">Routing logic in middleware</div>
-<div style="padding: 8px; background: #0f3460; border-radius: 4px; margin-bottom: 8px;">Transformation in bus</div>
-<div style="padding: 8px; background: #0f3460; border-radius: 4px; margin-bottom: 8px;">Orchestration in ESB</div>
-<div style="padding: 8px; background: #0f3460; border-radius: 4px;">Vendor lock-in, centralized bottleneck</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px; margin-bottom: 8px;">Routing logic in middleware</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px; margin-bottom: 8px;">Transformation in bus</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px; margin-bottom: 8px;">Orchestration in ESB</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px;">Vendor lock-in, centralized bottleneck</div>
 </div>
 </div>
 <div style="background: rgba(0, 173, 181, 0.15); padding: 24px; border-radius: 12px; border: 2px solid #00adb5;">
 <div style="color: #00adb5; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center;">Microservices (Dumb Pipes)</div>
 <div style="color: #a0a0a0; font-size: 13px; line-height: 1.8;">
-<div style="padding: 8px; background: #0f3460; border-radius: 4px; margin-bottom: 8px;">Simple HTTP or message queues</div>
-<div style="padding: 8px; background: #0f3460; border-radius: 4px; margin-bottom: 8px;">Services own transformation</div>
-<div style="padding: 8px; background: #0f3460; border-radius: 4px; margin-bottom: 8px;">Choreography or service orchestration</div>
-<div style="padding: 8px; background: #0f3460; border-radius: 4px;">Decentralized, independently evolvable</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px; margin-bottom: 8px;">Simple HTTP or message queues</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px; margin-bottom: 8px;">Services own transformation</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px; margin-bottom: 8px;">Choreography or service orchestration</div>
+<div style="padding: 8px; background: #eff6ff; border-radius: 4px;">Decentralized, independently evolvable</div>
 </div>
 </div>
 </div>
@@ -398,30 +398,30 @@ Microservices favor simple communication mechanisms (HTTP, message queues) with 
 
 Microservices have significant overhead costs. You must earn the right to use them by having problems that justify the complexity:
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #ffa500; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Microservices Overhead Costs</h4>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-<div style="background: #0f3460; padding: 16px; border-radius: 8px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Operational Complexity</div>
 <div style="color: #a0a0a0; font-size: 12px;">N services = N deployments, N monitoring setups, N failure modes, N log aggregations</div>
 </div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Network Overhead</div>
 <div style="color: #a0a0a0; font-size: 12px;">Latency, serialization, network failures, distributed tracing complexity</div>
 </div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Data Consistency</div>
 <div style="color: #a0a0a0; font-size: 12px;">No ACID transactions, eventual consistency, saga complexity, debugging difficulty</div>
 </div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Testing Complexity</div>
 <div style="color: #a0a0a0; font-size: 12px;">Integration tests, contract tests, end-to-end tests, test environment management</div>
 </div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Infrastructure Cost</div>
 <div style="color: #a0a0a0; font-size: 12px;">Service mesh, API gateway, message brokers, container orchestration, monitoring stack</div>
 </div>
-<div style="background: #0f3460; padding: 16px; border-radius: 8px;">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
 <div style="color: #e94560; font-weight: bold; margin-bottom: 8px;">Cognitive Load</div>
 <div style="color: #a0a0a0; font-size: 12px;">Understanding system topology, debugging across services, onboarding new developers</div>
 </div>
@@ -440,7 +440,7 @@ Microservices have significant overhead costs. You must earn the right to use th
 | **Organization** | Single team | Multiple autonomous teams |
 | **Domain Knowledge** | Still discovering boundaries | Clear, stable domain boundaries |
 
-<div style="background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border-left: 4px solid #ffa500;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border-left: 4px solid #ffa500;">
 <div style="color: #ffa500; font-weight: bold; font-size: 16px; margin-bottom: 12px;">Critical Assumption: The Monolith-First Approach</div>
 <div style="color: #a0a0a0; font-size: 14px; line-height: 1.7;">
 Martin Fowler recommends starting with a well-modularized monolith and extracting microservices only when you have: (1) clear domain boundaries validated through production usage, (2) team growth requiring organizational decoupling, (3) scaling bottlenecks that cannot be solved by vertical scaling. Premature decomposition leads to distributed monoliths and boundary mistakes that are expensive to fix.
@@ -490,7 +490,7 @@ class OrderService:
 # The interface stays the same - just implementation changes
 ```
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: When to Use Microservices (3-Level Deep)</h4>
 
 <div style="margin-bottom: 20px;">
@@ -521,24 +521,24 @@ Prioritize extraction by: (1) Team ownership clarity - modules owned by distinct
 
 This isn't just an observation - it's a tool. **Inverse Conway Maneuver**: Design your team structure to get the architecture you want.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #00adb5; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Team Structure vs Architecture Alignment</h4>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 <div style="background: rgba(233, 69, 96, 0.15); padding: 24px; border-radius: 12px;">
 <div style="color: #e94560; font-weight: bold; font-size: 15px; margin-bottom: 16px; text-align: center;">Misaligned: Component Teams</div>
 <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-<div style="background: #0f3460; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Frontend Team</div>
-<div style="background: #0f3460; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Backend Team</div>
-<div style="background: #0f3460; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Database Team</div>
+<div style="background: #eff6ff; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Frontend Team</div>
+<div style="background: #eff6ff; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Backend Team</div>
+<div style="background: #eff6ff; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Database Team</div>
 </div>
 <div style="color: #e94560; font-size: 12px; text-align: center;">Every feature requires 3 teams to coordinate</div>
 </div>
 <div style="background: rgba(0, 173, 181, 0.15); padding: 24px; border-radius: 12px;">
 <div style="color: #00adb5; font-weight: bold; font-size: 15px; margin-bottom: 16px; text-align: center;">Aligned: Stream-Aligned Teams</div>
 <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-<div style="background: #0f3460; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Orders Team (full stack)</div>
-<div style="background: #0f3460; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Payments Team (full stack)</div>
-<div style="background: #0f3460; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Search Team (full stack)</div>
+<div style="background: #eff6ff; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Orders Team (full stack)</div>
+<div style="background: #eff6ff; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Payments Team (full stack)</div>
+<div style="background: #eff6ff; padding: 10px; border-radius: 6px; text-align: center; color: #a0a0a0; font-size: 12px;">Search Team (full stack)</div>
 </div>
 <div style="color: #00adb5; font-size: 12px; text-align: center;">Each team delivers features independently</div>
 </div>
@@ -549,7 +549,7 @@ This isn't just an observation - it's a tool. **Inverse Conway Maneuver**: Desig
 
 The Team Topologies framework defines four fundamental team types:
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #ffa500; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Four Team Types</h4>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px;">
@@ -594,14 +594,14 @@ Amazon's "two-pizza team" (6-10 people) isn't arbitrary. It's based on communica
 
 **Optimal microservices team**: 5-8 engineers owning 2-5 services, with full-stack capability (frontend, backend, data, ops).
 
-<div style="background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border-left: 4px solid #e94560;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border-left: 4px solid #e94560;">
 <div style="color: #e94560; font-weight: bold; font-size: 16px; margin-bottom: 12px;">Critical Trade-off: Team Autonomy vs Consistency</div>
 <div style="color: #a0a0a0; font-size: 14px; line-height: 1.7;">
 Full autonomy leads to fragmentation: different logging formats, incompatible error handling, duplicated solutions. But too much standardization kills innovation and creates bottlenecks. Balance through: (1) Mandated standards for cross-cutting concerns (logging format, tracing IDs, error codes), (2) Recommended patterns with escape hatches, (3) Inner-source shared libraries, (4) Architecture Decision Records (ADRs) for transparency.
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: Team Organization (3-Level Deep)</h4>
 
 <div style="margin-bottom: 20px;">
@@ -628,10 +628,10 @@ Pattern depends on change type: (1) For infrastructure changes (new auth), platf
 
 ### Strategy Comparison
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #00adb5; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Deployment Strategy Spectrum</h4>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #1f6feb; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Rolling Deployment</div>
 <div style="color: #a0a0a0; font-size: 12px; margin-bottom: 12px;">Gradually replace instances of old version with new version</div>
 <div style="display: flex; gap: 8px; margin-bottom: 12px;">
@@ -643,7 +643,7 @@ Pattern depends on change type: (1) For infrastructure changes (new auth), platf
 <div style="color: #7ee787; font-size: 11px;">+ No extra infrastructure</div>
 <div style="color: #f85149; font-size: 11px;">- Version mixing during rollout</div>
 </div>
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #8957e5; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Blue-Green Deployment</div>
 <div style="color: #a0a0a0; font-size: 12px; margin-bottom: 12px;">Run two identical environments, switch traffic atomically</div>
 <div style="display: flex; gap: 16px; margin-bottom: 12px;">
@@ -659,7 +659,7 @@ Pattern depends on change type: (1) For infrastructure changes (new auth), platf
 <div style="color: #7ee787; font-size: 11px;">+ Instant rollback</div>
 <div style="color: #f85149; font-size: 11px;">- 2x infrastructure cost</div>
 </div>
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #f78166; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Canary Deployment</div>
 <div style="color: #a0a0a0; font-size: 12px; margin-bottom: 12px;">Route small % of traffic to new version, gradually increase</div>
 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
@@ -669,7 +669,7 @@ Pattern depends on change type: (1) For infrastructure changes (new auth), platf
 <div style="color: #7ee787; font-size: 11px;">+ Early problem detection</div>
 <div style="color: #f85149; font-size: 11px;">- Complex traffic routing</div>
 </div>
-<div style="background: #0f3460; padding: 20px; border-radius: 12px;">
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px;">
 <div style="color: #e94560; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Feature Flags</div>
 <div style="color: #a0a0a0; font-size: 12px; margin-bottom: 12px;">Deploy code to all, enable features selectively via configuration</div>
 <div style="background: #1a1a2e; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 10px; color: #a0a0a0; margin-bottom: 12px;">
@@ -858,28 +858,28 @@ class CanaryController:
 
 ### GitOps Deployment Pipeline
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #0f3460;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #00adb5; margin: 0 0 24px 0; text-align: center; font-size: 18px;">GitOps Deployment Flow</h4>
 <div style="display: flex; flex-direction: column; gap: 16px;">
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #1f6feb; padding: 16px 24px; border-radius: 8px; color: #fff; font-size: 13px; min-width: 140px; text-align: center;">Developer Push</div>
 <div style="color: #00adb5; font-size: 20px;">-></div>
-<div style="background: #0f3460; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">git push triggers CI pipeline</div>
+<div style="background: #eff6ff; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">git push triggers CI pipeline</div>
 </div>
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #8957e5; padding: 16px 24px; border-radius: 8px; color: #fff; font-size: 13px; min-width: 140px; text-align: center;">CI Pipeline</div>
 <div style="color: #00adb5; font-size: 20px;">-></div>
-<div style="background: #0f3460; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">Test, build image, push to registry, update manifest repo</div>
+<div style="background: #eff6ff; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">Test, build image, push to registry, update manifest repo</div>
 </div>
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #238636; padding: 16px 24px; border-radius: 8px; color: #fff; font-size: 13px; min-width: 140px; text-align: center;">GitOps Agent</div>
 <div style="color: #00adb5; font-size: 20px;">-></div>
-<div style="background: #0f3460; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">ArgoCD/Flux detects manifest change, syncs to cluster</div>
+<div style="background: #eff6ff; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">ArgoCD/Flux detects manifest change, syncs to cluster</div>
 </div>
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #f78166; padding: 16px 24px; border-radius: 8px; color: #fff; font-size: 13px; min-width: 140px; text-align: center;">Kubernetes</div>
 <div style="color: #00adb5; font-size: 20px;">-></div>
-<div style="background: #0f3460; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">Rolling update with health checks, automatic rollback on failure</div>
+<div style="background: #eff6ff; padding: 12px; border-radius: 8px; color: #a0a0a0; font-size: 12px; flex: 1;">Rolling update with health checks, automatic rollback on failure</div>
 </div>
 </div>
 <div style="background: rgba(0, 173, 181, 0.1); padding: 16px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #00adb5;">
@@ -888,7 +888,7 @@ class CanaryController:
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e94560;">
 <h4 style="color: #e94560; margin: 0 0 16px 0; font-size: 16px;">Interview Questions: Deployment Strategies (3-Level Deep)</h4>
 
 <div style="margin-bottom: 20px;">
@@ -913,7 +913,7 @@ Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by custo
 
 ## Common Anti-Patterns and How to Avoid Them
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e94560;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e94560;">
 <h4 style="color: #e94560; margin: 0 0 24px 0; text-align: center; font-size: 18px;">Microservices Anti-Patterns</h4>
 <div style="display: grid; gap: 16px;">
 <div style="background: rgba(233, 69, 96, 0.15); padding: 20px; border-radius: 12px; display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
@@ -963,7 +963,7 @@ Aggregate metrics miss long-tail issues. Solutions: (1) Segment metrics by custo
 
 ## Key Takeaways
 
-<div style="background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border-left: 4px solid #00adb5;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border-left: 4px solid #00adb5;">
 <div style="color: #00adb5; font-weight: bold; font-size: 16px; margin-bottom: 16px;">Essential Principles to Remember</div>
 <div style="color: #a0a0a0; font-size: 14px; line-height: 2;">
 <div><strong style="color: #e94560;">1.</strong> Microservices solve organizational scaling problems first, technical problems second</div>
