@@ -5,10 +5,10 @@
 An API Gateway is a unified entry point that mediates between external clients and internal microservices. It functions as a reverse proxy that handles cross-cutting concerns, enabling backend services to focus exclusively on business logic. At its core, an API Gateway performs request routing, protocol translation, authentication, rate limiting, and response aggregation.
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
-<h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">Core Equation</h4>
-<div style="font-family: 'Courier New', monospace; font-size: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #3b82f6;">
+  <h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">Core Equation</h4>
+  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #3b82f6;">
     API Gateway = Reverse Proxy + Authentication + Rate Limiting + Protocol Translation + Service Discovery + Observability
-</div>
+  </div>
 </div>
 
 **Critical Assumption**: The API Gateway assumes that backend services are stateless and horizontally scalable. If services maintain session state, the gateway must implement sticky sessions or session affinity, which complicates load balancing and failover.
@@ -24,25 +24,25 @@ An API Gateway is a unified entry point that mediates between external clients a
 Request routing is the process of mapping incoming HTTP requests to appropriate backend services based on configurable rules. The routing engine operates as a decision tree that evaluates multiple dimensions: URL path, HTTP method, headers, query parameters, and request body content.
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #166534; margin-top: 0;">Routing Decision Hierarchy</h4>
-<div style="display: flex; flex-direction: column; gap: 12px;">
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
-<strong style="color: #166534;">1. Path Matching</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Exact match > Prefix match > Regex match > Wildcard. Order determines performance - exact matches use O(1) hash lookup, while regex requires O(n) evaluation.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #16a34a;">
-<strong style="color: #166534;">2. Method Filtering</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">After path match, filter by HTTP method. Critical for RESTful APIs where same path handles different operations.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #15803d;">
-<strong style="color: #166534;">3. Header-Based Routing</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Content-Type, Accept headers, custom headers for versioning (X-API-Version) or tenant isolation (X-Tenant-ID).</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #14532d;">
-<strong style="color: #166534;">4. Content-Based Routing</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Inspect request body to route based on payload structure. Expensive - requires buffering and parsing.</p>
-</div>
-</div>
+  <h4 style="color: #166534; margin-top: 0;">Routing Decision Hierarchy</h4>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
+      <strong style="color: #166534;">1. Path Matching</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Exact match > Prefix match > Regex match > Wildcard. Order determines performance - exact matches use O(1) hash lookup, while regex requires O(n) evaluation.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #16a34a;">
+      <strong style="color: #166534;">2. Method Filtering</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">After path match, filter by HTTP method. Critical for RESTful APIs where same path handles different operations.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #15803d;">
+      <strong style="color: #166534;">3. Header-Based Routing</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Content-Type, Accept headers, custom headers for versioning (X-API-Version) or tenant isolation (X-Tenant-ID).</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #14532d;">
+      <strong style="color: #166534;">4. Content-Based Routing</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Inspect request body to route based on payload structure. Expensive - requires buffering and parsing.</p>
+    </div>
+  </div>
 </div>
 
 ### Internal Route Table Architecture
@@ -113,45 +113,45 @@ class RouteTable:
 ### Edge Cases and Failure Modes
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #92400e; margin-top: 0;">Critical Edge Cases</h4>
-<div style="display: grid; gap: 12px;">
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Path Normalization Attacks</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><code>/api/users/../admin/secrets</code> may bypass path-based access control. Gateway MUST normalize paths before routing. URL-decode, remove <code>..</code> sequences, collapse multiple slashes.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Trailing Slash Ambiguity</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><code>/api/users</code> vs <code>/api/users/</code> - these may route to different backends or cause cache fragmentation. Define canonical form and redirect or normalize.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Query String Ordering</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><code>?a=1&b=2</code> vs <code>?b=2&a=1</code> - if using query params for routing or caching, normalize parameter order to prevent cache fragmentation.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Unicode Normalization</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">URL-encoded unicode can be represented multiple ways. <code>%C3%A9</code> (NFC) vs <code>e%CC%81</code> (NFD) both represent 'e'. Normalize to single form.</p>
-</div>
-</div>
+  <h4 style="color: #92400e; margin-top: 0;">Critical Edge Cases</h4>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Path Normalization Attacks</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><code>/api/users/../admin/secrets</code> may bypass path-based access control. Gateway MUST normalize paths before routing. URL-decode, remove <code>..</code> sequences, collapse multiple slashes.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Trailing Slash Ambiguity</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><code>/api/users</code> vs <code>/api/users/</code> - these may route to different backends or cause cache fragmentation. Define canonical form and redirect or normalize.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Query String Ordering</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><code>?a=1&b=2</code> vs <code>?b=2&a=1</code> - if using query params for routing or caching, normalize parameter order to prevent cache fragmentation.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Unicode Normalization</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">URL-encoded unicode can be represented multiple ways. <code>%C3%A9</code> (NFC) vs <code>e%CC%81</code> (NFD) both represent 'e'. Normalize to single form.</p>
+    </div>
+  </div>
 </div>
 
 ### Routing Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e40af; margin-top: 0;">Level 1: How does an API Gateway route requests to backend services?</h4>
+  <h4 style="color: #1e40af; margin-top: 0;">Level 1: How does an API Gateway route requests to backend services?</h4>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> The gateway maintains a routing table that maps incoming request patterns (path, method, headers) to backend service endpoints. When a request arrives, the routing engine evaluates rules in priority order - typically exact matches first, then prefix matches, then regex patterns. The matched route contains the target service URL, and the gateway forwards the request after applying any configured transformations.</p>
+  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> The gateway maintains a routing table that maps incoming request patterns (path, method, headers) to backend service endpoints. When a request arrives, the routing engine evaluates rules in priority order - typically exact matches first, then prefix matches, then regex patterns. The matched route contains the target service URL, and the gateway forwards the request after applying any configured transformations.</p>
 
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-<h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle route priority conflicts when multiple patterns match?</h5>
+  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+    <h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle route priority conflicts when multiple patterns match?</h5>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Route conflicts are resolved through a specificity hierarchy. The gateway assigns priority scores based on pattern type: exact matches score highest, followed by longer prefix matches, then regex patterns by registration order. For paths like <code>/api/v1/users/123</code>, a route for <code>/api/v1/users/{id}</code> beats <code>/api/v1/*</code> because parameterized paths are more specific than wildcards. Some gateways (Kong, NGINX) use explicit priority weights; others (AWS API Gateway) require unique patterns. The key is deterministic behavior - given any input, routing must produce the same output.</p>
+    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Route conflicts are resolved through a specificity hierarchy. The gateway assigns priority scores based on pattern type: exact matches score highest, followed by longer prefix matches, then regex patterns by registration order. For paths like <code>/api/v1/users/123</code>, a route for <code>/api/v1/users/{id}</code> beats <code>/api/v1/*</code> because parameterized paths are more specific than wildcards. Some gateways (Kong, NGINX) use explicit priority weights; others (AWS API Gateway) require unique patterns. The key is deterministic behavior - given any input, routing must produce the same output.</p>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-<h6 style="color: #1e40af; margin-top: 0;">Level 3: How would you implement hot-reloading of routing rules without dropping connections or causing routing errors during transition?</h6>
+    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+      <h6 style="color: #1e40af; margin-top: 0;">Level 3: How would you implement hot-reloading of routing rules without dropping connections or causing routing errors during transition?</h6>
 
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires atomic route table swapping with graceful transition. The implementation uses double-buffering: maintain two route table instances (active and staging). Configuration changes are applied to the staging table, validated, then atomically swapped using a pointer/reference swap. In-flight requests continue using the old table (tracked via reference counting), while new requests use the new table. For validation, the gateway compiles routes and checks for conflicts before activation. Edge case: if a route is removed while requests are in-flight, those requests complete normally but new requests get 404. Some systems implement a brief overlap period where both old and new routes are valid. Implementation detail: use RCU (Read-Copy-Update) pattern for lock-free reads during the swap. Related: [[blue-green-deployment]](/topic/system-design/deployment-strategies) patterns apply here.</p>
-</div>
-</div>
+      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires atomic route table swapping with graceful transition. The implementation uses double-buffering: maintain two route table instances (active and staging). Configuration changes are applied to the staging table, validated, then atomically swapped using a pointer/reference swap. In-flight requests continue using the old table (tracked via reference counting), while new requests use the new table. For validation, the gateway compiles routes and checks for conflicts before activation. Edge case: if a route is removed while requests are in-flight, those requests complete normally but new requests get 404. Some systems implement a brief overlap period where both old and new routes are valid. Implementation detail: use RCU (Read-Copy-Update) pattern for lock-free reads during the swap. Related: [[blue-green-deployment]](/topic/system-design/deployment-strategies) patterns apply here.</p>
+    </div>
+  </div>
 </div>
 
 ---
@@ -163,21 +163,21 @@ class RouteTable:
 Authentication at the gateway level validates client identity before requests reach backend services. This creates a security perimeter where all traffic is verified at a single point, eliminating the need for each microservice to implement authentication logic.
 
 <div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-<h4 style="margin-top: 0; color: #f8fafc;">Authentication Flow Decision Tree</h4>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
-<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-<strong style="color: #f8fafc;">JWT Validation</strong>
-<p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Signature verification, expiry check, issuer validation. Stateless - no backend call needed. O(1) validation time.</p>
-</div>
-<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-<strong style="color: #f8fafc;">OAuth2 Introspection</strong>
-<p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Call authorization server to validate opaque tokens. Allows token revocation. Adds latency per request.</p>
-</div>
-<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-<strong style="color: #f8fafc;">API Key Lookup</strong>
-<p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Hash-based lookup in distributed cache. Simple but requires secure key generation and rotation.</p>
-</div>
-</div>
+  <h4 style="margin-top: 0; color: #f8fafc;">Authentication Flow Decision Tree</h4>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px;">
+    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+      <strong style="color: #f8fafc;">JWT Validation</strong>
+      <p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Signature verification, expiry check, issuer validation. Stateless - no backend call needed. O(1) validation time.</p>
+    </div>
+    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+      <strong style="color: #f8fafc;">OAuth2 Introspection</strong>
+      <p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Call authorization server to validate opaque tokens. Allows token revocation. Adds latency per request.</p>
+    </div>
+    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+      <strong style="color: #f8fafc;">API Key Lookup</strong>
+      <p style="color: #e0e7ff; margin: 8px 0 0 0; font-size: 13px;">Hash-based lookup in distributed cache. Simple but requires secure key generation and rotation.</p>
+    </div>
+  </div>
 </div>
 
 ### JWT Processing Pipeline
@@ -299,57 +299,57 @@ class JWTAuthenticator:
 ### Authorization Patterns
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Gateway vs Service Authorization</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-<div>
-  <div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-  <strong style="color: #1e40af;">Coarse-Grained (Gateway)</strong>
-  <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
-  <li>Route-level access control</li>
-  <li>Role-based path restrictions</li>
-  <li>IP allowlisting/blocklisting</li>
-  <li>API key scope validation</li>
-</ul>
-</div>
-<p style="color: #64748b; font-size: 13px; font-style: italic;">Example: Only 'admin' role can access /api/admin/*</p>
-</div>
-<div>
-  <div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-  <strong style="color: #166534;">Fine-Grained (Service)</strong>
-  <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
-  <li>Resource-level permissions</li>
-  <li>Attribute-based access (ABAC)</li>
-  <li>Business rule evaluation</li>
-  <li>Dynamic permission checks</li>
-</ul>
-</div>
-<p style="color: #64748b; font-size: 13px; font-style: italic;">Example: User can only view their own orders</p>
-</div>
-</div>
-<div style="background: #fef3c7; padding: 16px; border-radius: 8px; margin-top: 16px;">
-<strong style="color: #92400e;">Design Trade-off:</strong>
-<p style="color: #78350f; margin: 8px 0 0 0; font-size: 14px;">Pushing authorization to gateway simplifies services but limits flexibility. Gateway doesn't have business context (e.g., "is this the order owner?"). Hybrid approach: gateway handles authentication + coarse authorization, services handle fine-grained authorization using claims passed from gateway.</p>
-</div>
+  <h4 style="color: #1e293b; margin-top: 0;">Gateway vs Service Authorization</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div>
+      <div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+        <strong style="color: #1e40af;">Coarse-Grained (Gateway)</strong>
+        <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+          <li>Route-level access control</li>
+          <li>Role-based path restrictions</li>
+          <li>IP allowlisting/blocklisting</li>
+          <li>API key scope validation</li>
+        </ul>
+      </div>
+      <p style="color: #64748b; font-size: 13px; font-style: italic;">Example: Only 'admin' role can access /api/admin/*</p>
+    </div>
+    <div>
+      <div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+        <strong style="color: #166534;">Fine-Grained (Service)</strong>
+        <ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px;">
+          <li>Resource-level permissions</li>
+          <li>Attribute-based access (ABAC)</li>
+          <li>Business rule evaluation</li>
+          <li>Dynamic permission checks</li>
+        </ul>
+      </div>
+      <p style="color: #64748b; font-size: 13px; font-style: italic;">Example: User can only view their own orders</p>
+    </div>
+  </div>
+  <div style="background: #fef3c7; padding: 16px; border-radius: 8px; margin-top: 16px;">
+    <strong style="color: #92400e;">Design Trade-off:</strong>
+    <p style="color: #78350f; margin: 8px 0 0 0; font-size: 14px;">Pushing authorization to gateway simplifies services but limits flexibility. Gateway doesn't have business context (e.g., "is this the order owner?"). Hybrid approach: gateway handles authentication + coarse authorization, services handle fine-grained authorization using claims passed from gateway.</p>
+  </div>
 </div>
 
 ### Authentication Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e40af; margin-top: 0;">Level 1: How does API Gateway authentication work with JWT tokens?</h4>
+  <h4 style="color: #1e40af; margin-top: 0;">Level 1: How does API Gateway authentication work with JWT tokens?</h4>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> The gateway intercepts incoming requests and extracts the JWT from the Authorization header. It validates the token's signature using public keys (typically fetched from a JWKS endpoint), checks expiration time, verifies the issuer claim, and extracts user claims. If validation succeeds, the gateway forwards the request with claims attached (often as headers). Backend services trust these headers because they trust the gateway.</p>
+  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> The gateway intercepts incoming requests and extracts the JWT from the Authorization header. It validates the token's signature using public keys (typically fetched from a JWKS endpoint), checks expiration time, verifies the issuer claim, and extracts user claims. If validation succeeds, the gateway forwards the request with claims attached (often as headers). Backend services trust these headers because they trust the gateway.</p>
 
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-<h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle JWT revocation since JWTs are stateless?</h5>
+  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+    <h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle JWT revocation since JWTs are stateless?</h5>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Since JWTs are self-contained, true instant revocation is impossible without introducing state. Common strategies: (1) <strong>Short expiry times</strong> (5-15 minutes) with refresh tokens - limits exposure window. (2) <strong>Token blacklist</strong> in distributed cache (Redis) - gateway checks blacklist before accepting token; only need to store revoked tokens until their natural expiry. (3) <strong>Token versioning</strong> - store token version per user in cache; increment on logout/password change; reject tokens with old version. (4) <strong>Refresh token rotation</strong> - each refresh invalidates the previous refresh token chain. Trade-off: blacklist adds latency and state; short expiry increases auth server load. See [[distributed-caching]](/topic/system-design/caching) for blacklist implementation.</p>
+    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Since JWTs are self-contained, true instant revocation is impossible without introducing state. Common strategies: (1) <strong>Short expiry times</strong> (5-15 minutes) with refresh tokens - limits exposure window. (2) <strong>Token blacklist</strong> in distributed cache (Redis) - gateway checks blacklist before accepting token; only need to store revoked tokens until their natural expiry. (3) <strong>Token versioning</strong> - store token version per user in cache; increment on logout/password change; reject tokens with old version. (4) <strong>Refresh token rotation</strong> - each refresh invalidates the previous refresh token chain. Trade-off: blacklist adds latency and state; short expiry increases auth server load. See [[distributed-caching]](/topic/system-design/caching) for blacklist implementation.</p>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-<h6 style="color: #1e40af; margin-top: 0;">Level 3: How would you design the gateway to handle a compromised signing key without service disruption?</h6>
+    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+      <h6 style="color: #1e40af; margin-top: 0;">Level 3: How would you design the gateway to handle a compromised signing key without service disruption?</h6>
 
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires a key rotation strategy that maintains backward compatibility during transition. Implementation: (1) <strong>Multiple active keys</strong> - gateway accepts tokens signed by any key in the current key set (identified by 'kid' header). (2) <strong>Overlap period</strong> - when rotating, add new key to set before removing old key; auth server switches to new key; old tokens remain valid until expiry. (3) <strong>Compromise response</strong> - for compromised key: immediately remove from gateway's key set (blocking new validations), force re-authentication for all users with tokens signed by compromised key (blacklist by 'kid'), issue new tokens with new key. Edge case: if attacker has stolen the key, they can mint tokens - use very short blacklist window where ALL tokens from that key are rejected regardless of claims. (4) <strong>HSM integration</strong> - store signing keys in Hardware Security Module for production; keys never leave the HSM; reduces compromise risk. Monitoring: alert on unusual token patterns (bulk minting, unusual claims) as early compromise indicator.</p>
-</div>
-</div>
+      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires a key rotation strategy that maintains backward compatibility during transition. Implementation: (1) <strong>Multiple active keys</strong> - gateway accepts tokens signed by any key in the current key set (identified by 'kid' header). (2) <strong>Overlap period</strong> - when rotating, add new key to set before removing old key; auth server switches to new key; old tokens remain valid until expiry. (3) <strong>Compromise response</strong> - for compromised key: immediately remove from gateway's key set (blocking new validations), force re-authentication for all users with tokens signed by compromised key (blacklist by 'kid'), issue new tokens with new key. Edge case: if attacker has stolen the key, they can mint tokens - use very short blacklist window where ALL tokens from that key are rejected regardless of claims. (4) <strong>HSM integration</strong> - store signing keys in Hardware Security Module for production; keys never leave the HSM; reduces compromise risk. Monitoring: alert on unusual token patterns (bulk minting, unusual claims) as early compromise indicator.</p>
+    </div>
+  </div>
 </div>
 
 ---
@@ -361,25 +361,25 @@ class JWTAuthenticator:
 Rate limiting controls request throughput to protect backend services from overload and ensure fair resource allocation among clients. The gateway enforces limits based on various dimensions: client identity, endpoint, HTTP method, or combinations thereof.
 
 <div style="background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-<h4 style="margin-top: 0; color: white;">Rate Limiting Algorithms Compared</h4>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
-<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-<strong style="color: white;">Token Bucket</strong>
-<p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Allows bursts up to bucket capacity. Tokens refill at fixed rate. Smooth average rate with burst tolerance. Best for: APIs with variable traffic patterns.</p>
-</div>
-<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-<strong style="color: white;">Leaky Bucket</strong>
-<p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Queue-based, processes at constant rate. Smooths traffic but adds latency during bursts. Best for: Strict rate enforcement, traffic shaping.</p>
-</div>
-<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-<strong style="color: white;">Fixed Window</strong>
-<p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Count requests per time window. Simple but allows 2x burst at window boundaries. Best for: Simple use cases, billing.</p>
-</div>
-<div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-<strong style="color: white;">Sliding Window Log</strong>
-<p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Track timestamp of each request. Most accurate but memory-intensive. Best for: Precise limiting, small request volumes.</p>
-</div>
-</div>
+  <h4 style="margin-top: 0; color: white;">Rate Limiting Algorithms Compared</h4>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
+    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+      <strong style="color: white;">Token Bucket</strong>
+      <p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Allows bursts up to bucket capacity. Tokens refill at fixed rate. Smooth average rate with burst tolerance. Best for: APIs with variable traffic patterns.</p>
+    </div>
+    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+      <strong style="color: white;">Leaky Bucket</strong>
+      <p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Queue-based, processes at constant rate. Smooths traffic but adds latency during bursts. Best for: Strict rate enforcement, traffic shaping.</p>
+    </div>
+    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+      <strong style="color: white;">Fixed Window</strong>
+      <p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Count requests per time window. Simple but allows 2x burst at window boundaries. Best for: Simple use cases, billing.</p>
+    </div>
+    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
+      <strong style="color: white;">Sliding Window Log</strong>
+      <p style="color: #fed7aa; margin: 8px 0 0 0; font-size: 13px;">Track timestamp of each request. Most accurate but memory-intensive. Best for: Precise limiting, small request volumes.</p>
+    </div>
+  </div>
 </div>
 
 ### Sliding Window Counter Implementation
@@ -532,45 +532,45 @@ class DistributedRateLimiter:
 ### Edge Cases in Distributed Rate Limiting
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #991b1b; margin-top: 0;">Critical Distributed Rate Limiting Challenges</h4>
-<div style="display: grid; gap: 16px;">
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b;">Redis Failure Modes</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Fail-open:</strong> Allow requests when Redis unavailable (availability over protection). <strong>Fail-closed:</strong> Deny requests when Redis unavailable (protection over availability). Most systems choose fail-open with local rate limiting fallback and aggressive alerting.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b;">Clock Drift</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Gateway instances may have slight clock differences. If instance A is 100ms ahead, it may start a new window before instance B, causing temporary over-admission. Use NTP sync with tight tolerances; use Redis server time (TIME command) for window boundaries.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b;">Thundering Herd at Window Reset</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Clients waiting for window reset may all send requests simultaneously. Add jitter to Retry-After header (e.g., base_wait + random(0, 5 seconds)). Consider exponential backoff hints for repeated denials.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b;">Hot Keys</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Global rate limit key becomes bottleneck under high traffic. Use local counting with periodic sync (eventual consistency), or shard the key across multiple Redis keys with client-side aggregation.</p>
-</div>
-</div>
+  <h4 style="color: #991b1b; margin-top: 0;">Critical Distributed Rate Limiting Challenges</h4>
+  <div style="display: grid; gap: 16px;">
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b;">Redis Failure Modes</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;"><strong>Fail-open:</strong> Allow requests when Redis unavailable (availability over protection). <strong>Fail-closed:</strong> Deny requests when Redis unavailable (protection over availability). Most systems choose fail-open with local rate limiting fallback and aggressive alerting.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b;">Clock Drift</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Gateway instances may have slight clock differences. If instance A is 100ms ahead, it may start a new window before instance B, causing temporary over-admission. Use NTP sync with tight tolerances; use Redis server time (TIME command) for window boundaries.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b;">Thundering Herd at Window Reset</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Clients waiting for window reset may all send requests simultaneously. Add jitter to Retry-After header (e.g., base_wait + random(0, 5 seconds)). Consider exponential backoff hints for repeated denials.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b;">Hot Keys</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Global rate limit key becomes bottleneck under high traffic. Use local counting with periodic sync (eventual consistency), or shard the key across multiple Redis keys with client-side aggregation.</p>
+    </div>
+  </div>
 </div>
 
 ### Rate Limiting Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e40af; margin-top: 0;">Level 1: What is the difference between token bucket and sliding window rate limiting?</h4>
+  <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is the difference between token bucket and sliding window rate limiting?</h4>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Token bucket allows bursts up to bucket capacity while maintaining an average rate - tokens accumulate when unused and can be spent in bursts. Sliding window counts requests in a moving time window, providing more consistent rate enforcement without burst allowance. Token bucket is better for traffic with natural variation; sliding window is better when strict per-second limits are required.</p>
+  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Token bucket allows bursts up to bucket capacity while maintaining an average rate - tokens accumulate when unused and can be spent in bursts. Sliding window counts requests in a moving time window, providing more consistent rate enforcement without burst allowance. Token bucket is better for traffic with natural variation; sliding window is better when strict per-second limits are required.</p>
 
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-<h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you implement rate limiting across multiple gateway instances without creating a bottleneck?</h5>
+  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+    <h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you implement rate limiting across multiple gateway instances without creating a bottleneck?</h5>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Use a distributed counter in Redis with the sliding window counter algorithm. Each gateway instance atomically increments the counter using INCR command. For high-throughput scenarios, batch local counts and sync to Redis periodically (every 100ms) to reduce Redis calls - this trades precision for performance. For extreme scale, use Redis Cluster with key sharding, or implement hierarchical rate limiting: local limits (strict) + global limits (approximate via sampling). Monitor with [[distributed-systems]](/topic/system-design/distributed-systems) observability patterns.</p>
+    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Use a distributed counter in Redis with the sliding window counter algorithm. Each gateway instance atomically increments the counter using INCR command. For high-throughput scenarios, batch local counts and sync to Redis periodically (every 100ms) to reduce Redis calls - this trades precision for performance. For extreme scale, use Redis Cluster with key sharding, or implement hierarchical rate limiting: local limits (strict) + global limits (approximate via sampling). Monitor with [[distributed-systems]](/topic/system-design/distributed-systems) observability patterns.</p>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-<h6 style="color: #1e40af; margin-top: 0;">Level 3: A sophisticated client is bypassing your rate limits by rotating through a pool of API keys. How do you detect and mitigate this?</h6>
+    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+      <h6 style="color: #1e40af; margin-top: 0;">Level 3: A sophisticated client is bypassing your rate limits by rotating through a pool of API keys. How do you detect and mitigate this?</h6>
 
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires multi-signal abuse detection. (1) <strong>Behavioral fingerprinting:</strong> Track request patterns beyond API key - User-Agent, request timing patterns, endpoint access sequences. Cluster similar behaviors; if multiple keys show identical patterns, treat as single entity for rate limiting. (2) <strong>IP correlation:</strong> If multiple keys originate from same IP or IP block, apply aggregate limits. Consider ASN-level limits for coordinated attacks. (3) <strong>Device fingerprinting:</strong> For browser clients, use TLS fingerprinting (JA3 hash), canvas fingerprinting, or require client-side proof-of-work. (4) <strong>Anomaly detection:</strong> ML model trained on normal usage patterns; flag statistical outliers (unusual endpoint ratios, time-of-day patterns, geographic impossibility). (5) <strong>Proof-of-work challenges:</strong> Return CAPTCHA or computational puzzle when abuse suspected - legitimate users solve once, attackers must solve per-request. Trade-off: false positives harm legitimate users; start with soft limits (warn/log) before hard enforcement.</p>
-</div>
-</div>
+      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires multi-signal abuse detection. (1) <strong>Behavioral fingerprinting:</strong> Track request patterns beyond API key - User-Agent, request timing patterns, endpoint access sequences. Cluster similar behaviors; if multiple keys show identical patterns, treat as single entity for rate limiting. (2) <strong>IP correlation:</strong> If multiple keys originate from same IP or IP block, apply aggregate limits. Consider ASN-level limits for coordinated attacks. (3) <strong>Device fingerprinting:</strong> For browser clients, use TLS fingerprinting (JA3 hash), canvas fingerprinting, or require client-side proof-of-work. (4) <strong>Anomaly detection:</strong> ML model trained on normal usage patterns; flag statistical outliers (unusual endpoint ratios, time-of-day patterns, geographic impossibility). (5) <strong>Proof-of-work challenges:</strong> Return CAPTCHA or computational puzzle when abuse suspected - legitimate users solve once, attackers must solve per-request. Trade-off: false positives harm legitimate users; start with soft limits (warn/log) before hard enforcement.</p>
+    </div>
+  </div>
 </div>
 
 ---
@@ -582,27 +582,27 @@ class DistributedRateLimiter:
 Request transformation modifies requests before forwarding to backend services. This decouples external API contracts from internal service interfaces, enabling independent evolution of public APIs and internal implementations.
 
 <div style="background: #f0f9ff; border: 2px solid #0ea5e9; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Transformation Pipeline</h4>
-<div style="display: flex; flex-direction: column; gap: 12px;">
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #0ea5e9; color: white; min-width: 100px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Ingress</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bae6fd;">
-<span style="color: #475569; font-size: 14px;">Header injection (X-Request-ID, X-Forwarded-For), body parsing, validation, schema transformation</span>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #0ea5e9; color: white; min-width: 100px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Forward</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bae6fd;">
-<span style="color: #475569; font-size: 14px;">Protocol translation (REST to gRPC), URL rewriting, authentication header mutation</span>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #0ea5e9; color: white; min-width: 100px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Egress</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bae6fd;">
-<span style="color: #475569; font-size: 14px;">Response filtering, field masking, error translation, CORS header injection</span>
-</div>
-</div>
-</div>
+  <h4 style="color: #0369a1; margin-top: 0;">Transformation Pipeline</h4>
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #0ea5e9; color: white; min-width: 100px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Ingress</div>
+      <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bae6fd;">
+        <span style="color: #475569; font-size: 14px;">Header injection (X-Request-ID, X-Forwarded-For), body parsing, validation, schema transformation</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #0ea5e9; color: white; min-width: 100px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Forward</div>
+      <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bae6fd;">
+        <span style="color: #475569; font-size: 14px;">Protocol translation (REST to gRPC), URL rewriting, authentication header mutation</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="background: #0ea5e9; color: white; min-width: 100px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Egress</div>
+      <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bae6fd;">
+        <span style="color: #475569; font-size: 14px;">Response filtering, field masking, error translation, CORS header injection</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### Request Transformation Implementation
@@ -842,21 +842,21 @@ class ProtocolTranslator:
 ### Request Transformation Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e40af; margin-top: 0;">Level 1: Why would you transform requests at the API Gateway level?</h4>
+  <h4 style="color: #1e40af; margin-top: 0;">Level 1: Why would you transform requests at the API Gateway level?</h4>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Request transformation decouples external API contracts from internal service implementations. This allows the public API to remain stable while internal services evolve independently. Common use cases include API versioning (transform v1 requests to v2 format), protocol translation (REST to gRPC), and adding system headers (correlation IDs, forwarded-for addresses).</p>
+  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Request transformation decouples external API contracts from internal service implementations. This allows the public API to remain stable while internal services evolve independently. Common use cases include API versioning (transform v1 requests to v2 format), protocol translation (REST to gRPC), and adding system headers (correlation IDs, forwarded-for addresses).</p>
 
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-<h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle request transformation for streaming/large payloads without memory issues?</h5>
+  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+    <h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle request transformation for streaming/large payloads without memory issues?</h5>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> For large payloads, avoid buffering the entire request in memory. Use streaming transformation with chunked processing: (1) Parse headers and make routing decision first. (2) For body transformation, use SAX-style JSON parsing that emits events as it parses, transforming and forwarding chunks incrementally. (3) For protocol translation (REST to gRPC), buffer only the minimum needed - if transforming a 1GB file upload, the gateway should stream directly to the storage service without holding it in memory. (4) Set explicit body size limits and reject oversized requests early. Related: [[streaming-architectures]](/topic/system-design/streaming).</p>
+    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> For large payloads, avoid buffering the entire request in memory. Use streaming transformation with chunked processing: (1) Parse headers and make routing decision first. (2) For body transformation, use SAX-style JSON parsing that emits events as it parses, transforming and forwarding chunks incrementally. (3) For protocol translation (REST to gRPC), buffer only the minimum needed - if transforming a 1GB file upload, the gateway should stream directly to the storage service without holding it in memory. (4) Set explicit body size limits and reject oversized requests early. Related: [[streaming-architectures]](/topic/system-design/streaming).</p>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-<h6 style="color: #1e40af; margin-top: 0;">Level 3: You need to support 3 API versions simultaneously. V1 and V2 have different field names, V3 adds new required fields. How do you design the transformation layer?</h6>
+    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+      <h6 style="color: #1e40af; margin-top: 0;">Level 3: You need to support 3 API versions simultaneously. V1 and V2 have different field names, V3 adds new required fields. How do you design the transformation layer?</h6>
 
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Design a version normalization pipeline that transforms all versions to a canonical internal format. (1) <strong>Version detection:</strong> Extract version from URL (/v1/), header (Accept: application/vnd.api.v1+json), or query param. Default to latest version for unspecified. (2) <strong>Canonical model:</strong> Internal services always receive the latest (V3) format. Gateway transforms: V1->V3 and V2->V3. (3) <strong>Field mapping:</strong> V1 uses 'name', V2 uses 'full_name', V3 uses 'display_name' - map all to 'display_name'. (4) <strong>Required field handling:</strong> V3 requires 'locale' field not in V1/V2 - gateway adds default value or returns 400 if truly required. (5) <strong>Response transformation:</strong> Reverse the process - transform V3 responses back to requested version format. (6) <strong>Testing:</strong> Property-based tests ensuring roundtrip: transform(V1->V3)->transform(V3->V1) == original. (7) <strong>Deprecation:</strong> Add Sunset header to V1 responses with deprecation date; log V1 usage for migration tracking.</p>
-</div>
-</div>
+      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> Design a version normalization pipeline that transforms all versions to a canonical internal format. (1) <strong>Version detection:</strong> Extract version from URL (/v1/), header (Accept: application/vnd.api.v1+json), or query param. Default to latest version for unspecified. (2) <strong>Canonical model:</strong> Internal services always receive the latest (V3) format. Gateway transforms: V1->V3 and V2->V3. (3) <strong>Field mapping:</strong> V1 uses 'name', V2 uses 'full_name', V3 uses 'display_name' - map all to 'display_name'. (4) <strong>Required field handling:</strong> V3 requires 'locale' field not in V1/V2 - gateway adds default value or returns 400 if truly required. (5) <strong>Response transformation:</strong> Reverse the process - transform V3 responses back to requested version format. (6) <strong>Testing:</strong> Property-based tests ensuring roundtrip: transform(V1->V3)->transform(V3->V1) == original. (7) <strong>Deprecation:</strong> Add Sunset header to V1 responses with deprecation date; log V1 usage for migration tracking.</p>
+    </div>
+  </div>
 </div>
 
 ---
@@ -868,25 +868,25 @@ class ProtocolTranslator:
 Service discovery enables the gateway to locate backend service instances dynamically, essential for containerized and auto-scaling environments where instance addresses change frequently. The gateway must maintain an up-to-date registry of healthy service endpoints.
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #22c55e;">
-<h4 style="margin-top: 0; color: #166534;">Service Discovery Patterns</h4>
-<div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
-<strong style="color: #166534;">Client-Side Discovery</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Gateway queries registry directly, caches results, handles load balancing. More control but tighter coupling. Examples: Netflix Eureka, Consul.</p>
-</div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
-<strong style="color: #166534;">Server-Side Discovery</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Gateway calls load balancer, which handles discovery. Simpler gateway but additional hop. Examples: AWS ELB, Kubernetes Services.</p>
-</div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
-<strong style="color: #166534;">DNS-Based Discovery</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Service names resolve to instance IPs via DNS. Simple but limited health checking, TTL-based staleness. Examples: Kubernetes CoreDNS.</p>
-</div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
-<strong style="color: #166534;">Service Mesh Sidecar</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Sidecar proxy handles discovery transparently. Gateway routes to service name, sidecar resolves. Examples: Istio, Linkerd.</p>
-</div>
-</div>
+  <h4 style="margin-top: 0; color: #166534;">Service Discovery Patterns</h4>
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">Client-Side Discovery</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Gateway queries registry directly, caches results, handles load balancing. More control but tighter coupling. Examples: Netflix Eureka, Consul.</p>
+    </div>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">Server-Side Discovery</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Gateway calls load balancer, which handles discovery. Simpler gateway but additional hop. Examples: AWS ELB, Kubernetes Services.</p>
+    </div>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">DNS-Based Discovery</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Service names resolve to instance IPs via DNS. Simple but limited health checking, TTL-based staleness. Examples: Kubernetes CoreDNS.</p>
+    </div>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">Service Mesh Sidecar</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Sidecar proxy handles discovery transparently. Gateway routes to service name, sidecar resolves. Examples: Istio, Linkerd.</p>
+    </div>
+  </div>
 </div>
 
 ### Service Discovery Implementation
@@ -1124,45 +1124,45 @@ class ServiceRegistry:
 ### Service Discovery Edge Cases
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #92400e; margin-top: 0;">Critical Edge Cases</h4>
-<div style="display: grid; gap: 12px;">
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Split Brain</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Network partition causes gateway to see different instances than registry. Solution: Use quorum-based registry (Consul Raft), implement staleness detection on cached data, fail-open or fail-closed based on criticality.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Thundering Herd on Recovery</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">When a service recovers, all gateways may route traffic simultaneously. Solution: Implement warm-up period where new instances receive gradually increasing traffic (weight ramping).</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Stale DNS Cache</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">DNS-based discovery caches IPs at multiple layers (OS, JVM, resolver). Old IPs route to terminated instances. Solution: Use low TTLs (5-10s), implement connection-level health checks, prefer HTTP-based discovery over DNS.</p>
-</div>
-<div style="background: white; padding: 16px; border-radius: 8px;">
-<strong style="color: #92400e;">Zero Instances Available</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">All instances are unhealthy or deregistered. Gateway must decide: fail immediately (503), retry with exponential backoff, or serve stale cached response if available. Consider [[circuit-breaker]](/topic/design-patterns/circuit-breaker) integration.</p>
-</div>
-</div>
+  <h4 style="color: #92400e; margin-top: 0;">Critical Edge Cases</h4>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Split Brain</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Network partition causes gateway to see different instances than registry. Solution: Use quorum-based registry (Consul Raft), implement staleness detection on cached data, fail-open or fail-closed based on criticality.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Thundering Herd on Recovery</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">When a service recovers, all gateways may route traffic simultaneously. Solution: Implement warm-up period where new instances receive gradually increasing traffic (weight ramping).</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Stale DNS Cache</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">DNS-based discovery caches IPs at multiple layers (OS, JVM, resolver). Old IPs route to terminated instances. Solution: Use low TTLs (5-10s), implement connection-level health checks, prefer HTTP-based discovery over DNS.</p>
+    </div>
+    <div style="background: white; padding: 16px; border-radius: 8px;">
+      <strong style="color: #92400e;">Zero Instances Available</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">All instances are unhealthy or deregistered. Gateway must decide: fail immediately (503), retry with exponential backoff, or serve stale cached response if available. Consider [[circuit-breaker]](/topic/design-patterns/circuit-breaker) integration.</p>
+    </div>
+  </div>
 </div>
 
 ### Service Discovery Interview Questions (3 Levels Deep)
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e40af; margin-top: 0;">Level 1: What is service discovery and why is it needed in an API Gateway?</h4>
+  <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is service discovery and why is it needed in an API Gateway?</h4>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Service discovery enables the gateway to dynamically locate backend service instances. In containerized environments, services scale up/down and instances get new IP addresses frequently. Instead of hardcoding addresses, the gateway queries a service registry (Consul, etcd, Kubernetes) to find current healthy instances. This enables auto-scaling, rolling deployments, and failover without gateway reconfiguration.</p>
+  <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Service discovery enables the gateway to dynamically locate backend service instances. In containerized environments, services scale up/down and instances get new IP addresses frequently. Instead of hardcoding addresses, the gateway queries a service registry (Consul, etcd, Kubernetes) to find current healthy instances. This enables auto-scaling, rolling deployments, and failover without gateway reconfiguration.</p>
 
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
-<h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle the latency added by service discovery lookups on every request?</h5>
+  <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+    <h5 style="color: #1e40af; margin-top: 0;">Level 2: How do you handle the latency added by service discovery lookups on every request?</h5>
 
-<p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Avoid per-request registry lookups through local caching with background refresh. The gateway maintains a local cache of service instances, updated via push (registry watch/subscription) or pull (periodic polling). Requests use the local cache, which adds sub-millisecond overhead. For Consul, use blocking queries (long-polling) that return immediately on change. For Kubernetes, watch the Endpoints API. Cache TTL should be short enough to detect failures (5-30s) but long enough to not overwhelm the registry. Combine with active health checks from the gateway for faster failure detection than registry-based checks. See [[caching-strategies]](/topic/system-design/caching) for cache invalidation patterns.</p>
+    <p style="color: #1e293b; line-height: 1.7;"><strong>Answer:</strong> Avoid per-request registry lookups through local caching with background refresh. The gateway maintains a local cache of service instances, updated via push (registry watch/subscription) or pull (periodic polling). Requests use the local cache, which adds sub-millisecond overhead. For Consul, use blocking queries (long-polling) that return immediately on change. For Kubernetes, watch the Endpoints API. Cache TTL should be short enough to detect failures (5-30s) but long enough to not overwhelm the registry. Combine with active health checks from the gateway for faster failure detection than registry-based checks. See [[caching-strategies]](/topic/system-design/caching) for cache invalidation patterns.</p>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
-<h6 style="color: #1e40af; margin-top: 0;">Level 3: A critical service is experiencing a rolling deployment. During deployment, some requests fail because they're routed to terminating instances. How do you achieve zero-downtime deployments with service discovery?</h6>
+    <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px; border-left: 4px solid #60a5fa;">
+      <h6 style="color: #1e40af; margin-top: 0;">Level 3: A critical service is experiencing a rolling deployment. During deployment, some requests fail because they're routed to terminating instances. How do you achieve zero-downtime deployments with service discovery?</h6>
 
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires coordinated graceful shutdown between deployment orchestrator, service instances, and gateway. (1) <strong>Pre-shutdown deregistration:</strong> Before terminating, instance deregisters from service registry. Gateway stops routing new requests to it. (2) <strong>Connection draining:</strong> Instance continues serving in-flight requests for a drain period (e.g., 30 seconds) before actual shutdown. Gateway maintains connection until response received. (3) <strong>Health check integration:</strong> Instance returns unhealthy to health probes before deregistration, giving gateway time to mark it down. (4) <strong>Retry with different instance:</strong> If request to old instance fails with connection refused, gateway retries to a different instance (idempotent requests only). (5) <strong>Readiness vs liveness:</strong> New instances only appear in registry after passing readiness checks (warmup complete). (6) <strong>Version-aware routing:</strong> During canary deployments, route specific percentage to new version using instance metadata. (7) <strong>Implementation:</strong> Kubernetes does this with preStop hook + terminationGracePeriodSeconds + readiness probes. For non-K8s, implement in application: receive SIGTERM -> deregister -> wait drain period -> shutdown. Monitor: track 5xx rates during deployments to verify zero-downtime.</p>
-</div>
-</div>
+      <p style="color: #1e293b; line-height: 1.7; font-size: 14px;"><strong>Answer:</strong> This requires coordinated graceful shutdown between deployment orchestrator, service instances, and gateway. (1) <strong>Pre-shutdown deregistration:</strong> Before terminating, instance deregisters from service registry. Gateway stops routing new requests to it. (2) <strong>Connection draining:</strong> Instance continues serving in-flight requests for a drain period (e.g., 30 seconds) before actual shutdown. Gateway maintains connection until response received. (3) <strong>Health check integration:</strong> Instance returns unhealthy to health probes before deregistration, giving gateway time to mark it down. (4) <strong>Retry with different instance:</strong> If request to old instance fails with connection refused, gateway retries to a different instance (idempotent requests only). (5) <strong>Readiness vs liveness:</strong> New instances only appear in registry after passing readiness checks (warmup complete). (6) <strong>Version-aware routing:</strong> During canary deployments, route specific percentage to new version using instance metadata. (7) <strong>Implementation:</strong> Kubernetes does this with preStop hook + terminationGracePeriodSeconds + readiness probes. For non-K8s, implement in application: receive SIGTERM -> deregister -> wait drain period -> shutdown. Monitor: track 5xx rates during deployments to verify zero-downtime.</p>
+    </div>
+  </div>
 </div>
 
 ---
@@ -1170,79 +1170,79 @@ class ServiceRegistry:
 ## Unified Architecture: Putting It Together
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 28px; margin: 24px 0;">
-<h4 style="color: #1e293b; margin-top: 0; font-size: 20px;">Complete Request Flow Architecture</h4>
+  <h4 style="color: #1e293b; margin-top: 0; font-size: 20px;">Complete Request Flow Architecture</h4>
 
-<div style="display: grid; gap: 16px; margin-top: 20px;">
-<div style="display: flex; gap: 16px; align-items: stretch;">
-<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-<strong style="font-size: 16px;">INGRESS</strong>
-<span style="font-size: 12px; opacity: 0.9;">TLS Termination</span>
-</div>
-<div style="flex: 1; background: #eff6ff; padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6;">
-<p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">TLS Handshake</strong> - Decrypt HTTPS, validate client certificates if mTLS enabled. Extract SNI for multi-tenant routing.</p>
-</div>
-</div>
+  <div style="display: grid; gap: 16px; margin-top: 20px;">
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <strong style="font-size: 16px;">INGRESS</strong>
+        <span style="font-size: 12px; opacity: 0.9;">TLS Termination</span>
+      </div>
+      <div style="flex: 1; background: #eff6ff; padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+        <p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">TLS Handshake</strong> - Decrypt HTTPS, validate client certificates if mTLS enabled. Extract SNI for multi-tenant routing.</p>
+      </div>
+    </div>
 
-<div style="display: flex; gap: 16px; align-items: stretch;">
-<div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-<strong style="font-size: 16px;">AUTH</strong>
-<span style="font-size: 12px; opacity: 0.9;">Identity Verification</span>
-</div>
-<div style="flex: 1; background: #f5f3ff; padding: 16px; border-radius: 12px; border-left: 4px solid #8b5cf6;">
-<p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Authentication</strong> - Validate JWT/API key, extract claims. <strong>Authorization</strong> - Check route-level permissions. Fail fast on auth errors.</p>
-</div>
-</div>
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <strong style="font-size: 16px;">AUTH</strong>
+        <span style="font-size: 12px; opacity: 0.9;">Identity Verification</span>
+      </div>
+      <div style="flex: 1; background: #f5f3ff; padding: 16px; border-radius: 12px; border-left: 4px solid #8b5cf6;">
+        <p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Authentication</strong> - Validate JWT/API key, extract claims. <strong>Authorization</strong> - Check route-level permissions. Fail fast on auth errors.</p>
+      </div>
+    </div>
 
-<div style="display: flex; gap: 16px; align-items: stretch;">
-<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-<strong style="font-size: 16px;">RATE LIMIT</strong>
-<span style="font-size: 12px; opacity: 0.9;">Traffic Control</span>
-</div>
-<div style="flex: 1; background: #fffbeb; padding: 16px; border-radius: 12px; border-left: 4px solid #f59e0b;">
-<p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Multi-Dimensional Limiting</strong> - Check per-user, per-IP, per-endpoint limits. Add rate limit headers to response.</p>
-</div>
-</div>
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <strong style="font-size: 16px;">RATE LIMIT</strong>
+        <span style="font-size: 12px; opacity: 0.9;">Traffic Control</span>
+      </div>
+      <div style="flex: 1; background: #fffbeb; padding: 16px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+        <p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Multi-Dimensional Limiting</strong> - Check per-user, per-IP, per-endpoint limits. Add rate limit headers to response.</p>
+      </div>
+    </div>
 
-<div style="display: flex; gap: 16px; align-items: stretch;">
-<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-<strong style="font-size: 16px;">ROUTING</strong>
-<span style="font-size: 12px; opacity: 0.9;">Service Selection</span>
-</div>
-<div style="flex: 1; background: #ecfdf5; padding: 16px; border-radius: 12px; border-left: 4px solid #10b981;">
-<p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Route Match</strong> - Match path/method to route config. <strong>Service Discovery</strong> - Select healthy backend instance via load balancing strategy.</p>
-</div>
-</div>
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <strong style="font-size: 16px;">ROUTING</strong>
+        <span style="font-size: 12px; opacity: 0.9;">Service Selection</span>
+      </div>
+      <div style="flex: 1; background: #ecfdf5; padding: 16px; border-radius: 12px; border-left: 4px solid #10b981;">
+        <p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Route Match</strong> - Match path/method to route config. <strong>Service Discovery</strong> - Select healthy backend instance via load balancing strategy.</p>
+      </div>
+    </div>
 
-<div style="display: flex; gap: 16px; align-items: stretch;">
-<div style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-<strong style="font-size: 16px;">TRANSFORM</strong>
-<span style="font-size: 12px; opacity: 0.9;">Request Mutation</span>
-</div>
-<div style="flex: 1; background: #ecfeff; padding: 16px; border-radius: 12px; border-left: 4px solid #06b6d4;">
-<p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Ingress Transform</strong> - Add headers (X-Request-ID, X-User-ID), rewrite paths, translate protocols. Inject claims as headers.</p>
-</div>
-</div>
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <div style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <strong style="font-size: 16px;">TRANSFORM</strong>
+        <span style="font-size: 12px; opacity: 0.9;">Request Mutation</span>
+      </div>
+      <div style="flex: 1; background: #ecfeff; padding: 16px; border-radius: 12px; border-left: 4px solid #06b6d4;">
+        <p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Ingress Transform</strong> - Add headers (X-Request-ID, X-User-ID), rewrite paths, translate protocols. Inject claims as headers.</p>
+      </div>
+    </div>
 
-<div style="display: flex; gap: 16px; align-items: stretch;">
-<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-<strong style="font-size: 16px;">FORWARD</strong>
-<span style="font-size: 12px; opacity: 0.9;">Backend Call</span>
-</div>
-<div style="flex: 1; background: #fef2f2; padding: 16px; border-radius: 12px; border-left: 4px solid #ef4444;">
-<p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Circuit Breaker Check</strong> - Verify circuit is closed. <strong>HTTP Forward</strong> - Call backend with timeout. Record success/failure for circuit breaker.</p>
-</div>
-</div>
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <strong style="font-size: 16px;">FORWARD</strong>
+        <span style="font-size: 12px; opacity: 0.9;">Backend Call</span>
+      </div>
+      <div style="flex: 1; background: #fef2f2; padding: 16px; border-radius: 12px; border-left: 4px solid #ef4444;">
+        <p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Circuit Breaker Check</strong> - Verify circuit is closed. <strong>HTTP Forward</strong> - Call backend with timeout. Record success/failure for circuit breaker.</p>
+      </div>
+    </div>
 
-<div style="display: flex; gap: 16px; align-items: stretch;">
-<div style="background: linear-gradient(135deg, #64748b 0%, #475569 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-<strong style="font-size: 16px;">EGRESS</strong>
-<span style="font-size: 12px; opacity: 0.9;">Response Processing</span>
-</div>
-<div style="flex: 1; background: #f8fafc; padding: 16px; border-radius: 12px; border-left: 4px solid #64748b;">
-<p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Egress Transform</strong> - Add CORS headers, strip internal headers, add timing headers. <strong>Log</strong> - Record request metrics, trace spans.</p>
-</div>
-</div>
-</div>
+    <div style="display: flex; gap: 16px; align-items: stretch;">
+      <div style="background: linear-gradient(135deg, #64748b 0%, #475569 100%); color: white; padding: 16px; border-radius: 12px; min-width: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <strong style="font-size: 16px;">EGRESS</strong>
+        <span style="font-size: 12px; opacity: 0.9;">Response Processing</span>
+      </div>
+      <div style="flex: 1; background: #f8fafc; padding: 16px; border-radius: 12px; border-left: 4px solid #64748b;">
+        <p style="margin: 0; color: #475569; font-size: 14px;"><strong style="color: #1e293b;">Egress Transform</strong> - Add CORS headers, strip internal headers, add timing headers. <strong>Log</strong> - Record request metrics, trace spans.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -1250,67 +1250,67 @@ class ServiceRegistry:
 ## Production Considerations
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #991b1b; margin-top: 0;">Critical Production Failures and Mitigations</h4>
-<div style="display: grid; gap: 16px;">
-<div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b; font-size: 16px;">Single Point of Failure</strong>
-<p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> Gateway crash takes down all services. <strong>Mitigation:</strong> Deploy multiple gateway instances behind L4 load balancer (HAProxy, NLB). Ensure gateway is stateless - no local session state. Use distributed cache for rate limit counters. Test with chaos engineering.</p>
-</div>
-<div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b; font-size: 16px;">Memory Exhaustion</strong>
-<p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> Large request/response bodies exhaust heap. <strong>Mitigation:</strong> Enforce body size limits, stream large payloads instead of buffering, set aggressive timeouts, implement back-pressure when memory high. Monitor heap usage with alerts.</p>
-</div>
-<div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b; font-size: 16px;">Connection Pool Exhaustion</strong>
-<p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> Slow backend consumes all outbound connections. <strong>Mitigation:</strong> Implement per-service connection limits with [[circuit-breaker]](/topic/design-patterns/circuit-breaker). Set aggressive connection timeouts. Monitor connection pool metrics. Use connection pooling with keep-alive.</p>
-</div>
-<div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
-<strong style="color: #991b1b; font-size: 16px;">Cascading Failures</strong>
-<p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> One failing service causes gateway to slow down, affecting all services. <strong>Mitigation:</strong> Bulkhead pattern - separate thread/connection pools per service. Circuit breakers fail fast. Implement request prioritization during overload. See [[fault-tolerance]](/topic/system-design/fault-tolerance).</p>
-</div>
-</div>
+  <h4 style="color: #991b1b; margin-top: 0;">Critical Production Failures and Mitigations</h4>
+  <div style="display: grid; gap: 16px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b; font-size: 16px;">Single Point of Failure</strong>
+      <p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> Gateway crash takes down all services. <strong>Mitigation:</strong> Deploy multiple gateway instances behind L4 load balancer (HAProxy, NLB). Ensure gateway is stateless - no local session state. Use distributed cache for rate limit counters. Test with chaos engineering.</p>
+    </div>
+    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b; font-size: 16px;">Memory Exhaustion</strong>
+      <p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> Large request/response bodies exhaust heap. <strong>Mitigation:</strong> Enforce body size limits, stream large payloads instead of buffering, set aggressive timeouts, implement back-pressure when memory high. Monitor heap usage with alerts.</p>
+    </div>
+    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b; font-size: 16px;">Connection Pool Exhaustion</strong>
+      <p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> Slow backend consumes all outbound connections. <strong>Mitigation:</strong> Implement per-service connection limits with [[circuit-breaker]](/topic/design-patterns/circuit-breaker). Set aggressive connection timeouts. Monitor connection pool metrics. Use connection pooling with keep-alive.</p>
+    </div>
+    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ef4444;">
+      <strong style="color: #991b1b; font-size: 16px;">Cascading Failures</strong>
+      <p style="color: #475569; margin: 8px 0 0 0;"><strong>Problem:</strong> One failing service causes gateway to slow down, affecting all services. <strong>Mitigation:</strong> Bulkhead pattern - separate thread/connection pools per service. Circuit breakers fail fast. Implement request prioritization during overload. See [[fault-tolerance]](/topic/system-design/fault-tolerance).</p>
+    </div>
+  </div>
 </div>
 
 ### Key Metrics to Monitor
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Gateway Observability Checklist</h4>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-<div>
-  <h5 style="color: #334155; margin-bottom: 12px;">RED Metrics (per-route)</h5>
-  <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
-  <li><strong>Rate:</strong> Requests per second</li>
-  <li><strong>Errors:</strong> 4xx and 5xx percentages</li>
-  <li><strong>Duration:</strong> P50, P95, P99 latency</li>
-</ul>
-</div>
-<div>
-  <h5 style="color: #334155; margin-bottom: 12px;">USE Metrics (gateway resources)</h5>
-  <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
-  <li><strong>Utilization:</strong> CPU, memory, connections</li>
-  <li><strong>Saturation:</strong> Queue depths, rejected connections</li>
-  <li><strong>Errors:</strong> Connection failures, timeouts</li>
-</ul>
-</div>
-<div>
-  <h5 style="color: #334155; margin-bottom: 12px;">Business Metrics</h5>
-  <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
-  <li>Rate limit rejections per client</li>
-  <li>Auth failures by type</li>
-  <li>Cache hit ratio</li>
-  <li>Circuit breaker state changes</li>
-</ul>
-</div>
-<div>
-  <h5 style="color: #334155; margin-bottom: 12px;">Distributed Tracing</h5>
-  <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
-  <li>Inject trace ID at gateway</li>
-  <li>Propagate via headers (W3C Trace Context)</li>
-  <li>Span for each middleware stage</li>
-  <li>Trace sampling configuration</li>
-</ul>
-</div>
-</div>
+  <h4 style="color: #1e293b; margin-top: 0;">Gateway Observability Checklist</h4>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+    <div>
+      <h5 style="color: #334155; margin-bottom: 12px;">RED Metrics (per-route)</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li><strong>Rate:</strong> Requests per second</li>
+        <li><strong>Errors:</strong> 4xx and 5xx percentages</li>
+        <li><strong>Duration:</strong> P50, P95, P99 latency</li>
+      </ul>
+    </div>
+    <div>
+      <h5 style="color: #334155; margin-bottom: 12px;">USE Metrics (gateway resources)</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li><strong>Utilization:</strong> CPU, memory, connections</li>
+        <li><strong>Saturation:</strong> Queue depths, rejected connections</li>
+        <li><strong>Errors:</strong> Connection failures, timeouts</li>
+      </ul>
+    </div>
+    <div>
+      <h5 style="color: #334155; margin-bottom: 12px;">Business Metrics</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li>Rate limit rejections per client</li>
+        <li>Auth failures by type</li>
+        <li>Cache hit ratio</li>
+        <li>Circuit breaker state changes</li>
+      </ul>
+    </div>
+    <div>
+      <h5 style="color: #334155; margin-bottom: 12px;">Distributed Tracing</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px;">
+        <li>Inject trace ID at gateway</li>
+        <li>Propagate via headers (W3C Trace Context)</li>
+        <li>Span for each middleware stage</li>
+        <li>Trace sampling configuration</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 ---
@@ -1318,39 +1318,39 @@ class ServiceRegistry:
 ## Real-World Failure Story: Netflix Zuul (2015)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
-<h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">The Incident</h4>
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">The Incident</h4>
 
-<p style="color: #475569; line-height: 1.7;">Netflix's Zuul gateway became a single point of failure when a memory leak caused 45 minutes of streaming outage affecting millions of users.</p>
+  <p style="color: #475569; line-height: 1.7;">Netflix's Zuul gateway became a single point of failure when a memory leak caused 45 minutes of streaming outage affecting millions of users.</p>
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-<div style="flex: 1; min-width: 250px;">
-<h5 style="color: #f97316; margin-bottom: 12px;">Timeline</h5>
-<ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
-<li>Logging middleware stored full request bodies in memory</li>
-<li>No size limits on buffered requests</li>
-<li>Heap memory grew over hours</li>
-<li>GC pauses caused request timeouts</li>
-<li>Health checks failed, instances killed</li>
-<li>New instances hit same issue immediately</li>
-</ol>
-</div>
-<div style="flex: 1; min-width: 250px;">
-<h5 style="color: #22c55e; margin-bottom: 12px;">Fixes Implemented</h5>
-<ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
-<li>Request body size limits enforced</li>
-<li>Streaming for large payloads</li>
-<li>Circuit breakers on gateway itself</li>
-<li>Memory-based autoscaling alerts</li>
-<li>Chaos engineering (Chaos Monkey)</li>
-<li>Load testing with production-size payloads</li>
-</ol>
-</div>
-</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+    <div style="flex: 1; min-width: 250px;">
+      <h5 style="color: #f97316; margin-bottom: 12px;">Timeline</h5>
+      <ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+        <li>Logging middleware stored full request bodies in memory</li>
+        <li>No size limits on buffered requests</li>
+        <li>Heap memory grew over hours</li>
+        <li>GC pauses caused request timeouts</li>
+        <li>Health checks failed, instances killed</li>
+        <li>New instances hit same issue immediately</li>
+      </ol>
+    </div>
+    <div style="flex: 1; min-width: 250px;">
+      <h5 style="color: #22c55e; margin-bottom: 12px;">Fixes Implemented</h5>
+      <ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+        <li>Request body size limits enforced</li>
+        <li>Streaming for large payloads</li>
+        <li>Circuit breakers on gateway itself</li>
+        <li>Memory-based autoscaling alerts</li>
+        <li>Chaos engineering (Chaos Monkey)</li>
+        <li>Load testing with production-size payloads</li>
+      </ol>
+    </div>
+  </div>
 
-<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 20px; border: 2px solid #ef4444;">
-<strong style="color: #dc2626;">Key Lesson:</strong>
-<span style="color: #7f1d1d;"> The gateway must be the most reliable component. If it goes down, everything goes down. Design for the gateway to gracefully degrade rather than fail completely.</span>
-</div>
+  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 20px; border: 2px solid #ef4444;">
+    <strong style="color: #dc2626;">Key Lesson:</strong>
+    <span style="color: #7f1d1d;"> The gateway must be the most reliable component. If it goes down, everything goes down. Design for the gateway to gracefully degrade rather than fail completely.</span>
+  </div>
 </div>
 
 ---

@@ -11,21 +11,21 @@ A parking lot system manages the lifecycle of vehicles entering, parking, and ex
 ## Why This Problem Matters
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Real-World Parking Systems</h4>
-<div style="display: grid; gap: 16px;">
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
-<div style="color: #1e293b; font-weight: 600;">Airport Parking (LAX, Heathrow)</div>
-<div style="color: #475569; font-size: 14px; margin-top: 8px;">Handles 30,000+ vehicles daily across multiple terminals, long-term/short-term lots, valet services, and EV charging stations. Must integrate with flight data for pricing and availability predictions.</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
-<div style="color: #1e293b; font-weight: 600;">Shopping Mall Parking (Westfield, Simon Properties)</div>
-<div style="color: #475569; font-size: 14px; margin-top: 8px;">Dynamic pricing based on store validation, reserved spots for premium customers, integration with loyalty programs. Peak handling during holidays requires sophisticated load balancing.</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
-<div style="color: #1e293b; font-weight: 600;">Smart City Parking (SF Park, Barcelona)</div>
-<div style="color: #475569; font-size: 14px; margin-top: 8px;">Real-time sensor data from thousands of spots, mobile app integration, surge pricing during events, and integration with traffic management systems.</div>
-</div>
-</div>
+  <h4 style="color: #1e293b; margin-top: 0;">Real-World Parking Systems</h4>
+  <div style="display: grid; gap: 16px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e293b; font-weight: 600;">Airport Parking (LAX, Heathrow)</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Handles 30,000+ vehicles daily across multiple terminals, long-term/short-term lots, valet services, and EV charging stations. Must integrate with flight data for pricing and availability predictions.</div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+      <div style="color: #1e293b; font-weight: 600;">Shopping Mall Parking (Westfield, Simon Properties)</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Dynamic pricing based on store validation, reserved spots for premium customers, integration with loyalty programs. Peak handling during holidays requires sophisticated load balancing.</div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #1e293b; font-weight: 600;">Smart City Parking (SF Park, Barcelona)</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Real-time sensor data from thousands of spots, mobile app integration, surge pricing during events, and integration with traffic management systems.</div>
+    </div>
+  </div>
 </div>
 
 **What Interviewers Evaluate:**
@@ -40,41 +40,41 @@ A parking lot system manages the lifecycle of vehicles entering, parking, and ex
 ## Core Requirements Analysis
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Requirement Breakdown</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Requirement Breakdown</h4>
 
-<div style="display: flex; flex-direction: column; gap: 16px;">
-<div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
-<div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Functional Requirements</div>
-<div style="color: #047857; font-size: 14px;">
-<div style="padding: 4px 0;">1. Park vehicles of different types (motorcycle, car, truck, bus)</div>
-<div style="padding: 4px 0;">2. Assign appropriate spots based on vehicle size</div>
-<div style="padding: 4px 0;">3. Generate tickets on entry with timestamp</div>
-<div style="padding: 4px 0;">4. Calculate fees based on duration and vehicle type</div>
-<div style="padding: 4px 0;">5. Track real-time availability per floor/spot type</div>
-<div style="padding: 4px 0;">6. Support multiple entry/exit points</div>
-</div>
-</div>
-<div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 16px;">
-<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Non-Functional Requirements</div>
-<div style="color: #3730a3; font-size: 14px;">
-<div style="padding: 4px 0;">1. Handle concurrent entry/exit at peak times</div>
-<div style="padding: 4px 0;">2. Sub-second spot allocation latency</div>
-<div style="padding: 4px 0;">3. Accurate billing even during system failures</div>
-<div style="padding: 4px 0;">4. Extensible to new vehicle types without code changes</div>
-<div style="padding: 4px 0;">5. Audit trail for all transactions</div>
-</div>
-</div>
-<div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px;">
-<div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Key Assumptions to Clarify</div>
-<div style="color: #78350f; font-size: 14px;">
-<div style="padding: 4px 0;">- Can a motorcycle use a car spot if no small spots available?</div>
-<div style="padding: 4px 0;">- Is pricing per hour, per minute, or tiered?</div>
-<div style="padding: 4px 0;">- Do trucks span multiple spots?</div>
-<div style="padding: 4px 0;">- Are reservations supported?</div>
-<div style="padding: 4px 0;">- What happens on payment failure at exit?</div>
-</div>
-</div>
-</div>
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
+      <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">Functional Requirements</div>
+      <div style="color: #047857; font-size: 14px;">
+        <div style="padding: 4px 0;">1. Park vehicles of different types (motorcycle, car, truck, bus)</div>
+        <div style="padding: 4px 0;">2. Assign appropriate spots based on vehicle size</div>
+        <div style="padding: 4px 0;">3. Generate tickets on entry with timestamp</div>
+        <div style="padding: 4px 0;">4. Calculate fees based on duration and vehicle type</div>
+        <div style="padding: 4px 0;">5. Track real-time availability per floor/spot type</div>
+        <div style="padding: 4px 0;">6. Support multiple entry/exit points</div>
+      </div>
+    </div>
+    <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Non-Functional Requirements</div>
+      <div style="color: #3730a3; font-size: 14px;">
+        <div style="padding: 4px 0;">1. Handle concurrent entry/exit at peak times</div>
+        <div style="padding: 4px 0;">2. Sub-second spot allocation latency</div>
+        <div style="padding: 4px 0;">3. Accurate billing even during system failures</div>
+        <div style="padding: 4px 0;">4. Extensible to new vehicle types without code changes</div>
+        <div style="padding: 4px 0;">5. Audit trail for all transactions</div>
+      </div>
+    </div>
+    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px;">
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Key Assumptions to Clarify</div>
+      <div style="color: #78350f; font-size: 14px;">
+        <div style="padding: 4px 0;">- Can a motorcycle use a car spot if no small spots available?</div>
+        <div style="padding: 4px 0;">- Is pricing per hour, per minute, or tiered?</div>
+        <div style="padding: 4px 0;">- Do trucks span multiple spots?</div>
+        <div style="padding: 4px 0;">- Are reservations supported?</div>
+        <div style="padding: 4px 0;">- What happens on payment failure at exit?</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -84,190 +84,190 @@ A parking lot system manages the lifecycle of vehicles entering, parking, and ex
 ### Class Hierarchy and Relationships
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">System Architecture</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">System Architecture</h4>
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
-<div style="background: #dbeafe; border-radius: 8px; padding: 16px; text-align: center;">
-<div style="color: #1e40af; font-weight: 700; font-size: 16px;">Core Entities</div>
-<div style="color: #3730a3; font-size: 13px; margin-top: 8px;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+    <div style="background: #dbeafe; border-radius: 8px; padding: 16px; text-align: center;">
+      <div style="color: #1e40af; font-weight: 700; font-size: 16px;">Core Entities</div>
+      <div style="color: #3730a3; font-size: 13px; margin-top: 8px;">
         ParkingLot<br/>
         ParkingFloor<br/>
         ParkingSpot<br/>
         Vehicle (abstract)<br/>
         Ticket
-</div>
-</div>
-<div style="background: #dcfce7; border-radius: 8px; padding: 16px; text-align: center;">
-<div style="color: #166534; font-weight: 700; font-size: 16px;">Strategies</div>
-<div style="color: #15803d; font-size: 13px; margin-top: 8px;">
+      </div>
+    </div>
+    <div style="background: #dcfce7; border-radius: 8px; padding: 16px; text-align: center;">
+      <div style="color: #166534; font-weight: 700; font-size: 16px;">Strategies</div>
+      <div style="color: #15803d; font-size: 13px; margin-top: 8px;">
         SpotAllocationStrategy<br/>
         PricingStrategy<br/>
         PaymentProcessor<br/>
         NotificationService
-</div>
-</div>
-<div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center;">
-<div style="color: #92400e; font-weight: 700; font-size: 16px;">Entry Points</div>
-<div style="color: #b45309; font-size: 13px; margin-top: 8px;">
+      </div>
+    </div>
+    <div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center;">
+      <div style="color: #92400e; font-weight: 700; font-size: 16px;">Entry Points</div>
+      <div style="color: #b45309; font-size: 13px; margin-top: 8px;">
         EntryGate<br/>
         ExitGate<br/>
         DisplayBoard<br/>
         AdminPanel
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Relationship Types</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
-<div style="color: #475569;">
-<strong>Composition:</strong> ParkingLot owns Floors (floors don't exist independently)
-</div>
-<div style="color: #475569;">
-<strong>Aggregation:</strong> Floor has Spots (spots could theoretically exist alone)
-</div>
-<div style="color: #475569;">
-<strong>Association:</strong> Ticket references Vehicle and Spot
-</div>
-<div style="color: #475569;">
-<strong>Inheritance:</strong> Car, Motorcycle, Truck extend Vehicle
-</div>
-</div>
-</div>
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+    <div style="color: #1e293b; font-weight: 600; margin-bottom: 12px;">Relationship Types</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
+      <div style="color: #475569;">
+        <strong>Composition:</strong> ParkingLot owns Floors (floors don't exist independently)
+      </div>
+      <div style="color: #475569;">
+        <strong>Aggregation:</strong> Floor has Spots (spots could theoretically exist alone)
+      </div>
+      <div style="color: #475569;">
+        <strong>Association:</strong> Ticket references Vehicle and Spot
+      </div>
+      <div style="color: #475569;">
+        <strong>Inheritance:</strong> Car, Motorcycle, Truck extend Vehicle
+      </div>
+    </div>
+  </div>
 </div>
 
 ### Design Decisions and Trade-offs
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Critical Design Choices</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Critical Design Choices</h4>
 
-<div style="display: flex; flex-direction: column; gap: 16px;">
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600;">Decision 1: Vehicle as Abstract Class vs Interface</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
-<div style="background: #dcfce7; padding: 12px; border-radius: 6px;">
-<div style="color: #166534; font-weight: 600; font-size: 13px;">Abstract Class (Chosen)</div>
-<div style="color: #15803d; font-size: 12px; margin-top: 4px;">
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600;">Decision 1: Vehicle as Abstract Class vs Interface</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+        <div style="background: #dcfce7; padding: 12px; border-radius: 6px;">
+          <div style="color: #166534; font-weight: 600; font-size: 13px;">Abstract Class (Chosen)</div>
+          <div style="color: #15803d; font-size: 12px; margin-top: 4px;">
             - Shared state (license plate, entry time)<br/>
             - Common behavior implementations<br/>
             - Single inheritance sufficient here
-</div>
-</div>
-<div style="background: #fee2e2; padding: 12px; border-radius: 6px;">
-<div style="color: #991b1b; font-weight: 600; font-size: 13px;">Interface</div>
-<div style="color: #7f1d1d; font-size: 12px; margin-top: 4px;">
+          </div>
+        </div>
+        <div style="background: #fee2e2; padding: 12px; border-radius: 6px;">
+          <div style="color: #991b1b; font-weight: 600; font-size: 13px;">Interface</div>
+          <div style="color: #7f1d1d; font-size: 12px; margin-top: 4px;">
             - More flexible for hybrid vehicles<br/>
             - No shared state management<br/>
             - Better for multiple inheritance needs
-</div>
-</div>
-</div>
-</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600;">Decision 2: Spot Tracks Vehicle vs Vehicle Tracks Spot</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
-<div style="background: #dcfce7; padding: 12px; border-radius: 6px;">
-<div style="color: #166534; font-weight: 600; font-size: 13px;">Spot has Vehicle reference (Chosen)</div>
-<div style="color: #15803d; font-size: 12px; margin-top: 4px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600;">Decision 2: Spot Tracks Vehicle vs Vehicle Tracks Spot</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+        <div style="background: #dcfce7; padding: 12px; border-radius: 6px;">
+          <div style="color: #166534; font-weight: 600; font-size: 13px;">Spot has Vehicle reference (Chosen)</div>
+          <div style="color: #15803d; font-size: 12px; margin-top: 4px;">
             - Natural: "spot is occupied by vehicle"<br/>
             - Easy availability queries<br/>
             - Clear ownership semantics
-</div>
-</div>
-<div style="background: #fef3c7; padding: 12px; border-radius: 6px;">
-<div style="color: #92400e; font-weight: 600; font-size: 13px;">Both directions (Alternative)</div>
-<div style="color: #b45309; font-size: 12px; margin-top: 4px;">
+          </div>
+        </div>
+        <div style="background: #fef3c7; padding: 12px; border-radius: 6px;">
+          <div style="color: #92400e; font-weight: 600; font-size: 13px;">Both directions (Alternative)</div>
+          <div style="color: #b45309; font-size: 12px; margin-top: 4px;">
             - Bidirectional navigation<br/>
             - Risk of inconsistent state<br/>
             - Use Ticket as single source of truth
-</div>
-</div>
-</div>
-</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600;">Decision 3: Singleton ParkingLot vs Dependency Injection</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
-<div style="background: #fee2e2; padding: 12px; border-radius: 6px;">
-<div style="color: #991b1b; font-weight: 600; font-size: 13px;">Singleton</div>
-<div style="color: #7f1d1d; font-size: 12px; margin-top: 4px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600;">Decision 3: Singleton ParkingLot vs Dependency Injection</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+        <div style="background: #fee2e2; padding: 12px; border-radius: 6px;">
+          <div style="color: #991b1b; font-weight: 600; font-size: 13px;">Singleton</div>
+          <div style="color: #7f1d1d; font-size: 12px; margin-top: 4px;">
             - Global access point<br/>
             - Hard to test and mock<br/>
             - Tight coupling
-</div>
-</div>
-<div style="background: #dcfce7; padding: 12px; border-radius: 6px;">
-<div style="color: #166534; font-weight: 600; font-size: 13px;">Dependency Injection (Chosen)</div>
-<div style="color: #15803d; font-size: 12px; margin-top: 4px;">
+          </div>
+        </div>
+        <div style="background: #dcfce7; padding: 12px; border-radius: 6px;">
+          <div style="color: #166534; font-weight: 600; font-size: 13px;">Dependency Injection (Chosen)</div>
+          <div style="color: #15803d; font-size: 12px; margin-top: 4px;">
             - Testable with mock lots<br/>
             - Multiple lot support<br/>
             - Loose coupling
-</div>
-</div>
-</div>
-</div>
-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### Interview Questions: OOP Design (3-Level Deep)
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-**L1: Why use inheritance for Vehicle types instead of a single class with a type field?**
+  **L1: Why use inheritance for Vehicle types instead of a single class with a type field?**
 
-**Answer:** Inheritance enables:
-- **Type-specific behavior**: Electric vehicles need charging status, motorcycles may have helmet storage
-- **Compile-time type safety**: Can't accidentally pass a Car to motorcycle-only methods
-- **Open/Closed Principle**: Add new vehicle types without modifying existing code
-- **Polymorphism**: Uniform `getRequiredSpotSize()` interface with type-specific implementations
+  **Answer:** Inheritance enables:
+  - **Type-specific behavior**: Electric vehicles need charging status, motorcycles may have helmet storage
+  - **Compile-time type safety**: Can't accidentally pass a Car to motorcycle-only methods
+  - **Open/Closed Principle**: Add new vehicle types without modifying existing code
+  - **Polymorphism**: Uniform `getRequiredSpotSize()` interface with type-specific implementations
 
-**L2: Follow-up: When would you choose composition over inheritance for vehicles?**
+  **L2: Follow-up: When would you choose composition over inheritance for vehicles?**
 
-**Answer:** Use composition when:
-- **Vehicle capabilities vary independently**: A car can be electric OR gasoline, compact OR SUV (multiple orthogonal dimensions)
-- **Runtime flexibility needed**: Vehicle upgrades trailer attachment mid-parking
-- **Avoiding diamond problem**: Electric SUV inherits from both ElectricVehicle and SUV
+  **Answer:** Use composition when:
+  - **Vehicle capabilities vary independently**: A car can be electric OR gasoline, compact OR SUV (multiple orthogonal dimensions)
+  - **Runtime flexibility needed**: Vehicle upgrades trailer attachment mid-parking
+  - **Avoiding diamond problem**: Electric SUV inherits from both ElectricVehicle and SUV
 
-```python
-# Composition approach
-class Vehicle:
-    def __init__(self, engine: Engine, size: SizeCategory, features: List[Feature]):
-        self.engine = engine  # Gasoline, Electric, Hybrid
-        self.size = size      # Compact, Standard, Large
-        self.features = features  # [Trailer, RoofRack, ...]
-```
+  ```python
+  # Composition approach
+  class Vehicle:
+  def __init__(self, engine: Engine, size: SizeCategory, features: List[Feature]):
+  self.engine = engine  # Gasoline, Electric, Hybrid
+  self.size = size      # Compact, Standard, Large
+  self.features = features  # [Trailer, RoofRack, ...]
+  ```
 
-**L3: Follow-up: How would you handle a vehicle that requires multiple spots (bus spanning 5 spots)?**
+  **L3: Follow-up: How would you handle a vehicle that requires multiple spots (bus spanning 5 spots)?**
 
-**Answer:** Two approaches:
+  **Answer:** Two approaches:
 
-1. **Composite Spot Pattern**: Create a `MultiSpot` that groups adjacent spots
-```python
-class MultiSpot(ParkingSpot):
-    def __init__(self, spots: List[ParkingSpot]):
-        self.constituent_spots = spots
+  1. **Composite Spot Pattern**: Create a `MultiSpot` that groups adjacent spots
+  ```python
+  class MultiSpot(ParkingSpot):
+  def __init__(self, spots: List[ParkingSpot]):
+  self.constituent_spots = spots
 
-    def reserve(self):
-        # Atomically reserve all spots or none
-        with transaction:
-            for spot in self.constituent_spots:
-                if not spot.is_available():
-                    raise SpotUnavailableError()
-            for spot in self.constituent_spots:
-                spot.mark_reserved()
-```
+  def reserve(self):
+  # Atomically reserve all spots or none
+  with transaction:
+  for spot in self.constituent_spots:
+  if not spot.is_available():
+  raise SpotUnavailableError()
+  for spot in self.constituent_spots:
+  spot.mark_reserved()
+  ```
 
-2. **Spot Allocation Strategy**: Bus allocation strategy finds N contiguous spots
-```python
-class BusAllocationStrategy(SpotAllocationStrategy):
-    def allocate(self, vehicle: Bus, floor: Floor) -> List[ParkingSpot]:
-        required = vehicle.spots_needed  # e.g., 5
-        contiguous = self.find_contiguous_large_spots(floor, required)
-        return contiguous if len(contiguous) == required else None
-```
+  2. **Spot Allocation Strategy**: Bus allocation strategy finds N contiguous spots
+  ```python
+  class BusAllocationStrategy(SpotAllocationStrategy):
+  def allocate(self, vehicle: Bus, floor: Floor) -> List[ParkingSpot]:
+  required = vehicle.spots_needed  # e.g., 5
+  contiguous = self.find_contiguous_large_spots(floor, required)
+  return contiguous if len(contiguous) == required else None
+  ```
 
-**Trade-off**: Composite is cleaner OOP but requires adjacent spot management. Strategy is more flexible but spreads bus logic across classes.
+  **Trade-off**: Composite is cleaner OOP but requires adjacent spot management. Strategy is more flexible but spreads bus logic across classes.
 
 </div>
 
@@ -278,152 +278,152 @@ class BusAllocationStrategy(SpotAllocationStrategy):
 ### Type Hierarchy
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Vehicle Type System</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Vehicle Type System</h4>
 
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
-<div style="background: #dbeafe; border-radius: 8px; padding: 12px; text-align: center;">
-<div style="color: #1e40af; font-weight: 700;">Motorcycle</div>
-<div style="color: #3730a3; font-size: 12px; margin-top: 4px;">
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+    <div style="background: #dbeafe; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #1e40af; font-weight: 700;">Motorcycle</div>
+      <div style="color: #3730a3; font-size: 12px; margin-top: 4px;">
         Size: Small<br/>
         Can use: S, M, L spots<br/>
         Rate: $1/hr
-</div>
-</div>
-<div style="background: #dcfce7; border-radius: 8px; padding: 12px; text-align: center;">
-<div style="color: #166534; font-weight: 700;">Car</div>
-<div style="color: #15803d; font-size: 12px; margin-top: 4px;">
+      </div>
+    </div>
+    <div style="background: #dcfce7; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #166534; font-weight: 700;">Car</div>
+      <div style="color: #15803d; font-size: 12px; margin-top: 4px;">
         Size: Medium<br/>
         Can use: M, L spots<br/>
         Rate: $2/hr
-</div>
-</div>
-<div style="background: #fef3c7; border-radius: 8px; padding: 12px; text-align: center;">
-<div style="color: #92400e; font-weight: 700;">Truck</div>
-<div style="color: #b45309; font-size: 12px; margin-top: 4px;">
+      </div>
+    </div>
+    <div style="background: #fef3c7; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #92400e; font-weight: 700;">Truck</div>
+      <div style="color: #b45309; font-size: 12px; margin-top: 4px;">
         Size: Large<br/>
         Can use: L spots only<br/>
         Rate: $4/hr
-</div>
-</div>
-<div style="background: #fce7f3; border-radius: 8px; padding: 12px; text-align: center;">
-<div style="color: #9d174d; font-weight: 700;">Bus</div>
-<div style="color: #be185d; font-size: 12px; margin-top: 4px;">
+      </div>
+    </div>
+    <div style="background: #fce7f3; border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="color: #9d174d; font-weight: 700;">Bus</div>
+      <div style="color: #be185d; font-size: 12px; margin-top: 4px;">
         Size: X-Large (5 spots)<br/>
         Can use: 5 contiguous L<br/>
         Rate: $15/hr
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 
-<div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
-<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Edge Case: Flexible Spot Assignment</div>
-<div style="color: #7f1d1d; font-size: 14px;">
-<strong>Question:</strong> Should a motorcycle be allowed to take a car spot if all motorcycle spots are full?<br/><br/>
-<strong>Trade-off:</strong>
-<ul style="margin: 8px 0;">
-<li><strong>Allow (Revenue-optimized):</strong> Maximize lot utilization, never turn away customers</li>
-<li><strong>Disallow (Efficiency-optimized):</strong> Reserve larger spots for larger vehicles that need them</li>
-<li><strong>Configurable:</strong> Allow during off-peak, restrict during peak hours</li>
-</ul>
-</div>
-</div>
+  <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
+    <div style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">Edge Case: Flexible Spot Assignment</div>
+    <div style="color: #7f1d1d; font-size: 14px;">
+      <strong>Question:</strong> Should a motorcycle be allowed to take a car spot if all motorcycle spots are full?<br/><br/>
+      <strong>Trade-off:</strong>
+      <ul style="margin: 8px 0;">
+        <li><strong>Allow (Revenue-optimized):</strong> Maximize lot utilization, never turn away customers</li>
+        <li><strong>Disallow (Efficiency-optimized):</strong> Reserve larger spots for larger vehicles that need them</li>
+        <li><strong>Configurable:</strong> Allow during off-peak, restrict during peak hours</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 ### Interview Questions: Vehicle Types (3-Level Deep)
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-**L1: How do you determine which spot sizes a vehicle can use?**
+  **L1: How do you determine which spot sizes a vehicle can use?**
 
-**Answer:** Use the [[Strategy Pattern]](/topic/design-patterns/strategy) with a compatibility matrix:
+  **Answer:** Use the [[Strategy Pattern]](/topic/design-patterns/strategy) with a compatibility matrix:
 
-```python
-class SpotCompatibility:
-    # Vehicle type -> list of compatible spot sizes (in preference order)
-    COMPATIBILITY = {
-        VehicleType.MOTORCYCLE: [SpotSize.SMALL, SpotSize.MEDIUM, SpotSize.LARGE],
-        VehicleType.CAR: [SpotSize.MEDIUM, SpotSize.LARGE],
-        VehicleType.TRUCK: [SpotSize.LARGE],
-        VehicleType.BUS: [SpotSize.XLARGE],  # Virtual size for multi-spot
-    }
+  ```python
+  class SpotCompatibility:
+  # Vehicle type -> list of compatible spot sizes (in preference order)
+  COMPATIBILITY = {
+  VehicleType.MOTORCYCLE: [SpotSize.SMALL, SpotSize.MEDIUM, SpotSize.LARGE],
+  VehicleType.CAR: [SpotSize.MEDIUM, SpotSize.LARGE],
+  VehicleType.TRUCK: [SpotSize.LARGE],
+  VehicleType.BUS: [SpotSize.XLARGE],  # Virtual size for multi-spot
+  }
 
-    @classmethod
-    def can_fit(cls, vehicle_type: VehicleType, spot_size: SpotSize) -> bool:
-        return spot_size in cls.COMPATIBILITY.get(vehicle_type, [])
+  @classmethod
+  def can_fit(cls, vehicle_type: VehicleType, spot_size: SpotSize) -> bool:
+  return spot_size in cls.COMPATIBILITY.get(vehicle_type, [])
 
-    @classmethod
-    def preferred_size(cls, vehicle_type: VehicleType) -> SpotSize:
-        return cls.COMPATIBILITY[vehicle_type][0]
-```
+  @classmethod
+  def preferred_size(cls, vehicle_type: VehicleType) -> SpotSize:
+  return cls.COMPATIBILITY[vehicle_type][0]
+  ```
 
-**L2: Follow-up: How would you add electric vehicle support with charging spots?**
+  **L2: Follow-up: How would you add electric vehicle support with charging spots?**
 
-**Answer:** Electric vehicles introduce a new dimension orthogonal to size:
+  **Answer:** Electric vehicles introduce a new dimension orthogonal to size:
 
-```python
-class VehicleCapability(Enum):
-    STANDARD = "standard"
-    ELECTRIC = "electric"
-    HANDICAP = "handicap"
+  ```python
+  class VehicleCapability(Enum):
+  STANDARD = "standard"
+  ELECTRIC = "electric"
+  HANDICAP = "handicap"
 
-class ParkingSpot:
-    def __init__(self, size: SpotSize, capabilities: Set[VehicleCapability]):
-        self.size = size
-        self.capabilities = capabilities  # {ELECTRIC} for charging spots
+  class ParkingSpot:
+  def __init__(self, size: SpotSize, capabilities: Set[VehicleCapability]):
+  self.size = size
+  self.capabilities = capabilities  # {ELECTRIC} for charging spots
 
-    def can_accommodate(self, vehicle: Vehicle) -> bool:
-        # Size must fit AND capabilities must match
-        size_ok = SpotCompatibility.can_fit(vehicle.type, self.size)
+  def can_accommodate(self, vehicle: Vehicle) -> bool:
+  # Size must fit AND capabilities must match
+  size_ok = SpotCompatibility.can_fit(vehicle.type, self.size)
 
-        # Electric vehicles REQUIRE charging spots (or regular if configured)
-        if vehicle.needs_charging:
-            return size_ok and VehicleCapability.ELECTRIC in self.capabilities
+  # Electric vehicles REQUIRE charging spots (or regular if configured)
+  if vehicle.needs_charging:
+  return size_ok and VehicleCapability.ELECTRIC in self.capabilities
 
-        # Non-electric vehicles can use any spot (don't waste charging spots)
-        return size_ok
-```
+  # Non-electric vehicles can use any spot (don't waste charging spots)
+  return size_ok
+  ```
 
-**Design Decision:** Should non-electric vehicles use charging spots?
-- **Never:** Preserves charging spots for EVs (risk: wasted capacity)
-- **Only when lot > 80% full:** Balance utilization and EV accommodation
-- **With higher rate:** Economic incentive to leave charging spots
+  **Design Decision:** Should non-electric vehicles use charging spots?
+  - **Never:** Preserves charging spots for EVs (risk: wasted capacity)
+  - **Only when lot > 80% full:** Balance utilization and EV accommodation
+  - **With higher rate:** Economic incentive to leave charging spots
 
-**L3: Follow-up: How do you handle a vehicle that arrives as "standard" but the owner later requests charging?**
+  **L3: Follow-up: How do you handle a vehicle that arrives as "standard" but the owner later requests charging?**
 
-**Answer:** This requires spot migration during an active parking session:
+  **Answer:** This requires spot migration during an active parking session:
 
-```python
-class ParkingLot:
-    def request_charging(self, ticket_id: str) -> MigrationResult:
-        ticket = self.active_tickets[ticket_id]
-        current_spot = ticket.spot
+  ```python
+  class ParkingLot:
+  def request_charging(self, ticket_id: str) -> MigrationResult:
+  ticket = self.active_tickets[ticket_id]
+  current_spot = ticket.spot
 
-        if VehicleCapability.ELECTRIC in current_spot.capabilities:
-            return MigrationResult.ALREADY_CHARGING
+  if VehicleCapability.ELECTRIC in current_spot.capabilities:
+  return MigrationResult.ALREADY_CHARGING
 
-        # Find available charging spot of same or larger size
-        new_spot = self.find_charging_spot(ticket.vehicle)
+  # Find available charging spot of same or larger size
+  new_spot = self.find_charging_spot(ticket.vehicle)
 
-        if not new_spot:
-            # Add to charging waitlist
-            self.charging_waitlist.add(ticket_id, priority=ticket.entry_time)
-            return MigrationResult.WAITLISTED
+  if not new_spot:
+  # Add to charging waitlist
+  self.charging_waitlist.add(ticket_id, priority=ticket.entry_time)
+  return MigrationResult.WAITLISTED
 
-        # Atomic migration
-        with self.lock:
-            current_spot.release()
-            new_spot.occupy(ticket.vehicle)
-            ticket.spot = new_spot
-            ticket.add_event(TicketEvent.SPOT_MIGRATION, new_spot.id)
+  # Atomic migration
+  with self.lock:
+  current_spot.release()
+  new_spot.occupy(ticket.vehicle)
+  ticket.spot = new_spot
+  ticket.add_event(TicketEvent.SPOT_MIGRATION, new_spot.id)
 
-        return MigrationResult.SUCCESS
-```
+  return MigrationResult.SUCCESS
+  ```
 
-**Challenges:**
-- Concurrent migration requests
-- Preserving billing continuity (pro-rate charging from migration time)
-- Notifying customer of new spot location
-- Handling migration failures gracefully
+  **Challenges:**
+  - Concurrent migration requests
+  - Preserving billing continuity (pro-rate charging from migration time)
+  - Notifying customer of new spot location
+  - Handling migration failures gracefully
 
 </div>
 
@@ -434,54 +434,54 @@ class ParkingLot:
 ### Strategy Pattern Implementation
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Allocation Algorithms Comparison</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Allocation Algorithms Comparison</h4>
 
-<div style="overflow-x: auto;">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-<tr style="background: #f1f5f9;">
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Strategy</th>
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Time Complexity</th>
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Pros</th>
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Cons</th>
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Best For</th>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b; font-weight: 600;">First Available</td>
-<td style="padding: 12px; color: #475569;">O(n)</td>
-<td style="padding: 12px; color: #10b981;">Simple, fast</td>
-<td style="padding: 12px; color: #ef4444;">Poor distribution</td>
-<td style="padding: 12px; color: #475569;">Small lots</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b; font-weight: 600;">Nearest to Entrance</td>
-<td style="padding: 12px; color: #475569;">O(n log n)</td>
-<td style="padding: 12px; color: #10b981;">Customer satisfaction</td>
-<td style="padding: 12px; color: #ef4444;">Uneven wear</td>
-<td style="padding: 12px; color: #475569;">Shopping malls</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b; font-weight: 600;">Nearest to Exit</td>
-<td style="padding: 12px; color: #475569;">O(n log n)</td>
-<td style="padding: 12px; color: #10b981;">Faster egress</td>
-<td style="padding: 12px; color: #ef4444;">Longer walk in</td>
-<td style="padding: 12px; color: #475569;">Event venues</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b; font-weight: 600;">Load Balanced (Round Robin)</td>
-<td style="padding: 12px; color: #475569;">O(floors)</td>
-<td style="padding: 12px; color: #10b981;">Even distribution</td>
-<td style="padding: 12px; color: #ef4444;">Not optimal for customer</td>
-<td style="padding: 12px; color: #475569;">Multi-floor garages</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b; font-weight: 600;">Priority Queue (Heap)</td>
-<td style="padding: 12px; color: #475569;">O(log n)</td>
-<td style="padding: 12px; color: #10b981;">Fast, customizable</td>
-<td style="padding: 12px; color: #ef4444;">Memory overhead</td>
-<td style="padding: 12px; color: #475569;">High-traffic lots</td>
-</tr>
-</table>
-</div>
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Strategy</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Time Complexity</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Pros</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Cons</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Best For</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">First Available</td>
+        <td style="padding: 12px; color: #475569;">O(n)</td>
+        <td style="padding: 12px; color: #10b981;">Simple, fast</td>
+        <td style="padding: 12px; color: #ef4444;">Poor distribution</td>
+        <td style="padding: 12px; color: #475569;">Small lots</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Nearest to Entrance</td>
+        <td style="padding: 12px; color: #475569;">O(n log n)</td>
+        <td style="padding: 12px; color: #10b981;">Customer satisfaction</td>
+        <td style="padding: 12px; color: #ef4444;">Uneven wear</td>
+        <td style="padding: 12px; color: #475569;">Shopping malls</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Nearest to Exit</td>
+        <td style="padding: 12px; color: #475569;">O(n log n)</td>
+        <td style="padding: 12px; color: #10b981;">Faster egress</td>
+        <td style="padding: 12px; color: #ef4444;">Longer walk in</td>
+        <td style="padding: 12px; color: #475569;">Event venues</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Load Balanced (Round Robin)</td>
+        <td style="padding: 12px; color: #475569;">O(floors)</td>
+        <td style="padding: 12px; color: #10b981;">Even distribution</td>
+        <td style="padding: 12px; color: #ef4444;">Not optimal for customer</td>
+        <td style="padding: 12px; color: #475569;">Multi-floor garages</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Priority Queue (Heap)</td>
+        <td style="padding: 12px; color: #475569;">O(log n)</td>
+        <td style="padding: 12px; color: #10b981;">Fast, customizable</td>
+        <td style="padding: 12px; color: #ef4444;">Memory overhead</td>
+        <td style="padding: 12px; color: #475569;">High-traffic lots</td>
+      </tr>
+    </table>
+  </div>
 </div>
 
 ### Implementation with Strategy Pattern
@@ -651,143 +651,143 @@ class LoadBalancedStrategy(SpotAllocationStrategy):
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-**L1: Why use the Strategy pattern for spot allocation instead of a simple switch statement?**
+  **L1: Why use the Strategy pattern for spot allocation instead of a simple switch statement?**
 
-**Answer:** Strategy pattern provides:
+  **Answer:** Strategy pattern provides:
 
-1. **Open/Closed Principle**: Add new strategies without modifying existing code
-2. **Runtime flexibility**: Change allocation strategy based on time of day, occupancy level
-3. **Testing**: Each strategy can be unit tested independently
-4. **Single Responsibility**: Allocation logic separated from ParkingLot class
+  1. **Open/Closed Principle**: Add new strategies without modifying existing code
+  2. **Runtime flexibility**: Change allocation strategy based on time of day, occupancy level
+  3. **Testing**: Each strategy can be unit tested independently
+  4. **Single Responsibility**: Allocation logic separated from ParkingLot class
 
-```python
-# Without Strategy (problematic)
-class ParkingLot:
-    def find_spot(self, vehicle, strategy_type):
-        if strategy_type == "first":
-            # 20 lines of first-available logic
-        elif strategy_type == "nearest":
-            # 30 lines of nearest logic
-        elif strategy_type == "balanced":
-            # 25 lines of balancing logic
-        # Every new strategy requires modifying this class
+  ```python
+  # Without Strategy (problematic)
+  class ParkingLot:
+  def find_spot(self, vehicle, strategy_type):
+  if strategy_type == "first":
+  # 20 lines of first-available logic
+  elif strategy_type == "nearest":
+  # 30 lines of nearest logic
+  elif strategy_type == "balanced":
+  # 25 lines of balancing logic
+  # Every new strategy requires modifying this class
 
-# With Strategy (preferred)
-class ParkingLot:
-    def __init__(self, allocation_strategy: SpotAllocationStrategy):
-        self.strategy = allocation_strategy
+  # With Strategy (preferred)
+  class ParkingLot:
+  def __init__(self, allocation_strategy: SpotAllocationStrategy):
+  self.strategy = allocation_strategy
 
-    def find_spot(self, vehicle):
-        return self.strategy.find_spot(vehicle, self.floors)
-```
+  def find_spot(self, vehicle):
+  return self.strategy.find_spot(vehicle, self.floors)
+  ```
 
-**L2: Follow-up: How would you implement dynamic strategy switching based on lot occupancy?**
+  **L2: Follow-up: How would you implement dynamic strategy switching based on lot occupancy?**
 
-**Answer:** Use a [[Decorator]](/topic/design-patterns/decorator) or [[Chain of Responsibility]](/topic/design-patterns/chain-of-responsibility):
+  **Answer:** Use a [[Decorator]](/topic/design-patterns/decorator) or [[Chain of Responsibility]](/topic/design-patterns/chain-of-responsibility):
 
-```python
-class AdaptiveAllocationStrategy(SpotAllocationStrategy):
-    """
-    Switches strategy based on current lot conditions.
+  ```python
+  class AdaptiveAllocationStrategy(SpotAllocationStrategy):
+  """
+  Switches strategy based on current lot conditions.
 
-    - Low occupancy (<50%): Nearest to entrance (customer convenience)
-    - Medium occupancy (50-85%): Optimal fit (maximize capacity)
-    - High occupancy (>85%): Any available (speed over optimization)
-    """
+  - Low occupancy (<50%): Nearest to entrance (customer convenience)
+  - Medium occupancy (50-85%): Optimal fit (maximize capacity)
+  - High occupancy (>85%): Any available (speed over optimization)
+  """
 
-    def __init__(self, parking_lot: 'ParkingLot'):
-        self.lot = parking_lot
-        self.strategies = {
-            'low': NearestToEntranceStrategy(parking_lot.main_entrance),
-            'medium': OptimalFitStrategy(),
-            'high': FirstAvailableStrategy()
-        }
+  def __init__(self, parking_lot: 'ParkingLot'):
+  self.lot = parking_lot
+  self.strategies = {
+  'low': NearestToEntranceStrategy(parking_lot.main_entrance),
+  'medium': OptimalFitStrategy(),
+  'high': FirstAvailableStrategy()
+  }
 
-    def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -> Optional['ParkingSpot']:
-        occupancy = self.lot.get_occupancy_rate()
+  def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -> Optional['ParkingSpot']:
+  occupancy = self.lot.get_occupancy_rate()
 
-        if occupancy < 0.5:
-            strategy = self.strategies['low']
-        elif occupancy < 0.85:
-            strategy = self.strategies['medium']
-        else:
-            strategy = self.strategies['high']
+  if occupancy < 0.5:
+  strategy = self.strategies['low']
+  elif occupancy < 0.85:
+  strategy = self.strategies['medium']
+  else:
+  strategy = self.strategies['high']
 
-        return strategy.find_spot(vehicle, floors)
-```
+  return strategy.find_spot(vehicle, floors)
+  ```
 
-**L3: Follow-up: Two vehicles arrive simultaneously for the last spot. How do you prevent race conditions?**
+  **L3: Follow-up: Two vehicles arrive simultaneously for the last spot. How do you prevent race conditions?**
 
-**Answer:** This is a classic [[Concurrency]](/topic/system-design/concurrency-patterns) problem. Solutions:
+  **Answer:** This is a classic [[Concurrency]](/topic/system-design/concurrency-patterns) problem. Solutions:
 
-**Option 1: Optimistic Locking with Atomic Compare-And-Swap**
-```python
-class ParkingSpot:
-    def __init__(self):
-        self._vehicle = None
-        self._version = 0
+  **Option 1: Optimistic Locking with Atomic Compare-And-Swap**
+  ```python
+  class ParkingSpot:
+  def __init__(self):
+  self._vehicle = None
+  self._version = 0
 
-    def try_park(self, vehicle: Vehicle, expected_version: int) -> bool:
-        """
-        Atomically park if spot is still in expected state.
-        Returns False if spot changed since we checked availability.
-        """
-        with self._lock:
-            if self._version != expected_version or self._vehicle is not None:
-                return False
-            self._vehicle = vehicle
-            self._version += 1
-            return True
+  def try_park(self, vehicle: Vehicle, expected_version: int) -> bool:
+  """
+  Atomically park if spot is still in expected state.
+  Returns False if spot changed since we checked availability.
+  """
+  with self._lock:
+  if self._version != expected_version or self._vehicle is not None:
+  return False
+  self._vehicle = vehicle
+  self._version += 1
+  return True
 
-class ParkingLot:
-    def park_vehicle(self, vehicle: Vehicle) -> Optional[Ticket]:
-        max_retries = 3
-        for attempt in range(max_retries):
-            spot, version = self.strategy.find_spot_with_version(vehicle, self.floors)
-            if spot is None:
-                return None  # No spots available
+  class ParkingLot:
+  def park_vehicle(self, vehicle: Vehicle) -> Optional[Ticket]:
+  max_retries = 3
+  for attempt in range(max_retries):
+  spot, version = self.strategy.find_spot_with_version(vehicle, self.floors)
+  if spot is None:
+  return None  # No spots available
 
-            if spot.try_park(vehicle, version):
-                return self._create_ticket(vehicle, spot)
+  if spot.try_park(vehicle, version):
+  return self._create_ticket(vehicle, spot)
 
-            # Spot was taken, retry with fresh search
-            continue
+  # Spot was taken, retry with fresh search
+  continue
 
-        return None  # Failed after retries
-```
+  return None  # Failed after retries
+  ```
 
-**Option 2: Pessimistic Locking with Reservation**
-```python
-class ParkingSpot:
-    def __init__(self):
-        self._vehicle = None
-        self._reserved_until = None
-        self._lock = threading.Lock()
+  **Option 2: Pessimistic Locking with Reservation**
+  ```python
+  class ParkingSpot:
+  def __init__(self):
+  self._vehicle = None
+  self._reserved_until = None
+  self._lock = threading.Lock()
 
-    def reserve(self, duration_seconds: float = 30) -> bool:
-        """Reserve spot temporarily while processing entry."""
-        with self._lock:
-            now = time.time()
-            if self._vehicle is not None:
-                return False
-            if self._reserved_until and self._reserved_until > now:
-                return False
-            self._reserved_until = now + duration_seconds
-            return True
+  def reserve(self, duration_seconds: float = 30) -> bool:
+  """Reserve spot temporarily while processing entry."""
+  with self._lock:
+  now = time.time()
+  if self._vehicle is not None:
+  return False
+  if self._reserved_until and self._reserved_until > now:
+  return False
+  self._reserved_until = now + duration_seconds
+  return True
 
-    def confirm_reservation(self, vehicle: Vehicle) -> bool:
-        """Convert reservation to actual parking."""
-        with self._lock:
-            if self._reserved_until is None:
-                return False
-            self._vehicle = vehicle
-            self._reserved_until = None
-            return True
-```
+  def confirm_reservation(self, vehicle: Vehicle) -> bool:
+  """Convert reservation to actual parking."""
+  with self._lock:
+  if self._reserved_until is None:
+  return False
+  self._vehicle = vehicle
+  self._reserved_until = None
+  return True
+  ```
 
-**Trade-offs:**
-- Optimistic: Better throughput when contention is low, retries under high contention
-- Pessimistic: Guaranteed spot after reservation, but holds resources during payment processing
+  **Trade-offs:**
+  - Optimistic: Better throughput when contention is low, retries under high contention
+  - Pessimistic: Guaranteed spot after reservation, but holds resources during payment processing
 
 </div>
 
@@ -798,42 +798,42 @@ class ParkingSpot:
 ### Pricing Models
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Common Pricing Strategies</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Common Pricing Strategies</h4>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Flat Hourly Rate</div>
-<div style="color: #475569; font-size: 14px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Flat Hourly Rate</div>
+      <div style="color: #475569; font-size: 14px;">
         Simple: $2/hour for cars<br/>
         Pros: Easy to understand<br/>
         Cons: No incentive for short stays
-</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Tiered Pricing</div>
-<div style="color: #475569; font-size: 14px;">
+      </div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Tiered Pricing</div>
+      <div style="color: #475569; font-size: 14px;">
         First hour: $5, additional: $2/hr<br/>
         Pros: Revenue from short stays<br/>
         Cons: Complex calculation
-</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Daily Maximum</div>
-<div style="color: #475569; font-size: 14px;">
+      </div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Daily Maximum</div>
+      <div style="color: #475569; font-size: 14px;">
         $2/hr, max $20/day<br/>
         Pros: Predictable for all-day parkers<br/>
         Cons: Revenue cap
-</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Dynamic/Surge Pricing</div>
-<div style="color: #475569; font-size: 14px;">
+      </div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Dynamic/Surge Pricing</div>
+      <div style="color: #475569; font-size: 14px;">
         Price varies with occupancy<br/>
         Pros: Maximizes revenue<br/>
         Cons: Customer frustration
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### Payment Processor Implementation
@@ -1089,193 +1089,193 @@ class PaymentProcessor:
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-**L1: Why use Decimal instead of float for monetary calculations?**
+  **L1: Why use Decimal instead of float for monetary calculations?**
 
-**Answer:** Floating-point arithmetic introduces precision errors that compound over time:
+  **Answer:** Floating-point arithmetic introduces precision errors that compound over time:
 
-```python
-# Float problem
->>> 0.1 + 0.2
-0.30000000000000004
+  ```python
+  # Float problem
+  >>> 0.1 + 0.2
+  0.30000000000000004
 
->>> 0.1 + 0.1 + 0.1 - 0.3
-5.551115123125783e-17  # Should be 0!
+  >>> 0.1 + 0.1 + 0.1 - 0.3
+  5.551115123125783e-17  # Should be 0!
 
-# In a parking lot context:
->>> hourly_rate = 2.50
->>> hours = 2.4
->>> hourly_rate * hours
-5.999999999999999  # Customer charged $5.99 instead of $6.00
+  # In a parking lot context:
+  >>> hourly_rate = 2.50
+  >>> hours = 2.4
+  >>> hourly_rate * hours
+  5.999999999999999  # Customer charged $5.99 instead of $6.00
 
-# Decimal solution
->>> from decimal import Decimal
->>> Decimal('2.50') * Decimal('2.4')
-Decimal('6.000')
-```
+  # Decimal solution
+  >>> from decimal import Decimal
+  >>> Decimal('2.50') * Decimal('2.4')
+  Decimal('6.000')
+  ```
 
-Financial systems **must** use fixed-point arithmetic (Decimal in Python, BigDecimal in Java) to ensure:
-- Exact representation of currency values
-- Predictable rounding behavior
-- Audit compliance
+  Financial systems **must** use fixed-point arithmetic (Decimal in Python, BigDecimal in Java) to ensure:
+  - Exact representation of currency values
+  - Predictable rounding behavior
+  - Audit compliance
 
-**L2: Follow-up: Payment fails at the exit gate. How do you handle this without blocking the exit?**
+  **L2: Follow-up: Payment fails at the exit gate. How do you handle this without blocking the exit?**
 
-**Answer:** Implement a **deferred payment** system:
+  **Answer:** Implement a **deferred payment** system:
 
-```python
-class ExitGate:
-    def process_exit(self, ticket: Ticket, payment_method: str,
-                     payment_details: dict) -> ExitResult:
-        fee = self.payment_processor.calculate_fee(ticket)
+  ```python
+  class ExitGate:
+  def process_exit(self, ticket: Ticket, payment_method: str,
+  payment_details: dict) -> ExitResult:
+  fee = self.payment_processor.calculate_fee(ticket)
 
-        # Attempt payment with timeout
-        try:
-            result = self.payment_processor.process_payment(
-                ticket, payment_method, payment_details
-            )
-        except TimeoutError:
-            result = PaymentResult(success=False, amount=fee,
-                                   error_message="Payment timeout")
+  # Attempt payment with timeout
+  try:
+  result = self.payment_processor.process_payment(
+  ticket, payment_method, payment_details
+  )
+  except TimeoutError:
+  result = PaymentResult(success=False, amount=fee,
+  error_message="Payment timeout")
 
-        if result.success:
-            self._release_barrier()
-            return ExitResult.SUCCESS
+  if result.success:
+  self._release_barrier()
+  return ExitResult.SUCCESS
 
-        # Payment failed - options:
+  # Payment failed - options:
 
-        # Option 1: Deferred billing (for registered users)
-        if ticket.vehicle.owner and ticket.vehicle.owner.has_payment_on_file:
-            self._create_deferred_charge(ticket, fee)
-            self._release_barrier()
-            return ExitResult.DEFERRED
+  # Option 1: Deferred billing (for registered users)
+  if ticket.vehicle.owner and ticket.vehicle.owner.has_payment_on_file:
+  self._create_deferred_charge(ticket, fee)
+  self._release_barrier()
+  return ExitResult.DEFERRED
 
-        # Option 2: Issue IOU ticket
-        iou = self._create_iou_ticket(ticket, fee)
-        self._send_to_attendant(iou)
-        self._release_barrier()  # Don't trap customer
-        return ExitResult.IOU_ISSUED
+  # Option 2: Issue IOU ticket
+  iou = self._create_iou_ticket(ticket, fee)
+  self._send_to_attendant(iou)
+  self._release_barrier()  # Don't trap customer
+  return ExitResult.IOU_ISSUED
 
-        # Option 3: Require attendant intervention
-        # self._alert_attendant(ticket)
-        # return ExitResult.ATTENDANT_REQUIRED
-
-
-class DeferredPaymentService:
-    """Handles payments that couldn't be processed at exit."""
-
-    def __init__(self, max_retry_days: int = 7):
-        self.max_retry_days = max_retry_days
-
-    def process_deferred_charges(self):
-        """Batch process deferred charges (run daily)."""
-        pending = self.get_pending_charges()
-
-        for charge in pending:
-            if charge.age_days > self.max_retry_days:
-                self._send_to_collections(charge)
-                continue
-
-            result = self._attempt_charge(charge)
-            if result.success:
-                self._mark_paid(charge)
-            else:
-                self._increment_retry_count(charge)
-```
-
-**L3: Follow-up: How do you handle refunds when the pricing strategy changes mid-session?**
-
-**Answer:** This requires **price locking** and **audit trail**:
-
-```python
-class Ticket:
-    def __init__(self, vehicle: Vehicle, spot: ParkingSpot,
-                 pricing_snapshot: PricingSnapshot):
-        self.ticket_id = str(uuid.uuid4())
-        self.vehicle = vehicle
-        self.spot = spot
-        self.entry_time = datetime.now()
-
-        # Lock in pricing at entry time
-        self.pricing_snapshot = pricing_snapshot
-
-        # Audit trail for any modifications
-        self.events: List[TicketEvent] = []
-        self.refunds: List[Refund] = []
-
-    def get_fee_at_time(self, timestamp: datetime) -> Decimal:
-        """Calculate what the fee would be at a specific exit time."""
-        return self.pricing_snapshot.calculate_fee(self, exit_time=timestamp)
+  # Option 3: Require attendant intervention
+  # self._alert_attendant(ticket)
+  # return ExitResult.ATTENDANT_REQUIRED
 
 
-class PricingSnapshot:
-    """
-    Immutable capture of pricing rules at a point in time.
+  class DeferredPaymentService:
+  """Handles payments that couldn't be processed at exit."""
 
-    Ensures customers are charged based on rates when they entered,
-    not when they exit (or allows explicit policy choice).
-    """
+  def __init__(self, max_retry_days: int = 7):
+  self.max_retry_days = max_retry_days
 
-    def __init__(self, strategy: PricingStrategy, timestamp: datetime):
-        self.strategy = strategy
-        self.captured_at = timestamp
-        self.rates = self._capture_rates(strategy)
+  def process_deferred_charges(self):
+  """Batch process deferred charges (run daily)."""
+  pending = self.get_pending_charges()
 
-    def _capture_rates(self, strategy: PricingStrategy) -> dict:
-        # Deep copy all rate information
-        return {
-            'base_rates': copy.deepcopy(strategy.RATES) if hasattr(strategy, 'RATES') else {},
-            'tiers': copy.deepcopy(strategy.tiers) if hasattr(strategy, 'tiers') else [],
-            'multipliers': copy.deepcopy(strategy._get_vehicle_multiplier.__self__.__dict__)
-                          if hasattr(strategy, '_get_vehicle_multiplier') else {}
-        }
+  for charge in pending:
+  if charge.age_days > self.max_retry_days:
+  self._send_to_collections(charge)
+  continue
+
+  result = self._attempt_charge(charge)
+  if result.success:
+  self._mark_paid(charge)
+  else:
+  self._increment_retry_count(charge)
+  ```
+
+  **L3: Follow-up: How do you handle refunds when the pricing strategy changes mid-session?**
+
+  **Answer:** This requires **price locking** and **audit trail**:
+
+  ```python
+  class Ticket:
+  def __init__(self, vehicle: Vehicle, spot: ParkingSpot,
+  pricing_snapshot: PricingSnapshot):
+  self.ticket_id = str(uuid.uuid4())
+  self.vehicle = vehicle
+  self.spot = spot
+  self.entry_time = datetime.now()
+
+  # Lock in pricing at entry time
+  self.pricing_snapshot = pricing_snapshot
+
+  # Audit trail for any modifications
+  self.events: List[TicketEvent] = []
+  self.refunds: List[Refund] = []
+
+  def get_fee_at_time(self, timestamp: datetime) -> Decimal:
+  """Calculate what the fee would be at a specific exit time."""
+  return self.pricing_snapshot.calculate_fee(self, exit_time=timestamp)
 
 
-class RefundProcessor:
-    """Handle refunds with audit trail."""
+  class PricingSnapshot:
+  """
+  Immutable capture of pricing rules at a point in time.
 
-    def process_refund(self, ticket: Ticket, reason: RefundReason,
-                      amount: Optional[Decimal] = None) -> RefundResult:
-        original_fee = ticket.paid_amount
+  Ensures customers are charged based on rates when they entered,
+  not when they exit (or allows explicit policy choice).
+  """
 
-        if amount is None:
-            # Full refund
-            refund_amount = original_fee
-        else:
-            # Partial refund (e.g., overcharge correction)
-            refund_amount = min(amount, original_fee)
+  def __init__(self, strategy: PricingStrategy, timestamp: datetime):
+  self.strategy = strategy
+  self.captured_at = timestamp
+  self.rates = self._capture_rates(strategy)
 
-        # Create refund record
-        refund = Refund(
-            ticket_id=ticket.ticket_id,
-            original_amount=original_fee,
-            refund_amount=refund_amount,
-            reason=reason,
-            timestamp=datetime.now(),
-            authorized_by=self.current_user
-        )
+  def _capture_rates(self, strategy: PricingStrategy) -> dict:
+  # Deep copy all rate information
+  return {
+  'base_rates': copy.deepcopy(strategy.RATES) if hasattr(strategy, 'RATES') else {},
+  'tiers': copy.deepcopy(strategy.tiers) if hasattr(strategy, 'tiers') else [],
+  'multipliers': copy.deepcopy(strategy._get_vehicle_multiplier.__self__.__dict__)
+  if hasattr(strategy, '_get_vehicle_multiplier') else {}
+  }
 
-        # Process via original payment method
-        result = self.payment_gateway.refund(
-            ticket.transaction_id,
-            refund_amount
-        )
 
-        if result.success:
-            ticket.refunds.append(refund)
-            ticket.events.append(TicketEvent(
-                type=EventType.REFUND,
-                amount=refund_amount,
-                reason=reason
-            ))
+  class RefundProcessor:
+  """Handle refunds with audit trail."""
 
-        return result
-```
+  def process_refund(self, ticket: Ticket, reason: RefundReason,
+  amount: Optional[Decimal] = None) -> RefundResult:
+  original_fee = ticket.paid_amount
 
-**Key considerations:**
-- **Price at entry vs exit**: Policy decision - most lots honor entry-time pricing
-- **Audit requirements**: All price modifications need full audit trail
-- **Refund authorization**: May require manager approval above threshold
-- **Partial refunds**: For pricing errors, don't refund entire amount
+  if amount is None:
+  # Full refund
+  refund_amount = original_fee
+  else:
+  # Partial refund (e.g., overcharge correction)
+  refund_amount = min(amount, original_fee)
+
+  # Create refund record
+  refund = Refund(
+  ticket_id=ticket.ticket_id,
+  original_amount=original_fee,
+  refund_amount=refund_amount,
+  reason=reason,
+  timestamp=datetime.now(),
+  authorized_by=self.current_user
+  )
+
+  # Process via original payment method
+  result = self.payment_gateway.refund(
+  ticket.transaction_id,
+  refund_amount
+  )
+
+  if result.success:
+  ticket.refunds.append(refund)
+  ticket.events.append(TicketEvent(
+  type=EventType.REFUND,
+  amount=refund_amount,
+  reason=reason
+  ))
+
+  return result
+  ```
+
+  **Key considerations:**
+  - **Price at entry vs exit**: Policy decision - most lots honor entry-time pricing
+  - **Audit requirements**: All price modifications need full audit trail
+  - **Refund authorization**: May require manager approval above threshold
+  - **Partial refunds**: For pricing errors, don't refund entire amount
 
 </div>
 
@@ -1286,40 +1286,40 @@ class RefundProcessor:
 ### Race Conditions and Solutions
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Concurrency Challenges in Parking Systems</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Concurrency Challenges in Parking Systems</h4>
 
-<div style="display: flex; flex-direction: column; gap: 16px;">
-<div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
-<div style="color: #991b1b; font-weight: 600;">Race Condition: Double Booking</div>
-<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
+      <div style="color: #991b1b; font-weight: 600;">Race Condition: Double Booking</div>
+      <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
         Two vehicles check same spot availability simultaneously, both see "available", both attempt to park.
-<div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px;">
+        <div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px;">
           Thread A: check spot #42 -> available<br/>
           Thread B: check spot #42 -> available<br/>
           Thread A: park in spot #42 -> success<br/>
           Thread B: park in spot #42 -> overwrites A!
-</div>
-</div>
-</div>
-<div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
-<div style="color: #991b1b; font-weight: 600;">Race Condition: Counter Inconsistency</div>
-<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+        </div>
+      </div>
+    </div>
+    <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
+      <div style="color: #991b1b; font-weight: 600;">Race Condition: Counter Inconsistency</div>
+      <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
         Availability counter shows 5 spots, but 6 vehicles enter before counter updates.
-<div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px;">
+        <div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px;">
           Counter: 5 available<br/>
           Thread A: reads 5, decrements to 4<br/>
           Thread B: reads 5 (stale!), decrements to 4<br/>
           Actual: 2 vehicles parked, counter shows 4
-</div>
-</div>
-</div>
-<div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
-<div style="color: #991b1b; font-weight: 600;">Deadlock: Multi-Spot Allocation</div>
-<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+        </div>
+      </div>
+    </div>
+    <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px;">
+      <div style="color: #991b1b; font-weight: 600;">Deadlock: Multi-Spot Allocation</div>
+      <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
         Bus needs spots 1-5, truck needs spots 5-6. Bus locks 1-4, truck locks 6. Both wait for spot 5.
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### Thread-Safe Implementation
@@ -1615,169 +1615,169 @@ class AvailabilityCache:
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-**L1: What concurrency issues can occur in a parking lot system?**
+  **L1: What concurrency issues can occur in a parking lot system?**
 
-**Answer:** Three main categories:
+  **Answer:** Three main categories:
 
-1. **Race Conditions**:
-   - Two vehicles assigned same spot (check-then-act not atomic)
-   - Display shows available spots while they're being filled
-   - Payment processed twice for same ticket
+  1. **Race Conditions**:
+  - Two vehicles assigned same spot (check-then-act not atomic)
+  - Display shows available spots while they're being filled
+  - Payment processed twice for same ticket
 
-2. **Deadlocks**:
-   - Bus needs spots 1-5, truck needs spots 5-6
-   - Gate A locks vehicle entry, Gate B locks payment, each waits for other
+  2. **Deadlocks**:
+  - Bus needs spots 1-5, truck needs spots 5-6
+  - Gate A locks vehicle entry, Gate B locks payment, each waits for other
 
-3. **Starvation**:
-   - Large vehicles never get spots because small vehicles always grab first
-   - One entry gate monopolizes spot allocation
+  3. **Starvation**:
+  - Large vehicles never get spots because small vehicles always grab first
+  - One entry gate monopolizes spot allocation
 
-**L2: Follow-up: How does optimistic locking work, and when would you prefer pessimistic locking?**
+  **L2: Follow-up: How does optimistic locking work, and when would you prefer pessimistic locking?**
 
-**Answer:**
+  **Answer:**
 
-**Optimistic Locking** (check-then-act with versioning):
-```python
-# Read state with version
-spot, version = get_spot_state(spot_id)  # version = 5
+  **Optimistic Locking** (check-then-act with versioning):
+  ```python
+  # Read state with version
+  spot, version = get_spot_state(spot_id)  # version = 5
 
-# Do work assuming no one else modifies
-# ...
+  # Do work assuming no one else modifies
+  # ...
 
-# Attempt to commit, specifying expected version
-success = try_park(spot_id, vehicle, expected_version=5)
-# Fails if version changed (someone else modified)
-```
+  # Attempt to commit, specifying expected version
+  success = try_park(spot_id, vehicle, expected_version=5)
+  # Fails if version changed (someone else modified)
+  ```
 
-**Pessimistic Locking** (lock-then-act):
-```python
-# Acquire exclusive lock first
-with lock(spot_id):
-    # No one else can modify while we hold lock
-    if spot.is_available():
-        spot.park(vehicle)
-```
+  **Pessimistic Locking** (lock-then-act):
+  ```python
+  # Acquire exclusive lock first
+  with lock(spot_id):
+  # No one else can modify while we hold lock
+  if spot.is_available():
+  spot.park(vehicle)
+  ```
 
-**When to use each:**
+  **When to use each:**
 
-| Optimistic | Pessimistic |
-|------------|-------------|
-| Low contention | High contention |
-| Short hold times | Long operations |
-| Read-heavy workloads | Write-heavy workloads |
-| Single resource | Multiple related resources |
-| Retry is cheap | Retry is expensive |
+  | Optimistic | Pessimistic |
+  |------------|-------------|
+  | Low contention | High contention |
+  | Short hold times | Long operations |
+  | Read-heavy workloads | Write-heavy workloads |
+  | Single resource | Multiple related resources |
+  | Retry is cheap | Retry is expensive |
 
-For parking lots:
-- **Single spot**: Optimistic (low contention, fast retry)
-- **Multi-spot (bus)**: Pessimistic (must atomically reserve all spots)
+  For parking lots:
+  - **Single spot**: Optimistic (low contention, fast retry)
+  - **Multi-spot (bus)**: Pessimistic (must atomically reserve all spots)
 
-**L3: Follow-up: Design a distributed parking lot system where spots are managed by different servers. How do you maintain consistency?**
+  **L3: Follow-up: Design a distributed parking lot system where spots are managed by different servers. How do you maintain consistency?**
 
-**Answer:** This becomes a [[Distributed Systems]](/topic/system-design/consensus-algorithms) problem. Options:
+  **Answer:** This becomes a [[Distributed Systems]](/topic/system-design/consensus-algorithms) problem. Options:
 
-**Option 1: Centralized Lock Service (Redis/Zookeeper)**
-```python
-class DistributedParkingLot:
-    def __init__(self, redis_client):
-        self.redis = redis_client
+  **Option 1: Centralized Lock Service (Redis/Zookeeper)**
+  ```python
+  class DistributedParkingLot:
+  def __init__(self, redis_client):
+  self.redis = redis_client
 
-    def park_vehicle(self, vehicle: Vehicle) -> Optional[Ticket]:
-        # Find candidate spot from any server
-        spot_id = self.find_available_spot(vehicle)
+  def park_vehicle(self, vehicle: Vehicle) -> Optional[Ticket]:
+  # Find candidate spot from any server
+  spot_id = self.find_available_spot(vehicle)
 
-        # Acquire distributed lock
-        lock_key = f"spot_lock:{spot_id}"
-        lock_acquired = self.redis.set(
-            lock_key,
-            "locked",
-            nx=True,  # Only if not exists
-            ex=30     # 30 second expiry (lease)
-        )
+  # Acquire distributed lock
+  lock_key = f"spot_lock:{spot_id}"
+  lock_acquired = self.redis.set(
+  lock_key,
+  "locked",
+  nx=True,  # Only if not exists
+  ex=30     # 30 second expiry (lease)
+  )
 
-        if not lock_acquired:
-            return None  # Spot being claimed by another server
+  if not lock_acquired:
+  return None  # Spot being claimed by another server
 
-        try:
-            # Verify and claim spot
-            spot_data = self.redis.hgetall(f"spot:{spot_id}")
-            if spot_data.get('vehicle'):
-                return None  # Already occupied
+  try:
+  # Verify and claim spot
+  spot_data = self.redis.hgetall(f"spot:{spot_id}")
+  if spot_data.get('vehicle'):
+  return None  # Already occupied
 
-            # Atomic update
-            self.redis.hset(f"spot:{spot_id}", mapping={
-                'vehicle': vehicle.license_plate,
-                'entry_time': datetime.now().isoformat()
-            })
+  # Atomic update
+  self.redis.hset(f"spot:{spot_id}", mapping={
+  'vehicle': vehicle.license_plate,
+  'entry_time': datetime.now().isoformat()
+  })
 
-            return self.create_ticket(vehicle, spot_id)
-        finally:
-            self.redis.delete(lock_key)
-```
+  return self.create_ticket(vehicle, spot_id)
+  finally:
+  self.redis.delete(lock_key)
+  ```
 
-**Option 2: Partitioned Ownership**
-```python
-# Each server owns a floor/section
-# Cross-section operations use 2-phase commit
+  **Option 2: Partitioned Ownership**
+  ```python
+  # Each server owns a floor/section
+  # Cross-section operations use 2-phase commit
 
-class PartitionedParkingLot:
-    def __init__(self, partition_id: str, coordinator: 'CoordinatorService'):
-        self.partition_id = partition_id
-        self.coordinator = coordinator
-        self.local_spots = {}  # Spots this server owns
+  class PartitionedParkingLot:
+  def __init__(self, partition_id: str, coordinator: 'CoordinatorService'):
+  self.partition_id = partition_id
+  self.coordinator = coordinator
+  self.local_spots = {}  # Spots this server owns
 
-    def park_vehicle(self, vehicle: Vehicle) -> Optional[Ticket]:
-        # Try local spots first (fast path)
-        local_spot = self.find_local_spot(vehicle)
-        if local_spot:
-            return self.park_local(vehicle, local_spot)
+  def park_vehicle(self, vehicle: Vehicle) -> Optional[Ticket]:
+  # Try local spots first (fast path)
+  local_spot = self.find_local_spot(vehicle)
+  if local_spot:
+  return self.park_local(vehicle, local_spot)
 
-        # No local spots, ask coordinator for cross-partition allocation
-        return self.coordinator.allocate_cross_partition(
-            vehicle,
-            exclude_partition=self.partition_id
-        )
-```
+  # No local spots, ask coordinator for cross-partition allocation
+  return self.coordinator.allocate_cross_partition(
+  vehicle,
+  exclude_partition=self.partition_id
+  )
+  ```
 
-**Option 3: Eventual Consistency with Conflict Resolution**
-```python
-# Accept potential double-booking, resolve at exit
-# Good for very high throughput, lower consistency needs
+  **Option 3: Eventual Consistency with Conflict Resolution**
+  ```python
+  # Accept potential double-booking, resolve at exit
+  # Good for very high throughput, lower consistency needs
 
-class EventuallyConsistentParkingLot:
-    def park_vehicle(self, vehicle: Vehicle) -> Ticket:
-        spot = self.find_available_spot(vehicle)
+  class EventuallyConsistentParkingLot:
+  def park_vehicle(self, vehicle: Vehicle) -> Ticket:
+  spot = self.find_available_spot(vehicle)
 
-        # Optimistic allocation - no distributed lock
-        ticket = Ticket(vehicle, spot)
+  # Optimistic allocation - no distributed lock
+  ticket = Ticket(vehicle, spot)
 
-        # Publish event for eventual consistency
-        self.event_bus.publish(ParkingEvent(
-            type='VEHICLE_PARKED',
-            spot_id=spot.spot_id,
-            vehicle=vehicle.license_plate,
-            timestamp=datetime.now(),
-            server_id=self.server_id
-        ))
+  # Publish event for eventual consistency
+  self.event_bus.publish(ParkingEvent(
+  type='VEHICLE_PARKED',
+  spot_id=spot.spot_id,
+  vehicle=vehicle.license_plate,
+  timestamp=datetime.now(),
+  server_id=self.server_id
+  ))
 
-        return ticket
+  return ticket
 
-    def handle_conflict(self, spot_id: str, events: List[ParkingEvent]):
-        """Called when two servers parked in same spot."""
-        # Resolution: first timestamp wins
-        events.sort(key=lambda e: e.timestamp)
-        winner = events[0]
-        loser = events[1]
+  def handle_conflict(self, spot_id: str, events: List[ParkingEvent]):
+  """Called when two servers parked in same spot."""
+  # Resolution: first timestamp wins
+  events.sort(key=lambda e: e.timestamp)
+  winner = events[0]
+  loser = events[1]
 
-        # Loser's ticket is invalidated, vehicle reassigned
-        self.reassign_vehicle(loser.vehicle, loser.ticket_id)
-        self.notify_customer(loser, "Your spot was reassigned")
-```
+  # Loser's ticket is invalidated, vehicle reassigned
+  self.reassign_vehicle(loser.vehicle, loser.ticket_id)
+  self.notify_customer(loser, "Your spot was reassigned")
+  ```
 
-**Trade-offs:**
-- Centralized lock: Strong consistency, single point of failure
-- Partitioned: Good balance, complex cross-partition ops
-- Eventual: High throughput, requires conflict resolution
+  **Trade-offs:**
+  - Centralized lock: Strong consistency, single point of failure
+  - Partitioned: Good balance, complex cross-partition ops
+  - Eventual: High throughput, requires conflict resolution
 
 </div>
 
@@ -2477,34 +2477,34 @@ if __name__ == "__main__":
 ## Edge Cases and Error Handling
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Critical Edge Cases to Handle</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Critical Edge Cases to Handle</h4>
 
-<div style="display: grid; gap: 12px;">
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Lost Ticket</div>
-<div style="color: #7f1d1d; font-size: 14px;">Customer can't find ticket at exit. Solution: Search by license plate, charge from earliest unresolved entry, require ID verification.</div>
-</div>
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">System Crash Mid-Transaction</div>
-<div style="color: #7f1d1d; font-size: 14px;">Payment processed but barrier didn't open. Solution: Idempotent operations, transaction logging, barrier override capability.</div>
-</div>
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Overstay (Multi-Day Parking)</div>
-<div style="color: #7f1d1d; font-size: 14px;">Vehicle parked for weeks. Solution: Daily maximum caps, abandoned vehicle detection, admin override for fee adjustment.</div>
-</div>
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Clock Skew</div>
-<div style="color: #7f1d1d; font-size: 14px;">Entry and exit gates have unsynchronized clocks. Solution: Use centralized time service, include clock drift tolerance in billing.</div>
-</div>
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Vehicle Size Mismatch</div>
-<div style="color: #7f1d1d; font-size: 14px;">Car entered but truck exits (trailer attached). Solution: Exit sensor verification, manual override, charge difference.</div>
-</div>
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Concurrent Exit with Same Ticket</div>
-<div style="color: #7f1d1d; font-size: 14px;">Copied ticket used at multiple exits. Solution: Invalidate ticket atomically on first use, physical ticket capture.</div>
-</div>
-</div>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Lost Ticket</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Customer can't find ticket at exit. Solution: Search by license plate, charge from earliest unresolved entry, require ID verification.</div>
+    </div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">System Crash Mid-Transaction</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Payment processed but barrier didn't open. Solution: Idempotent operations, transaction logging, barrier override capability.</div>
+    </div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Overstay (Multi-Day Parking)</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Vehicle parked for weeks. Solution: Daily maximum caps, abandoned vehicle detection, admin override for fee adjustment.</div>
+    </div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Clock Skew</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Entry and exit gates have unsynchronized clocks. Solution: Use centralized time service, include clock drift tolerance in billing.</div>
+    </div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Vehicle Size Mismatch</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Car entered but truck exits (trailer attached). Solution: Exit sensor verification, manual override, charge difference.</div>
+    </div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Concurrent Exit with Same Ticket</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Copied ticket used at multiple exits. Solution: Invalidate ticket atomically on first use, physical ticket capture.</div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -2512,34 +2512,34 @@ if __name__ == "__main__":
 ## Extensions and Follow-ups
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Common Interview Extensions</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Common Interview Extensions</h4>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">1. Reservation System</div>
-<div style="color: #475569; font-size: 14px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">1. Reservation System</div>
+      <div style="color: #475569; font-size: 14px;">
         Pre-book spots for specific time windows. Requires temporal availability tracking, no-show penalties, and overbooking strategies.
-</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">2. Valet Parking</div>
-<div style="color: #475569; font-size: 14px;">
+      </div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">2. Valet Parking</div>
+      <div style="color: #475569; font-size: 14px;">
         Staff parks vehicles. Requires key management, damage tracking, priority retrieval queues.
-</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">3. Monthly Subscriptions</div>
-<div style="color: #475569; font-size: 14px;">
+      </div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">3. Monthly Subscriptions</div>
+      <div style="color: #475569; font-size: 14px;">
         Recurring payments with guaranteed spots. Requires capacity planning, grace periods, subscription tiers.
-</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
-<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">4. Multi-Lot Federation</div>
-<div style="color: #475569; font-size: 14px;">
+      </div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">4. Multi-Lot Federation</div>
+      <div style="color: #475569; font-size: 14px;">
         Chain of parking lots with unified ticketing. Requires central coordination, inter-lot transfers, distributed availability.
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -2547,46 +2547,46 @@ if __name__ == "__main__":
 ## Quick Reference
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Interview Cheat Sheet</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Interview Cheat Sheet</h4>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Design Patterns Used</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;"><strong>Strategy:</strong> Spot allocation, Pricing</div>
-  <div style="padding: 4px 0;"><strong>Factory:</strong> Ticket creation</div>
-  <div style="padding: 4px 0;"><strong>Observer:</strong> Event notifications</div>
-  <div style="padding: 4px 0;"><strong>Singleton:</strong> Avoid for testability</div>
-</div>
-</div>
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Key Classes</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;"><strong>ParkingLot:</strong> Main facade</div>
-  <div style="padding: 4px 0;"><strong>ParkingSpot:</strong> Thread-safe spot</div>
-  <div style="padding: 4px 0;"><strong>Ticket:</strong> Parking session</div>
-  <div style="padding: 4px 0;"><strong>Vehicle:</strong> Abstract base</div>
-</div>
-</div>
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Concurrency Approach</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;">Single spot: Optimistic locking</div>
-  <div style="padding: 4px 0;">Multi-spot: Pessimistic with ordering</div>
-  <div style="padding: 4px 0;">Counters: Atomic increments</div>
-  <div style="padding: 4px 0;">Tickets: RLock for nested access</div>
-</div>
-</div>
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Time Complexity</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;">Park (first avail): O(spots)</div>
-  <div style="padding: 4px 0;">Park (heap-based): O(log spots)</div>
-  <div style="padding: 4px 0;">Unpark: O(1) with ticket</div>
-  <div style="padding: 4px 0;">Availability: O(1) with cache</div>
-</div>
-</div>
-</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Design Patterns Used</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;"><strong>Strategy:</strong> Spot allocation, Pricing</div>
+        <div style="padding: 4px 0;"><strong>Factory:</strong> Ticket creation</div>
+        <div style="padding: 4px 0;"><strong>Observer:</strong> Event notifications</div>
+        <div style="padding: 4px 0;"><strong>Singleton:</strong> Avoid for testability</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Key Classes</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;"><strong>ParkingLot:</strong> Main facade</div>
+        <div style="padding: 4px 0;"><strong>ParkingSpot:</strong> Thread-safe spot</div>
+        <div style="padding: 4px 0;"><strong>Ticket:</strong> Parking session</div>
+        <div style="padding: 4px 0;"><strong>Vehicle:</strong> Abstract base</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Concurrency Approach</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">Single spot: Optimistic locking</div>
+        <div style="padding: 4px 0;">Multi-spot: Pessimistic with ordering</div>
+        <div style="padding: 4px 0;">Counters: Atomic increments</div>
+        <div style="padding: 4px 0;">Tickets: RLock for nested access</div>
+      </div>
+    </div>
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Time Complexity</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">Park (first avail): O(spots)</div>
+        <div style="padding: 4px 0;">Park (heap-based): O(log spots)</div>
+        <div style="padding: 4px 0;">Unpark: O(1) with ticket</div>
+        <div style="padding: 4px 0;">Availability: O(1) with cache</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---

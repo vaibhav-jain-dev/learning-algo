@@ -9,10 +9,10 @@ The Visitor pattern separates algorithms from the object structures they operate
 **Also Known As:** Double Dispatch, External Polymorphism
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
-<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 0.75rem; color: #1e293b;">Core Insight</div>
-<div style="line-height: 1.7; color: #475569;">
+  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 0.75rem; color: #1e293b;">Core Insight</div>
+  <div style="line-height: 1.7; color: #475569;">
     The Visitor pattern inverts the traditional OOP approach. Instead of placing behavior inside objects, it extracts behavior into external visitor objects. This trades the Open-Closed Principle in one dimension (easy to add operations) for violating it in another (hard to add element types).
-</div>
+  </div>
 </div>
 
 ---
@@ -24,10 +24,10 @@ The Visitor pattern separates algorithms from the object structures they operate
 Most object-oriented languages use **single dispatch**: the method called depends only on the runtime type of the receiver object, not on the runtime types of arguments.
 
 <div style="background: #fef3c7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
-<div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem;">The Dispatch Problem</div>
-<div style="color: #78350f; line-height: 1.7;">
+  <div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem;">The Dispatch Problem</div>
+  <div style="color: #78350f; line-height: 1.7;">
     When you call <code>process(element)</code>, the method selected depends on the static (compile-time) type of <code>element</code>, not its actual runtime type. Method overloading is resolved at compile time, not runtime. This means you cannot simply overload methods and expect runtime type-based dispatch.
-</div>
+  </div>
 </div>
 
 ```python
@@ -51,30 +51,30 @@ processor.process(shape)  # Calls Shape overload, not Circle!
 The Visitor pattern achieves runtime dispatch on both types through a **two-step protocol**:
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-<div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Double Dispatch Execution Flow</div>
-<div style="display: flex; flex-direction: column; gap: 1rem;">
-<div style="display: flex; align-items: center; gap: 1rem;">
-<div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
-<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #93c5fd;">
-<div style="font-weight: 600; color: #1e40af;">Client calls element.accept(visitor)</div>
-<div style="color: #1e40af; font-size: 0.9rem; margin-top: 0.25rem;">First dispatch: selects accept() based on element's runtime type</div>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem;">
-<div style="background: #22c55e; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
-<div style="background: #dcfce7; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #86efac;">
-<div style="font-weight: 600; color: #166534;">Element calls visitor.visitX(this)</div>
-<div style="color: #166534; font-size: 0.9rem; margin-top: 0.25rem;">Second dispatch: selects visitX() based on visitor's runtime type</div>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 1rem;">
-<div style="background: #a855f7; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
-<div style="background: #f3e8ff; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #d8b4fe;">
-<div style="font-weight: 600; color: #7c3aed;">Correct method executes for both types</div>
-<div style="color: #7c3aed; font-size: 0.9rem; margin-top: 0.25rem;">The "this" reference carries the concrete element type statically</div>
-</div>
-</div>
-</div>
+  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Double Dispatch Execution Flow</div>
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
+      <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #93c5fd;">
+        <div style="font-weight: 600; color: #1e40af;">Client calls element.accept(visitor)</div>
+        <div style="color: #1e40af; font-size: 0.9rem; margin-top: 0.25rem;">First dispatch: selects accept() based on element's runtime type</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background: #22c55e; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">2</div>
+      <div style="background: #dcfce7; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #86efac;">
+        <div style="font-weight: 600; color: #166534;">Element calls visitor.visitX(this)</div>
+        <div style="color: #166534; font-size: 0.9rem; margin-top: 0.25rem;">Second dispatch: selects visitX() based on visitor's runtime type</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="background: #a855f7; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">3</div>
+      <div style="background: #f3e8ff; border-radius: 8px; padding: 1rem; flex: 1; border: 1px solid #d8b4fe;">
+        <div style="font-weight: 600; color: #7c3aed;">Correct method executes for both types</div>
+        <div style="color: #7c3aed; font-size: 0.9rem; margin-top: 0.25rem;">The "this" reference carries the concrete element type statically</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### The Critical Role of "this"
@@ -90,33 +90,33 @@ class CircleElement(Element):
 ```
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ef4444;">
-<div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">Critical Assumption</div>
-<div style="color: #7f1d1d; line-height: 1.7;">
+  <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">Critical Assumption</div>
+  <div style="color: #7f1d1d; line-height: 1.7;">
     Double dispatch assumes <strong>static overload resolution</strong>. In languages with full multiple dispatch (like Julia or Common Lisp CLOS), the Visitor pattern is unnecessary because the language natively dispatches on all argument types at runtime.
-</div>
+  </div>
 </div>
 
 ### Interview Deep Dive: Double Dispatch
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is double dispatch and why do we need it?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What is double dispatch and why do we need it?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
     Double dispatch selects a method based on the runtime types of two objects: the receiver and one argument. Most OO languages only dispatch on the receiver type (single dispatch). We need it when behavior depends on combinations of types, such as collision detection between different shape pairs or applying different operations to different element types.
-</div>
+  </div>
 
-<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How does the Visitor pattern simulate true multiple dispatch?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How does the Visitor pattern simulate true multiple dispatch?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
       It chains two single-dispatch calls. The first call <code>element.accept(visitor)</code> dispatches on the element's runtime type. Inside <code>accept()</code>, the call to <code>visitor.visitX(this)</code> dispatches on the visitor's runtime type. The trick is that <code>this</code> has a known static type inside each concrete element class, so the correct <code>visitX</code> overload is selected at compile time. This simulates runtime dispatch on both types.
-</div>
+    </div>
 
-<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: What are the limitations of simulated double dispatch vs. true multiple dispatch?</div>
-<div style="color: #1e3a8a; line-height: 1.7;">
-<strong>Combinatorial explosion:</strong> True multiple dispatch can handle n types with n methods; simulated double dispatch requires n*m methods for n element types and m visitors. <strong>Asymmetric extension:</strong> Adding visitors is easy, but adding elements requires modifying all visitors. <strong>No dynamic discovery:</strong> Unlike true multiple dispatch which uses runtime type lookup, Visitor bakes the dispatch table into the class hierarchy at compile time. <strong>Two-hop overhead:</strong> Two virtual calls instead of one direct dispatch lookup.
-</div>
-</div>
-</div>
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: What are the limitations of simulated double dispatch vs. true multiple dispatch?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
+        <strong>Combinatorial explosion:</strong> True multiple dispatch can handle n types with n methods; simulated double dispatch requires n*m methods for n element types and m visitors. <strong>Asymmetric extension:</strong> Adding visitors is easy, but adding elements requires modifying all visitors. <strong>No dynamic discovery:</strong> Unlike true multiple dispatch which uses runtime type lookup, Visitor bakes the dispatch table into the class hierarchy at compile time. <strong>Two-hop overhead:</strong> Two virtual calls instead of one direct dispatch lookup.
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -128,29 +128,29 @@ class CircleElement(Element):
 A critical design decision is **who controls traversal**: the visitor, the elements, or an external iterator? Each approach has distinct implications.
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
-<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Traversal Strategies Comparison</div>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-<tr style="background: #e2e8f0;">
-<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Strategy</th>
-<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Description</th>
-<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Trade-offs</th>
-</tr>
-<tr>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Visitor-controlled</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Visitor explicitly calls accept on children</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Maximum flexibility, but visitors must know structure</td>
-</tr>
-<tr style="background: #f8fafc;">
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Element-controlled</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Element's accept() visits its children</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Encapsulates structure, but less control over order</td>
-</tr>
-<tr>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">External iterator</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Separate iterator drives traversal</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Clean separation, but adds complexity</td>
-</tr>
-</table>
+  <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Traversal Strategies Comparison</div>
+  <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+    <tr style="background: #e2e8f0;">
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Strategy</th>
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Description</th>
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Trade-offs</th>
+    </tr>
+    <tr>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Visitor-controlled</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Visitor explicitly calls accept on children</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Maximum flexibility, but visitors must know structure</td>
+    </tr>
+    <tr style="background: #f8fafc;">
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Element-controlled</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Element's accept() visits its children</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Encapsulates structure, but less control over order</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">External iterator</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Separate iterator drives traversal</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Clean separation, but adds complexity</td>
+    </tr>
+  </table>
 </div>
 
 ### Visitor-Controlled Traversal
@@ -184,10 +184,10 @@ class DepthFirstPrinter(TreeVisitor):
 ```
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #22c55e;">
-<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Advantage: Traversal Flexibility</div>
-<div style="color: #14532d; line-height: 1.7;">
+  <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Advantage: Traversal Flexibility</div>
+  <div style="color: #14532d; line-height: 1.7;">
     Visitor-controlled traversal allows different visitors to traverse differently: pre-order, post-order, selective visiting, early termination, or even visiting the same node multiple times.
-</div>
+  </div>
 </div>
 
 ### Element-Controlled Traversal
@@ -209,10 +209,10 @@ class Composite(Element):
 ```
 
 <div style="background: #fef3c7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
-<div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem;">Trade-off: Fixed Traversal Order</div>
-<div style="color: #78350f; line-height: 1.7;">
+  <div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem;">Trade-off: Fixed Traversal Order</div>
+  <div style="color: #78350f; line-height: 1.7;">
     When elements control traversal, all visitors use the same order. This reduces flexibility but ensures consistency and prevents visitors from needing to understand the element structure.
-</div>
+  </div>
 </div>
 
 ### Handling Cycles and Graph Structures
@@ -238,33 +238,33 @@ class GraphVisitor(ABC):
 ```
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #ef4444;">
-<div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">Edge Case: Shared Nodes</div>
-<div style="color: #7f1d1d; line-height: 1.7;">
+  <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem;">Edge Case: Shared Nodes</div>
+  <div style="color: #7f1d1d; line-height: 1.7;">
     In DAGs (directed acyclic graphs), nodes may be reachable via multiple paths without cycles. Decide whether shared nodes should be visited once or multiple times based on your use case. Size calculation should visit once; path enumeration should visit multiple times.
-</div>
+  </div>
 </div>
 
 ### Interview Deep Dive: Traversal
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: Who should control traversal in the Visitor pattern?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: Who should control traversal in the Visitor pattern?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
     Either the visitor or the elements can control traversal. Visitor-controlled traversal offers more flexibility (different orders, early termination). Element-controlled traversal encapsulates structure and ensures consistent behavior across visitors.
-</div>
+  </div>
 
-<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you handle visiting a graph with cycles?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you handle visiting a graph with cycles?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
       Track visited nodes using a set of object identities (or unique IDs). Before visiting a node, check if it has already been visited. For cycles, you can skip the node, return a cached result, or call a special <code>handleCycle()</code> method. The visited set can be stored in the visitor or passed as a parameter.
-</div>
+    </div>
 
-<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you implement a visitor that needs both pre-order and post-order callbacks?</div>
-<div style="color: #1e3a8a; line-height: 1.7;">
-<strong>Option 1:</strong> Add both <code>visitXEnter()</code> and <code>visitXExit()</code> methods to the visitor interface. Elements call enter before visiting children and exit after. <strong>Option 2:</strong> Have visit methods return a "continuation" that the traversal calls after children. <strong>Option 3:</strong> Use a hierarchical visitor pattern where <code>visitCompositeStart()</code> returns a boolean indicating whether to traverse children, and <code>visitCompositeEnd()</code> is called after. This is common in compiler AST visitors.
-</div>
-</div>
-</div>
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you implement a visitor that needs both pre-order and post-order callbacks?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
+        <strong>Option 1:</strong> Add both <code>visitXEnter()</code> and <code>visitXExit()</code> methods to the visitor interface. Elements call enter before visiting children and exit after. <strong>Option 2:</strong> Have visit methods return a "continuation" that the traversal calls after children. <strong>Option 3:</strong> Use a hierarchical visitor pattern where <code>visitCompositeStart()</code> returns a boolean indicating whether to traverse children, and <code>visitCompositeEnd()</code> is called after. This is common in compiler AST visitors.
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -276,23 +276,23 @@ class GraphVisitor(ABC):
 The Visitor pattern embodies a **dimensional trade-off** in the Open-Closed Principle:
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid #e2e8f0;">
-<div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Extension Trade-off Matrix</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-<div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border: 2px solid #22c55e;">
-<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">With Visitor Pattern</div>
-<div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
-<div style="margin-bottom: 0.5rem;"><strong>Adding operations:</strong> Open (just add new visitor)</div>
-<div><strong>Adding element types:</strong> Closed (must modify all visitors)</div>
-</div>
-</div>
-<div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border: 2px solid #3b82f6;">
-<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Without Visitor Pattern</div>
-<div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6;">
-<div style="margin-bottom: 0.5rem;"><strong>Adding element types:</strong> Open (just add new class)</div>
-<div><strong>Adding operations:</strong> Closed (must modify all elements)</div>
-</div>
-</div>
-</div>
+  <div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center;">Extension Trade-off Matrix</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem; border: 2px solid #22c55e;">
+      <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">With Visitor Pattern</div>
+      <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6;">
+        <div style="margin-bottom: 0.5rem;"><strong>Adding operations:</strong> Open (just add new visitor)</div>
+        <div><strong>Adding element types:</strong> Closed (must modify all visitors)</div>
+      </div>
+    </div>
+    <div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem; border: 2px solid #3b82f6;">
+      <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Without Visitor Pattern</div>
+      <div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6;">
+        <div style="margin-bottom: 0.5rem;"><strong>Adding element types:</strong> Open (just add new class)</div>
+        <div><strong>Adding operations:</strong> Closed (must modify all elements)</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ### When Visitor Wins
@@ -371,10 +371,10 @@ class CircleCounter(Visitor, CircleVisitor):
 ```
 
 <div style="background: #fef3c7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
-<div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem;">Trade-off: Runtime Type Checking</div>
-<div style="color: #78350f; line-height: 1.7;">
+  <div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem;">Trade-off: Runtime Type Checking</div>
+  <div style="color: #78350f; line-height: 1.7;">
     Acyclic Visitor trades compile-time safety for flexibility. The <code>isinstance()</code> check happens at runtime, meaning you lose static guarantees that all element types are handled. This is acceptable when visitors legitimately need to ignore certain element types.
-</div>
+  </div>
 </div>
 
 ### Default Visitor Implementation
@@ -415,24 +415,24 @@ class VariableFinder(DefaultExpressionVisitor):
 ### Interview Deep Dive: Extensibility
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: How does Visitor enable adding operations without modifying element classes?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: How does Visitor enable adding operations without modifying element classes?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
     Elements only need an <code>accept(visitor)</code> method that calls back to the visitor. New operations are added by creating new visitor classes that implement the visitor interface. The element classes never change when new operations are added.
-</div>
+  </div>
 
-<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: What happens when you need to add a new element type to a Visitor-based system?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: What happens when you need to add a new element type to a Visitor-based system?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
       Every existing visitor must be modified to add a <code>visitNewElement()</code> method. This is the primary drawback of the Visitor pattern. In a large system with many visitors, adding an element type becomes expensive. Mitigations include: default visitor base classes, the Acyclic Visitor pattern, or generating visitor code from element definitions.
-</div>
+    </div>
 
-<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: Compare the Expression Problem in functional vs. OO paradigms. How does Visitor fit in?</div>
-<div style="color: #1e3a8a; line-height: 1.7;">
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: Compare the Expression Problem in functional vs. OO paradigms. How does Visitor fit in?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
         The <strong>Expression Problem</strong> asks: how do you add both new data variants AND new operations without recompiling existing code? <strong>OO approach:</strong> Easy to add types (new subclasses), hard to add operations (modify all classes). <strong>FP approach:</strong> Easy to add operations (new functions with pattern matching), hard to add types (modify all functions). <strong>Visitor flips OO</strong> to behave like FP: easy to add operations, hard to add types. Solutions like type classes, object algebras, or tagless final attempt to solve both dimensions simultaneously.
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -1457,24 +1457,24 @@ if __name__ == "__main__":
 ## Interview Deep Dive: Implementation Details
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What should a visitor's visit method return?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: What should a visitor's visit method return?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
     It depends on the operation. Type checkers return types, evaluators return values, code generators return strings or IR nodes, collectors return nothing (mutate internal state). The return type should match the operation's purpose. Using generics (e.g., <code>Visitor&lt;T&gt;</code>) allows type-safe return values.
-</div>
+  </div>
 
-<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you handle state in visitors that need context from parent nodes?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
-<strong>Option 1:</strong> Store state in visitor instance variables (e.g., <code>current_function_return_type</code> in type checker). Save/restore when entering/exiting scopes. <strong>Option 2:</strong> Pass context as additional parameters using a context object pattern. <strong>Option 3:</strong> Maintain an explicit stack of contexts. <strong>Trade-off:</strong> Instance state is simpler but not thread-safe; parameter passing is pure but verbose.
-</div>
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How do you handle state in visitors that need context from parent nodes?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+      <strong>Option 1:</strong> Store state in visitor instance variables (e.g., <code>current_function_return_type</code> in type checker). Save/restore when entering/exiting scopes. <strong>Option 2:</strong> Pass context as additional parameters using a context object pattern. <strong>Option 3:</strong> Maintain an explicit stack of contexts. <strong>Trade-off:</strong> Instance state is simpler but not thread-safe; parameter passing is pure but verbose.
+    </div>
 
-<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you design a visitor that can be interrupted mid-traversal and resumed later?</div>
-<div style="color: #1e3a8a; line-height: 1.7;">
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you design a visitor that can be interrupted mid-traversal and resumed later?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
         Convert to <strong>continuation-passing style</strong> or use an <strong>explicit work stack</strong>. Instead of recursive calls, push pending work onto a stack. Process one item at a time and yield control. The visitor becomes an iterator: <code>while visitor.has_next(): visitor.step()</code>. This enables progress reporting, cancellation, and parallelization. Languages with generators/coroutines can <code>yield</code> from visit methods. This pattern is used in incremental parsers and background code analysis.
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -1482,65 +1482,65 @@ if __name__ == "__main__":
 ## Visitor Pattern vs. Alternatives
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
-<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Pattern Comparison</div>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-<tr style="background: #e2e8f0;">
-<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Approach</th>
-<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Add Types</th>
-<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Add Operations</th>
-<th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Best For</th>
-</tr>
-<tr>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Traditional OOP</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Hard</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Evolving type hierarchies</td>
-</tr>
-<tr style="background: #f8fafc;">
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Visitor Pattern</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Hard</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Stable types, many operations</td>
-</tr>
-<tr>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Pattern Matching</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Hard</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">FP languages, sealed types</td>
-</tr>
-<tr style="background: #f8fafc;">
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Type Classes</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
-<td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Haskell, Rust traits</td>
-</tr>
-</table>
+  <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Pattern Comparison</div>
+  <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+    <tr style="background: #e2e8f0;">
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Approach</th>
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Add Types</th>
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Add Operations</th>
+      <th style="padding: 0.75rem; text-align: left; border: 1px solid #cbd5e1;">Best For</th>
+    </tr>
+    <tr>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Traditional OOP</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Hard</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Evolving type hierarchies</td>
+    </tr>
+    <tr style="background: #f8fafc;">
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Visitor Pattern</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Hard</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Stable types, many operations</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Pattern Matching</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #991b1b;">Hard</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">FP languages, sealed types</td>
+    </tr>
+    <tr style="background: #f8fafc;">
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; font-weight: 600;">Type Classes</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1; color: #166534;">Easy</td>
+      <td style="padding: 0.75rem; border: 1px solid #cbd5e1;">Haskell, Rust traits</td>
+    </tr>
+  </table>
 </div>
 
 ### When to Use Alternatives
 
 <div style="background: #dcfce7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #22c55e;">
-<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Use Pattern Matching Instead When:</div>
-<div style="color: #14532d; line-height: 1.7;">
-<ul style="margin: 0; padding-left: 1.25rem;">
-<li>Your language has exhaustive pattern matching (Scala, Rust, Kotlin)</li>
-<li>Types are sealed/final and won't be extended</li>
-<li>Operations are simple enough to fit in a match expression</li>
-<li>You want compile-time exhaustiveness checking</li>
-</ul>
-</div>
+  <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem;">Use Pattern Matching Instead When:</div>
+  <div style="color: #14532d; line-height: 1.7;">
+    <ul style="margin: 0; padding-left: 1.25rem;">
+      <li>Your language has exhaustive pattern matching (Scala, Rust, Kotlin)</li>
+      <li>Types are sealed/final and won't be extended</li>
+      <li>Operations are simple enough to fit in a match expression</li>
+      <li>You want compile-time exhaustiveness checking</li>
+    </ul>
+  </div>
 </div>
 
 <div style="background: #dbeafe; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #3b82f6;">
-<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Use isinstance/type Dispatch Instead When:</div>
-<div style="color: #1e3a8a; line-height: 1.7;">
-<ul style="margin: 0; padding-left: 1.25rem;">
-<li>You have very few types (2-3)</li>
-<li>You only need one or two operations</li>
-<li>The overhead of the full Visitor infrastructure is not justified</li>
-<li>You're prototyping and need quick iteration</li>
-</ul>
-</div>
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem;">Use isinstance/type Dispatch Instead When:</div>
+  <div style="color: #1e3a8a; line-height: 1.7;">
+    <ul style="margin: 0; padding-left: 1.25rem;">
+      <li>You have very few types (2-3)</li>
+      <li>You only need one or two operations</li>
+      <li>The overhead of the full Visitor infrastructure is not justified</li>
+      <li>You're prototyping and need quick iteration</li>
+    </ul>
+  </div>
 </div>
 
 ---
@@ -1548,42 +1548,42 @@ if __name__ == "__main__":
 ## Common Pitfalls and Edge Cases
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #fecaca;">
-<div style="font-weight: 700; color: #991b1b; margin-bottom: 1rem;">Critical Pitfalls</div>
+  <div style="font-weight: 700; color: #991b1b; margin-bottom: 1rem;">Critical Pitfalls</div>
 
-<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">1. Forgetting to Visit Children</div>
-<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
+  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">1. Forgetting to Visit Children</div>
+    <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
       When traversal is visitor-controlled, forgetting to call <code>accept()</code> on children silently skips subtrees. Use a <code>DefaultVisitor</code> base class that handles traversal, so derived visitors only override behavior.
-</div>
-</div>
+    </div>
+  </div>
 
-<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">2. Breaking Encapsulation Excessively</div>
-<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
+  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">2. Breaking Encapsulation Excessively</div>
+    <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
       Visitors need access to element data, but exposing too many internals couples visitors tightly to element implementation. Provide focused accessor methods rather than exposing all fields.
-</div>
-</div>
+    </div>
+  </div>
 
-<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">3. Accumulating Stale State</div>
-<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
+  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">3. Accumulating Stale State</div>
+    <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
       Visitor instances that accumulate state (counters, collections) may retain state across multiple traversals. Either create new visitor instances for each traversal or provide explicit <code>reset()</code> methods.
-</div>
-</div>
+    </div>
+  </div>
 
-<div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
-<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">4. Infinite Loops in Cyclic Structures</div>
-<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
+  <div style="margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #fecaca;">
+    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">4. Infinite Loops in Cyclic Structures</div>
+    <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
       Visiting graphs without cycle detection causes stack overflow or infinite loops. Always track visited nodes when the structure might contain cycles.
-</div>
-</div>
+    </div>
+  </div>
 
-<div>
-  <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">5. Thread Safety Issues</div>
-  <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
-  Visitors with mutable state are not thread-safe. For parallel traversal, either use thread-local visitors, immutable visitors that return new state, or synchronize access to shared state.
-</div>
-</div>
+  <div>
+    <div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem;">5. Thread Safety Issues</div>
+    <div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6;">
+      Visitors with mutable state are not thread-safe. For parallel traversal, either use thread-local visitors, immutable visitors that return new state, or synchronize access to shared state.
+    </div>
+  </div>
 </div>
 
 ---
@@ -1591,24 +1591,24 @@ if __name__ == "__main__":
 ## Interview Deep Dive: Design Decisions
 
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #bfdbfe;">
-<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: How does Visitor relate to the Composite pattern?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+  <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem;">Level 1: How does Visitor relate to the Composite pattern?</div>
+  <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
     [[Composite]](/topic/design-patterns/composite) creates tree structures of objects. Visitor operates on those structures by traversing them and applying operations. Composite defines the structure; Visitor defines operations on that structure. They are highly complementary patterns.
-</div>
+  </div>
 
-<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How would you unit test visitors?</div>
-<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
-<strong>Test visit methods individually:</strong> Create each element type and verify the visitor produces correct output. <strong>Test traversal:</strong> Create composite structures and verify all nodes are visited in correct order. <strong>Test state accumulation:</strong> Traverse multiple elements and verify aggregated state. <strong>Use mock visitors:</strong> Test that elements call the correct visit method. <strong>Edge cases:</strong> Empty structures, single elements, deep nesting, cycles.
-</div>
+  <div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+    <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 2: How would you unit test visitors?</div>
+    <div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem;">
+      <strong>Test visit methods individually:</strong> Create each element type and verify the visitor produces correct output. <strong>Test traversal:</strong> Create composite structures and verify all nodes are visited in correct order. <strong>Test state accumulation:</strong> Traverse multiple elements and verify aggregated state. <strong>Use mock visitors:</strong> Test that elements call the correct visit method. <strong>Edge cases:</strong> Empty structures, single elements, deep nesting, cycles.
+    </div>
 
-<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
-<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you evolve a Visitor-based system when you need to add both new elements and new operations frequently?</div>
-<div style="color: #1e3a8a; line-height: 1.7;">
+    <div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem;">Level 3: How would you evolve a Visitor-based system when you need to add both new elements and new operations frequently?</div>
+      <div style="color: #1e3a8a; line-height: 1.7;">
         The Visitor pattern has a fundamental tension here. Strategies: <strong>1) Acyclic Visitor:</strong> Visitors implement only interfaces for types they care about. <strong>2) Reflective Visitor:</strong> Use reflection to dynamically dispatch, losing static safety but gaining flexibility. <strong>3) External Dispatch Table:</strong> Map (element type, operation type) pairs to handlers at runtime. <strong>4) Code Generation:</strong> Generate visitor infrastructure from element definitions. <strong>5) Reconsider the design:</strong> Perhaps the domain doesn't fit Visitor; consider [[Strategy]](/topic/design-patterns/strategy) or [[Command]](/topic/design-patterns/command) patterns instead.
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -1618,27 +1618,27 @@ if __name__ == "__main__":
 ### Compilers and Static Analysis
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 1px solid #e2e8f0;">
-<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Industry Usage</div>
+  <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Industry Usage</div>
 
-<div style="margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid #3b82f6;">
-<div style="font-weight: 600; color: #1e40af;">LLVM/Clang</div>
-<div style="color: #475569; font-size: 0.9rem;">Uses visitors for AST traversal, type checking, code generation, and optimization passes. Each compiler phase is a separate visitor.</div>
-</div>
+  <div style="margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid #3b82f6;">
+    <div style="font-weight: 600; color: #1e40af;">LLVM/Clang</div>
+    <div style="color: #475569; font-size: 0.9rem;">Uses visitors for AST traversal, type checking, code generation, and optimization passes. Each compiler phase is a separate visitor.</div>
+  </div>
 
-<div style="margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid #22c55e;">
-<div style="font-weight: 600; color: #166534;">ESLint / Pylint / SonarQube</div>
-<div style="color: #475569; font-size: 0.9rem;">Each linting rule is a visitor that traverses AST nodes looking for patterns. Adding rules doesn't modify the parser or AST classes.</div>
-</div>
+  <div style="margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid #22c55e;">
+    <div style="font-weight: 600; color: #166534;">ESLint / Pylint / SonarQube</div>
+    <div style="color: #475569; font-size: 0.9rem;">Each linting rule is a visitor that traverses AST nodes looking for patterns. Adding rules doesn't modify the parser or AST classes.</div>
+  </div>
 
-<div style="margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid #a855f7;">
-<div style="font-weight: 600; color: #7c3aed;">TypeScript Compiler</div>
-<div style="color: #475569; font-size: 0.9rem;">Type checker, transformer pipeline, and emit stages all use visitor patterns over the TypeScript AST.</div>
-</div>
+  <div style="margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid #a855f7;">
+    <div style="font-weight: 600; color: #7c3aed;">TypeScript Compiler</div>
+    <div style="color: #475569; font-size: 0.9rem;">Type checker, transformer pipeline, and emit stages all use visitor patterns over the TypeScript AST.</div>
+  </div>
 
-<div style="padding-left: 1rem; border-left: 3px solid #f59e0b;">
-<div style="font-weight: 600; color: #92400e;">Babel</div>
-<div style="color: #475569; font-size: 0.9rem;">Plugins are visitors that transform JavaScript AST. The plugin API is essentially a visitor registration system.</div>
-</div>
+  <div style="padding-left: 1rem; border-left: 3px solid #f59e0b;">
+    <div style="font-weight: 600; color: #92400e;">Babel</div>
+    <div style="color: #475569; font-size: 0.9rem;">Plugins are visitors that transform JavaScript AST. The plugin API is essentially a visitor registration system.</div>
+  </div>
 </div>
 
 ### Database Query Processing
@@ -1654,16 +1654,16 @@ PDF libraries traverse document structure with visitors for rendering, text extr
 ## Summary: Key Interview Points
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
-<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 0.75rem; color: #1e293b;">Memorize These</div>
-<ul style="margin: 0; padding-left: 1.25rem; line-height: 2; color: #475569;">
-<li><strong>Core mechanism:</strong> Double dispatch via accept/visit two-step protocol</li>
-<li><strong>Key trade-off:</strong> Easy to add operations, hard to add element types</li>
-<li><strong>When to use:</strong> Stable element hierarchy, frequently changing operations</li>
-<li><strong>Traversal:</strong> Either visitor or elements control it, be consistent</li>
-<li><strong>Cyclic structures:</strong> Track visited nodes to prevent infinite loops</li>
-<li><strong>Alternatives:</strong> Pattern matching, type dispatch, acyclic visitor</li>
-<li><strong>Related patterns:</strong> [[Composite]](/topic/design-patterns/composite), [[Iterator]](/topic/design-patterns/iterator), [[Strategy]](/topic/design-patterns/strategy)</li>
-</ul>
+  <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 2px solid #cbd5e1; padding-bottom: 0.75rem; color: #1e293b;">Memorize These</div>
+  <ul style="margin: 0; padding-left: 1.25rem; line-height: 2; color: #475569;">
+    <li><strong>Core mechanism:</strong> Double dispatch via accept/visit two-step protocol</li>
+    <li><strong>Key trade-off:</strong> Easy to add operations, hard to add element types</li>
+    <li><strong>When to use:</strong> Stable element hierarchy, frequently changing operations</li>
+    <li><strong>Traversal:</strong> Either visitor or elements control it, be consistent</li>
+    <li><strong>Cyclic structures:</strong> Track visited nodes to prevent infinite loops</li>
+    <li><strong>Alternatives:</strong> Pattern matching, type dispatch, acyclic visitor</li>
+    <li><strong>Related patterns:</strong> [[Composite]](/topic/design-patterns/composite), [[Iterator]](/topic/design-patterns/iterator), [[Strategy]](/topic/design-patterns/strategy)</li>
+  </ul>
 </div>
 
 ---

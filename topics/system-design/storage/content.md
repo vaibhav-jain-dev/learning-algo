@@ -13,21 +13,21 @@ Think of storage like different types of containers for your belongings: a filin
 ### Real Company Examples
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Companies and Their Storage Choices</h4>
-<div style="display: grid; gap: 16px;">
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
-<div style="color: #1e293b; font-weight: 600;">Netflix - Cassandra for Viewing History</div>
-<div style="color: #475569; font-size: 14px; margin-top: 8px;">Netflix uses Cassandra to store billions of viewing records. The wide-column store handles their write-heavy workload (every play, pause, seek) while providing fast reads for "Continue Watching" across 230+ million subscribers.</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
-<div style="color: #1e293b; font-weight: 600;">Uber - PostgreSQL + Redis Hybrid</div>
-<div style="color: #475569; font-size: 14px; margin-top: 8px;">Uber uses PostgreSQL for transactional data (rides, payments) requiring ACID compliance, and Redis for real-time driver location caching. The hybrid approach balances consistency needs with low-latency requirements.</div>
-</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
-<div style="color: #1e293b; font-weight: 600;">Airbnb - S3 for Images + Elasticsearch for Search</div>
-<div style="color: #475569; font-size: 14px; margin-top: 8px;">Airbnb stores millions of property images in S3 (object storage) for cost and scalability, while using Elasticsearch for fast full-text search across listings with complex filters and geo-queries.</div>
-</div>
-</div>
+  <h4 style="color: #1e293b; margin-top: 0;">Companies and Their Storage Choices</h4>
+  <div style="display: grid; gap: 16px;">
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
+      <div style="color: #1e293b; font-weight: 600;">Netflix - Cassandra for Viewing History</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Netflix uses Cassandra to store billions of viewing records. The wide-column store handles their write-heavy workload (every play, pause, seek) while providing fast reads for "Continue Watching" across 230+ million subscribers.</div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #10b981;">
+      <div style="color: #1e293b; font-weight: 600;">Uber - PostgreSQL + Redis Hybrid</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Uber uses PostgreSQL for transactional data (rides, payments) requiring ACID compliance, and Redis for real-time driver location caching. The hybrid approach balances consistency needs with low-latency requirements.</div>
+    </div>
+    <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; border-left: 4px solid #f59e0b;">
+      <div style="color: #1e293b; font-weight: 600;">Airbnb - S3 for Images + Elasticsearch for Search</div>
+      <div style="color: #475569; font-size: 14px; margin-top: 8px;">Airbnb stores millions of property images in S3 (object storage) for cost and scalability, while using Elasticsearch for fast full-text search across listings with complex filters and geo-queries.</div>
+    </div>
+  </div>
 </div>
 
 **Key Storage Decisions:**
@@ -44,184 +44,184 @@ Think of storage like different types of containers for your belongings: a filin
 ### Storage Hierarchy
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Memory and Storage Pyramid</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Memory and Storage Pyramid</h4>
 
-<div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
-<div style="background: #ef4444; color: white; padding: 12px 24px; border-radius: 8px; width: 150px; text-align: center;">
-<div style="font-weight: 600;">CPU Cache</div>
-<div style="font-size: 12px;">~1ns | KB | $$$$</div>
-</div>
-<div style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; width: 200px; text-align: center;">
-<div style="font-weight: 600;">RAM</div>
-<div style="font-size: 12px;">~100ns | GB | $$$</div>
-</div>
-<div style="background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; width: 250px; text-align: center;">
-<div style="font-weight: 600;">SSD</div>
-<div style="font-size: 12px;">~100us | TB | $$</div>
-</div>
-<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; width: 300px; text-align: center;">
-<div style="font-weight: 600;">HDD</div>
-<div style="font-size: 12px;">~10ms | TB | $</div>
-</div>
-<div style="background: #6366f1; color: white; padding: 12px 24px; border-radius: 8px; width: 350px; text-align: center;">
-<div style="font-weight: 600;">Network/Cloud Storage</div>
-<div style="font-size: 12px;">10-100ms | PB | Variable</div>
-</div>
-</div>
+  <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+    <div style="background: #ef4444; color: white; padding: 12px 24px; border-radius: 8px; width: 150px; text-align: center;">
+      <div style="font-weight: 600;">CPU Cache</div>
+      <div style="font-size: 12px;">~1ns | KB | $$$$</div>
+    </div>
+    <div style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; width: 200px; text-align: center;">
+      <div style="font-weight: 600;">RAM</div>
+      <div style="font-size: 12px;">~100ns | GB | $$$</div>
+    </div>
+    <div style="background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; width: 250px; text-align: center;">
+      <div style="font-weight: 600;">SSD</div>
+      <div style="font-size: 12px;">~100us | TB | $$</div>
+    </div>
+    <div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; width: 300px; text-align: center;">
+      <div style="font-weight: 600;">HDD</div>
+      <div style="font-size: 12px;">~10ms | TB | $</div>
+    </div>
+    <div style="background: #6366f1; color: white; padding: 12px 24px; border-radius: 8px; width: 350px; text-align: center;">
+      <div style="font-weight: 600;">Network/Cloud Storage</div>
+      <div style="font-size: 12px;">10-100ms | PB | Variable</div>
+    </div>
+  </div>
 
-<div style="text-align: center; margin-top: 16px; color: #64748b; font-size: 13px;">
+  <div style="text-align: center; margin-top: 16px; color: #64748b; font-size: 13px;">
     Faster and smaller at top, slower and larger at bottom
-</div>
+  </div>
 </div>
 
 ### Latency Numbers Every Developer Should Know
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Storage Latency Reference</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Storage Latency Reference</h4>
 
-<div style="overflow-x: auto;">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-<tr style="background: #f1f5f9;">
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Operation</th>
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Latency</th>
-<th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Notes</th>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b;">L1 cache reference</td>
-<td style="padding: 12px; color: #10b981; font-weight: 600;">0.5 ns</td>
-<td style="padding: 12px; color: #64748b;">Fastest possible</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b;">L2 cache reference</td>
-<td style="padding: 12px; color: #10b981; font-weight: 600;">7 ns</td>
-<td style="padding: 12px; color: #64748b;">14x L1</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b;">RAM access</td>
-<td style="padding: 12px; color: #f59e0b; font-weight: 600;">100 ns</td>
-<td style="padding: 12px; color: #64748b;">In-memory databases</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b;">SSD random read</td>
-<td style="padding: 12px; color: #f59e0b; font-weight: 600;">150 us</td>
-<td style="padding: 12px; color: #64748b;">1500x RAM</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b;">HDD seek</td>
-<td style="padding: 12px; color: #ef4444; font-weight: 600;">10 ms</td>
-<td style="padding: 12px; color: #64748b;">Physical movement</td>
-</tr>
-<tr style="border-bottom: 1px solid #e2e8f0;">
-<td style="padding: 12px; color: #1e293b;">Network same DC</td>
-<td style="padding: 12px; color: #ef4444; font-weight: 600;">0.5 ms</td>
-<td style="padding: 12px; color: #64748b;">Redis, databases</td>
-</tr>
-<tr>
-<td style="padding: 12px; color: #1e293b;">Network cross-continent</td>
-<td style="padding: 12px; color: #ef4444; font-weight: 600;">150 ms</td>
-<td style="padding: 12px; color: #64748b;">Speed of light limit</td>
-</tr>
-</table>
-</div>
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Operation</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Latency</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Notes</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">L1 cache reference</td>
+        <td style="padding: 12px; color: #10b981; font-weight: 600;">0.5 ns</td>
+        <td style="padding: 12px; color: #64748b;">Fastest possible</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">L2 cache reference</td>
+        <td style="padding: 12px; color: #10b981; font-weight: 600;">7 ns</td>
+        <td style="padding: 12px; color: #64748b;">14x L1</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">RAM access</td>
+        <td style="padding: 12px; color: #f59e0b; font-weight: 600;">100 ns</td>
+        <td style="padding: 12px; color: #64748b;">In-memory databases</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">SSD random read</td>
+        <td style="padding: 12px; color: #f59e0b; font-weight: 600;">150 us</td>
+        <td style="padding: 12px; color: #64748b;">1500x RAM</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">HDD seek</td>
+        <td style="padding: 12px; color: #ef4444; font-weight: 600;">10 ms</td>
+        <td style="padding: 12px; color: #64748b;">Physical movement</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b;">Network same DC</td>
+        <td style="padding: 12px; color: #ef4444; font-weight: 600;">0.5 ms</td>
+        <td style="padding: 12px; color: #64748b;">Redis, databases</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; color: #1e293b;">Network cross-continent</td>
+        <td style="padding: 12px; color: #ef4444; font-weight: 600;">150 ms</td>
+        <td style="padding: 12px; color: #64748b;">Speed of light limit</td>
+      </tr>
+    </table>
+  </div>
 </div>
 
 ### Storage Types
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Block vs File vs Object Storage</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Block vs File vs Object Storage</h4>
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-<div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 16px;">
-<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Block Storage</div>
-<div style="color: #1e3a8a; font-size: 13px;">
-<div style="margin-bottom: 8px;">Fixed-size blocks with IDs</div>
-<div style="font-weight: 600;">Best for:</div>
-<div>- Databases</div>
-  <div>- Virtual machines</div>
-    <div>- High IOPS workloads</div>
-      <div style="margin-top: 8px; font-size: 12px; color: #3b82f6;">AWS EBS, Azure Disk</div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+    <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 16px;">
+      <div style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">Block Storage</div>
+      <div style="color: #1e3a8a; font-size: 13px;">
+        <div style="margin-bottom: 8px;">Fixed-size blocks with IDs</div>
+        <div style="font-weight: 600;">Best for:</div>
+        <div>- Databases</div>
+        <div>- Virtual machines</div>
+        <div>- High IOPS workloads</div>
+        <div style="margin-top: 8px; font-size: 12px; color: #3b82f6;">AWS EBS, Azure Disk</div>
+      </div>
     </div>
-  </div>
 
-  <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
-  <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">File Storage</div>
-  <div style="color: #047857; font-size: 13px;">
-  <div style="margin-bottom: 8px;">Hierarchical directory structure</div>
-  <div style="font-weight: 600;">Best for:</div>
-  <div>- Shared file access</div>
-    <div>- Content management</div>
-      <div>- Home directories</div>
+    <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 16px;">
+      <div style="color: #065f46; font-weight: 600; margin-bottom: 8px;">File Storage</div>
+      <div style="color: #047857; font-size: 13px;">
+        <div style="margin-bottom: 8px;">Hierarchical directory structure</div>
+        <div style="font-weight: 600;">Best for:</div>
+        <div>- Shared file access</div>
+        <div>- Content management</div>
+        <div>- Home directories</div>
         <div style="margin-top: 8px; font-size: 12px; color: #10b981;">AWS EFS, NFS, SMB</div>
       </div>
     </div>
 
     <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px;">
-    <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Object Storage</div>
-    <div style="color: #78350f; font-size: 13px;">
-    <div style="margin-bottom: 8px;">Objects with metadata and keys</div>
-    <div style="font-weight: 600;">Best for:</div>
-    <div>- Static assets (images)</div>
-      <div>- Backups, archives</div>
+      <div style="color: #92400e; font-weight: 600; margin-bottom: 8px;">Object Storage</div>
+      <div style="color: #78350f; font-size: 13px;">
+        <div style="margin-bottom: 8px;">Objects with metadata and keys</div>
+        <div style="font-weight: 600;">Best for:</div>
+        <div>- Static assets (images)</div>
+        <div>- Backups, archives</div>
         <div>- Data lakes</div>
-          <div style="margin-top: 8px; font-size: 12px; color: #f59e0b;">AWS S3, Azure Blob, GCS</div>
-        </div>
+        <div style="margin-top: 8px; font-size: 12px; color: #f59e0b;">AWS S3, Azure Blob, GCS</div>
       </div>
     </div>
   </div>
+</div>
 
   ---
 
   ## Database Types
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #1e293b; margin-top: 0;">When to Use Which Database</h4>
 
   <div style="overflow-x: auto;">
-  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-  <tr style="background: #f1f5f9;">
-  <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Type</th>
-  <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Examples</th>
-  <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Best For</th>
-  <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Trade-offs</th>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-  <td style="padding: 12px; color: #1e293b; font-weight: 600;">Relational (SQL)</td>
-  <td style="padding: 12px; color: #475569;">PostgreSQL, MySQL</td>
-  <td style="padding: 12px; color: #475569;">Transactions, complex queries, joins</td>
-  <td style="padding: 12px; color: #475569;">Harder to scale horizontally</td>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-  <td style="padding: 12px; color: #1e293b; font-weight: 600;">Document</td>
-  <td style="padding: 12px; color: #475569;">MongoDB, CouchDB</td>
-  <td style="padding: 12px; color: #475569;">Flexible schemas, nested data</td>
-  <td style="padding: 12px; color: #475569;">Weaker transactions</td>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-  <td style="padding: 12px; color: #1e293b; font-weight: 600;">Key-Value</td>
-  <td style="padding: 12px; color: #475569;">Redis, DynamoDB</td>
-  <td style="padding: 12px; color: #475569;">Caching, sessions, simple lookups</td>
-  <td style="padding: 12px; color: #475569;">No complex queries</td>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-  <td style="padding: 12px; color: #1e293b; font-weight: 600;">Wide-Column</td>
-  <td style="padding: 12px; color: #475569;">Cassandra, HBase</td>
-  <td style="padding: 12px; color: #475569;">Time-series, write-heavy workloads</td>
-  <td style="padding: 12px; color: #475569;">Limited query flexibility</td>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-  <td style="padding: 12px; color: #1e293b; font-weight: 600;">Graph</td>
-  <td style="padding: 12px; color: #475569;">Neo4j, Neptune</td>
-  <td style="padding: 12px; color: #475569;">Social networks, recommendations</td>
-  <td style="padding: 12px; color: #475569;">Specialized use cases</td>
-  </tr>
-  <tr>
-  <td style="padding: 12px; color: #1e293b; font-weight: 600;">Search</td>
-  <td style="padding: 12px; color: #475569;">Elasticsearch, Solr</td>
-  <td style="padding: 12px; color: #475569;">Full-text search, analytics</td>
-  <td style="padding: 12px; color: #475569;">Not a primary data store</td>
-  </tr>
-</table>
-</div>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <tr style="background: #f1f5f9;">
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Type</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Examples</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Best For</th>
+        <th style="padding: 12px; text-align: left; color: #1e293b; border-bottom: 2px solid #e2e8f0;">Trade-offs</th>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Relational (SQL)</td>
+        <td style="padding: 12px; color: #475569;">PostgreSQL, MySQL</td>
+        <td style="padding: 12px; color: #475569;">Transactions, complex queries, joins</td>
+        <td style="padding: 12px; color: #475569;">Harder to scale horizontally</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Document</td>
+        <td style="padding: 12px; color: #475569;">MongoDB, CouchDB</td>
+        <td style="padding: 12px; color: #475569;">Flexible schemas, nested data</td>
+        <td style="padding: 12px; color: #475569;">Weaker transactions</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Key-Value</td>
+        <td style="padding: 12px; color: #475569;">Redis, DynamoDB</td>
+        <td style="padding: 12px; color: #475569;">Caching, sessions, simple lookups</td>
+        <td style="padding: 12px; color: #475569;">No complex queries</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Wide-Column</td>
+        <td style="padding: 12px; color: #475569;">Cassandra, HBase</td>
+        <td style="padding: 12px; color: #475569;">Time-series, write-heavy workloads</td>
+        <td style="padding: 12px; color: #475569;">Limited query flexibility</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Graph</td>
+        <td style="padding: 12px; color: #475569;">Neo4j, Neptune</td>
+        <td style="padding: 12px; color: #475569;">Social networks, recommendations</td>
+        <td style="padding: 12px; color: #475569;">Specialized use cases</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; color: #1e293b; font-weight: 600;">Search</td>
+        <td style="padding: 12px; color: #475569;">Elasticsearch, Solr</td>
+        <td style="padding: 12px; color: #475569;">Full-text search, analytics</td>
+        <td style="padding: 12px; color: #475569;">Not a primary data store</td>
+      </tr>
+    </table>
+  </div>
 </div>
 
 ---
@@ -231,36 +231,36 @@ Think of storage like different types of containers for your belongings: a filin
 ### The Instagram Migration (2012)
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">How Instagram Scaled Their Storage</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">How Instagram Scaled Their Storage</h4>
 
-<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #991b1b; font-weight: 600;">The Challenge</div>
-<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
+  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #991b1b; font-weight: 600;">The Challenge</div>
+    <div style="color: #7f1d1d; font-size: 14px; margin-top: 8px;">
       Instagram grew from 0 to 14 million users in one year with just 3 engineers. Their initial PostgreSQL setup couldn't handle the write load from millions of photo uploads and likes. Database replication lag grew to minutes, and users saw inconsistent data.
-</div>
-</div>
-
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #1e293b; font-weight: 600;">Original Architecture Problems</div>
-<div style="color: #475569; font-size: 14px; margin-top: 8px;">
-<div style="padding: 4px 0;">Single PostgreSQL master for all writes</div>
-<div style="padding: 4px 0;">Photos stored in filesystem, metadata in DB</div>
-<div style="padding: 4px 0;">No caching layer - every read hit the database</div>
-<div style="padding: 4px 0;">Vertical scaling limits reached</div>
-</div>
-</div>
-
-<div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
-<div style="color: #065f46; font-weight: 600;">Solution: Multi-Layer Storage Architecture</div>
-<div style="color: #047857; font-size: 14px; margin-top: 8px;">
-<div>1. <strong>Photos:</strong> Moved to S3 with CDN (CloudFront)</div>
-  <div>2. <strong>Caching:</strong> Added Redis for sessions and frequently accessed data</div>
-    <div>3. <strong>Database:</strong> Sharded PostgreSQL by user ID</div>
-      <div>4. <strong>Feed:</strong> Precomputed and cached in Redis</div>
-        <div style="margin-top: 8px; font-weight: 600;">Result: Handled 300M+ users with same small team</div>
-      </div>
     </div>
   </div>
+
+  <div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #1e293b; font-weight: 600;">Original Architecture Problems</div>
+    <div style="color: #475569; font-size: 14px; margin-top: 8px;">
+      <div style="padding: 4px 0;">Single PostgreSQL master for all writes</div>
+      <div style="padding: 4px 0;">Photos stored in filesystem, metadata in DB</div>
+      <div style="padding: 4px 0;">No caching layer - every read hit the database</div>
+      <div style="padding: 4px 0;">Vertical scaling limits reached</div>
+    </div>
+  </div>
+
+  <div style="background: #ecfdf5; border-radius: 8px; padding: 16px;">
+    <div style="color: #065f46; font-weight: 600;">Solution: Multi-Layer Storage Architecture</div>
+    <div style="color: #047857; font-size: 14px; margin-top: 8px;">
+      <div>1. <strong>Photos:</strong> Moved to S3 with CDN (CloudFront)</div>
+      <div>2. <strong>Caching:</strong> Added Redis for sessions and frequently accessed data</div>
+      <div>3. <strong>Database:</strong> Sharded PostgreSQL by user ID</div>
+      <div>4. <strong>Feed:</strong> Precomputed and cached in Redis</div>
+      <div style="margin-top: 8px; font-weight: 600;">Result: Handled 300M+ users with same small team</div>
+    </div>
+  </div>
+</div>
 
   ---
 
@@ -694,7 +694,7 @@ class ShardedDatabase:
 
   ## Interview Questions
 
-  <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 
   ### Q1: How would you design storage for a social media feed?
 
@@ -803,39 +803,39 @@ class ShardedDatabase:
 ## Common Mistakes
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Storage Anti-Patterns</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Storage Anti-Patterns</h4>
 
-<div style="display: grid; gap: 12px;">
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Storing blobs in the database</div>
-<div style="color: #7f1d1d; font-size: 14px;">Large files (images, videos) should go in object storage (S3), not in PostgreSQL. Database storage is expensive and slows down queries.</div>
-</div>
+  <div style="display: grid; gap: 12px;">
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Storing blobs in the database</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Large files (images, videos) should go in object storage (S3), not in PostgreSQL. Database storage is expensive and slows down queries.</div>
+    </div>
 
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Premature sharding</div>
-<div style="color: #7f1d1d; font-size: 14px;">Sharding adds complexity (cross-shard queries, distributed transactions). Exhaust vertical scaling and read replicas first. Most apps never need sharding.</div>
-</div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Premature sharding</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Sharding adds complexity (cross-shard queries, distributed transactions). Exhaust vertical scaling and read replicas first. Most apps never need sharding.</div>
+    </div>
 
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">No connection pooling</div>
-<div style="color: #7f1d1d; font-size: 14px;">Creating new database connections is expensive (10-100ms). Use connection pools (PgBouncer, HikariCP) to reuse connections.</div>
-</div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">No connection pooling</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Creating new database connections is expensive (10-100ms). Use connection pools (PgBouncer, HikariCP) to reuse connections.</div>
+    </div>
 
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Missing indexes on query columns</div>
-<div style="color: #7f1d1d; font-size: 14px;">Queries without indexes cause full table scans. Add indexes on columns used in WHERE, JOIN, and ORDER BY clauses.</div>
-</div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Missing indexes on query columns</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Queries without indexes cause full table scans. Add indexes on columns used in WHERE, JOIN, and ORDER BY clauses.</div>
+    </div>
 
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">No backup testing</div>
-<div style="color: #7f1d1d; font-size: 14px;">Backups that haven't been tested might not work when needed. Regularly restore backups to verify they're valid and practice recovery procedures.</div>
-</div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">No backup testing</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Backups that haven't been tested might not work when needed. Regularly restore backups to verify they're valid and practice recovery procedures.</div>
+    </div>
 
-<div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
-<div style="color: #991b1b; font-weight: 600;">Using database as a queue</div>
-<div style="color: #7f1d1d; font-size: 14px;">Polling tables for jobs is inefficient. Use purpose-built queues (Redis, RabbitMQ, SQS) for job processing.</div>
-</div>
-</div>
+    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+      <div style="color: #991b1b; font-weight: 600;">Using database as a queue</div>
+      <div style="color: #7f1d1d; font-size: 14px;">Polling tables for jobs is inefficient. Use purpose-built queues (Redis, RabbitMQ, SQS) for job processing.</div>
+    </div>
+  </div>
 </div>
 
 ---
@@ -843,54 +843,54 @@ class ShardedDatabase:
 ## Quick Reference Card
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
-<h4 style="color: #1e293b; margin-top: 0;">Storage Selection Cheat Sheet</h4>
+  <h4 style="color: #1e293b; margin-top: 0;">Storage Selection Cheat Sheet</h4>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">By Use Case</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;"><strong>Transactions:</strong> PostgreSQL</div>
-  <div style="padding: 4px 0;"><strong>Caching:</strong> Redis</div>
-  <div style="padding: 4px 0;"><strong>Search:</strong> Elasticsearch</div>
-  <div style="padding: 4px 0;"><strong>Time-series:</strong> TimescaleDB, InfluxDB</div>
-  <div style="padding: 4px 0;"><strong>Files:</strong> S3, GCS</div>
-  <div style="padding: 4px 0;"><strong>Graph:</strong> Neo4j</div>
-</div>
-</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">By Use Case</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;"><strong>Transactions:</strong> PostgreSQL</div>
+        <div style="padding: 4px 0;"><strong>Caching:</strong> Redis</div>
+        <div style="padding: 4px 0;"><strong>Search:</strong> Elasticsearch</div>
+        <div style="padding: 4px 0;"><strong>Time-series:</strong> TimescaleDB, InfluxDB</div>
+        <div style="padding: 4px 0;"><strong>Files:</strong> S3, GCS</div>
+        <div style="padding: 4px 0;"><strong>Graph:</strong> Neo4j</div>
+      </div>
+    </div>
 
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Scaling Strategies</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;">1. Add caching layer (Redis)</div>
-  <div style="padding: 4px 0;">2. Add read replicas</div>
-  <div style="padding: 4px 0;">3. Vertical scaling (bigger machine)</div>
-  <div style="padding: 4px 0;">4. Shard by tenant/user ID</div>
-  <div style="padding: 4px 0;">5. Move to distributed DB</div>
-</div>
-</div>
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Scaling Strategies</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">1. Add caching layer (Redis)</div>
+        <div style="padding: 4px 0;">2. Add read replicas</div>
+        <div style="padding: 4px 0;">3. Vertical scaling (bigger machine)</div>
+        <div style="padding: 4px 0;">4. Shard by tenant/user ID</div>
+        <div style="padding: 4px 0;">5. Move to distributed DB</div>
+      </div>
+    </div>
 
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Performance Checklist</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;">[ ] Connection pooling enabled</div>
-  <div style="padding: 4px 0;">[ ] Indexes on query columns</div>
-  <div style="padding: 4px 0;">[ ] Caching for hot data</div>
-  <div style="padding: 4px 0;">[ ] Query plans analyzed</div>
-  <div style="padding: 4px 0;">[ ] Monitoring in place</div>
-</div>
-</div>
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Performance Checklist</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">[ ] Connection pooling enabled</div>
+        <div style="padding: 4px 0;">[ ] Indexes on query columns</div>
+        <div style="padding: 4px 0;">[ ] Caching for hot data</div>
+        <div style="padding: 4px 0;">[ ] Query plans analyzed</div>
+        <div style="padding: 4px 0;">[ ] Monitoring in place</div>
+      </div>
+    </div>
 
-<div>
-  <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Reliability Checklist</div>
-  <div style="font-size: 14px; color: #475569;">
-  <div style="padding: 4px 0;">[ ] Automated backups</div>
-  <div style="padding: 4px 0;">[ ] Backup restoration tested</div>
-  <div style="padding: 4px 0;">[ ] Replication configured</div>
-  <div style="padding: 4px 0;">[ ] Failover tested</div>
-  <div style="padding: 4px 0;">[ ] Monitoring alerts set</div>
-</div>
-</div>
-</div>
+    <div>
+      <div style="color: #1e293b; font-weight: 600; margin-bottom: 8px;">Reliability Checklist</div>
+      <div style="font-size: 14px; color: #475569;">
+        <div style="padding: 4px 0;">[ ] Automated backups</div>
+        <div style="padding: 4px 0;">[ ] Backup restoration tested</div>
+        <div style="padding: 4px 0;">[ ] Replication configured</div>
+        <div style="padding: 4px 0;">[ ] Failover tested</div>
+        <div style="padding: 4px 0;">[ ] Monitoring alerts set</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 ---

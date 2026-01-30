@@ -11,59 +11,59 @@ Event-driven coordination strategies determine how distributed services collabor
 ## Section 1: Event Choreography vs Orchestration
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">CHOREOGRAPHY VS ORCHESTRATION: ARCHITECTURAL PARADIGMS</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+  <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">CHOREOGRAPHY VS ORCHESTRATION: ARCHITECTURAL PARADIGMS</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border-left: 3px solid #7ee787;">
-<div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 16px;">CHOREOGRAPHY</div>
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
-<div style="margin-bottom: 12px;"><strong style="color: #58a6ff;">Definition:</strong> Services react to events autonomously without central coordination. Each service knows its own responsibilities and publishes events for others to consume.</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin: 12px 0;">
-<div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">EVENT FLOW</div>
-<div style="color: #7ee787;">OrderService</div>
-<div style="color: #64748b; padding-left: 12px;">publishes: OrderCreated</div>
-<div style="color: #58a6ff; margin-top: 8px;">PaymentService</div>
-<div style="color: #64748b; padding-left: 12px;">subscribes: OrderCreated</div>
-<div style="color: #64748b; padding-left: 12px;">publishes: PaymentProcessed</div>
-<div style="color: #f0883e; margin-top: 8px;">InventoryService</div>
-<div style="color: #64748b; padding-left: 12px;">subscribes: PaymentProcessed</div>
-<div style="color: #64748b; padding-left: 12px;">publishes: InventoryReserved</div>
-</div>
-<div style="margin-top: 12px;">
-<div style="color: #7ee787;">Advantages:</div>
-<div style="padding-left: 12px;">- Loose coupling between services</div>
-<div style="padding-left: 12px;">- No single point of failure</div>
-<div style="padding-left: 12px;">- Services evolve independently</div>
-<div style="padding-left: 12px;">- Natural fit for truly autonomous domains</div>
-</div>
-</div>
-</div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border-left: 3px solid #7ee787;">
+      <div style="color: #7ee787; font-weight: bold; font-size: 14px; margin-bottom: 16px;">CHOREOGRAPHY</div>
+      <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
+        <div style="margin-bottom: 12px;"><strong style="color: #58a6ff;">Definition:</strong> Services react to events autonomously without central coordination. Each service knows its own responsibilities and publishes events for others to consume.</div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin: 12px 0;">
+          <div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">EVENT FLOW</div>
+          <div style="color: #7ee787;">OrderService</div>
+          <div style="color: #64748b; padding-left: 12px;">publishes: OrderCreated</div>
+          <div style="color: #58a6ff; margin-top: 8px;">PaymentService</div>
+          <div style="color: #64748b; padding-left: 12px;">subscribes: OrderCreated</div>
+          <div style="color: #64748b; padding-left: 12px;">publishes: PaymentProcessed</div>
+          <div style="color: #f0883e; margin-top: 8px;">InventoryService</div>
+          <div style="color: #64748b; padding-left: 12px;">subscribes: PaymentProcessed</div>
+          <div style="color: #64748b; padding-left: 12px;">publishes: InventoryReserved</div>
+        </div>
+        <div style="margin-top: 12px;">
+          <div style="color: #7ee787;">Advantages:</div>
+          <div style="padding-left: 12px;">- Loose coupling between services</div>
+          <div style="padding-left: 12px;">- No single point of failure</div>
+          <div style="padding-left: 12px;">- Services evolve independently</div>
+          <div style="padding-left: 12px;">- Natural fit for truly autonomous domains</div>
+        </div>
+      </div>
+    </div>
 
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 20px; border-left: 3px solid #8957e5;">
-<div style="color: #8957e5; font-weight: bold; font-size: 14px; margin-bottom: 16px;">ORCHESTRATION</div>
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
-<div style="margin-bottom: 12px;"><strong style="color: #58a6ff;">Definition:</strong> A central orchestrator service coordinates the saga by sending commands to participants and handling their responses.</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin: 12px 0;">
-<div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">COMMAND FLOW</div>
-<div style="color: #8957e5;">OrderOrchestrator</div>
-<div style="color: #64748b; padding-left: 12px;">sends: ProcessPayment cmd</div>
-<div style="color: #58a6ff; margin-top: 8px;">PaymentService</div>
-<div style="color: #64748b; padding-left: 12px;">receives: ProcessPayment</div>
-<div style="color: #64748b; padding-left: 12px;">replies: PaymentResult</div>
-<div style="color: #8957e5; margin-top: 8px;">OrderOrchestrator</div>
-<div style="color: #64748b; padding-left: 12px;">sends: ReserveInventory cmd</div>
-</div>
-<div style="margin-top: 12px;">
-<div style="color: #8957e5;">Advantages:</div>
-<div style="padding-left: 12px;">- Explicit workflow visibility</div>
-<div style="padding-left: 12px;">- Centralized error handling</div>
-<div style="padding-left: 12px;">- Easier to modify workflow</div>
-<div style="padding-left: 12px;">- Clear compensation logic</div>
-</div>
-</div>
-</div>
+    <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 20px; border-left: 3px solid #8957e5;">
+      <div style="color: #8957e5; font-weight: bold; font-size: 14px; margin-bottom: 16px;">ORCHESTRATION</div>
+      <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
+        <div style="margin-bottom: 12px;"><strong style="color: #58a6ff;">Definition:</strong> A central orchestrator service coordinates the saga by sending commands to participants and handling their responses.</div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin: 12px 0;">
+          <div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">COMMAND FLOW</div>
+          <div style="color: #8957e5;">OrderOrchestrator</div>
+          <div style="color: #64748b; padding-left: 12px;">sends: ProcessPayment cmd</div>
+          <div style="color: #58a6ff; margin-top: 8px;">PaymentService</div>
+          <div style="color: #64748b; padding-left: 12px;">receives: ProcessPayment</div>
+          <div style="color: #64748b; padding-left: 12px;">replies: PaymentResult</div>
+          <div style="color: #8957e5; margin-top: 8px;">OrderOrchestrator</div>
+          <div style="color: #64748b; padding-left: 12px;">sends: ReserveInventory cmd</div>
+        </div>
+        <div style="margin-top: 12px;">
+          <div style="color: #8957e5;">Advantages:</div>
+          <div style="padding-left: 12px;">- Explicit workflow visibility</div>
+          <div style="padding-left: 12px;">- Centralized error handling</div>
+          <div style="padding-left: 12px;">- Easier to modify workflow</div>
+          <div style="padding-left: 12px;">- Clear compensation logic</div>
+        </div>
+      </div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ### Internal Mechanisms: Choreography
@@ -89,10 +89,10 @@ The "process" in choreography exists only as an emergent property of individual 
 3. The business logic within each service's event handlers
 
 <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f85149;">
-<div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL ASSUMPTION</div>
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
-Choreography assumes services are <strong>truly autonomous</strong> and can make meaningful local decisions. If a service frequently needs information from other services to complete its task, choreography introduces implicit coupling that is harder to reason about than explicit orchestration.
-</div>
+  <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL ASSUMPTION</div>
+  <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
+    Choreography assumes services are <strong>truly autonomous</strong> and can make meaningful local decisions. If a service frequently needs information from other services to complete its task, choreography introduces implicit coupling that is harder to reason about than explicit orchestration.
+  </div>
 </div>
 
 ### Internal Mechanisms: Orchestration
@@ -134,65 +134,65 @@ def handle_message(message):
 ### Edge Cases and Failure Modes
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #f85149; margin: 0 0 20px 0; font-size: 13px;">CHOREOGRAPHY FAILURE MODES</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
+  <h4 style="color: #f85149; margin: 0 0 20px 0; font-size: 13px;">CHOREOGRAPHY FAILURE MODES</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Lost Events</div>
-<div style="color: #1e293b;">If an event is published but not delivered (broker failure, network partition), downstream services never react. The saga stalls silently without explicit timeout detection.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Outbox pattern + event store with replay capability</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Lost Events</div>
+      <div style="color: #1e293b;">If an event is published but not delivered (broker failure, network partition), downstream services never react. The saga stalls silently without explicit timeout detection.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Outbox pattern + event store with replay capability</div>
+    </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Cyclic Dependencies</div>
-<div style="color: #1e293b;">Service A reacts to events from B, which reacts to events from C, which reacts to events from A. Creates infinite loops or deadlocks that are hard to detect at design time.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Event flow diagrams, cycle detection in CI/CD</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Cyclic Dependencies</div>
+      <div style="color: #1e293b;">Service A reacts to events from B, which reacts to events from C, which reacts to events from A. Creates infinite loops or deadlocks that are hard to detect at design time.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Event flow diagrams, cycle detection in CI/CD</div>
+    </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Semantic Coupling</div>
-<div style="color: #1e293b;">Services appear decoupled but share implicit assumptions about event semantics. Changing event structure breaks consumers without compile-time detection.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Schema registry, consumer-driven contract testing</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Semantic Coupling</div>
+      <div style="color: #1e293b;">Services appear decoupled but share implicit assumptions about event semantics. Changing event structure breaks consumers without compile-time detection.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Schema registry, consumer-driven contract testing</div>
+    </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Compensation Complexity</div>
-<div style="color: #1e293b;">When a saga must roll back, each service must know how to compensate. With N services, there are N*(N-1)/2 potential compensation coordination scenarios.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Standardized compensation events, saga state tracking</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Compensation Complexity</div>
+      <div style="color: #1e293b;">When a saga must roll back, each service must know how to compensate. With N services, there are N*(N-1)/2 potential compensation coordination scenarios.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Standardized compensation events, saga state tracking</div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #8957e5; margin: 0 0 20px 0; font-size: 13px;">ORCHESTRATION FAILURE MODES</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
+  <h4 style="color: #8957e5; margin: 0 0 20px 0; font-size: 13px;">ORCHESTRATION FAILURE MODES</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Orchestrator as Bottleneck</div>
-<div style="color: #1e293b;">All saga traffic flows through the orchestrator. High-volume sagas can overwhelm it, and orchestrator failure halts all in-progress sagas.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Stateless orchestrators with external state store, horizontal scaling</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Orchestrator as Bottleneck</div>
+      <div style="color: #1e293b;">All saga traffic flows through the orchestrator. High-volume sagas can overwhelm it, and orchestrator failure halts all in-progress sagas.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Stateless orchestrators with external state store, horizontal scaling</div>
+    </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">God Service Anti-pattern</div>
-<div style="color: #1e293b;">Business logic migrates into orchestrator over time. It becomes a "god service" that knows too much about participant implementations.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Orchestrator contains only coordination logic, not business rules</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">God Service Anti-pattern</div>
+      <div style="color: #1e293b;">Business logic migrates into orchestrator over time. It becomes a "god service" that knows too much about participant implementations.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Orchestrator contains only coordination logic, not business rules</div>
+    </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Zombie Sagas</div>
-<div style="color: #1e293b;">Saga instances that await responses that never come. Orchestrator state grows unbounded with stuck sagas consuming resources.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Saga timeouts, periodic saga cleanup jobs, monitoring</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Zombie Sagas</div>
+      <div style="color: #1e293b;">Saga instances that await responses that never come. Orchestrator state grows unbounded with stuck sagas consuming resources.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Saga timeouts, periodic saga cleanup jobs, monitoring</div>
+    </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Command/Response Mismatch</div>
-<div style="color: #1e293b;">Response arrives for a saga that has already been compensated or completed. Orchestrator must handle late/duplicate responses gracefully.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Idempotent state transitions, ignore events for terminal states</div>
-</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">Command/Response Mismatch</div>
+      <div style="color: #1e293b;">Response arrives for a saga that has already been compensated or completed. Orchestrator must handle late/duplicate responses gracefully.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Mitigation: Idempotent state transitions, ignore events for terminal states</div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ### Trade-off Analysis
@@ -210,53 +210,53 @@ def handle_message(message):
 ### Interview Questions: Choreography vs Orchestration
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
-<h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
+  <h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is the fundamental difference between choreography and orchestration?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> In choreography, services react autonomously to events without central coordination - the workflow emerges from individual service behaviors. In orchestration, a central coordinator explicitly directs the workflow by sending commands to participants and handling their responses. The key distinction is where the "process knowledge" lives: distributed across services (choreography) or centralized in the orchestrator.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is the fundamental difference between choreography and orchestration?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> In choreography, services react autonomously to events without central coordination - the workflow emerges from individual service behaviors. In orchestration, a central coordinator explicitly directs the workflow by sending commands to participants and handling their responses. The key distinction is where the "process knowledge" lives: distributed across services (choreography) or centralized in the orchestrator.
+    </div>
+  </div>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: When would you choose choreography over orchestration?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Choreography works best when: (1) Services are truly autonomous and can complete meaningful work independently, (2) The workflow is simple with few steps and minimal compensation needs, (3) New consumers may need to react to events in the future without modifying existing services, (4) Team structure maps to services (each team owns their event handlers). Avoid choreography when workflows are complex, require sophisticated error handling, or when visibility into the overall process is important.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: When would you choose choreography over orchestration?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Choreography works best when: (1) Services are truly autonomous and can complete meaningful work independently, (2) The workflow is simple with few steps and minimal compensation needs, (3) New consumers may need to react to events in the future without modifying existing services, (4) Team structure maps to services (each team owns their event handlers). Avoid choreography when workflows are complex, require sophisticated error handling, or when visibility into the overall process is important.
+    </div>
+  </div>
 
-<h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
+  <h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: How does an orchestrator handle the case where a participant service is temporarily unavailable?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> The orchestrator implements retry logic with exponential backoff. It persists the saga state including pending commands, allowing resume after restart. After max retries, it transitions to a compensation state. Critical details: (1) Commands must be idempotent since retries may succeed multiple times, (2) Saga timeout should trigger compensation even without explicit failure response, (3) The orchestrator should use a circuit breaker to avoid overwhelming a recovering service with retries.
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: How does an orchestrator handle the case where a participant service is temporarily unavailable?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> The orchestrator implements retry logic with exponential backoff. It persists the saga state including pending commands, allowing resume after restart. After max retries, it transitions to a compensation state. Critical details: (1) Commands must be idempotent since retries may succeed multiple times, (2) Saga timeout should trigger compensation even without explicit failure response, (3) The orchestrator should use a circuit breaker to avoid overwhelming a recovering service with retries.
+    </div>
+  </div>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: In a choreographed system, how do you implement a timeout for a multi-step business process?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Since there is no central coordinator, timeout handling must be distributed. Options: (1) The initiating service schedules a delayed "timeout check" event when starting the saga, then queries current state when it fires, (2) A separate monitoring service tracks saga progress by consuming all events and detects stalled sagas, (3) Each service sets local timeouts and publishes failure events if expectations are not met. The challenge is ensuring exactly one service triggers compensation - typically the initiating service owns this responsibility.
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: In a choreographed system, how do you implement a timeout for a multi-step business process?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Since there is no central coordinator, timeout handling must be distributed. Options: (1) The initiating service schedules a delayed "timeout check" event when starting the saga, then queries current state when it fires, (2) A separate monitoring service tracks saga progress by consuming all events and detects stalled sagas, (3) Each service sets local timeouts and publishes failure events if expectations are not met. The challenge is ensuring exactly one service triggers compensation - typically the initiating service owns this responsibility.
+    </div>
+  </div>
 
-<h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
+  <h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: You have a choreographed saga where Service A publishes OrderCreated, Service B consumes it and publishes PaymentFailed, but Service A's consumer for PaymentFailed fails repeatedly. The event goes to DLQ. How do you handle this situation?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> This is a critical consistency issue. The order exists but Service A never learned payment failed. Solutions: (1) Implement a reconciliation job that periodically compares Order states with Payment states, (2) Add a saga ID to all events and implement a saga state tracker service that detects incomplete sagas, (3) Use the transactional outbox pattern so event consumption and state update are atomic - if the consumer fails, the order state is not updated, maintaining consistency. The DLQ event should trigger an alert for immediate investigation. Long-term, consider if this saga complexity indicates orchestration would be more appropriate.
-</div>
-</div>
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: You have a choreographed saga where Service A publishes OrderCreated, Service B consumes it and publishes PaymentFailed, but Service A's consumer for PaymentFailed fails repeatedly. The event goes to DLQ. How do you handle this situation?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> This is a critical consistency issue. The order exists but Service A never learned payment failed. Solutions: (1) Implement a reconciliation job that periodically compares Order states with Payment states, (2) Add a saga ID to all events and implement a saga state tracker service that detects incomplete sagas, (3) Use the transactional outbox pattern so event consumption and state update are atomic - if the consumer fails, the order state is not updated, maintaining consistency. The DLQ event should trigger an alert for immediate investigation. Long-term, consider if this saga complexity indicates orchestration would be more appropriate.
+    </div>
+  </div>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: Your orchestrator uses a relational database for saga state. During high load, you see saga state updates failing due to lock contention. How do you redesign the system?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Several approaches: (1) Partition saga state by saga ID across multiple database shards - sagas are independent so no cross-saga transactions needed, (2) Use optimistic locking with version numbers instead of row locks - conflicts retry from saga state reload, (3) Switch to an append-only event store pattern where saga state is computed from events - no updates means no locks, (4) Use a key-value store like Redis for saga state with TTL for automatic cleanup. Trade-off analysis needed: event sourcing adds complexity but scales better; sharding requires routing logic; Redis sacrifices durability for performance.
-</div>
-</div>
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: Your orchestrator uses a relational database for saga state. During high load, you see saga state updates failing due to lock contention. How do you redesign the system?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Several approaches: (1) Partition saga state by saga ID across multiple database shards - sagas are independent so no cross-saga transactions needed, (2) Use optimistic locking with version numbers instead of row locks - conflicts retry from saga state reload, (3) Switch to an append-only event store pattern where saga state is computed from events - no updates means no locks, (4) Use a key-value store like Redis for saga state with TTL for automatic cleanup. Trade-off analysis needed: event sourcing adds complexity but scales better; sharding requires routing logic; Redis sacrifices durability for performance.
+    </div>
+  </div>
 
 </div>
 
@@ -265,48 +265,48 @@ def handle_message(message):
 ## Section 2: The Saga Pattern
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">SAGA PATTERN: DISTRIBUTED TRANSACTION COORDINATION</h4>
+  <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">SAGA PATTERN: DISTRIBUTED TRANSACTION COORDINATION</h4>
 
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Core Concept</div>
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
-A saga is a sequence of local transactions where each transaction updates a single service and publishes an event/message to trigger the next step. If a step fails, the saga executes <strong>compensating transactions</strong> to undo the work of preceding steps. Sagas provide eventual consistency without distributed locks.
-</div>
-</div>
+  <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Core Concept</div>
+    <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
+      A saga is a sequence of local transactions where each transaction updates a single service and publishes an event/message to trigger the next step. If a step fails, the saga executes <strong>compensating transactions</strong> to undo the work of preceding steps. Sagas provide eventual consistency without distributed locks.
+    </div>
+  </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">FORWARD TRANSACTIONS (T1 -> T2 -> T3)</div>
-<div style="font-size: 10px; color: #1e293b;">
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
-<span style="color: #7ee787;">T1:</span> Create Order (status: PENDING)
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
-<span style="color: #7ee787;">T2:</span> Reserve Inventory (decrement stock)
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px;">
-<span style="color: #7ee787;">T3:</span> Process Payment (charge card)
-</div>
-</div>
-</div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px;">
+      <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">FORWARD TRANSACTIONS (T1 -> T2 -> T3)</div>
+      <div style="font-size: 10px; color: #1e293b;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+          <span style="color: #7ee787;">T1:</span> Create Order (status: PENDING)
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+          <span style="color: #7ee787;">T2:</span> Reserve Inventory (decrement stock)
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px;">
+          <span style="color: #7ee787;">T3:</span> Process Payment (charge card)
+        </div>
+      </div>
+    </div>
 
-<div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px;">
-<div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">COMPENSATING TRANSACTIONS (C3 -> C2 -> C1)</div>
-<div style="font-size: 10px; color: #1e293b;">
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
-<span style="color: #f85149;">C3:</span> Refund Payment (credit card)
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
-<span style="color: #f85149;">C2:</span> Release Inventory (increment stock)
-</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px;">
-<span style="color: #f85149;">C1:</span> Cancel Order (status: CANCELLED)
-</div>
-</div>
-</div>
+    <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px;">
+      <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">COMPENSATING TRANSACTIONS (C3 -> C2 -> C1)</div>
+      <div style="font-size: 10px; color: #1e293b;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+          <span style="color: #f85149;">C3:</span> Refund Payment (credit card)
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+          <span style="color: #f85149;">C2:</span> Release Inventory (increment stock)
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px;">
+          <span style="color: #f85149;">C1:</span> Cancel Order (status: CANCELLED)
+        </div>
+      </div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ### Saga Execution Coordinator (SEC) Implementation
@@ -366,53 +366,53 @@ class SagaExecutionCoordinator:
 ### Semantic Lock: Preventing Concurrent Modifications
 
 <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f78166;">
-<div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL DESIGN CONSIDERATION: SEMANTIC LOCKS</div>
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
-<p>Between T1 completion and saga completion, the Order is in a "pending" state. Other sagas or operations must not modify this order. The <strong>semantic lock</strong> pattern uses application-level status flags rather than database locks:</p>
+  <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL DESIGN CONSIDERATION: SEMANTIC LOCKS</div>
+  <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
+    <p>Between T1 completion and saga completion, the Order is in a "pending" state. Other sagas or operations must not modify this order. The <strong>semantic lock</strong> pattern uses application-level status flags rather than database locks:</p>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin: 12px 0; font-family: monospace; font-size: 10px;">
-<div><span style="color: #8957e5;">-- T1: Create Order with lock</span></div>
-  <div>INSERT INTO orders (id, status, saga_id) VALUES (?, 'PENDING', ?)</div>
-    <div style="margin-top: 8px;"><span style="color: #8957e5;">-- Any concurrent operation checks:</span></div>
-    <div>IF order.status = 'PENDING' THEN reject("Order locked by saga")</div>
+    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; margin: 12px 0; font-family: monospace; font-size: 10px;">
+      <div><span style="color: #8957e5;">-- T1: Create Order with lock</span></div>
+      <div>INSERT INTO orders (id, status, saga_id) VALUES (?, 'PENDING', ?)</div>
+      <div style="margin-top: 8px;"><span style="color: #8957e5;">-- Any concurrent operation checks:</span></div>
+      <div>IF order.status = 'PENDING' THEN reject("Order locked by saga")</div>
       <div style="margin-top: 8px;"><span style="color: #8957e5;">-- C1 or final step: Release lock</span></div>
       <div>UPDATE orders SET status = 'COMPLETED', saga_id = NULL WHERE id = ?</div>
-      </div>
-
-      <p><strong>Why not database locks?</strong> Sagas may span seconds to days. Database locks would cause connection exhaustion, deadlocks, and prevent other database operations.</p>
     </div>
+
+    <p><strong>Why not database locks?</strong> Sagas may span seconds to days. Database locks would cause connection exhaustion, deadlocks, and prevent other database operations.</p>
   </div>
+</div>
 
   ### Pivot and Retriable Transactions
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
   <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">TRANSACTION CLASSIFICATION</h4>
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; font-size: 11px;">
 
-  <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 16px;">
-  <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Compensatable</div>
-  <div style="color: #1e293b;">Can be undone by a compensating transaction. Must execute BEFORE the pivot transaction.</div>
-  <div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Reserve inventory (can release)</div>
-</div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 16px;">
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Compensatable</div>
+      <div style="color: #1e293b;">Can be undone by a compensating transaction. Must execute BEFORE the pivot transaction.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Reserve inventory (can release)</div>
+    </div>
 
-<div style="background: rgba(247,129,102,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #f78166; font-weight: bold; margin-bottom: 8px;">Pivot</div>
-<div style="color: #1e293b;">The point of no return. If it succeeds, saga will complete. If it fails, saga will compensate. Cannot be undone.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Charge credit card</div>
-</div>
+    <div style="background: rgba(247,129,102,0.1); border-radius: 8px; padding: 16px;">
+      <div style="color: #f78166; font-weight: bold; margin-bottom: 8px;">Pivot</div>
+      <div style="color: #1e293b;">The point of no return. If it succeeds, saga will complete. If it fails, saga will compensate. Cannot be undone.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Charge credit card</div>
+    </div>
 
-<div style="background: rgba(88,166,255,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Retriable</div>
-<div style="color: #1e293b;">Guaranteed to eventually succeed (with retries). Must execute AFTER the pivot transaction.</div>
-<div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Send confirmation email</div>
-</div>
+    <div style="background: rgba(88,166,255,0.1); border-radius: 8px; padding: 16px;">
+      <div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">Retriable</div>
+      <div style="color: #1e293b;">Guaranteed to eventually succeed (with retries). Must execute AFTER the pivot transaction.</div>
+      <div style="color: #64748b; margin-top: 8px; font-style: italic;">Example: Send confirmation email</div>
+    </div>
 
-</div>
+  </div>
 
-<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; margin-top: 16px;">
-<div style="color: #f85149; font-weight: bold; font-size: 11px;">DESIGN RULE</div>
-<div style="color: #1e293b; font-size: 10px; margin-top: 4px;">Order saga steps as: [Compensatable steps] -> [Pivot] -> [Retriable steps]. This minimizes scenarios where you must compensate AND have already passed the point of no return.</div>
-</div>
+  <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; margin-top: 16px;">
+    <div style="color: #f85149; font-weight: bold; font-size: 11px;">DESIGN RULE</div>
+    <div style="color: #1e293b; font-size: 10px; margin-top: 4px;">Order saga steps as: [Compensatable steps] -> [Pivot] -> [Retriable steps]. This minimizes scenarios where you must compensate AND have already passed the point of no return.</div>
+  </div>
 </div>
 
 ### Saga Data Isolation Problems
@@ -420,85 +420,85 @@ class SagaExecutionCoordinator:
 Unlike ACID transactions, sagas do not provide isolation. This leads to three anomalies:
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<div style="display: grid; grid-template-columns: 1fr; gap: 16px; font-size: 11px;">
+  <div style="display: grid; grid-template-columns: 1fr; gap: 16px; font-size: 11px;">
 
-<div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Lost Updates</div>
-<div style="color: #1e293b; margin-bottom: 8px;">
-Saga 1 reads X, Saga 2 reads X, Saga 1 writes X, Saga 2 writes X (overwrites Saga 1's change)
-</div>
-<div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Version numbers with optimistic locking, semantic locks</div>
-</div>
+    <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 16px;">
+      <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Lost Updates</div>
+      <div style="color: #1e293b; margin-bottom: 8px;">
+        Saga 1 reads X, Saga 2 reads X, Saga 1 writes X, Saga 2 writes X (overwrites Saga 1's change)
+      </div>
+      <div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Version numbers with optimistic locking, semantic locks</div>
+    </div>
 
-<div style="background: rgba(247,129,102,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #f78166; font-weight: bold; margin-bottom: 8px;">Dirty Reads</div>
-<div style="color: #1e293b; margin-bottom: 8px;">
-Saga 2 reads data written by Saga 1's uncommitted (later compensated) transaction
-</div>
-<div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Semantic locks prevent reading pending data, or use "read your own writes" pattern</div>
-</div>
+    <div style="background: rgba(247,129,102,0.1); border-radius: 8px; padding: 16px;">
+      <div style="color: #f78166; font-weight: bold; margin-bottom: 8px;">Dirty Reads</div>
+      <div style="color: #1e293b; margin-bottom: 8px;">
+        Saga 2 reads data written by Saga 1's uncommitted (later compensated) transaction
+      </div>
+      <div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Semantic locks prevent reading pending data, or use "read your own writes" pattern</div>
+    </div>
 
-<div style="background: rgba(137,87,229,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #8957e5; font-weight: bold; margin-bottom: 8px;">Non-Repeatable Reads</div>
-<div style="color: #1e293b; margin-bottom: 8px;">
-Saga reads X, another saga modifies X, first saga reads X again and gets different value
-</div>
-<div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Pass all needed data in saga context rather than re-reading from services</div>
-</div>
+    <div style="background: rgba(137,87,229,0.1); border-radius: 8px; padding: 16px;">
+      <div style="color: #8957e5; font-weight: bold; margin-bottom: 8px;">Non-Repeatable Reads</div>
+      <div style="color: #1e293b; margin-bottom: 8px;">
+        Saga reads X, another saga modifies X, first saga reads X again and gets different value
+      </div>
+      <div style="color: #7ee787; font-size: 10px;"><strong>Mitigation:</strong> Pass all needed data in saga context rather than re-reading from services</div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ### Interview Questions: Saga Pattern
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
-<h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
+  <h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: Why can't we use distributed transactions (2PC) instead of sagas?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> 2PC requires all participants to hold locks until the coordinator decides commit/abort. Problems: (1) Locks held across network - if coordinator fails, resources locked indefinitely, (2) Synchronous blocking reduces throughput dramatically, (3) NoSQL databases and message brokers often don't support XA transactions, (4) Latency increases with each participant. Sagas use eventual consistency with compensations, allowing each service to commit independently and release resources immediately.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: Why can't we use distributed transactions (2PC) instead of sagas?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> 2PC requires all participants to hold locks until the coordinator decides commit/abort. Problems: (1) Locks held across network - if coordinator fails, resources locked indefinitely, (2) Synchronous blocking reduces throughput dramatically, (3) NoSQL databases and message brokers often don't support XA transactions, (4) Latency increases with each participant. Sagas use eventual consistency with compensations, allowing each service to commit independently and release resources immediately.
+    </div>
+  </div>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: What is a compensating transaction and how does it differ from a rollback?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> A compensating transaction is a new forward transaction that semantically undoes a previous transaction. Unlike rollback (which reverts uncommitted changes), compensation creates a new committed transaction. Example: T1 debits account by $100, C1 credits account by $100. The history shows both transactions occurred, not that nothing happened. This has implications: audit trails show compensations, some actions cannot be compensated (sent emails), and the intermediate state was visible to other transactions.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: What is a compensating transaction and how does it differ from a rollback?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> A compensating transaction is a new forward transaction that semantically undoes a previous transaction. Unlike rollback (which reverts uncommitted changes), compensation creates a new committed transaction. Example: T1 debits account by $100, C1 credits account by $100. The history shows both transactions occurred, not that nothing happened. This has implications: audit trails show compensations, some actions cannot be compensated (sent emails), and the intermediate state was visible to other transactions.
+    </div>
+  </div>
 
-<h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
+  <h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: How do you handle the case where a compensating transaction fails?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Compensating transactions must be designed to eventually succeed (retriable). Implementation: (1) Retry with exponential backoff until success, (2) Compensations must be idempotent - safe to execute multiple times, (3) If max retries exceeded, alert operations for manual intervention, (4) Store compensation state so it can resume after process restart. Design principle: compensations should only fail for transient reasons (network, service unavailable), never for business logic reasons. If a business rule prevents compensation, the saga design is flawed.
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: How do you handle the case where a compensating transaction fails?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Compensating transactions must be designed to eventually succeed (retriable). Implementation: (1) Retry with exponential backoff until success, (2) Compensations must be idempotent - safe to execute multiple times, (3) If max retries exceeded, alert operations for manual intervention, (4) Store compensation state so it can resume after process restart. Design principle: compensations should only fail for transient reasons (network, service unavailable), never for business logic reasons. If a business rule prevents compensation, the saga design is flawed.
+    </div>
+  </div>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: How do you handle concurrent sagas that affect the same entity?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Use semantic locks: (1) First transaction marks entity with saga ID and pending status, (2) Subsequent sagas check for pending status and either wait, fail fast, or queue, (3) Upon saga completion/compensation, clear the lock. Alternative: use optimistic locking with version numbers - if version changed between read and write, saga step fails and may retry or compensate. For high-contention entities, consider redesigning to reduce saga scope or use a queue per entity to serialize access.
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: How do you handle concurrent sagas that affect the same entity?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Use semantic locks: (1) First transaction marks entity with saga ID and pending status, (2) Subsequent sagas check for pending status and either wait, fail fast, or queue, (3) Upon saga completion/compensation, clear the lock. Alternative: use optimistic locking with version numbers - if version changed between read and write, saga step fails and may retry or compensate. For high-contention entities, consider redesigning to reduce saga scope or use a queue per entity to serialize access.
+    </div>
+  </div>
 
-<h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
+  <h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: You have an order saga: CreateOrder -> ReserveInventory -> ChargePayment -> ShipOrder. The ChargePayment step succeeded but ShipOrder failed because the item is actually out of stock (inventory service had stale data). How do you handle this?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> This is a saga design flaw - ChargePayment is the pivot transaction but ShipOrder should not fail for business reasons after pivot. Solutions: (1) Redesign: Move inventory check to a step BEFORE charging payment, make it a hard reservation with TTL, (2) Add a "verify fulfillability" step after payment but before shipping that can trigger refund compensation, (3) Use a more sophisticated inventory system with allocation vs physical stock. Immediate handling: trigger compensation (refund payment, release inventory reservation, cancel order), notify customer. Long-term: fix the saga design to validate all requirements before the pivot.
-</div>
-</div>
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: You have an order saga: CreateOrder -> ReserveInventory -> ChargePayment -> ShipOrder. The ChargePayment step succeeded but ShipOrder failed because the item is actually out of stock (inventory service had stale data). How do you handle this?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> This is a saga design flaw - ChargePayment is the pivot transaction but ShipOrder should not fail for business reasons after pivot. Solutions: (1) Redesign: Move inventory check to a step BEFORE charging payment, make it a hard reservation with TTL, (2) Add a "verify fulfillability" step after payment but before shipping that can trigger refund compensation, (3) Use a more sophisticated inventory system with allocation vs physical stock. Immediate handling: trigger compensation (refund payment, release inventory reservation, cancel order), notify customer. Long-term: fix the saga design to validate all requirements before the pivot.
+    </div>
+  </div>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: Your saga uses event sourcing for state. During a compensation, you replay the saga events to rebuild state, but you discover events are missing due to a past event store corruption. How do you recover?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> This is a disaster recovery scenario requiring manual intervention. Steps: (1) Halt saga processing to prevent further damage, (2) Identify affected sagas by scanning for gaps in event sequences or inconsistent state, (3) Consult other system-of-record data sources (payment processor records, inventory management system, external APIs) to reconstruct what happened, (4) Create "reconciliation events" that represent the missing state transitions, (5) For sagas in compensating state, consider manual compensation if automated path is unsafe. Prevention: (1) Event store replication across regions, (2) Regular backups with restore testing, (3) Checksums/hashing for event integrity, (4) Audit log correlation between saga events and external system calls.
-</div>
-</div>
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: Your saga uses event sourcing for state. During a compensation, you replay the saga events to rebuild state, but you discover events are missing due to a past event store corruption. How do you recover?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> This is a disaster recovery scenario requiring manual intervention. Steps: (1) Halt saga processing to prevent further damage, (2) Identify affected sagas by scanning for gaps in event sequences or inconsistent state, (3) Consult other system-of-record data sources (payment processor records, inventory management system, external APIs) to reconstruct what happened, (4) Create "reconciliation events" that represent the missing state transitions, (5) For sagas in compensating state, consider manual compensation if automated path is unsafe. Prevention: (1) Event store replication across regions, (2) Regular backups with restore testing, (3) Checksums/hashing for event integrity, (4) Audit log correlation between saga events and external system calls.
+    </div>
+  </div>
 
 </div>
 
@@ -507,51 +507,51 @@ Saga reads X, another saga modifies X, first saga reads X again and gets differe
 ## Section 3: Event Versioning
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT SCHEMA EVOLUTION: MAINTAINING COMPATIBILITY</h4>
+  <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">EVENT SCHEMA EVOLUTION: MAINTAINING COMPATIBILITY</h4>
 
-<div style="font-size: 11px; color: #1e293b; line-height: 1.6; margin-bottom: 20px;">
-Event-driven systems must evolve over time: new fields are added, field types change, and event semantics shift. Unlike synchronous APIs where you can version endpoints, events are persisted in logs and may be replayed years later. Event versioning strategies ensure consumers can process both old and new event formats.
-</div>
-
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">BACKWARD COMPATIBLE</div>
-<div style="font-size: 10px; color: #1e293b;">New consumers can read old events</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
-<div style="color: #64748b;">// Old event (v1)</div>
-<div>{"name": "John"}</div>
-  <div style="color: #64748b; margin-top: 4px;">// New consumer expects</div>
-  <div>{"name": "John", "age": <span style="color: #f78166;">null</span>}</div>
+  <div style="font-size: 11px; color: #1e293b; line-height: 1.6; margin-bottom: 20px;">
+    Event-driven systems must evolve over time: new fields are added, field types change, and event semantics shift. Unlike synchronous APIs where you can version endpoints, events are persisted in logs and may be replayed years later. Event versioning strategies ensure consumers can process both old and new event formats.
   </div>
-  <div style="font-size: 9px; color: #7ee787;">New consumer handles missing fields</div>
-</div>
 
-<div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">FORWARD COMPATIBLE</div>
-<div style="font-size: 10px; color: #1e293b;">Old consumers can read new events</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
-<div style="color: #64748b;">// New event (v2)</div>
-<div>{"name": "John", "age": 30}</div>
-  <div style="color: #64748b; margin-top: 4px;">// Old consumer sees</div>
-  <div>{"name": "John"} <span style="color: #7ee787;">// ignores age</span></div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">BACKWARD COMPATIBLE</div>
+      <div style="font-size: 10px; color: #1e293b;">New consumers can read old events</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
+        <div style="color: #64748b;">// Old event (v1)</div>
+        <div>{"name": "John"}</div>
+        <div style="color: #64748b; margin-top: 4px;">// New consumer expects</div>
+        <div>{"name": "John", "age": <span style="color: #f78166;">null</span>}</div>
+      </div>
+      <div style="font-size: 9px; color: #7ee787;">New consumer handles missing fields</div>
+    </div>
+
+    <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">FORWARD COMPATIBLE</div>
+      <div style="font-size: 10px; color: #1e293b;">Old consumers can read new events</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
+        <div style="color: #64748b;">// New event (v2)</div>
+        <div>{"name": "John", "age": 30}</div>
+        <div style="color: #64748b; margin-top: 4px;">// Old consumer sees</div>
+        <div>{"name": "John"} <span style="color: #7ee787;">// ignores age</span></div>
+      </div>
+      <div style="font-size: 9px; color: #58a6ff;">Old consumer ignores unknown fields</div>
+    </div>
+
+    <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">FULL COMPATIBILITY</div>
+      <div style="font-size: 10px; color: #1e293b;">Both directions supported</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
+        <div style="color: #7ee787;">Add optional fields only</div>
+        <div style="color: #7ee787;">Never remove fields</div>
+        <div style="color: #7ee787;">Never change field types</div>
+        <div style="color: #7ee787;">Never rename fields</div>
+      </div>
+      <div style="font-size: 9px; color: #8957e5;">Most restrictive but safest</div>
+    </div>
+
   </div>
-  <div style="font-size: 9px; color: #58a6ff;">Old consumer ignores unknown fields</div>
-</div>
-
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #8957e5; font-weight: bold; font-size: 12px; margin-bottom: 12px;">FULL COMPATIBILITY</div>
-<div style="font-size: 10px; color: #1e293b;">Both directions supported</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin: 8px 0; font-family: monospace; font-size: 9px;">
-<div style="color: #7ee787;">Add optional fields only</div>
-<div style="color: #7ee787;">Never remove fields</div>
-<div style="color: #7ee787;">Never change field types</div>
-<div style="color: #7ee787;">Never rename fields</div>
-</div>
-<div style="font-size: 9px; color: #8957e5;">Most restrictive but safest</div>
-</div>
-
-</div>
 </div>
 
 ### Schema Registry Pattern
@@ -608,130 +608,130 @@ def consume(message):
 ### Versioning Strategies
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">EVENT VERSIONING APPROACHES</h4>
+  <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">EVENT VERSIONING APPROACHES</h4>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px;">
 
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">1. SEMANTIC VERSIONING IN EVENT TYPE</div>
-<div style="color: #1e293b; margin-bottom: 12px;">Include version in event type name:</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
-<div>com.company.order.created.v1</div>
-  <div>com.company.order.created.v2</div>
-  </div>
-  <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-  <div><span style="color: #7ee787;">+</span> Explicit version visible in message</div>
-    <div><span style="color: #7ee787;">+</span> Easy to route different versions</div>
-      <div><span style="color: #f85149;">-</span> Topic explosion (v1 topic, v2 topic)</div>
-        <div><span style="color: #f85149;">-</span> Consumers must subscribe to all versions</div>
-        </div>
-      </div>
-
-      <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
-      <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">2. VERSION FIELD IN PAYLOAD</div>
-      <div style="color: #1e293b; margin-bottom: 12px;">Single event type with version metadata:</div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">1. SEMANTIC VERSIONING IN EVENT TYPE</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">Include version in event type name:</div>
       <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
-      <div>{</div>
-        <div>  "type": "OrderCreated",</div>
-          <div>  "version": 2,</div>
-            <div>  "data": { ... }</div>
-              <div>}</div>
-              </div>
-              <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-              <div><span style="color: #7ee787;">+</span> Single topic per event type</div>
-                <div><span style="color: #7ee787;">+</span> Consumer routes internally</div>
-                  <div><span style="color: #f85149;">-</span> Consumer must handle all versions</div>
-                  </div>
-                </div>
-
-                <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px;">
-                <div style="color: #f78166; font-weight: bold; margin-bottom: 12px;">3. UPCASTER/DOWNCASTER PATTERN</div>
-                <div style="color: #1e293b; margin-bottom: 12px;">Transform events to latest version on read:</div>
-                <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
-                <div><span style="color: #8957e5;">def</span> upcast(event):</div>
-                  <div>  <span style="color: #8957e5;">if</span> event.version == 1:</div>
-                    <div>    event.data['age'] = None</div>
-                      <div>    event.version = 2</div>
-                        <div>  <span style="color: #8957e5;">return</span> event</div>
-                        </div>
-                        <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-                        <div><span style="color: #7ee787;">+</span> Consumers only handle latest version</div>
-                          <div><span style="color: #7ee787;">+</span> Centralized transformation logic</div>
-                            <div><span style="color: #f85149;">-</span> Upcast chain can grow long</div>
-                            </div>
-                          </div>
-
-                          <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
-                          <div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">4. COPY-AND-REPLACE MIGRATION</div>
-                          <div style="color: #1e293b; margin-bottom: 12px;">Migrate all events to new version:</div>
-                          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
-                          <div>1. Create new topic with v2 schema</div>
-                            <div>2. Migrate all v1 events to v2</div>
-                              <div>3. Switch consumers to new topic</div>
-                                <div>4. Deprecate old topic</div>
-                                </div>
-                                <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
-                                <div><span style="color: #7ee787;">+</span> Clean slate, no legacy handling</div>
-                                  <div><span style="color: #f85149;">-</span> Expensive for large event stores</div>
-                                    <div><span style="color: #f85149;">-</span> Requires coordinated cutover</div>
-                                    </div>
-                                  </div>
-
-                                </div>
-                              </div>
-
-                              ### Breaking vs Non-Breaking Changes
-
-                              <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-                              <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">CHANGE CLASSIFICATION</h4>
-
-                              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-
-                              <div>
-                                <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px; font-size: 12px;">NON-BREAKING CHANGES</div>
-                                <div style="font-size: 10px; color: #1e293b;">
-                                <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                                <span style="color: #7ee787;">+</span> Add optional field with default
-                              </div>
-                              <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                              <span style="color: #7ee787;">+</span> Add new event type
-                            </div>
-                            <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                            <span style="color: #7ee787;">+</span> Add optional enum value (at end)
-                          </div>
-                          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
-                          <span style="color: #7ee787;">+</span> Expand numeric range
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div style="color: #f85149; font-weight: bold; margin-bottom: 12px; font-size: 12px;">BREAKING CHANGES</div>
-                      <div style="font-size: 10px; color: #1e293b;">
-                      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                      <span style="color: #f85149;">-</span> Remove field
-                    </div>
-                    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                    <span style="color: #f85149;">-</span> Rename field
-                  </div>
-                  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                  <span style="color: #f85149;">-</span> Change field type (int -> string)
-                </div>
-                <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
-                <span style="color: #f85149;">-</span> Make optional field required
-              </div>
-              <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
-              <span style="color: #f85149;">-</span> Change semantic meaning
-            </div>
-          </div>
-        </div>
-
+        <div>com.company.order.created.v1</div>
+        <div>com.company.order.created.v2</div>
+      </div>
+      <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+        <div><span style="color: #7ee787;">+</span> Explicit version visible in message</div>
+        <div><span style="color: #7ee787;">+</span> Easy to route different versions</div>
+        <div><span style="color: #f85149;">-</span> Topic explosion (v1 topic, v2 topic)</div>
+        <div><span style="color: #f85149;">-</span> Consumers must subscribe to all versions</div>
       </div>
     </div>
 
-    <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f78166;">
-    <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">THE SEMANTIC CHANGE TRAP</div>
-    <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
+    <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">2. VERSION FIELD IN PAYLOAD</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">Single event type with version metadata:</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
+        <div>{</div>
+        <div>  "type": "OrderCreated",</div>
+        <div>  "version": 2,</div>
+        <div>  "data": { ... }</div>
+        <div>}</div>
+      </div>
+      <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+        <div><span style="color: #7ee787;">+</span> Single topic per event type</div>
+        <div><span style="color: #7ee787;">+</span> Consumer routes internally</div>
+        <div><span style="color: #f85149;">-</span> Consumer must handle all versions</div>
+      </div>
+    </div>
+
+    <div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #f78166; font-weight: bold; margin-bottom: 12px;">3. UPCASTER/DOWNCASTER PATTERN</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">Transform events to latest version on read:</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
+        <div><span style="color: #8957e5;">def</span> upcast(event):</div>
+        <div>  <span style="color: #8957e5;">if</span> event.version == 1:</div>
+        <div>    event.data['age'] = None</div>
+        <div>    event.version = 2</div>
+        <div>  <span style="color: #8957e5;">return</span> event</div>
+      </div>
+      <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+        <div><span style="color: #7ee787;">+</span> Consumers only handle latest version</div>
+        <div><span style="color: #7ee787;">+</span> Centralized transformation logic</div>
+        <div><span style="color: #f85149;">-</span> Upcast chain can grow long</div>
+      </div>
+    </div>
+
+    <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">4. COPY-AND-REPLACE MIGRATION</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">Migrate all events to new version:</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 9px;">
+        <div>1. Create new topic with v2 schema</div>
+        <div>2. Migrate all v1 events to v2</div>
+        <div>3. Switch consumers to new topic</div>
+        <div>4. Deprecate old topic</div>
+      </div>
+      <div style="color: #64748b; margin-top: 8px; font-size: 10px;">
+        <div><span style="color: #7ee787;">+</span> Clean slate, no legacy handling</div>
+        <div><span style="color: #f85149;">-</span> Expensive for large event stores</div>
+        <div><span style="color: #f85149;">-</span> Requires coordinated cutover</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+                              ### Breaking vs Non-Breaking Changes
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+  <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">CHANGE CLASSIFICATION</h4>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+    <div>
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px; font-size: 12px;">NON-BREAKING CHANGES</div>
+      <div style="font-size: 10px; color: #1e293b;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+          <span style="color: #7ee787;">+</span> Add optional field with default
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+          <span style="color: #7ee787;">+</span> Add new event type
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+          <span style="color: #7ee787;">+</span> Add optional enum value (at end)
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
+          <span style="color: #7ee787;">+</span> Expand numeric range
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="color: #f85149; font-weight: bold; margin-bottom: 12px; font-size: 12px;">BREAKING CHANGES</div>
+      <div style="font-size: 10px; color: #1e293b;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+          <span style="color: #f85149;">-</span> Remove field
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+          <span style="color: #f85149;">-</span> Rename field
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+          <span style="color: #f85149;">-</span> Change field type (int -> string)
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+          <span style="color: #f85149;">-</span> Make optional field required
+        </div>
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
+          <span style="color: #f85149;">-</span> Change semantic meaning
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="background: rgba(247,129,102,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f78166;">
+  <div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 12px;">THE SEMANTIC CHANGE TRAP</div>
+  <div style="font-size: 11px; color: #1e293b; line-height: 1.6;">
     <p>The most insidious breaking change is semantic: the field name and type are unchanged, but the meaning shifts. Example: <code>price</code> field changes from cents to dollars, or <code>status</code> enum value "PENDING" previously meant "awaiting payment" but now means "awaiting review".</p>
     <p style="margin-top: 8px;"><strong style="color: #7ee787;">Prevention:</strong> Document field semantics in schema, use specific field names (price_cents vs price_dollars), treat semantic changes as new fields.</p>
   </div>
@@ -740,53 +740,53 @@ def consume(message):
 ### Interview Questions: Event Versioning
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
-<h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
+  <h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is the difference between backward and forward compatibility for events?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Backward compatibility means new code can read old data (new consumers process old events). Forward compatibility means old code can read new data (old consumers process new events). For event-driven systems, backward compatibility is essential for replay scenarios - you must be able to replay historical events with current code. Forward compatibility matters when rolling out producer updates before consumer updates.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is the difference between backward and forward compatibility for events?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Backward compatibility means new code can read old data (new consumers process old events). Forward compatibility means old code can read new data (old consumers process new events). For event-driven systems, backward compatibility is essential for replay scenarios - you must be able to replay historical events with current code. Forward compatibility matters when rolling out producer updates before consumer updates.
+    </div>
+  </div>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: Why do we need a schema registry?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> A schema registry provides: (1) Single source of truth for event schemas, preventing producer/consumer schema drift, (2) Compatibility validation - rejects schema changes that would break consumers, (3) Schema evolution tracking - maintains version history, (4) Efficient serialization - messages contain schema ID rather than full schema, reducing size, (5) Documentation and discovery - teams can browse available events and their structures.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: Why do we need a schema registry?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> A schema registry provides: (1) Single source of truth for event schemas, preventing producer/consumer schema drift, (2) Compatibility validation - rejects schema changes that would break consumers, (3) Schema evolution tracking - maintains version history, (4) Efficient serialization - messages contain schema ID rather than full schema, reducing size, (5) Documentation and discovery - teams can browse available events and their structures.
+    </div>
+  </div>
 
-<h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
+  <h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: You need to rename a field from "user_id" to "customer_id" in an event. How do you do this without breaking consumers?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> A field rename is a breaking change. Multi-phase approach: (1) Add new field "customer_id" as optional, producer populates both fields, (2) Update all consumers to read "customer_id" (with fallback to "user_id"), (3) Once all consumers updated, producer can stop populating "user_id", (4) Eventually deprecate and remove "user_id" after confirming no consumers need it. For an event store, you may need upcasters to transform old events. Alternative: if using Avro, use aliases feature which allows the same field to be read by either name.
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: You need to rename a field from "user_id" to "customer_id" in an event. How do you do this without breaking consumers?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> A field rename is a breaking change. Multi-phase approach: (1) Add new field "customer_id" as optional, producer populates both fields, (2) Update all consumers to read "customer_id" (with fallback to "user_id"), (3) Once all consumers updated, producer can stop populating "user_id", (4) Eventually deprecate and remove "user_id" after confirming no consumers need it. For an event store, you may need upcasters to transform old events. Alternative: if using Avro, use aliases feature which allows the same field to be read by either name.
+    </div>
+  </div>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: How do upcasters work in an event-sourced system?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Upcasters transform events from old versions to new versions when events are read from the store. They form a chain: v1->v2->v3->current. When loading an aggregate, the event store reads raw events, applies upcasters to get current version, then applies to aggregate. Implementation: (1) Each upcaster handles one version transition, (2) Upcasters are registered in order, (3) Event includes version number to determine starting point. Key detail: upcasters are applied on read, so stored events remain in original format - this preserves audit history but means upcasting runs on every load (consider snapshotting for performance).
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: How do upcasters work in an event-sourced system?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Upcasters transform events from old versions to new versions when events are read from the store. They form a chain: v1->v2->v3->current. When loading an aggregate, the event store reads raw events, applies upcasters to get current version, then applies to aggregate. Implementation: (1) Each upcaster handles one version transition, (2) Upcasters are registered in order, (3) Event includes version number to determine starting point. Key detail: upcasters are applied on read, so stored events remain in original format - this preserves audit history but means upcasting runs on every load (consider snapshotting for performance).
+    </div>
+  </div>
 
-<h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
+  <h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: Your event schema needs to change the type of "amount" from integer (cents) to decimal (dollars with precision). This affects millions of historical events. What is your migration strategy?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> This is a semantic and type change - highly breaking. Options: (1) Add new field "amount_decimal" alongside "amount_cents", deprecate old field gradually. (2) Create v2 event type, run dual-write period, migrate consumers. (3) For event-sourced systems, implement upcaster that converts cents to decimal on read. (4) If storage allows, run batch migration to transform all historical events (risky, changes history). Key considerations: downstream analytics/reports using old format, third-party consumers, regulatory requirements for audit trails. Best approach usually combines upcasters for backward compatibility with new field for forward path.
-</div>
-</div>
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: Your event schema needs to change the type of "amount" from integer (cents) to decimal (dollars with precision). This affects millions of historical events. What is your migration strategy?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> This is a semantic and type change - highly breaking. Options: (1) Add new field "amount_decimal" alongside "amount_cents", deprecate old field gradually. (2) Create v2 event type, run dual-write period, migrate consumers. (3) For event-sourced systems, implement upcaster that converts cents to decimal on read. (4) If storage allows, run batch migration to transform all historical events (risky, changes history). Key considerations: downstream analytics/reports using old format, third-party consumers, regulatory requirements for audit trails. Best approach usually combines upcasters for backward compatibility with new field for forward path.
+    </div>
+  </div>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: You discover that events from 6 months ago have an incorrect field value due to a producer bug. Millions of events are affected, and multiple consumers have already processed them. How do you handle this?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> This is a data quality incident requiring careful remediation: (1) Assess impact - which consumers used the bad field, what decisions/state derived from it, (2) For event-sourced systems, events are immutable - publish compensating "Correction" events that consumers can apply, (3) For read models/projections, may need to rebuild from corrected event stream, (4) Notify affected consumers so they can trigger reprocessing. Prevention: (1) Producer-side validation before publishing, (2) Consumer-side validation with DLQ for invalid events, (3) Data quality monitoring comparing event values against source-of-truth. Do NOT silently modify historical events - this breaks audit trails and may cause consistency issues with already-processed state.
-</div>
-</div>
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: You discover that events from 6 months ago have an incorrect field value due to a producer bug. Millions of events are affected, and multiple consumers have already processed them. How do you handle this?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> This is a data quality incident requiring careful remediation: (1) Assess impact - which consumers used the bad field, what decisions/state derived from it, (2) For event-sourced systems, events are immutable - publish compensating "Correction" events that consumers can apply, (3) For read models/projections, may need to rebuild from corrected event stream, (4) Notify affected consumers so they can trigger reprocessing. Prevention: (1) Producer-side validation before publishing, (2) Consumer-side validation with DLQ for invalid events, (3) Data quality monitoring comparing event values against source-of-truth. Do NOT silently modify historical events - this breaks audit trails and may cause consistency issues with already-processed state.
+    </div>
+  </div>
 
 </div>
 
@@ -795,80 +795,80 @@ def consume(message):
 ## Section 4: Dead Letter Queues (DLQ)
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">DEAD LETTER QUEUE: HANDLING UNPROCESSABLE MESSAGES</h4>
+  <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">DEAD LETTER QUEUE: HANDLING UNPROCESSABLE MESSAGES</h4>
 
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
 
-<div>
-  <div style="font-size: 11px; color: #1e293b; line-height: 1.6; margin-bottom: 16px;">
-  A Dead Letter Queue is a holding area for messages that cannot be processed successfully. Instead of blocking the main queue or losing messages, unprocessable messages are moved to the DLQ for later inspection and remediation.
-</div>
+    <div>
+      <div style="font-size: 11px; color: #1e293b; line-height: 1.6; margin-bottom: 16px;">
+        A Dead Letter Queue is a holding area for messages that cannot be processed successfully. Instead of blocking the main queue or losing messages, unprocessable messages are moved to the DLQ for later inspection and remediation.
+      </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px;">
-<div style="font-size: 10px; color: #1e293b;">
-<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-<span style="background: #238636; padding: 4px 10px; border-radius: 4px;">Main Queue</span>
-<span style="color: #64748b;">-></span>
-<span style="background: #1f6feb; padding: 4px 10px; border-radius: 4px;">Consumer</span>
-</div>
-<div style="padding-left: 100px; color: #64748b; margin-bottom: 8px;">|</div>
-<div style="padding-left: 80px; color: #f85149; margin-bottom: 8px;">Fails N times</div>
-<div style="padding-left: 100px; color: #64748b; margin-bottom: 8px;">v</div>
-<div style="display: flex; align-items: center; gap: 8px; padding-left: 70px;">
-<span style="background: #f85149; padding: 4px 10px; border-radius: 4px;">DLQ</span>
-<span style="color: #64748b;">-></span>
-<span style="color: #1e293b;">Alert + Manual Review</span>
-</div>
-</div>
-</div>
-</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px;">
+        <div style="font-size: 10px; color: #1e293b;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="background: #238636; padding: 4px 10px; border-radius: 4px;">Main Queue</span>
+            <span style="color: #64748b;">-></span>
+            <span style="background: #1f6feb; padding: 4px 10px; border-radius: 4px;">Consumer</span>
+          </div>
+          <div style="padding-left: 100px; color: #64748b; margin-bottom: 8px;">|</div>
+          <div style="padding-left: 80px; color: #f85149; margin-bottom: 8px;">Fails N times</div>
+          <div style="padding-left: 100px; color: #64748b; margin-bottom: 8px;">v</div>
+          <div style="display: flex; align-items: center; gap: 8px; padding-left: 70px;">
+            <span style="background: #f85149; padding: 4px 10px; border-radius: 4px;">DLQ</span>
+            <span style="color: #64748b;">-></span>
+            <span style="color: #1e293b;">Alert + Manual Review</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #f85149; font-weight: bold; font-size: 11px; margin-bottom: 12px;">DLQ MESSAGE CONTAINS:</div>
-<div style="font-size: 10px; color: #1e293b;">
-<div style="margin-bottom: 6px;">- Original message payload</div>
-<div style="margin-bottom: 6px;">- Original message headers</div>
-<div style="margin-bottom: 6px;">- Error message/stack trace</div>
-<div style="margin-bottom: 6px;">- Retry count</div>
-<div style="margin-bottom: 6px;">- Failure timestamp</div>
-<div style="margin-bottom: 6px;">- Consumer instance ID</div>
-<div>- Original topic/queue name</div>
-</div>
-</div>
+    <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #f85149; font-weight: bold; font-size: 11px; margin-bottom: 12px;">DLQ MESSAGE CONTAINS:</div>
+      <div style="font-size: 10px; color: #1e293b;">
+        <div style="margin-bottom: 6px;">- Original message payload</div>
+        <div style="margin-bottom: 6px;">- Original message headers</div>
+        <div style="margin-bottom: 6px;">- Error message/stack trace</div>
+        <div style="margin-bottom: 6px;">- Retry count</div>
+        <div style="margin-bottom: 6px;">- Failure timestamp</div>
+        <div style="margin-bottom: 6px;">- Consumer instance ID</div>
+        <div>- Original topic/queue name</div>
+      </div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ### When Messages Go to DLQ
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px;">
 
-<div>
-  <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">POISON PILL MESSAGES</div>
-  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
-  <div style="margin-bottom: 8px;">Messages that will NEVER succeed:</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Malformed JSON/invalid schema</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Required field missing</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Business rule violation</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Referenced entity does not exist</div>
-  <div style="padding-left: 12px;">- Consumer bug (for this message type)</div>
-</div>
-</div>
+    <div>
+      <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">POISON PILL MESSAGES</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
+        <div style="margin-bottom: 8px;">Messages that will NEVER succeed:</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Malformed JSON/invalid schema</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Required field missing</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Business rule violation</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Referenced entity does not exist</div>
+        <div style="padding-left: 12px;">- Consumer bug (for this message type)</div>
+      </div>
+    </div>
 
-<div>
-  <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">TRANSIENT FAILURES (after max retries)</div>
-  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
-  <div style="margin-bottom: 8px;">Messages that MIGHT succeed later:</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Downstream service unavailable</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Database connection timeout</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Rate limit exceeded</div>
-  <div style="padding-left: 12px; margin-bottom: 4px;">- Resource temporarily locked</div>
-  <div style="padding-left: 12px;">- Network partition</div>
-</div>
-</div>
+    <div>
+      <div style="color: #f0883e; font-weight: bold; margin-bottom: 12px;">TRANSIENT FAILURES (after max retries)</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 12px; color: #1e293b;">
+        <div style="margin-bottom: 8px;">Messages that MIGHT succeed later:</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Downstream service unavailable</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Database connection timeout</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Rate limit exceeded</div>
+        <div style="padding-left: 12px; margin-bottom: 4px;">- Resource temporarily locked</div>
+        <div style="padding-left: 12px;">- Network partition</div>
+      </div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ### DLQ Implementation Patterns
@@ -920,171 +920,171 @@ class DeadLetterQueueHandler:
 ### DLQ Reprocessing Strategies
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">REPROCESSING DLQ MESSAGES</h4>
+  <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">REPROCESSING DLQ MESSAGES</h4>
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; font-size: 11px;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; font-size: 11px;">
 
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">MANUAL REPLAY</div>
-<div style="color: #1e293b; margin-bottom: 12px;">Operator inspects message, fixes issue, triggers replay</div>
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
-<div>1. View message in DLQ UI</div>
-  <div>2. Identify and fix root cause</div>
-    <div>3. Click "Replay" button</div>
-      <div>4. Monitor for success</div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">MANUAL REPLAY</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">Operator inspects message, fixes issue, triggers replay</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
+        <div>1. View message in DLQ UI</div>
+        <div>2. Identify and fix root cause</div>
+        <div>3. Click "Replay" button</div>
+        <div>4. Monitor for success</div>
       </div>
       <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Low volume, complex issues</div>
     </div>
 
     <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px;">
-    <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">SCHEDULED RETRY</div>
-    <div style="color: #1e293b; margin-bottom: 12px;">Periodically attempt to reprocess DLQ messages</div>
-    <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
-    <div>Every hour:</div>
-      <div>  - Read oldest N from DLQ</div>
+      <div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">SCHEDULED RETRY</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">Periodically attempt to reprocess DLQ messages</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
+        <div>Every hour:</div>
+        <div>  - Read oldest N from DLQ</div>
         <div>  - Attempt reprocessing</div>
-          <div>  - On success: delete from DLQ</div>
-            <div>  - On failure: update retry metadata</div>
-            </div>
-            <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Transient failures that self-heal</div>
-          </div>
+        <div>  - On success: delete from DLQ</div>
+        <div>  - On failure: update retry metadata</div>
+      </div>
+      <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Transient failures that self-heal</div>
+    </div>
 
-          <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
-          <div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">BULK REPLAY WITH FILTER</div>
-          <div style="color: #1e293b; margin-bottom: 12px;">After fixing a bug, replay affected messages</div>
-          <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
-          <div>dlq-cli replay \</div>
-            <div>  --filter "error LIKE '%NullPointer%'" \</div>
-              <div>  --since 2024-01-15 \</div>
-                <div>  --rate-limit 100/sec</div>
-                </div>
-                <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Post-bugfix recovery</div>
-              </div>
+    <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 16px;">
+      <div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">BULK REPLAY WITH FILTER</div>
+      <div style="color: #1e293b; margin-bottom: 12px;">After fixing a bug, replay affected messages</div>
+      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 10px; font-size: 10px;">
+        <div>dlq-cli replay \</div>
+        <div>  --filter "error LIKE '%NullPointer%'" \</div>
+        <div>  --since 2024-01-15 \</div>
+        <div>  --rate-limit 100/sec</div>
+      </div>
+      <div style="color: #64748b; margin-top: 8px; font-size: 9px;">Best for: Post-bugfix recovery</div>
+    </div>
 
-            </div>
-          </div>
+  </div>
+</div>
 
           ### DLQ Monitoring and Alerting
 
-          <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f85149;">
-          <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL METRICS TO MONITOR</div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
+<div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 3px solid #f85149;">
+  <div style="color: #f85149; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CRITICAL METRICS TO MONITOR</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
 
-          <div style="color: #1e293b;">
-          <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Depth:</strong> Number of messages in DLQ</div>
-          <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Depth > threshold OR growing trend</div>
+    <div style="color: #1e293b;">
+      <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Depth:</strong> Number of messages in DLQ</div>
+      <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Depth > threshold OR growing trend</div>
 
-          <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Ingress Rate:</strong> Messages entering DLQ per minute</div>
-          <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Sudden spike indicates systemic issue</div>
-        </div>
-
-        <div style="color: #1e293b;">
-        <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Message Age:</strong> Oldest message in DLQ</div>
-        <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Messages older than SLA indicate stuck remediation</div>
-
-        <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Error Type Distribution:</strong> Breakdown by error category</div>
-        <div style="color: #64748b; font-size: 10px;">Alert: New error type appears</div>
-      </div>
-
+      <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">DLQ Ingress Rate:</strong> Messages entering DLQ per minute</div>
+      <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Sudden spike indicates systemic issue</div>
     </div>
+
+    <div style="color: #1e293b;">
+      <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Message Age:</strong> Oldest message in DLQ</div>
+      <div style="color: #64748b; font-size: 10px; margin-bottom: 12px;">Alert: Messages older than SLA indicate stuck remediation</div>
+
+      <div style="margin-bottom: 8px;"><strong style="color: #58a6ff;">Error Type Distribution:</strong> Breakdown by error category</div>
+      <div style="color: #64748b; font-size: 10px;">Alert: New error type appears</div>
+    </div>
+
   </div>
+</div>
 
   ### DLQ vs Retry Topics
 
-  <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
   <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 13px;">RETRY TOPIC PATTERN (KAFKA)</h4>
 
   <div style="font-size: 11px; color: #1e293b; margin-bottom: 16px;">
-  For systems like Kafka where re-delivery with delay is not native, implement a retry topic chain:
-</div>
+    For systems like Kafka where re-delivery with delay is not native, implement a retry topic chain:
+  </div>
 
-<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px; font-size: 10px; color: #1e293b; text-align: center;">
-<div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-<span style="background: #238636; padding: 6px 12px; border-radius: 4px;">orders.main</span>
-<span style="color: #64748b;">-fail-></span>
-<span style="background: #1f6feb; padding: 6px 12px; border-radius: 4px;">orders.retry.1 (1min delay)</span>
-<span style="color: #64748b;">-fail-></span>
-<span style="background: #8957e5; padding: 6px 12px; border-radius: 4px;">orders.retry.2 (5min delay)</span>
-<span style="color: #64748b;">-fail-></span>
-<span style="background: #f85149; padding: 6px 12px; border-radius: 4px;">orders.dlq</span>
-</div>
-</div>
+  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px; font-size: 10px; color: #1e293b; text-align: center;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+      <span style="background: #238636; padding: 6px 12px; border-radius: 4px;">orders.main</span>
+      <span style="color: #64748b;">-fail-></span>
+      <span style="background: #1f6feb; padding: 6px 12px; border-radius: 4px;">orders.retry.1 (1min delay)</span>
+      <span style="color: #64748b;">-fail-></span>
+      <span style="background: #8957e5; padding: 6px 12px; border-radius: 4px;">orders.retry.2 (5min delay)</span>
+      <span style="color: #64748b;">-fail-></span>
+      <span style="background: #f85149; padding: 6px 12px; border-radius: 4px;">orders.dlq</span>
+    </div>
+  </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
 
-<div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 12px; font-size: 10px;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">RETRY TOPIC ADVANTAGES</div>
-<div style="color: #1e293b;">
-<div>+ Automatic exponential backoff</div>
-  <div>+ Failed messages don't block healthy ones</div>
-    <div>+ Separate consumer groups per retry level</div>
-      <div>+ Visibility into retry progression</div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 8px; padding: 12px; font-size: 10px;">
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">RETRY TOPIC ADVANTAGES</div>
+      <div style="color: #1e293b;">
+        <div>+ Automatic exponential backoff</div>
+        <div>+ Failed messages don't block healthy ones</div>
+        <div>+ Separate consumer groups per retry level</div>
+        <div>+ Visibility into retry progression</div>
       </div>
     </div>
 
     <div style="background: rgba(248,81,73,0.1); border-radius: 8px; padding: 12px; font-size: 10px;">
-    <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">IMPLEMENTATION CONCERNS</div>
-    <div style="color: #1e293b;">
-    <div>- Topic proliferation (N retry levels x M topics)</div>
-      <div>- Ordering not preserved across retries</div>
+      <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">IMPLEMENTATION CONCERNS</div>
+      <div style="color: #1e293b;">
+        <div>- Topic proliferation (N retry levels x M topics)</div>
+        <div>- Ordering not preserved across retries</div>
         <div>- Consumer must handle republishing</div>
-          <div>- Delay achieved via consumer pause, not native</div>
-          </div>
-        </div>
-
+        <div>- Delay achieved via consumer pause, not native</div>
       </div>
     </div>
 
-    ### Interview Questions: Dead Letter Queues
-
-    <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
-    <h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
-
-    <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is a dead letter queue and when should messages be sent there?</div>
-    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
-    <strong>Expected Answer:</strong> A DLQ is a separate queue for messages that cannot be processed after exhausting retry attempts. Messages go to DLQ when: (1) They fail permanently - schema invalid, business rule violated, required data missing, (2) They fail transiently but max retries exceeded - downstream service remained unavailable. The key decision is: can this message EVER succeed? If no, send to DLQ immediately. If yes but it failed too many times, send to DLQ for later investigation.
   </div>
 </div>
 
-<div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: What metadata should be included when sending a message to the DLQ?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Essential metadata: (1) Original message payload (unchanged), (2) Original headers including correlation ID, (3) Original topic/queue name for replay routing, (4) Error message and full stack trace, (5) Retry count at time of DLQ send, (6) Timestamp of each failure, (7) Consumer instance ID that failed. Optional but useful: consumer version, environment, request context. This metadata enables debugging (what went wrong), remediation (how to fix), and replay (where to send it back).
-</div>
-</div>
+    ### Interview Questions: Dead Letter Queues
 
-<h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #cbd5e1;">
+  <h4 style="color: #7aa2f7; margin: 0 0 20px 0;">LEVEL 1: Foundational Understanding</h4>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: How do you distinguish between retryable and non-retryable errors in your error handling code?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Use exception hierarchy or error codes. Design: (1) Base exceptions: RetryableException, NonRetryableException, (2) Specific exceptions extend these: HttpTimeoutException extends Retryable, ValidationException extends NonRetryable, (3) For HTTP calls, classify by status code: 5xx and 429 are retryable, 4xx (except 429) are not, (4) For database: connection timeout retryable, constraint violation not retryable. The consumer's error handler inspects exception type and routes accordingly. Edge case: some 4xx might be retryable if due to eventual consistency - the referenced entity might appear after a delay.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q1: What is a dead letter queue and when should messages be sent there?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> A DLQ is a separate queue for messages that cannot be processed after exhausting retry attempts. Messages go to DLQ when: (1) They fail permanently - schema invalid, business rule violated, required data missing, (2) They fail transiently but max retries exceeded - downstream service remained unavailable. The key decision is: can this message EVER succeed? If no, send to DLQ immediately. If yes but it failed too many times, send to DLQ for later investigation.
+    </div>
+  </div>
 
-<div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: Your team replayed 10,000 messages from DLQ after a bug fix. 9,500 succeeded but 500 failed again. How do you handle the failures?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> Don't retry blindly - analyze first. (1) Check if the 500 all have the same error - may indicate a different bug or a subset with different characteristics, (2) Export the 500 for detailed analysis - are they old messages with missing referenced data? Different schema version? Edge case not covered by fix?, (3) They should go back to DLQ with updated metadata indicating "replay attempt 2", (4) If truly unfixable (data no longer exists, business says to skip them), move to a permanent dead letter archive with documentation, (5) Alert stakeholders about the 500 - some may require manual business intervention like refunds or customer communication.
-</div>
-</div>
+  <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #7aa2f7; font-weight: bold; margin-bottom: 8px;">Q2: What metadata should be included when sending a message to the DLQ?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Essential metadata: (1) Original message payload (unchanged), (2) Original headers including correlation ID, (3) Original topic/queue name for replay routing, (4) Error message and full stack trace, (5) Retry count at time of DLQ send, (6) Timestamp of each failure, (7) Consumer instance ID that failed. Optional but useful: consumer version, environment, request context. This metadata enables debugging (what went wrong), remediation (how to fix), and replay (where to send it back).
+    </div>
+  </div>
 
-<h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
+  <h4 style="color: #bb9af7; margin: 20px 0;">LEVEL 2: Implementation Details</h4>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: Your DLQ is growing rapidly - 100,000 messages and climbing. Investigation shows they're all from one producer sending invalid schema. The producer team is on vacation. What do you do?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> This is an incident requiring immediate action: (1) Stop the bleeding - if possible, add a filter in the consumer to reject messages from that producer and acknowledge them (prevent main queue blocking) OR pause the producer if you have that capability, (2) Alert producer team's on-call/escalation path - "vacation" is not an excuse for incidents, (3) If the invalid messages are truly garbage, consider bulk-deleting from DLQ after archiving for later analysis, (4) Add rate limiting to DLQ ingress to prevent storage exhaustion, (5) Post-incident: implement schema validation at producer side or broker-level (schema registry with rejection), add DLQ growth rate alerting with automatic producer notification.
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q3: How do you distinguish between retryable and non-retryable errors in your error handling code?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Use exception hierarchy or error codes. Design: (1) Base exceptions: RetryableException, NonRetryableException, (2) Specific exceptions extend these: HttpTimeoutException extends Retryable, ValidationException extends NonRetryable, (3) For HTTP calls, classify by status code: 5xx and 429 are retryable, 4xx (except 429) are not, (4) For database: connection timeout retryable, constraint violation not retryable. The consumer's error handler inspects exception type and routes accordingly. Edge case: some 4xx might be retryable if due to eventual consistency - the referenced entity might appear after a delay.
+    </div>
+  </div>
 
-<div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
-<div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: You have ordering requirements - events for the same entity must be processed in order. A message fails and goes to DLQ. Subsequent messages for the same entity are now being processed. When you replay the DLQ message later, it will be out of order. How do you handle this?</div>
-<div style="color: #334155; font-size: 11px; line-height: 1.6;">
-<strong>Expected Answer:</strong> This is a fundamental tension between ordering and fault tolerance. Options: (1) Block subsequent messages: when message fails, pause processing for that partition key until DLQ message is resolved - guarantees order but reduces availability, (2) Skip-and-compensate: process later messages, mark DLQ message with "ordering violation" context, when replayed it must reconcile with current state rather than apply blindly, (3) Conditional updates: use version numbers/timestamps - if replayed message is older than current state, skip or merge, (4) Entity-level DLQ: maintain per-entity queues so failures only block that entity, not others on same partition. The right choice depends on consistency requirements - financial transactions need strict ordering, while analytics can tolerate some disorder.
-</div>
-</div>
+  <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #bb9af7; font-weight: bold; margin-bottom: 8px;">Q4: Your team replayed 10,000 messages from DLQ after a bug fix. 9,500 succeeded but 500 failed again. How do you handle the failures?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> Don't retry blindly - analyze first. (1) Check if the 500 all have the same error - may indicate a different bug or a subset with different characteristics, (2) Export the 500 for detailed analysis - are they old messages with missing referenced data? Different schema version? Edge case not covered by fix?, (3) They should go back to DLQ with updated metadata indicating "replay attempt 2", (4) If truly unfixable (data no longer exists, business says to skip them), move to a permanent dead letter archive with documentation, (5) Alert stakeholders about the 500 - some may require manual business intervention like refunds or customer communication.
+    </div>
+  </div>
+
+  <h4 style="color: #f7768e; margin: 20px 0;">LEVEL 3: Edge Cases and Trade-offs</h4>
+
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q5: Your DLQ is growing rapidly - 100,000 messages and climbing. Investigation shows they're all from one producer sending invalid schema. The producer team is on vacation. What do you do?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> This is an incident requiring immediate action: (1) Stop the bleeding - if possible, add a filter in the consumer to reject messages from that producer and acknowledge them (prevent main queue blocking) OR pause the producer if you have that capability, (2) Alert producer team's on-call/escalation path - "vacation" is not an excuse for incidents, (3) If the invalid messages are truly garbage, consider bulk-deleting from DLQ after archiving for later analysis, (4) Add rate limiting to DLQ ingress to prevent storage exhaustion, (5) Post-incident: implement schema validation at producer side or broker-level (schema registry with rejection), add DLQ growth rate alerting with automatic producer notification.
+    </div>
+  </div>
+
+  <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
+    <div style="color: #f7768e; font-weight: bold; margin-bottom: 8px;">Q6: You have ordering requirements - events for the same entity must be processed in order. A message fails and goes to DLQ. Subsequent messages for the same entity are now being processed. When you replay the DLQ message later, it will be out of order. How do you handle this?</div>
+    <div style="color: #334155; font-size: 11px; line-height: 1.6;">
+      <strong>Expected Answer:</strong> This is a fundamental tension between ordering and fault tolerance. Options: (1) Block subsequent messages: when message fails, pause processing for that partition key until DLQ message is resolved - guarantees order but reduces availability, (2) Skip-and-compensate: process later messages, mark DLQ message with "ordering violation" context, when replayed it must reconcile with current state rather than apply blindly, (3) Conditional updates: use version numbers/timestamps - if replayed message is older than current state, skip or merge, (4) Entity-level DLQ: maintain per-entity queues so failures only block that entity, not others on same partition. The right choice depends on consistency requirements - financial transactions need strict ordering, while analytics can tolerate some disorder.
+    </div>
+  </div>
 
 </div>
 
@@ -1093,44 +1093,44 @@ class DeadLetterQueueHandler:
 ## Design Decision Framework
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">CHOOSING YOUR EVENT COORDINATION STRATEGY</h4>
+  <h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 14px; text-align: center;">CHOOSING YOUR EVENT COORDINATION STRATEGY</h4>
 
-<div style="display: grid; grid-template-columns: 1fr; gap: 16px; font-size: 11px;">
+  <div style="display: grid; grid-template-columns: 1fr; gap: 16px; font-size: 11px;">
 
-<div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">CHOOSE CHOREOGRAPHY WHEN:</div>
-<div style="color: #1e293b;">
-<div style="margin-bottom: 6px;">- Services are genuinely autonomous with clear bounded contexts</div>
-<div style="margin-bottom: 6px;">- The workflow is simple (3-5 steps) with minimal compensation needs</div>
-<div style="margin-bottom: 6px;">- Teams are organized by service/domain and own their event handlers end-to-end</div>
-<div style="margin-bottom: 6px;">- New consumers may need to react to events without modifying producers</div>
-<div>- Eventual consistency is acceptable and failure modes are well-understood</div>
-</div>
-</div>
+    <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px;">
+      <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">CHOOSE CHOREOGRAPHY WHEN:</div>
+      <div style="color: #1e293b;">
+        <div style="margin-bottom: 6px;">- Services are genuinely autonomous with clear bounded contexts</div>
+        <div style="margin-bottom: 6px;">- The workflow is simple (3-5 steps) with minimal compensation needs</div>
+        <div style="margin-bottom: 6px;">- Teams are organized by service/domain and own their event handlers end-to-end</div>
+        <div style="margin-bottom: 6px;">- New consumers may need to react to events without modifying producers</div>
+        <div>- Eventual consistency is acceptable and failure modes are well-understood</div>
+      </div>
+    </div>
 
-<div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 20px;">
-<div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">CHOOSE ORCHESTRATION WHEN:</div>
-<div style="color: #1e293b;">
-<div style="margin-bottom: 6px;">- The workflow is complex with many steps, branches, and compensation scenarios</div>
-<div style="margin-bottom: 6px;">- Visibility into process state is critical for operations and debugging</div>
-<div style="margin-bottom: 6px;">- Centralized error handling and retry logic reduces duplication</div>
-<div style="margin-bottom: 6px;">- The workflow changes frequently and you need to update it in one place</div>
-<div>- Timeouts and SLAs must be enforced at the process level, not per-service</div>
-</div>
-</div>
+    <div style="background: rgba(137,87,229,0.1); border-radius: 12px; padding: 20px;">
+      <div style="color: #8957e5; font-weight: bold; margin-bottom: 12px;">CHOOSE ORCHESTRATION WHEN:</div>
+      <div style="color: #1e293b;">
+        <div style="margin-bottom: 6px;">- The workflow is complex with many steps, branches, and compensation scenarios</div>
+        <div style="margin-bottom: 6px;">- Visibility into process state is critical for operations and debugging</div>
+        <div style="margin-bottom: 6px;">- Centralized error handling and retry logic reduces duplication</div>
+        <div style="margin-bottom: 6px;">- The workflow changes frequently and you need to update it in one place</div>
+        <div>- Timeouts and SLAs must be enforced at the process level, not per-service</div>
+      </div>
+    </div>
 
-<div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px;">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">COMMON ANTI-PATTERNS TO AVOID:</div>
-<div style="color: #1e293b;">
-<div style="margin-bottom: 6px;">- Choreography with implicit orchestrator: one service secretly coordinates but without proper state management</div>
-<div style="margin-bottom: 6px;">- God orchestrator: business logic migrates into orchestrator, services become dumb executors</div>
-<div style="margin-bottom: 6px;">- DLQ as permanent storage: messages sit forever without remediation process</div>
-<div style="margin-bottom: 6px;">- Schema versioning afterthought: breaking changes discovered in production</div>
-<div>- Saga without compensation design: forward path works but rollback is undefined</div>
-</div>
-</div>
+    <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px;">
+      <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">COMMON ANTI-PATTERNS TO AVOID:</div>
+      <div style="color: #1e293b;">
+        <div style="margin-bottom: 6px;">- Choreography with implicit orchestrator: one service secretly coordinates but without proper state management</div>
+        <div style="margin-bottom: 6px;">- God orchestrator: business logic migrates into orchestrator, services become dumb executors</div>
+        <div style="margin-bottom: 6px;">- DLQ as permanent storage: messages sit forever without remediation process</div>
+        <div style="margin-bottom: 6px;">- Schema versioning afterthought: breaking changes discovered in production</div>
+        <div>- Saga without compensation design: forward path works but rollback is undefined</div>
+      </div>
+    </div>
 
-</div>
+  </div>
 </div>
 
 ---
