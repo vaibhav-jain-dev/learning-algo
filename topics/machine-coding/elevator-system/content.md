@@ -6,9 +6,9 @@ Design and implement an elevator control system for a multi-story building with 
 
 This classic machine coding problem tests your ability to model real-world physical systems with <span style="color: #22c55e; font-weight: bold;">complex state transitions</span>, implement <span style="color: #22c55e; font-weight: bold;">scheduling algorithms</span> borrowed from operating systems, and design <span style="color: #22c55e; font-weight: bold;">coordination mechanisms</span> for distributed actors. Companies like Amazon, Google, Microsoft, and Uber use this problem to assess systems thinking, [[state-machine]](/topics/system-design/state-machine) design, and algorithm selection.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 24px; margin: 24px 0;">
-<div style="color: #f8fafc; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Why This Problem Matters</div>
-<div style="color: #cbd5e1; font-size: 14px; line-height: 1.8;">
+<div style="background: #f8fafc; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">Why This Problem Matters</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8;">
 The elevator problem is a microcosm of distributed systems challenges: multiple independent actors (elevators) must coordinate to serve shared resources (passengers) while optimizing global metrics (wait time, throughput) without centralized real-time control. The algorithms you apply here—SCAN, LOOK, shortest-seek-time—originate from disk scheduling, making this an excellent bridge between OS concepts and real-world system design.
 </div>
 </div>
@@ -123,34 +123,34 @@ Real systems like Otis Compass and Schindler PORT handle this with combination o
 
 The core intellectual challenge of elevator systems is the <span style="color: #22c55e; font-weight: bold;">scheduling algorithm</span>—determining which floors to visit and in what order. These algorithms have direct parallels to [[disk-scheduling]](/topics/operating-systems/disk-scheduling) in operating systems, where the elevator head movement mirrors disk seek operations.
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #334155;">
-<div style="color: #f8fafc; font-weight: bold; font-size: 18px; margin-bottom: 20px; text-align: center;">Scheduling Algorithm Taxonomy</div>
+<div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 20px; text-align: center;">Scheduling Algorithm Taxonomy</div>
 
 <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;">
 
-<div style="background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
-<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Naive</div>
+<div style="background: #fef2f2; border-left: 3px solid #ef4444; padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Naive</div>
 <div style="color: #ffffff; font-weight: bold; font-size: 15px;">FCFS</div>
-<div style="color: #fca5a5; font-size: 11px; margin-top: 4px;">High variance</div>
+<div style="color: #dc2626; font-size: 11px; margin-top: 4px;">High variance</div>
 </div>
 
-<div style="color: #64748b; display: flex; align-items: center; font-size: 20px;">→</div>
+<div style="color: #475569; display: flex; align-items: center; font-size: 20px;">→</div>
 
-<div style="background: linear-gradient(135deg, #14532d 0%, #166534 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
-<div style="color: #bbf7d0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Sweep-Based</div>
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #166534; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Sweep-Based</div>
 <div style="color: #ffffff; font-weight: bold; font-size: 15px;">SCAN / LOOK</div>
-<div style="color: #86efac; font-size: 11px; margin-top: 4px;">Bounded wait</div>
+<div style="color: #166534; font-size: 11px; margin-top: 4px;">Bounded wait</div>
 </div>
 
-<div style="color: #64748b; display: flex; align-items: center; font-size: 20px;">→</div>
+<div style="color: #475569; display: flex; align-items: center; font-size: 20px;">→</div>
 
-<div style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
-<div style="color: #bfdbfe; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Greedy</div>
+<div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #1e40af; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Greedy</div>
 <div style="color: #ffffff; font-weight: bold; font-size: 15px;">SSTF</div>
-<div style="color: #93c5fd; font-size: 11px; margin-top: 4px;">Starvation risk</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 4px;">Starvation risk</div>
 </div>
 
-<div style="color: #64748b; display: flex; align-items: center; font-size: 20px;">→</div>
+<div style="color: #475569; display: flex; align-items: center; font-size: 20px;">→</div>
 
 <div style="background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center;">
 <div style="color: #e9d5ff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Hybrid</div>
@@ -213,16 +213,16 @@ Move in one direction serving all requests, then reverse direction and repeat. C
 
 <div style="display: flex; gap: 8px; align-items: flex-end; justify-content: center; margin-bottom: 16px; height: 200px;">
 <div style="display: flex; flex-direction: column; justify-content: space-between; padding-right: 8px; height: 100%;">
-<div style="font-size: 11px; color: #64748b;">F10</div>
-<div style="font-size: 11px; color: #64748b;">F9</div>
-<div style="font-size: 11px; color: #64748b;">F8</div>
-<div style="font-size: 11px; color: #64748b;">F7</div>
-<div style="font-size: 11px; color: #64748b;">F6</div>
-<div style="font-size: 11px; color: #64748b;">F5</div>
-<div style="font-size: 11px; color: #64748b;">F4</div>
-<div style="font-size: 11px; color: #64748b;">F3</div>
-<div style="font-size: 11px; color: #64748b;">F2</div>
-<div style="font-size: 11px; color: #64748b;">F1</div>
+<div style="font-size: 11px; color: #475569;">F10</div>
+<div style="font-size: 11px; color: #475569;">F9</div>
+<div style="font-size: 11px; color: #475569;">F8</div>
+<div style="font-size: 11px; color: #475569;">F7</div>
+<div style="font-size: 11px; color: #475569;">F6</div>
+<div style="font-size: 11px; color: #475569;">F5</div>
+<div style="font-size: 11px; color: #475569;">F4</div>
+<div style="font-size: 11px; color: #475569;">F3</div>
+<div style="font-size: 11px; color: #475569;">F2</div>
+<div style="font-size: 11px; color: #475569;">F1</div>
 </div>
 
 <div style="position: relative; width: 300px; height: 100%; background: linear-gradient(to right, #dbeafe 0%, #dbeafe 50%, #fef3c7 50%, #fef3c7 100%); border-radius: 8px; border: 1px solid #cbd5e1;">
@@ -327,25 +327,25 @@ Like SCAN, but reverses direction when no more requests exist in the current dir
 <div style="color: #991b1b; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">SCAN (Wasteful)</div>
 <div style="display: flex; flex-direction: column; gap: 4px;">
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F10</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F10</div>
 <div style="flex: 1; height: 20px; background: #fee2e2; border-radius: 4px; position: relative;">
 <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #dc2626;">← wasted travel</div>
 </div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F7</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F7</div>
 <div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F5</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F5</div>
 <div style="flex: 1; height: 20px; background: #dbeafe; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; border: 2px solid #1d4ed8;"></div></div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F3</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F3</div>
 <div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F1</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F1</div>
 <div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
 </div>
 </div>
@@ -356,25 +356,25 @@ Like SCAN, but reverses direction when no more requests exist in the current dir
 <div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center;">LOOK (Efficient)</div>
 <div style="display: flex; flex-direction: column; gap: 4px;">
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F10</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F10</div>
 <div style="flex: 1; height: 20px; background: #f1f5f9; border-radius: 4px; position: relative;">
 <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #94a3b8;">skipped</div>
 </div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F7</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F7</div>
 <div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div><span style="font-size: 10px; margin-left: 4px; color: #166534;">reverse here!</span></div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F5</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F5</div>
 <div style="flex: 1; height: 20px; background: #dbeafe; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; border: 2px solid #1d4ed8;"></div></div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F3</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F3</div>
 <div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
 </div>
 <div style="display: flex; align-items: center; gap: 8px;">
-<div style="width: 40px; font-size: 11px; color: #64748b;">F1</div>
+<div style="width: 40px; font-size: 11px; color: #475569;">F1</div>
 <div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%;"></div></div>
 </div>
 </div>
@@ -642,17 +642,17 @@ A single elevator is fundamentally a [[state-machine]](/topics/system-design/sta
 <div style="color: #166534; font-weight: bold; font-size: 13px;">IDLE</div>
 <div style="color: #22c55e; font-size: 10px;">Stationary, no requests</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="color: #475569; font-size: 20px;">&#8594;</div>
 <div style="background: #dbeafe; padding: 16px 24px; border-radius: 50px; text-align: center; border: 2px solid #93c5fd;">
 <div style="color: #1e40af; font-weight: bold; font-size: 13px;">MOVING_UP</div>
 <div style="color: #3b82f6; font-size: 10px;">Ascending</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="color: #475569; font-size: 20px;">&#8594;</div>
 <div style="background: #fef3c7; padding: 16px 24px; border-radius: 50px; text-align: center; border: 2px solid #fcd34d;">
 <div style="color: #92400e; font-weight: bold; font-size: 13px;">STOPPING</div>
 <div style="color: #d97706; font-size: 10px;">Decelerating</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="color: #475569; font-size: 20px;">&#8594;</div>
 <div style="background: #fae8ff; padding: 16px 24px; border-radius: 50px; text-align: center; border: 2px solid #e879f9;">
 <div style="color: #86198f; font-weight: bold; font-size: 13px;">DOORS_OPENING</div>
 <div style="color: #c026d3; font-size: 10px;">Doors in motion</div>
@@ -664,17 +664,17 @@ A single elevator is fundamentally a [[state-machine]](/topics/system-design/sta
 <div style="color: #166534; font-weight: bold; font-size: 13px;">DOORS_OPEN</div>
 <div style="color: #22c55e; font-size: 10px;">Passengers boarding</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="color: #475569; font-size: 20px;">&#8594;</div>
 <div style="background: #fae8ff; padding: 16px 24px; border-radius: 50px; text-align: center; border: 2px solid #e879f9;">
 <div style="color: #86198f; font-weight: bold; font-size: 13px;">DOORS_CLOSING</div>
 <div style="color: #c026d3; font-size: 10px;">Doors in motion</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="color: #475569; font-size: 20px;">&#8594;</div>
 <div style="background: #dbeafe; padding: 16px 24px; border-radius: 50px; text-align: center; border: 2px solid #93c5fd;">
 <div style="color: #1e40af; font-weight: bold; font-size: 13px;">MOVING_DOWN</div>
 <div style="color: #3b82f6; font-size: 10px;">Descending</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">&#8594;</div>
+<div style="color: #475569; font-size: 20px;">&#8594;</div>
 <div style="background: #dcfce7; padding: 16px 24px; border-radius: 50px; text-align: center; border: 2px solid #86efac;">
 <div style="color: #166534; font-weight: bold; font-size: 13px;">IDLE</div>
 <div style="color: #22c55e; font-size: 10px;">Cycle complete</div>
@@ -1133,7 +1133,7 @@ With multiple elevators, the system must decide which elevator should serve each
 </div>
 </div>
 
-<div style="text-align: center; color: #64748b; font-size: 24px;">&#8595; Commands &#8595;</div>
+<div style="text-align: center; color: #475569; font-size: 24px;">&#8595; Commands &#8595;</div>
 
 <div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px;">
 <div style="color: #7c3aed; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center;">Elevator Fleet (Independent State Machines)</div>
@@ -1156,7 +1156,7 @@ With multiple elevators, the system must decide which elevator should serve each
 </div>
 </div>
 
-<div style="text-align: center; color: #64748b; font-size: 24px;">&#8593; Status Updates &#8593;</div>
+<div style="text-align: center; color: #475569; font-size: 24px;">&#8593; Status Updates &#8593;</div>
 
 </div>
 </div>
@@ -1501,15 +1501,15 @@ This mirrors patterns from distributed databases like [[raft-consensus]](/topics
 
 <span style="color: #22c55e; font-weight: bold;">Emergency handling</span> is a critical aspect of elevator systems that interviewers love to explore. It tests your understanding of [[fault-tolerance]](/topics/system-design/fault-tolerance), safety-critical design, and graceful degradation patterns.
 
-<div style="background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #fca5a5;">
+<div style="background: #fef2f2; border-left: 3px solid #ef4444; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #fca5a5;">
 <div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 20px; text-align: center;">Emergency Response Architecture</div>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
 
 <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
-<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Fire Emergency</div>
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Fire Emergency</div>
 <div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Phase 1 Recall</div>
-<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6;">
 All elevators → Lobby<br/>
 Doors open & hold<br/>
 Disable hall calls<br/>
@@ -1518,9 +1518,9 @@ Firefighter key override
 </div>
 
 <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
-<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Power Failure</div>
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Power Failure</div>
 <div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Battery Backup</div>
-<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6;">
 One elevator at a time<br/>
 Move to nearest floor<br/>
 Open doors safely<br/>
@@ -1529,9 +1529,9 @@ Evacuate passengers
 </div>
 
 <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
-<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Earthquake</div>
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Earthquake</div>
 <div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Seismic Protocol</div>
-<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6;">
 Stop at nearest floor<br/>
 Open doors immediately<br/>
 Disable all operation<br/>
@@ -1540,9 +1540,9 @@ Require inspection reset
 </div>
 
 <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.2);">
-<div style="color: #fecaca; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Entrapment</div>
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Entrapment</div>
 <div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px;">Rescue Mode</div>
-<div style="color: #fca5a5; font-size: 12px; line-height: 1.6;">
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6;">
 Emergency intercom<br/>
 Ventilation maintained<br/>
 Position broadcast<br/>
@@ -1739,12 +1739,12 @@ class EmergencyHandler:
 <div style="color: #991b1b; font-weight: bold; font-size: 13px;">TRIGGER DETECTED</div>
 <div style="color: #dc2626; font-size: 11px;">Fire/Quake/Power/Manual</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="color: #475569; font-size: 20px;">→</div>
 <div style="background: #fef3c7; padding: 12px 20px; border-radius: 8px; border: 2px solid #fcd34d; text-align: center;">
 <div style="color: #92400e; font-weight: bold; font-size: 13px;">HALT NEW REQUESTS</div>
 <div style="color: #d97706; font-size: 11px;">Disable hall buttons</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="color: #475569; font-size: 20px;">→</div>
 <div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px; border: 2px solid #93c5fd; text-align: center;">
 <div style="color: #1e40af; font-weight: bold; font-size: 13px;">CLEAR STOP QUEUES</div>
 <div style="color: #3b82f6; font-size: 11px;">Override scheduling</div>
@@ -1756,15 +1756,15 @@ class EmergencyHandler:
 <div style="color: #7c3aed; font-weight: bold; font-size: 13px;">EXECUTE PROTOCOL</div>
 <div style="color: #8b5cf6; font-size: 11px;">Type-specific response</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="color: #475569; font-size: 20px;">→</div>
 <div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px; border: 2px solid #86efac; text-align: center;">
 <div style="color: #166534; font-weight: bold; font-size: 13px;">SAFE STATE REACHED</div>
 <div style="color: #22c55e; font-size: 11px;">Passengers evacuated</div>
 </div>
-<div style="color: #64748b; font-size: 20px;">→</div>
+<div style="color: #475569; font-size: 20px;">→</div>
 <div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px; border: 2px solid #cbd5e1; text-align: center;">
 <div style="color: #475569; font-weight: bold; font-size: 13px;">AWAIT RESET</div>
-<div style="color: #64748b; font-size: 11px;">Authorized personnel</div>
+<div style="color: #475569; font-size: 11px;">Authorized personnel</div>
 </div>
 </div>
 

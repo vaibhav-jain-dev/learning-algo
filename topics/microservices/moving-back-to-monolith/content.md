@@ -12,13 +12,13 @@ The microservices revolution promised independent deployability, team autonomy, 
 
 Understanding microservices failures requires examining the **fundamental assumptions** that underpin the architecture and identifying when those assumptions break down in practice.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">THE HIDDEN ASSUMPTIONS OF MICROSERVICES</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">THE HIDDEN ASSUMPTIONS OF MICROSERVICES</h3>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
       <h4 style="color: #f85149; margin: 0 0 16px 0;">Assumption 1: Clear Domain Boundaries</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 12px;">
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">
         <strong>What it assumes:</strong> Business domains are well-understood and stable enough to define service boundaries.
       </div>
       <div style="color: #fecaca; font-size: 0.85em;">
@@ -33,7 +33,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
       <h4 style="color: #f85149; margin: 0 0 16px 0;">Assumption 2: Network Reliability</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 12px;">
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">
         <strong>What it assumes:</strong> Network calls are "good enough" to replace in-process function calls.
       </div>
       <div style="color: #fecaca; font-size: 0.85em;">
@@ -48,7 +48,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
       <h4 style="color: #f85149; margin: 0 0 16px 0;">Assumption 3: Organizational Scale</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 12px;">
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">
         <strong>What it assumes:</strong> The organization is large enough that team autonomy benefits outweigh coordination costs.
       </div>
       <div style="color: #fecaca; font-size: 0.85em;">
@@ -63,7 +63,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
       <h4 style="color: #f85149; margin: 0 0 16px 0;">Assumption 4: Operational Maturity</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 12px;">
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 12px;">
         <strong>What it assumes:</strong> Teams can handle distributed systems complexity including observability, debugging, and incident response.
       </div>
       <div style="color: #fecaca; font-size: 0.85em;">
@@ -82,7 +82,7 @@ Understanding microservices failures requires examining the **fundamental assump
     <div style="color: #fed7aa; font-size: 0.95em;">
       When assumptions fail but microservices are adopted anyway, the result is often a <strong>distributed monolith</strong>: all the coupling of a monolith combined with all the complexity of a distributed system. Signs include:
     </div>
-    <ul style="color: #8b949e; margin: 12px 0 0 0; padding-left: 20px; font-size: 0.9em;">
+    <ul style="color: #64748b; margin: 12px 0 0 0; padding-left: 20px; font-size: 0.9em;">
       <li>Services that cannot be deployed independently</li>
       <li>Synchronous call chains spanning 5+ services for single operations</li>
       <li>Shared databases accessed by multiple services</li>
@@ -93,10 +93,10 @@ Understanding microservices failures requires examining the **fundamental assump
 
 ### Internal Mechanism: How Coupling Accumulates
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">COUPLING ACCUMULATION PATTERNS</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">COUPLING ACCUMULATION PATTERNS</h3>
 
-  <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
     <div style="display: flex; flex-direction: column; gap: 16px;">
 
       <div style="display: flex; align-items: center; gap: 16px;">
@@ -132,7 +132,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
   <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 16px; border-left: 4px solid #58a6ff;">
     <div style="color: #58a6ff; font-weight: 600; margin-bottom: 8px;">THE FUNDAMENTAL PROBLEM</div>
-    <div style="color: #8b949e; font-size: 0.95em;">
+    <div style="color: #64748b; font-size: 0.95em;">
       Microservices trade <strong>compile-time coupling</strong> for <strong>runtime coupling</strong>. The coupling doesn't disappear - it becomes invisible until production incidents reveal it. In a monolith, the compiler catches breaking changes. In microservices, production catches them.
     </div>
   </div>
@@ -140,12 +140,12 @@ Understanding microservices failures requires examining the **fundamental assump
 
 ### Interview Deep-Dive: When Microservices Fail
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
   <h4 style="color: #7aa2f7; margin: 0 0 20px 0; font-size: 1.1em;">LEVEL 1: Foundational Understanding</h4>
 
   <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #7aa2f7; font-weight: 600; margin-bottom: 8px;">Q: What are the primary reasons companies move back from microservices to monoliths?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> The main drivers are: (1) <strong>Operational overhead</strong> exceeding team capacity - each service requires its own CI/CD, monitoring, alerting, and on-call rotation; (2) <strong>Latency accumulation</strong> from network calls replacing in-process function calls; (3) <strong>Debugging complexity</strong> requiring distributed tracing across dozens of services; (4) <strong>Team size mismatch</strong> where small teams cannot justify the coordination costs; (5) <strong>Premature decomposition</strong> before domain boundaries were well-understood, resulting in a distributed monolith with the worst of both worlds.
     </div>
   </div>
@@ -154,7 +154,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
   <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #bb9af7; font-weight: 600; margin-bottom: 8px;">Q: How does the "distributed monolith" anti-pattern emerge, and why is it worse than a traditional monolith?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> A distributed monolith emerges through three mechanisms: (1) <strong>Synchronous coupling</strong> - services make blocking HTTP calls to each other, creating implicit dependencies; (2) <strong>Shared data</strong> - multiple services read/write the same database tables or share data through internal APIs that become de facto contracts; (3) <strong>Coordinated deployments</strong> - changes require releasing multiple services together because of implicit interface contracts.
       <br/><br/>
       It's worse than a traditional monolith because: (a) You inherit <strong>all the operational complexity</strong> of microservices - multiple deployments, distributed tracing, service mesh; (b) You retain <strong>all the coupling</strong> of a monolith - cannot deploy independently; (c) You lose <strong>monolith benefits</strong> - compile-time safety, simple debugging, ACID transactions; (d) Network calls add <strong>latency and failure modes</strong> without the compensating benefit of independent scalability.
@@ -163,7 +163,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
   <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #bb9af7; font-weight: 600; margin-bottom: 8px;">Q: Explain the "fallacies of distributed computing" and how they manifest in microservices failures.</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Peter Deutsch's eight fallacies are assumptions that developers make about networks that are actually false:
       <br/><br/>
       <strong>1. The network is reliable</strong> - Manifests as: Services failing because a dependency is temporarily unreachable. Requires circuit breakers, retries, timeouts - complexity that didn't exist in a monolith.
@@ -182,7 +182,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: A team argues that their distributed monolith still provides value through "independent deployment capability." How do you evaluate this claim?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> This claim requires rigorous verification through multiple lenses:
       <br/><br/>
       <strong>Verification approach:</strong>
@@ -205,7 +205,7 @@ Understanding microservices failures requires examining the **fundamental assump
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: Your company has 50 microservices but only 15 engineers. The CTO wants to consolidate. Some teams argue certain services must remain separate due to "different scaling requirements." How do you arbitrate?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Apply a structured decision framework:
       <br/><br/>
       <strong>Step 1: Quantify the scaling claim</strong>
@@ -240,8 +240,8 @@ Understanding microservices failures requires examining the **fundamental assump
 
 The cost of microservices is not in the code - it's in the **operational infrastructure** required to run, monitor, and debug them. This section quantifies the hidden costs that accumulate as service count grows.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">OPERATIONAL OVERHEAD MATRIX</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">OPERATIONAL OVERHEAD MATRIX</h3>
 
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
@@ -253,42 +253,42 @@ The cost of microservices is not in the code - it's in the **operational infrast
           <th style="padding: 12px; text-align: center; color: #f85149; border-bottom: 2px solid #f85149;">50 Services</th>
         </tr>
       </thead>
-      <tbody style="color: #8b949e;">
-        <tr style="background: rgba(0,0,0,0.2);">
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">CI/CD Pipelines</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">1</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">10</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">50</td>
+      <tbody style="color: #64748b;">
+        <tr style="background: rgba(59, 130, 246, 0.06);">
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">CI/CD Pipelines</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">1</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">10</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">50</td>
         </tr>
         <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Monitoring Dashboards</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">1-3</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">20-40</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">100-200</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Monitoring Dashboards</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">1-3</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">20-40</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">100-200</td>
         </tr>
-        <tr style="background: rgba(0,0,0,0.2);">
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Alert Rules</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">10-20</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">50-100</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">250-500</td>
-        </tr>
-        <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Secrets to Manage</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">1 set</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">10+ sets</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">50+ sets</td>
-        </tr>
-        <tr style="background: rgba(0,0,0,0.2);">
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Dependency Updates/Month</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">5-10</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">50-100</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">250-500</td>
+        <tr style="background: rgba(59, 130, 246, 0.06);">
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Alert Rules</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">10-20</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">50-100</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">250-500</td>
         </tr>
         <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">On-Call Runbooks</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">1</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">10</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d;">50</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Secrets to Manage</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">1 set</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">10+ sets</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">50+ sets</td>
+        </tr>
+        <tr style="background: rgba(59, 130, 246, 0.06);">
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Dependency Updates/Month</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">5-10</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">50-100</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">250-500</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">On-Call Runbooks</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">1</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">10</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">50</td>
         </tr>
         <tr style="background: rgba(248,81,73,0.1);">
           <td style="padding: 10px; font-weight: 600; color: #f85149;">Estimated Platform Team Size</td>
@@ -312,14 +312,14 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
 ### The Platform Tax: What You're Really Paying
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">INFRASTRUCTURE REQUIREMENTS FOR MICROSERVICES AT SCALE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">INFRASTRUCTURE REQUIREMENTS FOR MICROSERVICES AT SCALE</h3>
 
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
 
     <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #a371f7; margin: 0 0 12px 0;">Service Mesh</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 8px;">Required for: Service discovery, load balancing, mTLS, traffic management</div>
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 8px;">Required for: Service discovery, load balancing, mTLS, traffic management</div>
       <div style="color: #ede9fe; font-size: 0.85em;">
         <strong>Options:</strong> Istio, Linkerd, Consul Connect<br/>
         <strong>Overhead:</strong> ~15% CPU, ~20% latency per hop<br/>
@@ -329,7 +329,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
     <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #a371f7; margin: 0 0 12px 0;">Observability Stack</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 8px;">Required for: Distributed tracing, metrics, logging correlation</div>
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 8px;">Required for: Distributed tracing, metrics, logging correlation</div>
       <div style="color: #ede9fe; font-size: 0.85em;">
         <strong>Options:</strong> Jaeger/Zipkin + Prometheus + ELK/Loki<br/>
         <strong>Storage cost:</strong> $5-50K/month at scale<br/>
@@ -339,7 +339,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
     <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #a371f7; margin: 0 0 12px 0;">API Gateway</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 8px;">Required for: Rate limiting, authentication, request routing</div>
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 8px;">Required for: Rate limiting, authentication, request routing</div>
       <div style="color: #ede9fe; font-size: 0.85em;">
         <strong>Options:</strong> Kong, Ambassador, AWS API Gateway<br/>
         <strong>Latency added:</strong> 2-10ms per request<br/>
@@ -349,7 +349,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
     <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #a371f7; margin: 0 0 12px 0;">Container Orchestration</h4>
-      <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 8px;">Required for: Scheduling, scaling, health management</div>
+      <div style="color: #64748b; font-size: 0.9em; margin-bottom: 8px;">Required for: Scheduling, scaling, health management</div>
       <div style="color: #ede9fe; font-size: 0.85em;">
         <strong>Options:</strong> Kubernetes, ECS, Nomad<br/>
         <strong>Complexity:</strong> 100+ YAML files per service<br/>
@@ -363,7 +363,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
     <h4 style="color: #f85149; margin: 0 0 12px 0;">TOTAL PLATFORM TAX CALCULATION</h4>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div>
-        <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 8px;"><strong>For 50 microservices:</strong></div>
+        <div style="color: #64748b; font-size: 0.9em; margin-bottom: 8px;"><strong>For 50 microservices:</strong></div>
         <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.85em;">
           <li>Platform team: 8-15 engineers</li>
           <li>Infrastructure cost: +40-60%</li>
@@ -372,7 +372,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
         </ul>
       </div>
       <div>
-        <div style="color: #8b949e; font-size: 0.9em; margin-bottom: 8px;"><strong>For equivalent monolith:</strong></div>
+        <div style="color: #64748b; font-size: 0.9em; margin-bottom: 8px;"><strong>For equivalent monolith:</strong></div>
         <ul style="color: #7ee787; margin: 0; padding-left: 20px; font-size: 0.85em;">
           <li>Platform team: 1-2 engineers</li>
           <li>Infrastructure cost: baseline</li>
@@ -386,12 +386,12 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
 ### Interview Deep-Dive: Operational Overhead
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
   <h4 style="color: #7aa2f7; margin: 0 0 20px 0; font-size: 1.1em;">LEVEL 1: Foundational Understanding</h4>
 
   <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #7aa2f7; font-weight: 600; margin-bottom: 8px;">Q: What specific operational overhead is introduced when moving from a monolith to microservices?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> The overhead falls into five categories:
       <br/><br/>
       <strong>1. Deployment infrastructure:</strong> Each service needs its own CI/CD pipeline, container image registry, deployment manifests (Kubernetes YAML), and rollback procedures.
@@ -410,7 +410,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
   <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #bb9af7; font-weight: 600; margin-bottom: 8px;">Q: How does incident response differ between monolith and microservices architectures, and what tooling is required to maintain equivalent response times?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Incident response in microservices is fundamentally more complex due to the <strong>blast radius uncertainty</strong>:
       <br/><br/>
       <strong>Monolith incident response:</strong>
@@ -449,7 +449,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: Your observability costs have grown to $50K/month for 30 microservices. Leadership wants to cut costs. What's your analysis framework?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> This requires balancing <strong>visibility</strong> against <strong>cost</strong>, with the constraint that certain observability is non-negotiable for production stability.
       <br/><br/>
       <strong>Step 1: Audit current observability spend</strong>
@@ -479,7 +479,7 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: Design an on-call rotation for a team of 8 engineers supporting 40 microservices. What are the failure modes?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> This scenario (5 services per engineer) is already in the danger zone. Here's the analysis:
       <br/><br/>
       <strong>Option 1: Unified on-call (all services, all engineers)</strong>
@@ -514,15 +514,15 @@ The cost of microservices is not in the code - it's in the **operational infrast
 
 Segment's migration from 140+ microservices back to a monolithic architecture is the most thoroughly documented case study in the industry. Their experience provides quantitative evidence for when microservices become counterproductive.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">SEGMENT CASE STUDY: THE JOURNEY</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">SEGMENT CASE STUDY: THE JOURNEY</h3>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
 
     <div style="background: rgba(248,81,73,0.15); border-radius: 12px; padding: 24px; border-left: 4px solid #f85149;">
       <h4 style="color: #f85149; margin: 0 0 16px 0;">Before: 140+ Microservices</h4>
 
-      <div style="color: #8b949e; font-size: 0.95em; margin-bottom: 12px;"><strong>Architecture:</strong></div>
+      <div style="color: #64748b; font-size: 0.95em; margin-bottom: 12px;"><strong>Architecture:</strong></div>
       <ul style="color: #fecaca; margin: 0 0 16px 0; padding-left: 20px; font-size: 0.9em;">
         <li>One microservice per destination integration (Google Ads, Facebook, Salesforce, etc.)</li>
         <li>Each service had its own repository</li>
@@ -531,7 +531,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
         <li>Each service had its own monitoring and alerting</li>
       </ul>
 
-      <div style="color: #8b949e; font-size: 0.95em; margin-bottom: 12px;"><strong>The Problem:</strong></div>
+      <div style="color: #64748b; font-size: 0.95em; margin-bottom: 12px;"><strong>The Problem:</strong></div>
       <ul style="color: #fecaca; margin: 0; padding-left: 20px; font-size: 0.9em;">
         <li><strong>3-person team</strong> responsible for 140 services</li>
         <li>~47 services per engineer</li>
@@ -544,7 +544,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
     <div style="background: rgba(35,134,54,0.15); border-radius: 12px; padding: 24px; border-left: 4px solid #238636;">
       <h4 style="color: #7ee787; margin: 0 0 16px 0;">After: Centrifuge Monolith</h4>
 
-      <div style="color: #8b949e; font-size: 0.95em; margin-bottom: 12px;"><strong>Architecture:</strong></div>
+      <div style="color: #64748b; font-size: 0.95em; margin-bottom: 12px;"><strong>Architecture:</strong></div>
       <ul style="color: #7ee787; margin: 0 0 16px 0; padding-left: 20px; font-size: 0.9em;">
         <li>Single Go binary with plugin architecture</li>
         <li>Integrations as packages within monorepo</li>
@@ -553,7 +553,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
         <li>Single deployment unit</li>
       </ul>
 
-      <div style="color: #8b949e; font-size: 0.95em; margin-bottom: 12px;"><strong>The Results:</strong></div>
+      <div style="color: #64748b; font-size: 0.95em; margin-bottom: 12px;"><strong>The Results:</strong></div>
       <ul style="color: #7ee787; margin: 0; padding-left: 20px; font-size: 0.9em;">
         <li><strong>10x faster development</strong> - new integration in hours, not weeks</li>
         <li><strong>1 CI/CD pipeline</strong> instead of 140</li>
@@ -569,30 +569,30 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
     <h4 style="color: #58a6ff; margin: 0 0 16px 0;">WHY THEIR MICROSERVICES APPROACH FAILED</h4>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
         <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Mistake 1: Wrong Decomposition Axis</div>
-        <div style="color: #8b949e; font-size: 0.9em;">
+        <div style="color: #64748b; font-size: 0.9em;">
           They split by <strong>destination</strong> (Google, Facebook) rather than by <strong>capability</strong> (queue processing, transformation, delivery). The destinations had identical architectures - the only difference was the API endpoint called.
         </div>
       </div>
 
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
         <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Mistake 2: Team Size Mismatch</div>
-        <div style="color: #8b949e; font-size: 0.9em;">
+        <div style="color: #64748b; font-size: 0.9em;">
           3 engineers cannot maintain 140 services. The ratio of 47:1 meant each engineer owned more services than they could possibly understand deeply. Any incident required context switching across dozens of codebases.
         </div>
       </div>
 
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
         <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Mistake 3: Identical Code Duplication</div>
-        <div style="color: #8b949e; font-size: 0.9em;">
+        <div style="color: #64748b; font-size: 0.9em;">
           90% of each service was boilerplate (queue consumer, retry logic, metrics, logging). They had duplicated this 140 times. A bug in retry logic meant fixing 140 services.
         </div>
       </div>
 
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
         <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Mistake 4: No Scaling Requirement</div>
-        <div style="color: #8b949e; font-size: 0.9em;">
+        <div style="color: #64748b; font-size: 0.9em;">
           All integrations had similar load profiles. There was no need for independent scaling - the Google Ads integration didn't need 10x the resources of the Facebook integration. They were solving a non-existent problem.
         </div>
       </div>
@@ -602,7 +602,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
   <div style="background: rgba(126,231,135,0.2); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
     <h4 style="color: #7ee787; margin: 0 0 12px 0;">KEY INSIGHT: The Plugin Pattern</h4>
-    <div style="color: #8b949e; font-size: 0.95em;">
+    <div style="color: #64748b; font-size: 0.95em;">
       Segment's solution wasn't just "go back to monolith" - it was recognizing that their problem was better solved with a <strong>plugin architecture</strong>:
       <br/><br/>
       <ul style="margin: 0; padding-left: 20px;">
@@ -619,8 +619,8 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
 ### Quantitative Analysis: Before vs After
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">SEGMENT METRICS COMPARISON</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">SEGMENT METRICS COMPARISON</h3>
 
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
@@ -632,42 +632,42 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
           <th style="padding: 12px; text-align: center; color: #8957e5; border-bottom: 2px solid #58a6ff;">Improvement</th>
         </tr>
       </thead>
-      <tbody style="color: #8b949e;">
-        <tr style="background: rgba(0,0,0,0.2);">
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Time to add new integration</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #fecaca;">2-3 weeks</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">2-4 hours</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7; font-weight: 600;">~40x</td>
+      <tbody style="color: #64748b;">
+        <tr style="background: rgba(59, 130, 246, 0.06);">
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Time to add new integration</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #fecaca;">2-3 weeks</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">2-4 hours</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7; font-weight: 600;">~40x</td>
         </tr>
         <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">CI/CD pipelines to maintain</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #fecaca;">140</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">1</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7; font-weight: 600;">140x</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">CI/CD pipelines to maintain</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #fecaca;">140</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">1</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7; font-weight: 600;">140x</td>
         </tr>
-        <tr style="background: rgba(0,0,0,0.2);">
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">PRs for cross-cutting change</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #fecaca;">140</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">1</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7; font-weight: 600;">140x</td>
-        </tr>
-        <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Services to monitor</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #fecaca;">140</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">1</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7; font-weight: 600;">140x</td>
-        </tr>
-        <tr style="background: rgba(0,0,0,0.2);">
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Repositories</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #fecaca;">140</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">1 (monorepo)</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7; font-weight: 600;">140x</td>
+        <tr style="background: rgba(59, 130, 246, 0.06);">
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">PRs for cross-cutting change</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #fecaca;">140</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">1</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7; font-weight: 600;">140x</td>
         </tr>
         <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #30363d;">Engineer productivity</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #fecaca;">Baseline</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">10x</td>
-          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7; font-weight: 600;">10x</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Services to monitor</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #fecaca;">140</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">1</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7; font-weight: 600;">140x</td>
+        </tr>
+        <tr style="background: rgba(59, 130, 246, 0.06);">
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Repositories</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #fecaca;">140</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">1 (monorepo)</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7; font-weight: 600;">140x</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Engineer productivity</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #fecaca;">Baseline</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">10x</td>
+          <td style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7; font-weight: 600;">10x</td>
         </tr>
       </tbody>
     </table>
@@ -676,12 +676,12 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
 ### Interview Deep-Dive: Segment Case Study
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
   <h4 style="color: #7aa2f7; margin: 0 0 20px 0; font-size: 1.1em;">LEVEL 1: Foundational Understanding</h4>
 
   <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #7aa2f7; font-weight: 600; margin-bottom: 8px;">Q: Summarize Segment's microservices-to-monolith migration. What was the primary driver?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Segment operated a customer data platform with 140+ destination integrations (Google Ads, Facebook, Salesforce, etc.). Each integration was deployed as a separate microservice with its own repository, CI/CD, and infrastructure.
       <br/><br/>
       <strong>Primary driver:</strong> A 3-person team could not sustainably maintain 140 services. The ratio of 47 services per engineer meant:
@@ -700,7 +700,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
   <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #bb9af7; font-weight: 600; margin-bottom: 8px;">Q: Segment's integrations had identical architectures - why did microservices seem like the right choice initially, and what changed?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> The initial reasoning was based on several microservices principles that seemed to apply:
       <br/><br/>
       <strong>Why microservices seemed right:</strong>
@@ -725,7 +725,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
   <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #bb9af7; font-weight: 600; margin-bottom: 8px;">Q: How did Segment's Centrifuge architecture achieve isolation without distribution?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Centrifuge used a <strong>plugin architecture</strong> that provides logical isolation within a single process:
       <br/><br/>
       <strong>Architecture components:</strong>
@@ -759,7 +759,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: Your company has a similar situation - 80 microservices but they're written in 4 different languages (Node.js, Python, Go, Java). Can you apply Segment's approach?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> This is significantly more complex than Segment's situation. The multi-language constraint changes the analysis:
       <br/><br/>
       <strong>Option 1: Standardize on one language, then consolidate</strong>
@@ -794,7 +794,7 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: Segment's solution worked because integrations had identical structures. What if your microservices have genuinely different scaling characteristics - some CPU-bound, some I/O-bound, some memory-intensive?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Genuine heterogeneity in resource requirements is one of the valid reasons to maintain separate services. The analysis framework:
       <br/><br/>
       <strong>Step 1: Quantify the heterogeneity</strong>
@@ -833,48 +833,48 @@ Segment's migration from 140+ microservices back to a monolithic architecture is
 
 A modular monolith is an architecture that provides the organizational benefits of microservices (clear boundaries, team ownership, independent development) without the operational costs (network overhead, distributed debugging, deployment complexity).
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">MODULAR MONOLITH ARCHITECTURE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #8957e5; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">MODULAR MONOLITH ARCHITECTURE</h3>
 
-  <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+  <div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
 
       <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 10px; padding: 16px; text-align: center;">
         <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">User Module</div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
           <div style="color: #d1fae5; font-size: 0.75em;">Public API</div>
         </div>
-        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
           <div style="color: #7ee787; font-size: 0.7em;">Domain Logic<br/>Repository<br/>Events</div>
         </div>
       </div>
 
       <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 10px; padding: 16px; text-align: center;">
         <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">Order Module</div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
           <div style="color: #dbeafe; font-size: 0.75em;">Public API</div>
         </div>
-        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
           <div style="color: #93c5fd; font-size: 0.7em;">Domain Logic<br/>Repository<br/>Events</div>
         </div>
       </div>
 
       <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border-radius: 10px; padding: 16px; text-align: center;">
         <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">Payment Module</div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
           <div style="color: #fed7aa; font-size: 0.75em;">Public API</div>
         </div>
-        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
           <div style="color: #fdba74; font-size: 0.7em;">Domain Logic<br/>Repository<br/>Events</div>
         </div>
       </div>
 
       <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 10px; padding: 16px; text-align: center;">
         <div style="color: #fff; font-weight: 600; margin-bottom: 8px;">Inventory Module</div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 6px; padding: 8px; margin-bottom: 8px;">
           <div style="color: #ede9fe; font-size: 0.75em;">Public API</div>
         </div>
-        <div style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 8px;">
+        <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 8px;">
           <div style="color: #c4b5fd; font-size: 0.7em;">Domain Logic<br/>Repository<br/>Events</div>
         </div>
       </div>
@@ -882,14 +882,14 @@ A modular monolith is an architecture that provides the organizational benefits 
     </div>
 
     <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 16px;">
-      <div style="width: 20px; height: 20px; border-left: 2px solid #30363d; border-bottom: 2px solid #30363d;"></div>
-      <div style="width: 20px; height: 20px; border-bottom: 2px solid #30363d;"></div>
-      <div style="width: 20px; height: 20px; border-bottom: 2px solid #30363d;"></div>
-      <div style="width: 20px; height: 20px; border-right: 2px solid #30363d; border-bottom: 2px solid #30363d;"></div>
+      <div style="width: 20px; height: 20px; border-left: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0;"></div>
+      <div style="width: 20px; height: 20px; border-bottom: 2px solid #e2e8f0;"></div>
+      <div style="width: 20px; height: 20px; border-bottom: 2px solid #e2e8f0;"></div>
+      <div style="width: 20px; height: 20px; border-right: 2px solid #e2e8f0; border-bottom: 2px solid #e2e8f0;"></div>
     </div>
 
-    <div style="background: linear-gradient(135deg, #30363d 0%, #21262d 100%); border-radius: 10px; padding: 20px; text-align: center;">
-      <div style="color: #8b949e; font-weight: 600; margin-bottom: 12px;">SHARED INFRASTRUCTURE</div>
+    <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 10px; padding: 20px; text-align: center;">
+      <div style="color: #64748b; font-weight: 600; margin-bottom: 12px;">SHARED INFRASTRUCTURE</div>
       <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
         <div style="background: rgba(88,166,255,0.2); border-radius: 6px; padding: 8px 16px; color: #58a6ff; font-size: 0.85em;">Database</div>
         <div style="background: rgba(88,166,255,0.2); border-radius: 6px; padding: 8px 16px; color: #58a6ff; font-size: 0.85em;">Event Bus</div>
@@ -904,7 +904,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
     <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
       <h4 style="color: #7ee787; margin: 0 0 16px 0;">ENFORCED BOUNDARIES</h4>
-      <ol style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
+      <ol style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em;">
         <li><strong>Public API only:</strong> Modules expose interfaces, not implementations. Order module calls <code>UserService.GetUser(id)</code>, not <code>userRepository.findById(id)</code></li>
         <li><strong>No cross-module database access:</strong> Payment module cannot query Order module's tables directly. Must go through Order module's API.</li>
         <li><strong>Event-driven integration:</strong> Modules publish domain events. Other modules subscribe. Loose coupling through events.</li>
@@ -914,13 +914,13 @@ A modular monolith is an architecture that provides the organizational benefits 
 
     <div style="background: rgba(88,166,255,0.1); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
       <h4 style="color: #58a6ff; margin: 0 0 16px 0;">EXTRACTION PATH</h4>
-      <ol style="color: #8b949e; margin: 0; padding-left: 20px; font-size: 0.9em;">
+      <ol style="color: #64748b; margin: 0; padding-left: 20px; font-size: 0.9em;">
         <li><strong>Start modular:</strong> Build with clean boundaries from day one</li>
         <li><strong>Measure:</strong> Identify modules with different scaling needs</li>
         <li><strong>Extract gradually:</strong> One module at a time, as needed</li>
         <li><strong>Keep the option:</strong> Most modules may never need extraction</li>
       </ol>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-top: 16px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; margin-top: 16px;">
         <div style="color: #58a6ff; font-size: 0.85em; text-align: center;">
           <strong>Key insight:</strong> Extraction is cheap when boundaries are clean. The modular monolith is a "microservices-ready" architecture.
         </div>
@@ -932,14 +932,14 @@ A modular monolith is an architecture that provides the organizational benefits 
 
 ### Implementation Patterns for Modular Monolith
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #30363d; padding-bottom: 12px;">IMPLEMENTATION TECHNIQUES BY LANGUAGE</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.2em; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">IMPLEMENTATION TECHNIQUES BY LANGUAGE</h3>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
 
     <div style="background: rgba(249,115,22,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #f97316; margin: 0 0 12px 0;">Java / Kotlin</h4>
-      <div style="color: #8b949e; font-size: 0.9em;">
+      <div style="color: #64748b; font-size: 0.9em;">
         <strong>Module system:</strong> Java 9+ modules (module-info.java) or Gradle subprojects
         <br/><br/>
         <strong>Boundary enforcement:</strong>
@@ -949,7 +949,7 @@ A modular monolith is an architecture that provides the organizational benefits 
           <li>ArchUnit for architectural tests</li>
         </ul>
       </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-top: 12px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; margin-top: 12px;">
         <code style="color: #fed7aa; font-size: 0.8em;">
           module order.api { exports com.app.order.api; }<br/>
           module order.impl { requires order.api; }
@@ -959,7 +959,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
     <div style="background: rgba(88,166,255,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #58a6ff; margin: 0 0 12px 0;">Go</h4>
-      <div style="color: #8b949e; font-size: 0.9em;">
+      <div style="color: #64748b; font-size: 0.9em;">
         <strong>Module system:</strong> Go packages with internal/ directories
         <br/><br/>
         <strong>Boundary enforcement:</strong>
@@ -969,7 +969,7 @@ A modular monolith is an architecture that provides the organizational benefits 
           <li>Interface-based APIs for loose coupling</li>
         </ul>
       </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-top: 12px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; margin-top: 12px;">
         <code style="color: #93c5fd; font-size: 0.8em;">
           /order/api/service.go      // Public<br/>
           /order/internal/repo.go    // Private
@@ -979,7 +979,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
     <div style="background: rgba(126,231,135,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #7ee787; margin: 0 0 12px 0;">TypeScript / Node.js</h4>
-      <div style="color: #8b949e; font-size: 0.9em;">
+      <div style="color: #64748b; font-size: 0.9em;">
         <strong>Module system:</strong> npm workspaces or Nx monorepo
         <br/><br/>
         <strong>Boundary enforcement:</strong>
@@ -989,7 +989,7 @@ A modular monolith is an architecture that provides the organizational benefits 
           <li>barrel exports (index.ts) control public API</li>
         </ul>
       </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-top: 12px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; margin-top: 12px;">
         <code style="color: #86efac; font-size: 0.8em;">
           // libs/order/src/index.ts<br/>
           export { OrderService } from './services';<br/>
@@ -1000,7 +1000,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
     <div style="background: rgba(137,87,229,0.15); border-radius: 12px; padding: 20px;">
       <h4 style="color: #a371f7; margin: 0 0 12px 0;">Python</h4>
-      <div style="color: #8b949e; font-size: 0.9em;">
+      <div style="color: #64748b; font-size: 0.9em;">
         <strong>Module system:</strong> Python packages with __init__.py
         <br/><br/>
         <strong>Boundary enforcement:</strong>
@@ -1010,7 +1010,7 @@ A modular monolith is an architecture that provides the organizational benefits 
           <li>import-linter for architectural rules</li>
         </ul>
       </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; margin-top: 12px;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; margin-top: 12px;">
         <code style="color: #c4b5fd; font-size: 0.8em;">
           # order/__init__.py<br/>
           __all__ = ['OrderService', 'Order']<br/>
@@ -1023,21 +1023,21 @@ A modular monolith is an architecture that provides the organizational benefits 
 
   <div style="background: rgba(249,115,22,0.2); border-radius: 12px; padding: 20px; border-left: 4px solid #f97316;">
     <h4 style="color: #f97316; margin: 0 0 12px 0;">DATABASE SCHEMA SEPARATION</h4>
-    <div style="color: #8b949e; font-size: 0.95em; margin-bottom: 12px;">
+    <div style="color: #64748b; font-size: 0.95em; margin-bottom: 12px;">
       Even in a modular monolith, enforce database boundaries:
     </div>
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; text-align: center;">
         <div style="color: #f97316; font-weight: 600; margin-bottom: 6px;">Option 1: Schemas</div>
-        <div style="color: #8b949e; font-size: 0.85em;">Each module owns its own PostgreSQL schema. Cross-schema queries prohibited by convention.</div>
+        <div style="color: #64748b; font-size: 0.85em;">Each module owns its own PostgreSQL schema. Cross-schema queries prohibited by convention.</div>
       </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; text-align: center;">
         <div style="color: #f97316; font-weight: 600; margin-bottom: 6px;">Option 2: Table Prefixes</div>
-        <div style="color: #8b949e; font-size: 0.85em;">order_*, payment_*, user_*. Lint rules prevent cross-prefix joins.</div>
+        <div style="color: #64748b; font-size: 0.85em;">order_*, payment_*, user_*. Lint rules prevent cross-prefix joins.</div>
       </div>
-      <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; text-align: center;">
+      <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 12px; text-align: center;">
         <div style="color: #f97316; font-weight: 600; margin-bottom: 6px;">Option 3: Separate DBs</div>
-        <div style="color: #8b949e; font-size: 0.85em;">Each module has its own database. Heaviest isolation, closest to microservices.</div>
+        <div style="color: #64748b; font-size: 0.85em;">Each module has its own database. Heaviest isolation, closest to microservices.</div>
       </div>
     </div>
   </div>
@@ -1045,12 +1045,12 @@ A modular monolith is an architecture that provides the organizational benefits 
 
 ### Interview Deep-Dive: Modular Monolith
 
-<div style="background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7aa2f7;">
   <h4 style="color: #7aa2f7; margin: 0 0 20px 0; font-size: 1.1em;">LEVEL 1: Foundational Understanding</h4>
 
   <div style="background: rgba(122,162,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #7aa2f7; font-weight: 600; margin-bottom: 8px;">Q: What is a modular monolith and how does it differ from both a traditional monolith and microservices?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> A modular monolith is a <strong>single deployable unit</strong> that is internally organized into <strong>well-defined, loosely-coupled modules</strong> with enforced boundaries.
       <br/><br/>
       <strong>vs Traditional Monolith:</strong>
@@ -1073,7 +1073,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
   <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #bb9af7; font-weight: 600; margin-bottom: 8px;">Q: How do you enforce module boundaries in a modular monolith? What happens when boundaries are violated?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Boundary enforcement happens at multiple levels:
       <br/><br/>
       <strong>Level 1: Language/Framework Features</strong>
@@ -1108,7 +1108,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
   <div style="background: rgba(187,154,247,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #bb9af7; font-weight: 600; margin-bottom: 8px;">Q: How do modules communicate in a modular monolith? What patterns enable loose coupling?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> Module communication uses two primary patterns:
       <br/><br/>
       <strong>Pattern 1: Synchronous Interface Calls</strong>
@@ -1141,7 +1141,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: Your modular monolith has grown to 20 modules. The Payment module now needs to scale independently due to Black Friday traffic spikes. How do you extract it to a microservice while minimizing risk?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> This is exactly the scenario modular monolith is designed for - the "extract when needed" path. The process:
       <br/><br/>
       <strong>Phase 1: Audit Current State (1-2 weeks)</strong>
@@ -1190,7 +1190,7 @@ A modular monolith is an architecture that provides the organizational benefits 
 
   <div style="background: rgba(247,118,142,0.1); border-radius: 8px; padding: 16px;">
     <div style="color: #f7768e; font-weight: 600; margin-bottom: 8px;">Q: A team argues that modular monolith still has the "big deployment" problem - one bad change can break everything. How do you respond?</div>
-    <div style="color: #a9b1d6; font-size: 0.95em;">
+    <div style="color: #334155; font-size: 0.95em;">
       <strong>A:</strong> This is a valid concern that requires nuanced analysis:
       <br/><br/>
       <strong>Acknowledge the truth in the argument:</strong>
@@ -1225,8 +1225,8 @@ A modular monolith is an architecture that provides the organizational benefits 
 
 Returning to a monolith is not admitting failure - it's pragmatic engineering. This section provides a systematic approach to consolidation.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">CONSOLIDATION ROADMAP</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">CONSOLIDATION ROADMAP</h3>
 
   <div style="display: flex; flex-direction: column; gap: 20px;">
 
@@ -1236,7 +1236,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
         <h4 style="color: white; margin: 0;">PHASE 1: DEPENDENCY MAPPING (2-3 weeks)</h4>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Tasks</div>
           <ul style="color: #93c5fd; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li>Generate service dependency graph from tracing data</li>
@@ -1246,7 +1246,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
             <li>Calculate coupling scores between services</li>
           </ul>
         </div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #dbeafe; font-weight: 600; margin-bottom: 8px;">Output</div>
           <ul style="color: #93c5fd; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li>Dependency matrix showing service interactions</li>
@@ -1264,7 +1264,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
         <h4 style="color: white; margin: 0;">PHASE 2: DATA CONSOLIDATION (3-6 weeks)</h4>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Tasks</div>
           <ul style="color: #c4b5fd; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li>Design unified schema with module boundaries</li>
@@ -1274,7 +1274,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
             <li>Build read replica on new database</li>
           </ul>
         </div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #ede9fe; font-weight: 600; margin-bottom: 8px;">Risks & Mitigations</div>
           <ul style="color: #c4b5fd; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li><strong>Data loss:</strong> Keep old databases running for 30 days post-migration</li>
@@ -1291,7 +1291,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
         <h4 style="color: white; margin: 0;">PHASE 3: CODE CONSOLIDATION (4-8 weeks)</h4>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Tasks</div>
           <ul style="color: #fdba74; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li>Create monolith project with module structure</li>
@@ -1301,7 +1301,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
             <li>Unify logging, metrics, error handling</li>
           </ul>
         </div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #fed7aa; font-weight: 600; margin-bottom: 8px;">Approach: Strangler Fig</div>
           <ul style="color: #fdba74; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li>Don't try to merge all at once</li>
@@ -1320,7 +1320,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
         <h4 style="color: white; margin: 0;">PHASE 4: OPERATIONAL CONSOLIDATION (2-4 weeks)</h4>
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #d1fae5; font-weight: 600; margin-bottom: 8px;">Tasks</div>
           <ul style="color: #86efac; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li>Merge CI/CD pipelines into single pipeline</li>
@@ -1330,7 +1330,7 @@ Returning to a monolith is not admitting failure - it's pragmatic engineering. T
             <li>Retrain on-call engineers</li>
           </ul>
         </div>
-        <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px;">
+        <div style="background: rgba(59, 130, 246, 0.06); border-radius: 8px; padding: 16px;">
           <div style="color: #d1fae5; font-weight: 600; margin-bottom: 8px;">Decommissioning</div>
           <ul style="color: #86efac; margin: 0; padding-left: 18px; font-size: 0.9em;">
             <li>Archive old service repositories</li>
@@ -1365,14 +1365,14 @@ Related concepts for deeper understanding:
 
 ## Key Takeaways
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
-  <h3 style="color: #7ee787; margin: 0 0 24px 0; font-size: 1.2em; text-align: center; border-bottom: 2px solid #30363d; padding-bottom: 12px;">EXECUTIVE SUMMARY</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+  <h3 style="color: #7ee787; margin: 0 0 24px 0; font-size: 1.2em; text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">EXECUTIVE SUMMARY</h3>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
     <div style="background: rgba(126,231,135,0.1); border-radius: 12px; padding: 20px; border-left: 4px solid #7ee787;">
       <h4 style="color: #7ee787; margin: 0 0 12px 0;">When to Consider Consolidation</h4>
-      <ul style="color: #8b949e; margin: 0; padding-left: 18px; font-size: 0.9em;">
+      <ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em;">
         <li>Team spends more time on infrastructure than features</li>
         <li>Incident response takes hours due to distributed debugging</li>
         <li>Services per engineer ratio exceeds 5:1</li>
@@ -1383,7 +1383,7 @@ Related concepts for deeper understanding:
 
     <div style="background: rgba(248,81,73,0.1); border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
       <h4 style="color: #f85149; margin: 0 0 12px 0;">When Microservices Still Make Sense</h4>
-      <ul style="color: #8b949e; margin: 0; padding-left: 18px; font-size: 0.9em;">
+      <ul style="color: #64748b; margin: 0; padding-left: 18px; font-size: 0.9em;">
         <li>Multiple teams with genuinely different technology needs</li>
         <li>Components with dramatically different scaling requirements</li>
         <li>Regulatory requirements for isolation (PCI, HIPAA)</li>
@@ -1396,7 +1396,7 @@ Related concepts for deeper understanding:
 
   <div style="background: rgba(88,166,255,0.15); border-radius: 12px; padding: 20px; margin-top: 20px; border-left: 4px solid #58a6ff;">
     <h4 style="color: #58a6ff; margin: 0 0 12px 0;">The Modular Monolith Sweet Spot</h4>
-    <div style="color: #8b949e; font-size: 0.95em;">
+    <div style="color: #64748b; font-size: 0.95em;">
       For most organizations (especially those with fewer than 100 engineers), the modular monolith provides the optimal balance:
       <ul style="margin: 12px 0 0 0; padding-left: 20px;">
         <li><strong>Clear boundaries</strong> for team ownership and code organization</li>

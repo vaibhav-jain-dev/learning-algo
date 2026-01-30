@@ -5,20 +5,20 @@
 This comprehensive guide covers real-world system design case studies from major tech companies and startups. Each case study includes:
 
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0;">
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px; text-align: center;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; text-align: center;">
 <div style="font-size: 32px; margin-bottom: 8px;">📈</div>
-<h4 style="color: #58a6ff; margin: 0 0 8px 0;">3 Growth Phases</h4>
-<p style="color: #8b949e; font-size: 13px; margin: 0;">Low Budget → Medium Scale → High Scale</p>
+<h4 style="color: #1d4ed8; margin: 0 0 8px 0;">3 Growth Phases</h4>
+<p style="color: #475569; font-size: 13px; margin: 0;">Low Budget → Medium Scale → High Scale</p>
 </div>
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 20px; text-align: center;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; text-align: center;">
 <div style="font-size: 32px; margin-bottom: 8px;">🏗️</div>
-<h4 style="color: #a371f7; margin: 0 0 8px 0;">2 Architecture Styles</h4>
-<p style="color: #8b949e; font-size: 13px; margin: 0;">Monolith vs Microservices</p>
+<h4 style="color: #7c3aed; margin: 0 0 8px 0;">2 Architecture Styles</h4>
+<p style="color: #475569; font-size: 13px; margin: 0;">Monolith vs Microservices</p>
 </div>
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 20px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 20px; text-align: center;">
 <div style="font-size: 32px; margin-bottom: 8px;">☁️</div>
-<h4 style="color: #7ee787; margin: 0 0 8px 0;">AWS Deep Dive</h4>
-<p style="color: #8b949e; font-size: 13px; margin: 0;">Technologies, Alternatives & Trade-offs</p>
+<h4 style="color: #16a34a; margin: 0 0 8px 0;">AWS Deep Dive</h4>
+<p style="color: #475569; font-size: 13px; margin: 0;">Technologies, Alternatives & Trade-offs</p>
 </div>
 </div>
 
@@ -27,82 +27,82 @@ This comprehensive guide covers real-world system design case studies from major
 ## System Categories
 
 ### Financial Systems
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
-<a href="/topic/system-architectures/stockbroker" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; margin: -8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<a href="/topic/system-architectures/stockbroker" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; margin: -8px; transition: background 0.2s;">
 <strong>Stockbroker System</strong> - Real-time trading, order matching, market data streaming
 </a>
 </div>
 
 ### E-Commerce & Marketplace
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/amazon" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/amazon" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Amazon</strong> - E-commerce platform, inventory, payments, recommendations
 </a>
-<a href="/topic/system-architectures/airbnb" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<a href="/topic/system-architectures/airbnb" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Airbnb</strong> - Marketplace, search, booking, reviews, payments
 </a>
 </div>
 
 ### Social & Content Platforms
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/facebook-newsfeed" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/facebook-newsfeed" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Facebook News Feed</strong> - Feed ranking, real-time updates, social graph
 </a>
-<a href="/topic/system-architectures/reddit-api" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<a href="/topic/system-architectures/reddit-api" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Reddit API</strong> - Subreddits, voting, comments, moderation
 </a>
-<a href="/topic/system-architectures/tinder" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<a href="/topic/system-architectures/tinder" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Tinder</strong> - Geolocation matching, swipe mechanics, chat
 </a>
 </div>
 
 ### Streaming & Media
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/netflix" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/netflix" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Netflix</strong> - Video streaming, transcoding, CDN, recommendations
 </a>
-<a href="/topic/system-architectures/twitch-api" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<a href="/topic/system-architectures/twitch-api" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Twitch API</strong> - Live streaming, chat, subscriptions, VOD
 </a>
 </div>
 
 ### Communication & Collaboration
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/slack" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/slack" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Slack</strong> - Real-time messaging, channels, search, integrations
 </a>
 </div>
 
 ### Cloud Storage
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/google-drive" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/google-drive" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Google Drive</strong> - File storage, sync, sharing, collaboration
 </a>
 </div>
 
 ### Transportation & Logistics
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/uber-api" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/uber-api" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Uber API</strong> - Ride matching, pricing, tracking, payments
 </a>
-<a href="/topic/system-architectures/dunzo-logistics" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<a href="/topic/system-architectures/dunzo-logistics" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Dunzo Logistics</strong> - Hyperlocal delivery, route optimization, fleet management
 </a>
-<a href="/topic/system-architectures/parking" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<a href="/topic/system-architectures/parking" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Parking System</strong> - Spot allocation, reservations, payments
 </a>
 </div>
 
 ### Quick Commerce
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/zepto" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/zepto" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Zepto</strong> - 10-minute grocery delivery, dark stores, inventory
 </a>
 </div>
 
 ### DevOps & Infrastructure
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
-<a href="/topic/system-architectures/code-deployment" style="color: #58a6ff; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px;">
+<a href="/topic/system-architectures/code-deployment" style="color: #1d4ed8; text-decoration: none; display: block; padding: 12px; border-radius: 8px; transition: background 0.2s;">
 <strong>Code Deployment System</strong> - CI/CD, rollouts, canary deployments
 </a>
 </div>
@@ -111,8 +111,8 @@ This comprehensive guide covers real-world system design case studies from major
 
 ## Architecture Evolution Framework
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #58a6ff; text-align: center; margin: 0 0 32px 0;">SYSTEM EVOLUTION JOURNEY</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 32px 0;">SYSTEM EVOLUTION JOURNEY</h3>
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap;">
 
@@ -120,9 +120,9 @@ This comprehensive guide covers real-world system design case studies from major
 <div style="flex: 1; min-width: 250px; background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 12px; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
 <div style="background: #238636; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">1</div>
-<h4 style="color: #7ee787; margin: 0;">Starting Phase</h4>
+<h4 style="color: #16a34a; margin: 0;">Starting Phase</h4>
 </div>
-<div style="color: #8b949e; font-size: 13px;">
+<div style="color: #475569; font-size: 13px;">
 <p><strong>Users:</strong> 0 - 10K</p>
 <p><strong>Focus:</strong> MVP, validate idea</p>
 <p><strong>Architecture:</strong> Simple monolith</p>
@@ -131,15 +131,15 @@ This comprehensive guide covers real-world system design case studies from major
 </div>
 
 <!-- Arrow -->
-<div style="display: flex; align-items: center; color: #58a6ff; font-size: 24px;">→</div>
+<div style="display: flex; align-items: center; color: #1d4ed8; font-size: 24px;">→</div>
 
 <!-- Phase 2 -->
 <div style="flex: 1; min-width: 250px; background: rgba(31, 111, 235, 0.1); border: 1px solid rgba(31, 111, 235, 0.3); border-radius: 12px; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
 <div style="background: #1f6feb; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">2</div>
-<h4 style="color: #58a6ff; margin: 0;">Medium Scale</h4>
+<h4 style="color: #1d4ed8; margin: 0;">Medium Scale</h4>
 </div>
-<div style="color: #8b949e; font-size: 13px;">
+<div style="color: #475569; font-size: 13px;">
 <p><strong>Users:</strong> 10K - 1M</p>
 <p><strong>Focus:</strong> Scale, reliability</p>
 <p><strong>Architecture:</strong> Modular monolith</p>
@@ -148,15 +148,15 @@ This comprehensive guide covers real-world system design case studies from major
 </div>
 
 <!-- Arrow -->
-<div style="display: flex; align-items: center; color: #58a6ff; font-size: 24px;">→</div>
+<div style="display: flex; align-items: center; color: #1d4ed8; font-size: 24px;">→</div>
 
 <!-- Phase 3 -->
 <div style="flex: 1; min-width: 250px; background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 12px; padding: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
 <div style="background: #8957e5; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">3</div>
-<h4 style="color: #a371f7; margin: 0;">High Scale</h4>
+<h4 style="color: #7c3aed; margin: 0;">High Scale</h4>
 </div>
-<div style="color: #8b949e; font-size: 13px;">
+<div style="color: #475569; font-size: 13px;">
 <p><strong>Users:</strong> 1M+</p>
 <p><strong>Focus:</strong> Global scale</p>
 <p><strong>Architecture:</strong> Microservices</p>
@@ -171,18 +171,18 @@ This comprehensive guide covers real-world system design case studies from major
 
 ## Monolith vs Microservices Decision Framework
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
 <!-- Monolith -->
 <div style="background: rgba(35, 134, 54, 0.1); border: 1px solid rgba(35, 134, 54, 0.3); border-radius: 12px; padding: 24px;">
-<h4 style="color: #7ee787; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+<h4 style="color: #16a34a; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
 <span style="font-size: 24px;">📦</span> Monolithic Architecture
 </h4>
 
 <div style="margin-bottom: 16px;">
-<div style="color: #7ee787; font-weight: 600; margin-bottom: 8px;">When to Choose:</div>
-<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<div style="color: #16a34a; font-weight: 600; margin-bottom: 8px;">When to Choose:</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
 <li>Small team (< 10 developers)</li>
 <li>Early-stage startup/MVP</li>
 <li>Simple domain model</li>
@@ -192,8 +192,8 @@ This comprehensive guide covers real-world system design case studies from major
 </div>
 
 <div style="margin-bottom: 16px;">
-<div style="color: #7ee787; font-weight: 600; margin-bottom: 8px;">Advantages:</div>
-<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<div style="color: #16a34a; font-weight: 600; margin-bottom: 8px;">Advantages:</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
 <li>Simple deployment</li>
 <li>Easy debugging</li>
 <li>Lower infrastructure cost</li>
@@ -203,7 +203,7 @@ This comprehensive guide covers real-world system design case studies from major
 
 <div>
 <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Challenges:</div>
-<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
 <li>Scaling limitations</li>
 <li>Technology lock-in</li>
 <li>Deployment risk</li>
@@ -213,13 +213,13 @@ This comprehensive guide covers real-world system design case studies from major
 
 <!-- Microservices -->
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid rgba(137, 87, 229, 0.3); border-radius: 12px; padding: 24px;">
-<h4 style="color: #a371f7; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+<h4 style="color: #7c3aed; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
 <span style="font-size: 24px;">🔧</span> Microservices Architecture
 </h4>
 
 <div style="margin-bottom: 16px;">
-<div style="color: #a371f7; font-weight: 600; margin-bottom: 8px;">When to Choose:</div>
-<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<div style="color: #7c3aed; font-weight: 600; margin-bottom: 8px;">When to Choose:</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
 <li>Large team (10+ developers)</li>
 <li>Complex domain boundaries</li>
 <li>Different scaling needs per service</li>
@@ -229,8 +229,8 @@ This comprehensive guide covers real-world system design case studies from major
 </div>
 
 <div style="margin-bottom: 16px;">
-<div style="color: #a371f7; font-weight: 600; margin-bottom: 8px;">Advantages:</div>
-<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<div style="color: #7c3aed; font-weight: 600; margin-bottom: 8px;">Advantages:</div>
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
 <li>Independent scaling</li>
 <li>Technology flexibility</li>
 <li>Fault isolation</li>
@@ -240,7 +240,7 @@ This comprehensive guide covers real-world system design case studies from major
 
 <div>
 <div style="color: #f85149; font-weight: 600; margin-bottom: 8px;">Challenges:</div>
-<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px;">
 <li>Distributed complexity</li>
 <li>Network latency</li>
 <li>Operational overhead</li>
@@ -259,28 +259,28 @@ Every system at scale must address these fundamental challenges:
 
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0;">
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">🔄</div>
-<h5 style="color: #58a6ff; margin: 0 0 8px 0;">Consistency</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">Strong vs Eventual</p>
+<h5 style="color: #1d4ed8; margin: 0 0 8px 0;">Consistency</h5>
+<p style="color: #475569; font-size: 12px; margin: 0;">Strong vs Eventual</p>
 </div>
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">⚡</div>
-<h5 style="color: #a371f7; margin: 0 0 8px 0;">Availability</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">Uptime guarantees</p>
+<h5 style="color: #7c3aed; margin: 0 0 8px 0;">Availability</h5>
+<p style="color: #475569; font-size: 12px; margin: 0;">Uptime guarantees</p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">🌐</div>
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Partition Tolerance</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">Network failures</p>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Partition Tolerance</h5>
+<p style="color: #475569; font-size: 12px; margin: 0;">Network failures</p>
 </div>
 
 <div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">📊</div>
 <h5 style="color: #f85149; margin: 0 0 8px 0;">Scalability</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">Horizontal growth</p>
+<p style="color: #475569; font-size: 12px; margin: 0;">Horizontal growth</p>
 </div>
 
 </div>
@@ -290,25 +290,25 @@ Every system at scale must address these fundamental challenges:
 <div style="background: linear-gradient(135deg, #3d2a1a 0%, #5d4a2d 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">🔒</div>
 <h5 style="color: #f0883e; margin: 0 0 8px 0;">Data Integrity</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">ACID guarantees</p>
+<p style="color: #475569; font-size: 12px; margin: 0;">ACID guarantees</p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">🚀</div>
-<h5 style="color: #58a6ff; margin: 0 0 8px 0;">Latency</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">Response times</p>
+<h5 style="color: #1d4ed8; margin: 0 0 8px 0;">Latency</h5>
+<p style="color: #475569; font-size: 12px; margin: 0;">Response times</p>
 </div>
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">💾</div>
-<h5 style="color: #a371f7; margin: 0 0 8px 0;">Data Replication</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">Sync strategies</p>
+<h5 style="color: #7c3aed; margin: 0 0 8px 0;">Data Replication</h5>
+<p style="color: #475569; font-size: 12px; margin: 0;">Sync strategies</p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 16px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 16px; text-align: center;">
 <div style="font-size: 28px; margin-bottom: 8px;">🛡️</div>
-<h5 style="color: #7ee787; margin: 0 0 8px 0;">Fault Tolerance</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0;">Graceful degradation</p>
+<h5 style="color: #16a34a; margin: 0 0 8px 0;">Fault Tolerance</h5>
+<p style="color: #475569; font-size: 12px; margin: 0;">Graceful degradation</p>
 </div>
 
 </div>

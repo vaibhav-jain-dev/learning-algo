@@ -10,7 +10,7 @@ Building microservices requires a rich ecosystem of components that handle servi
 
 ## Architecture Component Map
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h3 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 18px; text-align: center;">MICROSERVICES INFRASTRUCTURE</h3>
 <!-- Edge Layer -->
 <div style="background: linear-gradient(135deg, #6e7681 0%, #8b949e 100%); border-radius: 12px; padding: 16px; margin-bottom: 12px;">
@@ -74,7 +74,7 @@ The **single entry point** for all client requests to backend services.
 
 ### Key Functions
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">API GATEWAY FUNCTIONS</h4>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 16px; color: #fff;">
@@ -142,9 +142,9 @@ Enables services to **find and communicate** with each other dynamically.
 
 ### Service Discovery Patterns
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 16px; text-align: center;">CLIENT-SIDE DISCOVERY</div>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
 <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
@@ -156,7 +156,7 @@ Enables services to **find and communicate** with each other dynamically.
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 8px; padding: 10px 20px; color: #fff; font-size: 10px;">Target Service</div>
 </div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 13px; margin-bottom: 16px; text-align: center;">SERVER-SIDE DISCOVERY</div>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
 <div style="display: flex; align-items: center; gap: 16px;">
@@ -211,62 +211,62 @@ Distributes traffic across multiple service instances.
 
 ### Load Balancing Strategies
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">LOAD BALANCING ALGORITHMS</h4>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">ROUND ROBIN</div>
 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
 <div style="background: #238636; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">1</div>
 <div style="background: #238636; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">2</div>
 <div style="background: #238636; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">3</div>
 </div>
-<div style="color: #8b949e; font-size: 10px;">1→2→3→1→2→3</div>
+<div style="color: #64748b; font-size: 10px;">1→2→3→1→2→3</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">WEIGHTED ROUND ROBIN</div>
 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
 <div style="background: #1f6feb; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">1:3</div>
 <div style="background: #1f6feb; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">2:2</div>
 <div style="background: #1f6feb; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">3:1</div>
 </div>
-<div style="color: #8b949e; font-size: 10px;">1→1→1→2→2→3→1→1→1</div>
+<div style="color: #64748b; font-size: 10px;">1→1→1→2→2→3→1→1→1</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 12px;">LEAST CONNECTIONS</div>
 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
 <div style="background: #8957e5; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">2</div>
 <div style="background: #8957e5; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">5</div>
 <div style="background: #7ee787; border-radius: 4px; padding: 6px 10px; color: #0d1117; font-size: 11px; font-weight: bold;">1</div>
 </div>
-<div style="color: #8b949e; font-size: 10px;">Next → Server 3</div>
+<div style="color: #64748b; font-size: 10px;">Next → Server 3</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 12px;">IP HASH</div>
 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
 <div style="background: #6e7681; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">S1</div>
 <div style="background: #6e7681; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">S2</div>
 <div style="background: #6e7681; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">S3</div>
 </div>
-<div style="color: #8b949e; font-size: 10px;">hash(IP) % servers</div>
+<div style="color: #64748b; font-size: 10px;">hash(IP) % servers</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">LEAST RESPONSE TIME</div>
 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
 <div style="background: #da3633; border-radius: 4px; padding: 6px 8px; color: #fff; font-size: 10px;">50ms</div>
 <div style="background: #da3633; border-radius: 4px; padding: 6px 8px; color: #fff; font-size: 10px;">100ms</div>
 <div style="background: #7ee787; border-radius: 4px; padding: 6px 8px; color: #0d1117; font-size: 10px; font-weight: bold;">30ms</div>
 </div>
-<div style="color: #8b949e; font-size: 10px;">Next → Server 3</div>
+<div style="color: #64748b; font-size: 10px;">Next → Server 3</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">RANDOM</div>
 <div style="display: flex; gap: 8px; margin-bottom: 8px;">
 <div style="background: #6e7681; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">?</div>
 <div style="background: #6e7681; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">?</div>
 <div style="background: #6e7681; border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 11px;">?</div>
 </div>
-<div style="color: #8b949e; font-size: 10px;">Random selection</div>
+<div style="color: #64748b; font-size: 10px;">Random selection</div>
 </div>
 </div>
 </div>
@@ -289,9 +289,9 @@ Enables **asynchronous communication** between services.
 
 ### Message Broker Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">MESSAGE BROKER PATTERNS</h4>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">POINT-TO-POINT (Queue)</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 11px;">Producer</div>
@@ -300,9 +300,9 @@ Enables **asynchronous communication** between services.
 <div style="color: #7ee787;">→</div>
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 11px;">Consumer</div>
 </div>
-<div style="color: #8b949e; font-size: 10px; text-align: center; margin-top: 8px;">(one consumer receives)</div>
+<div style="color: #64748b; font-size: 10px; text-align: center; margin-top: 8px;">(one consumer receives)</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 12px;">PUBLISH-SUBSCRIBE (Topic)</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 11px;">Publisher</div>
@@ -314,9 +314,9 @@ Enables **asynchronous communication** between services.
 <div style="display: flex; align-items: center; gap: 8px;"><span style="color: #f0883e;">→</span><div style="background: #8957e5; border-radius: 4px; padding: 4px 10px; color: #fff; font-size: 10px;">Consumer 3</div></div>
 </div>
 </div>
-<div style="color: #8b949e; font-size: 10px; text-align: center; margin-top: 8px;">(all receive)</div>
+<div style="color: #64748b; font-size: 10px; text-align: center; margin-top: 8px;">(all receive)</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">FAN-OUT</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 11px;">Producer</div>
@@ -362,9 +362,9 @@ Reduces latency and database load through **data caching**.
 
 ### Caching Strategies
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">CACHING PATTERNS</h4>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 12px;">CACHE-ASIDE (Lazy Loading)</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 12px 20px; color: #fff; font-size: 11px;">App</div>
@@ -378,7 +378,7 @@ Reduces latency and database load through **data caching**.
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 6px; padding: 12px 16px; color: #fff; font-size: 11px;">DB</div>
 </div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
 <div style="color: #f0883e; font-weight: bold; font-size: 12px; margin-bottom: 12px;">WRITE-THROUGH</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 10px 16px; color: #fff; font-size: 11px;">App</div>
@@ -388,16 +388,16 @@ Reduces latency and database load through **data caching**.
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 6px; padding: 10px 16px; color: #fff; font-size: 11px;">DB</div>
 </div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">WRITE-BEHIND (Write-Back)</div>
 <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 10px 16px; color: #fff; font-size: 11px;">App</div>
 <div style="color: #58a6ff; font-size: 10px;">1. Write →</div>
 <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); border-radius: 6px; padding: 10px 16px; color: #fff; font-size: 11px;">Cache</div>
-<div style="color: #8b949e; font-size: 10px; border-bottom: 1px dashed #8b949e;">Async →</div>
+<div style="color: #64748b; font-size: 10px; border-bottom: 1px dashed #8b949e;">Async →</div>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 6px; padding: 10px 16px; color: #fff; font-size: 11px;">DB</div>
 </div>
-<div style="color: #8b949e; font-size: 10px; text-align: center; margin-top: 8px;">(batched)</div>
+<div style="color: #64748b; font-size: 10px; text-align: center; margin-top: 8px;">(batched)</div>
 </div>
 </div>
 
@@ -416,7 +416,7 @@ Reduces latency and database load through **data caching**.
 
 ### Database Per Service Pattern
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">DATABASE PER SERVICE PATTERN</h4>
 <div style="display: flex; justify-content: center; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
 <div style="text-align: center;">
@@ -435,9 +435,9 @@ Reduces latency and database load through **data caching**.
 <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); border-radius: 8px; padding: 10px 14px; color: #fff; font-size: 10px;"><div style="font-weight: bold;">Elasticsearch</div><div style="opacity: 0.8;">(Search)</div></div>
 </div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 16px;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 12px; margin-bottom: 12px;">WHY DIFFERENT DATABASES?</div>
-<div style="color: #c9d1d9; font-size: 11px; display: grid; gap: 6px;">
+<div style="color: #1e293b; font-size: 11px; display: grid; gap: 6px;">
 <div>• User data needs strong consistency <span style="color: #58a6ff;">(PostgreSQL)</span></div>
 <div>• Orders have complex nested structures <span style="color: #a371f7;">(MongoDB)</span></div>
 <div>• Search needs full-text indexing <span style="color: #ffa657;">(Elasticsearch)</span></div>
@@ -465,7 +465,7 @@ Reduces latency and database load through **data caching**.
 
 ### Three Pillars of Observability
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">OBSERVABILITY PILLARS</h4>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px; color: #fff; text-align: center;">
@@ -506,11 +506,11 @@ Reduces latency and database load through **data caching**.
 
 ### Distributed Tracing
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">DISTRIBUTED TRACE</h4>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 16px;">Trace ID: abc123</div>
-<div style="font-family: monospace; font-size: 11px; color: #c9d1d9;">
+<div style="font-family: monospace; font-size: 11px; color: #1e293b;">
 <div style="margin-left: 0px;">├── <span style="color: #58a6ff;">Span: API Gateway</span> <span style="color: #f0883e;">(50ms)</span></div>
 <div style="margin-left: 20px;">└── <span style="color: #58a6ff;">Span: Auth Service</span> <span style="color: #f0883e;">(10ms)</span></div>
 <div style="margin-left: 0px;">├── <span style="color: #7ee787;">Span: Order Service</span> <span style="color: #f0883e;">(200ms)</span></div>
@@ -521,9 +521,9 @@ Reduces latency and database load through **data caching**.
 <div style="margin-left: 20px;">└── <span style="color: #a371f7;">Span: External Payment API</span> <span style="color: #f0883e;">(120ms)</span></div>
 </div>
 </div>
-<div style="color: #8b949e; font-size: 11px; margin-bottom: 12px;">Timeline:</div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; position: relative;">
-<div style="display: flex; justify-content: space-between; color: #8b949e; font-size: 10px; margin-bottom: 12px;">
+<div style="color: #64748b; font-size: 11px; margin-bottom: 12px;">Timeline:</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px; position: relative;">
+<div style="display: flex; justify-content: space-between; color: #64748b; font-size: 10px; margin-bottom: 12px;">
 <span>0ms</span><span>100ms</span><span>200ms</span><span>300ms</span><span>400ms</span>
 </div>
 <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -547,7 +547,7 @@ Handles **service-to-service communication** at the infrastructure layer.
 
 ### Service Mesh Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">SERVICE MESH ARCHITECTURE</h4>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 12px;">CONTROL PLANE</div>
@@ -558,18 +558,18 @@ Handles **service-to-service communication** at the infrastructure layer.
 </div>
 </div>
 <div style="text-align: center; color: #58a6ff; margin: 12px 0;">↓</div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
-<div style="color: #8b949e; font-size: 12px; text-align: center; margin-bottom: 16px;">DATA PLANE</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px;">
+<div style="color: #64748b; font-size: 12px; text-align: center; margin-bottom: 16px;">DATA PLANE</div>
 <div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
-<div style="background: rgba(0,0,0,0.3); border: 2px dashed #30363d; border-radius: 8px; padding: 16px; text-align: center;">
-<div style="color: #8b949e; font-size: 10px; margin-bottom: 8px;">Pod A</div>
+<div style="background: rgba(59, 130, 246, 0.08); border: 2px dashed #cbd5e1; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">Pod A</div>
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 10px; margin-bottom: 8px;">Sidecar (Envoy)</div>
 <div style="color: #58a6ff; font-size: 10px;">↕</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 10px;">Service A</div>
 </div>
 <div style="display: flex; align-items: center; color: #7ee787; font-size: 11px;">← mTLS →</div>
-<div style="background: rgba(0,0,0,0.3); border: 2px dashed #30363d; border-radius: 8px; padding: 16px; text-align: center;">
-<div style="color: #8b949e; font-size: 10px; margin-bottom: 8px;">Pod B</div>
+<div style="background: rgba(59, 130, 246, 0.08); border: 2px dashed #cbd5e1; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="color: #64748b; font-size: 10px; margin-bottom: 8px;">Pod B</div>
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 10px; margin-bottom: 8px;">Sidecar (Envoy)</div>
 <div style="color: #58a6ff; font-size: 10px;">↕</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 6px; padding: 8px 14px; color: #fff; font-size: 10px;">Service B</div>
@@ -594,7 +594,7 @@ Handles **service-to-service communication** at the infrastructure layer.
 
 ### Kubernetes Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">KUBERNETES CLUSTER</h4>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
 <div style="color: #fff; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 12px;">CONTROL PLANE</div>
@@ -605,24 +605,24 @@ Handles **service-to-service communication** at the infrastructure layer.
 <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 12px; color: #fff; text-align: center; font-size: 10px;"><div style="font-weight: bold;">etcd</div></div>
 </div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px;">
-<div style="color: #8b949e; font-size: 12px; text-align: center; margin-bottom: 16px;">WORKER NODES</div>
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 12px; padding: 20px;">
+<div style="color: #64748b; font-size: 12px; text-align: center; margin-bottom: 16px;">WORKER NODES</div>
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: rgba(0,0,0,0.3); border: 2px dashed #30363d; border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border: 2px dashed #cbd5e1; border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 11px; text-align: center; margin-bottom: 12px;">Node 1</div>
 <div style="display: flex; gap: 8px; margin-bottom: 12px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 10px;">Pod 1</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 10px;">Pod 2</div>
 </div>
-<div style="background: rgba(255,255,255,0.1); border-radius: 4px; padding: 8px; font-size: 9px; color: #c9d1d9; text-align: center;">kubelet | kube-proxy</div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 4px; padding: 8px; font-size: 9px; color: #1e293b; text-align: center;">kubelet | kube-proxy</div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border: 2px dashed #30363d; border-radius: 8px; padding: 16px;">
+<div style="background: rgba(59, 130, 246, 0.08); border: 2px dashed #cbd5e1; border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 11px; text-align: center; margin-bottom: 12px;">Node 2</div>
 <div style="display: flex; gap: 8px; margin-bottom: 12px;">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 10px;">Pod 3</div>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 4px; padding: 6px 10px; color: #fff; font-size: 10px;">Pod 4</div>
 </div>
-<div style="background: rgba(255,255,255,0.1); border-radius: 4px; padding: 8px; font-size: 9px; color: #c9d1d9; text-align: center;">kubelet | kube-proxy</div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 4px; padding: 8px; font-size: 9px; color: #1e293b; text-align: center;">kubelet | kube-proxy</div>
 </div>
 </div>
 </div>
@@ -632,7 +632,7 @@ Handles **service-to-service communication** at the infrastructure layer.
 
 ## 10. CI/CD Pipeline
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 14px; text-align: center;">MICROSERVICES CI/CD PIPELINE</h4>
 <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
 <div style="background: linear-gradient(135deg, #6e7681 0%, #8b949e 100%); border-radius: 8px; padding: 12px 20px; color: #fff; font-weight: bold; font-size: 12px;">Code</div>
@@ -646,13 +646,13 @@ Handles **service-to-service communication** at the infrastructure layer.
 <div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); border-radius: 8px; padding: 12px 20px; color: #fff; font-weight: bold; font-size: 12px;">Monitor</div>
 </div>
 <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; text-align: center;">
-<div style="color: #8b949e; font-size: 10px;"><div>Git Push</div><div>PR Review</div></div>
-<div style="color: #8b949e; font-size: 10px;"><div>Docker Build</div><div>Push Registry</div></div>
-<div style="color: #8b949e; font-size: 10px;"><div>Unit/Integration</div><div>E2E/Contract</div></div>
-<div style="color: #8b949e; font-size: 10px;"><div>Staging</div><div>Production</div><div>Canary</div></div>
-<div style="color: #8b949e; font-size: 10px;"><div>Prometheus</div><div>Grafana</div><div>PagerDuty</div></div>
+<div style="color: #64748b; font-size: 10px;"><div>Git Push</div><div>PR Review</div></div>
+<div style="color: #64748b; font-size: 10px;"><div>Docker Build</div><div>Push Registry</div></div>
+<div style="color: #64748b; font-size: 10px;"><div>Unit/Integration</div><div>E2E/Contract</div></div>
+<div style="color: #64748b; font-size: 10px;"><div>Staging</div><div>Production</div><div>Canary</div></div>
+<div style="color: #64748b; font-size: 10px;"><div>Prometheus</div><div>Grafana</div><div>PagerDuty</div></div>
 </div>
-<div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 16px; text-align: center;">
+<div style="background: rgba(59, 130, 246, 0.08); border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #58a6ff; font-weight: bold; font-size: 11px; margin-bottom: 12px;">TOOLS:</div>
 <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
 <span style="background: rgba(126,231,135,0.2); color: #7ee787; padding: 6px 12px; border-radius: 4px; font-size: 10px;">GitHub Actions</span>

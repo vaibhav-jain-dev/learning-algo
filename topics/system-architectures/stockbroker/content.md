@@ -1,6 +1,6 @@
 # Design a Stockbroker System
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 ## Problem Statement
 
@@ -19,7 +19,7 @@ Design a real-time electronic trading platform that enables order execution, mar
 
 ## Section 1: Order Matching Engine
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Core Concept: The Heart of Every Exchange
 
@@ -36,13 +36,13 @@ The matching engine assumes **price-time priority** (also called FIFO): orders a
 
 ### Internal Mechanism: Order Book Data Structure
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 2px solid #7ee787; border-radius: 12px; padding: 20px;">
 <div style="color: #7ee787; font-weight: 700; text-align: center; margin-bottom: 16px;">BID SIDE (Buyers)</div>
-<div style="font-family: monospace; font-size: 13px; color: #c9d1d9;">
+<div style="font-family: monospace; font-size: 13px; color: #475569;">
 <div style="display: flex; justify-content: space-between; padding: 8px; background: rgba(126, 231, 135, 0.2); border-radius: 4px; margin-bottom: 4px;">
 <span>$182.50</span><span>15,000 shares</span><span style="color: #7ee787;">Best Bid</span>
 </div>
@@ -61,7 +61,7 @@ The matching engine assumes **price-time priority** (also called FIFO): orders a
 
 <div style="background: rgba(248, 81, 73, 0.1); border: 2px solid #f85149; border-radius: 12px; padding: 20px;">
 <div style="color: #f85149; font-weight: 700; text-align: center; margin-bottom: 16px;">ASK SIDE (Sellers)</div>
-<div style="font-family: monospace; font-size: 13px; color: #c9d1d9;">
+<div style="font-family: monospace; font-size: 13px; color: #475569;">
 <div style="display: flex; justify-content: space-between; padding: 8px; background: rgba(248, 81, 73, 0.2); border-radius: 4px; margin-bottom: 4px;">
 <span>$182.55</span><span>10,500 shares</span><span style="color: #f85149;">Best Ask</span>
 </div>
@@ -90,7 +90,7 @@ The matching engine assumes **price-time priority** (also called FIFO): orders a
 
 The choice of data structure directly impacts matching latency. See [[data-structures]](/topics/data-structures) for fundamentals.
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 **For each price level:**
 - **Red-Black Tree / AVL Tree**: O(log n) insert, delete, lookup for price levels
@@ -167,7 +167,7 @@ class OrderBook:
 
 ### 3-Level Recursive Interview Questions: Matching Engine
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 #### Level 1: "How does an order matching engine work?"
 
@@ -201,7 +201,7 @@ For case 2, the remaining quantity is typically cancelled (not added to book, si
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 #### Level 1: "Why use a Red-Black tree instead of other data structures?"
 
@@ -236,7 +236,7 @@ For case 2, the remaining quantity is typically cancelled (not added to book, si
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #7ee787;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #7ee787;">
 
 #### Level 1: "How do you handle matching engine failures?"
 
@@ -276,7 +276,7 @@ For case 2, the remaining quantity is typically cancelled (not added to book, si
 
 ## Section 2: Market Data Feeds
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Core Concept: Publishing Price Information
 
@@ -296,7 +296,7 @@ Unlike order execution (which requires strong consistency), market data display 
 
 ### Internal Mechanism: Multicast Distribution
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
@@ -329,15 +329,15 @@ Unlike order execution (which requires strong consistency), market data display 
 </div>
 
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: #21262d; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
 <div style="color: #7ee787; font-weight: 600;">Subscriber 1</div>
 <div style="color: #8b949e; font-size: 11px;">HFT Firm</div>
 </div>
-<div style="background: #21262d; border: 2px solid #58a6ff; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border: 2px solid #58a6ff; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
 <div style="color: #58a6ff; font-weight: 600;">Subscriber 2</div>
 <div style="color: #8b949e; font-size: 11px;">Retail Broker</div>
 </div>
-<div style="background: #21262d; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
+<div style="background: #f8fafc; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
 <div style="color: #f0883e; font-weight: 600;">Subscriber 3</div>
 <div style="color: #8b949e; font-size: 11px;">Data Vendor</div>
 </div>
@@ -366,7 +366,7 @@ Unlike order execution (which requires strong consistency), market data display 
 
 UDP is unreliable by design. Market data systems implement their own reliability layer:
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 ```python
 class MarketDataReceiver:
@@ -402,7 +402,7 @@ class MarketDataReceiver:
 
 ### 3-Level Recursive Interview Questions: Market Data
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 #### Level 1: "How would you design a system to distribute market data to 100,000 concurrent users?"
 
@@ -440,7 +440,7 @@ class MarketDataReceiver:
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 #### Level 1: "Why do exchanges charge for market data?"
 
@@ -485,7 +485,7 @@ During that 450-microsecond window, the HFT firm can:
 
 ## Section 3: Trade Settlement
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Core Concept: From Trade to Transfer
 
@@ -502,7 +502,7 @@ Modern settlement assumes a central clearing house (like DTCC in the US) acts as
 
 ### Internal Mechanism: Settlement Lifecycle
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
@@ -602,7 +602,7 @@ Theoretically, blockchain-based systems could enable T+0 settlement. Why doesn't
 
 ### 3-Level Recursive Interview Questions: Settlement
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 #### Level 1: "What is T+1 settlement and why does it exist?"
 
@@ -646,7 +646,7 @@ Risk reduction: Instead of $10M in gross exposure, only $200K in net exposure ne
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 #### Level 1: "What is DVP and why is it important?"
 
@@ -696,7 +696,7 @@ Risk reduction: Instead of $10M in gross exposure, only $200K in net exposure ne
 
 ## Section 4: Latency Optimization
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Core Concept: The Speed Arms Race
 
@@ -713,7 +713,7 @@ Each microsecond of improvement costs exponentially more to achieve. Going from 
 
 ### Latency Breakdown by Component
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 8px;">
 
@@ -757,7 +757,7 @@ Each microsecond of improvement costs exponentially more to achieve. Going from 
 
 ### Optimization Techniques by Layer
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 **1. Physical Layer**
 - **Co-location**: Rent rack space in exchange's data center (~$10K-$100K/month)
@@ -804,7 +804,7 @@ Each microsecond of improvement costs exponentially more to achieve. Going from 
 
 ### 3-Level Recursive Interview Questions: Latency
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 #### Level 1: "How would you reduce order submission latency from 10ms to 1ms?"
 
@@ -853,7 +853,7 @@ Measure each segment independently. The segment with highest variance is often m
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 #### Level 1: "Why is Java used in trading systems despite being 'slow'?"
 
@@ -905,7 +905,7 @@ Measure each segment independently. The segment with highest variance is often m
 
 ## Section 5: Regulatory Compliance
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Core Concept: The Rules of Engagement
 
@@ -985,7 +985,7 @@ Regulators assume that once a record is written to the audit trail, it cannot be
 
 ### Internal Mechanism: Audit Trail Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
@@ -1007,17 +1007,17 @@ Regulators assume that once a record is written to the audit trail, it cannot be
 </div>
 
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: #21262d; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
+<div style="background: #f8fafc; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
 <div style="color: #7ee787; font-weight: 600;">Hot Storage</div>
 <div style="color: #8b949e; font-size: 11px;">TimescaleDB</div>
 <div style="color: #8b949e; font-size: 11px;">90 days online</div>
 </div>
-<div style="background: #21262d; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
+<div style="background: #f8fafc; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
 <div style="color: #f0883e; font-weight: 600;">Warm Storage</div>
 <div style="color: #8b949e; font-size: 11px;">S3 + Athena</div>
 <div style="color: #8b949e; font-size: 11px;">7 years queryable</div>
 </div>
-<div style="background: #21262d; border: 2px solid #f85149; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
+<div style="background: #f8fafc; border: 2px solid #f85149; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
 <div style="color: #f85149; font-weight: 600;">Cold Archive</div>
 <div style="color: #8b949e; font-size: 11px;">Glacier Deep Archive</div>
 <div style="color: #8b949e; font-size: 11px;">Permanent retention</div>
@@ -1028,7 +1028,7 @@ Regulators assume that once a record is written to the audit trail, it cannot be
 
 </div>
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 **Audit Record Schema (simplified)**:
 
@@ -1089,7 +1089,7 @@ Regulatory timestamps must be accurate to prevent disputes and enable cross-syst
 
 ### 3-Level Recursive Interview Questions: Compliance
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
 #### Level 1: "How do you ensure audit trail integrity?"
 
@@ -1131,7 +1131,7 @@ Regulatory timestamps must be accurate to prevent disputes and enable cross-syst
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 #### Level 1: "What is market manipulation and how do you detect it?"
 
@@ -1192,7 +1192,7 @@ Orders → Kafka → Flink Jobs → Alerts → Investigation Queue
 
 ## Cross-Cutting Concerns
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Distributed Systems Patterns Applied
 
@@ -1230,7 +1230,7 @@ External dependencies (exchange connections, payment gateways) wrapped in circui
 
 ### Technology Stack Summary
 
-<div style="background: #21262d; border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 | Component | Technology | Rationale |
 |-----------|------------|-----------|
@@ -1247,7 +1247,7 @@ External dependencies (exchange connections, payment gateways) wrapped in circui
 
 ### Final Interview Synthesis Question
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 #### "Walk me through what happens when a user clicks 'Buy 100 AAPL at Market' on their phone."
 

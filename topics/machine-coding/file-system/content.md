@@ -10,9 +10,9 @@ This appears frequently at FAANG companies (LeetCode 588) and can be extended to
 
 ## Core Mental Model
 
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; margin: 24px 0;">
-<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Unified Tree Abstraction</div>
-<div style="color: #f0f0f0; font-size: 15px; line-height: 1.8;">
+<div style="background: #f8fafc; border-left: 4px solid #8b5cf6; border-radius: 16px; padding: 24px; margin: 24px 0;">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px;">The Unified Tree Abstraction</div>
+<div style="color: #1e293b; font-size: 15px; line-height: 1.8;">
 
 A file system is fundamentally a **rooted tree** where:
 - **Every node is either a leaf (file) or an internal node (directory)**
@@ -38,10 +38,10 @@ The Composite Pattern is the architectural backbone of every file system impleme
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <div style="display: flex; justify-content: center;">
-<div style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 12px; padding: 20px 40px; text-align: center; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
-<div style="color: #ffffff; font-weight: bold; font-size: 16px;">FileSystemEntry</div>
-<div style="color: #bfdbfe; font-size: 12px; margin-top: 8px;">Abstract Component</div>
-<div style="color: #e0e7ff; font-size: 11px; margin-top: 12px; font-family: monospace; text-align: left;">
+<div style="background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 12px; padding: 20px 40px; text-align: center; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px;">FileSystemEntry</div>
+<div style="color: #1e40af; font-size: 12px; margin-top: 8px;">Abstract Component</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 12px; font-family: monospace; text-align: left;">
 + getName(): String<br/>
 + getPath(): String<br/>
 + getSize(): Long<br/>
@@ -57,10 +57,10 @@ The Composite Pattern is the architectural backbone of every file system impleme
 </div>
 
 <div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;">
-<div style="background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
-<div style="color: #ffffff; font-weight: bold; font-size: 14px;">File</div>
-<div style="color: #bbf7d0; font-size: 11px; margin-top: 4px;">Leaf Component</div>
-<div style="color: #dcfce7; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px;">File</div>
+<div style="color: #166534; font-size: 11px; margin-top: 4px;">Leaf Component</div>
+<div style="color: #166534; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left;">
 - content: byte[]<br/>
 - mimeType: String<br/>
 + read(): byte[]<br/>
@@ -69,10 +69,10 @@ The Composite Pattern is the architectural backbone of every file system impleme
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
-<div style="color: #ffffff; font-weight: bold; font-size: 14px;">Directory</div>
-<div style="color: #fef3c7; font-size: 11px; margin-top: 4px;">Composite Component</div>
-<div style="color: #fef9c3; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left;">
+<div style="background: #fef3c7; border-left: 3px solid #f59e0b; border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px;">Directory</div>
+<div style="color: #92400e; font-size: 11px; margin-top: 4px;">Composite Component</div>
+<div style="color: #92400e; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left;">
 - children: Map&lt;String, Entry&gt;<br/>
 + add(Entry): void<br/>
 + remove(name): Entry<br/>

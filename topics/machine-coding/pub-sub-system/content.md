@@ -8,7 +8,7 @@ Design a publish-subscribe messaging system that enables asynchronous, decoupled
 
 ## Core Concepts and Mental Model
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **The Pub-Sub Pattern Fundamentally Solves Three Problems:**
 
@@ -28,42 +28,42 @@ Design a publish-subscribe messaging system that enables asynchronous, decoupled
 
 Topic-based routing determines which subscribers receive which messages. This seemingly simple problem hides significant complexity in pattern matching, subscription management, and routing efficiency.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Topic Hierarchy and Pattern Matching</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Topic Hierarchy and Pattern Matching</h4>
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">Hierarchical Topic Namespace</div>
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+<div style="color: #166534; font-weight: bold; margin-bottom: 12px;">Hierarchical Topic Namespace</div>
 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-<div style="background: #238636; padding: 8px 14px; border-radius: 6px;">
+<div style="background: #22c55e; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #fff; font-size: 12px;">orders.us.created</span>
 </div>
-<div style="background: #238636; padding: 8px 14px; border-radius: 6px;">
+<div style="background: #22c55e; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #fff; font-size: 12px;">orders.eu.created</span>
 </div>
-<div style="background: #1f6feb; padding: 8px 14px; border-radius: 6px;">
+<div style="background: #3b82f6; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #fff; font-size: 12px;">orders.us.shipped</span>
 </div>
-<div style="background: #8957e5; padding: 8px 14px; border-radius: 6px;">
+<div style="background: #8b5cf6; padding: 8px 14px; border-radius: 6px;">
 <span style="color: #fff; font-size: 12px;">payments.processed</span>
 </div>
 </div>
 </div>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Single-Level Wildcard (*)</div>
-<div style="color: #c9d1d9; font-size: 11px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Single-Level Wildcard (*)</div>
+<div style="color: #1e293b; font-size: 11px;">
 <code>orders.*.created</code> matches:<br/>
 - orders.us.created<br/>
 - orders.eu.created<br/>
 Does NOT match: orders.us.west.created
 </div>
 </div>
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #f78166; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Level Wildcard (#)</div>
-<div style="color: #c9d1d9; font-size: 11px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Multi-Level Wildcard (#)</div>
+<div style="color: #1e293b; font-size: 11px;">
 <code>orders.#</code> matches:<br/>
 - orders.us.created<br/>
 - orders.eu.shipped.confirmed<br/>
@@ -77,7 +77,7 @@ Does NOT match: orders.us.west.created
 
 ### 1.2 Routing Data Structures
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #4ecdc4;">
 
 **Critical Design Decision: How to Store and Match Subscriptions**
 
@@ -243,7 +243,7 @@ This is a real problem at scale (e.g., IoT platforms with device-specific subscr
 
 ### 2.1 The Ordering Problem
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Why Ordering Matters**: Consider an e-commerce system:
 - Message 1: "Order 123 created"
@@ -258,8 +258,8 @@ If subscribers receive these out of order, they might process "delivered" before
 
 ### 2.2 Ordering Semantics Spectrum
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Message Ordering Guarantees</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Message Ordering Guarantees</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
@@ -504,7 +504,7 @@ class CausalOrderer:
 
 ### 3.1 Delivery Guarantee Spectrum
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **The Three Delivery Guarantees:**
 
@@ -525,8 +525,8 @@ Most systems implement "effectively exactly-once" through at-least-once delivery
 
 ### 3.2 At-Least-Once Implementation Architecture
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">At-Least-Once Delivery Flow</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">At-Least-Once Delivery Flow</h4>
 
 <div style="display: flex; flex-direction: column; gap: 24px;">
 
@@ -537,8 +537,8 @@ Most systems implement "effectively exactly-once" through at-least-once delivery
 </div>
 
 <div style="display: flex; flex-direction: column; align-items: center;">
-<div style="color: #7ee787; font-size: 11px;">1. Publish</div>
-<div style="color: #7ee787; font-size: 24px;">---></div>
+<div style="color: #166534; font-size: 11px;">1. Publish</div>
+<div style="color: #166534; font-size: 24px;">---></div>
 </div>
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
@@ -547,8 +547,8 @@ Most systems implement "effectively exactly-once" through at-least-once delivery
 </div>
 
 <div style="display: flex; flex-direction: column; align-items: center;">
-<div style="color: #ffa657; font-size: 11px;">2. Deliver</div>
-<div style="color: #ffa657; font-size: 24px;">---></div>
+<div style="color: #c2410c; font-size: 11px;">2. Deliver</div>
+<div style="color: #c2410c; font-size: 24px;">---></div>
 </div>
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 16px 24px; border-radius: 10px; text-align: center;">
@@ -560,23 +560,23 @@ Most systems implement "effectively exactly-once" through at-least-once delivery
 <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
 <div style="width: 120px;"></div>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<div style="color: #f78166; font-size: 24px;"><---</div>
-<div style="color: #f78166; font-size: 11px;">3. Broker ACK</div>
+<div style="color: #dc2626; font-size: 24px;"><---</div>
+<div style="color: #dc2626; font-size: 11px;">3. Broker ACK</div>
 </div>
 <div style="width: 140px;"></div>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<div style="color: #f78166; font-size: 24px;"><---</div>
-<div style="color: #f78166; font-size: 11px;">4. Consumer ACK</div>
+<div style="color: #dc2626; font-size: 24px;"><---</div>
+<div style="color: #dc2626; font-size: 11px;">4. Consumer ACK</div>
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
-<div style="color: #c9d1d9; font-size: 12px; line-height: 1.8;">
-<strong style="color: #7ee787;">On timeout/failure at any step:</strong><br/>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+<div style="color: #1e293b; font-size: 12px; line-height: 1.8;">
+<strong style="color: #166534;">On timeout/failure at any step:</strong><br/>
 - Step 1 fails: Publisher retries (may cause duplicate at broker)<br/>
 - Step 2 fails: Broker retries delivery (subscriber sees duplicate)<br/>
 - Step 4 fails: Broker retries delivery (subscriber sees duplicate)<br/>
-<strong style="color: #ffa657;">All paths lead to potential duplicates - consumers MUST be idempotent</strong>
+<strong style="color: #c2410c;">All paths lead to potential duplicates - consumers MUST be idempotent</strong>
 </div>
 </div>
 
@@ -970,7 +970,7 @@ def process_order(order_message):
 
 ### 4.1 The Backpressure Problem
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Backpressure occurs when**: The rate of message production exceeds the rate of consumption.
 
@@ -986,38 +986,38 @@ Without proper handling, backpressure leads to:
 
 ### 4.2 Backpressure Strategies
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Backpressure Handling Strategies</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Backpressure Handling Strategies</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px; border-left: 4px solid #238636;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">Buffering</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px; border-left: 4px solid #238636;">
+<div style="color: #166534; font-weight: bold; margin-bottom: 12px;">Buffering</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 Queue messages until consumer catches up. Works for temporary spikes.<br/><br/>
 <strong>Risk</strong>: Unbounded growth causes OOM
 </div>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px; border-left: 4px solid #1f6feb;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">Dropping</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px; border-left: 4px solid #1f6feb;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px;">Dropping</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 Discard messages when buffer full. Preserves system stability.<br/><br/>
 <strong>Variants</strong>: Drop oldest, drop newest, sample
 </div>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px; border-left: 4px solid #8957e5;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px; border-left: 4px solid #8957e5;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Throttling</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 Slow down producers via rate limiting or blocking.<br/><br/>
 <strong>Methods</strong>: Token bucket, reject with 429, block until space
 </div>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px; border-left: 4px solid #f78166;">
-<div style="color: #ffa657; font-weight: bold; margin-bottom: 12px;">Load Shedding</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px; border-left: 4px solid #f78166;">
+<div style="color: #c2410c; font-weight: bold; margin-bottom: 12px;">Load Shedding</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 Intelligently reject low-priority work to preserve high-priority.<br/><br/>
 <strong>Requires</strong>: Message priority classification
 </div>
@@ -2227,14 +2227,14 @@ Where:
 
 ## Real-World Systems Comparison
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; font-size: 16px;">Production Pub-Sub Systems</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px;">Production Pub-Sub Systems</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px;">
-<div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">Apache Kafka</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+<div style="color: #166534; font-weight: bold; margin-bottom: 12px;">Apache Kafka</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 <strong>Ordering</strong>: Per-partition<br/>
 <strong>Delivery</strong>: At-least-once (exactly-once with transactions)<br/>
 <strong>Backpressure</strong>: Consumer-controlled via poll<br/>
@@ -2242,9 +2242,9 @@ Where:
 </div>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px;">RabbitMQ</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px;">RabbitMQ</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 <strong>Ordering</strong>: Per-queue (FIFO)<br/>
 <strong>Delivery</strong>: All three modes<br/>
 <strong>Backpressure</strong>: Connection-level credit<br/>
@@ -2252,9 +2252,9 @@ Where:
 </div>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 12px;">Google Pub/Sub</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 <strong>Ordering</strong>: Optional per-key<br/>
 <strong>Delivery</strong>: At-least-once<br/>
 <strong>Backpressure</strong>: Auto-scaling + flow control<br/>
@@ -2262,9 +2262,9 @@ Where:
 </div>
 </div>
 
-<div style="background: #21262d; padding: 20px; border-radius: 10px;">
-<div style="color: #ffa657; font-weight: bold; margin-bottom: 12px;">Redis Streams</div>
-<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+<div style="color: #c2410c; font-weight: bold; margin-bottom: 12px;">Redis Streams</div>
+<div style="color: #1e293b; font-size: 11px; line-height: 1.6;">
 <strong>Ordering</strong>: Per-stream<br/>
 <strong>Delivery</strong>: At-least-once with consumer groups<br/>
 <strong>Backpressure</strong>: MAXLEN trim<br/>
@@ -2289,7 +2289,7 @@ Where:
 
 ## Interview Checklist
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7ee787;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #7ee787;">
 
 **Key Points to Cover:**
 

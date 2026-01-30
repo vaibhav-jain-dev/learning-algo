@@ -6,12 +6,12 @@
 
 The key challenge is keeping all copies synchronized - when you update the original, how and when do the copies get updated? This decision profoundly impacts your system's consistency, availability, and performance characteristics.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Trade-off Equation</h4>
-  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+  <h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">Core Trade-off Equation</h4>
+  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #3b82f6;">
     Replication = Consistency vs Availability vs Latency
   </div>
-  <div style="margin-top: 16px; color: #cbd5e1; font-size: 14px; text-align: center;">
+  <div style="margin-top: 16px; color: #475569; font-size: 14px; text-align: center;">
     Synchronous replication favors consistency; Asynchronous replication favors availability and latency
   </div>
 </div>

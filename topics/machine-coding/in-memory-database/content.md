@@ -4,12 +4,12 @@
 
 An in-memory database stores and manages data primarily in RAM rather than on disk, achieving microsecond-level latency for read/write operations. This machine coding problem tests your understanding of [[hash-tables]](/data-structures/hash-tables), [[concurrency]](/system-design/concurrency), transaction semantics, and memory management - skills directly applicable to building systems like Redis, Memcached, or the caching layer of any high-performance application.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #475569;">
-<div style="color: #f8fafc; font-weight: 700; font-size: 18px; margin-bottom: 16px;">Why This Problem Matters</div>
-<div style="color: #cbd5e1; font-size: 14px; line-height: 1.9;">
-<div style="margin-bottom: 12px;"><span style="color: #22d3ee; font-weight: 600;">Interview Frequency:</span> Asked at Amazon, Google, Stripe, and database companies (Redis Labs, MongoDB)</div>
-<div style="margin-bottom: 12px;"><span style="color: #22d3ee; font-weight: 600;">Skills Tested:</span> Data structure selection, concurrent programming, transaction isolation, memory efficiency</div>
-<div><span style="color: #22d3ee; font-weight: 600;">Real-World Relevance:</span> Understanding in-memory stores is crucial for caching strategies, session management, and high-throughput applications</div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="color: #1e293b; font-weight: 700; font-size: 18px; margin-bottom: 16px;">Why This Problem Matters</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.9;">
+<div style="margin-bottom: 12px;"><span style="color: #0369a1; font-weight: 600;">Interview Frequency:</span> Asked at Amazon, Google, Stripe, and database companies (Redis Labs, MongoDB)</div>
+<div style="margin-bottom: 12px;"><span style="color: #0369a1; font-weight: 600;">Skills Tested:</span> Data structure selection, concurrent programming, transaction isolation, memory efficiency</div>
+<div><span style="color: #0369a1; font-weight: 600;">Real-World Relevance:</span> Understanding in-memory stores is crucial for caching strategies, session management, and high-throughput applications</div>
 </div>
 </div>
 
@@ -3190,8 +3190,8 @@ def example_query_execution(store: dict):
 
 This section presents a complete 3-level recursive interview covering all aspects of in-memory database design.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #475569;">
-<div style="color: #f8fafc; font-weight: 700; font-size: 20px; margin-bottom: 20px; text-align: center;">Master Interview: In-Memory Database Architecture</div>
+<div style="background: #f8fafc; border-radius: 16px; padding: 28px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<div style="color: #1e293b; font-weight: 700; font-size: 20px; margin-bottom: 20px; text-align: center;">Master Interview: In-Memory Database Architecture</div>
 <div style="color: #94a3b8; font-size: 14px; text-align: center;">The following simulates a deep-dive technical interview covering all major topics</div>
 </div>
 

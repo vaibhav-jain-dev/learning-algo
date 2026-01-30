@@ -6,12 +6,12 @@
 
 When you need the current state, you <span style="color:#10b981">**replay all events**</span> from the beginning (or from a snapshot) to reconstruct it. This gives you a complete audit trail and the ability to understand exactly how you got to any particular state.
 
-<div style="background: linear-gradient(135deg, #0f766e 0%, #065f46 100%); border-radius: 12px; padding: 24px; margin: 20px 0; color: white;">
-  <h4 style="margin-top: 0; color: white;">Core Principle</h4>
-  <div style="font-size: 18px; font-weight: 500;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #22c55e;">
+  <h4 style="margin-top: 0; color: #166534;">Core Principle</h4>
+  <div style="font-size: 18px; font-weight: 500; color: #15803d;">
     "Don't store state. Store the facts that led to that state."
   </div>
-  <div style="margin-top: 12px; opacity: 0.9;">
+  <div style="margin-top: 12px; color: #475569;">
     Events are immutable historical facts. The current state is a left-fold over the event stream.
   </div>
 </div>
@@ -73,7 +73,7 @@ The <span style="color:#10b981">**Event Store**</span> is the heart of an event-
       </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #1e293b; color: white; padding: 10px 16px; font-size: 12px; font-weight: 600;">
+    <div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af; padding: 10px 16px; font-size: 12px; font-weight: 600; border: 1px solid #3b82f6;">
       <div>Version</div>
       <div>Event Type</div>
       <div>Timestamp</div>
@@ -2060,7 +2060,7 @@ TestBankAccount = BankAccountStateMachine.TestCase
   <div style="overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
       <thead>
-        <tr style="background: #1e293b; color: white;">
+        <tr style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af;">
           <th style="padding: 12px; text-align: left; border-radius: 8px 0 0 0;">Technology</th>
           <th style="padding: 12px; text-align: left;">Best For</th>
           <th style="padding: 12px; text-align: left;">Strengths</th>

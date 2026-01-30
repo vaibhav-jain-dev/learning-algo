@@ -4,7 +4,7 @@
 
 Design a <span style="color:#22c55e;font-weight:bold">URL shortening service</span> (like bit.ly or TinyURL) that converts long URLs into compact, shareable codes while enabling redirection, <span style="color:#22c55e;font-weight:bold">analytics tracking</span>, and <span style="color:#22c55e;font-weight:bold">high availability</span> at scale.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Core Challenge**: This seemingly simple problem masks profound distributed systems challenges - deterministic ID generation without coordination, collision-free encoding at scale, cache coherence across geographies, and real-time analytics without sacrificing redirect latency.
 
@@ -18,7 +18,7 @@ Design a <span style="color:#22c55e;font-weight:bold">URL shortening service</sp
 
 <span style="color:#22c55e;font-weight:bold">Base62 encoding</span> transforms numeric identifiers into alphanumeric strings using a 62-character alphabet: `a-z`, `A-Z`, `0-9`. This choice is deliberate and reveals important trade-offs in [[information density]](/topics/system-design/data-encoding) versus URL compatibility.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Why Base62 Specifically?**
 
@@ -73,7 +73,7 @@ def decode_base62(code: str) -> int:
     return num
 ```
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **Assumption**: The alphabet ordering affects generated codes. Starting with digits (`0-9`) means small numbers produce digit-only codes, potentially revealing ID patterns. Some systems shuffle the alphabet for obfuscation.
 
@@ -83,7 +83,7 @@ def decode_base62(code: str) -> int:
 
 ### Edge Cases in Base62 Encoding
 
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
 **Edge Case 1: Leading Zeros**
 - Number `0` should encode to `"0"`, not empty string
@@ -112,7 +112,7 @@ Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
    8   | 62^8 = 218T       | 693,000 writes/sec       | 109 PB
 ```
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
 **Design Choice**: 7 characters provides the sweet spot - short enough to be memorable, large enough keyspace to avoid collisions for decades at massive scale.
 
@@ -122,7 +122,7 @@ Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
 
 ### Interview Questions: Base62 Encoding (3 Levels Deep)
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Why use Base62 instead of Base64 for URL shortening?
 
@@ -132,7 +132,7 @@ Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Explain the time complexity of base62 encoding/decoding.
 
@@ -142,7 +142,7 @@ Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: What happens if someone guesses short codes sequentially?
 
@@ -160,7 +160,7 @@ Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
 
 <span style="color:#22c55e;font-weight:bold">Hash collisions</span> occur when two different inputs produce the same short code. The probability follows the [[birthday paradox]](/topics/probability/birthday-paradox) mathematics, a fundamental concept in [[cryptography]](/topics/security/cryptographic-foundations) and [[distributed systems]](/topics/system-design/distributed-systems-fundamentals).
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Birthday Paradox Applied to URL Shortening**
 
@@ -200,7 +200,7 @@ class CounterBasedShortener:
             return code
 ```
 
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
 **Trade-off Analysis**:
 
@@ -266,7 +266,7 @@ class HashBasedShortener:
                 return code
 ```
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **Assumption**: Hash-based approach assumes same URL should map to same short code (idempotency). This is a business decision - some services intentionally create different codes for the same URL to track different campaigns.
 
@@ -321,7 +321,7 @@ class BloomOptimizedShortener:
         return self._resolve_collision(url)
 ```
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
 **Performance Impact**:
 
@@ -337,7 +337,7 @@ At 1 billion codes: Bloom filter uses ~1.2GB RAM, saves billions of DB lookups.
 
 ### Collision Resolution: Linear Probing vs. Chaining
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Collision Resolution Strategies</div>
 
@@ -387,7 +387,7 @@ Cons: Inconsistent code lengths
 
 ### Interview Questions: Collision Handling (3 Levels Deep)
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: How would you handle hash collisions in a URL shortener?
 
@@ -397,7 +397,7 @@ Cons: Inconsistent code lengths
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: What's the probability of collision at 100 million URLs with 7-character codes?
 
@@ -407,7 +407,7 @@ Cons: Inconsistent code lengths
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: How does a Bloom filter help with collision checking?
 
@@ -425,7 +425,7 @@ Cons: Inconsistent code lengths
 
 In a <span style="color:#22c55e;font-weight:bold">distributed system</span>, generating unique IDs without coordination is one of the hardest problems. Each approach trades off between <span style="color:#22c55e;font-weight:bold">uniqueness guarantees</span>, <span style="color:#22c55e;font-weight:bold">latency</span>, and operational complexity. This relates closely to [[consensus protocols]](/topics/system-design/consensus-algorithms) and [[distributed coordination]](/topics/system-design/distributed-locking).
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **The Fundamental Trade-off**:
 
@@ -438,7 +438,7 @@ This is a manifestation of the [[CAP theorem]](/topics/system-design/cap-theorem
 
 ### Strategy 1: Twitter Snowflake IDs
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Snowflake ID Structure (64 bits)</div>
 
@@ -470,7 +470,7 @@ This is a manifestation of the [[CAP theorem]](/topics/system-design/cap-theorem
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Capacity Analysis:</div>
 <div style="color: #c9d1d9; font-size: 12px;">
 <div>32 datacenters x 32 workers = 1,024 total ID generators</div>
@@ -587,7 +587,7 @@ class SnowflakeGenerator:
         }
 ```
 
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
 **Clock Skew Problem**:
 
@@ -606,7 +606,7 @@ If A's clock later jumps forward (NTP correction), it might generate duplicate t
 
 ### Strategy 2: Range-Based Allocation with Zookeeper
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #7ee787; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Range Allocation Architecture</div>
 
@@ -643,7 +643,7 @@ If A's clock later jumps forward (NTP correction), it might generate duplicate t
 
 </div>
 
-<div style="background: #21262d; padding: 12px 20px; border-radius: 8px; margin-top: 12px;">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 8px; margin-top: 12px;">
 <div style="color: #ffa657; font-size: 11px;">Server C nearly exhausted - requesting new range 5M-6M</div>
 </div>
 
@@ -722,7 +722,7 @@ class RangeAllocator:
         self.zk.stop()
 ```
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **Design Choice: Range Size**
 
@@ -811,7 +811,7 @@ class ULIDGenerator:
 
 ### Comparison of Distributed ID Strategies
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 | Strategy | Coordination | Sortable | Uniqueness | Complexity | Best For |
 |----------|--------------|----------|------------|------------|----------|
@@ -825,7 +825,7 @@ class ULIDGenerator:
 
 ### Interview Questions: Distributed ID Generation (3 Levels Deep)
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: How does Snowflake ID ensure uniqueness across distributed servers?
 
@@ -835,7 +835,7 @@ class ULIDGenerator:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Explain the trade-off between range size in Zookeeper-based ID allocation.
 
@@ -845,7 +845,7 @@ class ULIDGenerator:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Why might you choose ULID over UUID for a URL shortener?
 
@@ -863,7 +863,7 @@ class ULIDGenerator:
 
 <span style="color:#22c55e;font-weight:bold">Custom aliases</span> (also called vanity URLs) allow users to choose memorable, branded short codes instead of auto-generated ones. This feature transforms a utility into a premium product.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
 
 **Business Value of Custom Aliases**:
 
@@ -878,7 +878,7 @@ class ULIDGenerator:
 
 ### Design Challenges for Custom Aliases
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Alias Design Considerations</div>
 
@@ -1039,7 +1039,7 @@ class CustomAliasValidator:
 
 ### Namespace Separation Strategy
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **The Namespace Problem**:
 
@@ -1047,7 +1047,7 @@ If auto-generated codes use Base62 and produce `abc123`, but a user wants custom
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Namespace Separation Approaches</div>
 
@@ -1148,14 +1148,14 @@ class NamespaceManager:
 
 <span style="color:#22c55e;font-weight:bold">Custom domains</span> take vanity URLs to the next level, allowing enterprises to use their own domains (e.g., `go.nike.com/sale`) while the URL shortener handles everything.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Custom Domain Architecture</div>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
-<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 16px 20px; border-radius: 10px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 20px; border-radius: 10px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">Customer Domain</div>
 <div style="color: #dcfce7; font-size: 10px;">go.nike.com</div>
 </div>
@@ -1176,7 +1176,7 @@ class NamespaceManager:
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
 <div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px;">SSL/TLS Considerations:</div>
 <div style="color: #c9d1d9; font-size: 11px; line-height: 1.6;">
 <div>1. Customer adds CNAME record pointing to your infrastructure</div>
@@ -1284,7 +1284,7 @@ class CustomDomainManager:
 
 ### Interview Questions: Custom Aliases (3 Levels Deep)
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: How would you implement custom short code (vanity URL) support?
 
@@ -1413,7 +1413,7 @@ async def create_alias(alias: str, user_id: str, url: str) -> bool:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Should custom aliases be case-sensitive or case-insensitive?
 
@@ -1605,7 +1605,7 @@ class AliasDisputeSystem:
 
 Redirect status codes fundamentally affect your analytics capabilities.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">HTTP Redirect Behavior Comparison</div>
 
@@ -1635,7 +1635,7 @@ Redirect status codes fundamentally affect your analytics capabilities.
 
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px; margin-top: 20px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px;">
 <div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Real-World Choices:</div>
 <div style="color: #c9d1d9; font-size: 11px;">
 <div>bit.ly: 301 + tracking pixel (best of both worlds)</div>
@@ -1734,7 +1734,7 @@ class URLAnalytics:
 
 ### Real-Time vs. Batch Analytics Pipeline
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Lambda Architecture for Analytics</div>
 
@@ -1952,7 +1952,7 @@ class ClickEnricher:
         await pipe.execute()
 ```
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **Trade-off: Accuracy vs. Memory**
 
@@ -1969,7 +1969,7 @@ bit.ly processes 10 billion+ clicks/month. Exact counting at this scale requires
 
 ### Interview Questions: Analytics Tracking (3 Levels Deep)
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Why might you choose 302 redirects over 301 for a URL shortener with analytics?
 
@@ -1979,7 +1979,7 @@ bit.ly processes 10 billion+ clicks/month. Exact counting at this scale requires
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: How would you count unique visitors to a short URL?
 
@@ -1989,7 +1989,7 @@ bit.ly processes 10 billion+ clicks/month. Exact counting at this scale requires
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Why use Kafka for click event processing instead of direct database writes?
 
@@ -2007,14 +2007,14 @@ bit.ly processes 10 billion+ clicks/month. Exact counting at this scale requires
 
 URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), making caching critical for performance and cost.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center;">Multi-Layer Cache Architecture</div>
 
 <div style="display: flex; flex-direction: column; gap: 16px;">
 
 <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
-<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 13px;">Browser</div>
 <div style="color: #dcfce7; font-size: 10px; margin-top: 4px;">301 Cache</div>
 </div>
@@ -2040,7 +2040,7 @@ URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), maki
 </div>
 </div>
 
-<div style="background: #21262d; padding: 16px; border-radius: 8px; margin-top: 8px;">
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 8px;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
 <div>
 <div style="color: #22c55e; font-weight: bold; font-size: 11px;">Browser Cache</div>
@@ -2221,7 +2221,7 @@ class URLCache:
 
 ### Handling Cache Stampede
 
-<div style="background: linear-gradient(135deg, #4a1a1a 0%, #6b2d2d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #ef4444;">
 
 **Cache Stampede Problem**:
 
@@ -2392,7 +2392,7 @@ class StampedeProtectedCache:
 
 ### Cache Consistency in Distributed Systems
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **The Consistency Challenge**:
 
@@ -2483,7 +2483,7 @@ class ConsistentCache:
 
 ### Interview Questions: Caching Strategy (3 Levels Deep)
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: Why use multiple cache layers (local + Redis) instead of just Redis?
 
@@ -2493,7 +2493,7 @@ class ConsistentCache:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: What is cache stampede and how would you prevent it?
 
@@ -2503,7 +2503,7 @@ class ConsistentCache:
 
 </div>
 
-<div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 
 **Level 1**: How would you determine the optimal cache TTL for a URL shortener?
 
@@ -2517,7 +2517,7 @@ class ConsistentCache:
 
 ## System Architecture Overview
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
 
 <div style="color: #58a6ff; font-weight: bold; font-size: 18px; margin-bottom: 24px; text-align: center;">Complete URL Shortener Architecture</div>
 
@@ -3146,7 +3146,7 @@ if __name__ == "__main__":
 
 ## Key Interview Takeaways
 
-<div style="background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 
 **What Interviewers Look For**:
 
@@ -3158,7 +3158,7 @@ if __name__ == "__main__":
 
 </div>
 
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #a855f7;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #8b5cf6;">
 
 **Common Follow-up Questions**:
 

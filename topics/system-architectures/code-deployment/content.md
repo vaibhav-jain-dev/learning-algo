@@ -1,6 +1,6 @@
 # Code Deployment Systems
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 **Code deployment** is the process of releasing software changes from development to production environments. Modern deployment systems must balance speed (deploying frequently) with safety (avoiding outages), while providing mechanisms for rapid recovery when failures occur.
 
@@ -14,7 +14,7 @@ This document covers the internal mechanisms, design trade-offs, and real-world 
 
 ### Core Mechanism
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 **Continuous Integration (CI)** automates the building, testing, and validation of code changes. **Continuous Deployment (CD)** extends this to automatically deploy validated changes to production environments.
 
@@ -26,35 +26,35 @@ This document covers the internal mechanisms, design trade-offs, and real-world 
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #238636; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center;">Source Trigger</div>
-<div style="color: #8b949e; font-size: 13px;">Git webhook fires on push/merge. Controller validates signature, extracts commit SHA, branch, and author metadata.</div>
+<div style="color: #475569; font-size: 13px;">Git webhook fires on push/merge. Controller validates signature, extracts commit SHA, branch, and author metadata.</div>
 </div>
 
-<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #30363d;"></div></div>
+<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #e2e8f0;"></div></div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #1f6feb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center;">Pipeline Parser</div>
-<div style="color: #8b949e; font-size: 13px;">Reads pipeline definition (YAML/JSON), builds Directed Acyclic Graph (DAG) of stages, resolves variable interpolation.</div>
+<div style="color: #475569; font-size: 13px;">Reads pipeline definition (YAML/JSON), builds Directed Acyclic Graph (DAG) of stages, resolves variable interpolation.</div>
 </div>
 
-<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #30363d;"></div></div>
+<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #e2e8f0;"></div></div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #8957e5; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center;">Job Scheduler</div>
-<div style="color: #8b949e; font-size: 13px;">Topologically sorts DAG, queues ready jobs. Handles parallelism constraints, resource requests, and agent affinity rules.</div>
+<div style="color: #475569; font-size: 13px;">Topologically sorts DAG, queues ready jobs. Handles parallelism constraints, resource requests, and agent affinity rules.</div>
 </div>
 
-<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #30363d;"></div></div>
+<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #e2e8f0;"></div></div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #f0883e; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center;">Build Agent</div>
-<div style="color: #8b949e; font-size: 13px;">Ephemeral container/VM claims job from queue. Clones repo, restores cache, executes steps, streams logs, uploads artifacts.</div>
+<div style="color: #475569; font-size: 13px;">Ephemeral container/VM claims job from queue. Clones repo, restores cache, executes steps, streams logs, uploads artifacts.</div>
 </div>
 
-<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #30363d;"></div></div>
+<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #e2e8f0;"></div></div>
 
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #da3633; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center;">Result Handler</div>
-<div style="color: #8b949e; font-size: 13px;">Updates pipeline state, triggers downstream jobs or deployment. Posts status to SCM, sends notifications.</div>
+<div style="color: #475569; font-size: 13px;">Updates pipeline state, triggers downstream jobs or deployment. Posts status to SCM, sends notifications.</div>
 </div>
 
 </div>
@@ -131,7 +131,7 @@ This document covers the internal mechanisms, design trade-offs, and real-world 
 
 ### 3-Level Interview Questions: CI/CD Pipelines
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 #### Level 1: "Explain how a CI/CD pipeline works internally."
 
@@ -178,7 +178,7 @@ Finally, autoscaling: monitor queue depth and wait times, scale agents up when a
 
 ### Core Mechanism
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 **Blue-green deployment** maintains two identical production environments. At any time, one (e.g., "blue") serves live traffic while the other ("green") is idle or receiving new deployments. Releases happen by deploying to the idle environment and then switching traffic atomically.
 
@@ -195,12 +195,12 @@ Finally, autoscaling: monitor queue depth and wait times, scale agents up when a
 </div>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-<div style="background: #30363d; color: #8b949e; padding: 12px; border-radius: 8px; text-align: center; font-size: 12px;">
+<div style="background: #e2e8f0; color: #475569; padding: 12px; border-radius: 8px; text-align: center; font-size: 12px;">
 <div style="font-weight: bold; margin-bottom: 4px;">Load Balancer</div>
 <div>DNS / L7 Proxy</div>
 </div>
 <div style="color: #f0883e; font-size: 24px;">&#8644;</div>
-<div style="color: #8b949e; font-size: 11px; text-align: center;">Atomic switch<br/>via config update</div>
+<div style="color: #475569; font-size: 11px; text-align: center;">Atomic switch<br/>via config update</div>
 </div>
 
 <div style="background: #238636; border-radius: 12px; padding: 20px; text-align: center;">
@@ -278,7 +278,7 @@ Blue and green each have their own database. Data sync via CDC (Change Data Capt
 
 ### 3-Level Interview Questions: Blue-Green Deployments
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 #### Level 1: "What is blue-green deployment and when would you use it?"
 
@@ -327,7 +327,7 @@ Blue and green each have their own database. Data sync via CDC (Change Data Capt
 
 ### Core Mechanism
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 **Canary releases** gradually shift traffic from the current version to the new version while monitoring for degradation. Unlike blue-green (instant full switch), canary allows validating new code with real production traffic at controlled risk levels.
 
@@ -338,38 +338,38 @@ Blue and green each have their own database. Data sync via CDC (Change Data Capt
 <div style="display: flex; flex-direction: column; gap: 16px; margin: 16px 0;">
 
 <div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #30363d; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #8b949e; font-weight: bold;">Stage 0</div>
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold;">Stage 0</div>
 <div style="flex: 1; display: flex; gap: 4px;">
 <div style="background: #1f6feb; flex: 100; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">v1.4 (100%)</div>
 </div>
-<div style="color: #8b949e; font-size: 12px; min-width: 120px;">Initial state</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px;">Initial state</div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #30363d; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #8b949e; font-weight: bold;">Stage 1</div>
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold;">Stage 1</div>
 <div style="flex: 1; display: flex; gap: 4px;">
 <div style="background: #1f6feb; flex: 95; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">v1.4 (95%)</div>
 <div style="background: #238636; flex: 5; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">v1.5</div>
 </div>
-<div style="color: #8b949e; font-size: 12px; min-width: 120px;">5% canary, 10 min</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px;">5% canary, 10 min</div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #30363d; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #8b949e; font-weight: bold;">Stage 2</div>
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold;">Stage 2</div>
 <div style="flex: 1; display: flex; gap: 4px;">
 <div style="background: #1f6feb; flex: 75; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">v1.4 (75%)</div>
 <div style="background: #238636; flex: 25; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">v1.5 (25%)</div>
 </div>
-<div style="color: #8b949e; font-size: 12px; min-width: 120px;">25% canary, 20 min</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px;">25% canary, 20 min</div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #30363d; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #8b949e; font-weight: bold;">Stage 3</div>
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold;">Stage 3</div>
 <div style="flex: 1; display: flex; gap: 4px;">
 <div style="background: #1f6feb; flex: 50; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">v1.4 (50%)</div>
 <div style="background: #238636; flex: 50; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">v1.5 (50%)</div>
 </div>
-<div style="color: #8b949e; font-size: 12px; min-width: 120px;">50% canary, 30 min</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px;">50% canary, 30 min</div>
 </div>
 
 <div style="display: flex; align-items: center; gap: 16px;">
@@ -390,17 +390,17 @@ Blue and green each have their own database. Data sync via CDC (Change Data Capt
 
 <div style="background: rgba(88, 166, 255, 0.1); border: 1px solid #58a6ff; border-radius: 8px; padding: 12px;">
 <h5 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 13px;">Replica-based</h5>
-<div style="color: #8b949e; font-size: 12px;">Run 19 v1.4 pods, 1 v1.5 pod behind same service. ~5% traffic to canary. Coarse-grained control.</div>
+<div style="color: #475569; font-size: 12px;">Run 19 v1.4 pods, 1 v1.5 pod behind same service. ~5% traffic to canary. Coarse-grained control.</div>
 </div>
 
 <div style="background: rgba(126, 231, 135, 0.1); border: 1px solid #7ee787; border-radius: 8px; padding: 12px;">
 <h5 style="color: #7ee787; margin: 0 0 8px 0; font-size: 13px;">Service Mesh</h5>
-<div style="color: #8b949e; font-size: 12px;">Istio/Linkerd VirtualService with weight-based routing. Fine-grained percentages, header-based routing.</div>
+<div style="color: #475569; font-size: 12px;">Istio/Linkerd VirtualService with weight-based routing. Fine-grained percentages, header-based routing.</div>
 </div>
 
 <div style="background: rgba(163, 113, 247, 0.1); border: 1px solid #a371f7; border-radius: 8px; padding: 12px;">
 <h5 style="color: #a371f7; margin: 0 0 8px 0; font-size: 13px;">Load Balancer</h5>
-<div style="color: #8b949e; font-size: 12px;">ALB/Nginx weighted target groups. Infrastructure-level control, no app changes required.</div>
+<div style="color: #475569; font-size: 12px;">ALB/Nginx weighted target groups. Infrastructure-level control, no app changes required.</div>
 </div>
 
 </div>
@@ -482,7 +482,7 @@ IF (conversion_rate_baseline - conversion_rate_canary) / conversion_rate_baselin
 
 ### 3-Level Interview Questions: Canary Releases
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 #### Level 1: "How does canary deployment differ from blue-green?"
 
@@ -534,7 +534,7 @@ IF (conversion_rate_baseline - conversion_rate_canary) / conversion_rate_baselin
 
 ### Core Mechanism
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 **Rollback** is the process of reverting a deployment when problems are detected. The complexity of rollback is inversely proportional to how well you designed your deployment for reversibility.
 
@@ -544,7 +544,7 @@ IF (conversion_rate_baseline - conversion_rate_canary) / conversion_rate_baselin
 
 <div style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;">
 
-<div style="background: #30363d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: white; font-weight: bold;">Problem Detected in Production</div>
 </div>
 
@@ -668,7 +668,7 @@ Data migration rollback
 
 ### Key Design Decisions
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 <h4 style="color: #58a6ff; margin: 0 0 16px 0;">Rollback Velocity vs. Complexity Trade-off</h4>
 
@@ -691,7 +691,7 @@ Data migration rollback
 
 ### 3-Level Interview Questions: Rollback Strategies
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 #### Level 1: "How quickly should a production rollback take, and what factors affect this?"
 
@@ -745,7 +745,7 @@ If incompatible: We have a choice - roll back all to known-good state, or roll f
 
 ### Core Mechanism
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 **Feature flags** (also called feature toggles) are conditional statements in code that enable or disable functionality at runtime without deployment. They decouple deployment (shipping code) from release (enabling features for users).
 
@@ -757,34 +757,34 @@ If incompatible: We have a choice - roll back all to known-good state, or roll f
 
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #1f6feb; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold;">Application Code</div>
-<div style="color: #8b949e; font-size: 13px; flex: 1;">
+<div style="color: #475569; font-size: 13px; flex: 1;">
 `if (featureFlags.isEnabled("new-checkout", user)) { showNewCheckout(); }`
 </div>
 </div>
 
-<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #30363d;"></div></div>
+<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #e2e8f0;"></div></div>
 
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #238636; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold;">Local SDK Cache</div>
-<div style="color: #8b949e; font-size: 13px; flex: 1;">
+<div style="color: #475569; font-size: 13px; flex: 1;">
 SDK caches flag rules locally. Cache TTL typically 30s-5min. Evaluation happens in-process, no network call per check.
 </div>
 </div>
 
-<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #30363d;"></div></div>
+<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #e2e8f0;"></div></div>
 
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #8957e5; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold;">Flag Service</div>
-<div style="color: #8b949e; font-size: 13px; flex: 1;">
+<div style="color: #475569; font-size: 13px; flex: 1;">
 Central service stores flag configuration. SDK polls or receives push updates. Provides UI for flag management.
 </div>
 </div>
 
-<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #30363d;"></div></div>
+<div style="display: flex; justify-content: center;"><div style="width: 2px; height: 20px; background: #e2e8f0;"></div></div>
 
 <div style="display: flex; align-items: center; gap: 16px;">
 <div style="background: #f0883e; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold;">Targeting Rules</div>
-<div style="color: #8b949e; font-size: 13px; flex: 1;">
+<div style="color: #475569; font-size: 13px; flex: 1;">
 Rules evaluated in order: user ID match, segment membership, percentage rollout, default value.
 </div>
 </div>
@@ -863,7 +863,7 @@ Rules evaluated in order: user ID match, segment membership, percentage rollout,
 
 ### Key Design Decisions
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
 
 <h4 style="color: #58a6ff; margin: 0 0 16px 0;">Server-side vs. Client-side Evaluation</h4>
 
@@ -931,7 +931,7 @@ Rules evaluated in order: user ID match, segment membership, percentage rollout,
 
 ### 3-Level Interview Questions: Feature Flags
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
 #### Level 1: "What are feature flags and why would you use them instead of just deploying code?"
 
@@ -985,7 +985,7 @@ Rules evaluated in order: user ID match, segment membership, percentage rollout,
 
 ## Cross-Cutting Concerns
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
 ### Security Considerations
 
@@ -1035,34 +1035,34 @@ Deployment systems must integrate with [[monitoring]](/topics/system-architectur
 
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0;">
 
-<div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center;">
 <a href="/topics/system-architectures/container-orchestration" style="color: #58a6ff; text-decoration: none;">[[Container Orchestration]]</a>
-<div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Kubernetes, ECS patterns</div>
+<div style="color: #475569; font-size: 11px; margin-top: 4px;">Kubernetes, ECS patterns</div>
 </div>
 
-<div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center;">
 <a href="/topics/system-architectures/service-mesh" style="color: #58a6ff; text-decoration: none;">[[Service Mesh]]</a>
-<div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Traffic management, canary routing</div>
+<div style="color: #475569; font-size: 11px; margin-top: 4px;">Traffic management, canary routing</div>
 </div>
 
-<div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center;">
 <a href="/topics/system-architectures/gitops" style="color: #58a6ff; text-decoration: none;">[[GitOps]]</a>
-<div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Declarative deployment patterns</div>
+<div style="color: #475569; font-size: 11px; margin-top: 4px;">Declarative deployment patterns</div>
 </div>
 
-<div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center;">
 <a href="/topics/system-architectures/infrastructure-as-code" style="color: #58a6ff; text-decoration: none;">[[Infrastructure as Code]]</a>
-<div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Terraform, Pulumi patterns</div>
+<div style="color: #475569; font-size: 11px; margin-top: 4px;">Terraform, Pulumi patterns</div>
 </div>
 
-<div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center;">
 <a href="/topics/system-architectures/secrets-management" style="color: #58a6ff; text-decoration: none;">[[Secrets Management]]</a>
-<div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Vault, credential rotation</div>
+<div style="color: #475569; font-size: 11px; margin-top: 4px;">Vault, credential rotation</div>
 </div>
 
-<div style="background: #30363d; border-radius: 8px; padding: 12px; text-align: center;">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center;">
 <a href="/topics/system-architectures/chaos-engineering" style="color: #58a6ff; text-decoration: none;">[[Chaos Engineering]]</a>
-<div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Testing deployment resilience</div>
+<div style="color: #475569; font-size: 11px; margin-top: 4px;">Testing deployment resilience</div>
 </div>
 
 </div>
@@ -1073,7 +1073,7 @@ Deployment systems must integrate with [[monitoring]](/topics/system-architectur
 
 ## Summary: Deployment Strategy Decision Framework
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
 <div style="overflow-x: auto; margin: 16px 0;">
 

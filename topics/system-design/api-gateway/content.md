@@ -4,9 +4,9 @@
 
 An API Gateway is a unified entry point that mediates between external clients and internal microservices. It functions as a reverse proxy that handles cross-cutting concerns, enabling backend services to focus exclusively on business logic. At its core, an API Gateway performs request routing, protocol translation, authentication, rate limiting, and response aggregation.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Equation</h4>
-  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+  <h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">Core Equation</h4>
+  <div style="font-family: 'Courier New', monospace; font-size: 16px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; color: #1e293b; border: 1px solid #3b82f6;">
     API Gateway = Reverse Proxy + Authentication + Rate Limiting + Protocol Translation + Service Discovery + Observability
   </div>
 </div>
@@ -867,24 +867,24 @@ class ProtocolTranslator:
 
 Service discovery enables the gateway to locate backend service instances dynamically, essential for containerized and auto-scaling environments where instance addresses change frequently. The gateway must maintain an up-to-date registry of healthy service endpoints.
 
-<div style="background: linear-gradient(135deg, #059669 0%, #34d399 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: white;">Service Discovery Patterns</h4>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">Client-Side Discovery</strong>
-      <p style="color: #a7f3d0; margin: 8px 0 0 0; font-size: 13px;">Gateway queries registry directly, caches results, handles load balancing. More control but tighter coupling. Examples: Netflix Eureka, Consul.</p>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #22c55e;">
+  <h4 style="margin-top: 0; color: #166534;">Service Discovery Patterns</h4>
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">Client-Side Discovery</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Gateway queries registry directly, caches results, handles load balancing. More control but tighter coupling. Examples: Netflix Eureka, Consul.</p>
     </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">Server-Side Discovery</strong>
-      <p style="color: #a7f3d0; margin: 8px 0 0 0; font-size: 13px;">Gateway calls load balancer, which handles discovery. Simpler gateway but additional hop. Examples: AWS ELB, Kubernetes Services.</p>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">Server-Side Discovery</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Gateway calls load balancer, which handles discovery. Simpler gateway but additional hop. Examples: AWS ELB, Kubernetes Services.</p>
     </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">DNS-Based Discovery</strong>
-      <p style="color: #a7f3d0; margin: 8px 0 0 0; font-size: 13px;">Service names resolve to instance IPs via DNS. Simple but limited health checking, TTL-based staleness. Examples: Kubernetes CoreDNS.</p>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">DNS-Based Discovery</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Service names resolve to instance IPs via DNS. Simple but limited health checking, TTL-based staleness. Examples: Kubernetes CoreDNS.</p>
     </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 16px; border-radius: 8px;">
-      <strong style="color: white;">Service Mesh Sidecar</strong>
-      <p style="color: #a7f3d0; margin: 8px 0 0 0; font-size: 13px;">Sidecar proxy handles discovery transparently. Gateway routes to service name, sidecar resolves. Examples: Istio, Linkerd.</p>
+    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #86efac; flex: 1; min-width: 200px;">
+      <strong style="color: #166534;">Service Mesh Sidecar</strong>
+      <p style="color: #475569; margin: 8px 0 0 0; font-size: 13px;">Sidecar proxy handles discovery transparently. Gateway routes to service name, sidecar resolves. Examples: Istio, Linkerd.</p>
     </div>
   </div>
 </div>
@@ -1317,15 +1317,15 @@ class ServiceRegistry:
 
 ## Real-World Failure Story: Netflix Zuul (2015)
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">The Incident</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">The Incident</h4>
 
-  <p style="color: #cbd5e1; line-height: 1.7;">Netflix's Zuul gateway became a single point of failure when a memory leak caused 45 minutes of streaming outage affecting millions of users.</p>
+  <p style="color: #475569; line-height: 1.7;">Netflix's Zuul gateway became a single point of failure when a memory leak caused 45 minutes of streaming outage affecting millions of users.</p>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-    <div>
-      <h5 style="color: #fbbf24; margin-bottom: 12px;">Timeline</h5>
-      <ol style="color: #e2e8f0; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+    <div style="flex: 1; min-width: 250px;">
+      <h5 style="color: #f97316; margin-bottom: 12px;">Timeline</h5>
+      <ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
         <li>Logging middleware stored full request bodies in memory</li>
         <li>No size limits on buffered requests</li>
         <li>Heap memory grew over hours</li>
@@ -1334,9 +1334,9 @@ class ServiceRegistry:
         <li>New instances hit same issue immediately</li>
       </ol>
     </div>
-    <div>
-      <h5 style="color: #34d399; margin-bottom: 12px;">Fixes Implemented</h5>
-      <ol style="color: #e2e8f0; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+    <div style="flex: 1; min-width: 250px;">
+      <h5 style="color: #22c55e; margin-bottom: 12px;">Fixes Implemented</h5>
+      <ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
         <li>Request body size limits enforced</li>
         <li>Streaming for large payloads</li>
         <li>Circuit breakers on gateway itself</li>
@@ -1347,9 +1347,9 @@ class ServiceRegistry:
     </div>
   </div>
 
-  <div style="background: rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 16px; margin-top: 20px; border: 1px solid rgba(239, 68, 68, 0.3);">
-    <strong style="color: #fca5a5;">Key Lesson:</strong>
-    <span style="color: #fecaca;"> The gateway must be the most reliable component. If it goes down, everything goes down. Design for the gateway to gracefully degrade rather than fail completely.</span>
+  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 20px; border: 2px solid #ef4444;">
+    <strong style="color: #dc2626;">Key Lesson:</strong>
+    <span style="color: #7f1d1d;"> The gateway must be the most reliable component. If it goes down, everything goes down. Design for the gateway to gracefully degrade rather than fail completely.</span>
   </div>
 </div>
 

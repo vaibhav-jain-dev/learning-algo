@@ -4,7 +4,7 @@
 
 <span style="color:#22c55e; font-weight:bold;">Query optimization</span> is the art and science of writing SQL that executes with minimal resource consumption and maximum speed. It encompasses understanding the query planner's decision-making process, leveraging indexes effectively, rewriting queries for efficiency, and diagnosing performance bottlenecks through execution plan analysis.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: #1e293b;">
   <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Equation</h4>
   <div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
     Query Performance = (Rows Scanned x Cost Per Row) + (Joins x Join Cost) + (Sort/Aggregate Cost) + Network I/O
@@ -23,8 +23,8 @@
 
 Understanding how databases process queries is fundamental to optimization. The <span style="color:#22c55e; font-weight:bold;">query execution pipeline</span> transforms SQL text into actual results through multiple stages.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">QUERY EXECUTION PIPELINE</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">QUERY EXECUTION PIPELINE</h4>
 <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;">
   <div style="flex: 1; min-width: 280px; max-width: 350px;">
     <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -32,12 +32,12 @@ Understanding how databases process queries is fundamental to optimization. The 
         1. Parser
         <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">SQL text to AST</div>
       </div>
-      <div style="text-align: center; color: #58a6ff; font-size: 18px;">|</div>
+      <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
       <div style="background: linear-gradient(90deg, #1f6feb, #388bfd); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
         2. Analyzer
         <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Semantic validation, resolve names</div>
       </div>
-      <div style="text-align: center; color: #58a6ff; font-size: 18px;">|</div>
+      <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
       <div style="background: linear-gradient(90deg, #8957e5, #a371f7); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
         3. Rewriter
         <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">View expansion, rule application</div>
@@ -50,12 +50,12 @@ Understanding how databases process queries is fundamental to optimization. The 
         4. Planner/Optimizer
         <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Generate & choose execution plan</div>
       </div>
-      <div style="text-align: center; color: #58a6ff; font-size: 18px;">|</div>
+      <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
       <div style="background: linear-gradient(90deg, #da3633, #f85149); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
         5. Executor
         <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Execute plan, fetch data</div>
       </div>
-      <div style="text-align: center; color: #58a6ff; font-size: 18px;">|</div>
+      <div style="text-align: center; color: #1e40af; font-size: 18px;">|</div>
       <div style="background: linear-gradient(90deg, #7ee787, #56d364); color: #0d1117; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
         6. Result Set
         <div style="font-weight: normal; font-size: 12px; margin-top: 4px;">Return rows to client</div>
@@ -69,47 +69,47 @@ Understanding how databases process queries is fundamental to optimization. The 
 
 The <span style="color:#22c55e; font-weight:bold;">logical execution order</span> differs from how you write SQL. Understanding this is crucial for optimization.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">LOGICAL EXECUTION ORDER</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">LOGICAL EXECUTION ORDER</h4>
 <div style="display: flex; flex-direction: column; gap: 8px; max-width: 600px; margin: 0 auto;">
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #238636; color: #fff; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; font-weight: bold;">1. FROM / JOIN</div>
-<span style="color: #8b949e; font-size: 13px;">Identify source tables, apply joins, create working set</span>
+<span style="color: #64748b; font-size: 13px;">Identify source tables, apply joins, create working set</span>
 </div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #1f6feb; color: #fff; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; font-weight: bold;">2. WHERE</div>
-<span style="color: #8b949e; font-size: 13px;">Filter rows (before grouping, cannot use aliases)</span>
+<span style="color: #64748b; font-size: 13px;">Filter rows (before grouping, cannot use aliases)</span>
 </div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #8957e5; color: #fff; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; font-weight: bold;">3. GROUP BY</div>
-<span style="color: #8b949e; font-size: 13px;">Aggregate rows into groups</span>
+<span style="color: #64748b; font-size: 13px;">Aggregate rows into groups</span>
 </div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #f0883e; color: #fff; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; font-weight: bold;">4. HAVING</div>
-<span style="color: #8b949e; font-size: 13px;">Filter groups (after grouping, can use aggregates)</span>
+<span style="color: #64748b; font-size: 13px;">Filter groups (after grouping, can use aggregates)</span>
 </div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #da3633; color: #fff; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; font-weight: bold;">5. SELECT</div>
-<span style="color: #8b949e; font-size: 13px;">Compute expressions, create column aliases</span>
+<span style="color: #64748b; font-size: 13px;">Compute expressions, create column aliases</span>
 </div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #7ee787; color: #0d1117; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; font-weight: bold;">6. DISTINCT</div>
-<span style="color: #8b949e; font-size: 13px;">Remove duplicate rows</span>
+<span style="color: #64748b; font-size: 13px;">Remove duplicate rows</span>
 </div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="display: flex; align-items: center; gap: 12px;">
 <div style="background: #a371f7; color: #fff; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; font-weight: bold;">7. ORDER BY</div>
-<span style="color: #8b949e; font-size: 13px;">Sort results (can use aliases, column positions)</span>
+<span style="color: #64748b; font-size: 13px;">Sort results (can use aliases, column positions)</span>
 </div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="display: flex; align-items: center; gap: 12px;">
-<div style="background: #21262d; color: #c9d1d9; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; border: 1px solid #30363d; font-weight: bold;">8. LIMIT/OFFSET</div>
-<span style="color: #8b949e; font-size: 13px;">Restrict output rows</span>
+<div style="background: #ffffff; color: #475569; padding: 10px 20px; border-radius: 6px; min-width: 140px; text-align: center; font-size: 14px; border: 2px solid #e2e8f0; font-weight: bold;">8. LIMIT/OFFSET</div>
+<span style="color: #64748b; font-size: 13px;">Restrict output rows</span>
 </div>
 </div>
 </div>
@@ -124,27 +124,27 @@ The <span style="color:#22c55e; font-weight:bold;">EXPLAIN command</span> reveal
 
 ### EXPLAIN Variants
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 4px solid #7ee787;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">EXPLAIN</div>
-<div style="color: #c9d1d9; font-size: 13px;">Shows estimated plan without executing. Fast but may differ from actual execution.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #8b949e;">EXPLAIN SELECT * FROM users;</div>
+<div style="color: #475569; font-size: 13px;">Shows estimated plan without executing. Fast but may differ from actual execution.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #64748b;">EXPLAIN SELECT * FROM users;</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 4px solid #58a6ff;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">EXPLAIN ANALYZE</div>
-<div style="color: #c9d1d9; font-size: 13px;">Executes query and shows actual timings. Essential for production debugging.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #8b949e;">EXPLAIN ANALYZE SELECT * FROM users;</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #58a6ff;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px;">EXPLAIN ANALYZE</div>
+<div style="color: #475569; font-size: 13px;">Executes query and shows actual timings. Essential for production debugging.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #64748b;">EXPLAIN ANALYZE SELECT * FROM users;</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 4px solid #f0883e;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #f0883e;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">EXPLAIN (BUFFERS)</div>
-<div style="color: #c9d1d9; font-size: 13px;">Shows buffer usage (cache hits/misses). Critical for I/O optimization.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #8b949e;">EXPLAIN (ANALYZE, BUFFERS) SELECT ...;</div>
+<div style="color: #475569; font-size: 13px;">Shows buffer usage (cache hits/misses). Critical for I/O optimization.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #64748b;">EXPLAIN (ANALYZE, BUFFERS) SELECT ...;</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 4px solid #a371f7;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 4px solid #a371f7;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">EXPLAIN (FORMAT JSON)</div>
-<div style="color: #c9d1d9; font-size: 13px;">Machine-readable output for tooling and visualization platforms.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #8b949e;">EXPLAIN (FORMAT JSON) SELECT ...;</div>
+<div style="color: #475569; font-size: 13px;">Machine-readable output for tooling and visualization platforms.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; margin-top: 8px; font-family: monospace; font-size: 12px; color: #64748b;">EXPLAIN (FORMAT JSON) SELECT ...;</div>
 </div>
 </div>
 </div>
@@ -162,19 +162,19 @@ ORDER BY order_count DESC
 LIMIT 10;
 ```
 
-<div style="background: #0d1117; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #30363d; font-family: monospace; font-size: 13px; overflow-x: auto;">
-<pre style="margin: 0; color: #c9d1d9; white-space: pre-wrap;">
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0; font-family: monospace; font-size: 13px; overflow-x: auto;">
+<pre style="margin: 0; color: #475569; white-space: pre-wrap;">
 <span style="color: #f85149;">Limit</span>  (cost=1285.32..1285.35 rows=10 width=44) (actual time=12.456..12.461 rows=10 loops=1)
   ->  <span style="color: #f0883e;">Sort</span>  (cost=1285.32..1287.89 rows=1028 width=44) (actual time=12.454..12.457 rows=10 loops=1)
         Sort Key: (count(o.id)) DESC
         Sort Method: <span style="color: #7ee787;">top-N heapsort</span>  Memory: 25kB
-        ->  <span style="color: #58a6ff;">HashAggregate</span>  (cost=1256.42..1266.70 rows=1028 width=44) (actual time=11.234..11.890 rows=1028 loops=1)
+        ->  <span style="color: #1e40af;">HashAggregate</span>  (cost=1256.42..1266.70 rows=1028 width=44) (actual time=11.234..11.890 rows=1028 loops=1)
               Group Key: u.id
               Batches: 1  Memory Usage: 209kB
               ->  <span style="color: #a371f7;">Hash Right Join</span>  (cost=42.36..1180.92 rows=15100 width=40) (actual time=0.892..8.234 rows=15234 loops=1)
                     Hash Cond: (o.user_id = u.id)
                     ->  <span style="color: #7ee787;">Seq Scan on orders o</span>  (cost=0.00..963.00 rows=50000 width=8) (actual time=0.012..3.456 rows=50000 loops=1)
-                    ->  <span style="color: #58a6ff;">Hash</span>  (cost=29.78..29.78 rows=1006 width=36) (actual time=0.867..0.868 rows=1028 loops=1)
+                    ->  <span style="color: #1e40af;">Hash</span>  (cost=29.78..29.78 rows=1006 width=36) (actual time=0.867..0.868 rows=1028 loops=1)
                           Buckets: 2048  Batches: 1  Memory Usage: 73kB
                           ->  <span style="color: #7ee787;">Index Scan using idx_users_status on users u</span>  (cost=0.28..29.78 rows=1006 width=36) (actual time=0.021..0.534 rows=1028 loops=1)
                                 Index Cond: (status = 'active'::text)
@@ -185,73 +185,73 @@ Execution Time: 12.567 ms
 
 ### Key EXPLAIN Metrics Decoded
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
-<div style="background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">cost=startup..total</div>
-<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">Estimated cost in arbitrary units (not milliseconds)</div>
-<div style="color: #c9d1d9; font-size: 12px;"><strong>Startup:</strong> Cost before first row returned<br><strong>Total:</strong> Cost to return all rows</div>
+<div style="color: #64748b; font-size: 13px; margin-bottom: 8px;">Estimated cost in arbitrary units (not milliseconds)</div>
+<div style="color: #475569; font-size: 12px;"><strong>Startup:</strong> Cost before first row returned<br><strong>Total:</strong> Cost to return all rows</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">rows=N</div>
-<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">Estimated row count (planner estimate)</div>
-<div style="color: #c9d1d9; font-size: 12px;"><strong>Red Flag:</strong> If estimated << actual, statistics are stale. Run ANALYZE.</div>
+<div style="color: #64748b; font-size: 13px; margin-bottom: 8px;">Estimated row count (planner estimate)</div>
+<div style="color: #475569; font-size: 12px;"><strong>Red Flag:</strong> If estimated << actual, statistics are stale. Run ANALYZE.</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">actual time=start..end</div>
-<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">Real execution time in milliseconds</div>
-<div style="color: #c9d1d9; font-size: 12px;"><strong>Per loop:</strong> Multiply by loops for total time in that node</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px;">actual time=start..end</div>
+<div style="color: #64748b; font-size: 13px; margin-bottom: 8px;">Real execution time in milliseconds</div>
+<div style="color: #475569; font-size: 12px;"><strong>Per loop:</strong> Multiply by loops for total time in that node</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #f0883e; font-weight: bold; margin-bottom: 8px;">loops=N</div>
-<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">How many times this node was executed</div>
-<div style="color: #c9d1d9; font-size: 12px;"><strong>High loops:</strong> Common in nested loop joins; multiply time by loops</div>
+<div style="color: #64748b; font-size: 13px; margin-bottom: 8px;">How many times this node was executed</div>
+<div style="color: #475569; font-size: 12px;"><strong>High loops:</strong> Common in nested loop joins; multiply time by loops</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">Buffers: shared hit/read</div>
-<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">Buffer cache usage (with BUFFERS option)</div>
-<div style="color: #c9d1d9; font-size: 12px;"><strong>hit:</strong> From cache (fast)<br><strong>read:</strong> From disk (slow)</div>
+<div style="color: #64748b; font-size: 13px; margin-bottom: 8px;">Buffer cache usage (with BUFFERS option)</div>
+<div style="color: #475569; font-size: 12px;"><strong>hit:</strong> From cache (fast)<br><strong>read:</strong> From disk (slow)</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">width=N</div>
-<div style="color: #8b949e; font-size: 13px; margin-bottom: 8px;">Average row width in bytes</div>
-<div style="color: #c9d1d9; font-size: 12px;"><strong>Optimization:</strong> SELECT fewer columns to reduce width and memory usage</div>
+<div style="color: #64748b; font-size: 13px; margin-bottom: 8px;">Average row width in bytes</div>
+<div style="color: #475569; font-size: 12px;"><strong>Optimization:</strong> SELECT fewer columns to reduce width and memory usage</div>
 </div>
 </div>
 </div>
 
 ### Scan Types: Performance Hierarchy
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; text-align: center;">SCAN TYPES (Best to Worst for Selective Queries)</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">SCAN TYPES (Best to Worst for Selective Queries)</h4>
 <div style="display: flex; flex-direction: column; gap: 12px; max-width: 700px; margin: 0 auto;">
 <div style="display: flex; align-items: stretch; gap: 12px;">
 <div style="background: linear-gradient(135deg, #238636, #2ea043); color: #fff; padding: 16px; border-radius: 8px; min-width: 180px; display: flex; flex-direction: column; justify-content: center;">
 <div style="font-weight: bold;">Index Only Scan</div>
 <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">O(log n) + no heap access</div>
 </div>
-<div style="background: #21262d; padding: 12px; border-radius: 8px; flex: 1; color: #c9d1d9; font-size: 13px;">All required columns in index. No table access needed. Fastest possible scan.</div>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; flex: 1; color: #475569; font-size: 13px;">All required columns in index. No table access needed. Fastest possible scan.</div>
 </div>
 <div style="display: flex; align-items: stretch; gap: 12px;">
 <div style="background: linear-gradient(135deg, #1f6feb, #388bfd); color: #fff; padding: 16px; border-radius: 8px; min-width: 180px; display: flex; flex-direction: column; justify-content: center;">
 <div style="font-weight: bold;">Index Scan</div>
 <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">O(log n) + heap fetch</div>
 </div>
-<div style="background: #21262d; padding: 12px; border-radius: 8px; flex: 1; color: #c9d1d9; font-size: 13px;">Uses index to find rows, then fetches full row from table. Good for selective queries.</div>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; flex: 1; color: #475569; font-size: 13px;">Uses index to find rows, then fetches full row from table. Good for selective queries.</div>
 </div>
 <div style="display: flex; align-items: stretch; gap: 12px;">
 <div style="background: linear-gradient(135deg, #f0883e, #d29922); color: #fff; padding: 16px; border-radius: 8px; min-width: 180px; display: flex; flex-direction: column; justify-content: center;">
 <div style="font-weight: bold;">Bitmap Index Scan</div>
 <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">O(log n) + bitmap + heap</div>
 </div>
-<div style="background: #21262d; padding: 12px; border-radius: 8px; flex: 1; color: #c9d1d9; font-size: 13px;">Builds bitmap of matching rows, then fetches. Efficient for multiple index conditions (AND/OR).</div>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; flex: 1; color: #475569; font-size: 13px;">Builds bitmap of matching rows, then fetches. Efficient for multiple index conditions (AND/OR).</div>
 </div>
 <div style="display: flex; align-items: stretch; gap: 12px;">
 <div style="background: linear-gradient(135deg, #da3633, #f85149); color: #fff; padding: 16px; border-radius: 8px; min-width: 180px; display: flex; flex-direction: column; justify-content: center;">
 <div style="font-weight: bold;">Sequential Scan</div>
 <div style="font-size: 11px; opacity: 0.9; margin-top: 4px;">O(n) full table scan</div>
 </div>
-<div style="background: #21262d; padding: 12px; border-radius: 8px; flex: 1; color: #c9d1d9; font-size: 13px;">Reads every row. May be optimal for small tables or when fetching >10-15% of rows.</div>
+<div style="background: #ffffff; padding: 12px; border-radius: 8px; flex: 1; color: #475569; font-size: 13px;">Reads every row. May be optimal for small tables or when fetching >10-15% of rows.</div>
 </div>
 </div>
 </div>
@@ -284,40 +284,40 @@ Execution Time: 12.567 ms
 
 ### Join Algorithm Types
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; text-align: center;">JOIN ALGORITHMS COMPARISON</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">JOIN ALGORITHMS COMPARISON</h4>
 <div style="overflow-x: auto;">
-<table style="width: 100%; border-collapse: collapse; color: #c9d1d9; font-size: 13px;">
-<tr style="background: #21262d;">
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Algorithm</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Complexity</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Best For</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Memory</th>
+<table style="width: 100%; border-collapse: collapse; color: #475569; font-size: 13px;">
+<tr style="background: #ffffff;">
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Algorithm</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Complexity</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Best For</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Memory</th>
 </tr>
-<tr style="background: #161b22;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;"><span style="color: #f85149; font-weight: bold;">Nested Loop</span></td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">O(n * m)</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Small outer table, indexed inner table</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Low</td>
+<tr style="background: #f1f5f9;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="color: #f85149; font-weight: bold;">Nested Loop</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n * m)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Small outer table, indexed inner table</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low</td>
 </tr>
-<tr style="background: #21262d;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;"><span style="color: #58a6ff; font-weight: bold;">Hash Join</span></td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">O(n + m)</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Equality joins, medium-large tables</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">High (hash table)</td>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="color: #1e40af; font-weight: bold;">Hash Join</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n + m)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Equality joins, medium-large tables</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">High (hash table)</td>
 </tr>
-<tr style="background: #161b22;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;"><span style="color: #7ee787; font-weight: bold;">Merge Join</span></td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">O(n log n + m log m)</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Pre-sorted data, range joins</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Low-Medium</td>
+<tr style="background: #f1f5f9;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="color: #7ee787; font-weight: bold;">Merge Join</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">O(n log n + m log m)</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Pre-sorted data, range joins</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Low-Medium</td>
 </tr>
 </table>
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">JOIN ALGORITHM DECISION TREE</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">JOIN ALGORITHM DECISION TREE</h4>
 <div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
   <div style="text-align: center;">
     <div style="background: #8957e5; color: #fff; padding: 16px 24px; border-radius: 8px; display: inline-block; font-weight: bold;">
@@ -330,11 +330,11 @@ Execution Time: 12.567 ms
       <div style="background: #238636; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
         Nested Loop Join
       </div>
-      <div style="color: #8b949e; font-size: 12px; margin-top: 8px;">Small build, many lookups</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 8px;">Small build, many lookups</div>
     </div>
     <div style="text-align: center;">
       <div style="color: #f0883e; font-size: 14px; margin-bottom: 8px;">NO</div>
-      <div style="color: #58a6ff; font-size: 24px;">|</div>
+      <div style="color: #1e40af; font-size: 24px;">|</div>
     </div>
   </div>
   <div style="text-align: center;">
@@ -348,14 +348,14 @@ Execution Time: 12.567 ms
       <div style="background: #1f6feb; color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
         Hash Join
       </div>
-      <div style="color: #8b949e; font-size: 12px; margin-top: 8px;">Build hash, probe O(1)</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 8px;">Build hash, probe O(1)</div>
     </div>
     <div style="text-align: center;">
       <div style="color: #f0883e; font-size: 14px; margin-bottom: 8px;">NO (range/inequality)</div>
       <div style="background: #7ee787; color: #0d1117; padding: 12px 20px; border-radius: 8px; font-weight: bold;">
         Merge Join
       </div>
-      <div style="color: #8b949e; font-size: 12px; margin-top: 8px;">Sort both, merge scan</div>
+      <div style="color: #64748b; font-size: 12px; margin-top: 8px;">Sort both, merge scan</div>
     </div>
   </div>
 </div>
@@ -438,30 +438,30 @@ Understanding when to use <span style="color:#22c55e; font-weight:bold;">subquer
 
 ### Subquery Types and Performance
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-top: 3px solid #7ee787;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-top: 3px solid #7ee787;">
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Scalar Subquery</div>
-<div style="color: #c9d1d9; font-size: 13px; margin-bottom: 12px;">Returns single value. Used in SELECT, WHERE.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #8b949e;">SELECT (SELECT MAX(salary) FROM employees)</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Returns single value. Used in SELECT, WHERE.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #64748b;">SELECT (SELECT MAX(salary) FROM employees)</div>
 <div style="color: #f0883e; font-size: 11px; margin-top: 8px;">Cached if non-correlated</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-top: 3px solid #f85149;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-top: 3px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Correlated Subquery</div>
-<div style="color: #c9d1d9; font-size: 13px; margin-bottom: 12px;">References outer query. Re-executes per row.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #8b949e;">WHERE salary > (SELECT AVG(salary) FROM emp WHERE dept = e.dept)</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">References outer query. Re-executes per row.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #64748b;">WHERE salary > (SELECT AVG(salary) FROM emp WHERE dept = e.dept)</div>
 <div style="color: #f85149; font-size: 11px; margin-top: 8px;">O(n * subquery_cost) - Often slow!</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-top: 3px solid #58a6ff;">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 8px;">EXISTS Subquery</div>
-<div style="color: #c9d1d9; font-size: 13px; margin-bottom: 12px;">Tests existence. Short-circuits on first match.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #8b949e;">WHERE EXISTS (SELECT 1 FROM orders WHERE user_id = u.id)</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-top: 3px solid #58a6ff;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px;">EXISTS Subquery</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Tests existence. Short-circuits on first match.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #64748b;">WHERE EXISTS (SELECT 1 FROM orders WHERE user_id = u.id)</div>
 <div style="color: #7ee787; font-size: 11px; margin-top: 8px;">Often optimal for existence checks</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; border-top: 3px solid #a371f7;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; border-top: 3px solid #a371f7;">
 <div style="color: #a371f7; font-weight: bold; margin-bottom: 8px;">IN Subquery</div>
-<div style="color: #c9d1d9; font-size: 13px; margin-bottom: 12px;">Tests membership in result set.</div>
-<div style="background: #161b22; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #8b949e;">WHERE user_id IN (SELECT id FROM premium_users)</div>
+<div style="color: #475569; font-size: 13px; margin-bottom: 12px;">Tests membership in result set.</div>
+<div style="background: #f1f5f9; padding: 8px; border-radius: 4px; font-family: monospace; font-size: 11px; color: #64748b;">WHERE user_id IN (SELECT id FROM premium_users)</div>
 <div style="color: #f0883e; font-size: 11px; margin-top: 8px;">Usually transformed to semi-join</div>
 </div>
 </div>
@@ -469,45 +469,45 @@ Understanding when to use <span style="color:#22c55e; font-weight:bold;">subquer
 
 ### When to Use Subquery vs JOIN
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; text-align: center;">DECISION MATRIX</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">DECISION MATRIX</h4>
 <div style="overflow-x: auto;">
-<table style="width: 100%; border-collapse: collapse; color: #c9d1d9; font-size: 13px;">
-<tr style="background: #21262d;">
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Scenario</th>
-<th style="padding: 12px; text-align: center; border-bottom: 2px solid #30363d; color: #7ee787;">Use JOIN</th>
-<th style="padding: 12px; text-align: center; border-bottom: 2px solid #30363d; color: #a371f7;">Use Subquery</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #f0883e;">Why</th>
+<table style="width: 100%; border-collapse: collapse; color: #475569; font-size: 13px;">
+<tr style="background: #ffffff;">
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Scenario</th>
+<th style="padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0; color: #7ee787;">Use JOIN</th>
+<th style="padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0; color: #a371f7;">Use Subquery</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #f0883e;">Why</th>
 </tr>
-<tr style="background: #161b22;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Need columns from both tables</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">Preferred</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;">-</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Subquery in SELECT is scalar, can't return multiple columns</td>
+<tr style="background: #f1f5f9;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Need columns from both tables</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">Preferred</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;">-</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Subquery in SELECT is scalar, can't return multiple columns</td>
 </tr>
-<tr style="background: #21262d;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Existence check only</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;">-</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7;">EXISTS</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Short-circuits on first match, no duplicate risk</td>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Existence check only</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;">-</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7;">EXISTS</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Short-circuits on first match, no duplicate risk</td>
 </tr>
-<tr style="background: #161b22;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Aggregate comparison per row</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d; color: #7ee787;">With derived table</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;">-</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Pre-compute aggregates, avoid correlated re-execution</td>
+<tr style="background: #f1f5f9;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Aggregate comparison per row</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #7ee787;">With derived table</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;">-</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Pre-compute aggregates, avoid correlated re-execution</td>
 </tr>
-<tr style="background: #21262d;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Anti-join (NOT IN/NOT EXISTS)</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;">-</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7;">NOT EXISTS</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">NOT IN has NULL trap; NOT EXISTS handles NULLs correctly</td>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Anti-join (NOT IN/NOT EXISTS)</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;">-</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7;">NOT EXISTS</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">NOT IN has NULL trap; NOT EXISTS handles NULLs correctly</td>
 </tr>
-<tr style="background: #161b22;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Row deduplication needed</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;">DISTINCT or</td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d; color: #a371f7;">EXISTS</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">JOIN can multiply rows; EXISTS returns one row per outer</td>
+<tr style="background: #f1f5f9;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Row deduplication needed</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;">DISTINCT or</td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; color: #a371f7;">EXISTS</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">JOIN can multiply rows; EXISTS returns one row per outer</td>
 </tr>
 </table>
 </div>
@@ -600,39 +600,39 @@ WHERE id NOT IN (
 
 The <span style="color:#22c55e; font-weight:bold;">N+1 problem</span> is one of the most common performance issues in applications using ORMs. It occurs when code executes 1 query to fetch N parent records, then N additional queries to fetch related data for each parent.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #f85149; margin: 0 0 24px 0; text-align: center;">N+1 QUERY PROBLEM VISUALIZED</h4>
 <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;">
   <div style="flex: 1; min-width: 280px; max-width: 350px;">
     <div style="color: #f85149; font-weight: bold; margin-bottom: 12px; text-align: center;">BAD: N+1 Queries (101 queries)</div>
-    <div style="background: #21262d; border-radius: 8px; padding: 16px; margin-bottom: 8px; border-left: 3px solid #f85149;">
-      <div style="color: #c9d1d9; font-size: 12px; font-family: monospace;">SELECT * FROM users LIMIT 100;</div>
-      <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Query 1: Fetch all users</div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; margin-bottom: 8px; border-left: 3px solid #f85149;">
+      <div style="color: #475569; font-size: 12px; font-family: monospace;">SELECT * FROM users LIMIT 100;</div>
+      <div style="color: #64748b; font-size: 11px; margin-top: 4px;">Query 1: Fetch all users</div>
     </div>
-    <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
-      <div style="color: #c9d1d9; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id = 1;</div>
-      <div style="color: #c9d1d9; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id = 2;</div>
-      <div style="color: #c9d1d9; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id = 3;</div>
-      <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">... repeated 100 times!</div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 3px solid #f85149;">
+      <div style="color: #475569; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id = 1;</div>
+      <div style="color: #475569; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id = 2;</div>
+      <div style="color: #475569; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id = 3;</div>
+      <div style="color: #64748b; font-size: 11px; margin-top: 4px;">... repeated 100 times!</div>
     </div>
   </div>
   <div style="flex: 1; min-width: 280px; max-width: 350px;">
     <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px; text-align: center;">GOOD: 2 Queries Total</div>
-    <div style="background: #21262d; border-radius: 8px; padding: 16px; margin-bottom: 8px; border-left: 3px solid #7ee787;">
-      <div style="color: #c9d1d9; font-size: 12px; font-family: monospace;">SELECT * FROM users LIMIT 100;</div>
-      <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Query 1: Fetch all users</div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; margin-bottom: 8px; border-left: 3px solid #7ee787;">
+      <div style="color: #475569; font-size: 12px; font-family: monospace;">SELECT * FROM users LIMIT 100;</div>
+      <div style="color: #64748b; font-size: 11px; margin-top: 4px;">Query 1: Fetch all users</div>
     </div>
-    <div style="background: #21262d; border-radius: 8px; padding: 16px; border-left: 3px solid #7ee787;">
-      <div style="color: #c9d1d9; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id IN (1,2,3,...,100);</div>
-      <div style="color: #8b949e; font-size: 11px; margin-top: 4px;">Query 2: Fetch ALL orders in one query</div>
+    <div style="background: #ffffff; border-radius: 8px; padding: 16px; border-left: 3px solid #7ee787;">
+      <div style="color: #475569; font-size: 12px; font-family: monospace;">SELECT * FROM orders WHERE user_id IN (1,2,3,...,100);</div>
+      <div style="color: #64748b; font-size: 11px; margin-top: 4px;">Query 2: Fetch ALL orders in one query</div>
     </div>
   </div>
 </div>
-<div style="text-align: center; margin-top: 20px; padding: 16px; background: #21262d; border-radius: 8px;">
+<div style="text-align: center; margin-top: 20px; padding: 16px; background: #ffffff; border-radius: 8px;">
   <span style="color: #f85149;">101 queries x 5ms = 505ms</span>
-  <span style="color: #8b949e; margin: 0 16px;">vs</span>
+  <span style="color: #64748b; margin: 0 16px;">vs</span>
   <span style="color: #7ee787;">2 queries x 5ms = 10ms</span>
-  <span style="color: #8b949e; margin-left: 16px;">(50x faster)</span>
+  <span style="color: #64748b; margin-left: 16px;">(50x faster)</span>
 </div>
 </div>
 
@@ -732,39 +732,39 @@ ON o.user_id = t.user_id;
 
 <span style="color:#22c55e; font-weight:bold;">Pagination</span> is essential for handling large result sets, but naive OFFSET-based pagination degrades as offset grows. Understanding pagination trade-offs is critical for APIs and data-heavy applications.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center;">PAGINATION STRATEGIES COMPARISON</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center;">PAGINATION STRATEGIES COMPARISON</h4>
 <div style="overflow-x: auto;">
-<table style="width: 100%; border-collapse: collapse; color: #c9d1d9; font-size: 13px;">
-<tr style="background: #21262d;">
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Strategy</th>
-<th style="padding: 12px; text-align: center; border-bottom: 2px solid #30363d; color: #58a6ff;">Performance</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Pros</th>
-<th style="padding: 12px; text-align: left; border-bottom: 2px solid #30363d; color: #58a6ff;">Cons</th>
+<table style="width: 100%; border-collapse: collapse; color: #475569; font-size: 13px;">
+<tr style="background: #ffffff;">
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Strategy</th>
+<th style="padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Performance</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Pros</th>
+<th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #1e40af;">Cons</th>
 </tr>
-<tr style="background: #161b22;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;"><span style="color: #f85149; font-weight: bold;">OFFSET/LIMIT</span></td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;"><span style="color: #f85149;">O(offset + limit)</span></td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Simple, random page access</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Slow for large offsets, inconsistent with concurrent writes</td>
+<tr style="background: #f1f5f9;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="color: #f85149; font-weight: bold;">OFFSET/LIMIT</span></td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"><span style="color: #f85149;">O(offset + limit)</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Simple, random page access</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Slow for large offsets, inconsistent with concurrent writes</td>
 </tr>
-<tr style="background: #21262d;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;"><span style="color: #7ee787; font-weight: bold;">Keyset/Cursor</span></td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;"><span style="color: #7ee787;">O(log n + limit)</span></td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Constant time, stable pagination</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">No random page access, complex for multi-column sort</td>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="color: #7ee787; font-weight: bold;">Keyset/Cursor</span></td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"><span style="color: #7ee787;">O(log n + limit)</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Constant time, stable pagination</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">No random page access, complex for multi-column sort</td>
 </tr>
-<tr style="background: #161b22;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;"><span style="color: #58a6ff; font-weight: bold;">Seek Method</span></td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;"><span style="color: #7ee787;">O(log n + limit)</span></td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Handles ties, multi-column keys</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Requires unique tiebreaker column</td>
+<tr style="background: #f1f5f9;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="color: #1e40af; font-weight: bold;">Seek Method</span></td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"><span style="color: #7ee787;">O(log n + limit)</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Handles ties, multi-column keys</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Requires unique tiebreaker column</td>
 </tr>
-<tr style="background: #21262d;">
-<td style="padding: 12px; border-bottom: 1px solid #30363d;"><span style="color: #a371f7; font-weight: bold;">Deferred Join</span></td>
-<td style="padding: 12px; text-align: center; border-bottom: 1px solid #30363d;"><span style="color: #f0883e;">O(offset) on index only</span></td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Works with OFFSET, faster than naive</td>
-<td style="padding: 12px; border-bottom: 1px solid #30363d;">Still linear, requires covering index</td>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><span style="color: #a371f7; font-weight: bold;">Deferred Join</span></td>
+<td style="padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0;"><span style="color: #f0883e;">O(offset) on index only</span></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Works with OFFSET, faster than naive</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Still linear, requires covering index</td>
 </tr>
 </table>
 </div>
@@ -772,22 +772,22 @@ ON o.user_id = t.user_id;
 
 ### OFFSET/LIMIT Problem
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
 <h4 style="color: #f85149; margin: 0 0 16px 0;">Why OFFSET Gets Slower</h4>
 <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-<div style="flex: 1; min-width: 280px; background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="flex: 1; min-width: 280px; background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-size: 14px; font-weight: bold; margin-bottom: 8px;">Page 1: OFFSET 0</div>
-<div style="font-family: monospace; font-size: 12px; color: #8b949e;">Scan 20 rows, return 20</div>
+<div style="font-family: monospace; font-size: 12px; color: #64748b;">Scan 20 rows, return 20</div>
 <div style="color: #7ee787; font-size: 12px;">Time: 2ms</div>
 </div>
-<div style="flex: 1; min-width: 280px; background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="flex: 1; min-width: 280px; background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #f0883e; font-size: 14px; font-weight: bold; margin-bottom: 8px;">Page 500: OFFSET 10000</div>
-<div style="font-family: monospace; font-size: 12px; color: #8b949e;">Scan 10020 rows, discard 10000, return 20</div>
+<div style="font-family: monospace; font-size: 12px; color: #64748b;">Scan 10020 rows, discard 10000, return 20</div>
 <div style="color: #f0883e; font-size: 12px;">Time: 150ms</div>
 </div>
-<div style="flex: 1; min-width: 280px; background: #21262d; border-radius: 8px; padding: 16px;">
+<div style="flex: 1; min-width: 280px; background: #ffffff; border-radius: 8px; padding: 16px;">
 <div style="color: #f85149; font-size: 14px; font-weight: bold; margin-bottom: 8px;">Page 5000: OFFSET 100000</div>
-<div style="font-family: monospace; font-size: 12px; color: #8b949e;">Scan 100020 rows, discard 100000, return 20</div>
+<div style="font-family: monospace; font-size: 12px; color: #64748b;">Scan 100020 rows, discard 100000, return 20</div>
 <div style="color: #f85149; font-size: 12px;">Time: 1500ms</div>
 </div>
 </div>
@@ -1093,17 +1093,17 @@ See [[Connection Pooling]](/topics/system-design/connection-pooling) for managin
 
 ### Covering Indexes (Index-Only Scans)
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 16px 0;">Covering Index Explained</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 16px 0;">Covering Index Explained</h4>
 <div style="display: flex; flex-wrap: wrap; gap: 16px;">
 <div style="flex: 1; min-width: 280px;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 8px;">Regular Index Scan</div>
 <div style="display: flex; flex-direction: column; gap: 8px;">
-<div style="background: #21262d; padding: 12px; border-radius: 6px; font-size: 12px;">1. Scan index (find row pointers)</div>
-<div style="text-align: center; color: #58a6ff;">|</div>
-<div style="background: #21262d; padding: 12px; border-radius: 6px; font-size: 12px;">2. Heap fetch (read full row from disk)</div>
-<div style="text-align: center; color: #58a6ff;">|</div>
-<div style="background: #21262d; padding: 12px; border-radius: 6px; font-size: 12px;">3. Return columns</div>
+<div style="background: #ffffff; padding: 12px; border-radius: 6px; font-size: 12px;">1. Scan index (find row pointers)</div>
+<div style="text-align: center; color: #1e40af;">|</div>
+<div style="background: #ffffff; padding: 12px; border-radius: 6px; font-size: 12px;">2. Heap fetch (read full row from disk)</div>
+<div style="text-align: center; color: #1e40af;">|</div>
+<div style="background: #ffffff; padding: 12px; border-radius: 6px; font-size: 12px;">3. Return columns</div>
 </div>
 <div style="color: #f85149; font-size: 12px; margin-top: 8px;">Random I/O to table</div>
 </div>
@@ -1111,7 +1111,7 @@ See [[Connection Pooling]](/topics/system-design/connection-pooling) for managin
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 8px;">Index-Only Scan</div>
 <div style="display: flex; flex-direction: column; gap: 8px;">
 <div style="background: #238636; padding: 12px; border-radius: 6px; font-size: 12px; color: #fff;">1. Scan index (all data in index)</div>
-<div style="text-align: center; color: #58a6ff;">|</div>
+<div style="text-align: center; color: #1e40af;">|</div>
 <div style="background: #238636; padding: 12px; border-radius: 6px; font-size: 12px; color: #fff;">2. Return columns directly</div>
 </div>
 <div style="color: #7ee787; font-size: 12px; margin-top: 8px;">No table access needed!</div>
@@ -1319,32 +1319,32 @@ ORDER BY time DESC;
 
 ### Key Metrics to Track
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0;">Database Health Indicators</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0;">Database Health Indicators</h4>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #7ee787; font-size: 24px; font-weight: bold;">< 50ms</div>
-<div style="color: #8b949e; font-size: 12px;">P95 Query Latency</div>
+<div style="color: #64748b; font-size: 12px;">P95 Query Latency</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #7ee787; font-size: 24px; font-weight: bold;">> 99%</div>
-<div style="color: #8b949e; font-size: 12px;">Buffer Cache Hit Ratio</div>
+<div style="color: #64748b; font-size: 12px;">Buffer Cache Hit Ratio</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #f0883e; font-size: 24px; font-weight: bold;">< 20%</div>
-<div style="color: #8b949e; font-size: 12px;">Table Bloat</div>
+<div style="color: #64748b; font-size: 12px;">Table Bloat</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #f85149; font-size: 24px; font-weight: bold;">0</div>
-<div style="color: #8b949e; font-size: 12px;">Lock Wait Timeouts</div>
+<div style="color: #64748b; font-size: 12px;">Lock Wait Timeouts</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
-<div style="color: #58a6ff; font-size: 24px; font-weight: bold;">< 80%</div>
-<div style="color: #8b949e; font-size: 12px;">Connection Pool Usage</div>
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="color: #1e40af; font-size: 24px; font-weight: bold;">< 80%</div>
+<div style="color: #64748b; font-size: 12px;">Connection Pool Usage</div>
 </div>
-<div style="background: #21262d; border-radius: 8px; padding: 16px; text-align: center;">
+<div style="background: #ffffff; border-radius: 8px; padding: 16px; text-align: center;">
 <div style="color: #a371f7; font-size: 24px; font-weight: bold;">> 1</div>
-<div style="color: #8b949e; font-size: 12px;">Index Scans per Seq Scan</div>
+<div style="color: #64748b; font-size: 12px;">Index Scans per Seq Scan</div>
 </div>
 </div>
 </div>
@@ -1353,12 +1353,12 @@ ORDER BY time DESC;
 
 ## Quick Reference
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; text-align: center;">Query Optimization Checklist</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center;">Query Optimization Checklist</h4>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
 <div>
 <div style="color: #7ee787; font-weight: bold; margin-bottom: 12px;">DO</div>
-<ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px; line-height: 1.8;">
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px; line-height: 1.8;">
 <li>Run EXPLAIN ANALYZE on slow queries</li>
 <li>Index columns used in WHERE, JOIN, ORDER BY</li>
 <li>Select only needed columns</li>
@@ -1373,7 +1373,7 @@ ORDER BY time DESC;
 </div>
 <div>
 <div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">AVOID</div>
-<ul style="margin: 0; padding-left: 20px; color: #c9d1d9; font-size: 13px; line-height: 1.8;">
+<ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 13px; line-height: 1.8;">
 <li>SELECT * in production code</li>
 <li>Functions on indexed columns in WHERE</li>
 <li>Leading wildcards in LIKE patterns</li>

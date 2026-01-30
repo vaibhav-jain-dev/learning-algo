@@ -2,11 +2,11 @@
 
 ## Overview
 
-An LRU (Least Recently Used) Cache is a bounded data structure that maintains a fixed number of entries, automatically evicting the least recently accessed item when capacity is exceeded. <span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">The fundamental insight is combining a HashMap for O(1) key lookups with a Doubly Linked List for O(1) recency tracking, achieving constant-time operations for both `get` and `put`.</span>
+An LRU (Least Recently Used) Cache is a bounded data structure that maintains a fixed number of entries, automatically evicting the least recently accessed item when capacity is exceeded. <span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">The fundamental insight is combining a HashMap for O(1) key lookups with a Doubly Linked List for O(1) recency tracking, achieving constant-time operations for both `get` and `put`.</span>
 
 This is among the most frequently asked machine coding problems because it tests the candidate's ability to compose data structures, understand pointer manipulation, and reason about time-space trade-offs under constraints.
 
-<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
+<div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
   <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">Interview Frequency</div>
   <div style="color: #78350f; font-size: 14px;">LeetCode #146. Asked at Amazon (weekly), Google, Meta, Microsoft, Netflix, Uber, and virtually every major tech company. Often the first question in machine coding rounds.</div>
 </div>
@@ -39,11 +39,11 @@ This is among the most frequently asked machine coding problems because it tests
 
 ## Requirements Gathering
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">Always clarify requirements before coding. Interviewers intentionally leave specifications ambiguous to test your requirement-gathering skills.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Always clarify requirements before coding. Interviewers intentionally leave specifications ambiguous to test your requirement-gathering skills.</span>
 
 ### Questions to Ask the Interviewer
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
     <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
       <div style="color: #059669; font-weight: 600; font-size: 14px; margin-bottom: 12px; border-bottom: 2px solid #10b981; padding-bottom: 8px;">Functional Requirements</div>
@@ -72,7 +72,7 @@ This is among the most frequently asked machine coding problems because it tests
 
 ### Interview Questions: Requirements
 
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
   <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why is requirements gathering important for LRU Cache?</div>
   <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">It determines API design, thread-safety needs, and whether simple LRU suffices or if variants (LRU-K, ARC, LIRS) are needed.</div>
 
@@ -93,9 +93,9 @@ This is among the most frequently asked machine coding problems because it tests
 
 ### The HashMap + Doubly Linked List Synergy
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">The key architectural insight: HashMap provides O(1) lookup by key, while the doubly linked list maintains access order with O(1) insertion, deletion, and reordering when we have a direct node reference.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">The key architectural insight: HashMap provides O(1) lookup by key, while the doubly linked list maintains access order with O(1) insertion, deletion, and reordering when we have a direct node reference.</span>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center; font-size: 16px;">LRU Cache Internal Architecture</h4>
 
   <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -159,7 +159,7 @@ This is among the most frequently asked machine coding problems because it tests
 
 ### Why Doubly Linked List (Not Singly)?
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">To remove a node from a singly linked list, you need its predecessor. Finding the predecessor requires O(n) traversal. With a doubly linked list, the predecessor is directly accessible via `node.prev`, enabling O(1) removal.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">To remove a node from a singly linked list, you need its predecessor. Finding the predecessor requires O(n) traversal. With a doubly linked list, the predecessor is directly accessible via `node.prev`, enabling O(1) removal.</span>
 
 | Operation | Singly Linked | Doubly Linked |
 |-----------|--------------|---------------|
@@ -194,7 +194,7 @@ def remove(node):
 
 ### Class Structure
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
     <div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; min-width: 200px; overflow: hidden;">
       <div style="background: #3b82f6; color: white; padding: 10px; text-align: center; font-weight: 600; font-size: 14px;">Node</div>
@@ -244,7 +244,7 @@ def remove(node):
 
 ### Interview Questions: Architecture
 
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
   <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why can't we use just a HashMap for LRU Cache?</div>
   <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">HashMap provides O(1) lookup but has no inherent ordering. We need to track access recency, which requires a separate ordered structure. HashMap iteration order is either undefined or insertion-order (LinkedHashMap), not access-order.</div>
 
@@ -356,7 +356,7 @@ def remove(node):
 
 ### Pointer Update Sequence (Critical)
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">The order of pointer updates matters! Updating in the wrong order can lose references.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">The order of pointer updates matters! Updating in the wrong order can lose references.</span>
 
 ```python
 # CORRECT: Insert node after head
@@ -378,7 +378,7 @@ def add_to_front_WRONG(self, node):
 
 ### Interview Questions: O(1) Operations
 
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
   <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Walk me through what happens internally when we call get(key) on an existing key.</div>
   <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">HashMap lookup returns node pointer (O(1)). Node is unlinked from current position by making its neighbors point to each other (O(1)). Node is then inserted right after head sentinel by updating 4 pointers (O(1)). Finally, return node.value.</div>
 
@@ -883,7 +883,7 @@ func (c *Cache[K, V]) Delete(key K) bool {
 
 ### The Challenge
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU Cache operations appear to be simple reads (get) and writes (put), but get actually MUTATES the data structure by updating access order. This makes thread-safe implementation non-trivial.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU Cache operations appear to be simple reads (get) and writes (put), but get actually MUTATES the data structure by updating access order. This makes thread-safe implementation non-trivial.</span>
 
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 20px; margin: 20px 0;">
   <div style="font-weight: 600; color: #991b1b; font-size: 15px; margin-bottom: 12px;">Race Condition Example</div>
@@ -921,7 +921,7 @@ func (c *Cache[K, V]) Delete(key K) bool {
 
 ### Synchronization Strategies
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
     <div style="background: #ffffff; border: 2px solid #f59e0b; border-radius: 8px; overflow: hidden;">
@@ -991,11 +991,11 @@ func (c *Cache[K, V]) Delete(key K) bool {
 - Each segment has its own LRU order
 - Global LRU is approximated, not exact
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">In interviews, implement simple global lock first, then discuss trade-offs. Mentioning Caffeine/Guava shows production awareness.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">In interviews, implement simple global lock first, then discuss trade-offs. Mentioning Caffeine/Guava shows production awareness.</span>
 
 ### Interview Questions: Thread Safety
 
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
   <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: Why does get() need a write lock in thread-safe LRU Cache?</div>
   <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">Because get() modifies the data structure by moving the accessed node to the front of the list. This is a write operation on the linked list, even though it appears to be a "read" from the caller's perspective.</div>
 
@@ -1014,9 +1014,9 @@ func (c *Cache[K, V]) Delete(key K) bool {
 
 ## Cache Eviction Policies Comparison
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU is just one eviction policy. Understanding alternatives shows depth and helps choose the right tool for specific workloads.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">LRU is just one eviction policy. Understanding alternatives shows depth and helps choose the right tool for specific workloads.</span>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
     <thead>
       <tr style="background: #e2e8f0;">
@@ -1106,7 +1106,7 @@ See [[LFU Cache]](/topic/machine-coding/lfu-cache) for detailed implementation. 
 
 ### Interview Questions: Eviction Policies
 
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
   <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: When would LFU be better than LRU?</div>
   <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">When access patterns have clear frequency differences. Example: A popular API endpoint called 1000x/sec should stay cached even if a batch job scans through rarely-accessed data. LRU would evict the popular endpoint; LFU keeps it.</div>
 
@@ -1125,11 +1125,11 @@ See [[LFU Cache]](/topic/machine-coding/lfu-cache) for detailed implementation. 
 
 ## Distributed Caching
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">Scaling LRU Cache beyond a single machine introduces fundamental distributed systems challenges: consistency, partition tolerance, and coordination overhead.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Scaling LRU Cache beyond a single machine introduces fundamental distributed systems challenges: consistency, partition tolerance, and coordination overhead.</span>
 
 ### Architecture Patterns
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
     <div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; overflow: hidden;">
@@ -1193,7 +1193,7 @@ See [[LFU Cache]](/topic/machine-coding/lfu-cache) for detailed implementation. 
 
 ### Consistent Hashing for Sharding
 
-<span style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); padding: 2px 6px; border-radius: 4px; font-weight: 500;">Consistent hashing minimizes key redistribution when nodes are added/removed. Instead of rehashing all keys, only keys in the affected range move.</span>
+<span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500;">Consistent hashing minimizes key redistribution when nodes are added/removed. Instead of rehashing all keys, only keys in the affected range move.</span>
 
 See [[Consistent Hashing]](/topic/system-design/consistent-hashing) for detailed explanation.
 
@@ -1204,7 +1204,7 @@ Key insight for LRU: Each shard maintains its own LRU order independently. There
 
 ### Cache Invalidation
 
-<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
+<div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
   <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">"There are only two hard things in Computer Science: cache invalidation and naming things." - Phil Karlton</div>
 </div>
 
@@ -1238,7 +1238,7 @@ Key insight for LRU: Each shard maintains its own LRU order independently. There
 
 ### Interview Questions: Distributed Caching
 
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
+<div style="background: #faf5ff; border: 1px solid #d8b4fe; border-radius: 8px; padding: 16px; margin: 16px 0;">
   <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px;">L1: How would you distribute an LRU cache across multiple servers?</div>
   <div style="color: #581c87; font-size: 13px; margin-bottom: 12px;">Use consistent hashing to partition keys across nodes. Each node maintains its own LRU cache for its assigned keys. Clients hash the key to determine which node to contact. This scales capacity linearly with nodes.</div>
 
@@ -1358,7 +1358,7 @@ def test_edge_cases():
 
 ### 45-Minute Timeline
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <div style="display: flex; flex-direction: column; gap: 12px;">
 
     <div style="display: flex; align-items: center; gap: 12px;">
@@ -1426,7 +1426,7 @@ def test_edge_cases():
 
 ## Time and Space Complexity
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
     <thead>
       <tr style="background: #e2e8f0;">

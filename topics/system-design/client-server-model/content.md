@@ -4,16 +4,16 @@
 
 The <span style="color: #22c55e; font-weight: 600;">Client-Server Model</span> is the foundational architecture pattern for distributed computing. It divides computing tasks between <span style="color: #22c55e; font-weight: 600;">service providers (servers)</span> that host resources and <span style="color: #22c55e; font-weight: 600;">service requesters (clients)</span> that consume them. This simple yet powerful paradigm underpins virtually every internet application from web browsing to mobile apps to IoT devices.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 32px; margin: 24px 0; color: white;">
-<h4 style="color: #60a5fa; margin-top: 0;">Why This Matters in Interviews</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-<div>
-<div style="color: #94a3b8; font-size: 13px; margin-bottom: 8px;">Surface-level answer:</div>
-<div style="color: #f1f5f9; font-size: 14px;">"Client sends requests, server responds"</div>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #3b82f6;">
+<h4 style="color: #1e40af; margin-top: 0;">Why This Matters in Interviews</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 24px;">
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #475569; font-size: 13px; margin-bottom: 8px;">Surface-level answer:</div>
+<div style="color: #1e293b; font-size: 14px;">"Client sends requests, server responds"</div>
 </div>
-<div>
-<div style="color: #94a3b8; font-size: 13px; margin-bottom: 8px;">Interview-winning answer:</div>
-<div style="color: #f1f5f9; font-size: 14px;">"Understanding the trade-offs between REST's statelessness enabling horizontal scaling versus WebSocket's persistent connections for real-time features, and when to use SSE for unidirectional server push"</div>
+<div style="flex: 1; min-width: 200px;">
+<div style="color: #475569; font-size: 13px; margin-bottom: 8px;">Interview-winning answer:</div>
+<div style="color: #1e293b; font-size: 14px;">"Understanding the trade-offs between REST's statelessness enabling horizontal scaling versus WebSocket's persistent connections for real-time features, and when to use SSE for unidirectional server push"</div>
 </div>
 </div>
 </div>

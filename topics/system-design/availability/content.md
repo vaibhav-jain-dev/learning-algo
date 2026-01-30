@@ -6,24 +6,24 @@ Availability measures the percentage of time a system is operational and accessi
 
 Think of availability like a store's operating hours, but instead of closing at night, we aim to be open 24/7/365. The challenge is that unlike a store, software systems have countless components that can fail - servers, networks, databases, and code itself.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Availability Equations</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Core Availability Equations</h4>
   <div style="display: grid; gap: 16px;">
-    <div style="font-family: 'Courier New', monospace; font-size: 15px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
-      <strong>Availability = Uptime / (Uptime + Downtime) x 100%</strong>
+    <div style="font-family: 'Courier New', monospace; font-size: 15px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #3b82f6;">
+      <strong style="color: #1e293b;">Availability = Uptime / (Uptime + Downtime) x 100%</strong>
     </div>
-    <div style="font-family: 'Courier New', monospace; font-size: 15px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
-      <strong>Availability = MTBF / (MTBF + MTTR)</strong>
+    <div style="font-family: 'Courier New', monospace; font-size: 15px; background: #eff6ff; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #3b82f6;">
+      <strong style="color: #1e293b;">Availability = MTBF / (MTBF + MTTR)</strong>
     </div>
   </div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
-    <div style="background: rgba(34, 197, 94, 0.2); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.4);">
-      <strong style="color: #86efac;">MTBF (Mean Time Between Failures)</strong>
-      <p style="color: #bbf7d0; margin: 4px 0 0 0; font-size: 13px;">Average time system operates without failure</p>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; flex-wrap: wrap;">
+    <div style="background: #f0fdf4; padding: 12px 16px; border-radius: 8px; border: 2px solid #22c55e;">
+      <strong style="color: #166534;">MTBF (Mean Time Between Failures)</strong>
+      <p style="color: #15803d; margin: 4px 0 0 0; font-size: 13px;">Average time system operates without failure</p>
     </div>
-    <div style="background: rgba(239, 68, 68, 0.2); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4);">
-      <strong style="color: #fca5a5;">MTTR (Mean Time To Recovery)</strong>
-      <p style="color: #fecaca; margin: 4px 0 0 0; font-size: 13px;">Average time to restore service after failure</p>
+    <div style="background: #fef2f2; padding: 12px 16px; border-radius: 8px; border: 2px solid #ef4444;">
+      <strong style="color: #991b1b;">MTTR (Mean Time To Recovery)</strong>
+      <p style="color: #dc2626; margin: 4px 0 0 0; font-size: 13px;">Average time to restore service after failure</p>
     </div>
   </div>
 </div>
@@ -43,12 +43,12 @@ The "nines" notation provides a standardized way to express availability targets
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
   <h4 style="color: #1e293b; margin-top: 0;">Availability Levels Explained</h4>
   <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-    <tr style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
-      <th style="padding: 14px; text-align: left; color: white; border-bottom: 2px solid #e2e8f0;">Availability</th>
-      <th style="padding: 14px; text-align: center; color: white; border-bottom: 2px solid #e2e8f0;">Nines</th>
-      <th style="padding: 14px; text-align: center; color: white; border-bottom: 2px solid #e2e8f0;">Downtime/Year</th>
-      <th style="padding: 14px; text-align: center; color: white; border-bottom: 2px solid #e2e8f0;">Downtime/Month</th>
-      <th style="padding: 14px; text-align: left; color: white; border-bottom: 2px solid #e2e8f0;">Requirements</th>
+    <tr style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+      <th style="padding: 14px; text-align: left; color: #1e293b; border-bottom: 2px solid #3b82f6;">Availability</th>
+      <th style="padding: 14px; text-align: center; color: #1e293b; border-bottom: 2px solid #3b82f6;">Nines</th>
+      <th style="padding: 14px; text-align: center; color: #1e293b; border-bottom: 2px solid #3b82f6;">Downtime/Year</th>
+      <th style="padding: 14px; text-align: center; color: #1e293b; border-bottom: 2px solid #3b82f6;">Downtime/Month</th>
+      <th style="padding: 14px; text-align: left; color: #1e293b; border-bottom: 2px solid #3b82f6;">Requirements</th>
     </tr>
     <tr style="border-bottom: 1px solid #e2e8f0;">
       <td style="padding: 14px; color: #475569;">99%</td>
@@ -166,30 +166,30 @@ The "nines" notation provides a standardized way to express availability targets
 
 <span style="color: #22c55e; font-weight: 600;">MTBF (Mean Time Between Failures)</span> and <span style="color: #22c55e; font-weight: 600;">MTTR (Mean Time To Recovery)</span> are the two fundamental levers for improving availability. Understanding their relationship is crucial for making informed architecture decisions.
 
-<div style="background: linear-gradient(135deg, #059669 0%, #34d399 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: white; font-size: 18px;">MTBF vs MTTR Trade-offs</h4>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
-    <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
-      <strong style="color: white; font-size: 16px;">Increase MTBF (Prevent Failures)</strong>
-      <ul style="color: #a7f3d0; margin: 12px 0 0 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #22c55e;">
+  <h4 style="margin-top: 0; color: #166534; font-size: 18px;">MTBF vs MTTR Trade-offs</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; flex-wrap: wrap;">
+    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #22c55e;">
+      <strong style="color: #166534; font-size: 16px;">Increase MTBF (Prevent Failures)</strong>
+      <ul style="color: #475569; margin: 12px 0 0 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
         <li>Higher quality hardware</li>
         <li>Extensive testing</li>
         <li>Code reviews</li>
         <li>Gradual rollouts</li>
         <li>Redundant components</li>
       </ul>
-      <p style="color: #bbf7d0; margin: 12px 0 0 0; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 12px;"><strong>Cost:</strong> High upfront investment, diminishing returns</p>
+      <p style="color: #15803d; margin: 12px 0 0 0; font-size: 13px; border-top: 1px solid #86efac; padding-top: 12px;"><strong>Cost:</strong> High upfront investment, diminishing returns</p>
     </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
-      <strong style="color: white; font-size: 16px;">Decrease MTTR (Recover Faster)</strong>
-      <ul style="color: #a7f3d0; margin: 12px 0 0 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #22c55e;">
+      <strong style="color: #166534; font-size: 16px;">Decrease MTTR (Recover Faster)</strong>
+      <ul style="color: #475569; margin: 12px 0 0 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
         <li>Automated monitoring</li>
         <li>Fast rollback mechanisms</li>
         <li>Runbooks and playbooks</li>
         <li>Auto-scaling/healing</li>
         <li>Chaos engineering practice</li>
       </ul>
-      <p style="color: #bbf7d0; margin: 12px 0 0 0; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 12px;"><strong>Cost:</strong> Ongoing operational investment, high leverage</p>
+      <p style="color: #15803d; margin: 12px 0 0 0; font-size: 13px; border-top: 1px solid #86efac; padding-top: 12px;"><strong>Cost:</strong> Ongoing operational investment, high leverage</p>
     </div>
   </div>
 </div>
@@ -957,48 +957,48 @@ class FailoverManager:
 
 ### Multi-Region Active-Active Architecture
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Global Active-Active Deployment</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Global Active-Active Deployment</h4>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
-    <div style="background: rgba(34, 197, 94, 0.2); padding: 20px; border-radius: 12px; border: 2px solid rgba(34, 197, 94, 0.5);">
-      <strong style="color: #86efac; font-size: 14px;">US-EAST</strong>
-      <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-top: 12px;">
-        <div style="color: #a7f3d0; font-size: 13px;">App Servers: 10</div>
-        <div style="color: #a7f3d0; font-size: 13px;">DB: Primary (writes)</div>
-        <div style="color: #a7f3d0; font-size: 13px;">Cache: Local</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 20px; justify-content: center;">
+    <div style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 2px solid #22c55e; min-width: 180px; flex: 1;">
+      <strong style="color: #166534; font-size: 14px;">US-EAST</strong>
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 12px; border: 1px solid #86efac;">
+        <div style="color: #15803d; font-size: 13px;">App Servers: 10</div>
+        <div style="color: #15803d; font-size: 13px;">DB: Primary (writes)</div>
+        <div style="color: #15803d; font-size: 13px;">Cache: Local</div>
       </div>
     </div>
-    <div style="background: rgba(34, 197, 94, 0.2); padding: 20px; border-radius: 12px; border: 2px solid rgba(34, 197, 94, 0.5);">
-      <strong style="color: #86efac; font-size: 14px;">EU-WEST</strong>
-      <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-top: 12px;">
-        <div style="color: #a7f3d0; font-size: 13px;">App Servers: 8</div>
-        <div style="color: #a7f3d0; font-size: 13px;">DB: Replica (reads)</div>
-        <div style="color: #a7f3d0; font-size: 13px;">Cache: Local</div>
+    <div style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 2px solid #22c55e; min-width: 180px; flex: 1;">
+      <strong style="color: #166534; font-size: 14px;">EU-WEST</strong>
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 12px; border: 1px solid #86efac;">
+        <div style="color: #15803d; font-size: 13px;">App Servers: 8</div>
+        <div style="color: #15803d; font-size: 13px;">DB: Replica (reads)</div>
+        <div style="color: #15803d; font-size: 13px;">Cache: Local</div>
       </div>
     </div>
-    <div style="background: rgba(34, 197, 94, 0.2); padding: 20px; border-radius: 12px; border: 2px solid rgba(34, 197, 94, 0.5);">
-      <strong style="color: #86efac; font-size: 14px;">AP-SOUTH</strong>
-      <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-top: 12px;">
-        <div style="color: #a7f3d0; font-size: 13px;">App Servers: 6</div>
-        <div style="color: #a7f3d0; font-size: 13px;">DB: Replica (reads)</div>
-        <div style="color: #a7f3d0; font-size: 13px;">Cache: Local</div>
+    <div style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 2px solid #22c55e; min-width: 180px; flex: 1;">
+      <strong style="color: #166534; font-size: 14px;">AP-SOUTH</strong>
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-top: 12px; border: 1px solid #86efac;">
+        <div style="color: #15803d; font-size: 13px;">App Servers: 6</div>
+        <div style="color: #15803d; font-size: 13px;">DB: Replica (reads)</div>
+        <div style="color: #15803d; font-size: 13px;">Cache: Local</div>
       </div>
     </div>
   </div>
 
-  <div style="display: flex; justify-content: center; gap: 32px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; margin-top: 20px; padding-top: 20px; border-top: 2px solid #cbd5e1;">
     <div style="text-align: center;">
-      <div style="color: #fbbf24; font-size: 24px; font-weight: bold;">50ms</div>
-      <div style="color: #94a3b8; font-size: 12px;">Cross-region latency</div>
+      <div style="color: #f97316; font-size: 24px; font-weight: bold;">50ms</div>
+      <div style="color: #475569; font-size: 12px;">Cross-region latency</div>
     </div>
     <div style="text-align: center;">
-      <div style="color: #fbbf24; font-size: 24px; font-weight: bold;">&lt;5s</div>
-      <div style="color: #94a3b8; font-size: 12px;">Replication lag</div>
+      <div style="color: #f97316; font-size: 24px; font-weight: bold;">&lt;5s</div>
+      <div style="color: #475569; font-size: 12px;">Replication lag</div>
     </div>
     <div style="text-align: center;">
-      <div style="color: #fbbf24; font-size: 24px; font-weight: bold;">99.99%</div>
-      <div style="color: #94a3b8; font-size: 12px;">Target availability</div>
+      <div style="color: #f97316; font-size: 24px; font-weight: bold;">99.99%</div>
+      <div style="color: #475569; font-size: 12px;">Target availability</div>
     </div>
   </div>
 </div>
@@ -1350,34 +1350,34 @@ class GeoRoutingManager:
 
 ### Deep Mechanics
 
-<div style="background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: white; font-size: 18px;">The Availability Measurement Hierarchy</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #3b82f6;">
+  <h4 style="margin-top: 0; color: #1e40af; font-size: 18px;">The Availability Measurement Hierarchy</h4>
   <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
-    <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; display: flex; gap: 20px; align-items: center;">
-      <div style="background: #1e40af; padding: 12px 20px; border-radius: 8px; min-width: 80px; text-align: center;">
+    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; border: 1px solid #93c5fd;">
+      <div style="background: #3b82f6; padding: 12px 20px; border-radius: 8px; min-width: 80px; text-align: center; color: white;">
         <strong style="font-size: 18px;">SLI</strong>
       </div>
-      <div>
-        <strong style="color: white;">Service Level Indicator - What you MEASURE</strong>
-        <p style="color: #bae6fd; margin: 8px 0 0 0; font-size: 14px;">Quantitative metrics: request latency (P99 < 200ms), error rate (< 0.1%), availability (> 99.9%)</p>
+      <div style="flex: 1; min-width: 200px;">
+        <strong style="color: #1e40af;">Service Level Indicator - What you MEASURE</strong>
+        <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Quantitative metrics: request latency (P99 < 200ms), error rate (< 0.1%), availability (> 99.9%)</p>
       </div>
     </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; display: flex; gap: 20px; align-items: center;">
-      <div style="background: #7c3aed; padding: 12px 20px; border-radius: 8px; min-width: 80px; text-align: center;">
+    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; border: 1px solid #c4b5fd;">
+      <div style="background: #7c3aed; padding: 12px 20px; border-radius: 8px; min-width: 80px; text-align: center; color: white;">
         <strong style="font-size: 18px;">SLO</strong>
       </div>
-      <div>
-        <strong style="color: white;">Service Level Objective - What you TARGET</strong>
-        <p style="color: #bae6fd; margin: 8px 0 0 0; font-size: 14px;">Internal goals for each SLI. Set stricter than SLA to provide buffer. "P99 latency < 150ms"</p>
+      <div style="flex: 1; min-width: 200px;">
+        <strong style="color: #5b21b6;">Service Level Objective - What you TARGET</strong>
+        <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Internal goals for each SLI. Set stricter than SLA to provide buffer. "P99 latency < 150ms"</p>
       </div>
     </div>
-    <div style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 12px; display: flex; gap: 20px; align-items: center;">
-      <div style="background: #dc2626; padding: 12px 20px; border-radius: 8px; min-width: 80px; text-align: center;">
+    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; border: 1px solid #fecaca;">
+      <div style="background: #dc2626; padding: 12px 20px; border-radius: 8px; min-width: 80px; text-align: center; color: white;">
         <strong style="font-size: 18px;">SLA</strong>
       </div>
-      <div>
-        <strong style="color: white;">Service Level Agreement - What you PROMISE</strong>
-        <p style="color: #bae6fd; margin: 8px 0 0 0; font-size: 14px;">Legal contract with customers including penalties. "99.9% uptime or service credits"</p>
+      <div style="flex: 1; min-width: 200px;">
+        <strong style="color: #991b1b;">Service Level Agreement - What you PROMISE</strong>
+        <p style="color: #475569; margin: 8px 0 0 0; font-size: 14px;">Legal contract with customers including penalties. "99.9% uptime or service credits"</p>
       </div>
     </div>
   </div>
@@ -1443,27 +1443,27 @@ class GeoRoutingManager:
 
 ### The AWS S3 Outage (February 28, 2017)
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #fbbf24; font-size: 18px;">The Day the Internet Broke</h4>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0; border: 2px solid #cbd5e1;">
+  <h4 style="margin-top: 0; color: #f97316; font-size: 18px;">The Day the Internet Broke</h4>
 
-  <p style="color: #cbd5e1; line-height: 1.7;">On February 28, 2017, a large portion of the internet went down because Amazon S3 in US-EAST-1 became unavailable for nearly 4 hours. This single outage affected thousands of websites and services globally.</p>
+  <p style="color: #475569; line-height: 1.7;">On February 28, 2017, a large portion of the internet went down because Amazon S3 in US-EAST-1 became unavailable for nearly 4 hours. This single outage affected thousands of websites and services globally.</p>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-    <div>
-      <h5 style="color: #f87171; margin-bottom: 12px;">What Went Wrong</h5>
-      <ol style="color: #e2e8f0; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+    <div style="flex: 1; min-width: 250px;">
+      <h5 style="color: #dc2626; margin-bottom: 12px;">What Went Wrong</h5>
+      <ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
         <li>Engineer debugging billing system slowdown</li>
         <li>Ran command to remove small set of servers</li>
-        <li><strong style="color: #fbbf24;">Typo removed far more servers than intended</strong></li>
+        <li><strong style="color: #f97316;">Typo removed far more servers than intended</strong></li>
         <li>Removed servers were S3's index subsystem</li>
         <li>S3 couldn't locate any stored data</li>
         <li>Cascading failures across dependent services</li>
         <li>AWS's own status dashboard went down (it used S3)</li>
       </ol>
     </div>
-    <div>
-      <h5 style="color: #34d399; margin-bottom: 12px;">Root Causes</h5>
-      <ul style="color: #e2e8f0; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
+    <div style="flex: 1; min-width: 250px;">
+      <h5 style="color: #22c55e; margin-bottom: 12px;">Root Causes</h5>
+      <ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.8;">
         <li>No safeguards on destructive commands</li>
         <li>Single region dependency for critical systems</li>
         <li>Monitoring depended on monitored system</li>
@@ -1473,9 +1473,9 @@ class GeoRoutingManager:
     </div>
   </div>
 
-  <div style="background: rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 16px; margin-top: 20px; border: 1px solid rgba(239, 68, 68, 0.3);">
-    <strong style="color: #fca5a5;">The Irony:</strong>
-    <span style="color: #fecaca;"> Customers couldn't even check if AWS was having issues because the AWS status dashboard was hosted on S3. This violates the principle that monitoring systems should be independent of the systems they monitor.</span>
+  <div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 20px; border: 2px solid #ef4444;">
+    <strong style="color: #dc2626;">The Irony:</strong>
+    <span style="color: #7f1d1d;"> Customers couldn't even check if AWS was having issues because the AWS status dashboard was hosted on S3. This violates the principle that monitoring systems should be independent of the systems they monitor.</span>
   </div>
 </div>
 

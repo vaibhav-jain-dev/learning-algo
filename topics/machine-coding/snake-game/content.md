@@ -4,9 +4,9 @@
 
 Design the classic Snake game where a snake moves around a grid, eats food to grow, and the game ends when the snake collides with walls or itself. This is a canonical machine coding problem that tests your understanding of **game loops**, **state management**, **collision detection algorithms**, and **efficient data structure usage**.
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #4a5568;">
-<h4 style="color: #63b3ed; margin: 0 0 16px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Core Challenge</h4>
-<p style="color: #e2e8f0; margin: 0; line-height: 1.7;">
+<div style="background: #f8fafc; border-radius: 16px; padding: 24px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 16px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Core Challenge</h4>
+<p style="color: #1e293b; margin: 0; line-height: 1.7;">
 The snake game appears simple but reveals deep systems design thinking: How do you model continuous movement in discrete time? How do you handle input that arrives between frames? What data structure allows O(1) growth while maintaining spatial ordering?
 </p>
 </div>
@@ -17,29 +17,29 @@ The snake game appears simple but reveals deep systems design thinking: How do y
 
 The **game loop** is the heartbeat of any real-time game. It orchestrates the continuous cycle of processing input, updating game state, and rendering output. Understanding game loops is critical because they appear in embedded systems, simulations, and any application requiring continuous state updates.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Game Loop Execution Cycle</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Game Loop Execution Cycle</h4>
 <div style="display: flex; flex-direction: column; gap: 12px;">
 <div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 24px; border-radius: 12px; min-width: 140px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 13px;">1. PROCESS INPUT</div>
-<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">Direction changes</div>
+<div style="color: #166534; font-size: 10px; margin-top: 4px;">Direction changes</div>
 </div>
-<div style="color: #7ee787; font-size: 24px;">&#8594;</div>
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 24px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #166534; font-size: 24px;">&#8594;</div>
+<div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 16px 24px; border-radius: 12px; min-width: 140px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 13px;">2. UPDATE STATE</div>
-<div style="color: #c8e1ff; font-size: 10px; margin-top: 4px;">Move, collision, score</div>
+<div style="color: #1e40af; font-size: 10px; margin-top: 4px;">Move, collision, score</div>
 </div>
-<div style="color: #58a6ff; font-size: 24px;">&#8594;</div>
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 16px 24px; border-radius: 12px; min-width: 140px; text-align: center;">
+<div style="color: #1e40af; font-size: 24px;">&#8594;</div>
+<div style="background: #f5f3ff; border-left: 3px solid #8b5cf6; padding: 16px 24px; border-radius: 12px; min-width: 140px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 13px;">3. RENDER</div>
-<div style="color: #e2c5ff; font-size: 10px; margin-top: 4px;">Draw grid state</div>
+<div style="color: #5b21b6; font-size: 10px; margin-top: 4px;">Draw grid state</div>
 </div>
 </div>
 <div style="display: flex; justify-content: center; margin-top: 16px;">
-<div style="background: #21262d; padding: 12px 24px; border-radius: 8px; border-left: 3px solid #f0883e;">
-<div style="color: #f0883e; font-size: 11px; font-weight: bold;">LOOP BACK</div>
-<div style="color: #8b949e; font-size: 10px;">After fixed time delta or vsync</div>
+<div style="background: #f8fafc; padding: 12px 24px; border-radius: 8px; border-left: 3px solid #f97316;">
+<div style="color: #c2410c; font-size: 11px; font-weight: bold;">LOOP BACK</div>
+<div style="color: #64748b; font-size: 10px;">After fixed time delta or vsync</div>
 </div>
 </div>
 </div>
@@ -47,9 +47,9 @@ The **game loop** is the heartbeat of any real-time game. It orchestrates the co
 
 ### Fixed vs Variable Time Step
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d253f 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #58a6ff;">
-<h4 style="color: #58a6ff; margin: 0 0 12px 0;">Assumption: Fixed Time Step</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Assumption: Fixed Time Step</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 The snake game assumes a <strong>fixed time step</strong> where each update moves the snake exactly one cell. This simplifies collision detection but creates a coupling between game speed and frame rate. In production games, you would decouple these using delta time accumulation.
 </p>
 </div>
@@ -60,9 +60,9 @@ The **fixed time step** approach means:
 - Collision detection only checks grid-aligned positions
 - Game speed is controlled by the delay between ticks, not the update logic
 
-<div style="background: linear-gradient(135deg, #2d1f1f 0%, #1f1a1a 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f85149;">
-<h4 style="color: #f85149; margin: 0 0 12px 0;">Trade-off: Fixed vs Variable Step</h4>
-<div style="color: #c9d1d9; font-size: 14px; line-height: 1.6;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<h4 style="color: #dc2626; margin: 0 0 12px 0;">Trade-off: Fixed vs Variable Step</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.6;">
 <strong>Fixed Step:</strong> Deterministic behavior, simpler collision, but speed tied to tick rate<br/>
 <strong>Variable Step:</strong> Smooth movement at any framerate, but requires interpolation and continuous collision detection
 </div>
@@ -85,26 +85,26 @@ Without input buffering, the last input (LEFT) would be applied, causing the sna
 
 ### Interview Questions: Game Loop
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #a78bfa; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: What are the three phases of a game loop and why is their order important?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: What are the three phases of a game loop and why is their order important?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Input processing must happen before update (so new direction takes effect). Update must happen before render (so we display current state). Render must complete before next input poll (to prevent visual lag).</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a2e1a 0%, #0f1a0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #86efac; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: How would you handle input that arrives faster than your tick rate without losing responsiveness?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #166534; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: How would you handle input that arrives faster than your tick rate without losing responsiveness?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Implement an input queue with timestamps. During each tick, process the oldest unprocessed input. This prevents "swallowing" rapid inputs while maintaining deterministic game state. Discussion should include queue size limits and input coalescing for mobile touch events.</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #2e1a1a 0%, #1a0f0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #fca5a5; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: If you needed to support networked multiplayer snake, how would you modify the game loop to handle latency and ensure consistency across clients?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #dc2626; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: If you needed to support networked multiplayer snake, how would you modify the game loop to handle latency and ensure consistency across clients?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Implement lockstep or rollback networking. Lockstep: All clients wait for inputs from all players before advancing. Rollback: Predict opponent moves, then rewind and resimulate when actual input arrives. Discuss authoritative server model, input delay compensation, and the trade-off between responsiveness and consistency. Reference [[distributed systems]](/topic/system-design/distributed-systems) concepts like eventual consistency.</em>
 </p>
 </div>
@@ -115,31 +115,31 @@ Without input buffering, the last input (LEFT) would be applied, causing the sna
 
 The snake body is the central data structure. The choice of data structure directly impacts the time complexity of movement, growth, and collision detection. This is where [[deque]](/topic/data-structures/deque) knowledge becomes essential.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Deque-Based Snake Body Operations</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Deque-Based Snake Body Operations</h4>
 <div style="display: flex; flex-direction: column; gap: 20px;">
 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
-<div style="background: #238636; padding: 12px 16px; border-radius: 8px; color: white; font-weight: bold; font-size: 12px;">HEAD</div>
-<div style="background: #1f6feb; padding: 12px 16px; border-radius: 8px; color: white; font-size: 12px;">Body[1]</div>
-<div style="background: #1f6feb; padding: 12px 16px; border-radius: 8px; color: white; font-size: 12px;">Body[2]</div>
-<div style="background: #1f6feb; padding: 12px 16px; border-radius: 8px; color: white; font-size: 12px;">Body[3]</div>
-<div style="background: #da3633; padding: 12px 16px; border-radius: 8px; color: white; font-weight: bold; font-size: 12px;">TAIL</div>
+<div style="background: #22c55e; padding: 12px 16px; border-radius: 8px; color: white; font-weight: bold; font-size: 12px;">HEAD</div>
+<div style="background: #3b82f6; padding: 12px 16px; border-radius: 8px; color: white; font-size: 12px;">Body[1]</div>
+<div style="background: #3b82f6; padding: 12px 16px; border-radius: 8px; color: white; font-size: 12px;">Body[2]</div>
+<div style="background: #3b82f6; padding: 12px 16px; border-radius: 8px; color: white; font-size: 12px;">Body[3]</div>
+<div style="background: #ef4444; padding: 12px 16px; border-radius: 8px; color: white; font-weight: bold; font-size: 12px;">TAIL</div>
 </div>
 <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 16px;">
-<div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; min-width: 150px;">
-<div style="color: #7ee787; font-weight: bold; font-size: 13px;">MOVE</div>
-<div style="color: #8b949e; font-size: 11px; margin-top: 8px;">appendleft(new_head)<br/>pop() from tail</div>
-<div style="color: #58a6ff; font-size: 11px; margin-top: 4px;">O(1) + O(1)</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center; min-width: 150px;">
+<div style="color: #166534; font-weight: bold; font-size: 13px;">MOVE</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 8px;">appendleft(new_head)<br/>pop() from tail</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 4px;">O(1) + O(1)</div>
 </div>
-<div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; min-width: 150px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 13px;">GROW</div>
-<div style="color: #8b949e; font-size: 11px; margin-top: 8px;">appendleft(new_head)<br/>skip pop()</div>
-<div style="color: #58a6ff; font-size: 11px; margin-top: 4px;">O(1)</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center; min-width: 150px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 13px;">GROW</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 8px;">appendleft(new_head)<br/>skip pop()</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 4px;">O(1)</div>
 </div>
-<div style="background: #21262d; padding: 16px; border-radius: 8px; text-align: center; min-width: 150px;">
-<div style="color: #f778ba; font-weight: bold; font-size: 13px;">COLLISION CHECK</div>
-<div style="color: #8b949e; font-size: 11px; margin-top: 8px;">head in body_set?</div>
-<div style="color: #58a6ff; font-size: 11px; margin-top: 4px;">O(1) with HashSet</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center; min-width: 150px;">
+<div style="color: #be185d; font-weight: bold; font-size: 13px;">COLLISION CHECK</div>
+<div style="color: #64748b; font-size: 11px; margin-top: 8px;">head in body_set?</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 4px;">O(1) with HashSet</div>
 </div>
 </div>
 </div>
@@ -155,9 +155,9 @@ The snake body is the central data structure. The choice of data structure direc
 
 *Requires tail pointer. **Amortized for dynamic array deque. ***O(1) if augmented with HashSet.
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d253f 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #58a6ff;">
-<h4 style="color: #58a6ff; margin: 0 0 12px 0;">Design Choice: Deque + HashSet Hybrid</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Design Choice: Deque + HashSet Hybrid</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 The optimal structure is a <strong>deque for ordering</strong> (maintains head-to-tail sequence for rendering) combined with a <strong>HashSet for O(1) membership queries</strong> (collision detection). This uses O(n) extra space but reduces collision check from O(n) to O(1) per move.
 </p>
 </div>
@@ -181,35 +181,35 @@ def move(self) -> Position:
     return new_head
 ```
 
-<div style="background: linear-gradient(135deg, #2d1f1f 0%, #1f1a1a 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f85149;">
-<h4 style="color: #f85149; margin: 0 0 12px 0;">Edge Case: Multiple Consecutive Growth</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<h4 style="color: #dc2626; margin: 0 0 12px 0;">Edge Case: Multiple Consecutive Growth</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 What if food spawns allow eating multiple items in quick succession? The boolean flag only tracks one pending growth. For games with multiple food items or power-ups, use a <strong>growth counter</strong> instead: <code>self.pending_growth += food.growth_amount</code> and decrement each tick.
 </p>
 </div>
 
 ### Interview Questions: Snake Body Data Structure
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #a78bfa; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: Why is a deque preferred over an array for the snake body?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: Why is a deque preferred over an array for the snake body?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Movement requires adding to head and removing from tail every tick. Arrays have O(n) insertion at front due to shifting. Deque provides O(1) for both operations. Candidate should mention that Python's deque is implemented as a doubly-linked list of fixed-size blocks.</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a2e1a 0%, #0f1a0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #86efac; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: How do you maintain O(1) self-collision detection while keeping body segments ordered?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #166534; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: How do you maintain O(1) self-collision detection while keeping body segments ordered?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Use two data structures - a deque for ordered traversal (rendering) and a HashSet for O(1) lookup. On move: add new head to both, remove tail from both. Trade-off is O(n) space overhead. Candidate should discuss keeping these structures synchronized and the bug potential if they diverge.</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #2e1a1a 0%, #1a0f0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #fca5a5; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: If the snake could grow to millions of segments (server-side simulation), how would you optimize memory and support fast serialization for network sync?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #dc2626; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: If the snake could grow to millions of segments (server-side simulation), how would you optimize memory and support fast serialization for network sync?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Run-length encoding for straight segments (store direction + length instead of each position). Use spatial partitioning (quadtree) for collision. For serialization, send delta updates (new head position, removed tail) instead of full body. Discuss memory pooling for Position objects to reduce GC pressure. Reference [[spatial indexing]](/topic/algorithms/spatial-indexing) for large-scale collision systems.</em>
 </p>
 </div>
@@ -220,13 +220,13 @@ What if food spawns allow eating multiple items in quick succession? The boolean
 
 Collision detection in Snake involves two distinct checks: **boundary collision** (snake vs walls) and **self-collision** (snake head vs body). Each has different algorithmic characteristics.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Collision Detection Decision Tree</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Collision Detection Decision Tree</h4>
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-<div style="background: #21262d; padding: 16px 24px; border-radius: 12px; text-align: center;">
-<div style="color: #58a6ff; font-weight: bold; font-size: 14px;">New Head Position Calculated</div>
+<div style="background: #f8fafc; padding: 16px 24px; border-radius: 12px; text-align: center;">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px;">New Head Position Calculated</div>
 </div>
-<div style="color: #8b949e; font-size: 20px;">&#8595;</div>
+<div style="color: #64748b; font-size: 20px;">&#8595;</div>
 <div style="display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;">
 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
 <div style="background: #f85149; padding: 12px 20px; border-radius: 8px; text-align: center;">
@@ -234,19 +234,19 @@ Collision detection in Snake involves two distinct checks: **boundary collision*
 <div style="color: #ffd1cf; font-size: 10px;">0 &lt;= x &lt; width?</div>
 <div style="color: #ffd1cf; font-size: 10px;">0 &lt;= y &lt; height?</div>
 </div>
-<div style="color: #f85149; font-size: 10px;">O(1) - constant</div>
+<div style="color: #dc2626; font-size: 10px;">O(1) - constant</div>
 </div>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
 <div style="background: #ffa657; padding: 12px 20px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">SELF-COLLISION</div>
 <div style="color: #fff3e0; font-size: 10px;">head in body_set?</div>
 </div>
-<div style="color: #ffa657; font-size: 10px;">O(1) with HashSet</div>
+<div style="color: #c2410c; font-size: 10px;">O(1) with HashSet</div>
 </div>
 <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-<div style="background: #238636; padding: 12px 20px; border-radius: 8px; text-align: center;">
+<div style="background: #22c55e; padding: 12px 20px; border-radius: 8px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 12px;">FOOD COLLISION</div>
-<div style="color: #d1f5d3; font-size: 10px;">head == food.pos?</div>
+<div style="color: #166534; font-size: 10px;">head == food.pos?</div>
 </div>
 <div style="color: #238636; font-size: 10px;">O(1) - direct compare</div>
 </div>
@@ -256,9 +256,9 @@ Collision detection in Snake involves two distinct checks: **boundary collision*
 
 ### Order of Collision Checks Matters
 
-<div style="background: linear-gradient(135deg, #2d1f1f 0%, #1f1a1a 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f85149;">
-<h4 style="color: #f85149; margin: 0 0 12px 0;">Critical Edge Case: Tail Removal Timing</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<h4 style="color: #dc2626; margin: 0 0 12px 0;">Critical Edge Case: Tail Removal Timing</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 In the LeetCode variant (353), the snake can move into the cell its tail is about to vacate. This requires removing the tail <strong>before</strong> checking self-collision. The order must be: (1) calculate new head, (2) if not eating: remove tail from body set, (3) check if new head collides with remaining body, (4) add new head to body.
 </p>
 </div>
@@ -297,9 +297,9 @@ def move(self, direction: str) -> int:
 
 ### Wraparound Boundaries vs Hard Walls
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d253f 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #58a6ff;">
-<h4 style="color: #58a6ff; margin: 0 0 12px 0;">Design Choice: Boundary Behavior</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Design Choice: Boundary Behavior</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 <strong>Hard walls:</strong> Collision = game over. Simpler to implement.<br/>
 <strong>Wraparound (toroidal):</strong> Exiting right reappears left. Requires modulo arithmetic: <code>new_x = (head.x + dx) % width</code>. Changes strategy significantly - no "safe corners."
 </p>
@@ -307,26 +307,26 @@ def move(self, direction: str) -> int:
 
 ### Interview Questions: Collision Detection
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #a78bfa; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: In the LeetCode variant, why must we remove the tail before checking self-collision?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: In the LeetCode variant, why must we remove the tail before checking self-collision?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: The snake is allowed to move into the space its tail currently occupies because the tail will vacate that cell in the same move. If we check collision first, we'd falsely detect a collision with our own tail. This models the physical reality that head and tail move simultaneously.</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a2e1a 0%, #0f1a0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #86efac; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: How would collision detection change if the snake moved at sub-cell granularity (smooth movement)?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #166534; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: How would collision detection change if the snake moved at sub-cell granularity (smooth movement)?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Would need continuous collision detection - check if the head's path intersects any body segment. Could use line-segment intersection for body represented as connected line segments, or swept AABB (Axis-Aligned Bounding Box) tests. Discuss the performance implications: O(n) segment checks per frame vs spatial partitioning with [[quadtrees]](/topic/data-structures/quadtree) for O(log n).</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #2e1a1a 0%, #1a0f0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #fca5a5; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: In a multiplayer snake game with 100 snakes of average length 50, how would you optimize collision detection between all snakes?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #dc2626; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: In a multiplayer snake game with 100 snakes of average length 50, how would you optimize collision detection between all snakes?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Naive approach is O(n * m) where n = number of snakes, m = average length (5000 * 5000 = 25M checks). Use spatial hashing: divide grid into cells, only check collisions within same/adjacent cells. For moving objects, use sweep-and-prune algorithm. Discuss the trade-off between cell size (too small = many cells to check, too large = no benefit). Reference [[collision detection]](/topic/game-dev/collision-detection) and [[spatial partitioning]](/topic/algorithms/spatial-partitioning).</em>
 </p>
 </div>
@@ -337,31 +337,31 @@ def move(self, direction: str) -> int:
 
 Food generation seems trivial but has interesting algorithmic implications as the snake grows. The naive approach degrades significantly when the board is nearly full.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Food Generation Strategy Comparison</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Food Generation Strategy Comparison</h4>
 <div style="display: flex; flex-direction: column; gap: 16px;">
 <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
-<div style="background: #21262d; padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 280px;">
-<div style="color: #f85149; font-weight: bold; font-size: 13px; margin-bottom: 12px;">NAIVE: Random Retry</div>
-<div style="color: #8b949e; font-size: 11px; line-height: 1.5;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 280px;">
+<div style="color: #dc2626; font-weight: bold; font-size: 13px; margin-bottom: 12px;">NAIVE: Random Retry</div>
+<div style="color: #64748b; font-size: 11px; line-height: 1.5;">
 Generate random position<br/>
 If occupied, retry<br/>
-<span style="color: #f85149;">Worst case: infinite loop when board 99% full</span>
+<span style="color: #dc2626;">Worst case: infinite loop when board 99% full</span>
 </div>
-<div style="color: #f85149; font-size: 10px; margin-top: 8px;">O(infinity) worst case</div>
+<div style="color: #dc2626; font-size: 10px; margin-top: 8px;">O(infinity) worst case</div>
 </div>
-<div style="background: #21262d; padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 280px;">
-<div style="color: #ffa657; font-weight: bold; font-size: 13px; margin-bottom: 12px;">SCAN: Filter Empty</div>
-<div style="color: #8b949e; font-size: 11px; line-height: 1.5;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 280px;">
+<div style="color: #c2410c; font-weight: bold; font-size: 13px; margin-bottom: 12px;">SCAN: Filter Empty</div>
+<div style="color: #64748b; font-size: 11px; line-height: 1.5;">
 Enumerate all cells<br/>
 Filter out snake body<br/>
 Random choice from remainder
 </div>
-<div style="color: #ffa657; font-size: 10px; margin-top: 8px;">O(width * height) always</div>
+<div style="color: #c2410c; font-size: 10px; margin-top: 8px;">O(width * height) always</div>
 </div>
-<div style="background: #21262d; padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 280px;">
+<div style="background: #f8fafc; padding: 20px; border-radius: 12px; flex: 1; min-width: 200px; max-width: 280px;">
 <div style="color: #238636; font-weight: bold; font-size: 13px; margin-bottom: 12px;">OPTIMAL: Maintain Empty Set</div>
-<div style="color: #8b949e; font-size: 11px; line-height: 1.5;">
+<div style="color: #64748b; font-size: 11px; line-height: 1.5;">
 Track empty cells in list<br/>
 Random index selection<br/>
 Update on snake move
@@ -418,9 +418,9 @@ class OptimizedFoodSpawner:
             self.empty_cells.append(removed_tail)
 ```
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d253f 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #58a6ff;">
-<h4 style="color: #58a6ff; margin: 0 0 12px 0;">Assumption: Uniform Random Distribution</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Assumption: Uniform Random Distribution</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 We assume food should spawn with uniform probability across all empty cells. Some game variants use weighted distributions - food more likely near edges, or further from snake head to increase difficulty. The optimal algorithm supports weighted selection by storing weights with positions.
 </p>
 </div>
@@ -440,26 +440,26 @@ def _spawn_food(self):
 
 ### Interview Questions: Food Generation
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #a78bfa; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: What's wrong with the naive "generate random, retry if occupied" approach?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: What's wrong with the naive "generate random, retry if occupied" approach?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: When the snake covers 90% of the board, each random attempt has only 10% chance of finding an empty cell. Expected attempts = 10. At 99% coverage, expected attempts = 100. As coverage approaches 100%, attempts approach infinity. This is unacceptable for real-time games.</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a2e1a 0%, #0f1a0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #86efac; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: How do you achieve O(1) removal from the empty cells list while maintaining random access for spawning?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #166534; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: How do you achieve O(1) removal from the empty cells list while maintaining random access for spawning?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Use the "swap with last and pop" technique. Maintain a position-to-index mapping. When removing, swap the target with the last element, update the swapped element's index in the map, then pop from the end. This maintains O(1) random access (array indexing) while enabling O(1) removal. Reference [[array manipulation]](/topic/algorithms/array-techniques).</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #2e1a1a 0%, #1a0f0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #fca5a5; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: Design a food generation system for a massive multiplayer snake game where the board is 10,000 x 10,000 cells with 1000 concurrent snakes. Memory and latency are critical.</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #dc2626; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: Design a food generation system for a massive multiplayer snake game where the board is 10,000 x 10,000 cells with 1000 concurrent snakes. Memory and latency are critical.</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Cannot enumerate all 100M cells. Use hierarchical approach: divide into regions, track empty count per region, select region proportionally to empty count, then use local spawner per region. For memory, use sparse representation - only track occupied cells, generate random positions and check against occupied set. Discuss consistent hashing for distributing regions across servers. Reference [[distributed systems]](/topic/system-design/distributed-systems) and [[sharding]](/topic/system-design/database-sharding).</em>
 </p>
 </div>
@@ -470,31 +470,31 @@ def _spawn_food(self):
 
 Score tracking extends beyond a simple counter. Production games need persistent storage, leaderboards, anti-cheat measures, and analytics. This connects to [[state management]](/topic/system-design/state-management) patterns.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #30363d;">
-<h4 style="color: #58a6ff; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Score State Machine</h4>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e40af; margin: 0 0 24px 0; text-align: center; font-size: 16px;">Score State Machine</h4>
 <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
 <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center;">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 12px; text-align: center;">
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 24px; border-radius: 12px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 13px;">PLAYING</div>
-<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">score: N</div>
+<div style="color: #166534; font-size: 10px; margin-top: 4px;">score: N</div>
 </div>
-<div style="color: #7ee787; font-size: 24px;">&#8594;</div>
-<div style="background: #21262d; padding: 12px 16px; border-radius: 8px;">
-<div style="color: #7ee787; font-size: 11px;">eat food (+10)</div>
+<div style="color: #166534; font-size: 24px;">&#8594;</div>
+<div style="background: #f8fafc; padding: 12px 16px; border-radius: 8px;">
+<div style="color: #166534; font-size: 11px;">eat food (+10)</div>
 </div>
-<div style="color: #7ee787; font-size: 24px;">&#8594;</div>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 12px; text-align: center;">
+<div style="color: #166534; font-size: 24px;">&#8594;</div>
+<div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 16px 24px; border-radius: 12px; text-align: center;">
 <div style="color: #fff; font-weight: bold; font-size: 13px;">PLAYING</div>
-<div style="color: #d1f5d3; font-size: 10px; margin-top: 4px;">score: N+10</div>
+<div style="color: #166534; font-size: 10px; margin-top: 4px;">score: N+10</div>
 </div>
 </div>
 <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; margin-top: 8px;">
 <div style="display: flex; align-items: center; gap: 12px;">
-<div style="color: #f85149; font-size: 20px;">&#8595;</div>
-<div style="background: #21262d; padding: 8px 12px; border-radius: 6px;">
-<div style="color: #f85149; font-size: 10px;">collision</div>
+<div style="color: #dc2626; font-size: 20px;">&#8595;</div>
+<div style="background: #f8fafc; padding: 8px 12px; border-radius: 6px;">
+<div style="color: #dc2626; font-size: 10px;">collision</div>
 </div>
-<div style="color: #f85149; font-size: 20px;">&#8595;</div>
+<div style="color: #dc2626; font-size: 20px;">&#8595;</div>
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 16px 24px; border-radius: 12px; text-align: center;">
@@ -513,9 +513,9 @@ Score tracking extends beyond a simple counter. Production games need persistent
 | **Time-pressure** | `score += max(100 - ticks_since_food, 10)` | Encourages aggressive play |
 | **Combo** | `score += 10 * combo_multiplier` | Rewards consecutive quick eats |
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d253f 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #58a6ff;">
-<h4 style="color: #58a6ff; margin: 0 0 12px 0;">Design Choice: Immutable Game State</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 12px 0;">Design Choice: Immutable Game State</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 For replay systems, undo functionality, or debugging, consider making game state immutable. Each update creates a new state object. This enables time-travel debugging but increases memory usage. Use structural sharing (like in [[persistent data structures]](/topic/data-structures/persistent)) to mitigate.
 </p>
 </div>
@@ -545,9 +545,9 @@ class GameState:
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 ```
 
-<div style="background: linear-gradient(135deg, #2d1f1f 0%, #1f1a1a 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f85149;">
-<h4 style="color: #f85149; margin: 0 0 12px 0;">Trade-off: Client-side vs Server-side Score</h4>
-<p style="color: #c9d1d9; margin: 0; font-size: 14px; line-height: 1.6;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #ef4444;">
+<h4 style="color: #dc2626; margin: 0 0 12px 0;">Trade-off: Client-side vs Server-side Score</h4>
+<p style="color: #1e293b; margin: 0; font-size: 14px; line-height: 1.6;">
 <strong>Client-side:</strong> Responsive, works offline, but vulnerable to manipulation<br/>
 <strong>Server-side:</strong> Authoritative, cheat-resistant, but requires connectivity and adds latency<br/>
 <strong>Hybrid:</strong> Client runs game, server validates replay/input sequence. Best of both worlds but complex to implement.
@@ -556,26 +556,26 @@ class GameState:
 
 ### Interview Questions: Score and State Management
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #a78bfa; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: What information is minimally required to serialize a snake game state for save/load?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #5b21b6; margin: 0 0 16px 0;">Level 1: Fundamentals</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: What information is minimally required to serialize a snake game state for save/load?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Snake body positions (ordered list), current direction, food position, score, and board dimensions. Optionally: RNG seed for deterministic replay, move count for statistics. Note that direction must be saved separately from body since two snakes with identical body positions could be moving different directions.</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a2e1a 0%, #0f1a0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #86efac; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: How would you implement a replay system that can play back any game from just the initial state and input sequence?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #166534; margin: 0 0 16px 0;">Level 2: Implementation Depth</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: How would you implement a replay system that can play back any game from just the initial state and input sequence?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Store initial RNG seed, board dimensions, and timestamped input events [(tick, direction), ...]. To replay: reconstruct initial state, apply inputs at correct ticks, use same RNG seed for deterministic food spawning. Discuss the importance of determinism - floating point issues, RNG implementation differences across platforms. Reference [[event sourcing]](/topic/system-design/event-sourcing).</em>
 </p>
 </div>
 
-<div style="background: linear-gradient(135deg, #2e1a1a 0%, #1a0f0f 100%); border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #4a5568;">
-<h4 style="color: #fca5a5; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
-<p style="color: #e2e8f0; margin: 0 0 8px 0;"><strong>Q: Design a global leaderboard system for 10 million daily active users with real-time rank updates. How do you handle score submissions, prevent cheating, and display ranks efficiently?</strong></p>
-<p style="color: #94a3b8; margin: 0; font-size: 13px;">
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #dc2626; margin: 0 0 16px 0;">Level 3: System Design Integration</h4>
+<p style="color: #1e293b; margin: 0 0 8px 0;"><strong>Q: Design a global leaderboard system for 10 million daily active users with real-time rank updates. How do you handle score submissions, prevent cheating, and display ranks efficiently?</strong></p>
+<p style="color: #64748b; margin: 0; font-size: 13px;">
 <em>Expected: Use Redis sorted sets for O(log n) rank queries and updates. Shard by score ranges for horizontal scaling. For anti-cheat: require replay submission, server-side validation of physics/timing, statistical anomaly detection (impossibly fast scores). For real-time updates: use pub/sub to notify affected users when rank changes. Discuss eventual consistency trade-offs - showing slightly stale ranks is acceptable. Reference [[leaderboard design]](/topic/system-design/leaderboard) and [[redis data structures]](/topic/databases/redis).</em>
 </p>
 </div>

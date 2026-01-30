@@ -4,8 +4,8 @@
 
 A live streaming platform enables creators to broadcast video content to millions of concurrent viewers with real-time chat interaction. The architecture must handle <span style="color:#00ff00">**video ingest**</span>, <span style="color:#00ff00">**real-time transcoding**</span>, <span style="color:#00ff00">**global CDN delivery**</span>, <span style="color:#00ff00">**WebSocket-based chat**</span>, and <span style="color:#00ff00">**personalized recommendations**</span>.
 
-<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white;">
-  <h4 style="margin-top: 0; color: #f8fafc; font-size: 18px;">Core Equation</h4>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: #1e293b;">
+  <h4 style="margin-top: 0; color: #1e293b; font-size: 18px;">Core Equation</h4>
   <div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
     Streaming Platform = Ingest + Transcode + CDN Delivery + Real-time Chat + VOD Storage + Recommendations
   </div>
@@ -19,7 +19,7 @@ A live streaming platform enables creators to broadcast video content to million
 
 ## Core Requirements
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #9146ff;">
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #9146ff;">
 
 ### Functional Requirements
 - **Live Streaming**: Ingest RTMP, transcode to multiple qualities, deliver via HLS/DASH
@@ -43,13 +43,13 @@ A live streaming platform enables creators to broadcast video content to million
 
 ### System Components Overview
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h4 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">TWITCH STREAMING ARCHITECTURE</h4>
 
   <div style="display: flex; flex-direction: column; gap: 16px;">
     <!-- Broadcaster -->
     <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #9146ff 0%, #772ce8 100%); padding: 16px 32px; border-radius: 12px; text-align: center; color: white;">
+      <div style="background: linear-gradient(135deg, #9146ff 0%, #772ce8 100%); padding: 16px 32px; border-radius: 12px; text-align: center; color: #1e293b;">
         <strong style="font-size: 16px;">BROADCASTER</strong>
         <p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.9;">OBS / Streamlabs / Hardware Encoder</p>
         <p style="margin: 4px 0 0 0; font-size: 11px; opacity: 0.7;">RTMP Push to Ingest</p>
@@ -62,21 +62,21 @@ A live streaming platform enables creators to broadcast video content to million
     <div style="background: rgba(145, 70, 255, 0.1); border: 2px solid #9146ff; border-radius: 12px; padding: 20px;">
       <h5 style="color: #9146ff; margin: 0 0 16px 0; text-align: center;">INGEST LAYER (Edge Locations)</h5>
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: #a0a0a0; font-size: 12px;">US-EAST</span><br>
-          <span style="color: white; font-size: 11px;">ingest-iad.twitch.tv</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #475569; font-size: 12px;">US-EAST</span><br>
+          <span style="color: #1e293b; font-size: 11px;">ingest-iad.twitch.tv</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: #a0a0a0; font-size: 12px;">US-WEST</span><br>
-          <span style="color: white; font-size: 11px;">ingest-lax.twitch.tv</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #475569; font-size: 12px;">US-WEST</span><br>
+          <span style="color: #1e293b; font-size: 11px;">ingest-lax.twitch.tv</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: #a0a0a0; font-size: 12px;">EU-WEST</span><br>
-          <span style="color: white; font-size: 11px;">ingest-ams.twitch.tv</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #475569; font-size: 12px;">EU-WEST</span><br>
+          <span style="color: #1e293b; font-size: 11px;">ingest-ams.twitch.tv</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: #a0a0a0; font-size: 12px;">AP-NORTHEAST</span><br>
-          <span style="color: white; font-size: 11px;">ingest-tyo.twitch.tv</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #475569; font-size: 12px;">AP-NORTHEAST</span><br>
+          <span style="color: #1e293b; font-size: 11px;">ingest-tyo.twitch.tv</span>
         </div>
       </div>
     </div>
@@ -87,13 +87,13 @@ A live streaming platform enables creators to broadcast video content to million
     <div style="background: rgba(240, 136, 62, 0.1); border: 2px solid #f0883e; border-radius: 12px; padding: 20px;">
       <h5 style="color: #f0883e; margin: 0 0 16px 0; text-align: center;">MEDIA PROCESSING (GPU Clusters)</h5>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
           <strong style="color: #f0883e;">Transcoder</strong>
-          <p style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0;">Real-time encoding to multiple quality levels (1080p60, 720p60, 480p30, 360p30, 160p)</p>
+          <p style="color: #475569; font-size: 12px; margin: 8px 0 0 0;">Real-time encoding to multiple quality levels (1080p60, 720p60, 480p30, 360p30, 160p)</p>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
           <strong style="color: #f0883e;">Packager</strong>
-          <p style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0;">Segment into HLS (.m3u8 + .ts) with 2-4 second segments for CDN delivery</p>
+          <p style="color: #475569; font-size: 12px; margin: 8px 0 0 0;">Segment into HLS (.m3u8 + .ts) with 2-4 second segments for CDN delivery</p>
         </div>
       </div>
     </div>
@@ -107,11 +107,11 @@ A live streaming platform enables creators to broadcast video content to million
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div style="background: rgba(88, 166, 255, 0.1); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px;">
         <h5 style="color: #58a6ff; margin: 0 0 12px 0; text-align: center;">ORIGIN SERVERS</h5>
-        <p style="color: #a0a0a0; font-size: 12px; text-align: center; margin: 0;">Live segment cache, playlist generation, CDN origin pull</p>
+        <p style="color: #475569; font-size: 12px; text-align: center; margin: 0;">Live segment cache, playlist generation, CDN origin pull</p>
       </div>
       <div style="background: rgba(63, 185, 80, 0.1); border: 2px solid #3fb950; border-radius: 12px; padding: 20px;">
         <h5 style="color: #3fb950; margin: 0 0 12px 0; text-align: center;">VOD STORAGE (S3)</h5>
-        <p style="color: #a0a0a0; font-size: 12px; text-align: center; margin: 0;">Archived streams, clips, thumbnails, metadata</p>
+        <p style="color: #475569; font-size: 12px; text-align: center; margin: 0;">Archived streams, clips, thumbnails, metadata</p>
       </div>
     </div>
 
@@ -121,30 +121,30 @@ A live streaming platform enables creators to broadcast video content to million
     <div style="background: rgba(88, 166, 255, 0.1); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px;">
       <h5 style="color: #58a6ff; margin: 0 0 16px 0; text-align: center;">CDN EDGE LAYER (100+ PoPs Globally)</h5>
       <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-        <div style="background: #1a1a2e; padding: 8px 16px; border-radius: 8px;">
-          <span style="color: white; font-size: 11px;">Edge PoP 1</span>
+        <div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px;">
+          <span style="color: #1e293b; font-size: 11px;">Edge PoP 1</span>
         </div>
-        <div style="background: #1a1a2e; padding: 8px 16px; border-radius: 8px;">
-          <span style="color: white; font-size: 11px;">Edge PoP 2</span>
+        <div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px;">
+          <span style="color: #1e293b; font-size: 11px;">Edge PoP 2</span>
         </div>
-        <div style="background: #1a1a2e; padding: 8px 16px; border-radius: 8px;">
-          <span style="color: white; font-size: 11px;">Edge PoP 3</span>
+        <div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px;">
+          <span style="color: #1e293b; font-size: 11px;">Edge PoP 3</span>
         </div>
-        <div style="background: #1a1a2e; padding: 8px 16px; border-radius: 8px;">
-          <span style="color: white; font-size: 11px;">...</span>
+        <div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px;">
+          <span style="color: #1e293b; font-size: 11px;">...</span>
         </div>
-        <div style="background: #1a1a2e; padding: 8px 16px; border-radius: 8px;">
-          <span style="color: white; font-size: 11px;">Edge PoP N</span>
+        <div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px;">
+          <span style="color: #1e293b; font-size: 11px;">Edge PoP N</span>
         </div>
       </div>
       <p style="color: #58a6ff; font-size: 11px; text-align: center; margin: 12px 0 0 0;">~95% cache hit rate for popular streams</p>
     </div>
 
-    <div style="text-align: center; color: white; font-size: 24px;">↓</div>
+    <div style="text-align: center; color: #1e293b; font-size: 24px;">↓</div>
 
     <!-- Viewers -->
     <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: white;">
+      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: #1e293b;">
         <strong style="font-size: 16px;">VIEWERS (Millions)</strong>
         <p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.9;">HLS playback via native player or hls.js</p>
       </div>
@@ -164,7 +164,7 @@ This architecture leverages [[CDN]](/topic/system-design/cdn) for edge caching, 
 
 The live streaming pipeline transforms a single <span style="color:#00ff00">**RTMP stream**</span> from the broadcaster into multiple <span style="color:#00ff00">**HLS streams**</span> at different quality levels, delivered globally through CDN edge servers. The pipeline operates in real-time with strict latency budgets.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">VIDEO PROCESSING PIPELINE</h4>
 
   <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -173,13 +173,13 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
       <h5 style="color: #9146ff; margin: 0 0 12px 0;">STAGE 1: INGEST (from broadcaster)</h5>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 0;"><strong style="color: white;">Protocol:</strong> RTMP (Real-Time Messaging Protocol)</p>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: white;">Input:</strong> 1080p60, 6000 kbps, x264/NVENC</p>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: white;">Auth:</strong> Stream key validation</p>
+          <p style="color: #475569; font-size: 13px; margin: 0;"><strong style="color: #1e293b;">Protocol:</strong> RTMP (Real-Time Messaging Protocol)</p>
+          <p style="color: #475569; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: #1e293b;">Input:</strong> 1080p60, 6000 kbps, x264/NVENC</p>
+          <p style="color: #475569; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: #1e293b;">Auth:</strong> Stream key validation</p>
         </div>
-        <div style="background: #0d1117; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
-          <span style="color: #7ee787;">rtmp://ingest-nyc.twitch.tv/app/</span><br>
-          <span style="color: #a0a0a0;">live_abc123_streamkey</span>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+          <span style="color: #16a34a;">rtmp://ingest-nyc.twitch.tv/app/</span><br>
+          <span style="color: #475569;">live_abc123_streamkey</span>
         </div>
       </div>
     </div>
@@ -188,33 +188,33 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
     <div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
       <h5 style="color: #f0883e; margin: 0 0 12px 0;">STAGE 2: TRANSCODE (real-time ABR ladder)</h5>
       <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px;">
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold; font-size: 14px;">1080p60</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">6000 kbps</span><br>
+          <span style="color: #475569; font-size: 11px;">6000 kbps</span><br>
           <span style="color: #58a6ff; font-size: 10px;">Source</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold; font-size: 14px;">720p60</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">3000 kbps</span><br>
+          <span style="color: #475569; font-size: 11px;">3000 kbps</span><br>
           <span style="color: #58a6ff; font-size: 10px;">High</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold; font-size: 14px;">480p30</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">1500 kbps</span><br>
+          <span style="color: #475569; font-size: 11px;">1500 kbps</span><br>
           <span style="color: #58a6ff; font-size: 10px;">Medium</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold; font-size: 14px;">360p30</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">800 kbps</span><br>
+          <span style="color: #475569; font-size: 11px;">800 kbps</span><br>
           <span style="color: #58a6ff; font-size: 10px;">Low</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold; font-size: 14px;">160p</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">400 kbps</span><br>
+          <span style="color: #475569; font-size: 11px;">400 kbps</span><br>
           <span style="color: #58a6ff; font-size: 10px;">Audio-only</span>
         </div>
       </div>
-      <p style="color: #a0a0a0; font-size: 12px; margin: 12px 0 0 0;"><strong style="color: white;">Note:</strong> Partners get full ladder. Affiliates get limited transcodes. Regular streamers may get source-only.</p>
+      <p style="color: #475569; font-size: 12px; margin: 12px 0 0 0;"><strong style="color: #1e293b;">Note:</strong> Partners get full ladder. Affiliates get limited transcodes. Regular streamers may get source-only.</p>
     </div>
 
     <!-- Package Stage -->
@@ -222,17 +222,17 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
       <h5 style="color: #58a6ff; margin: 0 0 12px 0;">STAGE 3: PACKAGE (HLS segmentation)</h5>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 0;"><strong style="color: white;">Format:</strong> HLS (.m3u8 manifest + .ts segments)</p>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: white;">Segment Duration:</strong> 2-4 seconds (normal), 1-2s (low-latency)</p>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: white;">Latency:</strong> 10-15s normal, 3-5s low-latency mode</p>
+          <p style="color: #475569; font-size: 13px; margin: 0;"><strong style="color: #1e293b;">Format:</strong> HLS (.m3u8 manifest + .ts segments)</p>
+          <p style="color: #475569; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: #1e293b;">Segment Duration:</strong> 2-4 seconds (normal), 1-2s (low-latency)</p>
+          <p style="color: #475569; font-size: 13px; margin: 8px 0 0 0;"><strong style="color: #1e293b;">Latency:</strong> 10-15s normal, 3-5s low-latency mode</p>
         </div>
-        <div style="background: #0d1117; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px;">
-          <span style="color: #7ee787;">#EXTM3U</span><br>
-          <span style="color: #a0a0a0;">#EXT-X-VERSION:3</span><br>
-          <span style="color: #a0a0a0;">#EXT-X-TARGETDURATION:4</span><br>
-          <span style="color: #a0a0a0;">#EXTINF:4.000,</span><br>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px;">
+          <span style="color: #16a34a;">#EXTM3U</span><br>
+          <span style="color: #475569;">#EXT-X-VERSION:3</span><br>
+          <span style="color: #475569;">#EXT-X-TARGETDURATION:4</span><br>
+          <span style="color: #475569;">#EXTINF:4.000,</span><br>
           <span style="color: #58a6ff;">segment_00001.ts</span><br>
-          <span style="color: #a0a0a0;">#EXTINF:4.000,</span><br>
+          <span style="color: #475569;">#EXTINF:4.000,</span><br>
           <span style="color: #58a6ff;">segment_00002.ts</span>
         </div>
       </div>
@@ -246,37 +246,37 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
   <h4 style="color: #166534; margin-top: 0;">Where Latency Comes From</h4>
   <div style="display: flex; flex-direction: column; gap: 12px;">
     <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Encoding</div>
+      <div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Encoding</div>
       <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
         <span style="color: #475569; font-size: 14px;"><strong>1-2 seconds</strong> - Broadcaster's encoder (OBS) buffers frames before sending</span>
       </div>
     </div>
     <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Network</div>
+      <div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Network</div>
       <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
         <span style="color: #475569; font-size: 14px;"><strong>0.1-0.5 seconds</strong> - RTMP upload from broadcaster to ingest server</span>
       </div>
     </div>
     <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Transcoding</div>
+      <div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Transcoding</div>
       <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
         <span style="color: #475569; font-size: 14px;"><strong>1-2 seconds</strong> - GPU cluster processes and outputs multiple quality levels</span>
       </div>
     </div>
     <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Segmentation</div>
+      <div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Segmentation</div>
       <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
         <span style="color: #475569; font-size: 14px;"><strong>2-4 seconds</strong> - Must wait for full segment before it can be delivered</span>
       </div>
     </div>
     <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">CDN</div>
+      <div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">CDN</div>
       <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
         <span style="color: #475569; font-size: 14px;"><strong>0.1-0.5 seconds</strong> - Propagation from origin to edge + edge to viewer</span>
       </div>
     </div>
     <div style="display: flex; align-items: center; gap: 16px;">
-      <div style="background: #22c55e; color: white; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Player Buffer</div>
+      <div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold;">Player Buffer</div>
       <div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px; border: 1px solid #bbf7d0;">
         <span style="color: #475569; font-size: 14px;"><strong>4-8 seconds</strong> - Player buffers 2-3 segments before playback starts</span>
       </div>
@@ -316,7 +316,7 @@ The live streaming pipeline transforms a single <span style="color:#00ff00">**RT
 
 Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem**</span>: one message from a viewer must reach 100K+ connected clients in near real-time. The architecture uses hierarchical distribution with edge WebSocket servers consuming from a central message bus.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">CHAT ARCHITECTURE FOR 100K+ VIEWERS</h4>
 
   <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -324,21 +324,21 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
     <div style="background: rgba(163, 113, 247, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #a371f7;">
       <h5 style="color: #a371f7; margin: 0 0 12px 0;">CHAT INGEST SERVERS</h5>
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Validate</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">Auth, permissions</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Validate</span><br>
+          <span style="color: #475569; font-size: 11px;">Auth, permissions</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Rate Limit</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">1 msg/sec/user</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Rate Limit</span><br>
+          <span style="color: #475569; font-size: 11px;">1 msg/sec/user</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Moderate</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">AutoMod, filters</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Moderate</span><br>
+          <span style="color: #475569; font-size: 11px;">AutoMod, filters</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Enrich</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">Badges, emotes</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Enrich</span><br>
+          <span style="color: #475569; font-size: 11px;">Badges, emotes</span>
         </div>
       </div>
     </div>
@@ -348,8 +348,8 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
     <!-- Message Queue -->
     <div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
       <h5 style="color: #f0883e; margin: 0 0 12px 0;">MESSAGE QUEUE (Kafka)</h5>
-      <p style="color: #a0a0a0; font-size: 13px; margin: 0;"><strong style="color: white;">Topic:</strong> chat.{channel_id} | <strong style="color: white;">Partitions:</strong> By user_id % N | <strong style="color: white;">Retention:</strong> 2 hours</p>
-      <p style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0;">Provides ordered delivery, durability, and decouples ingest from distribution</p>
+      <p style="color: #475569; font-size: 13px; margin: 0;"><strong style="color: #1e293b;">Topic:</strong> chat.{channel_id} | <strong style="color: #1e293b;">Partitions:</strong> By user_id % N | <strong style="color: #1e293b;">Retention:</strong> 2 hours</p>
+      <p style="color: #475569; font-size: 12px; margin: 8px 0 0 0;">Provides ordered delivery, durability, and decouples ingest from distribution</p>
     </div>
 
     <div style="text-align: center; color: #58a6ff; font-size: 24px;">↓</div>
@@ -358,24 +358,24 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
     <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
       <h5 style="color: #58a6ff; margin: 0 0 16px 0;">EDGE WEBSOCKET SERVERS</h5>
       <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
           <span style="color: #58a6ff; font-weight: bold;">WS Server 1</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">10K connections</span>
+          <span style="color: #475569; font-size: 11px;">10K connections</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
           <span style="color: #58a6ff; font-weight: bold;">WS Server 2</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">10K connections</span>
+          <span style="color: #475569; font-size: 11px;">10K connections</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
           <span style="color: #58a6ff; font-weight: bold;">WS Server 3</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">10K connections</span>
+          <span style="color: #475569; font-size: 11px;">10K connections</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
-          <span style="color: #a0a0a0; font-weight: bold;">...</span>
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
+          <span style="color: #475569; font-weight: bold;">...</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
           <span style="color: #58a6ff; font-weight: bold;">WS Server N</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">10K connections</span>
+          <span style="color: #475569; font-size: 11px;">10K connections</span>
         </div>
       </div>
       <p style="color: #58a6ff; font-size: 12px; text-align: center; margin: 12px 0 0 0;">For 100K viewer stream → ~10 edge servers needed</p>
@@ -385,7 +385,7 @@ Chat at Twitch scale is a <span style="color:#00ff00">**massive fan-out problem*
 
     <!-- Viewers -->
     <div style="display: flex; justify-content: center;">
-      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: white;">
+      <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: #1e293b;">
         <strong style="font-size: 16px;">VIEWERS (100K+)</strong>
         <p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.9;">WebSocket connection to nearest edge server</p>
       </div>
@@ -616,7 +616,7 @@ class EdgeChatServer:
 
 <span style="color:#00ff00">**VOD (Video on Demand)**</span> stores past broadcasts for later viewing. Unlike live streaming where segments are ephemeral, VOD requires long-term storage with efficient retrieval. <span style="color:#00ff00">**Clips**</span> are short highlights extracted from live or VOD content.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h4 style="color: #3fb950; text-align: center; margin: 0 0 24px 0;">VOD STORAGE ARCHITECTURE</h4>
 
   <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -624,12 +624,12 @@ class EdgeChatServer:
     <div style="display: flex; gap: 20px; align-items: stretch;">
       <div style="background: rgba(145, 70, 255, 0.15); border: 2px solid #9146ff; border-radius: 12px; padding: 20px; flex: 1;">
         <h5 style="color: #9146ff; margin: 0 0 12px 0;">LIVE PIPELINE</h5>
-        <p style="color: #a0a0a0; font-size: 13px; margin: 0;">During stream, segments are cached in memory/SSD for low-latency delivery</p>
+        <p style="color: #475569; font-size: 13px; margin: 0;">During stream, segments are cached in memory/SSD for low-latency delivery</p>
       </div>
       <div style="display: flex; align-items: center; color: #3fb950; font-size: 24px;">→</div>
       <div style="background: rgba(63, 185, 80, 0.15); border: 2px solid #3fb950; border-radius: 12px; padding: 20px; flex: 1;">
         <h5 style="color: #3fb950; margin: 0 0 12px 0;">VOD ARCHIVE</h5>
-        <p style="color: #a0a0a0; font-size: 13px; margin: 0;">After stream ends, segments are archived to object storage (S3)</p>
+        <p style="color: #475569; font-size: 13px; margin: 0;">After stream ends, segments are archived to object storage (S3)</p>
       </div>
     </div>
 
@@ -637,23 +637,23 @@ class EdgeChatServer:
     <div style="background: rgba(63, 185, 80, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #3fb950;">
       <h5 style="color: #3fb950; margin: 0 0 16px 0;">TIERED STORAGE</h5>
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
           <span style="color: #3fb950; font-weight: bold;">HOT (0-7 days)</span><br>
-          <span style="color: #a0a0a0; font-size: 12px;">S3 Standard</span><br>
-          <span style="color: white; font-size: 11px; margin-top: 8px; display: block;">$0.023/GB/month</span>
-          <span style="color: #a0a0a0; font-size: 11px;">Most replays happen in first week</span>
+          <span style="color: #475569; font-size: 12px;">S3 Standard</span><br>
+          <span style="color: #1e293b; font-size: 11px; margin-top: 8px; display: block;">$0.023/GB/month</span>
+          <span style="color: #475569; font-size: 11px;">Most replays happen in first week</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
           <span style="color: #f0883e; font-weight: bold;">WARM (7-60 days)</span><br>
-          <span style="color: #a0a0a0; font-size: 12px;">S3 Standard-IA</span><br>
-          <span style="color: white; font-size: 11px; margin-top: 8px; display: block;">$0.0125/GB/month</span>
-          <span style="color: #a0a0a0; font-size: 11px;">Infrequent access, fast retrieval</span>
+          <span style="color: #475569; font-size: 12px;">S3 Standard-IA</span><br>
+          <span style="color: #1e293b; font-size: 11px; margin-top: 8px; display: block;">$0.0125/GB/month</span>
+          <span style="color: #475569; font-size: 11px;">Infrequent access, fast retrieval</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
-          <span style="color: #a0a0a0; font-weight: bold;">COLD (60+ days)</span><br>
-          <span style="color: #a0a0a0; font-size: 12px;">S3 Glacier</span><br>
-          <span style="color: white; font-size: 11px; margin-top: 8px; display: block;">$0.004/GB/month</span>
-          <span style="color: #a0a0a0; font-size: 11px;">Archive, retrieval takes minutes</span>
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+          <span style="color: #475569; font-weight: bold;">COLD (60+ days)</span><br>
+          <span style="color: #475569; font-size: 12px;">S3 Glacier</span><br>
+          <span style="color: #1e293b; font-size: 11px; margin-top: 8px; display: block;">$0.004/GB/month</span>
+          <span style="color: #475569; font-size: 11px;">Archive, retrieval takes minutes</span>
         </div>
       </div>
     </div>
@@ -662,27 +662,27 @@ class EdgeChatServer:
     <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
       <h5 style="color: #58a6ff; margin: 0 0 12px 0;">VOD DATA STRUCTURE</h5>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div style="background: #0d1117; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px;">
-          <span style="color: #7ee787;">s3://twitch-vods/</span><br>
-          <span style="color: #a0a0a0;">  ├── {channel_id}/</span><br>
-          <span style="color: #a0a0a0;">  │   ├── {vod_id}/</span><br>
+        <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px;">
+          <span style="color: #16a34a;">s3://twitch-vods/</span><br>
+          <span style="color: #475569;">  ├── {channel_id}/</span><br>
+          <span style="color: #475569;">  │   ├── {vod_id}/</span><br>
           <span style="color: #58a6ff;">  │   │   ├── manifest.m3u8</span><br>
           <span style="color: #58a6ff;">  │   │   ├── 1080p60/</span><br>
-          <span style="color: #a0a0a0;">  │   │   │   ├── 00001.ts</span><br>
-          <span style="color: #a0a0a0;">  │   │   │   ├── 00002.ts</span><br>
-          <span style="color: #a0a0a0;">  │   │   │   └── ...</span><br>
+          <span style="color: #475569;">  │   │   │   ├── 00001.ts</span><br>
+          <span style="color: #475569;">  │   │   │   ├── 00002.ts</span><br>
+          <span style="color: #475569;">  │   │   │   └── ...</span><br>
           <span style="color: #58a6ff;">  │   │   ├── 720p60/</span><br>
           <span style="color: #58a6ff;">  │   │   ├── thumbnails/</span><br>
           <span style="color: #58a6ff;">  │   │   └── metadata.json</span>
         </div>
         <div>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 0;"><strong style="color: white;">Typical VOD Size:</strong></p>
-          <p style="color: #a0a0a0; font-size: 12px; margin: 4px 0;">4-hour stream @ 1080p60 = ~50GB</p>
-          <p style="color: #a0a0a0; font-size: 12px; margin: 4px 0;">With all quality levels = ~100GB</p>
-          <p style="color: #a0a0a0; font-size: 13px; margin: 16px 0 0 0;"><strong style="color: white;">Retention:</strong></p>
-          <p style="color: #a0a0a0; font-size: 12px; margin: 4px 0;">Partners: 60 days</p>
-          <p style="color: #a0a0a0; font-size: 12px; margin: 4px 0;">Turbo/Prime: 60 days</p>
-          <p style="color: #a0a0a0; font-size: 12px; margin: 4px 0;">Regular: 14 days</p>
+          <p style="color: #475569; font-size: 13px; margin: 0;"><strong style="color: #1e293b;">Typical VOD Size:</strong></p>
+          <p style="color: #475569; font-size: 12px; margin: 4px 0;">4-hour stream @ 1080p60 = ~50GB</p>
+          <p style="color: #475569; font-size: 12px; margin: 4px 0;">With all quality levels = ~100GB</p>
+          <p style="color: #475569; font-size: 13px; margin: 16px 0 0 0;"><strong style="color: #1e293b;">Retention:</strong></p>
+          <p style="color: #475569; font-size: 12px; margin: 4px 0;">Partners: 60 days</p>
+          <p style="color: #475569; font-size: 12px; margin: 4px 0;">Turbo/Prime: 60 days</p>
+          <p style="color: #475569; font-size: 12px; margin: 4px 0;">Regular: 14 days</p>
         </div>
       </div>
     </div>
@@ -824,7 +824,7 @@ func (c *ClipService) ProcessClip(job *ClipJob) error {
 
 <span style="color:#00ff00">**Real-time transcoding**</span> is the most computationally intensive component. It converts the broadcaster's single input stream into multiple quality levels (ABR ladder) with strict latency requirements - processing must be faster than real-time.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">TRANSCODING INFRASTRUCTURE</h4>
 
   <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -832,48 +832,48 @@ func (c *ClipService) ProcessClip(job *ClipJob) error {
     <div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #f0883e;">
       <h5 style="color: #f0883e; margin: 0 0 16px 0;">GPU TRANSCODING CLUSTER</h5>
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold;">NVIDIA T4</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">8-12 streams/GPU</span><br>
-          <span style="color: white; font-size: 10px;">NVENC encoder</span>
+          <span style="color: #475569; font-size: 11px;">8-12 streams/GPU</span><br>
+          <span style="color: #1e293b; font-size: 10px;">NVENC encoder</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold;">NVIDIA T4</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">8-12 streams/GPU</span><br>
-          <span style="color: white; font-size: 10px;">NVENC encoder</span>
+          <span style="color: #475569; font-size: 11px;">8-12 streams/GPU</span><br>
+          <span style="color: #1e293b; font-size: 10px;">NVENC encoder</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
           <span style="color: #f0883e; font-weight: bold;">NVIDIA T4</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">8-12 streams/GPU</span><br>
-          <span style="color: white; font-size: 10px;">NVENC encoder</span>
+          <span style="color: #475569; font-size: 11px;">8-12 streams/GPU</span><br>
+          <span style="color: #1e293b; font-size: 10px;">NVENC encoder</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px; text-align: center;">
-          <span style="color: #a0a0a0; font-weight: bold;">...</span>
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center;">
+          <span style="color: #475569; font-weight: bold;">...</span>
         </div>
       </div>
-      <p style="color: #a0a0a0; font-size: 12px; margin: 12px 0 0 0;"><strong style="color: white;">Scale:</strong> 100K concurrent streams × 5 outputs = 500K parallel encoding jobs</p>
+      <p style="color: #475569; font-size: 12px; margin: 12px 0 0 0;"><strong style="color: #1e293b;">Scale:</strong> 100K concurrent streams × 5 outputs = 500K parallel encoding jobs</p>
     </div>
 
     <!-- Transcoding Tiers -->
     <div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #58a6ff;">
       <h5 style="color: #58a6ff; margin: 0 0 16px 0;">TRANSCODING TIERS (Business Logic)</h5>
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
           <span style="color: #9146ff; font-weight: bold;">PARTNERS</span><br>
-          <span style="color: #a0a0a0; font-size: 12px; margin-top: 8px; display: block;">Full ABR ladder</span>
-          <span style="color: white; font-size: 11px;">1080p, 720p, 480p, 360p, 160p</span><br>
+          <span style="color: #475569; font-size: 12px; margin-top: 8px; display: block;">Full ABR ladder</span>
+          <span style="color: #1e293b; font-size: 11px;">1080p, 720p, 480p, 360p, 160p</span><br>
           <span style="color: #3fb950; font-size: 11px;">Always guaranteed</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
           <span style="color: #58a6ff; font-weight: bold;">AFFILIATES</span><br>
-          <span style="color: #a0a0a0; font-size: 12px; margin-top: 8px; display: block;">Limited ladder</span>
-          <span style="color: white; font-size: 11px;">Source + 720p + 480p</span><br>
+          <span style="color: #475569; font-size: 12px; margin-top: 8px; display: block;">Limited ladder</span>
+          <span style="color: #1e293b; font-size: 11px;">Source + 720p + 480p</span><br>
           <span style="color: #f0883e; font-size: 11px;">When capacity available</span>
         </div>
-        <div style="background: #1a1a2e; padding: 16px; border-radius: 8px;">
-          <span style="color: #a0a0a0; font-weight: bold;">REGULAR</span><br>
-          <span style="color: #a0a0a0; font-size: 12px; margin-top: 8px; display: block;">Source only</span>
-          <span style="color: white; font-size: 11px;">No transcoding</span><br>
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px;">
+          <span style="color: #475569; font-weight: bold;">REGULAR</span><br>
+          <span style="color: #475569; font-size: 12px; margin-top: 8px; display: block;">Source only</span>
+          <span style="color: #1e293b; font-size: 11px;">No transcoding</span><br>
           <span style="color: #ef4444; font-size: 11px;">Viewers need bandwidth</span>
         </div>
       </div>
@@ -892,39 +892,39 @@ func (c *ClipService) ProcessClip(job *ClipJob) error {
             <th style="padding: 8px; text-align: left; color: #3fb950;">Keyframe</th>
           </tr>
           <tr style="border-bottom: 1px solid #333;">
-            <td style="padding: 8px; color: white;">Source</td>
-            <td style="padding: 8px; color: #a0a0a0;">1920×1080</td>
-            <td style="padding: 8px; color: #a0a0a0;">6000 kbps</td>
-            <td style="padding: 8px; color: #a0a0a0;">60 fps</td>
-            <td style="padding: 8px; color: #a0a0a0;">2 sec</td>
+            <td style="padding: 8px; color: #1e293b;">Source</td>
+            <td style="padding: 8px; color: #475569;">1920×1080</td>
+            <td style="padding: 8px; color: #475569;">6000 kbps</td>
+            <td style="padding: 8px; color: #475569;">60 fps</td>
+            <td style="padding: 8px; color: #475569;">2 sec</td>
           </tr>
           <tr style="border-bottom: 1px solid #333;">
-            <td style="padding: 8px; color: white;">720p60</td>
-            <td style="padding: 8px; color: #a0a0a0;">1280×720</td>
-            <td style="padding: 8px; color: #a0a0a0;">3000 kbps</td>
-            <td style="padding: 8px; color: #a0a0a0;">60 fps</td>
-            <td style="padding: 8px; color: #a0a0a0;">2 sec</td>
+            <td style="padding: 8px; color: #1e293b;">720p60</td>
+            <td style="padding: 8px; color: #475569;">1280×720</td>
+            <td style="padding: 8px; color: #475569;">3000 kbps</td>
+            <td style="padding: 8px; color: #475569;">60 fps</td>
+            <td style="padding: 8px; color: #475569;">2 sec</td>
           </tr>
           <tr style="border-bottom: 1px solid #333;">
-            <td style="padding: 8px; color: white;">480p30</td>
-            <td style="padding: 8px; color: #a0a0a0;">852×480</td>
-            <td style="padding: 8px; color: #a0a0a0;">1500 kbps</td>
-            <td style="padding: 8px; color: #a0a0a0;">30 fps</td>
-            <td style="padding: 8px; color: #a0a0a0;">2 sec</td>
+            <td style="padding: 8px; color: #1e293b;">480p30</td>
+            <td style="padding: 8px; color: #475569;">852×480</td>
+            <td style="padding: 8px; color: #475569;">1500 kbps</td>
+            <td style="padding: 8px; color: #475569;">30 fps</td>
+            <td style="padding: 8px; color: #475569;">2 sec</td>
           </tr>
           <tr style="border-bottom: 1px solid #333;">
-            <td style="padding: 8px; color: white;">360p30</td>
-            <td style="padding: 8px; color: #a0a0a0;">640×360</td>
-            <td style="padding: 8px; color: #a0a0a0;">800 kbps</td>
-            <td style="padding: 8px; color: #a0a0a0;">30 fps</td>
-            <td style="padding: 8px; color: #a0a0a0;">2 sec</td>
+            <td style="padding: 8px; color: #1e293b;">360p30</td>
+            <td style="padding: 8px; color: #475569;">640×360</td>
+            <td style="padding: 8px; color: #475569;">800 kbps</td>
+            <td style="padding: 8px; color: #475569;">30 fps</td>
+            <td style="padding: 8px; color: #475569;">2 sec</td>
           </tr>
           <tr>
-            <td style="padding: 8px; color: white;">160p (audio)</td>
-            <td style="padding: 8px; color: #a0a0a0;">284×160</td>
-            <td style="padding: 8px; color: #a0a0a0;">400 kbps</td>
-            <td style="padding: 8px; color: #a0a0a0;">30 fps</td>
-            <td style="padding: 8px; color: #a0a0a0;">2 sec</td>
+            <td style="padding: 8px; color: #1e293b;">160p (audio)</td>
+            <td style="padding: 8px; color: #475569;">284×160</td>
+            <td style="padding: 8px; color: #475569;">400 kbps</td>
+            <td style="padding: 8px; color: #475569;">30 fps</td>
+            <td style="padding: 8px; color: #475569;">2 sec</td>
           </tr>
         </table>
       </div>
@@ -1103,7 +1103,7 @@ class TranscodeSession:
 
 The <span style="color:#00ff00">**recommendation engine**</span> personalizes content discovery, helping viewers find streams they'll enjoy. Unlike Netflix (catalog of fixed content), Twitch recommendations must account for real-time factors: who is currently live, viewer count trends, and stream recency.
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
   <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">RECOMMENDATION SYSTEM ARCHITECTURE</h4>
 
   <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -1111,21 +1111,21 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
     <div style="background: rgba(163, 113, 247, 0.15); border-radius: 12px; padding: 20px; border-left: 4px solid #a371f7;">
       <h5 style="color: #a371f7; margin: 0 0 16px 0;">DATA SOURCES</h5>
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Watch History</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">Channels, duration, recency</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Watch History</span><br>
+          <span style="color: #475569; font-size: 11px;">Channels, duration, recency</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Follows/Subs</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">Explicit preferences</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Follows/Subs</span><br>
+          <span style="color: #475569; font-size: 11px;">Explicit preferences</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Interactions</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">Chat, clips, raids</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Interactions</span><br>
+          <span style="color: #475569; font-size: 11px;">Chat, clips, raids</span>
         </div>
-        <div style="background: #1a1a2e; padding: 12px; border-radius: 8px; text-align: center;">
-          <span style="color: white; font-size: 13px;">Real-time</span><br>
-          <span style="color: #a0a0a0; font-size: 11px;">Live status, viewers, trends</span>
+        <div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center;">
+          <span style="color: #1e293b; font-size: 13px;">Real-time</span><br>
+          <span style="color: #475569; font-size: 11px;">Live status, viewers, trends</span>
         </div>
       </div>
     </div>
@@ -1134,15 +1134,15 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
       <div style="background: rgba(240, 136, 62, 0.15); border: 2px solid #f0883e; border-radius: 12px; padding: 20px;">
         <h5 style="color: #f0883e; margin: 0 0 12px 0;">CANDIDATE GENERATION</h5>
-        <p style="color: #a0a0a0; font-size: 12px; margin: 0;">Retrieve 1000s of potentially relevant streams using lightweight models (embedding similarity, collaborative filtering)</p>
+        <p style="color: #475569; font-size: 12px; margin: 0;">Retrieve 1000s of potentially relevant streams using lightweight models (embedding similarity, collaborative filtering)</p>
       </div>
       <div style="background: rgba(88, 166, 255, 0.15); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px;">
         <h5 style="color: #58a6ff; margin: 0 0 12px 0;">RANKING</h5>
-        <p style="color: #a0a0a0; font-size: 12px; margin: 0;">Deep neural network scores candidates on predicted engagement (watch time, follows, interactions)</p>
+        <p style="color: #475569; font-size: 12px; margin: 0;">Deep neural network scores candidates on predicted engagement (watch time, follows, interactions)</p>
       </div>
       <div style="background: rgba(63, 185, 80, 0.15); border: 2px solid #3fb950; border-radius: 12px; padding: 20px;">
         <h5 style="color: #3fb950; margin: 0 0 12px 0;">FILTERING & DIVERSITY</h5>
-        <p style="color: #a0a0a0; font-size: 12px; margin: 0;">Remove duplicates, apply business rules, ensure category diversity, inject exploration</p>
+        <p style="color: #475569; font-size: 12px; margin: 0;">Remove duplicates, apply business rules, ensure category diversity, inject exploration</p>
       </div>
     </div>
 
@@ -1151,8 +1151,8 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
       <h5 style="color: #58a6ff; margin: 0 0 16px 0;">RANKING SIGNALS (Feature Engineering)</h5>
       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
         <div>
-          <strong style="color: white; font-size: 13px;">User-Stream Affinity</strong>
-          <ul style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
+          <strong style="color: #1e293b; font-size: 13px;">User-Stream Affinity</strong>
+          <ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
             <li>Cosine similarity of user/streamer embeddings</li>
             <li>Shared viewers (collaborative signal)</li>
             <li>Category match to watch history</li>
@@ -1160,8 +1160,8 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
           </ul>
         </div>
         <div>
-          <strong style="color: white; font-size: 13px;">Stream Quality Signals</strong>
-          <ul style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
+          <strong style="color: #1e293b; font-size: 13px;">Stream Quality Signals</strong>
+          <ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
             <li>Current viewer count (social proof)</li>
             <li>Viewer trend (growing vs declining)</li>
             <li>Chat activity rate</li>
@@ -1169,8 +1169,8 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
           </ul>
         </div>
         <div>
-          <strong style="color: white; font-size: 13px;">Contextual Features</strong>
-          <ul style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
+          <strong style="color: #1e293b; font-size: 13px;">Contextual Features</strong>
+          <ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
             <li>Time of day / day of week</li>
             <li>User's current session length</li>
             <li>Recently watched in session</li>
@@ -1178,8 +1178,8 @@ The <span style="color:#00ff00">**recommendation engine**</span> personalizes co
           </ul>
         </div>
         <div>
-          <strong style="color: white; font-size: 13px;">Business Rules</strong>
-          <ul style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
+          <strong style="color: #1e293b; font-size: 13px;">Business Rules</strong>
+          <ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px;">
             <li>Partner boost (contractual requirements)</li>
             <li>New streamer boost (growth program)</li>
             <li>Promoted content (sponsored)</li>
@@ -1472,7 +1472,7 @@ class RealTimeFeatureService:
 ### Phase 1: Starting Phase (MVP)
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 24px;">
 
 **Assumptions:**
 - **Streamers**: 100 - 1,000 concurrent
@@ -1535,7 +1535,7 @@ class ChatService:
 ### Phase 2: Growth Phase
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 24px;">
 
 **Assumptions:**
 - **Streamers**: 10K concurrent
@@ -1565,7 +1565,7 @@ At this scale, managed service costs become significant. Start building custom c
 ### Phase 3: Twitch Scale
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
-<div style="background: #0d1117; border-radius: 10px; padding: 24px;">
+<div style="background: #f1f5f9; border-radius: 10px; padding: 24px;">
 
 **Assumptions:**
 - **Concurrent streamers**: 100K+
@@ -1601,7 +1601,7 @@ At 100+ Tbps, CDN costs are $0.01-0.02/GB. That's $30M+/year in CDN fees. Buildi
 
 ## Trade-off Analysis
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
 ### Core Trade-offs in Live Streaming
 
@@ -1613,33 +1613,33 @@ At 100+ Tbps, CDN costs are $0.01-0.02/GB. That's $30M+/year in CDN fees. Buildi
     <th style="padding: 12px; text-align: left; color: #58a6ff;">Twitch's Choice</th>
   </tr>
   <tr style="border-bottom: 1px solid #333;">
-    <td style="padding: 12px; color: white;">Latency vs. Stability</td>
-    <td style="padding: 12px; color: #a0a0a0;">Low latency (3-5s), more rebuffering</td>
-    <td style="padding: 12px; color: #a0a0a0;">Higher latency (15-30s), stable</td>
+    <td style="padding: 12px; color: #1e293b;">Latency vs. Stability</td>
+    <td style="padding: 12px; color: #475569;">Low latency (3-5s), more rebuffering</td>
+    <td style="padding: 12px; color: #475569;">Higher latency (15-30s), stable</td>
     <td style="padding: 12px; color: #3fb950;">User-selectable, default stable</td>
   </tr>
   <tr style="border-bottom: 1px solid #333;">
-    <td style="padding: 12px; color: white;">Transcode Cost vs. Quality</td>
-    <td style="padding: 12px; color: #a0a0a0;">Transcode all (expensive)</td>
-    <td style="padding: 12px; color: #a0a0a0;">Partners only (cheaper)</td>
+    <td style="padding: 12px; color: #1e293b;">Transcode Cost vs. Quality</td>
+    <td style="padding: 12px; color: #475569;">Transcode all (expensive)</td>
+    <td style="padding: 12px; color: #475569;">Partners only (cheaper)</td>
     <td style="padding: 12px; color: #3fb950;">Tiered by streamer level</td>
   </tr>
   <tr style="border-bottom: 1px solid #333;">
-    <td style="padding: 12px; color: white;">Chat Consistency vs. Perf</td>
-    <td style="padding: 12px; color: #a0a0a0;">Strong ordering (slower)</td>
-    <td style="padding: 12px; color: #a0a0a0;">Eventually consistent (faster)</td>
+    <td style="padding: 12px; color: #1e293b;">Chat Consistency vs. Perf</td>
+    <td style="padding: 12px; color: #475569;">Strong ordering (slower)</td>
+    <td style="padding: 12px; color: #475569;">Eventually consistent (faster)</td>
     <td style="padding: 12px; color: #3fb950;">Eventually consistent</td>
   </tr>
   <tr style="border-bottom: 1px solid #333;">
-    <td style="padding: 12px; color: white;">Recommendations</td>
-    <td style="padding: 12px; color: #a0a0a0;">Popularity-based (simple)</td>
-    <td style="padding: 12px; color: #a0a0a0;">Personalized (complex)</td>
+    <td style="padding: 12px; color: #1e293b;">Recommendations</td>
+    <td style="padding: 12px; color: #475569;">Popularity-based (simple)</td>
+    <td style="padding: 12px; color: #475569;">Personalized (complex)</td>
     <td style="padding: 12px; color: #3fb950;">Personalized with diversity</td>
   </tr>
   <tr>
-    <td style="padding: 12px; color: white;">VOD Retention</td>
-    <td style="padding: 12px; color: #a0a0a0;">Keep forever (expensive)</td>
-    <td style="padding: 12px; color: #a0a0a0;">Aggressive deletion (cheap)</td>
+    <td style="padding: 12px; color: #1e293b;">VOD Retention</td>
+    <td style="padding: 12px; color: #475569;">Keep forever (expensive)</td>
+    <td style="padding: 12px; color: #475569;">Aggressive deletion (cheap)</td>
     <td style="padding: 12px; color: #3fb950;">Tiered by user level</td>
   </tr>
 </table>

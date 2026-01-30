@@ -10,9 +10,9 @@ As AI agents become integral to software development and operations, microservic
 
 ## Why AI-Friendly Architecture Matters
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">AI Agents in Microservices Ecosystem</h3>
-  <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
+  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
     <h4 style="color: #4facfe; margin: 0 0 16px 0; font-size: 1.1em;">AI Agents Are Being Used For:</h4>
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 16px;">
@@ -266,7 +266,7 @@ runbooks:
 
 ## Standard 2: Consistent Naming Conventions
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Naming Convention Standards</h3>
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
@@ -710,11 +710,11 @@ func (s *OrderService) CancelOrder(ctx context.Context, orderID string, reason C
 
 ## Standard 5: Structured Logging
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">Structured Logging for AI</h3>
-  <div style="background: linear-gradient(135deg, #2d3561 0%, #1e2a4a 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
+  <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 10px; padding: 20px; margin-bottom: 16px;">
     <h4 style="color: #4facfe; margin: 0 0 12px 0;">Log Format (JSON):</h4>
-    <pre style="background: #0d1117; border-radius: 8px; padding: 16px; color: #c9d1d9; font-size: 0.85em; overflow-x: auto; margin: 0;"><code>{
+    <pre style="background: #f1f5f9; border-radius: 8px; padding: 16px; color: #1e293b; font-size: 0.85em; overflow-x: auto; margin: 0;"><code>{
   "timestamp": "2024-01-15T10:30:00.123Z",
   "level": "info",
   "service": "order-service",
@@ -904,7 +904,7 @@ patterns:
 
 ## Implementation Checklist
 
-<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif;">
   <h3 style="color: #00d4ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center; text-transform: uppercase; letter-spacing: 2px;">AI-Friendly Microservices Checklist</h3>
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 16px;">
