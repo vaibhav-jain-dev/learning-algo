@@ -792,17 +792,29 @@ ${testCases.map((tc, i) => {
         const startMarker = '__TEST_RESULTS__';
         const endMarker = '__END_TEST_RESULTS__';
 
-        const startIdx = output.indexOf(startMarker);
-        const endIdx = output.indexOf(endMarker);
+        // Strip HTML tags first (server may wrap output in HTML)
+        let cleanOutput = output.replace(/<[^>]*>/g, '');
+
+        // Decode common HTML entities
+        cleanOutput = cleanOutput
+            .replace(/&quot;/g, '"')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&#39;/g, "'")
+            .replace(/&nbsp;/g, ' ');
+
+        const startIdx = cleanOutput.indexOf(startMarker);
+        const endIdx = cleanOutput.indexOf(endMarker);
 
         if (startIdx === -1 || endIdx === -1) return null;
 
-        const jsonStr = output.substring(startIdx + startMarker.length, endIdx).trim();
+        const jsonStr = cleanOutput.substring(startIdx + startMarker.length, endIdx).trim();
 
         try {
             return JSON.parse(jsonStr);
         } catch (e) {
-            console.error('[ProblemRenderer] Failed to parse test results:', e);
+            console.error('[ProblemRenderer] Failed to parse test results:', e, jsonStr);
             return null;
         }
     }
