@@ -227,14 +227,32 @@ async function fetchTopicContent(topicPath) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
-    // Get the topic content
-    let content = doc.querySelector('.topic-content') || doc.querySelector('.topic-detail-page');
+    // Get the topic content - prefer .topic-content which contains the actual markdown content
+    let content = doc.querySelector('.topic-content');
+
+    if (!content) {
+        // Fallback to the entire page if topic-content not found
+        content = doc.querySelector('.topic-detail-page');
+    }
 
     if (!content) {
         throw new Error(`Could not find topic content for: ${topicPath}`);
     }
 
-    return content.cloneNode(true);
+    // Clone the content
+    const clonedContent = content.cloneNode(true);
+
+    // Debug: log content size
+    console.log(`Topic content found for ${topicPath}:`, clonedContent.textContent.length, 'characters');
+
+    // Check if content is actually there
+    if (clonedContent.textContent.trim().length === 0) {
+        console.warn(`Warning: Topic ${topicPath} has empty content`);
+    } else {
+        console.log(`First 100 chars:`, clonedContent.textContent.trim().substring(0, 100));
+    }
+
+    return clonedContent;
 }
 
 // Generate PDF
@@ -299,6 +317,9 @@ async function generatePdf() {
         // Use the combined content for PDF processing
         const pdfContent = combinedContent;
 
+        console.log('Combined content created with', topicContents.length, 'topics');
+        console.log('Total combined text length:', pdfContent.textContent.length, 'characters');
+
         // Remove elements not suitable for PDF
         const elementsToRemove = [
             '.code-run-btn',
@@ -320,11 +341,19 @@ async function generatePdf() {
             '.collapsible-heading .collapse-icon',
             'script',
             'style:not(.pdf-styles)',
+            'nav.breadcrumb', // Remove breadcrumb navigation
+            '.topic-badge', // Remove topic badges
         ];
 
+        let removedCount = 0;
         elementsToRemove.forEach(selector => {
-            pdfContent.querySelectorAll(selector).forEach(el => el.remove());
+            const elements = pdfContent.querySelectorAll(selector);
+            removedCount += elements.length;
+            elements.forEach(el => el.remove());
         });
+
+        console.log('Removed', removedCount, 'unwanted elements');
+        console.log('Content after cleanup:', pdfContent.textContent.length, 'characters');
 
         // Expand all collapsed sections
         pdfContent.querySelectorAll('.collapsible-content.collapsed').forEach(el => {
@@ -631,11 +660,34 @@ async function generatePdf() {
         `;
         pdfContainer.prepend(pdfStyles);
 
-        // Temporarily add to DOM for rendering (hidden)
-        pdfContainer.style.position = 'absolute';
-        pdfContainer.style.left = '-9999px';
+        // Debug: log final container stats
+        console.log('PDF Container created');
+        console.log('Container HTML length:', pdfContainer.innerHTML.length);
+        console.log('Container text length:', pdfContainer.textContent.length);
+        console.log('Number of elements:', pdfContainer.querySelectorAll('*').length);
+
+        // Temporarily add to DOM for rendering (hidden but on-screen for html2canvas)
+        // Using opacity:0 and pointer-events:none instead of positioning off-screen
+        // because html2canvas may not render off-screen content properly
+        pdfContainer.style.position = 'fixed';
         pdfContainer.style.top = '0';
+        pdfContainer.style.left = '50%';
+        pdfContainer.style.transform = 'translateX(-50%)';
+        pdfContainer.style.width = '680px';
+        pdfContainer.style.opacity = '0';
+        pdfContainer.style.pointerEvents = 'none';
+        pdfContainer.style.backgroundColor = 'white';
+        pdfContainer.style.zIndex = '-1000';
         document.body.appendChild(pdfContainer);
+
+        // Give browser time to render and calculate layout
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // DEBUG MODE: Uncomment to see content before PDF generation
+        // pdfContainer.style.opacity = '1';
+        // pdfContainer.style.zIndex = '10000';
+        // pdfContainer.style.transform = 'translateX(-50%)';
+        // return; // Stop here to inspect content
 
         // Generate filename
         let filename;
@@ -659,9 +711,11 @@ async function generatePdf() {
                 scale: 2,
                 useCORS: true,
                 letterRendering: true,
-                logging: false,
+                logging: true, // Enable logging for debugging
                 width: 680,
-                windowWidth: 680
+                windowWidth: 680,
+                scrollY: 0,
+                scrollX: 0
             },
             jsPDF: {
                 unit: 'mm',
@@ -678,13 +732,17 @@ async function generatePdf() {
         };
 
         // Generate PDF with page numbers
-        const pdfInstance = html2pdf().set(opt).from(pdfContainer);
+        console.log('Starting PDF generation...');
+        const worker = html2pdf().set(opt).from(pdfContainer);
 
-        // Add page numbers after PDF is generated
-        await pdfInstance.toPdf().get('pdf').then(function(pdf) {
+        // Convert to PDF and add page numbers
+        await worker.toPdf().get('pdf').then(function(pdf) {
+            console.log('PDF generated, adding page numbers...');
             const totalPages = pdf.internal.getNumberOfPages();
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
+
+            console.log(`Total pages: ${totalPages}`);
 
             for (let i = 1; i <= totalPages; i++) {
                 pdf.setPage(i);
@@ -707,7 +765,11 @@ async function generatePdf() {
                 const rightTextWidth = pdf.getStringUnitWidth(rightText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
                 pdf.text(rightText, pageWidth - rightTextWidth - 15, pageHeight - 10);
             }
-        }).save();
+
+            // Save the PDF
+            console.log('Saving PDF as:', filename);
+            pdf.save(filename);
+        });
 
         // Remove temporary container
         document.body.removeChild(pdfContainer);
