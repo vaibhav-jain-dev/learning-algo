@@ -1703,6 +1703,597 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
+## Edge Cases & Failure Modes {#edge-cases-failure-modes}
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+### Sync Conflicts {#sync-conflicts}
+
+<div class="flow-diagram" style="background: #f1f5f9; border: 2px solid #da3633; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="text-align: center; font-weight: bold; color: #f85149; margin-bottom: 20px; font-size: 16px;">CONFLICT SCENARIOS & RESOLUTION</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px;">
+
+<!-- Scenario 1: Edit-Edit Conflict -->
+<div class="flow-box warning" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 8px;">Scenario 1: Edit-Edit Conflict</div>
+<div style="font-size: 13px; color: #78350f;">
+<strong>Situation:</strong> User edits file on laptop (offline) while same file is edited on phone (online)<br>
+<strong>Detection:</strong> Server version incremented while client has local changes based on stale version<br>
+<strong>Resolution:</strong> Create conflict copy: <code>file.docx</code> + <code>file (conflict from Laptop).docx</code><br>
+<strong>UX:</strong> Notify user with clear message showing which device made which change
+</div>
+</div>
+
+<!-- Scenario 2: Delete-Edit Conflict -->
+<div class="flow-box warning" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 12px; padding: 16px; border-left: 4px solid #dc2626;">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 8px;">Scenario 2: Delete-Edit Conflict</div>
+<div style="font-size: 13px; color: #7f1d1d;">
+<strong>Situation:</strong> User A deletes file while User B is editing it offline<br>
+<strong>Detection:</strong> File marked deleted on server, client attempts to push edit<br>
+<strong>Resolution:</strong> Resurrect file with User B's edits, notify User A<br>
+<strong>Alternative:</strong> Move to User B's trash with "This file was deleted while you were editing"
+</div>
+</div>
+
+<!-- Scenario 3: Move-Edit Conflict -->
+<div class="flow-box warning" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 16px; border-left: 4px solid #2563eb;">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px;">Scenario 3: Move-Edit Conflict</div>
+<div style="font-size: 13px; color: #1e3a8a;">
+<strong>Situation:</strong> File moved from <code>/Projects/Q1/</code> to <code>/Archive/</code> while being edited<br>
+<strong>Detection:</strong> Path changed on server while client references old path<br>
+<strong>Resolution:</strong> Track by file ID (not path) - apply edit to file at new location<br>
+<strong>Key:</strong> Never use path as primary identifier
+</div>
+</div>
+
+<!-- Scenario 4: Rename-Rename Conflict -->
+<div class="flow-box warning" style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 16px; border-left: 4px solid #9333ea;">
+<div style="color: #6b21a8; font-weight: bold; margin-bottom: 8px;">Scenario 4: Rename-Rename Conflict</div>
+<div style="font-size: 13px; color: #581c87;">
+<strong>Situation:</strong> User A renames to <code>report-final.docx</code>, User B renames to <code>report-v2.docx</code><br>
+<strong>Detection:</strong> Two rename operations on same file ID with same base version<br>
+<strong>Resolution:</strong> Last-write-wins for metadata, but keep version history showing both names<br>
+<strong>UX:</strong> Notification to losing user: "report.docx was renamed to X by User A"
+</div>
+</div>
+
+</div>
+</div>
+
+### Network Failures {#network-failures}
+
+<div class="flow-diagram" style="background: #f1f5f9; border: 2px solid #f59e0b; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="text-align: center; font-weight: bold; color: #d97706; margin-bottom: 20px; font-size: 16px;">NETWORK FAILURE HANDLING</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+
+<!-- Upload Interruption -->
+<div class="flow-box primary" style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Upload Interruption</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Problem:</strong> Connection drops during 500MB upload at 80%<br><br>
+<strong>Solution:</strong>
+<ul style="margin: 8px 0; padding-left: 16px;">
+<li>Chunked upload (4MB chunks)</li>
+<li>Server tracks received chunks by upload_id</li>
+<li>Client queries: "Which chunks do you have?"</li>
+<li>Resume from chunk 101 instead of byte 0</li>
+</ul>
+<strong>Implementation:</strong> S3 multipart upload API
+</div>
+</div>
+
+<!-- Download Interruption -->
+<div class="flow-box primary" style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Download Interruption</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Problem:</strong> Large file download fails at 60%<br><br>
+<strong>Solution:</strong>
+<ul style="margin: 8px 0; padding-left: 16px;">
+<li>HTTP Range requests for partial content</li>
+<li>Track downloaded bytes in local DB</li>
+<li>Resume with <code>Range: bytes=N-</code> header</li>
+<li>Verify final hash matches expected</li>
+</ul>
+<strong>Header:</strong> <code>Accept-Ranges: bytes</code>
+</div>
+</div>
+
+<!-- Sync Queue Backup -->
+<div class="flow-box primary" style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Sync Queue Backup</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Problem:</strong> Device offline for days, 1000s of pending changes<br><br>
+<strong>Solution:</strong>
+<ul style="margin: 8px 0; padding-left: 16px;">
+<li>Persistent local queue (SQLite)</li>
+<li>Priority ordering (user-initiated > background)</li>
+<li>Exponential backoff with jitter</li>
+<li>Batch operations where possible</li>
+</ul>
+<strong>Limit:</strong> Queue cap with oldest-first eviction
+</div>
+</div>
+
+<!-- Partial Metadata Updates -->
+<div class="flow-box primary" style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Partial Metadata Updates</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Problem:</strong> Chunk uploaded but metadata update fails<br><br>
+<strong>Solution:</strong>
+<ul style="margin: 8px 0; padding-left: 16px;">
+<li>Idempotent chunk uploads (content-addressed)</li>
+<li>Retry metadata update with same chunk hashes</li>
+<li>Background orphan cleanup job</li>
+<li>Two-phase commit for critical operations</li>
+</ul>
+<strong>Key:</strong> Never delete chunks until metadata confirms
+</div>
+</div>
+
+</div>
+</div>
+
+### Storage Failures {#storage-failures}
+
+<div style="background: #f1f5f9; border: 2px solid #059669; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="text-align: center; font-weight: bold; color: #059669; margin-bottom: 20px; font-size: 16px;">STORAGE FAILURE SCENARIOS</div>
+
+| Failure Type | Detection | Recovery | Prevention |
+|--------------|-----------|----------|------------|
+| **Chunk Corruption** | Checksum mismatch on read | Fetch from replica, mark primary for repair | Checksums on write, periodic scrubbing |
+| **Metadata DB Failure** | Connection timeout, query errors | Failover to read replica, promote to primary | Multi-AZ deployment, regular backups |
+| **S3 Region Outage** | AWS health check, increased latency | Route to secondary region, serve cached | Cross-region replication for critical data |
+| **Orphaned Chunks** | Reference count = 0 in reconciliation | Background cleanup after grace period | Transactional chunk registration |
+| **Missing Chunks** | Manifest references non-existent chunk | Restore from backup or mark file corrupted | 3+ replicas, erasure coding |
+
+</div>
+
+### Edge Cases in File Operations {#edge-cases-file-ops}
+
+<div style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+
+<!-- Edge Case 1 -->
+<div class="flow-box success" style="background: #ffffff; border-left: 4px solid #16a34a; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Zero-Byte Files</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Issue:</strong> Empty file has no chunks to deduplicate<br>
+<strong>Solution:</strong> Special handling - store only metadata, no S3 object<br>
+<strong>Sync:</strong> Create placeholder immediately, no chunk transfer needed
+</div>
+</div>
+
+<!-- Edge Case 2 -->
+<div class="flow-box success" style="background: #ffffff; border-left: 4px solid #16a34a; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Extremely Large Files (100GB+)</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Issue:</strong> 25,000+ chunks per file, manifest becomes huge<br>
+<strong>Solution:</strong> Hierarchical manifests (manifest of manifests)<br>
+<strong>Limit:</strong> Consider max file size policy (5TB like S3)
+</div>
+</div>
+
+<!-- Edge Case 3 -->
+<div class="flow-box success" style="background: #ffffff; border-left: 4px solid #16a34a; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Special Characters in Filenames</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Issue:</strong> Unicode, emojis, path separators in names<br>
+<strong>Solution:</strong> UTF-8 normalization (NFC), escape path separators<br>
+<strong>Cross-platform:</strong> Map illegal characters per OS
+</div>
+</div>
+
+<!-- Edge Case 4 -->
+<div class="flow-box success" style="background: #ffffff; border-left: 4px solid #16a34a; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Case Sensitivity Conflicts</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Issue:</strong> <code>File.txt</code> and <code>file.txt</code> are same on Windows, different on Linux<br>
+<strong>Solution:</strong> Case-preserving but case-insensitive matching<br>
+<strong>Warning:</strong> Alert user before creating case-only-different names
+</div>
+</div>
+
+<!-- Edge Case 5 -->
+<div class="flow-box success" style="background: #ffffff; border-left: 4px solid #16a34a; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Symbolic Links & Shortcuts</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Issue:</strong> Should links be followed or synced as links?<br>
+<strong>Solution:</strong> Sync as metadata (link target path), not resolved content<br>
+<strong>Security:</strong> Prevent symlink attacks (links outside sync folder)
+</div>
+</div>
+
+<!-- Edge Case 6 -->
+<div class="flow-box success" style="background: #ffffff; border-left: 4px solid #16a34a; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Rapid File Changes</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>Issue:</strong> User saves file 10 times in 5 seconds<br>
+<strong>Solution:</strong> Debounce (wait 2s after last change), coalesce versions<br>
+<strong>Optimization:</strong> Only sync final state, not intermediate
+</div>
+</div>
+
+</div>
+</div>
+
+### Quota & Rate Limit Failures {#quota-rate-failures}
+
+<div style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+```python
+class QuotaManager:
+    """Handle quota edge cases gracefully."""
+
+    def check_upload_quota(self, user_id, file_size):
+        current_usage = self.get_cached_usage(user_id)
+        quota_limit = self.get_quota_limit(user_id)
+
+        # Edge case 1: Quota exceeded mid-upload
+        if current_usage + file_size > quota_limit:
+            # Don't fail silently - give actionable error
+            return QuotaError(
+                current=current_usage,
+                limit=quota_limit,
+                needed=file_size,
+                suggestion="Delete 50MB or upgrade plan"
+            )
+
+        # Edge case 2: Race condition - two uploads start simultaneously
+        # Use optimistic locking with retry
+        reserved = self.reserve_quota(user_id, file_size, ttl=3600)
+        if not reserved:
+            return QuotaError("Concurrent upload in progress, retry in 60s")
+
+        return QuotaReservation(id=reserved, expires_in=3600)
+
+    def handle_dedup_credit(self, user_id, file_id):
+        """
+        Edge case 3: File uploaded but chunks already exist
+        User shouldn't be charged for deduplicated storage
+        """
+        file_manifest = self.get_manifest(file_id)
+        actual_new_bytes = sum(
+            chunk.size for chunk in file_manifest.chunks
+            if chunk.ref_count == 1  # Only this user references it
+        )
+
+        # Credit back the difference
+        logical_size = file_manifest.total_size
+        self.adjust_quota(user_id, actual_new_bytes - logical_size)
+```
+
+</div>
+
+</div>
+
+---
+
+## Scaling Strategies {#scaling-strategies}
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+### Horizontal Scaling Architecture {#horizontal-scaling}
+
+<div class="flow-diagram" style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 24px; font-size: 16px;">HORIZONTAL SCALING PATTERN</div>
+
+<!-- Load Balancer Layer -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div class="flow-box primary" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); border-radius: 12px; padding: 16px 32px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">Global Load Balancer</div>
+<div style="font-size: 11px; color: #fecaca;">GeoDNS + Health Checks</div>
+</div>
+</div>
+
+<div class="flow-arrow" style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #3b82f6; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- API Gateway Layer -->
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+<div class="flow-box primary" style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 12px 20px; text-align: center; min-width: 120px;">
+<div style="color: #1d4ed8; font-weight: bold;">API Gateway</div>
+<div style="font-size: 10px; color: #475569;">US-East</div>
+</div>
+<div class="flow-box primary" style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 12px 20px; text-align: center; min-width: 120px;">
+<div style="color: #1d4ed8; font-weight: bold;">API Gateway</div>
+<div style="font-size: 10px; color: #475569;">EU-West</div>
+</div>
+<div class="flow-box primary" style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 12px 20px; text-align: center; min-width: 120px;">
+<div style="color: #1d4ed8; font-weight: bold;">API Gateway</div>
+<div style="font-size: 10px; color: #475569;">AP-South</div>
+</div>
+</div>
+
+<div class="flow-arrow" style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #3b82f6; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Services Layer -->
+<div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+<div class="flow-box success" style="background: #ffffff; border: 2px solid #16a34a; border-radius: 12px; padding: 12px 16px; text-align: center;">
+<div style="color: #16a34a; font-weight: bold; font-size: 12px;">Metadata</div>
+<div style="font-size: 10px; color: #475569;">x10 pods</div>
+</div>
+<div class="flow-box success" style="background: #ffffff; border: 2px solid #16a34a; border-radius: 12px; padding: 12px 16px; text-align: center;">
+<div style="color: #16a34a; font-weight: bold; font-size: 12px;">Upload</div>
+<div style="font-size: 10px; color: #475569;">x20 pods</div>
+</div>
+<div class="flow-box success" style="background: #ffffff; border: 2px solid #16a34a; border-radius: 12px; padding: 12px 16px; text-align: center;">
+<div style="color: #16a34a; font-weight: bold; font-size: 12px;">Sync</div>
+<div style="font-size: 10px; color: #475569;">x15 pods</div>
+</div>
+<div class="flow-box success" style="background: #ffffff; border: 2px solid #16a34a; border-radius: 12px; padding: 12px 16px; text-align: center;">
+<div style="color: #16a34a; font-weight: bold; font-size: 12px;">Download</div>
+<div style="font-size: 10px; color: #475569;">x25 pods</div>
+</div>
+</div>
+
+<div class="flow-arrow" style="text-align: center; margin: 12px 0;">
+<div style="border-left: 3px solid #3b82f6; height: 24px; margin: 0 auto; width: 0;"></div>
+</div>
+
+<!-- Data Layer -->
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+<div class="flow-box warning" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); border-radius: 12px; padding: 12px 20px; text-align: center;">
+<div style="font-weight: bold; color: #78350f;">PostgreSQL</div>
+<div style="font-size: 10px; color: #92400e;">Sharded x8</div>
+</div>
+<div class="flow-box warning" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); border-radius: 12px; padding: 12px 20px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">Redis Cluster</div>
+<div style="font-size: 10px; color: #fecaca;">x12 nodes</div>
+</div>
+<div class="flow-box warning" style="background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); border-radius: 12px; padding: 12px 20px; text-align: center;">
+<div style="font-weight: bold; color: #ffffff;">S3</div>
+<div style="font-size: 10px; color: #fed7aa;">Multi-region</div>
+</div>
+</div>
+
+</div>
+
+### Database Sharding Strategy {#database-sharding}
+
+<div style="background: #f1f5f9; border: 2px solid #8b5cf6; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="text-align: center; font-weight: bold; color: #7c3aed; margin-bottom: 20px; font-size: 16px;">METADATA SHARDING STRATEGIES</div>
+
+| Strategy | Shard Key | Pros | Cons | Best For |
+|----------|-----------|------|------|----------|
+| **User ID Hash** | `hash(user_id) % N` | Even distribution, simple | Cross-user queries slow | Consumer apps (Dropbox) |
+| **Organization ID** | `org_id` | Team data colocated | Hot orgs need splitting | Enterprise (Google Workspace) |
+| **File ID Hash** | `hash(file_id) % N` | Even distribution | User's files scattered | High-volume single files |
+| **Geographic** | `user_region` | Data locality, compliance | Uneven if regions differ | Global with regulations |
+
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px;">Recommended Hybrid Approach:</div>
+<div style="font-size: 13px; color: #475569;">
+1. <strong>Primary shard</strong> by <code>user_id</code> - keeps user's metadata together<br>
+2. <strong>Secondary index</strong> for shared files - cross-shard lookup table<br>
+3. <strong>Global table</strong> for chunk dedup index - DynamoDB Global Tables
+</div>
+</div>
+
+</div>
+
+### Caching Strategy {#caching-strategy}
+
+<div style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+
+<!-- L1 Cache -->
+<div style="background: #ffffff; border: 2px solid #16a34a; border-radius: 12px; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px;">L1: Application Cache</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>What:</strong> In-memory, per-pod<br>
+<strong>TTL:</strong> 30 seconds<br>
+<strong>Use for:</strong> User sessions, hot file metadata<br>
+<strong>Size:</strong> 512MB per pod<br>
+<strong>Eviction:</strong> LRU
+</div>
+</div>
+
+<!-- L2 Cache -->
+<div style="background: #ffffff; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px;">
+<div style="color: #d97706; font-weight: bold; margin-bottom: 12px;">L2: Redis Cluster</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>What:</strong> Distributed, shared<br>
+<strong>TTL:</strong> 5 minutes<br>
+<strong>Use for:</strong> Sync cursors, file listings, permissions<br>
+<strong>Size:</strong> 100GB cluster<br>
+<strong>Eviction:</strong> volatile-lru
+</div>
+</div>
+
+<!-- L3 Cache -->
+<div style="background: #ffffff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">L3: CDN Edge Cache</div>
+<div style="font-size: 12px; color: #475569;">
+<strong>What:</strong> CloudFront/Cloudflare<br>
+<strong>TTL:</strong> 24 hours (thumbnails), 1 hour (files)<br>
+<strong>Use for:</strong> Thumbnails, static previews, downloads<br>
+<strong>Size:</strong> Edge-dependent<br>
+<strong>Invalidation:</strong> On file update
+</div>
+</div>
+
+</div>
+
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Cache Invalidation Strategy:</div>
+<div style="font-size: 13px; color: #475569; font-family: monospace;">
+file_update -> publish to Kafka "file.updated" topic<br>
+-> Redis subscriber invalidates L2 cache<br>
+-> CDN purge API called for affected URLs<br>
+-> Websocket pushes invalidation to connected clients (L1)
+</div>
+</div>
+
+</div>
+
+### Auto-Scaling Policies {#auto-scaling}
+
+<div style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+```yaml
+# Kubernetes HPA Configuration
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: upload-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: upload-service
+  minReplicas: 5
+  maxReplicas: 100
+  metrics:
+  # Scale on CPU
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  # Scale on custom metric: upload queue depth
+  - type: External
+    external:
+      metric:
+        name: upload_queue_depth
+      target:
+        type: AverageValue
+        averageValue: "100"
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+```
+
+| Service | Scale Trigger | Min Pods | Max Pods | Scale Speed |
+|---------|--------------|----------|----------|-------------|
+| **Upload** | Queue depth > 100 | 5 | 100 | Fast (60s) |
+| **Download** | Request latency > 200ms | 10 | 200 | Fast (60s) |
+| **Sync** | WebSocket connections | 5 | 50 | Medium (120s) |
+| **Metadata** | CPU > 70% | 3 | 30 | Slow (300s) |
+
+</div>
+
+### Performance Optimization Techniques {#performance-optimization}
+
+<div style="background: #f1f5f9; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+
+<!-- Technique 1 -->
+<div style="background: #ffffff; border-left: 4px solid #16a34a; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #16a34a; font-weight: bold; margin-bottom: 8px;">Parallel Chunk Upload</div>
+<div style="font-size: 12px; color: #475569;">
+Upload 4-8 chunks simultaneously<br>
+<strong>Result:</strong> 4x faster for large files<br>
+<strong>Limit:</strong> Per-user connection pool
+</div>
+</div>
+
+<!-- Technique 2 -->
+<div style="background: #ffffff; border-left: 4px solid #3b82f6; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Presigned URL Offload</div>
+<div style="font-size: 12px; color: #475569;">
+Direct S3 upload bypasses API servers<br>
+<strong>Result:</strong> 10x API server capacity<br>
+<strong>Security:</strong> Short-lived URLs (15min)
+</div>
+</div>
+
+<!-- Technique 3 -->
+<div style="background: #ffffff; border-left: 4px solid #f59e0b; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #d97706; font-weight: bold; margin-bottom: 8px;">Batch Sync Operations</div>
+<div style="font-size: 12px; color: #475569;">
+Combine multiple changes in single request<br>
+<strong>Result:</strong> 90% fewer API calls<br>
+<strong>Trade-off:</strong> Slightly delayed sync
+</div>
+</div>
+
+<!-- Technique 4 -->
+<div style="background: #ffffff; border-left: 4px solid #8b5cf6; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px;">Connection Pooling</div>
+<div style="font-size: 12px; color: #475569;">
+Reuse DB/Redis connections across requests<br>
+<strong>Result:</strong> 50% latency reduction<br>
+<strong>Config:</strong> PgBouncer, Redis connection pool
+</div>
+</div>
+
+<!-- Technique 5 -->
+<div style="background: #ffffff; border-left: 4px solid #ec4899; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #db2777; font-weight: bold; margin-bottom: 8px;">Async Thumbnail Generation</div>
+<div style="font-size: 12px; color: #475569;">
+Generate previews in background queue<br>
+<strong>Result:</strong> Upload returns immediately<br>
+<strong>Queue:</strong> SQS + Lambda or Kafka + workers
+</div>
+</div>
+
+<!-- Technique 6 -->
+<div style="background: #ffffff; border-left: 4px solid #06b6d4; border-radius: 0 12px 12px 0; padding: 16px;">
+<div style="color: #0891b2; font-weight: bold; margin-bottom: 8px;">Read Replicas</div>
+<div style="font-size: 12px; color: #475569;">
+Route reads to replicas, writes to primary<br>
+<strong>Result:</strong> 5x read capacity<br>
+<strong>Latency:</strong> Accept 100ms replication lag
+</div>
+</div>
+
+</div>
+</div>
+
+### Capacity Planning {#capacity-planning}
+
+<div style="background: #f1f5f9; border: 2px solid #1d4ed8; border-radius: 16px; padding: 24px; margin: 16px 0;">
+
+<div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px;">CAPACITY ESTIMATION FORMULAS</div>
+
+| Metric | Formula | Example (10M users) |
+|--------|---------|---------------------|
+| **Storage** | Users x Avg files x Avg size x (1 - dedup%) | 10M x 500 x 5MB x 0.6 = 15PB |
+| **Metadata DB** | Users x Files x 2KB per record | 10M x 500 x 2KB = 10TB |
+| **Upload bandwidth** | Daily uploads x Avg size / seconds | 50M x 5MB / 86400 = 2.9GB/s |
+| **API requests** | Users x Requests/day / seconds | 10M x 100 / 86400 = 11.5K RPS |
+| **Sync connections** | Active users x Devices | 1M x 2.5 = 2.5M WebSockets |
+
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 16px;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px;">Rule of Thumb:</div>
+<div style="font-size: 13px; color: #475569;">
+Plan for <strong>3x peak traffic</strong> over average. File storage services see 5-10x spikes during:<br>
+- Monday mornings (sync after weekend)<br>
+- End of quarter (business reports)<br>
+- Product launches (marketing assets)
+</div>
+</div>
+
+</div>
+
+</div>
+
+  ---
+
 ## Interview Tips {#interview-tips}
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
