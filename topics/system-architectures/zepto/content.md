@@ -1,6 +1,54 @@
 # Design Zepto (Quick Commerce Platform)
 
-## Problem Statement
+<nav style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #334155;">
+<h3 style="color: #f8fafc; margin: 0 0 16px 0; font-size: 18px;">📑 Table of Contents</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+
+<div>
+<h4 style="color: #60a5fa; margin: 0 0 8px 0; font-size: 14px;">Business Context</h4>
+<ul style="list-style: none; padding: 0; margin: 0; font-size: 13px;">
+<li style="margin-bottom: 4px;"><a href="#problem-statement" style="color: #94a3b8; text-decoration: none;">→ Problem Statement</a></li>
+<li style="margin-bottom: 4px;"><a href="#business-model" style="color: #94a3b8; text-decoration: none;">→ Business Model Deep Dive</a></li>
+<li style="margin-bottom: 4px;"><a href="#unit-economics" style="color: #94a3b8; text-decoration: none;">→ Unit Economics</a></li>
+<li style="margin-bottom: 4px;"><a href="#latency-budget" style="color: #94a3b8; text-decoration: none;">→ 10-Minute Latency Budget</a></li>
+</ul>
+</div>
+
+<div>
+<h4 style="color: #22c55e; margin: 0 0 8px 0; font-size: 14px;">Core Systems</h4>
+<ul style="list-style: none; padding: 0; margin: 0; font-size: 13px;">
+<li style="margin-bottom: 4px;"><a href="#dark-store-architecture" style="color: #94a3b8; text-decoration: none;">→ Dark Store Architecture</a></li>
+<li style="margin-bottom: 4px;"><a href="#delivery-optimization" style="color: #94a3b8; text-decoration: none;">→ Delivery Optimization</a></li>
+<li style="margin-bottom: 4px;"><a href="#inventory-management" style="color: #94a3b8; text-decoration: none;">→ Inventory Management</a></li>
+<li style="margin-bottom: 4px;"><a href="#demand-prediction" style="color: #94a3b8; text-decoration: none;">→ Demand Prediction</a></li>
+</ul>
+</div>
+
+<div>
+<h4 style="color: #f59e0b; margin: 0 0 8px 0; font-size: 14px;">Architecture & Scale</h4>
+<ul style="list-style: none; padding: 0; margin: 0; font-size: 13px;">
+<li style="margin-bottom: 4px;"><a href="#system-architecture" style="color: #94a3b8; text-decoration: none;">→ High-Level Architecture</a></li>
+<li style="margin-bottom: 4px;"><a href="#scaling-phases" style="color: #94a3b8; text-decoration: none;">→ Scaling Phases</a></li>
+<li style="margin-bottom: 4px;"><a href="#trade-offs" style="color: #94a3b8; text-decoration: none;">→ Trade-offs & Decisions</a></li>
+<li style="margin-bottom: 4px;"><a href="#edge-cases" style="color: #94a3b8; text-decoration: none;">→ Edge Cases & Failure Modes</a></li>
+</ul>
+</div>
+
+<div>
+<h4 style="color: #ec4899; margin: 0 0 8px 0; font-size: 14px;">Interview Prep</h4>
+<ul style="list-style: none; padding: 0; margin: 0; font-size: 13px;">
+<li style="margin-bottom: 4px;"><a href="#interview-tips" style="color: #94a3b8; text-decoration: none;">→ Interview Tips</a></li>
+<li style="margin-bottom: 4px;"><a href="#response-framework" style="color: #94a3b8; text-decoration: none;">→ Response Framework</a></li>
+<li style="margin-bottom: 4px;"><a href="#cross-references" style="color: #94a3b8; text-decoration: none;">→ Cross-References</a></li>
+</ul>
+</div>
+
+</div>
+</nav>
+
+---
+
+<h2 id="problem-statement">Problem Statement</h2>
 
 Design a 10-minute grocery delivery platform operating through strategically located dark stores, managing real-time inventory across thousands of SKUs, optimizing last-mile delivery with dedicated rider fleets, and predicting hyper-local demand patterns to maintain service level agreements.
 
@@ -37,7 +85,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Quick Commerce: The Business Model Deep Dive
+<h2 id="business-model">Quick Commerce: The Business Model Deep Dive</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -70,7 +118,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 </div>
 </div>
 
-### The Unit Economics Reality
+<h3 id="unit-economics">The Unit Economics Reality</h3>
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -94,7 +142,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-### The 10-Minute Promise: Latency Budget Breakdown
+<h3 id="latency-budget">The 10-Minute Promise: Latency Budget Breakdown</h3>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
 <h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">10-MINUTE DELIVERY LATENCY BUDGET</h4>
@@ -208,7 +256,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Dark Store Architecture
+<h2 id="dark-store-architecture">Dark Store Architecture</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -524,7 +572,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Delivery Optimization System
+<h2 id="delivery-optimization">Delivery Optimization System</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -963,7 +1011,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Inventory Management System
+<h2 id="inventory-management">Inventory Management System</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -1166,10 +1214,89 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-### Inventory Events and State Machine
+<h3 id="inventory-state-machine">Inventory Events and State Machine</h3>
+
+<!-- Visual State Machine Diagram -->
+<div class="diagram-container">
+<div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #f8fafc; text-align: center; margin: 0 0 24px 0;">INVENTORY STATE MACHINE</h4>
+
+<!-- Inbound Flow -->
+<div style="margin-bottom: 24px;">
+<div style="color: #22c55e; font-size: 12px; font-weight: bold; margin-bottom: 12px; text-transform: uppercase;">Inbound Flow (Supplier → Shelf)</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: linear-gradient(135deg, #374151 0%, #1f2937 100%); border: 2px solid #6b7280; border-radius: 8px; padding: 10px 16px; text-align: center; color: #d1d5db; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">ORDERED</div>
+</div>
+<div style="color: #22c55e;">→</div>
+<div style="background: linear-gradient(135deg, #374151 0%, #1f2937 100%); border: 2px solid #6b7280; border-radius: 8px; padding: 10px 16px; text-align: center; color: #d1d5db; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">IN_TRANSIT</div>
+</div>
+<div style="color: #22c55e;">→</div>
+<div style="background: linear-gradient(135deg, #374151 0%, #1f2937 100%); border: 2px solid #6b7280; border-radius: 8px; padding: 10px 16px; text-align: center; color: #d1d5db; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">RECEIVED</div>
+</div>
+<div style="color: #22c55e;">→</div>
+<div style="background: linear-gradient(135deg, #374151 0%, #1f2937 100%); border: 2px solid #6b7280; border-radius: 8px; padding: 10px 16px; text-align: center; color: #d1d5db; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">PUTAWAY</div>
+</div>
+<div style="color: #22c55e;">→</div>
+<div style="background: linear-gradient(135deg, #166534 0%, #14532d 100%); border: 2px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; color: #86efac; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">AVAILABLE</div>
+</div>
+</div>
+</div>
+
+<!-- Outbound Flow -->
+<div style="margin-bottom: 24px;">
+<div style="color: #3b82f6; font-size: 12px; font-weight: bold; margin-bottom: 12px; text-transform: uppercase;">Outbound Flow (Shelf → Customer)</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: linear-gradient(135deg, #166534 0%, #14532d 100%); border: 2px solid #22c55e; border-radius: 8px; padding: 10px 16px; text-align: center; color: #86efac; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">AVAILABLE</div>
+</div>
+<div style="color: #3b82f6;">→</div>
+<div style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); border: 2px solid #3b82f6; border-radius: 8px; padding: 10px 16px; text-align: center; color: #93c5fd; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">RESERVED</div>
+</div>
+<div style="color: #3b82f6;">→</div>
+<div style="background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%); border: 2px solid #a855f7; border-radius: 8px; padding: 10px 16px; text-align: center; color: #d8b4fe; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">PICKED</div>
+</div>
+<div style="color: #3b82f6;">→</div>
+<div style="background: linear-gradient(135deg, #9d174d 0%, #831843 100%); border: 2px solid #ec4899; border-radius: 8px; padding: 10px 16px; text-align: center; color: #f9a8d4; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">PACKED</div>
+</div>
+<div style="color: #3b82f6;">→</div>
+<div style="background: linear-gradient(135deg, #0e7490 0%, #155e75 100%); border: 2px solid #06b6d4; border-radius: 8px; padding: 10px 16px; text-align: center; color: #67e8f9; min-width: 80px;">
+<div style="font-weight: bold; font-size: 12px;">DELIVERED</div>
+</div>
+</div>
+</div>
+
+<!-- Exception Flows -->
+<div>
+<div style="color: #ef4444; font-size: 12px; font-weight: bold; margin-bottom: 12px; text-transform: uppercase;">Exception Flows</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div style="background: #450a0a; border: 1px dashed #ef4444; border-radius: 8px; padding: 8px 12px; font-size: 11px; color: #fca5a5;">
+RESERVED → AVAILABLE (cancelled)
+</div>
+<div style="background: #450a0a; border: 1px dashed #ef4444; border-radius: 8px; padding: 8px 12px; font-size: 11px; color: #fca5a5;">
+AVAILABLE → DAMAGED
+</div>
+<div style="background: #450a0a; border: 1px dashed #ef4444; border-radius: 8px; padding: 8px 12px; font-size: 11px; color: #fca5a5;">
+AVAILABLE → EXPIRED
+</div>
+<div style="background: #451a03; border: 1px dashed #f59e0b; border-radius: 8px; padding: 8px 12px; font-size: 11px; color: #fcd34d;">
+DELIVERED → AVAILABLE (return)
+</div>
+</div>
+</div>
+
+</div>
+</div>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #3b82f6;">
-<h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">INVENTORY STATE TRANSITIONS</h4>
+<h4 style="color: #60a5fa; margin: 0 0 20px 0; text-align: center;">INVENTORY STATE TRANSITIONS - DETAILED</h4>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
 
@@ -1462,7 +1589,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Demand Prediction System
+<h2 id="demand-prediction">Demand Prediction System</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -2015,7 +2142,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## High-Level System Architecture
+<h2 id="system-architecture">High-Level System Architecture</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -2159,7 +2286,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Scaling Phases
+<h2 id="scaling-phases">Scaling Phases</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -2247,7 +2374,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Trade-offs and Design Decisions
+<h2 id="trade-offs">Trade-offs and Design Decisions</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -2342,7 +2469,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Interview Tips: What To Say and What To Avoid
+<h2 id="interview-tips">Interview Tips: What To Say and What To Avoid</h2>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
@@ -2378,7 +2505,7 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 </div>
 
-### The Structured Response Framework
+<h3 id="response-framework">The Structured Response Framework</h3>
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #374151;">
 
@@ -2408,7 +2535,318 @@ Design a 10-minute grocery delivery platform operating through strategically loc
 
 ---
 
-## Cross-References
+<h2 id="edge-cases">Edge Cases & Failure Modes</h2>
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+Understanding what can go wrong is as important as knowing the happy path. Here's a comprehensive analysis of failure modes and how to handle them.
+
+<h3 id="order-flow-failures">Order Flow Failure Scenarios</h3>
+
+<div class="diagram-container">
+<div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h4 style="color: #f8fafc; text-align: center; margin: 0 0 24px 0;">ORDER LIFECYCLE WITH FAILURE POINTS</h4>
+
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 12px; padding: 16px 24px; text-align: center; color: white; min-width: 120px;">
+<div style="font-weight: bold;">Order Placed</div>
+<div style="font-size: 11px; opacity: 0.8;">t=0</div>
+</div>
+<div style="color: #60a5fa; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 12px; padding: 16px 24px; text-align: center; color: white; min-width: 120px;">
+<div style="font-weight: bold;">Payment</div>
+<div style="font-size: 11px; opacity: 0.8;">t=5s</div>
+</div>
+<div style="color: #60a5fa; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 12px; padding: 16px 24px; text-align: center; color: white; min-width: 120px;">
+<div style="font-weight: bold;">Inventory Reserved</div>
+<div style="font-size: 11px; opacity: 0.8;">t=10s</div>
+</div>
+</div>
+
+<div style="color: #94a3b8; font-size: 16px;">↓</div>
+
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center;">
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; padding: 16px 24px; text-align: center; color: white; min-width: 120px;">
+<div style="font-weight: bold;">Picking</div>
+<div style="font-size: 11px; opacity: 0.8;">t=30s-3min</div>
+</div>
+<div style="color: #60a5fa; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); border-radius: 12px; padding: 16px 24px; text-align: center; color: white; min-width: 120px;">
+<div style="font-weight: bold;">Rider Assigned</div>
+<div style="font-size: 11px; opacity: 0.8;">t=3-4min</div>
+</div>
+<div style="color: #60a5fa; font-size: 20px;">→</div>
+<div style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border-radius: 12px; padding: 16px 24px; text-align: center; color: white; min-width: 120px;">
+<div style="font-weight: bold;">Delivered</div>
+<div style="font-size: 11px; opacity: 0.8;">t=10min</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h5 style="color: #dc2626; margin: 0 0 12px 0;">🔴 Payment Failure</h5>
+<div style="font-size: 13px; color: #374151;">
+
+**Scenario**: Payment gateway timeout or decline
+
+**Impact**: Order stuck, customer frustrated
+
+**Handling**:
+1. Retry with exponential backoff (3 attempts)
+2. Hold inventory reservation for 5 minutes
+3. Show "Retrying payment..." to customer
+4. Offer alternative payment methods
+5. If all fail, release reservation gracefully
+
+**Mitigation**: Pre-authorize for subscription customers
+
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h5 style="color: #dc2626; margin: 0 0 12px 0;">🔴 Inventory Discrepancy</h5>
+<div style="font-size: 13px; color: #374151;">
+
+**Scenario**: System shows available, but item not on shelf
+
+**Impact**: Order delay, potential cancellation
+
+**Handling**:
+1. Picker marks "Item Not Found"
+2. System triggers substitution flow
+3. Customer notified with alternatives
+4. 60-second window for response
+5. Default action if no response
+6. Immediate cycle count scheduled
+
+**Mitigation**: Higher safety stock, RFID tracking
+
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h5 style="color: #dc2626; margin: 0 0 12px 0;">🔴 No Rider Available</h5>
+<div style="font-size: 13px; color: #374151;">
+
+**Scenario**: All riders busy or shift change
+
+**Impact**: SLA breach risk
+
+**Handling**:
+1. Queue order with priority
+2. Expand search radius for riders
+3. Contact off-duty riders for overtime
+4. Activate gig rider pool
+5. Notify customer of delay
+6. Offer compensation if >15min
+
+**Mitigation**: Demand-based shift scheduling
+
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h5 style="color: #dc2626; margin: 0 0 12px 0;">🔴 Rider Accident/Breakdown</h5>
+<div style="font-size: 13px; color: #374151;">
+
+**Scenario**: Vehicle breakdown or minor accident
+
+**Impact**: Order stranded mid-delivery
+
+**Handling**:
+1. Rider reports incident via app
+2. GPS last-known location captured
+3. Nearest available rider dispatched
+4. Customer notified with new ETA
+5. Original rider gets support assistance
+6. Food safety check if perishables
+
+**Mitigation**: Regular vehicle maintenance, insurance
+
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h5 style="color: #dc2626; margin: 0 0 12px 0;">🔴 Customer Unavailable</h5>
+<div style="font-size: 13px; color: #374151;">
+
+**Scenario**: Customer not answering door/phone
+
+**Impact**: Rider blocked, other deliveries delayed
+
+**Handling**:
+1. Auto-call customer on arrival
+2. Ring doorbell, wait 2 minutes
+3. Attempt call again
+4. Leave at door if "safe drop" enabled
+5. After 5 min, mark as delivery attempted
+6. Order returned, partial refund
+
+**Mitigation**: Delivery window confirmation
+
+</div>
+</div>
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h5 style="color: #dc2626; margin: 0 0 12px 0;">🔴 Dark Store System Down</h5>
+<div style="font-size: 13px; color: #374151;">
+
+**Scenario**: Store terminal/network failure
+
+**Impact**: Cannot process orders
+
+**Handling**:
+1. Failover to paper-based picking
+2. Manual inventory tracking
+3. Route new orders to nearby stores
+4. Notify affected customers
+5. Sync when systems restore
+6. Reconcile any discrepancies
+
+**Mitigation**: Offline-capable POS systems
+
+</div>
+</div>
+
+</div>
+
+<h3 id="scale-edge-cases">Scale-Specific Edge Cases</h3>
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8b5cf6;">
+<h4 style="color: #a78bfa; margin: 0 0 20px 0; text-align: center;">EDGE CASES AT DIFFERENT SCALES</h4>
+
+<div style="overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+<thead>
+<tr style="background: #1e1b4b;">
+<th style="padding: 12px; text-align: left; color: #c4b5fd; border-bottom: 2px solid #4c1d95;">Scale</th>
+<th style="padding: 12px; text-align: left; color: #c4b5fd; border-bottom: 2px solid #4c1d95;">Edge Case</th>
+<th style="padding: 12px; text-align: left; color: #c4b5fd; border-bottom: 2px solid #4c1d95;">Why It's a Problem</th>
+<th style="padding: 12px; text-align: left; color: #c4b5fd; border-bottom: 2px solid #4c1d95;">Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>1-5 Stores</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Single point of failure</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">One store down = entire zone dark</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Manual backup procedures, founder on-call</td>
+</tr>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>20-50 Stores</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Inventory sync lag</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Redis cluster split-brain scenarios</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Implement consensus protocol, accept brief oversell risk</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>100+ Stores</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Cross-region coordination</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">User in Mumbai, address in Delhi</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">City-level sharding with global user service</td>
+</tr>
+<tr style="background: #ffffff;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>500+ Stores</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Cascading failures</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">One service failure takes down others</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Circuit breakers, bulkheads, graceful degradation</td>
+</tr>
+<tr style="background: #f8fafc;">
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;"><strong>Flash Sale</strong></td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Thundering herd</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">1000x traffic spike in 10 seconds</td>
+<td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Rate limiting, queue-based checkout, pre-scaling</td>
+</tr>
+<tr style="background: #ffffff;">
+<td style="padding: 12px;">IPL Final Night</td>
+<td style="padding: 12px;">Demand spike + rider shortage</td>
+<td style="padding: 12px;">Everyone orders snacks, no one wants to deliver</td>
+<td style="padding: 12px;">Incentive-based rider bonuses, temporary SLA relaxation</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<h3 id="what-if-scenarios">What-If Scenarios for Interviews</h3>
+
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+
+<div style="margin-bottom: 24px;">
+<h5 style="color: #2563eb; margin: 0 0 12px 0;">❓ "What if your entire Redis cluster goes down?"</h5>
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; font-size: 13px;">
+
+**Immediate Impact**: Inventory checks fail, no new orders can be placed
+
+**Response (first 30 seconds)**:
+1. Circuit breaker trips, returns cached availability (stale but safe)
+2. Accept orders with "availability not guaranteed" warning
+3. Fall back to PostgreSQL for inventory (slower but works)
+
+**Response (30s - 5min)**:
+1. Activate Redis secondary/replica cluster
+2. Warm cache from PostgreSQL snapshot
+3. Queue inventory writes for replay
+
+**Response (5min+)**:
+1. Investigate root cause
+2. If hardware failure, failover to cold standby
+3. Post-incident: Add monitoring for cache hit rate anomalies
+
+</div>
+</div>
+
+<div style="margin-bottom: 24px;">
+<h5 style="color: #2563eb; margin: 0 0 12px 0;">❓ "What if a competitor launches in your city with lower prices?"</h5>
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; font-size: 13px;">
+
+**Technical Response**:
+1. Real-time competitor price monitoring (web scraping)
+2. Dynamic pricing engine adjusts margins
+3. Targeted promotions to high-LTV customers
+4. Focus on speed advantage (10 min vs competitor's 20 min)
+
+**System Implications**:
+- Higher load on pricing service
+- More frequent price cache invalidations
+- A/B testing framework for promotion effectiveness
+
+</div>
+</div>
+
+<div>
+<h5 style="color: #2563eb; margin: 0 0 12px 0;">❓ "What if your demand forecast is consistently 50% off?"</h5>
+<div style="background: #f8fafc; border-radius: 8px; padding: 16px; font-size: 13px;">
+
+**Root Cause Investigation**:
+1. Check for data quality issues (missing events, duplicate counting)
+2. Look for systematic bias (always over or always under)
+3. Verify feature engineering (are we using right signals?)
+4. Check for concept drift (has customer behavior changed?)
+
+**Short-term Fix**:
+1. Increase safety stock buffer
+2. Fall back to simpler moving average model
+3. Add human review for high-value SKUs
+
+**Long-term Fix**:
+1. Retrain model with recent data
+2. Add new features capturing missed patterns
+3. Implement ensemble approach for robustness
+
+</div>
+</div>
+
+</div>
+
+</div>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 

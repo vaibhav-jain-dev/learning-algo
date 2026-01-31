@@ -1,6 +1,30 @@
 # Design Google Drive
 
-## Problem Statement
+<nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #4285f4;">
+
+## Table of Contents
+
+- [Problem Statement](#problem-statement)
+- [High-Level Architecture](#high-level-architecture)
+- [File Chunking Strategy](#file-chunking-strategy)
+- [Phase 1: Starting Phase](#phase-1-starting-phase)
+- [Phase 2: Medium Scale](#phase-2-medium-scale)
+- [Phase 3: High Scale (Google Drive Scale)](#phase-3-high-scale)
+- [AWS Technologies & Alternatives](#aws-technologies-alternatives)
+- [Distributed Systems Considerations](#distributed-systems-considerations)
+- [Interview Deep Dive Questions](#interview-deep-dive-questions)
+- [Why This Technology?](#why-this-technology)
+- [When Simpler Solutions Work](#when-simpler-solutions-work)
+- [Trade-off Analysis & Mitigation](#trade-off-analysis)
+- [Edge Cases & Failure Modes](#edge-cases-failure-modes)
+- [Scaling Strategies](#scaling-strategies)
+- [Interview Tips](#interview-tips)
+
+</nav>
+
+---
+
+## Problem Statement {#problem-statement}
 
 Design a cloud file storage and synchronization service that allows users to store, share, and sync files across devices.
 
@@ -18,9 +42,9 @@ Design a cloud file storage and synchronization service that allows users to sto
 
 ---
 
-## High-Level Architecture
+## High-Level Architecture {#high-level-architecture}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">CLOUD STORAGE ARCHITECTURE</h3>
 
   <!-- Client Layer -->
@@ -114,9 +138,9 @@ Design a cloud file storage and synchronization service that allows users to sto
 
   ---
 
-## File Chunking Strategy
+## File Chunking Strategy {#file-chunking-strategy}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">BLOCK-LEVEL DEDUPLICATION</h4>
 
   <!-- File Input -->
@@ -207,18 +231,18 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Phase 1: Starting Phase
+## Phase 1: Starting Phase {#phase-1-starting-phase}
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Assumptions
+### Assumptions {#phase1-assumptions}
                           - **Users**: 1,000 - 50,000
                           - **Storage**: 100GB - 10TB total
                           - **Files**: Mostly small files (< 100MB)
                           - **Budget**: $500 - $3,000/month
 
-### Monolithic Architecture
+### Monolithic Architecture {#monolithic-architecture}
 
                           ```python
                           # Simple file storage service
@@ -262,7 +286,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
                           return response['Body'].read()
                           ```
 
-#### Simple Sync Protocol
+#### Simple Sync Protocol {#simple-sync-protocol}
 
 <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
 <div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px;">POLLING-BASED SYNC</div>
@@ -292,20 +316,20 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Phase 2: Medium Scale
+## Phase 2: Medium Scale {#phase-2-medium-scale}
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Assumptions
+### Assumptions {#phase2-assumptions}
                                       - **Users**: 1M - 10M
                                       - **Storage**: 100PB+
                                       - **Uploads**: 10K files/second
                                       - **Budget**: $200K - $1M/month
 
-### Microservices with Chunking
+### Microservices with Chunking {#microservices-with-chunking}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
   <!-- API Gateway -->
 <div style="display: flex; justify-content: center; margin-bottom: 20px;">
@@ -376,7 +400,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### Delta Sync Algorithm
+### Delta Sync Algorithm {#delta-sync-algorithm}
 
                                       ```python
                                       class DeltaSyncService:
@@ -431,9 +455,9 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
                                       self.update_manifest(file_id, delta)
                                       ```
 
-### Conflict Resolution
+### Conflict Resolution {#conflict-resolution}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
   <!-- Three-way diagram -->
 <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 16px; align-items: start; margin-bottom: 24px;">
@@ -503,20 +527,20 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Phase 3: High Scale (Google Drive Scale)
+## Phase 3: High Scale (Google Drive Scale) {#phase-3-high-scale}
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Assumptions
+### Assumptions {#phase3-assumptions}
                                               - **Users**: 1B+
                                               - **Storage**: Exabytes
                                               - **Uploads**: 1M files/second
                                               - **Team**: 500+ engineers
 
-### Global Architecture
+### Global Architecture {#global-architecture}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
 <div style="text-align: center; font-weight: bold; color: #a371f7; font-size: 18px; margin-bottom: 24px;">GLOBAL FILE STORAGE INFRASTRUCTURE</div>
 
@@ -601,7 +625,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### Storage Tiering
+### Storage Tiering {#storage-tiering}
 
 <div style="background: #f1f5f9; border: 2px solid #8957e5; border-radius: 16px; padding: 24px; margin: 16px 0;">
 <div style="text-align: center; font-weight: bold; color: #a371f7; margin-bottom: 20px; font-size: 16px;">INTELLIGENT TIERING</div>
@@ -658,7 +682,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## AWS Technologies & Alternatives
+## AWS Technologies & Alternatives {#aws-technologies-alternatives}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -675,11 +699,11 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Distributed Systems Considerations
+## Distributed Systems Considerations {#distributed-systems-considerations}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### 1. Consistency Model
+### 1. Consistency Model {#consistency-model}
 
 <div style="background: #f1f5f9; border: 2px solid #58a6ff; border-radius: 16px; padding: 24px; margin: 16px 0;">
 <div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px;">CONSISTENCY GUARANTEES</div>
@@ -702,7 +726,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 </div>
 </div>
 
-### 2. Deduplication at Scale
+### 2. Deduplication at Scale {#deduplication-at-scale}
 
                                             ```python
                                             class GlobalDeduplicationService:
@@ -742,7 +766,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
                                             self.deletion_queue.add(chunk_hash)
                                             ```
 
-### 3. Quota Management
+### 3. Quota Management {#quota-management}
 
 <div style="background: #f1f5f9; border: 2px solid #f0883e; border-radius: 16px; padding: 24px; margin: 16px 0;">
 <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px;">QUOTA SERVICE</div>
@@ -777,11 +801,11 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Interview Deep Dive Questions
+## Interview Deep Dive Questions {#interview-deep-dive-questions}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
-### 1. "Why chunking instead of whole file upload?"
+### 1. "Why chunking instead of whole file upload?" {#q1-chunking}
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -841,7 +865,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
-### 2. "How do you handle conflicts in collaborative editing?"
+### 2. "How do you handle conflicts in collaborative editing?" {#q2-conflicts}
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -936,7 +960,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #238636;">
 
-### 3. "Why not just use S3 directly for everything?"
+### 3. "Why not just use S3 directly for everything?" {#q3-s3-directly}
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1024,7 +1048,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #8957e5;">
 
-### 4. "How would you implement offline support?"
+### 4. "How would you implement offline support?" {#q4-offline-support}
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1171,7 +1195,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f78166;">
 
-### 5. "How do you ensure durability and prevent data loss?"
+### 5. "How do you ensure durability and prevent data loss?" {#q5-durability}
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1304,11 +1328,11 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Why This Technology?
+## Why This Technology? {#why-this-technology}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Technology Decision Matrix
+### Technology Decision Matrix {#technology-decision-matrix}
 
   | Decision | Why This Choice | Alternative Considered | When Alternative Wins |
   |----------|-----------------|----------------------|----------------------|
@@ -1318,7 +1342,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
   | **DynamoDB for chunk index** | Consistent hashing, auto-scaling, single-digit ms | PostgreSQL | Already have Postgres, < 1B chunks |
   | **Kafka for events** | Ordered event delivery, replay capability, decoupling | Redis Pub/Sub | Simple real-time only, no replay needed |
 
-### S3 vs Alternatives Deep Dive
+### S3 vs Alternatives Deep Dive {#s3-vs-alternatives}
 
 <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1365,7 +1389,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### DynamoDB vs PostgreSQL for Metadata
+### DynamoDB vs PostgreSQL for Metadata {#dynamodb-vs-postgresql}
 
 <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1408,12 +1432,12 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## When Simpler Solutions Work
+## When Simpler Solutions Work {#when-simpler-solutions-work}
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### The "$150/month File Storage" Architecture
+### The "$150/month File Storage" Architecture {#simple-architecture}
 
 <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1492,7 +1516,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### When You Don't Need Delta Sync
+### When You Don't Need Delta Sync {#when-no-delta-sync}
 
 <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1510,7 +1534,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### Simpler Alternatives Table
+### Simpler Alternatives Table {#simpler-alternatives}
 
 <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1526,7 +1550,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### Decision Framework: Build vs. Buy
+### Decision Framework: Build vs. Buy {#build-vs-buy}
 
 <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1584,15 +1608,15 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Trade-off Analysis & Mitigation
+## Trade-off Analysis & Mitigation {#trade-off-analysis}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Core Trade-offs
+### Core Trade-offs {#core-trade-offs}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #f0883e;">
 
-#### 1. Consistency vs. Availability
+#### 1. Consistency vs. Availability {#tradeoff-consistency}
 
   | Choice | Consistency | Availability | Use When |
   |--------|-------------|--------------|----------|
@@ -1609,7 +1633,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #58a6ff;">
 
-#### 2. Storage Cost vs. Access Speed
+#### 2. Storage Cost vs. Access Speed {#tradeoff-storage-cost}
 
   | Tier | Cost/GB/month | Access Time | Use For |
   |------|---------------|-------------|---------|
@@ -1627,7 +1651,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #238636;">
 
-#### 3. Deduplication vs. Privacy
+#### 3. Deduplication vs. Privacy {#tradeoff-dedup-privacy}
 
   | Approach | Storage Savings | Privacy | Complexity |
   |----------|-----------------|---------|------------|
@@ -1645,7 +1669,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #8957e5;">
 
-#### 4. Sync Speed vs. Battery/Bandwidth
+#### 4. Sync Speed vs. Battery/Bandwidth {#tradeoff-sync-speed}
 
   | Strategy | Sync Speed | Battery Impact | Bandwidth |
   |----------|------------|----------------|-----------|
@@ -1661,7 +1685,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### Risk Mitigation Matrix
+### Risk Mitigation Matrix {#risk-mitigation}
 
 <div style="background: #f1f5f9; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1679,11 +1703,11 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
   ---
 
-## Interview Tips
+## Interview Tips {#interview-tips}
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-### Key Discussion Points
+### Key Discussion Points {#key-discussion-points}
 
   1. **Start simple, add complexity**: "For a startup, I'd use S3 + PostgreSQL. Here's when I'd add chunking..."
   2. **Chunking strategy**: Explain block-level dedup, resumability, delta sync - and when to skip it
@@ -1691,7 +1715,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
   4. **Storage tiering**: Hot/warm/cold storage, cost optimization at scale
   5. **Security**: Encryption at rest (S3 SSE), in transit (TLS), client-side for sensitive
 
-### Red Flags (What NOT to Say)
+### Red Flags (What NOT to Say) {#red-flags}
 
 <div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1706,7 +1730,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### Impressive Statements (What TO Say)
+### Impressive Statements (What TO Say) {#impressive-statements}
 
 <div style="background: linear-gradient(135deg, #1f3d1f 0%, #3a5d3a 100%); border-radius: 10px; padding: 20px; margin: 16px 0;">
 
@@ -1721,7 +1745,7 @@ Hash(C2) = <span style="color: #16a34a;">def456</span><br>
 
 </div>
 
-### Common Follow-up Questions
+### Common Follow-up Questions {#common-follow-up}
 
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0;">
 
