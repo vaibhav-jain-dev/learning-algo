@@ -382,283 +382,204 @@ async function generatePdf() {
             documentTitle = `${selectedTopics.length} Selected Topics`;
         }
 
-        // Create PDF container with A4 dimensions
+        // Create PDF container with A4 dimensions and inline styles (for html2canvas compatibility)
         // 794px width at 96 DPI = 210mm (A4 width)
         // Content area: 794 - 113 (margins) = 681px for 180mm content width
         const pdfContainer = document.createElement('div');
         pdfContainer.className = 'pdf-export-container';
-        pdfContainer.innerHTML = `
-            <div class="pdf-header">
-                <h1>${documentTitle}</h1>
-                <p class="pdf-subtitle">DSAlgo Learning Platform</p>
-            </div>
-            <div class="pdf-body"></div>
-        `;
-        pdfContainer.querySelector('.pdf-body').appendChild(pdfContent);
 
-        // Add PDF-specific styles optimized for A4
-        const pdfStyles = document.createElement('style');
-        pdfStyles.className = 'pdf-styles';
-        pdfStyles.textContent = `
-            /* A4 optimized container */
-            .pdf-export-container {
-                font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                color: #1a1a2e;
-                background: white;
-                width: 680px;
-                max-width: 680px;
-                margin: 0 auto;
-                padding: 0;
-                font-size: 11pt;
-                line-height: 1.5;
-                box-sizing: border-box;
-            }
+        // Apply inline styles to container for html2canvas
+        pdfContainer.style.fontFamily = "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+        pdfContainer.style.color = '#1a1a2e';
+        pdfContainer.style.background = 'white';
+        pdfContainer.style.width = '680px';
+        pdfContainer.style.maxWidth = '680px';
+        pdfContainer.style.margin = '0 auto';
+        pdfContainer.style.padding = '0';
+        pdfContainer.style.fontSize = '11pt';
+        pdfContainer.style.lineHeight = '1.5';
+        pdfContainer.style.boxSizing = 'border-box';
 
-            /* Header styling */
-            .pdf-header {
-                text-align: center;
-                margin-bottom: 24px;
-                padding-bottom: 16px;
-                border-bottom: 2px solid #0d6efd;
-            }
-            .pdf-header h1 {
-                font-size: 22pt;
-                margin: 0 0 8px 0;
-                color: #1a1a2e;
-                font-weight: 600;
-            }
-            .pdf-subtitle {
-                color: #6c757d;
-                margin: 0;
-                font-size: 10pt;
-            }
+        // Create header
+        const pdfHeader = document.createElement('div');
+        pdfHeader.style.textAlign = 'center';
+        pdfHeader.style.marginBottom = '24px';
+        pdfHeader.style.paddingBottom = '16px';
+        pdfHeader.style.borderBottom = '2px solid #0d6efd';
 
-            /* Topic heading for multiple topics */
-            .pdf-topic-heading {
-                margin-top: 32px;
-                margin-bottom: 20px;
-                padding-top: 16px;
-                border-top: 2px solid #0d6efd;
-            }
-            .pdf-topic-heading h1 {
-                font-size: 20pt;
-                margin: 0;
-                color: #0d6efd;
-                font-weight: 600;
-            }
+        const headerTitle = document.createElement('h1');
+        headerTitle.textContent = documentTitle;
+        headerTitle.style.fontSize = '22pt';
+        headerTitle.style.margin = '0 0 8px 0';
+        headerTitle.style.color = '#1a1a2e';
+        headerTitle.style.fontWeight = '600';
 
-            /* Body content */
-            .pdf-body {
-                line-height: 1.6;
-            }
-            .pdf-body * {
-                max-width: 100%;
-                box-sizing: border-box;
-            }
+        const headerSubtitle = document.createElement('p');
+        headerSubtitle.textContent = 'DSAlgo Learning Platform';
+        headerSubtitle.style.color = '#6c757d';
+        headerSubtitle.style.margin = '0';
+        headerSubtitle.style.fontSize = '10pt';
 
-            /* Headings - sized for A4 readability */
-            .pdf-body h1 {
-                font-size: 18pt;
-                margin: 24px 0 12px 0;
-                color: #1a1a2e;
-                font-weight: 600;
-                page-break-after: avoid;
-            }
-            .pdf-body h2 {
-                font-size: 14pt;
-                margin: 20px 0 10px 0;
-                color: #1a1a2e;
-                border-bottom: 1px solid #dee2e6;
-                padding-bottom: 6px;
-                font-weight: 600;
-                page-break-after: avoid;
-            }
-            .pdf-body h3 {
-                font-size: 12pt;
-                margin: 16px 0 8px 0;
-                color: #1a1a2e;
-                font-weight: 600;
-                page-break-after: avoid;
-            }
-            .pdf-body h4 {
-                font-size: 11pt;
-                margin: 12px 0 6px 0;
-                color: #495057;
-                font-weight: 600;
-                page-break-after: avoid;
-            }
+        pdfHeader.appendChild(headerTitle);
+        pdfHeader.appendChild(headerSubtitle);
 
-            /* Paragraphs and text */
-            .pdf-body p {
-                margin: 0 0 10px 0;
-                color: #333;
-                text-align: justify;
-                orphans: 3;
-                widows: 3;
-            }
+        // Create body wrapper
+        const pdfBody = document.createElement('div');
+        pdfBody.style.lineHeight = '1.6';
+        pdfBody.appendChild(pdfContent);
 
-            /* Lists */
-            .pdf-body ul, .pdf-body ol {
-                margin: 0 0 12px 0;
-                padding-left: 24px;
-            }
-            .pdf-body li {
-                margin-bottom: 4px;
-                color: #333;
-            }
-            .pdf-body li > ul, .pdf-body li > ol {
-                margin-top: 4px;
-                margin-bottom: 4px;
-            }
+        pdfContainer.appendChild(pdfHeader);
+        pdfContainer.appendChild(pdfBody);
 
-            /* Code blocks - optimized for A4 */
-            .pdf-body pre {
-                background: #f6f8fa;
-                border: 1px solid #e1e4e8;
-                border-radius: 4px;
-                padding: 12px;
-                margin: 12px 0;
-                font-size: 9pt;
-                line-height: 1.4;
-                overflow-x: visible;
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                word-break: break-all;
-                page-break-inside: avoid;
-                max-width: 100%;
-            }
-            .pdf-body code {
-                font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-                font-size: 9pt;
-                background: #f0f0f0;
-                padding: 1px 4px;
-                border-radius: 3px;
-            }
-            .pdf-body pre code {
-                background: none;
-                padding: 0;
-                font-size: 9pt;
-            }
+        // Apply inline styles to all content elements recursively
+        function applyInlineStyles(element) {
+            if (!element || !element.tagName) return;
 
-            /* Tables - fit A4 width */
-            .pdf-body table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 12px 0;
-                font-size: 10pt;
-                page-break-inside: avoid;
+            const tag = element.tagName.toLowerCase();
+
+            // Headings
+            if (tag === 'h1') {
+                element.style.fontSize = '18pt';
+                element.style.margin = '24px 0 12px 0';
+                element.style.color = '#1a1a2e';
+                element.style.fontWeight = '600';
+                element.style.pageBreakAfter = 'avoid';
+            } else if (tag === 'h2') {
+                element.style.fontSize = '14pt';
+                element.style.margin = '20px 0 10px 0';
+                element.style.color = '#1a1a2e';
+                element.style.borderBottom = '1px solid #dee2e6';
+                element.style.paddingBottom = '6px';
+                element.style.fontWeight = '600';
+                element.style.pageBreakAfter = 'avoid';
+            } else if (tag === 'h3') {
+                element.style.fontSize = '12pt';
+                element.style.margin = '16px 0 8px 0';
+                element.style.color = '#1a1a2e';
+                element.style.fontWeight = '600';
+                element.style.pageBreakAfter = 'avoid';
+            } else if (tag === 'h4') {
+                element.style.fontSize = '11pt';
+                element.style.margin = '12px 0 6px 0';
+                element.style.color = '#495057';
+                element.style.fontWeight = '600';
+                element.style.pageBreakAfter = 'avoid';
             }
-            .pdf-body th, .pdf-body td {
-                border: 1px solid #dee2e6;
-                padding: 8px 10px;
-                text-align: left;
-                word-wrap: break-word;
+            // Paragraphs
+            else if (tag === 'p') {
+                element.style.margin = '0 0 10px 0';
+                element.style.color = '#333';
+                element.style.textAlign = 'justify';
             }
-            .pdf-body th {
-                background: #f8f9fa;
-                font-weight: 600;
-                font-size: 10pt;
+            // Lists
+            else if (tag === 'ul' || tag === 'ol') {
+                element.style.margin = '0 0 12px 0';
+                element.style.paddingLeft = '24px';
+            } else if (tag === 'li') {
+                element.style.marginBottom = '4px';
+                element.style.color = '#333';
             }
-            .pdf-body td {
-                font-size: 9pt;
+            // Code blocks
+            else if (tag === 'pre') {
+                element.style.background = '#f6f8fa';
+                element.style.border = '1px solid #e1e4e8';
+                element.style.borderRadius = '4px';
+                element.style.padding = '12px';
+                element.style.margin = '12px 0';
+                element.style.fontSize = '9pt';
+                element.style.lineHeight = '1.4';
+                element.style.overflowX = 'visible';
+                element.style.whiteSpace = 'pre-wrap';
+                element.style.wordWrap = 'break-word';
+                element.style.wordBreak = 'break-all';
+                element.style.pageBreakInside = 'avoid';
+                element.style.maxWidth = '100%';
+            } else if (tag === 'code') {
+                element.style.fontFamily = "'Consolas', 'Monaco', 'Courier New', monospace";
+                element.style.fontSize = '9pt';
+                if (element.parentElement?.tagName !== 'PRE') {
+                    element.style.background = '#f0f0f0';
+                    element.style.padding = '1px 4px';
+                    element.style.borderRadius = '3px';
+                }
+            }
+            // Tables
+            else if (tag === 'table') {
+                element.style.width = '100%';
+                element.style.borderCollapse = 'collapse';
+                element.style.margin = '12px 0';
+                element.style.fontSize = '10pt';
+                element.style.pageBreakInside = 'avoid';
+            } else if (tag === 'th' || tag === 'td') {
+                element.style.border = '1px solid #dee2e6';
+                element.style.padding = '8px 10px';
+                element.style.textAlign = 'left';
+                element.style.wordWrap = 'break-word';
+                if (tag === 'th') {
+                    element.style.background = '#f8f9fa';
+                    element.style.fontWeight = '600';
+                    element.style.fontSize = '10pt';
+                } else {
+                    element.style.fontSize = '9pt';
+                }
+            }
+            // Blockquotes
+            else if (tag === 'blockquote') {
+                element.style.borderLeft = '3px solid #0d6efd';
+                element.style.margin = '12px 0';
+                element.style.padding = '8px 16px';
+                element.style.background = '#f8f9fa';
+                element.style.pageBreakInside = 'avoid';
+                element.style.fontStyle = 'italic';
+                element.style.color = '#555';
+            }
+            // Links
+            else if (tag === 'a') {
+                element.style.color = '#0d6efd';
+                element.style.textDecoration = 'none';
+            }
+            // Horizontal rules
+            else if (tag === 'hr') {
+                element.style.border = 'none';
+                element.style.borderTop = '1px solid #dee2e6';
+                element.style.margin = '16px 0';
+            }
+            // Strong/Bold
+            else if (tag === 'strong' || tag === 'b') {
+                element.style.fontWeight = '600';
+            }
+            // Emphasis/Italic
+            else if (tag === 'em' || tag === 'i') {
+                element.style.fontStyle = 'italic';
+            }
+            // SVG and images
+            else if (tag === 'svg' || tag === 'img') {
+                element.style.maxWidth = '100%';
+                element.style.height = 'auto';
+                element.style.pageBreakInside = 'avoid';
             }
 
-            /* Blockquotes */
-            .pdf-body blockquote {
-                border-left: 3px solid #0d6efd;
-                margin: 12px 0;
-                padding: 8px 16px;
-                background: #f8f9fa;
-                page-break-inside: avoid;
-                font-style: italic;
-                color: #555;
-            }
+            // Apply to children
+            Array.from(element.children).forEach(child => applyInlineStyles(child));
+        }
 
-            /* Diagrams and images */
-            .pdf-body .diagram-container,
-            .pdf-body .circuit-diagram,
-            .pdf-body .state-diagram,
-            .pdf-body .lb-architecture,
-            .pdf-body .flow-diagram,
-            .pdf-body svg {
-                page-break-inside: avoid;
-                margin: 16px 0;
-                max-width: 100%;
-                height: auto;
-            }
-            .pdf-body img {
-                max-width: 100%;
-                height: auto;
-                page-break-inside: avoid;
-            }
+        // Apply inline styles to all content
+        applyInlineStyles(pdfBody);
 
-            /* Code block wrapper */
-            .code-block-wrapper {
-                position: relative;
-                margin: 12px 0;
-                page-break-inside: avoid;
+        // Also apply to topic headings if present
+        pdfContainer.querySelectorAll('.pdf-topic-heading').forEach(heading => {
+            heading.style.marginTop = '32px';
+            heading.style.marginBottom = '20px';
+            heading.style.paddingTop = '16px';
+            heading.style.borderTop = '2px solid #0d6efd';
+            const h1 = heading.querySelector('h1');
+            if (h1) {
+                h1.style.fontSize = '20pt';
+                h1.style.margin = '0';
+                h1.style.color = '#0d6efd';
+                h1.style.fontWeight = '600';
             }
-
-            /* Info boxes and callouts */
-            .pdf-body .info-box,
-            .pdf-body .warning-box,
-            .pdf-body .note {
-                padding: 10px 14px;
-                margin: 12px 0;
-                border-radius: 4px;
-                page-break-inside: avoid;
-            }
-
-            /* Hide interactive elements */
-            button, .btn, input, select, textarea,
-            .code-run-btn, .code-copy-btn {
-                display: none !important;
-            }
-
-            /* Ensure collapsible content is visible */
-            .collapsible-content {
-                display: block !important;
-                max-height: none !important;
-                opacity: 1 !important;
-                overflow: visible !important;
-            }
-            .collapsible-heading {
-                cursor: default;
-            }
-            .collapse-icon {
-                display: none !important;
-            }
-
-            /* Page break helpers */
-            .page-break {
-                page-break-before: always;
-            }
-            .no-break {
-                page-break-inside: avoid;
-            }
-
-            /* Strong and emphasis */
-            .pdf-body strong, .pdf-body b {
-                font-weight: 600;
-            }
-            .pdf-body em, .pdf-body i {
-                font-style: italic;
-            }
-
-            /* Links */
-            .pdf-body a {
-                color: #0d6efd;
-                text-decoration: none;
-            }
-
-            /* Horizontal rules */
-            .pdf-body hr {
-                border: none;
-                border-top: 1px solid #dee2e6;
-                margin: 16px 0;
-            }
-        `;
-        pdfContainer.prepend(pdfStyles);
+        });
 
         // Debug: log final container stats
         console.log('PDF Container created');
