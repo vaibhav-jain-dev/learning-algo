@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <style>
+        /* A4 Paper dimensions */
+        @page {
+            size: A4;
+            margin: 15mm 15mm 20mm 15mm;
+        }
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: white;
+            max-width: 180mm;
+            margin: 0 auto;
+        }
+
+        /* Page break controls */
+        .page-break {
+            page-break-before: always;
+        }
+
+        .no-break {
+            page-break-inside: avoid;
+        }
+
+        /* Header */
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #0d6efd;
+            page-break-after: avoid;
+        }
+
+        .pdf-header h1 {
+            font-size: 22pt;
+            margin: 0 0 8px 0;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .pdf-subtitle {
+            color: #6c757d;
+            font-size: 10pt;
+        }
+
+        /* Topic separator */
+        .topic-separator {
+            margin-top: 32px;
+            margin-bottom: 20px;
+            padding-top: 16px;
+            border-top: 2px solid #0d6efd;
+            page-break-before: always;
+        }
+
+        .topic-separator h2 {
+            font-size: 20pt;
+            margin: 0;
+            color: #0d6efd;
+            font-weight: 600;
+        }
+
+        /* Content styles */
+        h1 {
+            font-size: 18pt;
+            margin: 24px 0 12px 0;
+            color: #1a1a2e;
+            font-weight: 600;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            font-size: 14pt;
+            margin: 20px 0 10px 0;
+            color: #1a1a2e;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 6px;
+            font-weight: 600;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: 12pt;
+            margin: 16px 0 8px 0;
+            color: #1a1a2e;
+            font-weight: 600;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            font-size: 11pt;
+            margin: 12px 0 6px 0;
+            color: #495057;
+            font-weight: 600;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 10px 0;
+            color: #333;
+            text-align: justify;
+            orphans: 3;
+            widows: 3;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 0 0 12px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        li > ul, li > ol {
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+
+        /* Code blocks */
+        pre {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 12px 0;
+            font-size: 9pt;
+            line-height: 1.4;
+            overflow-x: visible;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            page-break-inside: avoid;
+            max-width: 100%;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 9pt;
+        }
+
+        :not(pre) > code {
+            background: #f0f0f0;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 10pt;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px 10px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            font-size: 10pt;
+        }
+
+        td {
+            font-size: 9pt;
+        }
+
+        /* Blockquotes */
+        blockquote {
+            border-left: 3px solid #0d6efd;
+            margin: 12px 0;
+            padding: 8px 16px;
+            background: #f8f9fa;
+            page-break-inside: avoid;
+            font-style: italic;
+            color: #555;
+        }
+
+        /* Links */
+        a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        /* Horizontal rules */
+        hr {
+            border: none;
+            border-top: 1px solid #dee2e6;
+            margin: 16px 0;
+        }
+
+        /* Strong and emphasis */
+        strong, b {
+            font-weight: 600;
+        }
+
+        em, i {
+            font-style: italic;
+        }
+
+        /* SVG and images */
+        svg, img {
+            max-width: 100%;
+            height: auto;
+            page-break-inside: avoid;
+        }
+
+        /* Hide interactive elements */
+        button, .btn, input, select, textarea {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    {{embed}}
+</body>
+</html>
