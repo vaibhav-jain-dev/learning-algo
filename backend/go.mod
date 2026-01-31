@@ -1,14 +1,17 @@
 module github.com/vaibhav-jain-dev/learning-algo
 
-go 1.21
+go 1.22
+
+toolchain go1.24.7
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.0
 	github.com/gofiber/template/html/v2 v2.1.1
 	github.com/gofiber/websocket/v2 v2.2.1
 	github.com/google/uuid v1.5.0
+	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/lib/pq v1.10.9
-	github.com/yuin/goldmark v1.6.0
+	github.com/yuin/goldmark v1.7.16
 )
 
 require (

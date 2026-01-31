@@ -1,17 +1,21 @@
 package pdf
 
 import (
-	"context"
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/chromedp/cdproto/page"
-	"github.com/chromedp/chromedp"
 	"github.com/google/uuid"
+	"github.com/jung-kurt/gofpdf"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/ast"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/text"
 )
 
 // Job represents a PDF generation job
@@ -131,22 +135,12 @@ func (m *Manager) ProcessJob(jobID string, topicPaths []string) {
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				m.updateJob(jobID, "failed", 0, fmt.Sprintf("Panic: %v", r), "")
+				m.updateJob(jobID, "failed", 0, "", fmt.Sprintf("Panic: %v", r))
 			}
 		}()
 
 		// Update to processing
 		m.updateJob(jobID, "processing", 10, "Initializing PDF generation...", "")
-
-		// Build URL to print view
-		topicsQuery := ""
-		for i, path := range topicPaths {
-			if i > 0 {
-				topicsQuery += ","
-			}
-			topicsQuery += path
-		}
-		printURL := fmt.Sprintf("%s/pdf/print?topics=%s", m.baseURL, topicsQuery)
 
 		// Generate filename
 		filename := "dsalgo-topics.pdf"
@@ -161,7 +155,7 @@ func (m *Manager) ProcessJob(jobID string, topicPaths []string) {
 
 		// Generate PDF
 		pdfPath := filepath.Join(m.pdfDir, filename)
-		err := m.generatePDF(jobID, printURL, pdfPath)
+		err := m.generatePDF(jobID, topicPaths, pdfPath)
 		if err != nil {
 			m.updateJob(jobID, "failed", 0, "", err.Error())
 			return
@@ -177,59 +171,273 @@ func (m *Manager) ProcessJob(jobID string, topicPaths []string) {
 	}()
 }
 
-// generatePDF uses chromedp to navigate to URL and generate PDF
-func (m *Manager) generatePDF(jobID, url, outputPath string) error {
-	m.updateJob(jobID, "processing", 30, "Launching browser...", "")
+// generatePDF creates a PDF directly from markdown files (no browser needed)
+func (m *Manager) generatePDF(jobID string, topicPaths []string, outputPath string) error {
+	m.updateJob(jobID, "processing", 20, "Reading topic content...", "")
 
-	// Create context
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
+	// Create PDF with A4 size
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.SetMargins(15, 15, 15)
+	pdf.SetAutoPageBreak(true, 20)
 
-	// Set timeout
-	ctx, cancel = context.WithTimeout(ctx, 2*time.Minute)
-	defer cancel()
+	// Set up document metadata
+	pdf.SetAuthor("DSAlgo Learning Platform", true)
+	pdf.SetCreator("DSAlgo Platform", true)
+	pdf.SetTitle("DSAlgo Topics Export", true)
 
-	m.updateJob(jobID, "processing", 50, "Rendering content...", "")
+	// Add page numbers in footer
+	pdf.SetFooterFunc(func() {
+		pdf.SetY(-15)
+		pdf.SetFont("Arial", "I", 8)
+		pdf.SetTextColor(128, 128, 128)
+		pdf.CellFormat(0, 10, fmt.Sprintf("Page %d", pdf.PageNo()), "", 0, "C", false, 0, "")
+	})
 
-	var buf []byte
-	err := chromedp.Run(ctx,
-		chromedp.Navigate(url),
-		chromedp.Sleep(2*time.Second), // Let content render fully
-		chromedp.ActionFunc(func(ctx context.Context) error {
-			var err error
-			buf, _, err = page.PrintToPDF().
-				WithPrintBackground(true).
-				WithPreferCSSPageSize(true).
-				WithPaperWidth(8.27).  // A4 width in inches
-				WithPaperHeight(11.69). // A4 height in inches
-				WithMarginTop(0.59).    // 15mm
-				WithMarginBottom(0.79). // 20mm
-				WithMarginLeft(0.59).   // 15mm
-				WithMarginRight(0.59).  // 15mm
-				WithDisplayHeaderFooter(true).
-				WithHeaderTemplate("<div></div>"). // Empty header
-				WithFooterTemplate(`<div style="font-size:8px; text-align:center; width:100%; margin:0 auto;">
-					<span style="float:left; margin-left:15mm;"></span>
-					<span style="margin:0 auto;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-					<span style="float:right; margin-right:15mm;">DSAlgo Learning Platform</span>
-				</div>`).
-				Do(ctx)
-			return err
-		}),
-	)
+	// Process each topic
+	for i, topicPath := range topicPaths {
+		m.updateJob(jobID, "processing", 30+int(float64(i)/float64(len(topicPaths))*40),
+			fmt.Sprintf("Processing topic %d/%d...", i+1, len(topicPaths)), "")
 
-	if err != nil {
-		return fmt.Errorf("chromedp error: %w", err)
+		// Read markdown content
+		parts := strings.Split(topicPath, "/")
+		if len(parts) != 2 {
+			continue
+		}
+		category := parts[0]
+		topic := parts[1]
+
+		contentPath := filepath.Join("./topics", category, topic, "content.md")
+		mdContent, err := os.ReadFile(contentPath)
+		if err != nil {
+			return fmt.Errorf("failed to read %s: %w", topicPath, err)
+		}
+
+		// Add new page for each topic (except first)
+		if i > 0 {
+			pdf.AddPage()
+		} else {
+			pdf.AddPage()
+		}
+
+		// Add topic title
+		topicTitle := formatTopicName(topic)
+		m.renderTopicToPDF(pdf, topicTitle, string(mdContent))
 	}
 
-	m.updateJob(jobID, "processing", 80, "Saving PDF file...", "")
+	m.updateJob(jobID, "processing", 80, "Finalizing PDF...", "")
 
-	// Write PDF to file
-	if err := os.WriteFile(outputPath, buf, 0644); err != nil {
-		return fmt.Errorf("failed to write PDF: %w", err)
+	// Save PDF
+	err := pdf.OutputFileAndClose(outputPath)
+	if err != nil {
+		return fmt.Errorf("failed to save PDF: %w", err)
 	}
 
 	return nil
+}
+
+// renderTopicToPDF renders a single topic's markdown content to PDF
+func (m *Manager) renderTopicToPDF(pdf *gofpdf.Fpdf, title, markdown string) {
+	// Add topic title
+	pdf.SetFont("Arial", "B", 16)
+	pdf.SetTextColor(13, 110, 253) // Bootstrap blue
+	pdf.CellFormat(0, 10, title, "", 1, "L", false, 0, "")
+	pdf.Ln(5)
+
+	// Parse markdown
+	md := goldmark.New(
+		goldmark.WithExtensions(extension.GFM),
+	)
+
+	reader := text.NewReader([]byte(markdown))
+	doc := md.Parser().Parse(reader)
+
+	// Walk the AST and render each node
+	m.renderNode(pdf, doc, []byte(markdown))
+}
+
+// renderNode recursively renders markdown nodes to PDF
+func (m *Manager) renderNode(pdf *gofpdf.Fpdf, node ast.Node, source []byte) {
+	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+		if !entering {
+			return ast.WalkContinue, nil
+		}
+
+		switch n := n.(type) {
+		case *ast.Heading:
+			level := n.Level
+			text := string(n.Text(source))
+
+			pdf.Ln(3)
+			switch level {
+			case 1:
+				pdf.SetFont("Arial", "B", 14)
+				pdf.SetTextColor(26, 26, 46)
+			case 2:
+				pdf.SetFont("Arial", "B", 12)
+				pdf.SetTextColor(26, 26, 46)
+			default:
+				pdf.SetFont("Arial", "B", 11)
+				pdf.SetTextColor(73, 80, 87)
+			}
+			pdf.MultiCell(0, 6, text, "", "L", false)
+			pdf.Ln(2)
+			pdf.SetFont("Arial", "", 10)
+			pdf.SetTextColor(51, 51, 51)
+			return ast.WalkSkipChildren, nil
+
+		case *ast.Paragraph:
+			text := m.extractText(n, source)
+			pdf.SetFont("Arial", "", 10)
+			pdf.SetTextColor(51, 51, 51)
+			pdf.MultiCell(0, 5, text, "", "J", false)
+			pdf.Ln(2)
+			return ast.WalkSkipChildren, nil
+
+		case *ast.CodeBlock:
+			code := string(n.Text(source))
+			pdf.Ln(2)
+			pdf.SetFillColor(246, 248, 250)
+			pdf.SetTextColor(33, 37, 41)
+			pdf.SetFont("Courier", "", 9)
+
+			// Split code into lines to handle long lines
+			lines := strings.Split(code, "\n")
+			for _, line := range lines {
+				if line != "" {
+					// Truncate very long lines
+					if len(line) > 85 {
+						line = line[:82] + "..."
+					}
+					pdf.CellFormat(0, 5, line, "", 1, "L", true, 0, "")
+				}
+			}
+			pdf.Ln(2)
+			pdf.SetFont("Arial", "", 10)
+			pdf.SetTextColor(51, 51, 51)
+			return ast.WalkSkipChildren, nil
+
+		case *ast.FencedCodeBlock:
+			code := string(n.Text(source))
+			lang := string(n.Language(source))
+
+			pdf.Ln(2)
+			// Code block header with language
+			if lang != "" {
+				pdf.SetFont("Arial", "I", 8)
+				pdf.SetTextColor(108, 117, 125)
+				pdf.Cell(0, 4, lang)
+				pdf.Ln(4)
+			}
+
+			pdf.SetFillColor(246, 248, 250)
+			pdf.SetTextColor(33, 37, 41)
+			pdf.SetFont("Courier", "", 9)
+
+			lines := strings.Split(code, "\n")
+			for _, line := range lines {
+				if line != "" {
+					if len(line) > 85 {
+						line = line[:82] + "..."
+					}
+					pdf.CellFormat(0, 5, line, "", 1, "L", true, 0, "")
+				}
+			}
+			pdf.Ln(2)
+			pdf.SetFont("Arial", "", 10)
+			pdf.SetTextColor(51, 51, 51)
+			return ast.WalkSkipChildren, nil
+
+		case *ast.List:
+			pdf.Ln(1)
+			return ast.WalkContinue, nil
+
+		case *ast.ListItem:
+			text := m.extractText(n, source)
+			// Clean up the text
+			text = strings.TrimSpace(text)
+			text = strings.ReplaceAll(text, "\n", " ")
+
+			pdf.SetFont("Arial", "", 10)
+			pdf.SetTextColor(51, 51, 51)
+
+			// Add bullet point
+			currentX := pdf.GetX()
+			pdf.SetX(currentX + 5)
+			pdf.Cell(5, 5, "•")
+			pdf.SetX(currentX + 10)
+
+			// Handle multi-line list items
+			pdf.MultiCell(0, 5, text, "", "L", false)
+			return ast.WalkSkipChildren, nil
+
+		case *ast.Blockquote:
+			text := m.extractText(n, source)
+			pdf.Ln(2)
+			pdf.SetFillColor(248, 249, 250)
+			pdf.SetTextColor(85, 85, 85)
+			pdf.SetFont("Arial", "I", 10)
+			pdf.SetLeftMargin(20)
+			pdf.MultiCell(0, 5, text, "", "L", true)
+			pdf.SetLeftMargin(15)
+			pdf.Ln(2)
+			pdf.SetFont("Arial", "", 10)
+			pdf.SetTextColor(51, 51, 51)
+			return ast.WalkSkipChildren, nil
+
+		case *ast.ThematicBreak:
+			pdf.Ln(2)
+			pdf.SetDrawColor(222, 226, 230)
+			pdf.SetLineWidth(0.5)
+			pdf.Line(15, pdf.GetY(), 195, pdf.GetY())
+			pdf.Ln(3)
+			return ast.WalkContinue, nil
+		}
+
+		return ast.WalkContinue, nil
+	})
+}
+
+// extractText extracts plain text from a node and its children
+func (m *Manager) extractText(node ast.Node, source []byte) string {
+	var buf bytes.Buffer
+
+	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+		if !entering {
+			return ast.WalkContinue, nil
+		}
+
+		switch n := n.(type) {
+		case *ast.Text:
+			buf.Write(n.Segment.Value(source))
+			if n.HardLineBreak() || n.SoftLineBreak() {
+				buf.WriteString(" ")
+			}
+		case *ast.String:
+			buf.Write(n.Value)
+		case *ast.CodeSpan:
+			buf.Write(n.Text(source))
+		}
+
+		return ast.WalkContinue, nil
+	})
+
+	text := buf.String()
+	// Clean up text
+	text = regexp.MustCompile(`\s+`).ReplaceAllString(text, " ")
+	text = strings.TrimSpace(text)
+
+	return text
+}
+
+// formatTopicName converts a slug to a readable title
+func formatTopicName(slug string) string {
+	words := strings.Split(slug, "-")
+	for i, word := range words {
+		if len(word) > 0 {
+			words[i] = strings.ToUpper(word[:1]) + word[1:]
+		}
+	}
+	return strings.Join(words, " ")
 }
 
 // updateJob updates a job's status and notifies subscribers
