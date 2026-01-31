@@ -8,22 +8,53 @@
             <span class="guide-badge python-badge">Python 3.10+</span>
             <h1>Python Development Guide</h1>
             <p class="guide-description">Master Python from fundamentals to production - complete learning roadmap with interactive examples</p>
-            <div class="guide-stats">
-                <div class="stat-item">
-                    <span class="stat-icon">&#128218;</span>
-                    <span class="stat-text">5 Sections</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">&#9889;</span>
-                    <span class="stat-text">Interactive Code</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">&#128200;</span>
-                    <span class="stat-text">Beginner to Advanced</span>
-                </div>
-            </div>
         </div>
     </div>
+
+    <!-- MAIN LAYOUT WITH SIDEBAR -->
+    <div class="guide-layout">
+        <!-- FIXED SIDEBAR NAVIGATION -->
+        <aside class="guide-sidebar python-sidebar">
+            <div class="sidebar-header">Topics</div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title py-title">Language Fundamentals</div>
+                <a href="#variables-types-py" class="sidebar-link" onclick="scrollToTopic('variables-types-py'); return false;">Variables & Types</a>
+                <a href="#functions-py" class="sidebar-link" onclick="scrollToTopic('functions-py'); return false;">Functions</a>
+                <a href="#classes-py" class="sidebar-link" onclick="scrollToTopic('classes-py'); return false;">Classes & OOP</a>
+                <a href="#decorators-section" class="sidebar-link active" onclick="scrollToTopic('decorators-section'); return false;">Decorators</a>
+                <a href="#generators-section" class="sidebar-link" onclick="scrollToTopic('generators-section'); return false;">Generators</a>
+                <a href="#context-managers" class="sidebar-link" onclick="scrollToTopic('context-managers'); return false;">Context Managers</a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title py-title">Standard Library</div>
+                <a href="#collections-py" class="sidebar-link" onclick="scrollToTopic('collections-py'); return false;">Collections</a>
+                <a href="#itertools-py" class="sidebar-link" onclick="scrollToTopic('itertools-py'); return false;">itertools</a>
+                <a href="#functools-py" class="sidebar-link" onclick="scrollToTopic('functools-py'); return false;">functools</a>
+                <a href="#pathlib-py" class="sidebar-link" onclick="scrollToTopic('pathlib-py'); return false;">pathlib & Files</a>
+                <a href="#dataclasses-py" class="sidebar-link" onclick="scrollToTopic('dataclasses-py'); return false;">dataclasses</a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title py-title">Concurrency & Async</div>
+                <a href="#threading-py" class="sidebar-link" onclick="scrollToTopic('threading-py'); return false;">Threading</a>
+                <a href="#multiprocessing-py" class="sidebar-link" onclick="scrollToTopic('multiprocessing-py'); return false;">Multiprocessing</a>
+                <a href="#asyncio-py" class="sidebar-link" onclick="scrollToTopic('asyncio-py'); return false;">asyncio</a>
+                <a href="#concurrent-py" class="sidebar-link" onclick="scrollToTopic('concurrent-py'); return false;">concurrent.futures</a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title py-title">Production & Tooling</div>
+                <a href="#testing-py" class="sidebar-link" onclick="scrollToTopic('testing-py'); return false;">Testing</a>
+                <a href="#debugging-py" class="sidebar-link" onclick="scrollToTopic('debugging-py'); return false;">Debugging</a>
+                <a href="#typing-py" class="sidebar-link" onclick="scrollToTopic('typing-py'); return false;">Type Checking</a>
+                <a href="#packaging-py" class="sidebar-link" onclick="scrollToTopic('packaging-py'); return false;">Packaging</a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="guide-content">
 
     <!-- CLICKABLE ROADMAP SECTION -->
     <section class="roadmap-section">
@@ -36,7 +67,7 @@
                 <h3 class="column-title fundamentals-py">Language Fundamentals</h3>
 
                 <div class="roadmap-card">
-                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                    <a href="#variables-types-py" class="card-title-link" onclick="scrollToTopic('variables-types-py'); return false;">
                         <h4>Variables & Types</h4>
                     </a>
                     <ul>
@@ -50,7 +81,7 @@
                 </div>
 
                 <div class="roadmap-card">
-                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                    <a href="#functions-py" class="card-title-link" onclick="scrollToTopic('functions-py'); return false;">
                         <h4>Functions</h4>
                     </a>
                     <ul>
@@ -64,7 +95,7 @@
                 </div>
 
                 <div class="roadmap-card">
-                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                    <a href="#classes-py" class="card-title-link" onclick="scrollToTopic('classes-py'); return false;">
                         <h4>Classes & OOP</h4>
                     </a>
                     <ul>
@@ -106,7 +137,7 @@
                 </div>
 
                 <div class="roadmap-card">
-                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                    <a href="#context-managers" class="card-title-link" onclick="scrollToTopic('context-managers'); return false;">
                         <h4>Context Managers</h4>
                     </a>
                     <ul>
@@ -389,23 +420,11 @@
         </div>
     </section>
 
-    <div class="guide-nav">
-        <a href="#python-basics" class="guide-nav-link active" data-section="python-basics">
-            <span class="nav-icon">&#128013;</span> Python Basics
-        </a>
-        <a href="#intermediate" class="guide-nav-link" data-section="intermediate">
-            <span class="nav-icon">&#128295;</span> Intermediate
-        </a>
-        <a href="#advanced" class="guide-nav-link" data-section="advanced">
-            <span class="nav-icon">&#128640;</span> Advanced
-        </a>
-    </div>
-
-    <!-- PYTHON BASICS SECTION -->
-    <section id="python-basics" class="guide-section">
+    <!-- VARIABLES & TYPES SECTION -->
+    <section id="variables-types-py" class="guide-section">
         <div class="section-header">
-            <h2><span class="section-icon">&#128013;</span> Python Language Fundamentals</h2>
-            <p class="section-description">Essential Python concepts you need to master</p>
+            <h2><span class="section-icon">&#128221;</span> Variables & Types</h2>
+            <p class="section-description">Python's type system, dynamic typing, and type hints</p>
         </div>
 
         <div class="topic-block highlight-block">
@@ -1937,9 +1956,118 @@ if __name__ == "__main__":
             </div>
         </div>
     </section>
-</div>
+
+        </main><!-- END guide-content -->
+    </div><!-- END guide-layout -->
+</div><!-- END guide-page -->
 
 <style>
+/* ============================================
+   SIDEBAR LAYOUT STYLES FOR PYTHON
+   ============================================ */
+.guide-layout {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.guide-sidebar {
+    position: sticky;
+    top: 1rem;
+    width: 220px;
+    min-width: 220px;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    background: var(--color-bg-primary, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    align-self: flex-start;
+}
+
+.sidebar-header {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-secondary, #64748b);
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.sidebar-section {
+    margin-bottom: 1rem;
+}
+
+.sidebar-section-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.sidebar-section-title.py-title {
+    color: #3776ab;
+}
+
+.sidebar-link {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary, #64748b);
+    text-decoration: none;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.375rem;
+    margin-bottom: 0.15rem;
+    transition: all 0.15s ease;
+}
+
+.sidebar-link:hover {
+    background: #3776ab10;
+    color: #3776ab;
+}
+
+.python-sidebar .sidebar-link.active {
+    background: #3776ab;
+    color: white;
+    font-weight: 500;
+}
+
+.guide-content {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .guide-layout {
+        flex-direction: column;
+    }
+
+    .guide-sidebar {
+        position: static;
+        width: 100%;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .sidebar-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .sidebar-section-title {
+        width: 100%;
+    }
+
+    .sidebar-link {
+        flex: 0 0 auto;
+        margin-bottom: 0;
+    }
+}
+
 /* Python Theme Colors */
 .python-theme .guide-header {
     background: linear-gradient(135deg, #3776ab10 0%, #ffd43b10 100%);
@@ -2337,7 +2465,7 @@ if __name__ == "__main__":
 
 /* Infinite scroll fix */
 .guide-page {
-    max-width: 1100px;
+    max-width: 1300px;
     margin: 0 auto;
     padding: 2rem;
     overflow-x: hidden;
