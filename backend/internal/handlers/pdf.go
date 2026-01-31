@@ -6,7 +6,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
-	"github.com/vaibhav-jain-dev/learning-algo/internal/pdf"
 )
 
 // GeneratePDFRequest represents the request to generate a PDF
@@ -74,10 +73,8 @@ func (h *Handlers) DownloadPDF(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "Job not found"})
 	}
 
-	job.mu.RLock()
-	status := job.Status
-	filePath := job.FilePath
-	job.mu.RUnlock()
+	status := job.GetStatus()
+	filePath := job.GetFilePath()
 
 	if status != "completed" {
 		return c.Status(400).JSON(fiber.Map{"error": "PDF not ready yet"})

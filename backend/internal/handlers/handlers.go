@@ -17,6 +17,7 @@ import (
 
 	"github.com/vaibhav-jain-dev/learning-algo/internal/kernel"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/models"
+	"github.com/vaibhav-jain-dev/learning-algo/internal/pdf"
 	"github.com/vaibhav-jain-dev/learning-algo/internal/topics"
 )
 
@@ -29,6 +30,7 @@ type Handlers struct {
 	goPool       *kernel.GoPool
 	execManager  *kernel.ExecutionManager
 	topicIndexer *topics.TopicIndexer
+	pdfManager   *pdf.Manager
 	md           goldmark.Markdown
 }
 
@@ -46,11 +48,23 @@ func New(pythonPool *kernel.PythonPool, goPool *kernel.GoPool, execManager *kern
 	// Initialize topic indexer with 5 minute cache TTL
 	topicIndexer := topics.NewTopicIndexer(topicsDir, 5*time.Minute)
 
+	// Initialize PDF manager
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080"
+	}
+	pdfDir := os.Getenv("PDF_DIR")
+	if pdfDir == "" {
+		pdfDir = "/tmp/pdf-exports"
+	}
+	pdfManager := pdf.NewManager(baseURL, pdfDir)
+
 	return &Handlers{
 		pythonPool:   pythonPool,
 		goPool:       goPool,
 		execManager:  execManager,
 		topicIndexer: topicIndexer,
+		pdfManager:   pdfManager,
 		md:           md,
 	}
 }

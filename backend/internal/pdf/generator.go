@@ -28,6 +28,20 @@ type Job struct {
 	mu          sync.RWMutex
 }
 
+// GetStatus returns the job status safely
+func (j *Job) GetStatus() string {
+	j.mu.RLock()
+	defer j.mu.RUnlock()
+	return j.Status
+}
+
+// GetFilePath returns the job file path safely
+func (j *Job) GetFilePath() string {
+	j.mu.RLock()
+	defer j.mu.RUnlock()
+	return j.FilePath
+}
+
 // JobUpdate represents a status update for a job
 type JobUpdate struct {
 	Status   string `json:"status"`
