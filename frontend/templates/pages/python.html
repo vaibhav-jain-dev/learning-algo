@@ -77,8 +77,8 @@
                     </div>
                 </div>
 
-                <div class="roadmap-card">
-                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                <div class="roadmap-card highlight-card">
+                    <a href="#decorators-section" class="card-title-link" onclick="scrollToTopic('decorators-section'); return false;">
                         <h4>Decorators</h4>
                     </a>
                     <ul>
@@ -91,8 +91,8 @@
                     </div>
                 </div>
 
-                <div class="roadmap-card">
-                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                <div class="roadmap-card highlight-card">
+                    <a href="#generators-section" class="card-title-link" onclick="scrollToTopic('generators-section'); return false;">
                         <h4>Generators & Iterators</h4>
                     </a>
                     <ul>
@@ -726,6 +726,658 @@ list_size = sys.getsizeof([x**2 for x in range(1000)])
 gen_size = sys.getsizeof((x**2 for x in range(1000)))
 print(f"\nList size: {list_size} bytes")
 print(f"Generator size: {gen_size} bytes")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- DECORATORS VISUAL GUIDE SECTION -->
+    <section id="decorators-section" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#127873;</span> Python Decorators — Complete Visual Guide</h2>
+            <p class="section-description">Master decorators with visual diagrams, practical examples, and common patterns</p>
+        </div>
+
+        <!-- What is a Decorator -->
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#127919;</span>
+                <h3>1. What is a Decorator (Plain Meaning)</h3>
+            </div>
+            <p>A <strong>decorator</strong> is a function that <strong>wraps another function</strong> to extend or modify its behavior without changing its source code.</p>
+
+            <div class="pointer-concept-card">
+                <h4>Think of it like</h4>
+                <p><strong>Gift Wrapping:</strong> The original function is the gift. The decorator is the wrapping paper - it adds extra features while the gift (original function) stays the same inside.</p>
+            </div>
+
+            <!-- Visual Decorator Diagram -->
+            <div class="visual-memory-diagram">
+                <svg viewBox="0 0 600 200" style="width: 100%; height: auto; margin: 16px 0;">
+                    <!-- Original Function Box -->
+                    <rect x="20" y="60" width="140" height="80" fill="#dcfce7" stroke="#16a34a" stroke-width="3" rx="8"/>
+                    <text x="90" y="90" font-size="14" font-weight="600" text-anchor="middle" fill="#16a34a">Original Function</text>
+                    <text x="90" y="115" font-size="12" text-anchor="middle" fill="#0a3069">def greet():</text>
+                    <text x="90" y="130" font-size="11" text-anchor="middle" fill="#57606a">return "Hello"</text>
+
+                    <!-- Arrow to Decorator -->
+                    <path d="M 160 100 L 200 100" stroke="#3776ab" stroke-width="2" marker-end="url(#pyarrow1)"/>
+                    <text x="180" y="90" font-size="10" text-anchor="middle" fill="#3776ab">@decorator</text>
+
+                    <!-- Decorator Wrapper Box -->
+                    <rect x="200" y="30" width="200" height="140" fill="#dbeafe" stroke="#3776ab" stroke-width="3" rx="8"/>
+                    <text x="300" y="55" font-size="14" font-weight="600" text-anchor="middle" fill="#3776ab">Decorator Wrapper</text>
+
+                    <!-- Inner function inside wrapper -->
+                    <rect x="220" y="70" width="160" height="80" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                    <text x="300" y="95" font-size="11" text-anchor="middle" fill="#16a34a">Original Function</text>
+                    <text x="300" y="115" font-size="10" text-anchor="middle" fill="#57606a">+ Extra Behavior</text>
+                    <text x="300" y="135" font-size="10" text-anchor="middle" fill="#ea580c">(logging, timing, etc.)</text>
+
+                    <!-- Arrow to Result -->
+                    <path d="M 400 100 L 440 100" stroke="#3776ab" stroke-width="2" marker-end="url(#pyarrow1)"/>
+
+                    <!-- Enhanced Function Box -->
+                    <rect x="440" y="60" width="140" height="80" fill="#fef3c7" stroke="#d97706" stroke-width="3" rx="8"/>
+                    <text x="510" y="90" font-size="14" font-weight="600" text-anchor="middle" fill="#d97706">Enhanced</text>
+                    <text x="510" y="110" font-size="14" font-weight="600" text-anchor="middle" fill="#d97706">Function</text>
+                    <text x="510" y="130" font-size="10" text-anchor="middle" fill="#57606a">Same name, more features</text>
+
+                    <defs>
+                        <marker id="pyarrow1" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10" fill="#3776ab"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="pointer-concept-card success">
+                <h4>Why Care?</h4>
+                <p>Decorators let you add <strong>logging, timing, authentication, caching</strong> and more to functions without modifying them. They're essential for DRY (Don't Repeat Yourself) code.</p>
+            </div>
+        </div>
+
+        <!-- @ Syntax Section -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128161;</span>
+                <h3>2. The @ Syntax (MOST IMPORTANT)</h3>
+            </div>
+
+            <div class="pointer-operators-grid">
+                <div class="operator-card address-operator">
+                    <h4>@ Syntax (Shorthand)</h4>
+                    <p>The <code>@decorator</code> syntax is syntactic sugar for function reassignment.</p>
+                    <svg viewBox="0 0 220 100" style="width: 100%; height: auto; margin: 12px 0;">
+                        <rect x="10" y="10" width="90" height="40" fill="#dbeafe" stroke="#3776ab" stroke-width="2" rx="6"/>
+                        <text x="55" y="35" font-size="11" font-weight="600" text-anchor="middle" fill="#3776ab">@timer</text>
+                        <rect x="10" y="55" width="90" height="35" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                        <text x="55" y="78" font-size="10" text-anchor="middle" fill="#16a34a">def func():</text>
+                        <text x="130" y="50" font-size="24" fill="#57606a">=</text>
+                        <text x="170" y="50" font-size="10" fill="#d97706">wrapped</text>
+                    </svg>
+                    <pre><code class="language-python">@timer
+def greet():
+    return "Hello"</code></pre>
+                </div>
+                <div class="operator-card value-operator">
+                    <h4>Equivalent Without @</h4>
+                    <p>The <code>@</code> is just shorthand for wrapping and reassigning.</p>
+                    <svg viewBox="0 0 220 100" style="width: 100%; height: auto; margin: 12px 0;">
+                        <rect x="10" y="15" width="90" height="35" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                        <text x="55" y="38" font-size="10" text-anchor="middle" fill="#16a34a">def greet():</text>
+                        <path d="M 100 32 L 130 32" stroke="#d97706" stroke-width="2" marker-end="url(#pyarr2)"/>
+                        <rect x="10" y="55" width="200" height="35" fill="#fef3c7" stroke="#d97706" stroke-width="2" rx="6"/>
+                        <text x="110" y="78" font-size="10" text-anchor="middle" fill="#d97706">greet = timer(greet)</text>
+                        <defs>
+                            <marker id="pyarr2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10" fill="#d97706"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                    <pre><code class="language-python">def greet():
+    return "Hello"
+greet = timer(greet)</code></pre>
+                </div>
+            </div>
+
+            <div class="pointer-concept-card warning">
+                <h4>Mnemonic</h4>
+                <p><code>@decorator</code> = <strong>"wrap me!"</strong> | The function below gets passed to the decorator and replaced with the result.</p>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python">import functools
+
+def timer(func):
+    """Decorator that times function execution."""
+    @functools.wraps(func)  # Preserves function metadata
+    def wrapper(*args, **kwargs):
+        import time
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        print(f"{func.__name__} took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+@timer
+def slow_operation():
+    """Simulates slow work."""
+    import time
+    time.sleep(0.1)
+    return "Done!"
+
+# Run it
+result = slow_operation()
+print(f"Result: {result}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <!-- Decorator Execution Flow -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128202;</span>
+                <h3>3. Execution Flow Visualization</h3>
+            </div>
+
+            <h4>What Happens When You Call a Decorated Function</h4>
+            <div class="visual-example-diagram">
+                <svg viewBox="0 0 550 180" style="width: 100%; height: auto; margin: 12px 0;">
+                    <!-- Step 1: Call -->
+                    <rect x="10" y="20" width="100" height="60" fill="#f0f4ff" stroke="#6b21a8" stroke-width="2" rx="6"/>
+                    <text x="60" y="45" font-size="11" font-weight="600" text-anchor="middle" fill="#6b21a8">1. Call</text>
+                    <text x="60" y="65" font-size="10" text-anchor="middle" fill="#1f2937">greet()</text>
+
+                    <path d="M 110 50 L 140 50" stroke="#3776ab" stroke-width="2" marker-end="url(#pyarr3)"/>
+
+                    <!-- Step 2: Wrapper -->
+                    <rect x="140" y="10" width="120" height="80" fill="#dbeafe" stroke="#3776ab" stroke-width="2" rx="6"/>
+                    <text x="200" y="35" font-size="11" font-weight="600" text-anchor="middle" fill="#3776ab">2. Wrapper</text>
+                    <text x="200" y="55" font-size="9" text-anchor="middle" fill="#1f2937">Pre-processing</text>
+                    <text x="200" y="70" font-size="9" text-anchor="middle" fill="#57606a">(logging, timing...)</text>
+
+                    <path d="M 260 50 L 290 50" stroke="#16a34a" stroke-width="2" marker-end="url(#pyarr4)"/>
+
+                    <!-- Step 3: Original -->
+                    <rect x="290" y="20" width="100" height="60" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                    <text x="340" y="45" font-size="11" font-weight="600" text-anchor="middle" fill="#16a34a">3. Original</text>
+                    <text x="340" y="65" font-size="10" text-anchor="middle" fill="#1f2937">func(*args)</text>
+
+                    <path d="M 390 50 L 420 50" stroke="#d97706" stroke-width="2" marker-end="url(#pyarr5)"/>
+
+                    <!-- Step 4: Post-processing -->
+                    <rect x="420" y="10" width="120" height="80" fill="#fef3c7" stroke="#d97706" stroke-width="2" rx="6"/>
+                    <text x="480" y="35" font-size="11" font-weight="600" text-anchor="middle" fill="#d97706">4. Post-process</text>
+                    <text x="480" y="55" font-size="9" text-anchor="middle" fill="#1f2937">Cleanup, log result</text>
+                    <text x="480" y="70" font-size="9" text-anchor="middle" fill="#57606a">return result</text>
+
+                    <!-- Return flow -->
+                    <path d="M 480 90 L 480 120 L 60 120 L 60 90" stroke="#6b21a8" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#pyarr6)"/>
+                    <text x="270" y="140" font-size="10" text-anchor="middle" fill="#6b21a8">5. Return enhanced result</text>
+
+                    <defs>
+                        <marker id="pyarr3" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#3776ab"/></marker>
+                        <marker id="pyarr4" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#16a34a"/></marker>
+                        <marker id="pyarr5" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#d97706"/></marker>
+                        <marker id="pyarr6" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#6b21a8"/></marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python">import functools
+
+def debug(func):
+    """Decorator showing execution flow."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"[1] Calling {func.__name__} with args={args}")
+        print(f"[2] Pre-processing in wrapper...")
+
+        result = func(*args, **kwargs)  # [3] Call original
+
+        print(f"[4] Post-processing, got result: {result}")
+        return result  # [5] Return
+    return wrapper
+
+@debug
+def add(a, b):
+    print(f"[3] Inside original add function")
+    return a + b
+
+# Watch the execution flow
+print("=== Execution Flow Demo ===")
+result = add(3, 5)
+print(f"[5] Final result: {result}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <!-- Common Decorator Patterns -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128214;</span>
+                <h3>4. Common Decorator Patterns</h3>
+            </div>
+
+            <div class="pointer-rules-grid">
+                <div class="rule-card do-rule">
+                    <strong>Timer / Logging</strong>
+                    <p>Track execution time and log function calls for debugging and monitoring.</p>
+                </div>
+                <div class="rule-card do-rule">
+                    <strong>Caching / Memoization</strong>
+                    <p>Cache expensive function results. Use <code>@functools.lru_cache</code> built-in.</p>
+                </div>
+                <div class="rule-card do-rule">
+                    <strong>Authentication</strong>
+                    <p>Check user permissions before allowing function execution (Flask, Django).</p>
+                </div>
+                <div class="rule-card do-rule">
+                    <strong>Retry Logic</strong>
+                    <p>Automatically retry failed operations with configurable attempts.</p>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Common Decorator Patterns
+import functools
+import time
+
+# 1. Caching with lru_cache (built-in!)
+@functools.lru_cache(maxsize=128)
+def fibonacci(n):
+    if n < 2:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+print("=== Memoization ===")
+print(f"fib(30) = {fibonacci(30)}")
+print(f"Cache info: {fibonacci.cache_info()}")
+
+# 2. Decorator with arguments
+def retry(max_attempts=3, delay=0.1):
+    """Retry decorator with configuration."""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if attempt < max_attempts - 1:
+                        print(f"Attempt {attempt + 1} failed, retrying...")
+                        time.sleep(delay)
+                    else:
+                        raise
+        return wrapper
+    return decorator
+
+@retry(max_attempts=3, delay=0.05)
+def flaky_api_call():
+    import random
+    if random.random() < 0.7:
+        raise ConnectionError("Network error")
+    return "Success!"
+
+print("\n=== Retry Pattern ===")
+try:
+    result = flaky_api_call()
+    print(f"Result: {result}")
+except ConnectionError:
+    print("All attempts failed")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <!-- functools.wraps -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#9888;</span>
+                <h3>5. Always Use @functools.wraps!</h3>
+            </div>
+
+            <div class="pointer-concept-card error">
+                <h4>Common Mistake</h4>
+                <p>Without <code>@functools.wraps</code>, the decorated function loses its <strong>name, docstring, and metadata</strong>. Always include it!</p>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python">import functools
+
+# BAD: Without @functools.wraps
+def bad_decorator(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+# GOOD: With @functools.wraps
+def good_decorator(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@bad_decorator
+def greet_bad():
+    """Says hello."""
+    return "Hello"
+
+@good_decorator
+def greet_good():
+    """Says hello."""
+    return "Hello"
+
+print("=== Without @functools.wraps ===")
+print(f"Name: {greet_bad.__name__}")  # 'wrapper' - WRONG!
+print(f"Doc: {greet_bad.__doc__}")    # None - WRONG!
+
+print("\n=== With @functools.wraps ===")
+print(f"Name: {greet_good.__name__}")  # 'greet_good' - Correct!
+print(f"Doc: {greet_good.__doc__}")    # 'Says hello.' - Correct!</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- GENERATORS VISUAL GUIDE SECTION -->
+    <section id="generators-section" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#9889;</span> Python Generators — Complete Visual Guide</h2>
+            <p class="section-description">Master generators and iterators with visual diagrams and practical examples</p>
+        </div>
+
+        <!-- What is a Generator -->
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#127919;</span>
+                <h3>1. What is a Generator (Plain Meaning)</h3>
+            </div>
+            <p>A <strong>generator</strong> is a function that <strong>produces values one at a time</strong> using <code>yield</code>, pausing between each value instead of computing everything at once.</p>
+
+            <div class="pointer-concept-card">
+                <h4>Think of it like</h4>
+                <p><strong>A Vending Machine:</strong> Instead of getting all snacks at once (list), you get one snack each time you press the button (generator). Memory efficient!</p>
+            </div>
+
+            <!-- Visual Generator Diagram -->
+            <div class="visual-memory-diagram">
+                <svg viewBox="0 0 600 180" style="width: 100%; height: auto; margin: 16px 0;">
+                    <!-- Generator Function -->
+                    <rect x="20" y="40" width="140" height="100" fill="#dbeafe" stroke="#3776ab" stroke-width="3" rx="8"/>
+                    <text x="90" y="65" font-size="14" font-weight="600" text-anchor="middle" fill="#3776ab">Generator</text>
+                    <text x="90" y="85" font-size="11" text-anchor="middle" fill="#0a3069">def count():</text>
+                    <text x="90" y="100" font-size="10" text-anchor="middle" fill="#16a34a">yield 1</text>
+                    <text x="90" y="115" font-size="10" text-anchor="middle" fill="#16a34a">yield 2</text>
+                    <text x="90" y="130" font-size="10" text-anchor="middle" fill="#16a34a">yield 3</text>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 160 90 L 200 90" stroke="#d97706" stroke-width="2" marker-end="url(#genarrow1)"/>
+                    <text x="180" y="80" font-size="10" fill="#d97706">next()</text>
+
+                    <!-- Value 1 -->
+                    <rect x="200" y="60" width="60" height="60" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                    <text x="230" y="85" font-size="10" text-anchor="middle" fill="#16a34a">yields</text>
+                    <text x="230" y="105" font-size="20" font-weight="700" text-anchor="middle" fill="#0a3069">1</text>
+
+                    <!-- Arrow 2 -->
+                    <path d="M 260 90 L 300 90" stroke="#d97706" stroke-width="2" marker-end="url(#genarrow1)"/>
+                    <text x="280" y="80" font-size="10" fill="#d97706">next()</text>
+
+                    <!-- Value 2 -->
+                    <rect x="300" y="60" width="60" height="60" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                    <text x="330" y="85" font-size="10" text-anchor="middle" fill="#16a34a">yields</text>
+                    <text x="330" y="105" font-size="20" font-weight="700" text-anchor="middle" fill="#0a3069">2</text>
+
+                    <!-- Arrow 3 -->
+                    <path d="M 360 90 L 400 90" stroke="#d97706" stroke-width="2" marker-end="url(#genarrow1)"/>
+                    <text x="380" y="80" font-size="10" fill="#d97706">next()</text>
+
+                    <!-- Value 3 -->
+                    <rect x="400" y="60" width="60" height="60" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                    <text x="430" y="85" font-size="10" text-anchor="middle" fill="#16a34a">yields</text>
+                    <text x="430" y="105" font-size="20" font-weight="700" text-anchor="middle" fill="#0a3069">3</text>
+
+                    <!-- Arrow 4 - StopIteration -->
+                    <path d="M 460 90 L 500 90" stroke="#ef4444" stroke-width="2" marker-end="url(#genarrow2)"/>
+                    <text x="480" y="80" font-size="10" fill="#ef4444">next()</text>
+
+                    <!-- StopIteration -->
+                    <rect x="500" y="60" width="80" height="60" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="6"/>
+                    <text x="540" y="85" font-size="9" text-anchor="middle" fill="#ef4444">Stop</text>
+                    <text x="540" y="100" font-size="9" text-anchor="middle" fill="#ef4444">Iteration</text>
+
+                    <defs>
+                        <marker id="genarrow1" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#d97706"/></marker>
+                        <marker id="genarrow2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#ef4444"/></marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="pointer-concept-card success">
+                <h4>Why Care?</h4>
+                <p>Generators are <strong>memory efficient</strong> - they produce values on-demand instead of storing everything in memory. Perfect for large datasets, infinite sequences, and streaming data.</p>
+            </div>
+        </div>
+
+        <!-- yield vs return -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128161;</span>
+                <h3>2. yield vs return (KEY DIFFERENCE)</h3>
+            </div>
+
+            <div class="pointer-operators-grid">
+                <div class="operator-card address-operator">
+                    <h4>return (Regular Function)</h4>
+                    <p><code>return</code> sends back a value and <strong>terminates</strong> the function completely.</p>
+                    <svg viewBox="0 0 220 80" style="width: 100%; height: auto; margin: 12px 0;">
+                        <rect x="10" y="10" width="90" height="60" fill="#fef3c7" stroke="#d97706" stroke-width="2" rx="6"/>
+                        <text x="55" y="35" font-size="11" text-anchor="middle" fill="#d97706">return [1,2,3]</text>
+                        <text x="55" y="55" font-size="9" text-anchor="middle" fill="#57606a">ALL at once</text>
+                        <path d="M 100 40 L 140 40" stroke="#d97706" stroke-width="2" marker-end="url(#retarr)"/>
+                        <text x="180" y="45" font-size="12" fill="#d97706">[1,2,3]</text>
+                        <defs><marker id="retarr" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#d97706"/></marker></defs>
+                    </svg>
+                    <pre><code class="language-python">def get_all():
+    return [1, 2, 3]  # done</code></pre>
+                </div>
+                <div class="operator-card value-operator">
+                    <h4>yield (Generator)</h4>
+                    <p><code>yield</code> sends back a value and <strong>pauses</strong> - can resume later!</p>
+                    <svg viewBox="0 0 220 80" style="width: 100%; height: auto; margin: 12px 0;">
+                        <rect x="10" y="10" width="90" height="60" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                        <text x="55" y="35" font-size="11" text-anchor="middle" fill="#16a34a">yield 1, 2, 3</text>
+                        <text x="55" y="55" font-size="9" text-anchor="middle" fill="#57606a">ONE at a time</text>
+                        <path d="M 100 40 L 140 40" stroke="#16a34a" stroke-width="2" marker-end="url(#yieldarr)"/>
+                        <text x="160" y="35" font-size="12" fill="#16a34a">1</text>
+                        <text x="175" y="45" font-size="12" fill="#16a34a">2</text>
+                        <text x="190" y="55" font-size="12" fill="#16a34a">3</text>
+                        <defs><marker id="yieldarr" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#16a34a"/></marker></defs>
+                    </svg>
+                    <pre><code class="language-python">def gen():
+    yield 1; yield 2; yield 3</code></pre>
+                </div>
+            </div>
+
+            <div class="pointer-concept-card warning">
+                <h4>Mnemonic</h4>
+                <p><code>return</code> = <strong>"here's everything, goodbye!"</strong> | <code>yield</code> = <strong>"here's one, I'll wait for you to ask for more"</strong></p>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Generator vs List - Memory comparison
+import sys
+
+# List - stores ALL values in memory
+def get_numbers_list(n):
+    return [i for i in range(n)]
+
+# Generator - produces values on demand
+def get_numbers_gen(n):
+    for i in range(n):
+        yield i
+
+# Compare memory usage
+n = 10000
+numbers_list = get_numbers_list(n)
+numbers_gen = get_numbers_gen(n)
+
+print("=== Memory Comparison ===")
+print(f"List size: {sys.getsizeof(numbers_list):,} bytes")
+print(f"Generator size: {sys.getsizeof(numbers_gen):,} bytes")
+
+print("\n=== Using the generator ===")
+# Iterate over generator (values produced on demand)
+gen = get_numbers_gen(5)
+print(f"First: {next(gen)}")
+print(f"Second: {next(gen)}")
+print(f"Third: {next(gen)}")
+print(f"Rest: {list(gen)}")  # Consume remaining</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <!-- Generator Expressions -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128202;</span>
+                <h3>3. Generator Expressions (Compact Syntax)</h3>
+            </div>
+
+            <p>Generator expressions are like list comprehensions but use <code>()</code> instead of <code>[]</code>.</p>
+
+            <div class="pointer-operators-grid">
+                <div class="operator-card address-operator">
+                    <h4>List Comprehension [ ]</h4>
+                    <p>Creates list immediately, uses more memory.</p>
+                    <pre><code class="language-python">squares = [x**2 for x in range(1000)]
+# All 1000 values in memory NOW</code></pre>
+                </div>
+                <div class="operator-card value-operator">
+                    <h4>Generator Expression ( )</h4>
+                    <p>Creates generator, memory efficient.</p>
+                    <pre><code class="language-python">squares = (x**2 for x in range(1000))
+# Values computed on demand</code></pre>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python"># Generator expressions in action
+import sys
+
+# List comprehension vs Generator expression
+list_comp = [x**2 for x in range(1000)]
+gen_expr = (x**2 for x in range(1000))
+
+print("=== Memory Comparison ===")
+print(f"List: {sys.getsizeof(list_comp):,} bytes")
+print(f"Generator: {sys.getsizeof(gen_expr):,} bytes")
+
+# Common patterns with generator expressions
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# Sum of squares (efficient - no intermediate list)
+total = sum(x**2 for x in numbers)
+print(f"\nSum of squares: {total}")
+
+# Any/all with generators
+has_even = any(x % 2 == 0 for x in numbers)
+all_positive = all(x > 0 for x in numbers)
+print(f"Has even: {has_even}")
+print(f"All positive: {all_positive}")
+
+# Chain generators (lazy evaluation)
+result = sum(x for x in range(1000000) if x % 2 == 0)
+print(f"Sum of even numbers 0-999999: {result:,}")</code></pre>
+                <button class="run-code-btn" data-language="python">Run Code</button>
+            </div>
+        </div>
+
+        <!-- yield from -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128214;</span>
+                <h3>4. yield from (Delegate to Sub-generators)</h3>
+            </div>
+
+            <p><code>yield from</code> delegates to another iterable, yielding each of its values.</p>
+
+            <div class="visual-example-diagram">
+                <svg viewBox="0 0 500 120" style="width: 100%; height: auto; margin: 12px 0;">
+                    <!-- Main Generator -->
+                    <rect x="10" y="20" width="120" height="80" fill="#dbeafe" stroke="#3776ab" stroke-width="2" rx="6"/>
+                    <text x="70" y="45" font-size="11" font-weight="600" text-anchor="middle" fill="#3776ab">Main Gen</text>
+                    <text x="70" y="65" font-size="10" text-anchor="middle" fill="#0a3069">yield from sub</text>
+
+                    <path d="M 130 60 L 170 60" stroke="#d97706" stroke-width="2" marker-end="url(#yfarrow)"/>
+
+                    <!-- Sub Generator -->
+                    <rect x="170" y="20" width="100" height="80" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                    <text x="220" y="45" font-size="11" font-weight="600" text-anchor="middle" fill="#16a34a">Sub Gen</text>
+                    <text x="220" y="65" font-size="10" text-anchor="middle" fill="#0a3069">[1, 2, 3]</text>
+
+                    <path d="M 270 60 L 310 60" stroke="#16a34a" stroke-width="2" marker-end="url(#yfarrow2)"/>
+
+                    <!-- Values -->
+                    <text x="330" y="50" font-size="16" fill="#0a3069">1</text>
+                    <text x="360" y="60" font-size="16" fill="#0a3069">2</text>
+                    <text x="390" y="70" font-size="16" fill="#0a3069">3</text>
+
+                    <text x="420" y="60" font-size="10" fill="#57606a">...yielded directly</text>
+
+                    <defs>
+                        <marker id="yfarrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#d97706"/></marker>
+                        <marker id="yfarrow2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10" fill="#16a34a"/></marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-python"># yield from - Delegating to sub-generators
+
+def countdown(n):
+    """Count down from n to 1."""
+    while n > 0:
+        yield n
+        n -= 1
+
+def countup(n):
+    """Count up from 1 to n."""
+    for i in range(1, n + 1):
+        yield i
+
+def full_sequence(n):
+    """Combine generators using yield from."""
+    print("Counting down...")
+    yield from countdown(n)
+
+    print("Counting up...")
+    yield from countup(n)
+
+    print("Done!")
+
+# Use the combined generator
+print("=== yield from Demo ===")
+for value in full_sequence(3):
+    print(f"  Got: {value}")
+
+# Practical example: Flatten nested lists
+def flatten(nested):
+    """Flatten arbitrarily nested lists."""
+    for item in nested:
+        if isinstance(item, list):
+            yield from flatten(item)  # Recurse!
+        else:
+            yield item
+
+print("\n=== Flatten Nested List ===")
+nested = [1, [2, 3, [4, 5]], 6, [7, [8, 9]]]
+flat = list(flatten(nested))
+print(f"Nested: {nested}")
+print(f"Flat: {flat}")</code></pre>
                 <button class="run-code-btn" data-language="python">Run Code</button>
             </div>
         </div>
@@ -1514,6 +2166,173 @@ if __name__ == "__main__":
     background: #3776ab;
     color: white;
     border-color: #3776ab;
+}
+
+/* Visual Guide Styles (for Decorators and Generators sections) */
+.pointer-concept-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.pointer-concept-card h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.pointer-concept-card p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.pointer-concept-card.success {
+    background: #dcfce710;
+    border-color: #16a34a40;
+}
+
+.pointer-concept-card.success h4 {
+    color: #16a34a;
+}
+
+.pointer-concept-card.warning {
+    background: #fef3c710;
+    border-color: #d9770640;
+}
+
+.pointer-concept-card.warning h4 {
+    color: #d97706;
+}
+
+.pointer-concept-card.error {
+    background: #fef2f210;
+    border-color: #ef444440;
+}
+
+.pointer-concept-card.error h4 {
+    color: #ef4444;
+}
+
+.visual-memory-diagram {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.visual-memory-diagram svg,
+.visual-example-diagram svg,
+.operator-card svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.visual-example-diagram {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.pointer-operators-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .pointer-operators-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.operator-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.operator-card.address-operator {
+    border-left: 4px solid #d97706;
+}
+
+.operator-card.value-operator {
+    border-left: 4px solid #3776ab;
+}
+
+.operator-card h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.operator-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary, #64748b);
+    margin-bottom: 0.75rem;
+}
+
+.operator-card pre {
+    background: #1e293b;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin: 0.75rem 0 0 0;
+    font-size: 0.8rem;
+}
+
+.operator-card pre code {
+    background: none;
+    color: #e2e8f0;
+}
+
+.pointer-rules-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .pointer-rules-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.rule-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.rule-card.do-rule {
+    border-left: 3px solid #16a34a;
+}
+
+.rule-card strong {
+    color: #16a34a;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.rule-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary, #64748b);
 }
 
 /* Infinite scroll fix */
