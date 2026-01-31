@@ -3,23 +3,51 @@
 <div class="roadmap-page">
     <div class="roadmap-header">
         <h1>7-Day Intensive Study Roadmap</h1>
-        <p class="page-description">Smart study plan: 10 hours daily covering DS/Algo, System Design, Design Patterns, and more</p>
+        <p class="page-description">ADHD-friendly plan: Shorter sessions (30min-1.5hrs) with frequent topic switches</p>
+
+        <div class="roadmap-controls">
+            <button id="show-graph-btn" class="btn btn-secondary btn-sm" onclick="toggleGraphView()">
+                <span>📊</span> Show Progress Graph
+            </button>
+            <button id="reset-progress-btn" class="btn btn-secondary btn-sm" onclick="resetProgress()">
+                <span>🔄</span> Reset All Progress
+            </button>
+        </div>
+
         <div class="roadmap-stats">
             <div class="stat-box">
-                <span class="stat-value">70</span>
-                <span class="stat-label">Total Hours</span>
+                <span class="stat-value" id="total-sessions">42</span>
+                <span class="stat-label">Total Sessions</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="completed-sessions">0</span>
+                <span class="stat-label">Completed</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" id="progress-percent">0%</span>
+                <span class="stat-label">Progress</span>
             </div>
             <div class="stat-box">
                 <span class="stat-value">7</span>
                 <span class="stat-label">Days</span>
             </div>
-            <div class="stat-box">
-                <span class="stat-value">35</span>
-                <span class="stat-label">Sessions</span>
+        </div>
+    </div>
+
+    <!-- Graph View Modal -->
+    <div id="graph-modal" class="graph-modal hidden">
+        <div class="graph-modal-overlay" onclick="toggleGraphView()"></div>
+        <div class="graph-modal-content">
+            <div class="graph-modal-header">
+                <h2>Progress Visualization</h2>
+                <button class="graph-modal-close" onclick="toggleGraphView()">&times;</button>
             </div>
-            <div class="stat-box">
-                <span class="stat-value">12+</span>
-                <span class="stat-label">Topics</span>
+            <div class="graph-modal-body">
+                <canvas id="progress-chart"></canvas>
+                <div class="progress-summary">
+                    <h3>Category Breakdown</h3>
+                    <div id="category-stats"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -34,66 +62,57 @@
 
             <div class="sessions-container">
                 {{range .Sessions}}
-                <a href="{{.Link}}" class="session-card {{.Category}}">
-                    <div class="session-icon">{{.Icon}}</div>
-                    <div class="session-content">
-                        <div class="session-header">
-                            <h3>{{.Topic}}</h3>
-                            <span class="session-category {{.Category}}">{{.Category}}</span>
+                <div class="session-wrapper">
+                    <div class="session-card {{.Category}}" data-session-id="{{.ID}}">
+                        <div class="session-checkbox" onclick="toggleSession('{{.ID}}', event)">
+                            <input type="checkbox" id="check-{{.ID}}" class="session-check" />
+                            <label for="check-{{.ID}}"></label>
                         </div>
-                        <p class="session-description">{{.Description}}</p>
-                        <div class="session-footer">
-                            <span class="session-time">⏱️ {{.Time}}</span>
-                            <span class="session-duration">⏰ {{.Duration}}</span>
+
+                        <div class="session-icon">{{.Icon}}</div>
+
+                        <div class="session-content">
+                            <div class="session-header">
+                                <h3>{{.Topic}}</h3>
+                                <span class="session-category {{.Category}}">{{.Category}}</span>
+                            </div>
+                            <p class="session-description">{{.Description}}</p>
+                            <div class="session-footer">
+                                <span class="session-time">⏱️ {{.Time}}</span>
+                                <span class="session-duration">⏰ {{.Duration}}</span>
+                            </div>
+
+                            {{if .SubTopics}}
+                            <div class="subtopics-toggle" onclick="toggleSubTopics('{{.ID}}')">
+                                <span class="toggle-icon">▶</span>
+                                <span class="toggle-text">Show {{len .SubTopics}} Topics</span>
+                            </div>
+                            {{end}}
                         </div>
                     </div>
-                </a>
+
+                    {{if .SubTopics}}
+                    <div class="subtopics-list hidden" id="subtopics-{{.ID}}">
+                        {{range .SubTopics}}
+                        <a href="{{.Link}}" class="subtopic-item">
+                            <span class="subtopic-bullet">•</span>
+                            <span class="subtopic-name">{{.Name}}</span>
+                            <span class="subtopic-arrow">→</span>
+                        </a>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
                 {{end}}
             </div>
         </div>
         {{end}}
     </div>
 
-    <div class="roadmap-tips">
-        <h2>Study Tips for Success</h2>
-        <div class="tips-grid">
-            <div class="tip-card">
-                <div class="tip-icon">💪</div>
-                <h3>Stay Consistent</h3>
-                <p>Follow the schedule daily. Consistency is key to mastering all topics in 7 days.</p>
-            </div>
-            <div class="tip-card">
-                <div class="tip-icon">🎯</div>
-                <h3>Focus on Understanding</h3>
-                <p>Don't just memorize. Understand the 'why' behind each concept and pattern.</p>
-            </div>
-            <div class="tip-card">
-                <div class="tip-icon">✍️</div>
-                <h3>Practice Coding</h3>
-                <p>Write code for every problem. Use the practice page to test your solutions.</p>
-            </div>
-            <div class="tip-card">
-                <div class="tip-icon">🔄</div>
-                <h3>Review Regularly</h3>
-                <p>Each day includes review time. Use it to revisit difficult concepts.</p>
-            </div>
-            <div class="tip-card">
-                <div class="tip-icon">🤝</div>
-                <h3>Mix Topics</h3>
-                <p>The plan mixes different topics to prevent fatigue and maintain engagement.</p>
-            </div>
-            <div class="tip-card">
-                <div class="tip-icon">💡</div>
-                <h3>Take Breaks</h3>
-                <p>Use the 1-hour lunch break to rest, recharge, and consolidate learning.</p>
-            </div>
-        </div>
-    </div>
-
     <div class="roadmap-footer">
         <div class="footer-cta">
             <h2>Ready to Start Your Journey?</h2>
-            <p>Begin with Day 1 and work through the roadmap systematically</p>
+            <p>Begin with Day 1 and track your progress. Check off sessions as you complete them!</p>
             <div class="cta-buttons">
                 <a href="/200-problems" class="btn btn-primary">Start Day 1</a>
                 <a href="/" class="btn btn-secondary">Back to Home</a>
@@ -101,3 +120,228 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Progress tracking with localStorage
+const STORAGE_KEY = 'roadmap_progress';
+
+function loadProgress() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : {};
+}
+
+function saveProgress(progress) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+function toggleSession(sessionId, event) {
+    event.stopPropagation();
+    const progress = loadProgress();
+    const checkbox = document.getElementById('check-' + sessionId);
+
+    // Toggle the state
+    progress[sessionId] = !progress[sessionId];
+    checkbox.checked = progress[sessionId];
+
+    // Update the session card visual state
+    const sessionCard = document.querySelector(`[data-session-id="${sessionId}"]`);
+    if (progress[sessionId]) {
+        sessionCard.classList.add('completed');
+    } else {
+        sessionCard.classList.remove('completed');
+    }
+
+    saveProgress(progress);
+    updateStats();
+}
+
+function toggleSubTopics(sessionId) {
+    const subtopicsList = document.getElementById('subtopics-' + sessionId);
+    const toggleIcon = event.currentTarget.querySelector('.toggle-icon');
+    const toggleText = event.currentTarget.querySelector('.toggle-text');
+
+    if (subtopicsList.classList.contains('hidden')) {
+        subtopicsList.classList.remove('hidden');
+        toggleIcon.textContent = '▼';
+        const count = subtopicsList.querySelectorAll('.subtopic-item').length;
+        toggleText.textContent = 'Hide Topics';
+    } else {
+        subtopicsList.classList.add('hidden');
+        toggleIcon.textContent = '▶';
+        const count = subtopicsList.querySelectorAll('.subtopic-item').length;
+        toggleText.textContent = `Show ${count} Topics`;
+    }
+}
+
+function updateStats() {
+    const progress = loadProgress();
+    const totalSessions = document.querySelectorAll('.session-card').length;
+    const completedSessions = Object.values(progress).filter(Boolean).length;
+    const progressPercent = Math.round((completedSessions / totalSessions) * 100);
+
+    document.getElementById('total-sessions').textContent = totalSessions;
+    document.getElementById('completed-sessions').textContent = completedSessions;
+    document.getElementById('progress-percent').textContent = progressPercent + '%';
+}
+
+function resetProgress() {
+    if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        localStorage.removeItem(STORAGE_KEY);
+
+        // Uncheck all checkboxes and remove completed class
+        document.querySelectorAll('.session-check').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        document.querySelectorAll('.session-card.completed').forEach(card => {
+            card.classList.remove('completed');
+        });
+
+        updateStats();
+    }
+}
+
+function toggleGraphView() {
+    const modal = document.getElementById('graph-modal');
+    modal.classList.toggle('hidden');
+
+    if (!modal.classList.contains('hidden')) {
+        renderProgressChart();
+        renderCategoryStats();
+    }
+}
+
+function renderProgressChart() {
+    const progress = loadProgress();
+    const sessionCards = document.querySelectorAll('.session-card');
+
+    // Count by category
+    const categories = {};
+    sessionCards.forEach(card => {
+        const category = card.classList[1]; // Second class is the category
+        const sessionId = card.dataset.sessionId;
+
+        if (!categories[category]) {
+            categories[category] = { total: 0, completed: 0 };
+        }
+        categories[category].total++;
+        if (progress[sessionId]) {
+            categories[category].completed++;
+        }
+    });
+
+    const labels = Object.keys(categories);
+    const completedData = labels.map(cat => categories[cat].completed);
+    const totalData = labels.map(cat => categories[cat].total);
+
+    const ctx = document.getElementById('progress-chart');
+
+    // Destroy existing chart if any
+    if (window.progressChart) {
+        window.progressChart.destroy();
+    }
+
+    window.progressChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Completed',
+                    data: completedData,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                },
+                {
+                    label: 'Remaining',
+                    data: labels.map((cat, i) => totalData[i] - completedData[i]),
+                    backgroundColor: 'rgba(229, 231, 235, 0.8)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                x: { stacked: true },
+                y: { stacked: true, beginAtZero: true }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Progress by Category'
+                },
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+}
+
+function renderCategoryStats() {
+    const progress = loadProgress();
+    const sessionCards = document.querySelectorAll('.session-card');
+
+    const categories = {};
+    sessionCards.forEach(card => {
+        const category = card.classList[1];
+        const sessionId = card.dataset.sessionId;
+
+        if (!categories[category]) {
+            categories[category] = { total: 0, completed: 0 };
+        }
+        categories[category].total++;
+        if (progress[sessionId]) {
+            categories[category].completed++;
+        }
+    });
+
+    const statsHtml = Object.entries(categories).map(([cat, data]) => {
+        const percent = Math.round((data.completed / data.total) * 100);
+        return `
+            <div class="category-stat-item">
+                <div class="category-stat-header">
+                    <span class="category-stat-name">${cat}</span>
+                    <span class="category-stat-value">${data.completed}/${data.total}</span>
+                </div>
+                <div class="category-stat-bar">
+                    <div class="category-stat-progress" style="width: ${percent}%"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('category-stats').innerHTML = statsHtml;
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const progress = loadProgress();
+
+    // Restore checkbox states and visual appearance
+    Object.entries(progress).forEach(([sessionId, isCompleted]) => {
+        const checkbox = document.getElementById('check-' + sessionId);
+        const sessionCard = document.querySelector(`[data-session-id="${sessionId}"]`);
+
+        if (checkbox && isCompleted) {
+            checkbox.checked = true;
+            if (sessionCard) {
+                sessionCard.classList.add('completed');
+            }
+        }
+    });
+
+    updateStats();
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('graph-modal');
+        if (!modal.classList.contains('hidden')) {
+            toggleGraphView();
+        }
+    }
+});
+</script>

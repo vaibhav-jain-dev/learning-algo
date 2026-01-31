@@ -39,15 +39,23 @@ type ExecuteResponse struct {
 	Duration int64  `json:"duration_ms"`
 }
 
+// SubTopic represents a specific topic to study
+type SubTopic struct {
+	Name string `json:"name"`
+	Link string `json:"link"`
+}
+
 // StudySession represents a single study session in the roadmap
 type StudySession struct {
-	Time        string `json:"time"`
-	Duration    string `json:"duration"`
-	Topic       string `json:"topic"`
-	Description string `json:"description"`
-	Link        string `json:"link"`
-	Icon        string `json:"icon"`
-	Category    string `json:"category"`
+	ID          string     `json:"id"`
+	Time        string     `json:"time"`
+	Duration    string     `json:"duration"`
+	Topic       string     `json:"topic"`
+	Description string     `json:"description"`
+	Link        string     `json:"link"`
+	Icon        string     `json:"icon"`
+	Category    string     `json:"category"`
+	SubTopics   []SubTopic `json:"sub_topics"`
 }
 
 // DayPlan represents a day's study plan in the roadmap
