@@ -127,18 +127,18 @@ type KernelFactory func(id int, memoryLimit int64) (Kernel, error)
 
 // Pool manages a pool of on-demand kernels with standby mode
 type Pool struct {
-	mu            sync.Mutex
-	kernels       []Kernel
-	available     chan Kernel
-	maxSize       int
-	currentSize   int
-	memoryLimit   int64
-	idleTimeout   time.Duration
-	lastUsed      time.Time
-	running       bool
-	factory       KernelFactory
-	stopChan      chan struct{}
-	idleTimer     *time.Timer
+	mu          sync.Mutex
+	kernels     []Kernel
+	available   chan Kernel
+	maxSize     int
+	currentSize int
+	memoryLimit int64
+	idleTimeout time.Duration
+	lastUsed    time.Time
+	running     bool
+	factory     KernelFactory
+	stopChan    chan struct{}
+	idleTimer   *time.Timer
 }
 
 // PoolConfig configures the kernel pool

@@ -220,15 +220,15 @@ func main() {
 	app.Get("/roadmap", h.Roadmap) // 7-day study roadmap
 
 	// Unified database learning routes (dashboard + lessons in tabs)
-	app.Get("/sql", h.SQL)                      // Combined SQL playground and lessons
-	app.Get("/elasticsearch", h.Elasticsearch)  // Combined Elasticsearch playground and lessons
+	app.Get("/sql", h.SQL)                                              // Combined SQL playground and lessons
+	app.Get("/elasticsearch", h.Elasticsearch)                          // Combined Elasticsearch playground and lessons
 	app.Get("/elasticsearch/search-architecture", h.SearchArchitecture) // Real-world search implementation case study
-	app.Get("/redis", h.Redis)                  // Combined Redis playground and lessons
+	app.Get("/redis", h.Redis)                                          // Combined Redis playground and lessons
 
 	// Other learning routes
 	app.Get("/must-solve-problems", h.MustSolveProblems) // 200 Must Solve Problems (topic overview)
-	app.Get("/200-problems", h.TwoHundredProblems)        // 200 Problems Practice Page
-	app.Get("/200-problems/*", h.TwoHundredProblems)      // 200 Problems with direct URL (e.g., /200-problems/validate-subsequence)
+	app.Get("/200-problems", h.TwoHundredProblems)       // 200 Problems Practice Page
+	app.Get("/200-problems/*", h.TwoHundredProblems)     // 200 Problems with direct URL (e.g., /200-problems/validate-subsequence)
 	app.Get("/learn-subject", h.LearnSubject)            // Learn Subject - Algorithms, Data Structures & Terminologies
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
