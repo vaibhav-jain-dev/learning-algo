@@ -25,9 +25,254 @@
         </div>
     </div>
 
+    <!-- CLICKABLE ROADMAP SECTION -->
+    <section class="roadmap-section">
+        <h2 class="roadmap-title">Go Learning Roadmap</h2>
+        <p class="roadmap-subtitle">Click any topic to jump to detailed content with examples</p>
+
+        <div class="roadmap-grid">
+            <!-- Language Fundamentals Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title fundamentals">Language Fundamentals</h3>
+
+                <div class="roadmap-card" data-topic="variables-types" onclick="scrollToTopic('go-basics')">
+                    <h4>Variables & Types</h4>
+                    <ul>
+                        <li>Zero values</li>
+                        <li>Type inference</li>
+                    </ul>
+                    <a href="https://go.dev/ref/spec" target="_blank" class="card-link">Go Spec</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go variables and types including zero values and type inference with examples')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="functions" onclick="scrollToTopic('go-basics')">
+                    <h4>Functions & Defer</h4>
+                    <ul>
+                        <li>Multiple returns</li>
+                        <li>Named returns</li>
+                    </ul>
+                    <a href="https://go.dev/doc/effective_go" target="_blank" class="card-link">Effective Go</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go functions including multiple returns, named returns, and defer with examples')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="structs" onclick="scrollToTopic('basic')">
+                    <h4>Structs & Methods</h4>
+                    <ul>
+                        <li>Embedding</li>
+                        <li>Composition</li>
+                    </ul>
+                    <a href="https://go.dev/doc/effective_go#composite_literals" target="_blank" class="card-link">Structs</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go structs and methods including embedding and composition with examples')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="interfaces" onclick="scrollToTopic('basic')">
+                    <h4>Interfaces</h4>
+                    <ul>
+                        <li>Implicit impl</li>
+                        <li>Interface design</li>
+                    </ul>
+                    <a href="https://go.dev/doc/effective_go#interfaces" target="_blank" class="card-link">Interfaces</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go interfaces including implicit implementation and interface design patterns')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="errors" onclick="scrollToTopic('basic')">
+                    <h4>Error Handling</h4>
+                    <ul>
+                        <li>Wrapping</li>
+                        <li>Custom errors</li>
+                    </ul>
+                    <a href="https://go.dev/blog/error-handling-and-go" target="_blank" class="card-link">Error Blog</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go error handling including wrapping, custom errors, and errors.Is/As')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card highlight-card" data-topic="pointers" onclick="scrollToTopic('pointers-section')">
+                    <h4>Pointers</h4>
+                    <ul>
+                        <li>& vs * operators</li>
+                        <li>Value vs Reference</li>
+                    </ul>
+                    <a href="https://go.dev/tour/moretypes/1" target="_blank" class="card-link">Go Tour</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go pointers including & vs * operators, value vs reference semantics with visual examples')">Copy Prompt</button>
+                </div>
+            </div>
+
+            <!-- Compiler & Runtime Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title compiler">Compiler & Runtime</h3>
+
+                <div class="roadmap-card" data-topic="compilation" onclick="scrollToTopic('intermediate')">
+                    <h4>Compilation Pipeline</h4>
+                    <ul>
+                        <li>AST</li>
+                        <li>SSA</li>
+                    </ul>
+                    <a href="https://go.dev/doc/cmd" target="_blank" class="card-link">Compiler Docs</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go compilation pipeline including AST parsing and SSA form')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="escape" onclick="scrollToTopic('intermediate')">
+                    <h4>Escape Analysis</h4>
+                    <ul>
+                        <li>Stack vs Heap</li>
+                    </ul>
+                    <a href="https://www.ardanlabs.com/blog/2017/05/language-mechanics-on-escape-analysis.html" target="_blank" class="card-link">Ardan Labs</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go escape analysis including stack vs heap allocation decisions')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="scheduler" onclick="scrollToTopic('intermediate')">
+                    <h4>Scheduler (GMP)</h4>
+                    <ul>
+                        <li>Work stealing</li>
+                    </ul>
+                    <a href="https://go.dev/src/runtime/proc.go" target="_blank" class="card-link">Scheduler</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go GMP scheduler model including goroutines, machine threads, and work stealing')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="gc" onclick="scrollToTopic('advanced')">
+                    <h4>Garbage Collector</h4>
+                    <ul>
+                        <li>Tri-color</li>
+                    </ul>
+                    <a href="https://tip.golang.org/doc/gc-guide" target="_blank" class="card-link">GC Guide</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go garbage collector including tri-color marking algorithm')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="memory" onclick="scrollToTopic('advanced')">
+                    <h4>Memory Model</h4>
+                    <ul>
+                        <li>Happens-before</li>
+                    </ul>
+                    <a href="https://go.dev/ref/mem" target="_blank" class="card-link">Memory Model</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go memory model including happens-before relationships')">Copy Prompt</button>
+                </div>
+            </div>
+
+            <!-- Concurrency & APIs Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title concurrency">Concurrency & APIs</h3>
+
+                <div class="roadmap-card" data-topic="goroutines" onclick="scrollToTopic('intermediate')">
+                    <h4>Goroutines</h4>
+                    <ul>
+                        <li>Lightweight threads</li>
+                    </ul>
+                    <a href="https://go.dev/doc/faq#goroutines" target="_blank" class="card-link">FAQ</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go goroutines including creation, lifecycle, and best practices')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="channels" onclick="scrollToTopic('intermediate')">
+                    <h4>Channels</h4>
+                    <ul>
+                        <li>Pipelines</li>
+                    </ul>
+                    <a href="https://go.dev/blog/pipelines" target="_blank" class="card-link">Pipelines</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go channels including buffered channels, pipelines, and fan-out/fan-in')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="sync" onclick="scrollToTopic('intermediate')">
+                    <h4>Mutex / Sync</h4>
+                    <ul>
+                        <li>sync package</li>
+                    </ul>
+                    <a href="https://pkg.go.dev/sync" target="_blank" class="card-link">sync Docs</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go sync package including Mutex, RWMutex, WaitGroup, and sync.Map')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="context" onclick="scrollToTopic('intermediate')">
+                    <h4>Context</h4>
+                    <ul>
+                        <li>Cancellation</li>
+                    </ul>
+                    <a href="https://go.dev/blog/context" target="_blank" class="card-link">Context Blog</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go context package including timeouts, cancellation, and value propagation')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="http" onclick="scrollToTopic('advanced')">
+                    <h4>HTTP / REST</h4>
+                    <ul>
+                        <li>net/http package</li>
+                    </ul>
+                    <a href="https://pkg.go.dev/net/http" target="_blank" class="card-link">net/http</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go HTTP servers and clients including handlers, middleware, and REST API patterns')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="grpc" onclick="scrollToTopic('advanced')">
+                    <h4>gRPC</h4>
+                    <ul>
+                        <li>Protocol Buffers</li>
+                    </ul>
+                    <a href="https://grpc.io/docs/languages/go/" target="_blank" class="card-link">gRPC Intro</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go gRPC including protocol buffers, service definitions, and streaming')">Copy Prompt</button>
+                </div>
+            </div>
+
+            <!-- System Design & Production Column -->
+            <div class="roadmap-column">
+                <h3 class="column-title production">System Design & Production</h3>
+
+                <div class="roadmap-card" data-topic="timeouts" onclick="scrollToTopic('advanced')">
+                    <h4>Timeouts & Retries</h4>
+                    <ul>
+                        <li>Exponential backoff</li>
+                    </ul>
+                    <a href="https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/" target="_blank" class="card-link">AWS Library</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain timeout and retry patterns in Go including exponential backoff with jitter')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="backpressure" onclick="scrollToTopic('advanced')">
+                    <h4>Backpressure</h4>
+                    <ul>
+                        <li>Rate limiting</li>
+                    </ul>
+                    <a href="https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/" target="_blank" class="card-link">Cloudflare</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain backpressure and rate limiting patterns in Go')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="observability" onclick="scrollToTopic('advanced')">
+                    <h4>Observability</h4>
+                    <ul>
+                        <li>Metrics, Logs, Traces</li>
+                    </ul>
+                    <a href="https://opentelemetry.io/docs/instrumentation/go/" target="_blank" class="card-link">OpenTelemetry</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain observability in Go including OpenTelemetry, metrics, logging, and distributed tracing')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="profiling" onclick="scrollToTopic('advanced')">
+                    <h4>Profiling</h4>
+                    <ul>
+                        <li>pprof</li>
+                    </ul>
+                    <a href="https://go.dev/doc/diagnostics" target="_blank" class="card-link">Diagnostics</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go profiling with pprof including CPU, memory, and goroutine profiling')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="docker" onclick="scrollToTopic('advanced')">
+                    <h4>Deployment & Docker</h4>
+                    <ul>
+                        <li>Multi-stage builds</li>
+                    </ul>
+                    <a href="https://docs.docker.com/language/golang/" target="_blank" class="card-link">Docker Go</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go deployment with Docker including multi-stage builds and optimization')">Copy Prompt</button>
+                </div>
+
+                <div class="roadmap-card" data-topic="patterns" onclick="scrollToTopic('advanced')">
+                    <h4>Design Patterns</h4>
+                    <ul>
+                        <li>Worker Pool, Circuit Breaker</li>
+                    </ul>
+                    <a href="/design-patterns" class="card-link">Patterns</a>
+                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go design patterns including worker pool, circuit breaker, and graceful shutdown')">Copy Prompt</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div class="guide-nav">
         <a href="#go-basics" class="guide-nav-link active" data-section="go-basics">
             <span class="nav-icon">&#128029;</span> Go Basics
+        </a>
+        <a href="#pointers-section" class="guide-nav-link" data-section="pointers-section">
+            <span class="nav-icon">&#128204;</span> Pointers Deep Dive
         </a>
         <a href="#basic" class="guide-nav-link" data-section="basic">
             <span class="nav-icon">&#9881;</span> Foundations
@@ -468,6 +713,568 @@ func main() {
     }
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- POINTERS DEEP DIVE SECTION -->
+    <section id="pointers-section" class="guide-section">
+        <div class="section-header">
+            <h2><span class="section-icon">&#128204;</span> Go Pointers — Complete Visual Guide</h2>
+            <p class="section-description">Master pointers with visual diagrams, practical examples, and interview traps</p>
+        </div>
+
+        <!-- What is a Pointer -->
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#127919;</span>
+                <h3>1. What is a Pointer (Plain Meaning)</h3>
+            </div>
+            <p>A <strong>pointer</strong> stores the <strong>memory address</strong> of a value, not the value itself.</p>
+
+            <div class="pointer-concept-card">
+                <h4>Think of it like</h4>
+                <p><strong>House vs House Address:</strong> A variable is the house (contains data). A pointer is the address (tells you where the house is).</p>
+            </div>
+
+            <!-- Visual Memory Diagram -->
+            <div class="visual-memory-diagram">
+                <svg viewBox="0 0 600 180" style="width: 100%; height: auto; margin: 16px 0;">
+                    <!-- Variable Box -->
+                    <rect x="20" y="30" width="120" height="80" fill="#dcfce7" stroke="#16a34a" stroke-width="3" rx="8"/>
+                    <text x="80" y="55" font-size="14" font-weight="600" text-anchor="middle" fill="#16a34a">Variable x</text>
+                    <text x="80" y="90" font-size="24" font-weight="700" text-anchor="middle" fill="#0a3069">10</text>
+                    <!-- Memory Address Label -->
+                    <text x="80" y="130" font-size="11" text-anchor="middle" fill="#57606a">Address: 0x12a45f8</text>
+
+                    <!-- Pointer Box -->
+                    <rect x="280" y="30" width="140" height="80" fill="#dbeafe" stroke="#2563eb" stroke-width="3" rx="8"/>
+                    <text x="350" y="55" font-size="14" font-weight="600" text-anchor="middle" fill="#2563eb">Pointer p</text>
+                    <text x="350" y="90" font-size="14" font-weight="700" text-anchor="middle" fill="#ea580c">→ 0x12a45f8</text>
+                    <text x="350" y="130" font-size="11" text-anchor="middle" fill="#57606a">p := &x</text>
+
+                    <!-- Arrow connecting them -->
+                    <path d="M 420 70 L 520 70" stroke="#ea580c" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead1)"/>
+
+                    <!-- Dereference box -->
+                    <rect x="520" y="30" width="60" height="80" fill="#fef3c7" stroke="#d97706" stroke-width="3" rx="8"/>
+                    <text x="550" y="55" font-size="12" font-weight="600" text-anchor="middle" fill="#d97706">*p</text>
+                    <text x="550" y="90" font-size="20" font-weight="700" text-anchor="middle" fill="#0a3069">10</text>
+
+                    <defs>
+                        <marker id="arrowhead1" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10" fill="#ea580c"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="pointer-concept-card success">
+                <h4>Why Care?</h4>
+                <p>Pointers let you <strong>modify data without copying</strong> and <strong>share state</strong> between functions. Essential for performance and mutability.</p>
+            </div>
+        </div>
+
+        <!-- & vs * Section -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128161;</span>
+                <h3>2. & vs * (MOST IMPORTANT)</h3>
+            </div>
+
+            <div class="pointer-operators-grid">
+                <div class="operator-card address-operator">
+                    <h4>& → Get Address</h4>
+                    <p>The <code>&</code> operator gives you the <strong>memory address</strong> of a variable.</p>
+                    <svg viewBox="0 0 220 120" style="width: 100%; height: auto; margin: 12px 0;">
+                        <rect x="10" y="10" width="90" height="50" fill="#fef3c7" stroke="#d97706" stroke-width="2" rx="6"/>
+                        <text x="55" y="32" font-size="12" font-weight="600" text-anchor="middle" fill="#1f2937">Variable x</text>
+                        <text x="55" y="52" font-size="16" font-weight="700" text-anchor="middle" fill="#2563eb">10</text>
+                        <path d="M 100 35 L 130 35" stroke="#d97706" stroke-width="2" marker-end="url(#arr2)"/>
+                        <text x="160" y="40" font-size="14" font-weight="700" fill="#d97706">&x</text>
+                        <text x="55" y="80" font-size="10" text-anchor="middle" fill="#57606a">gets address</text>
+                        <defs>
+                            <marker id="arr2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10" fill="#d97706"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                    <pre><code class="language-go">x := 10
+p := &x  // p holds address</code></pre>
+                </div>
+                <div class="operator-card value-operator">
+                    <h4>* → Get Value from Address</h4>
+                    <p>The <code>*</code> operator <strong>dereferences</strong> a pointer to get the value.</p>
+                    <svg viewBox="0 0 220 120" style="width: 100%; height: auto; margin: 12px 0;">
+                        <rect x="10" y="10" width="90" height="50" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="6"/>
+                        <text x="55" y="32" font-size="12" font-weight="600" text-anchor="middle" fill="#1f2937">Pointer p</text>
+                        <text x="55" y="52" font-size="12" font-weight="700" text-anchor="middle" fill="#ea580c">0x12a45f8</text>
+                        <path d="M 100 35 L 130 35" stroke="#2563eb" stroke-width="2" marker-end="url(#arr3)"/>
+                        <text x="160" y="35" font-size="14" font-weight="700" fill="#2563eb">*p</text>
+                        <text x="160" y="55" font-size="16" font-weight="700" fill="#16a34a">10</text>
+                        <text x="55" y="80" font-size="10" text-anchor="middle" fill="#57606a">gets value</text>
+                        <defs>
+                            <marker id="arr3" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10" fill="#2563eb"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                    <pre><code class="language-go">val := *p  // = 10
+*p = 20    // modify original</code></pre>
+                </div>
+            </div>
+
+            <div class="pointer-concept-card warning">
+                <h4>Mnemonic</h4>
+                <p><code>&</code> = <strong>"where is it?"</strong> (get address) | <code>*</code> = <strong>"what's inside?"</strong> (get value)</p>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    x := 10
+    p := &x               // p points to x
+
+    fmt.Println("x =", x)         // Output: 10
+    fmt.Println("&x =", &x)       // Output: 0x... (address)
+    fmt.Println("p =", p)         // Output: same address
+    fmt.Println("*p =", *p)       // Output: 10
+
+    *p = 20              // Change x via pointer
+    fmt.Println("After *p = 20:")
+    fmt.Println("x =", x)         // Output: 20
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <!-- When to Use Pointers -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128214;</span>
+                <h3>3. When to Use Pointers (Decision Rules)</h3>
+            </div>
+
+            <div class="pointer-rules-grid">
+                <div class="rule-card do-rule">
+                    <strong>✓ Modify Original Data</strong>
+                    <p>Pass a pointer to a function to modify the original value, not a copy.</p>
+                </div>
+                <div class="rule-card do-rule">
+                    <strong>✓ Avoid Copying Large Structs</strong>
+                    <p>For structs >128 bytes, pass a pointer to avoid expensive memory copies.</p>
+                </div>
+                <div class="rule-card do-rule">
+                    <strong>✓ Represent Optional Values</strong>
+                    <p>Use pointers to distinguish nil (not set) from zero values (0, "", false).</p>
+                </div>
+                <div class="rule-card do-rule">
+                    <strong>✓ Share State</strong>
+                    <p>Multiple goroutines/functions need to modify the same data.</p>
+                </div>
+            </div>
+
+            <div class="pointer-concept-card error">
+                <h4>Don't Overuse</h4>
+                <p>Avoid pointers for simple types (int, string) or reference types (slices, maps). They already share memory efficiently.</p>
+            </div>
+        </div>
+
+        <!-- Visual Examples: Value vs Pointer -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128202;</span>
+                <h3>4. Visual Examples: Value vs Pointer</h3>
+            </div>
+
+            <h4>Example 1: Value Copy (NO Pointer) - Won't Modify</h4>
+            <div class="visual-example-diagram">
+                <svg viewBox="0 0 500 150" style="width: 100%; height: auto; margin: 12px 0;">
+                    <!-- Main Function Box -->
+                    <rect x="10" y="10" width="140" height="130" fill="#f0f4ff" stroke="#6b21a8" stroke-width="2" rx="6"/>
+                    <text x="80" y="30" font-size="12" font-weight="600" text-anchor="middle" fill="#6b21a8">main()</text>
+                    <rect x="20" y="40" width="120" height="35" fill="white" stroke="#d1d5db" stroke-width="1" rx="3"/>
+                    <text x="80" y="55" font-size="11" font-weight="600" fill="#1f2937">num = 5</text>
+                    <text x="80" y="68" font-size="9" fill="#57606a">Call addOne(5)</text>
+                    <!-- Arrow -->
+                    <path d="M 150 57 L 180 57" stroke="#2563eb" stroke-width="2" marker-end="url(#arrmain)"/>
+                    <!-- Function Box -->
+                    <rect x="180" y="10" width="140" height="130" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="6"/>
+                    <text x="250" y="30" font-size="12" font-weight="600" text-anchor="middle" fill="#16a34a">addOne(x)</text>
+                    <rect x="190" y="40" width="120" height="35" fill="white" stroke="#d1d5db" stroke-width="1" rx="3"/>
+                    <text x="250" y="55" font-size="11" font-weight="600" fill="#1f2937">x = 5 (COPY)</text>
+                    <text x="250" y="68" font-size="9" fill="#57606a">x++ → x = 6</text>
+                    <!-- Result -->
+                    <text x="80" y="100" font-size="10" fill="#57606a">Result: num still = 5</text>
+                    <rect x="25" y="110" width="110" height="22" fill="#fef3c7" stroke="#d97706" stroke-width="1" rx="3"/>
+                    <text x="80" y="125" font-size="10" font-weight="600" text-anchor="middle" fill="#1f2937">❌ NOT MODIFIED</text>
+                    <defs>
+                        <marker id="arrmain" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10" fill="#2563eb"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func addOne(x int) {
+    x++  // Modifies copy only!
+}
+
+func main() {
+    num := 5
+    addOne(num)
+    fmt.Println("num =", num)  // Output: 5 (unchanged!)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <h4>Example 2: Pointer for Mutation - WILL Modify</h4>
+            <div class="visual-example-diagram">
+                <svg viewBox="0 0 500 150" style="width: 100%; height: auto; margin: 12px 0;">
+                    <!-- Main Function Box -->
+                    <rect x="10" y="10" width="140" height="130" fill="#f0f4ff" stroke="#6b21a8" stroke-width="2" rx="6"/>
+                    <text x="80" y="30" font-size="12" font-weight="600" text-anchor="middle" fill="#6b21a8">main()</text>
+                    <rect x="20" y="40" width="120" height="40" fill="white" stroke="#d1d5db" stroke-width="1" rx="3"/>
+                    <text x="80" y="55" font-size="11" font-weight="600" fill="#1f2937">num = 5</text>
+                    <text x="80" y="72" font-size="9" fill="#57606a">addr: 0x12a45f8</text>
+                    <!-- Arrow showing &num -->
+                    <path d="M 150 60 L 180 60" stroke="#ea580c" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrptr)"/>
+                    <text x="155" y="50" font-size="9" fill="#ea580c">&num</text>
+                    <!-- Function with Pointer -->
+                    <rect x="180" y="10" width="155" height="130" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="6"/>
+                    <text x="257" y="30" font-size="12" font-weight="600" text-anchor="middle" fill="#2563eb">addOne(x *int)</text>
+                    <rect x="190" y="40" width="135" height="45" fill="white" stroke="#d1d5db" stroke-width="1" rx="3"/>
+                    <text x="257" y="55" font-size="11" font-weight="600" fill="#1f2937">x = 0x12a45f8</text>
+                    <text x="257" y="68" font-size="9" fill="#57606a">(SAME ADDRESS!)</text>
+                    <text x="257" y="80" font-size="9" fill="#ea580c">*x++ modifies num</text>
+                    <!-- Result -->
+                    <text x="80" y="100" font-size="10" fill="#57606a">Result: num NOW = 6</text>
+                    <rect x="25" y="110" width="110" height="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="3"/>
+                    <text x="80" y="125" font-size="10" font-weight="600" text-anchor="middle" fill="#16a34a">✓ MODIFIED!</text>
+                    <defs>
+                        <marker id="arrptr" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10" fill="#ea580c"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func addOne(x *int) {
+    *x++  // Modifies original via pointer!
+}
+
+func main() {
+    num := 5
+    addOne(&num)  // Pass address
+    fmt.Println("num =", num)  // Output: 6 (changed!)
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <!-- Struct Pointer Fields -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128230;</span>
+                <h3>5. Struct Fields: When to Use Pointer</h3>
+            </div>
+
+            <div class="pointer-table-container">
+                <table class="pointer-decision-table">
+                    <thead>
+                        <tr>
+                            <th>Field Type</th>
+                            <th>Use Pointer?</th>
+                            <th>Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Age *int</code></td>
+                            <td class="yes">✓ YES</td>
+                            <td>Optional value (nil = not set, 0 = set to zero)</td>
+                        </tr>
+                        <tr>
+                            <td><code>Email string</code></td>
+                            <td class="no">✗ NO</td>
+                            <td>Strings are small, use empty string for "not set"</td>
+                        </tr>
+                        <tr>
+                            <td><code>Config *LargeStruct</code></td>
+                            <td class="yes">✓ YES</td>
+                            <td>Large structs are expensive to copy</td>
+                        </tr>
+                        <tr>
+                            <td><code>Items []Item</code></td>
+                            <td class="no">✗ NO</td>
+                            <td>Slices already reference memory</td>
+                        </tr>
+                        <tr>
+                            <td><code>Metadata map[string]string</code></td>
+                            <td class="no">✗ NO</td>
+                            <td>Maps already reference memory</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+type User struct {
+    Name string   // Required
+    Age  *int     // Optional - nil means "not provided"
+}
+
+func main() {
+    // User without age
+    user1 := User{Name: "Alice"}
+    fmt.Printf("user1.Age is nil: %v\n", user1.Age == nil)
+
+    // User with age
+    age := 25
+    user2 := User{Name: "Bob", Age: &age}
+
+    if user2.Age != nil {
+        fmt.Printf("Bob's age: %d\n", *user2.Age)
+    }
+
+    // Difference: nil vs zero
+    zeroAge := 0
+    user3 := User{Name: "Charlie", Age: &zeroAge}
+    fmt.Printf("Charlie's age is zero: %d\n", *user3.Age)
+    fmt.Println("But it's NOT nil - it was explicitly set!")
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <!-- DOs and DON'Ts -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#9989;</span>
+                <h3>6. DOs and DON'Ts (Best Practices)</h3>
+            </div>
+
+            <div class="dos-donts-grid">
+                <div class="dos-column">
+                    <h4>✓ Do These</h4>
+                    <ul>
+                        <li>Use pointers for mutation (modify original data)</li>
+                        <li>Use pointers for large structs (>128 bytes typically)</li>
+                        <li>Always check nil before dereferencing</li>
+                        <li>Use pointers for optional fields in structs</li>
+                        <li>Pass pointers to modify receiver in methods</li>
+                        <li>Use pointers for tree/graph nodes</li>
+                    </ul>
+                </div>
+                <div class="donts-column">
+                    <h4>✗ Don't Do These</h4>
+                    <ul>
+                        <li>Don't use pointers for int, string, bool (too small)</li>
+                        <li>Don't use pointers for slices/maps unnecessarily</li>
+                        <li>Don't dereference nil pointers (panic!)</li>
+                        <li>Don't use pointers just to "be more efficient"</li>
+                        <li>Don't over-architect with pointers prematurely</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mental Model -->
+        <div class="topic-block highlight-block">
+            <div class="block-header">
+                <span class="block-icon">&#129504;</span>
+                <h3>7. Mental Model (Remember This)</h3>
+            </div>
+
+            <div class="mental-model-grid">
+                <div class="mental-model-item">
+                    <div class="model-operator">&</div>
+                    <div class="model-text">
+                        <strong>Where is it?</strong>
+                        <p>Gets the memory address of a variable. Use when you need to pass the location to a function.</p>
+                    </div>
+                </div>
+                <div class="mental-model-item">
+                    <div class="model-operator">*</div>
+                    <div class="model-text">
+                        <strong>What's inside?</strong>
+                        <p>Dereferences a pointer to get the value it points to. Use to read/modify the actual value.</p>
+                    </div>
+                </div>
+                <div class="mental-model-item">
+                    <div class="model-operator">nil</div>
+                    <div class="model-text">
+                        <strong>Empty address</strong>
+                        <p>A pointer that doesn't point to anything. Always check before dereference!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Traps -->
+        <div class="topic-block">
+            <div class="block-header warning-header">
+                <span class="block-icon">&#9888;</span>
+                <h3>8. Interview Traps & Common Mistakes</h3>
+            </div>
+
+            <div class="trap-card">
+                <h4>Trap 1: Nil Dereference Panic</h4>
+                <pre><code class="language-go">var p *int
+*p = 10  // PANIC! p is nil</code></pre>
+                <div class="trap-solution">
+                    <strong>Fix:</strong> Always check nil: <code>if p != nil { *p = 10 }</code>
+                </div>
+            </div>
+
+            <div class="trap-card">
+                <h4>Trap 2: Pointer to Loop Variable</h4>
+                <pre><code class="language-go">var ptrs []*int
+for _, v := range []int{1, 2, 3} {
+    ptrs = append(ptrs, &v)  // All point to same v!
+}</code></pre>
+                <div class="trap-solution">
+                    <strong>Fix:</strong> Create a copy: <code>v := v; ptrs = append(ptrs, &v)</code>
+                </div>
+            </div>
+
+            <div class="trap-card">
+                <h4>Trap 3: Slice Append Won't Work Without Pointer</h4>
+                <pre><code class="language-go">func add(s []int, v int) {
+    s = append(s, v)  // Changes local copy only!
+}</code></pre>
+                <div class="trap-solution">
+                    <strong>Fix:</strong> Return new slice: <code>func add(s []int, v int) []int { return append(s, v) }</code>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <pre><code class="language-go">package main
+
+import "fmt"
+
+func main() {
+    // Trap 2 demonstration - Loop variable capture
+    fmt.Println("=== Loop Variable Trap ===")
+
+    // BAD - all point to same variable
+    var badPtrs []*int
+    nums := []int{1, 2, 3}
+    for _, v := range nums {
+        badPtrs = append(badPtrs, &v)
+    }
+    fmt.Print("Bad: ")
+    for _, p := range badPtrs {
+        fmt.Printf("%d ", *p)  // All print 3!
+    }
+    fmt.Println()
+
+    // GOOD - create local copy
+    var goodPtrs []*int
+    for _, v := range nums {
+        v := v  // Shadow variable
+        goodPtrs = append(goodPtrs, &v)
+    }
+    fmt.Print("Good: ")
+    for _, p := range goodPtrs {
+        fmt.Printf("%d ", *p)  // Prints 1, 2, 3
+    }
+    fmt.Println()
+}</code></pre>
+                <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#128203;</span>
+                <h3>Quick Reference Card</h3>
+            </div>
+
+            <div class="pointer-table-container">
+                <table class="pointer-decision-table">
+                    <thead>
+                        <tr>
+                            <th>Syntax</th>
+                            <th>Meaning</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>&x</code></td>
+                            <td>Address of x</td>
+                            <td><code>p := &x</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>*p</code></td>
+                            <td>Value at pointer p</td>
+                            <td><code>v := *p</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>*int</code></td>
+                            <td>Type: pointer to int</td>
+                            <td><code>var p *int</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>*p = 10</code></td>
+                            <td>Set value at p to 10</td>
+                            <td><code>*p = 10</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>p == nil</code></td>
+                            <td>Check if p is nil</td>
+                            <td><code>if p == nil { ... }</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>p.Name</code></td>
+                            <td>Shorthand for (*p).Name</td>
+                            <td><code>p.Name = "Alice"</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Decision Tree -->
+        <div class="topic-block">
+            <div class="block-header">
+                <span class="block-icon">&#127795;</span>
+                <h3>Quick Decision Tree</h3>
+            </div>
+
+            <div class="decision-tree">
+                <pre>Does the function need to modify the data?
+  ├─ YES → Use * pointer receiver
+  └─ NO → Use value receiver
+
+Is the struct large (>128 bytes)?
+  ├─ YES → Use * pointer
+  └─ NO → Value is fine
+
+Is it a slice, map, or channel?
+  ├─ YES → NO pointer needed (already reference types)
+  └─ NO → Check if optional
+
+Should the field be optional (nil vs zero)?
+  ├─ YES → Use * pointer
+  └─ NO → Value is fine</pre>
             </div>
         </div>
     </section>
@@ -1926,6 +2733,530 @@ func main() {
 </div>
 
 <style>
+/* ============================================
+   ROADMAP SECTION STYLES
+   ============================================ */
+.roadmap-section {
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    background: var(--color-bg-secondary, #f8fafc);
+    border-radius: 1rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+}
+
+.roadmap-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.roadmap-subtitle {
+    text-align: center;
+    color: var(--color-text-secondary, #64748b);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .roadmap-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .roadmap-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.roadmap-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.column-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.column-title.fundamentals {
+    background: #dbeafe;
+    color: #1e40af;
+    border-left: 4px solid #2563eb;
+}
+
+.column-title.compiler {
+    background: #fef3c7;
+    color: #92400e;
+    border-left: 4px solid #d97706;
+}
+
+.column-title.concurrency {
+    background: #dcfce7;
+    color: #166534;
+    border-left: 4px solid #16a34a;
+}
+
+.column-title.production {
+    background: #fce7f3;
+    color: #9d174d;
+    border-left: 4px solid #db2777;
+}
+
+.roadmap-card {
+    background: var(--color-bg-primary, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    padding: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.roadmap-card:hover {
+    border-color: #00ADD8;
+    box-shadow: 0 4px 12px rgba(0, 173, 216, 0.15);
+    transform: translateY(-2px);
+}
+
+.roadmap-card.highlight-card {
+    border-color: #00ADD8;
+    background: linear-gradient(135deg, #00ADD808 0%, #ffffff 100%);
+}
+
+.roadmap-card h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.roadmap-card ul {
+    margin: 0 0 0.5rem 0;
+    padding-left: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary, #64748b);
+}
+
+.roadmap-card li {
+    margin-bottom: 0.15rem;
+}
+
+.card-link {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #00ADD8;
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.copy-prompt-btn {
+    display: block;
+    width: 100%;
+    padding: 0.4rem 0.75rem;
+    background: var(--color-bg-tertiary, #f1f5f9);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary, #64748b);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.copy-prompt-btn:hover {
+    background: #00ADD8;
+    color: white;
+    border-color: #00ADD8;
+}
+
+/* ============================================
+   POINTERS SECTION STYLES
+   ============================================ */
+.pointer-concept-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-left: 4px solid #2563eb;
+}
+
+.pointer-concept-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: #2563eb;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pointer-concept-card.warning {
+    border-left-color: #d97706;
+}
+.pointer-concept-card.warning h4 { color: #d97706; }
+
+.pointer-concept-card.success {
+    border-left-color: #16a34a;
+}
+.pointer-concept-card.success h4 { color: #16a34a; }
+
+.pointer-concept-card.error {
+    border-left-color: #dc2626;
+}
+.pointer-concept-card.error h4 { color: #dc2626; }
+
+.pointer-concept-card p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.visual-memory-diagram {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.pointer-operators-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .pointer-operators-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.operator-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.operator-card.address-operator {
+    border-left: 4px solid #d97706;
+}
+
+.operator-card.value-operator {
+    border-left: 4px solid #2563eb;
+}
+
+.operator-card h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.operator-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary, #64748b);
+    margin-bottom: 0.75rem;
+}
+
+.operator-card pre {
+    background: #1e293b;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin: 0.75rem 0 0 0;
+    font-size: 0.8rem;
+}
+
+.operator-card pre code {
+    background: none;
+    color: #e2e8f0;
+}
+
+.pointer-rules-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .pointer-rules-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.rule-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.rule-card.do-rule {
+    border-left: 3px solid #16a34a;
+}
+
+.rule-card strong {
+    color: #16a34a;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.rule-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary, #64748b);
+}
+
+.visual-example-diagram {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 0.75rem 0;
+}
+
+.pointer-table-container {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.pointer-decision-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    font-size: 0.9rem;
+}
+
+.pointer-decision-table th {
+    background: var(--color-bg-tertiary, #f1f5f9);
+    color: var(--color-text-primary, #0f172a);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--color-border, #e2e8f0);
+}
+
+.pointer-decision-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.pointer-decision-table tr:last-child td {
+    border-bottom: none;
+}
+
+.pointer-decision-table td.yes {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.pointer-decision-table td.no {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.dos-donts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .dos-donts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dos-column, .donts-column {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.dos-column {
+    border-left: 4px solid #16a34a;
+}
+
+.donts-column {
+    border-left: 4px solid #dc2626;
+}
+
+.dos-column h4 {
+    color: #16a34a;
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+}
+
+.donts-column h4 {
+    color: #dc2626;
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+}
+
+.dos-column ul, .donts-column ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dos-column li, .donts-column li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.25rem;
+    position: relative;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary, #64748b);
+}
+
+.dos-column li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.donts-column li::before {
+    content: "✗";
+    position: absolute;
+    left: 0;
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.mental-model-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.mental-model-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.model-operator {
+    flex: 0 0 50px;
+    background: var(--color-bg-tertiary, #f1f5f9);
+    border: 2px solid #2563eb;
+    border-radius: 0.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #2563eb;
+    font-size: 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.model-text {
+    flex: 1;
+}
+
+.model-text strong {
+    color: #2563eb;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.model-text p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.trap-card {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 2px solid #f59e0b;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin: 1rem 0;
+}
+
+.trap-card h4 {
+    margin: 0 0 0.75rem 0;
+    color: #f59e0b;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.trap-card pre {
+    background: #1e293b;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin: 0.5rem 0;
+    font-size: 0.8rem;
+}
+
+.trap-card pre code {
+    background: none;
+    color: #e2e8f0;
+}
+
+.trap-solution {
+    background: var(--color-bg-tertiary, #f1f5f9);
+    border-left: 3px solid #16a34a;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+}
+
+.trap-solution strong {
+    color: #16a34a;
+}
+
+.decision-tree {
+    background: var(--color-bg-secondary, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-left: 4px solid #16a34a;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.decision-tree pre {
+    background: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--color-text-primary, #0f172a);
+    white-space: pre-wrap;
+    border: none;
+}
+
+/* ============================================
+   ORIGINAL GUIDE PAGE STYLES
+   ============================================ */
 /* Enhanced Guide Page Styles - Go Theme */
 .guide-page {
     max-width: 1100px;
@@ -2619,4 +3950,80 @@ func main() {
         });
     }
 })();
+
+// Roadmap navigation function
+function scrollToTopic(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const headerOffset = 100;
+        const elementPosition = section.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+
+        // Update nav active state
+        document.querySelectorAll('.guide-nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-section') === sectionId) {
+                link.classList.add('active');
+            }
+        });
+    }
+}
+
+// Copy prompt function for roadmap cards
+function copyPrompt(promptText) {
+    navigator.clipboard.writeText(promptText).then(() => {
+        // Show feedback
+        const notification = document.createElement('div');
+        notification.textContent = 'Prompt copied to clipboard!';
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00ADD8;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 173, 216, 0.4);
+            animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = promptText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('Prompt copied!');
+    });
+}
+
+// Add animations for notifications
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(styleSheet);
 </script>

@@ -261,6 +261,13 @@ func (h *Handlers) PythonAsyncio(c *fiber.Ctx) error {
 	})
 }
 
+// Python renders the Python development guide page
+func (h *Handlers) Python(c *fiber.Ctx) error {
+	return c.Render("pages/python", fiber.Map{
+		"Title": "Python Development Guide",
+	})
+}
+
 // TopicDetail renders a specific topic page
 func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 	category := c.Params("category")
