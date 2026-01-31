@@ -1,8 +1,50 @@
 # Design Tinder: Location-Based Dating Platform
 
+<nav style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #fe3c72;">
+
+## Table of Contents {#table-of-contents}
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+
+<div>
+
+**Core Concepts**
+- [Problem Statement](#problem-statement)
+- [Core Architecture Overview](#core-architecture)
+- [Technology Selection Matrix](#technology-selection)
+- [Scale Strategy](#scale-strategy)
+
+</div>
+
+<div>
+
+**Deep Dive Sections**
+- [Geolocation Indexing](#geolocation-indexing)
+- [Recommendation Engine](#recommendation-engine)
+- [Swipe Mechanics](#swipe-mechanics)
+- [Match Detection Algorithm](#match-detection)
+- [Real-Time Messaging](#real-time-messaging)
+
+</div>
+
+<div>
+
+**Reference Sections**
+- [Edge Cases & Failure Modes](#edge-cases-failure-modes)
+- [Why This Solution](#why-this-solution)
+- [Cross-References](#cross-references)
+- [Interview Checklist](#interview-checklist)
+
+</div>
+
+</div>
+</nav>
+
+---
+
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #fe3c72;">
 
-## Problem Statement
+## Problem Statement {#problem-statement}
 
 Design a location-based dating application that enables users to discover potential matches within their geographic proximity, express interest through swipe mechanics, form mutual matches, and communicate in real-time.
 
@@ -24,10 +66,10 @@ Design a location-based dating application that enables users to discover potent
 
 ---
 
-## Core Architecture Overview
+## Core Architecture Overview {#core-architecture}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">TINDER SYSTEM ARCHITECTURE</h3>
+<h3 id="system-architecture-diagram" style="color: #58a6ff; text-align: center; margin: 0 0 24px 0;">TINDER SYSTEM ARCHITECTURE</h3>
 
 <div style="display: flex; flex-direction: column; gap: 20px;">
 
@@ -120,11 +162,11 @@ Design a location-based dating application that enables users to discover potent
 
 ---
 
-## 1. Geolocation Indexing Deep Dive
+## 1. Geolocation Indexing Deep Dive {#geolocation-indexing}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3fb950;">
 
-### The Fundamental Challenge
+### The Fundamental Challenge {#geo-fundamental-challenge}
 
 When a user in Manhattan opens Tinder at 8pm on Friday, they expect to see nearby profiles instantly. With 150,000 active users in NYC, we need to efficiently answer: "Find all users within 10 miles of coordinates (40.7589, -73.9851) matching my preferences."
 
@@ -136,7 +178,7 @@ At 1000 concurrent requests: 150M calculations/second. Latency: ~500ms. Unaccept
 </div>
 </div>
 
-### Geospatial Indexing Strategies
+### Geospatial Indexing Strategies {#geospatial-strategies}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -218,7 +260,7 @@ nearby = redis.georadius(
 
 </div>
 
-### Location Update Architecture
+### Location Update Architecture {#location-update-architecture}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -251,7 +293,7 @@ nearby = redis.georadius(
 
 </div>
 
-### Location Privacy Mechanisms
+### Location Privacy Mechanisms {#location-privacy}
 
 <div style="background: rgba(248, 81, 73, 0.15); border: 2px solid #f85149; border-radius: 12px; padding: 20px; margin: 16px 0;">
 <div style="color: #f85149; font-weight: bold; font-size: 15px; margin-bottom: 12px;">CRITICAL: Never Expose Exact Coordinates</div>
@@ -285,7 +327,7 @@ def get_display_distance(actual_distance_km):
 
 </div>
 
-### Interview Questions: Geolocation Indexing
+### Interview Questions: Geolocation Indexing {#geo-interview-questions}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
@@ -333,11 +375,11 @@ def get_display_distance(actual_distance_km):
 
 ---
 
-## 2. Recommendation Engine Deep Dive
+## 2. Recommendation Engine Deep Dive {#recommendation-engine}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
-### The Multi-Stage Recommendation Pipeline
+### The Multi-Stage Recommendation Pipeline {#recommendation-pipeline}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -427,7 +469,7 @@ score = w1 * elo_compatibility
 </div>
 </div>
 
-### The ELO Desirability System
+### The ELO Desirability System {#elo-system}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -482,7 +524,7 @@ ELO creates implicit "leagues" which can feel discriminatory. Tinder officially 
 
 </div>
 
-### Cold Start Problem
+### Cold Start Problem {#cold-start}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -519,7 +561,7 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 
 </div>
 
-### Interview Questions: Recommendation Engine
+### Interview Questions: Recommendation Engine {#rec-interview-questions}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
@@ -578,11 +620,11 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 
 ---
 
-## 3. Swipe Mechanics Deep Dive
+## 3. Swipe Mechanics Deep Dive {#swipe-mechanics}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #da3633;">
 
-### Swipe Data Model
+### Swipe Data Model {#swipe-data-model}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -607,7 +649,7 @@ Run ML models on uploaded photos to assess quality (lighting, resolution, face v
 
 </div>
 
-### Storage Architecture for Swipes
+### Storage Architecture for Swipes {#swipe-storage}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -660,7 +702,7 @@ Old swipes (> 6 months) have diminishing value. User preferences change, people'
 
 </div>
 
-### Bloom Filters for "Already Swiped" Check
+### Bloom Filters for "Already Swiped" Check {#bloom-filters}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -745,7 +787,7 @@ class SwipeTracker:
 
 </div>
 
-### Rate Limiting Swipes
+### Rate Limiting Swipes {#rate-limiting}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -820,7 +862,7 @@ Hard limits frustrate users but drive premium conversions. Soft limits (slow dow
 
 </div>
 
-### Interview Questions: Swipe Mechanics
+### Interview Questions: Swipe Mechanics {#swipe-interview-questions}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
@@ -884,11 +926,11 @@ Hard limits frustrate users but drive premium conversions. Soft limits (slow dow
 
 ---
 
-## 4. Match Detection Algorithm
+## 4. Match Detection Algorithm {#match-detection}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #fe3c72;">
 
-### The Simultaneous Swipe Race Condition
+### The Simultaneous Swipe Race Condition {#race-condition}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -908,7 +950,7 @@ At 9:47:32.150pm, Sarah and Mike both swipe right on each other from different p
 
 </div>
 
-### Solution 1: Deterministic Distributed Locking
+### Solution 1: Deterministic Distributed Locking {#distributed-locking}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -999,7 +1041,7 @@ By sorting user IDs, we ensure that regardless of who swipes first (Sarah->Mike 
 
 </div>
 
-### Solution 2: Event Sourcing with Asynchronous Reconciliation
+### Solution 2: Event Sourcing with Asynchronous Reconciliation {#event-sourcing}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1079,7 +1121,7 @@ class AsyncMatchDetector:
 
 </div>
 
-### Background Reconciliation
+### Background Reconciliation {#background-reconciliation}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1115,7 +1157,7 @@ def reconcile_orphaned_matches():
 
 </div>
 
-### Interview Questions: Match Detection
+### Interview Questions: Match Detection {#match-interview-questions}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
@@ -1181,11 +1223,11 @@ def reconcile_orphaned_matches():
 
 ---
 
-## 5. Real-Time Messaging Deep Dive
+## 5. Real-Time Messaging Deep Dive {#real-time-messaging}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
-### Chat Architecture Overview
+### Chat Architecture Overview {#chat-architecture}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1242,7 +1284,7 @@ When User A on Server 1 sends a message to User B on Server 3, the message is pu
 </div>
 </div>
 
-### Message Data Model
+### Message Data Model {#message-data-model}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1293,7 +1335,7 @@ CREATE TABLE conversations_by_user (
 
 </div>
 
-### WebSocket Connection Management
+### WebSocket Connection Management {#websocket-management}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1370,7 +1412,7 @@ class ConnectionManager:
 
 </div>
 
-### Message Delivery Guarantees
+### Message Delivery Guarantees {#message-delivery}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1449,7 +1491,7 @@ async def handle_message_ack(self, user_id: str, message_ids: list, ack_type: st
 
 </div>
 
-### Typing Indicators
+### Typing Indicators {#typing-indicators}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1488,7 +1530,7 @@ async def send_typing_indicator(self, sender_id: str, recipient_id: str, is_typi
 
 </div>
 
-### Message Moderation
+### Message Moderation {#message-moderation}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1542,7 +1584,7 @@ class MessageModerator:
 
 </div>
 
-### Interview Questions: Real-Time Messaging
+### Interview Questions: Real-Time Messaging {#messaging-interview-questions}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 2px solid #8957e5;">
 
@@ -1629,7 +1671,7 @@ class MessageModerator:
 
 ---
 
-## Technology Selection Matrix
+## Technology Selection Matrix {#technology-selection}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
@@ -1651,7 +1693,7 @@ class MessageModerator:
 
 ---
 
-## Scaling Evolution
+## Scale Strategy {#scale-strategy}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
@@ -1737,22 +1779,308 @@ class MessageModerator:
 
 ---
 
-## Cross-References
+## Edge Cases & Failure Modes {#edge-cases-failure-modes}
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
+
+### System Failure Scenarios {#system-failures}
+
+<div class="flow-diagram" style="display: flex; flex-direction: column; gap: 16px; margin: 20px 0;">
+
+<div class="flow-box warning" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #92400e; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Redis Cluster Failure</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Impact:</strong> Match detection latency increases, bloom filters unavailable, geo queries degrade<br>
+<strong>Detection:</strong> Health checks fail, P99 latency spikes > 500ms<br>
+<strong>Mitigation:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>Fallback to Cassandra for likes lookup (200ms vs 10ms)</li>
+<li>Accept showing previously-swiped profiles temporarily</li>
+<li>Queue swipes for later bloom filter update</li>
+</ul>
+<strong>Recovery:</strong> Redis Sentinel auto-promotes replica, rebuild bloom filters from Cassandra
+</div>
+</div>
+
+<div class="flow-box warning" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #92400e; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Kafka Broker Failure</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Impact:</strong> Swipe events queue up, match notifications delayed, analytics gaps<br>
+<strong>Detection:</strong> Consumer lag alerts, producer timeout errors<br>
+<strong>Mitigation:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>In-memory buffer for critical swipe processing</li>
+<li>Direct Redis writes for match detection bypass</li>
+<li>Push notifications via backup queue</li>
+</ul>
+<strong>Recovery:</strong> Kafka rebalances partitions, consumers catch up from last checkpoint
+</div>
+</div>
+
+<div class="flow-box warning" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #92400e; font-weight: bold; font-size: 15px; margin-bottom: 12px;">WebSocket Server Crash</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Impact:</strong> 10K users lose real-time connection, messages queue<br>
+<strong>Detection:</strong> Heartbeat failures, connection count drops<br>
+<strong>Mitigation:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>Client auto-reconnects to different server</li>
+<li>Messages persisted to Cassandra before WebSocket delivery</li>
+<li>Sync on reconnect catches missed messages</li>
+</ul>
+<strong>Recovery:</strong> Load balancer routes to healthy servers, users reconnect within 5 seconds
+</div>
+</div>
+
+</div>
+
+### Edge Cases in Core Flows {#edge-case-flows}
+
+<div style="display: flex; flex-direction: column; gap: 16px; margin: 20px 0;">
+
+<div style="background: #f1f5f9; border-left: 4px solid #8957e5; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Simultaneous Location Updates</div>
+<div style="color: #1e293b; font-size: 13px;">
+<strong>Scenario:</strong> User opens app on phone and tablet simultaneously, both send location updates<br>
+<strong>Problem:</strong> Race condition in updating geo index<br>
+<strong>Solution:</strong> Last-write-wins with timestamp, geohash updates are idempotent
+</div>
+</div>
+
+<div style="background: #f1f5f9; border-left: 4px solid #8957e5; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Hot User Problem</div>
+<div style="color: #1e293b; font-size: 13px;">
+<strong>Scenario:</strong> Celebrity joins app, receives 100K likes per hour<br>
+<strong>Problem:</strong> Write hotspot on their likes set, notification storm<br>
+<strong>Solution:</strong> Shard incoming likes by time bucket, batch notifications, rate-limit "who liked you" queries
+</div>
+</div>
+
+<div style="background: #f1f5f9; border-left: 4px solid #8957e5; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Location Spoofing</div>
+<div style="color: #1e293b; font-size: 13px;">
+<strong>Scenario:</strong> User spoofs GPS to appear in different city<br>
+<strong>Problem:</strong> Unfair to local users, potential harassment vector<br>
+<strong>Solution:</strong> IP-location cross-validation, sudden location jumps flag account, velocity checks
+</div>
+</div>
+
+<div style="background: #f1f5f9; border-left: 4px solid #8957e5; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Empty Stack Region</div>
+<div style="color: #1e293b; font-size: 13px;">
+<strong>Scenario:</strong> User in remote area with < 10 potential matches within 100 miles<br>
+<strong>Problem:</strong> Poor experience, user churns<br>
+<strong>Solution:</strong> Expand radius automatically, show "no more profiles" gracefully, suggest Passport feature
+</div>
+</div>
+
+<div style="background: #f1f5f9; border-left: 4px solid #8957e5; border-radius: 0 8px 8px 0; padding: 16px;">
+<div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px;">Double Match Creation</div>
+<div style="color: #1e293b; font-size: 13px;">
+<strong>Scenario:</strong> Network partition causes retry, match created twice<br>
+<strong>Problem:</strong> Duplicate notifications, data inconsistency<br>
+<strong>Solution:</strong> Deterministic match_id from sorted user IDs, INSERT IF NOT EXISTS, dedupe on notification service
+</div>
+</div>
+
+</div>
+
+### Data Consistency Edge Cases {#data-consistency}
+
+<div style="background: rgba(56, 139, 253, 0.1); border: 2px solid #58a6ff; border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 12px;">Eventual Consistency Implications</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+
+| Scenario | Acceptable? | User Impact | Mitigation |
+|----------|-------------|-------------|------------|
+| User sees profile they swiped 5 min ago | Yes | Minor annoyance | Bloom filter catches 99% |
+| Match notification delayed 2 seconds | Yes | Unnoticeable | Kafka lag monitoring |
+| Message delivered out of order | No | Confusing conversation | Sequence numbers, client-side reorder |
+| Profile photo not updated for 1 hour | Yes | Stale but not breaking | CDN cache headers |
+| Location shown as 10 miles when actually 8 | Yes | Fuzzing is intentional | Privacy feature, not bug |
+
+</div>
+</div>
+
+</div>
+
+---
+
+## Why This Solution {#why-this-solution}
+
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
+
+### Key Architecture Decisions Explained {#key-decisions}
+
+<div class="flow-diagram" style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
+
+<div class="flow-box primary" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+<div style="color: #1d4ed8; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Why Cassandra for Swipes Instead of PostgreSQL?</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Decision:</strong> Use Cassandra for swipe storage<br><br>
+<strong>Alternatives Considered:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li><strong>PostgreSQL:</strong> Excellent for < 100M rows, struggles at 2B+ writes/day</li>
+<li><strong>DynamoDB:</strong> Higher cost at scale, less control over partitioning</li>
+<li><strong>MongoDB:</strong> Similar write performance but weaker consistency guarantees</li>
+</ul>
+<strong>Why Cassandra Won:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>Linear scalability - add nodes, get proportional throughput</li>
+<li>Write-optimized LSM tree handles 100K+ writes/second</li>
+<li>Built-in TTL for automatic swipe expiration</li>
+<li>Tunable consistency (we use LOCAL_ONE for writes, LOCAL_QUORUM for match detection)</li>
+</ul>
+</div>
+</div>
+
+<div class="flow-box primary" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+<div style="color: #1d4ed8; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Why Redis for Match Detection Instead of Database Triggers?</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Decision:</strong> Check for mutual likes in Redis, not database<br><br>
+<strong>Alternatives Considered:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li><strong>Database trigger:</strong> Tight coupling, hard to scale, blocks write</li>
+<li><strong>Application-level join:</strong> Slow, multiple round trips</li>
+<li><strong>Materialized view:</strong> Update lag, complex to maintain</li>
+</ul>
+<strong>Why Redis Won:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>O(1) lookup in sorted sets: <code>ZSCORE likes:{swiped_id} {swiper_id}</code></li>
+<li>Sub-millisecond latency (10ms vs 50-100ms for database)</li>
+<li>Distributed locking for race condition prevention</li>
+<li>Match detection path is latency-critical (user waiting for "It's a Match!")</li>
+</ul>
+</div>
+</div>
+
+<div class="flow-box success" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 20px;">
+<div style="color: #166534; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Why Bloom Filters Instead of Explicit Sets?</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Decision:</strong> Use Bloom filters for "already swiped" checks<br><br>
+<strong>The Math:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>Average user: 20,000 swipes over lifetime</li>
+<li>Explicit set storage: 20,000 * 16 bytes (UUID) = 320KB per user</li>
+<li>Bloom filter (1% FP rate): ~24KB per user</li>
+<li>75M users: 24TB vs 1.8TB - 13x memory savings</li>
+</ul>
+<strong>Why 1% False Positives Are Acceptable:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>False positive = user doesn't see a profile they could have seen</li>
+<li>No false negatives = never show profile they already swiped</li>
+<li>1 in 100 missed opportunities is acceptable vs. annoying repetition</li>
+</ul>
+</div>
+</div>
+
+<div class="flow-box success" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 20px;">
+<div style="color: #166534; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Why Pre-computed Stacks Instead of Real-time Queries?</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Decision:</strong> Pre-compute top 500 candidates for active users, cache in Redis<br><br>
+<strong>Trade-offs:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li><strong>Freshness:</strong> Stack may be 2-4 hours stale vs. real-time</li>
+<li><strong>Latency:</strong> 5ms cache hit vs. 200ms full pipeline</li>
+<li><strong>Compute:</strong> Background job vs. per-request computation</li>
+</ul>
+<strong>Why Pre-computation Won:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>User opens app, wants instant gratification</li>
+<li>200ms delay per swipe session = poor UX</li>
+<li>Dating preferences change slowly - 2-hour cache is fine</li>
+<li>Invalidate on preference change or location move</li>
+</ul>
+</div>
+</div>
+
+<div class="flow-box primary" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+<div style="color: #1d4ed8; font-weight: bold; font-size: 15px; margin-bottom: 12px;">Why Redis Pub/Sub for Chat Instead of Direct Server Communication?</div>
+<div style="color: #1e293b; font-size: 13px; line-height: 1.7;">
+<strong>Decision:</strong> Route cross-server messages through Redis Pub/Sub<br><br>
+<strong>Alternatives Considered:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li><strong>Direct server-to-server gRPC:</strong> Requires service mesh, connection management</li>
+<li><strong>Kafka for all messages:</strong> Overkill latency for ephemeral chat</li>
+<li><strong>Sticky sessions only:</strong> Doesn't work for multi-device users</li>
+</ul>
+<strong>Why Redis Pub/Sub Won:</strong>
+<ul style="margin: 8px 0; padding-left: 20px;">
+<li>Decouples WebSocket servers from each other</li>
+<li>No service discovery needed - just subscribe to channels</li>
+<li>Sub-millisecond fan-out</li>
+<li>Ephemeral by design - lost message = re-sync from Cassandra</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+### Decision Flow Diagram {#decision-flow}
+
+<div class="flow-diagram" style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div class="flow-box" style="background: #f1f5f9; border: 2px solid #64748b; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #475569;">User Count</div>
+</div>
+<div class="flow-arrow" style="color: #64748b; font-weight: bold;">→</div>
+<div class="flow-box primary" style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #1d4ed8;"><strong>&lt; 50K:</strong> PostgreSQL + PostGIS</div>
+</div>
+<div class="flow-arrow" style="color: #64748b; font-weight: bold;">→</div>
+<div class="flow-box success" style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #166534;"><strong>50K-1M:</strong> Add Elasticsearch + Redis</div>
+</div>
+<div class="flow-arrow" style="color: #64748b; font-weight: bold;">→</div>
+<div class="flow-box warning" style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #92400e;"><strong>&gt; 1M:</strong> Cassandra + Kafka + Sharding</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+<div class="flow-box" style="background: #f1f5f9; border: 2px solid #64748b; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #475569;">Latency Requirement</div>
+</div>
+<div class="flow-arrow" style="color: #64748b; font-weight: bold;">→</div>
+<div class="flow-box primary" style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #1d4ed8;"><strong>&gt; 500ms OK:</strong> Direct DB queries</div>
+</div>
+<div class="flow-arrow" style="color: #64748b; font-weight: bold;">→</div>
+<div class="flow-box success" style="background: #dcfce7; border: 2px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #166534;"><strong>&lt; 100ms:</strong> Redis caching layer</div>
+</div>
+<div class="flow-arrow" style="color: #64748b; font-weight: bold;">→</div>
+<div class="flow-box warning" style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px 16px; text-align: center;">
+<div style="font-size: 12px; color: #92400e;"><strong>&lt; 10ms:</strong> Pre-computed + in-memory</div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+---
+
+## Cross-References {#cross-references}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-### Related System Designs
+### Related System Designs {#related-systems}
 - [[Design Bumble]](/topic/system-architectures/bumble) - Similar dating app with women-first messaging
 - [[Design Instagram]](/topic/system-architectures/instagram) - Photo storage and CDN at scale
 - [[Design WhatsApp]](/topic/system-architectures/whatsapp) - Real-time messaging deep dive
 - [[Design Uber]](/topic/system-architectures/uber) - Geolocation at extreme scale
 
-### Data Structures & Algorithms
+### Data Structures & Algorithms {#data-structures}
 - [[Bloom Filters]](/topic/data-structures/bloom-filter) - Probabilistic set membership
 - [[Geohashing]](/topic/algorithms/geohashing) - Spatial indexing technique
 - [[ELO Rating System]](/topic/algorithms/elo-rating) - Competitive ranking algorithm
 
-### Infrastructure
+### Infrastructure {#infrastructure}
 - [[Redis Pub/Sub]](/topic/infrastructure/redis-pubsub) - Real-time message fanout
 - [[Cassandra Data Modeling]](/topic/databases/cassandra) - Write-heavy workloads
 - [[Kafka Streams]](/topic/infrastructure/kafka-streams) - Stream processing
@@ -1762,11 +2090,11 @@ class MessageModerator:
 
 ---
 
-## Interview Checklist
+## Interview Checklist {#interview-checklist}
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-### Key Points to Hit
+### Key Points to Hit {#key-points}
 
 <div style="display: flex; flex-direction: column; gap: 12px;">
 
