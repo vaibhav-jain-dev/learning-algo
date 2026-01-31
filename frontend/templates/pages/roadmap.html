@@ -463,7 +463,12 @@ function renderHierarchyVisualization() {
 
     // D3 Tree Visualization
     const width = container.clientWidth || 900;
-    const height = 1200;
+
+    // Calculate height based on number of leaf nodes for proper spacing
+    const root = d3.hierarchy(hierarchyData);
+    const leafCount = root.leaves().length;
+    const nodeSpacing = 35; // pixels per leaf node (increased for better readability)
+    const height = Math.max(2000, leafCount * nodeSpacing);
 
     const svg = d3.select(container)
         .append('svg')
@@ -474,9 +479,9 @@ function renderHierarchyVisualization() {
         .attr('transform', 'translate(50, 50)');
 
     const tree = d3.tree()
-        .size([height - 100, width - 200]);
+        .size([height - 100, width - 200])
+        .separation((a, b) => a.parent === b.parent ? 1 : 1.5);
 
-    const root = d3.hierarchy(hierarchyData);
     tree(root);
 
     // Links
@@ -516,16 +521,24 @@ function renderHierarchyVisualization() {
         .attr('dy', '.31em')
         .attr('x', d => d.children ? -12 : 12)
         .attr('text-anchor', d => d.children ? 'end' : 'start')
-        .text(d => d.data.name)
-        .style('font-size', '12px')
+        .text(d => {
+            // Truncate long text to prevent overlap
+            const maxLength = d.depth === 0 ? 50 : (d.depth === 1 ? 40 : 35);
+            return d.data.name.length > maxLength
+                ? d.data.name.substring(0, maxLength) + '...'
+                : d.data.name;
+        })
+        .style('font-size', d => d.depth === 0 ? '14px' : (d.depth === 1 ? '13px' : '11px'))
         .style('fill', d => d.data.completed ? '#065f46' : '#374151')
-        .style('font-weight', d => d.data.completed ? 'bold' : 'normal')
+        .style('font-weight', d => d.depth < 2 ? 'bold' : (d.data.completed ? 'bold' : 'normal'))
         .style('cursor', d => d.data.link ? 'pointer' : 'default')
         .on('click', function(event, d) {
             if (d.data.link && d.data.link !== '#') {
                 window.location.href = d.data.link;
             }
-        });
+        })
+        .append('title')
+        .text(d => d.data.name); // Full text on hover
 }
 
 function scrollToDay(day) {

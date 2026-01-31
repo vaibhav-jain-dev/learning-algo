@@ -699,6 +699,16 @@
 
 #hierarchy-viz .node text {
     user-select: none;
+    pointer-events: none;
+}
+
+#hierarchy-viz .link {
+    opacity: 0.6;
+}
+
+#hierarchy-viz .link:hover {
+    opacity: 1;
+    stroke-width: 3px;
 }
 
 /* Days Started stat */
@@ -712,8 +722,13 @@
 }
 
 .hierarchy-modal-large .graph-modal-body {
-    max-height: 70vh;
+    max-height: 75vh;
     overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.hierarchy-modal-large .graph-modal-content {
+    max-height: 95vh;
 }
 
 @media (max-width: 768px) {
