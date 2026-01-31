@@ -1,0 +1,16 @@
+<div class="pdf-header">
+    <h1>{{.DocumentTitle}}</h1>
+    <p class="pdf-subtitle">DSAlgo Learning Platform</p>
+</div>
+
+{{range $index, $topic := .Topics}}
+    {{if gt $index 0}}
+    <div class="topic-separator">
+        <h2>{{$topic.Title}}</h2>
+    </div>
+    {{end}}
+
+    <div class="topic-content">
+        {{safeHTML $topic.Content}}
+    </div>
+{{end}}

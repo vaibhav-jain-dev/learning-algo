@@ -241,6 +241,9 @@ func main() {
 	app.Get("/deployment-guide", h.DeploymentGuide)
 	app.Get("/topic/:category/:topic", h.TopicDetail)
 
+	// PDF print view (for chromedp to render)
+	app.Get("/pdf/print", h.PDFPrintView)
+
 	// API routes
 	api := app.Group("/api")
 	api.Get("/problems", h.ListProblems)
