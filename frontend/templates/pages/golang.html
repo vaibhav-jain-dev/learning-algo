@@ -17,8 +17,6 @@
         <aside class="guide-sidebar">
             <div class="sidebar-header">Topics</div>
 
-            <a href="#roadmap" class="sidebar-link sidebar-home active" onclick="showRoadmap(); return false;">Overview</a>
-
             <div class="sidebar-section">
                 <div class="sidebar-section-title">Language Fundamentals</div>
                 <a href="#variables-types" class="sidebar-link" onclick="scrollToTopic('variables-types'); return false;">Variables & Types</a>
@@ -2852,20 +2850,17 @@ func main() {
     display: flex;
     gap: 2rem;
     margin-top: 1.5rem;
-    min-height: calc(100vh - 200px);
 }
 
 .guide-sidebar {
     position: sticky;
     top: 1rem;
-    width: 220px;
-    min-width: 220px;
+    width: 200px;
+    min-width: 200px;
     max-height: calc(100vh - 2rem);
     overflow-y: auto;
-    background: var(--color-bg-primary, #ffffff);
-    border: 1px solid var(--color-border, #e2e8f0);
-    border-radius: 0.75rem;
-    padding: 1rem;
+    background: transparent;
+    padding: 0.5rem;
     align-self: flex-start;
     flex-shrink: 0;
 }
@@ -2873,9 +2868,6 @@ func main() {
 .guide-content {
     flex: 1;
     min-width: 0;
-    max-height: calc(100vh - 2rem);
-    overflow-y: auto;
-    padding-right: 0.5rem;
 }
 
 .sidebar-header {
@@ -2884,9 +2876,8 @@ func main() {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--color-text-secondary, #64748b);
-    padding-bottom: 0.75rem;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .sidebar-section {
@@ -2925,18 +2916,6 @@ func main() {
     font-weight: 500;
 }
 
-.sidebar-home {
-    display: block;
-    font-weight: 600;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
-}
-
-/* Hide roadmap section in sidebar layout */
-.guide-layout .roadmap-section {
-    margin-bottom: 2rem;
-}
 
 @media (max-width: 900px) {
     .guide-layout {
@@ -3709,15 +3688,11 @@ html, body {
     margin: 0;
 }
 
-/* Guide Section - Two-pane layout: show only active section */
+/* Guide Section - visible with scroll navigation */
 .guide-section {
-    display: none;
-    margin-bottom: 1rem;
-    padding-top: 0;
-}
-
-.guide-section.active {
-    display: block;
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+    scroll-margin-top: 1rem;
 }
 
 /* Topic Block */
@@ -4250,68 +4225,57 @@ html, body {
     }
 })();
 
-// Two-pane navigation: show/hide sections
+// Smooth scroll navigation
 function scrollToTopic(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
-        // Hide roadmap section
-        const roadmap = document.getElementById('roadmap');
-        if (roadmap) roadmap.style.display = 'none';
+        const headerOffset = 80;
+        const elementPosition = section.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
-        // Hide all guide sections
-        document.querySelectorAll('.guide-section').forEach(s => {
-            s.classList.remove('active');
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
         });
 
-        // Show selected section
-        section.classList.add('active');
-
-        // Update sidebar nav active state
+        // Update sidebar active state
         document.querySelectorAll('.sidebar-link').forEach(link => {
             link.classList.remove('active');
         });
-
-        // Find and activate the clicked link
         const activeLink = document.querySelector(`.sidebar-link[href="#${sectionId}"]`);
         if (activeLink) {
             activeLink.classList.add('active');
         }
-
-        // Scroll content pane to top
-        document.querySelector('.guide-content').scrollTop = 0;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
-// Show roadmap/overview
-function showRoadmap() {
-    // Hide all guide sections
-    document.querySelectorAll('.guide-section').forEach(s => {
-        s.classList.remove('active');
-    });
-
-    // Show roadmap
-    const roadmap = document.getElementById('roadmap');
-    if (roadmap) roadmap.style.display = 'block';
-
-    // Update sidebar nav active state
-    document.querySelectorAll('.sidebar-link').forEach(link => {
-        link.classList.remove('active');
-    });
-
-    // Activate overview link
-    const overviewLink = document.querySelector('.sidebar-home');
-    if (overviewLink) overviewLink.classList.add('active');
-
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Initialize: show roadmap by default
+// Scroll spy - auto-update sidebar on scroll
 document.addEventListener('DOMContentLoaded', function() {
-    // Roadmap is shown by default (no need to hide guide sections as they're hidden by CSS)
-    const overviewLink = document.querySelector('.sidebar-home');
-    if (overviewLink) overviewLink.classList.add('active');
+    const sections = document.querySelectorAll('.guide-section');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    function updateActiveLink() {
+        let currentSection = '';
+        const scrollPos = window.scrollY + 150;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        sidebarLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + currentSection) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', updateActiveLink);
+    updateActiveLink(); // Initial call
 });
 
 // Copy prompt function for roadmap cards
