@@ -28,71 +28,95 @@
     <!-- CLICKABLE ROADMAP SECTION -->
     <section class="roadmap-section">
         <h2 class="roadmap-title">Python Learning Roadmap</h2>
-        <p class="roadmap-subtitle">Click any topic to jump to detailed content with examples</p>
+        <p class="roadmap-subtitle">Click topic titles to jump to content, or visit official docs</p>
 
         <div class="roadmap-grid">
             <!-- Language Fundamentals Column -->
             <div class="roadmap-column">
                 <h3 class="column-title fundamentals-py">Language Fundamentals</h3>
 
-                <div class="roadmap-card" data-topic="variables" onclick="scrollToTopic('python-basics')">
-                    <h4>Variables & Types</h4>
+                <div class="roadmap-card">
+                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                        <h4>Variables & Types</h4>
+                    </a>
                     <ul>
                         <li>Dynamic typing</li>
                         <li>Type hints (PEP 484)</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/typing.html" target="_blank" class="card-link">typing docs</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python variables and types including dynamic typing, type hints, and common data structures with examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/typing.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python variables and types including dynamic typing, type hints, and common data structures with examples')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="functions" onclick="scrollToTopic('python-basics')">
-                    <h4>Functions</h4>
+                <div class="roadmap-card">
+                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                        <h4>Functions</h4>
+                    </a>
                     <ul>
                         <li>*args, **kwargs</li>
                         <li>First-class functions</li>
                     </ul>
-                    <a href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions" target="_blank" class="card-link">Functions docs</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python functions including *args, **kwargs, lambda, closures, and first-class function concepts')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python functions including *args, **kwargs, lambda, closures, and first-class function concepts')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="classes" onclick="scrollToTopic('python-basics')">
-                    <h4>Classes & OOP</h4>
+                <div class="roadmap-card">
+                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                        <h4>Classes & OOP</h4>
+                    </a>
                     <ul>
                         <li>Dunder methods</li>
                         <li>Inheritance, MRO</li>
                     </ul>
-                    <a href="https://docs.python.org/3/tutorial/classes.html" target="_blank" class="card-link">Classes docs</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python classes and OOP including dunder methods, inheritance, MRO, and dataclasses')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/tutorial/classes.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python classes and OOP including dunder methods, inheritance, MRO, and dataclasses')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="decorators" onclick="scrollToTopic('intermediate')">
-                    <h4>Decorators</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Decorators</h4>
+                    </a>
                     <ul>
                         <li>Function decorators</li>
                         <li>Class decorators</li>
                     </ul>
-                    <a href="https://realpython.com/primer-on-python-decorators/" target="_blank" class="card-link">Real Python</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python decorators including function decorators, class decorators, and functools.wraps')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://realpython.com/primer-on-python-decorators/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python decorators including function decorators, class decorators, and functools.wraps')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="generators" onclick="scrollToTopic('intermediate')">
-                    <h4>Generators & Iterators</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Generators & Iterators</h4>
+                    </a>
                     <ul>
                         <li>yield, yield from</li>
                         <li>Iterator protocol</li>
                     </ul>
-                    <a href="https://docs.python.org/3/howto/functional.html#generators" target="_blank" class="card-link">Generators</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python generators and iterators including yield, yield from, and the iterator protocol')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/howto/functional.html#generators" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python generators and iterators including yield, yield from, and the iterator protocol')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="context" onclick="scrollToTopic('intermediate')">
-                    <h4>Context Managers</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Context Managers</h4>
+                    </a>
                     <ul>
                         <li>with statement</li>
                         <li>contextlib</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/contextlib.html" target="_blank" class="card-link">contextlib</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python context managers including with statement, __enter__/__exit__, and contextlib')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/contextlib.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python context managers including with statement, __enter__/__exit__, and contextlib')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
 
@@ -100,64 +124,88 @@
             <div class="roadmap-column">
                 <h3 class="column-title stdlib-py">Standard Library</h3>
 
-                <div class="roadmap-card" data-topic="collections" onclick="scrollToTopic('intermediate')">
-                    <h4>Collections</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Collections</h4>
+                    </a>
                     <ul>
                         <li>defaultdict, Counter</li>
                         <li>deque, namedtuple</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/collections.html" target="_blank" class="card-link">collections</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python collections module including defaultdict, Counter, deque, and namedtuple with examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/collections.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python collections module including defaultdict, Counter, deque, and namedtuple with examples')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="itertools" onclick="scrollToTopic('intermediate')">
-                    <h4>itertools</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>itertools</h4>
+                    </a>
                     <ul>
                         <li>Infinite iterators</li>
                         <li>Combinatoric functions</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/itertools.html" target="_blank" class="card-link">itertools</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python itertools module including chain, product, permutations, and groupby with examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/itertools.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python itertools module including chain, product, permutations, and groupby with examples')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="functools" onclick="scrollToTopic('intermediate')">
-                    <h4>functools</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>functools</h4>
+                    </a>
                     <ul>
                         <li>lru_cache, partial</li>
                         <li>reduce, wraps</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/functools.html" target="_blank" class="card-link">functools</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python functools module including lru_cache, partial, reduce, and singledispatch')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/functools.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python functools module including lru_cache, partial, reduce, and singledispatch')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="pathlib" onclick="scrollToTopic('python-basics')">
-                    <h4>pathlib & Files</h4>
+                <div class="roadmap-card">
+                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                        <h4>pathlib & Files</h4>
+                    </a>
                     <ul>
                         <li>Path operations</li>
                         <li>File I/O</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/pathlib.html" target="_blank" class="card-link">pathlib</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python pathlib module and file operations including Path, reading/writing files')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/pathlib.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python pathlib module and file operations including Path, reading/writing files')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="dataclasses" onclick="scrollToTopic('intermediate')">
-                    <h4>dataclasses</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>dataclasses</h4>
+                    </a>
                     <ul>
                         <li>@dataclass decorator</li>
                         <li>field(), frozen</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/dataclasses.html" target="_blank" class="card-link">dataclasses</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python dataclasses including @dataclass, field(), frozen, and comparison with namedtuple')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/dataclasses.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python dataclasses including @dataclass, field(), frozen, and comparison with namedtuple')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="json" onclick="scrollToTopic('python-basics')">
-                    <h4>JSON & Serialization</h4>
+                <div class="roadmap-card">
+                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                        <h4>JSON & Serialization</h4>
+                    </a>
                     <ul>
                         <li>json, pickle</li>
                         <li>Custom encoders</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/json.html" target="_blank" class="card-link">json</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python JSON handling including json module, custom encoders/decoders, and serialization')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/json.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python JSON handling including json module, custom encoders/decoders, and serialization')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
 
@@ -165,64 +213,88 @@
             <div class="roadmap-column">
                 <h3 class="column-title concurrency-py">Concurrency & Async</h3>
 
-                <div class="roadmap-card" data-topic="threading" onclick="scrollToTopic('advanced')">
-                    <h4>Threading</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Threading</h4>
+                    </a>
                     <ul>
                         <li>Thread, Lock</li>
                         <li>GIL limitations</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/threading.html" target="_blank" class="card-link">threading</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python threading including Thread, Lock, GIL, and when to use threading vs multiprocessing')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/threading.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python threading including Thread, Lock, GIL, and when to use threading vs multiprocessing')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="multiprocessing" onclick="scrollToTopic('advanced')">
-                    <h4>Multiprocessing</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Multiprocessing</h4>
+                    </a>
                     <ul>
                         <li>Process, Pool</li>
                         <li>Shared memory</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/multiprocessing.html" target="_blank" class="card-link">multiprocessing</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python multiprocessing including Process, Pool, shared memory, and inter-process communication')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/multiprocessing.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python multiprocessing including Process, Pool, shared memory, and inter-process communication')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card highlight-card" data-topic="asyncio" onclick="window.location.href='/python-asyncio'">
-                    <h4>asyncio</h4>
+                <div class="roadmap-card highlight-card">
+                    <a href="/python-asyncio" class="card-title-link">
+                        <h4>asyncio</h4>
+                    </a>
                     <ul>
                         <li>async/await</li>
                         <li>Event loop, Tasks</li>
                     </ul>
-                    <a href="/python-asyncio" class="card-link">Full Guide</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python asyncio including async/await, event loop, Tasks, and concurrent coroutines')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="/python-asyncio" class="docs-link">Full Guide</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python asyncio including async/await, event loop, Tasks, and concurrent coroutines')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="concurrent" onclick="scrollToTopic('advanced')">
-                    <h4>concurrent.futures</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>concurrent.futures</h4>
+                    </a>
                     <ul>
                         <li>ThreadPoolExecutor</li>
                         <li>ProcessPoolExecutor</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/concurrent.futures.html" target="_blank" class="card-link">futures</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python concurrent.futures including ThreadPoolExecutor, ProcessPoolExecutor, and Future objects')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/concurrent.futures.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python concurrent.futures including ThreadPoolExecutor, ProcessPoolExecutor, and Future objects')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="aiohttp" onclick="scrollToTopic('advanced')">
-                    <h4>Async HTTP</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Async HTTP</h4>
+                    </a>
                     <ul>
                         <li>aiohttp, httpx</li>
                         <li>Async patterns</li>
                     </ul>
-                    <a href="https://docs.aiohttp.org/" target="_blank" class="card-link">aiohttp</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python async HTTP with aiohttp and httpx including client sessions and server setup')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.aiohttp.org/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python async HTTP with aiohttp and httpx including client sessions and server setup')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="queues" onclick="scrollToTopic('advanced')">
-                    <h4>Queues & Patterns</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Queues & Patterns</h4>
+                    </a>
                     <ul>
                         <li>asyncio.Queue</li>
                         <li>Producer/Consumer</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/asyncio-queue.html" target="_blank" class="card-link">Async Queues</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python async patterns including asyncio.Queue, producer/consumer, and rate limiting')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/asyncio-queue.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python async patterns including asyncio.Queue, producer/consumer, and rate limiting')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
 
@@ -230,64 +302,88 @@
             <div class="roadmap-column">
                 <h3 class="column-title production-py">Production & Tooling</h3>
 
-                <div class="roadmap-card" data-topic="testing" onclick="scrollToTopic('advanced')">
-                    <h4>Testing</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Testing</h4>
+                    </a>
                     <ul>
                         <li>pytest, unittest</li>
                         <li>Mocking, fixtures</li>
                     </ul>
-                    <a href="https://docs.pytest.org/" target="_blank" class="card-link">pytest</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python testing with pytest including fixtures, mocking, parametrize, and async tests')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.pytest.org/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python testing with pytest including fixtures, mocking, parametrize, and async tests')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="debugging" onclick="scrollToTopic('intermediate')">
-                    <h4>Debugging</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Debugging</h4>
+                    </a>
                     <ul>
                         <li>pdb, breakpoint()</li>
                         <li>logging module</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/pdb.html" target="_blank" class="card-link">pdb</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python debugging with pdb, breakpoint(), and the logging module with examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/pdb.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python debugging with pdb, breakpoint(), and the logging module with examples')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="typing" onclick="scrollToTopic('intermediate')">
-                    <h4>Type Checking</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Type Checking</h4>
+                    </a>
                     <ul>
                         <li>mypy, pyright</li>
                         <li>Generic types</li>
                     </ul>
-                    <a href="https://mypy.readthedocs.io/" target="_blank" class="card-link">mypy</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python type checking with mypy including Generic types, Protocol, and TypeVar')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://mypy.readthedocs.io/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python type checking with mypy including Generic types, Protocol, and TypeVar')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="packaging" onclick="scrollToTopic('advanced')">
-                    <h4>Packaging</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Packaging</h4>
+                    </a>
                     <ul>
                         <li>pyproject.toml</li>
                         <li>setuptools, poetry</li>
                     </ul>
-                    <a href="https://packaging.python.org/" target="_blank" class="card-link">Packaging Guide</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python packaging with pyproject.toml, setuptools, and poetry for distribution')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://packaging.python.org/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python packaging with pyproject.toml, setuptools, and poetry for distribution')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="venv" onclick="scrollToTopic('python-basics')">
-                    <h4>Virtual Environments</h4>
+                <div class="roadmap-card">
+                    <a href="#python-basics" class="card-title-link" onclick="scrollToTopic('python-basics'); return false;">
+                        <h4>Virtual Environments</h4>
+                    </a>
                     <ul>
                         <li>venv, pip</li>
                         <li>requirements.txt</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/venv.html" target="_blank" class="card-link">venv</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python virtual environments with venv, pip, and requirements management')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/venv.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python virtual environments with venv, pip, and requirements management')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="profiling" onclick="scrollToTopic('advanced')">
-                    <h4>Profiling</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Profiling</h4>
+                    </a>
                     <ul>
                         <li>cProfile, line_profiler</li>
                         <li>memory_profiler</li>
                     </ul>
-                    <a href="https://docs.python.org/3/library/profile.html" target="_blank" class="card-link">profile</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Python profiling with cProfile, line_profiler, and memory_profiler for optimization')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.python.org/3/library/profile.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Python profiling with cProfile, line_profiler, and memory_profiler for optimization')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1315,7 +1411,6 @@ if __name__ == "__main__":
     border: 1px solid var(--color-border, #e2e8f0);
     border-radius: 0.5rem;
     padding: 0.875rem;
-    cursor: pointer;
     transition: all 0.2s ease;
 }
 
@@ -1378,6 +1473,80 @@ if __name__ == "__main__":
     background: #3776ab;
     color: white;
     border-color: #3776ab;
+}
+
+/* Card title link styles */
+.card-title-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.card-title-link:hover h4 {
+    color: #3776ab;
+}
+
+/* Card actions container */
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.docs-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #3776ab;
+    background: #3776ab10;
+    border: 1px solid #3776ab30;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.docs-link:hover {
+    background: #3776ab;
+    color: white;
+    border-color: #3776ab;
+}
+
+/* Infinite scroll fix */
+.guide-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    overflow-x: hidden;
+}
+
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .docs-link {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .copy-prompt-btn {
+        width: 100%;
+    }
+
+    .guide-page {
+        padding: 1rem;
+    }
 }
 </style>
 

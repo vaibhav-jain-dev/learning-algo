@@ -28,71 +28,95 @@
     <!-- CLICKABLE ROADMAP SECTION -->
     <section class="roadmap-section">
         <h2 class="roadmap-title">Go Learning Roadmap</h2>
-        <p class="roadmap-subtitle">Click any topic to jump to detailed content with examples</p>
+        <p class="roadmap-subtitle">Click topic titles to jump to content, or visit official docs</p>
 
         <div class="roadmap-grid">
             <!-- Language Fundamentals Column -->
             <div class="roadmap-column">
                 <h3 class="column-title fundamentals">Language Fundamentals</h3>
 
-                <div class="roadmap-card" data-topic="variables-types" onclick="scrollToTopic('go-basics')">
-                    <h4>Variables & Types</h4>
+                <div class="roadmap-card">
+                    <a href="#go-basics" class="card-title-link" onclick="scrollToTopic('go-basics'); return false;">
+                        <h4>Variables & Types</h4>
+                    </a>
                     <ul>
                         <li>Zero values</li>
                         <li>Type inference</li>
                     </ul>
-                    <a href="https://go.dev/ref/spec" target="_blank" class="card-link">Go Spec</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go variables and types including zero values and type inference with examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/ref/spec" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go variables and types including zero values and type inference with examples')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="functions" onclick="scrollToTopic('go-basics')">
-                    <h4>Functions & Defer</h4>
+                <div class="roadmap-card">
+                    <a href="#go-basics" class="card-title-link" onclick="scrollToTopic('go-basics'); return false;">
+                        <h4>Functions & Defer</h4>
+                    </a>
                     <ul>
                         <li>Multiple returns</li>
                         <li>Named returns</li>
                     </ul>
-                    <a href="https://go.dev/doc/effective_go" target="_blank" class="card-link">Effective Go</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go functions including multiple returns, named returns, and defer with examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/doc/effective_go" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go functions including multiple returns, named returns, and defer with examples')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="structs" onclick="scrollToTopic('basic')">
-                    <h4>Structs & Methods</h4>
+                <div class="roadmap-card">
+                    <a href="#basic" class="card-title-link" onclick="scrollToTopic('basic'); return false;">
+                        <h4>Structs & Methods</h4>
+                    </a>
                     <ul>
                         <li>Embedding</li>
                         <li>Composition</li>
                     </ul>
-                    <a href="https://go.dev/doc/effective_go#composite_literals" target="_blank" class="card-link">Structs</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go structs and methods including embedding and composition with examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/doc/effective_go#composite_literals" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go structs and methods including embedding and composition with examples')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="interfaces" onclick="scrollToTopic('basic')">
-                    <h4>Interfaces</h4>
+                <div class="roadmap-card">
+                    <a href="#basic" class="card-title-link" onclick="scrollToTopic('basic'); return false;">
+                        <h4>Interfaces</h4>
+                    </a>
                     <ul>
                         <li>Implicit impl</li>
                         <li>Interface design</li>
                     </ul>
-                    <a href="https://go.dev/doc/effective_go#interfaces" target="_blank" class="card-link">Interfaces</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go interfaces including implicit implementation and interface design patterns')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/doc/effective_go#interfaces" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go interfaces including implicit implementation and interface design patterns')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="errors" onclick="scrollToTopic('basic')">
-                    <h4>Error Handling</h4>
+                <div class="roadmap-card">
+                    <a href="#basic" class="card-title-link" onclick="scrollToTopic('basic'); return false;">
+                        <h4>Error Handling</h4>
+                    </a>
                     <ul>
                         <li>Wrapping</li>
                         <li>Custom errors</li>
                     </ul>
-                    <a href="https://go.dev/blog/error-handling-and-go" target="_blank" class="card-link">Error Blog</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go error handling including wrapping, custom errors, and errors.Is/As')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/blog/error-handling-and-go" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go error handling including wrapping, custom errors, and errors.Is/As')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card highlight-card" data-topic="pointers" onclick="scrollToTopic('pointers-section')">
-                    <h4>Pointers</h4>
+                <div class="roadmap-card highlight-card">
+                    <a href="#pointers-section" class="card-title-link" onclick="scrollToTopic('pointers-section'); return false;">
+                        <h4>Pointers</h4>
+                    </a>
                     <ul>
                         <li>& vs * operators</li>
                         <li>Value vs Reference</li>
                     </ul>
-                    <a href="https://go.dev/tour/moretypes/1" target="_blank" class="card-link">Go Tour</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go pointers including & vs * operators, value vs reference semantics with visual examples')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/tour/moretypes/1" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go pointers including & vs * operators, value vs reference semantics with visual examples')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
 
@@ -100,50 +124,70 @@
             <div class="roadmap-column">
                 <h3 class="column-title compiler">Compiler & Runtime</h3>
 
-                <div class="roadmap-card" data-topic="compilation" onclick="scrollToTopic('intermediate')">
-                    <h4>Compilation Pipeline</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Compilation Pipeline</h4>
+                    </a>
                     <ul>
                         <li>AST</li>
                         <li>SSA</li>
                     </ul>
-                    <a href="https://go.dev/doc/cmd" target="_blank" class="card-link">Compiler Docs</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go compilation pipeline including AST parsing and SSA form')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/doc/cmd" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go compilation pipeline including AST parsing and SSA form')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="escape" onclick="scrollToTopic('intermediate')">
-                    <h4>Escape Analysis</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Escape Analysis</h4>
+                    </a>
                     <ul>
                         <li>Stack vs Heap</li>
                     </ul>
-                    <a href="https://www.ardanlabs.com/blog/2017/05/language-mechanics-on-escape-analysis.html" target="_blank" class="card-link">Ardan Labs</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go escape analysis including stack vs heap allocation decisions')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://www.ardanlabs.com/blog/2017/05/language-mechanics-on-escape-analysis.html" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go escape analysis including stack vs heap allocation decisions')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="scheduler" onclick="scrollToTopic('intermediate')">
-                    <h4>Scheduler (GMP)</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Scheduler (GMP)</h4>
+                    </a>
                     <ul>
                         <li>Work stealing</li>
                     </ul>
-                    <a href="https://go.dev/src/runtime/proc.go" target="_blank" class="card-link">Scheduler</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go GMP scheduler model including goroutines, machine threads, and work stealing')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/src/runtime/proc.go" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go GMP scheduler model including goroutines, machine threads, and work stealing')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="gc" onclick="scrollToTopic('advanced')">
-                    <h4>Garbage Collector</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Garbage Collector</h4>
+                    </a>
                     <ul>
                         <li>Tri-color</li>
                     </ul>
-                    <a href="https://tip.golang.org/doc/gc-guide" target="_blank" class="card-link">GC Guide</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go garbage collector including tri-color marking algorithm')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://tip.golang.org/doc/gc-guide" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go garbage collector including tri-color marking algorithm')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="memory" onclick="scrollToTopic('advanced')">
-                    <h4>Memory Model</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Memory Model</h4>
+                    </a>
                     <ul>
                         <li>Happens-before</li>
                     </ul>
-                    <a href="https://go.dev/ref/mem" target="_blank" class="card-link">Memory Model</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go memory model including happens-before relationships')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/ref/mem" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go memory model including happens-before relationships')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
 
@@ -151,58 +195,82 @@
             <div class="roadmap-column">
                 <h3 class="column-title concurrency">Concurrency & APIs</h3>
 
-                <div class="roadmap-card" data-topic="goroutines" onclick="scrollToTopic('intermediate')">
-                    <h4>Goroutines</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Goroutines</h4>
+                    </a>
                     <ul>
                         <li>Lightweight threads</li>
                     </ul>
-                    <a href="https://go.dev/doc/faq#goroutines" target="_blank" class="card-link">FAQ</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go goroutines including creation, lifecycle, and best practices')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/doc/faq#goroutines" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go goroutines including creation, lifecycle, and best practices')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="channels" onclick="scrollToTopic('intermediate')">
-                    <h4>Channels</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Channels</h4>
+                    </a>
                     <ul>
                         <li>Pipelines</li>
                     </ul>
-                    <a href="https://go.dev/blog/pipelines" target="_blank" class="card-link">Pipelines</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go channels including buffered channels, pipelines, and fan-out/fan-in')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/blog/pipelines" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go channels including buffered channels, pipelines, and fan-out/fan-in')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="sync" onclick="scrollToTopic('intermediate')">
-                    <h4>Mutex / Sync</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Mutex / Sync</h4>
+                    </a>
                     <ul>
                         <li>sync package</li>
                     </ul>
-                    <a href="https://pkg.go.dev/sync" target="_blank" class="card-link">sync Docs</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go sync package including Mutex, RWMutex, WaitGroup, and sync.Map')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://pkg.go.dev/sync" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go sync package including Mutex, RWMutex, WaitGroup, and sync.Map')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="context" onclick="scrollToTopic('intermediate')">
-                    <h4>Context</h4>
+                <div class="roadmap-card">
+                    <a href="#intermediate" class="card-title-link" onclick="scrollToTopic('intermediate'); return false;">
+                        <h4>Context</h4>
+                    </a>
                     <ul>
                         <li>Cancellation</li>
                     </ul>
-                    <a href="https://go.dev/blog/context" target="_blank" class="card-link">Context Blog</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go context package including timeouts, cancellation, and value propagation')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/blog/context" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go context package including timeouts, cancellation, and value propagation')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="http" onclick="scrollToTopic('advanced')">
-                    <h4>HTTP / REST</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>HTTP / REST</h4>
+                    </a>
                     <ul>
                         <li>net/http package</li>
                     </ul>
-                    <a href="https://pkg.go.dev/net/http" target="_blank" class="card-link">net/http</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go HTTP servers and clients including handlers, middleware, and REST API patterns')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://pkg.go.dev/net/http" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go HTTP servers and clients including handlers, middleware, and REST API patterns')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="grpc" onclick="scrollToTopic('advanced')">
-                    <h4>gRPC</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>gRPC</h4>
+                    </a>
                     <ul>
                         <li>Protocol Buffers</li>
                     </ul>
-                    <a href="https://grpc.io/docs/languages/go/" target="_blank" class="card-link">gRPC Intro</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go gRPC including protocol buffers, service definitions, and streaming')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://grpc.io/docs/languages/go/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go gRPC including protocol buffers, service definitions, and streaming')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
 
@@ -210,58 +278,82 @@
             <div class="roadmap-column">
                 <h3 class="column-title production">System Design & Production</h3>
 
-                <div class="roadmap-card" data-topic="timeouts" onclick="scrollToTopic('advanced')">
-                    <h4>Timeouts & Retries</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Timeouts & Retries</h4>
+                    </a>
                     <ul>
                         <li>Exponential backoff</li>
                     </ul>
-                    <a href="https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/" target="_blank" class="card-link">AWS Library</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain timeout and retry patterns in Go including exponential backoff with jitter')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain timeout and retry patterns in Go including exponential backoff with jitter')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="backpressure" onclick="scrollToTopic('advanced')">
-                    <h4>Backpressure</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Backpressure</h4>
+                    </a>
                     <ul>
                         <li>Rate limiting</li>
                     </ul>
-                    <a href="https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/" target="_blank" class="card-link">Cloudflare</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain backpressure and rate limiting patterns in Go')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain backpressure and rate limiting patterns in Go')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="observability" onclick="scrollToTopic('advanced')">
-                    <h4>Observability</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Observability</h4>
+                    </a>
                     <ul>
                         <li>Metrics, Logs, Traces</li>
                     </ul>
-                    <a href="https://opentelemetry.io/docs/instrumentation/go/" target="_blank" class="card-link">OpenTelemetry</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain observability in Go including OpenTelemetry, metrics, logging, and distributed tracing')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://opentelemetry.io/docs/instrumentation/go/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain observability in Go including OpenTelemetry, metrics, logging, and distributed tracing')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="profiling" onclick="scrollToTopic('advanced')">
-                    <h4>Profiling</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Profiling</h4>
+                    </a>
                     <ul>
                         <li>pprof</li>
                     </ul>
-                    <a href="https://go.dev/doc/diagnostics" target="_blank" class="card-link">Diagnostics</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go profiling with pprof including CPU, memory, and goroutine profiling')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://go.dev/doc/diagnostics" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go profiling with pprof including CPU, memory, and goroutine profiling')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="docker" onclick="scrollToTopic('advanced')">
-                    <h4>Deployment & Docker</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Deployment & Docker</h4>
+                    </a>
                     <ul>
                         <li>Multi-stage builds</li>
                     </ul>
-                    <a href="https://docs.docker.com/language/golang/" target="_blank" class="card-link">Docker Go</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go deployment with Docker including multi-stage builds and optimization')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="https://docs.docker.com/language/golang/" target="_blank" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go deployment with Docker including multi-stage builds and optimization')">Copy Prompt</button>
+                    </div>
                 </div>
 
-                <div class="roadmap-card" data-topic="patterns" onclick="scrollToTopic('advanced')">
-                    <h4>Design Patterns</h4>
+                <div class="roadmap-card">
+                    <a href="#advanced" class="card-title-link" onclick="scrollToTopic('advanced'); return false;">
+                        <h4>Design Patterns</h4>
+                    </a>
                     <ul>
                         <li>Worker Pool, Circuit Breaker</li>
                     </ul>
-                    <a href="/design-patterns" class="card-link">Patterns</a>
-                    <button class="copy-prompt-btn" onclick="event.stopPropagation(); copyPrompt('Explain Go design patterns including worker pool, circuit breaker, and graceful shutdown')">Copy Prompt</button>
+                    <div class="card-actions">
+                        <a href="/design-patterns" class="docs-link">Docs</a>
+                        <button class="copy-prompt-btn" onclick="copyPrompt('Explain Go design patterns including worker pool, circuit breaker, and graceful shutdown')">Copy Prompt</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2734,6 +2826,21 @@ func main() {
 
 <style>
 /* ============================================
+   FIX INFINITE SCROLL - CRITICAL
+   ============================================ */
+.guide-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    overflow-x: hidden;
+}
+
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* ============================================
    ROADMAP SECTION STYLES
    ============================================ */
 .roadmap-section {
@@ -2742,6 +2849,7 @@ func main() {
     background: var(--color-bg-secondary, #f8fafc);
     border-radius: 1rem;
     border: 1px solid var(--color-border, #e2e8f0);
+    overflow: hidden;
 }
 
 .roadmap-title {
@@ -2774,6 +2882,9 @@ func main() {
 @media (max-width: 600px) {
     .roadmap-grid {
         grid-template-columns: 1fr;
+    }
+    .roadmap-section {
+        padding: 1rem;
     }
 }
 
@@ -2822,7 +2933,6 @@ func main() {
     border: 1px solid var(--color-border, #e2e8f0);
     border-radius: 0.5rem;
     padding: 0.875rem;
-    cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
 }
@@ -2830,7 +2940,6 @@ func main() {
 .roadmap-card:hover {
     border-color: #00ADD8;
     box-shadow: 0 4px 12px rgba(0, 173, 216, 0.15);
-    transform: translateY(-2px);
 }
 
 .roadmap-card.highlight-card {
@@ -2838,11 +2947,22 @@ func main() {
     background: linear-gradient(135deg, #00ADD808 0%, #ffffff 100%);
 }
 
+/* Card title link - clickable to scroll to section */
+.card-title-link {
+    text-decoration: none;
+    display: block;
+}
+
+.card-title-link:hover h4 {
+    color: #00ADD8;
+}
+
 .roadmap-card h4 {
     font-size: 0.9rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
     color: var(--color-text-primary, #0f172a);
+    transition: color 0.2s;
 }
 
 .roadmap-card ul {
@@ -2854,6 +2974,35 @@ func main() {
 
 .roadmap-card li {
     margin-bottom: 0.15rem;
+}
+
+/* Card actions - contains docs link and copy prompt */
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.docs-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #00ADD8;
+    background: #00ADD810;
+    border: 1px solid #00ADD830;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.docs-link:hover {
+    background: #00ADD8;
+    color: white;
+    border-color: #00ADD8;
 }
 
 .card-link {
@@ -2869,9 +3018,8 @@ func main() {
 }
 
 .copy-prompt-btn {
-    display: block;
-    width: 100%;
-    padding: 0.4rem 0.75rem;
+    flex: 1;
+    padding: 0.35rem 0.75rem;
     background: var(--color-bg-tertiary, #f1f5f9);
     border: 1px solid var(--color-border, #e2e8f0);
     border-radius: 0.375rem;
@@ -2883,9 +3031,9 @@ func main() {
 }
 
 .copy-prompt-btn:hover {
-    background: #00ADD8;
+    background: #64748b;
     color: white;
-    border-color: #00ADD8;
+    border-color: #64748b;
 }
 
 /* ============================================
@@ -2935,6 +3083,16 @@ func main() {
     border-radius: 0.75rem;
     padding: 1rem;
     margin: 1rem 0;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.visual-memory-diagram svg,
+.visual-example-diagram svg,
+.operator-card svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 .pointer-operators-grid {
@@ -3034,6 +3192,8 @@ func main() {
     border-radius: 0.5rem;
     padding: 1rem;
     margin: 0.75rem 0;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .pointer-table-container {
@@ -3771,6 +3931,28 @@ func main() {
 
     .code-example pre {
         padding-top: 3.5rem;
+    }
+
+    /* SVG diagrams mobile fixes */
+    .visual-memory-diagram,
+    .visual-example-diagram {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+    }
+
+    .visual-memory-diagram svg,
+    .visual-example-diagram svg,
+    .operator-card svg {
+        min-width: 280px;
+        width: 100%;
+    }
+
+    .operator-card {
+        padding: 0.75rem;
+    }
+
+    .operator-card svg {
+        margin: 8px 0;
     }
 }
 
