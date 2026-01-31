@@ -18,7 +18,7 @@
 # =============================================================================
 # Stage 1: Build Go backend
 # =============================================================================
-FROM golang:1.21-alpine AS go-builder
+FROM golang:1.24-alpine AS go-builder
 
 WORKDIR /build
 
@@ -48,7 +48,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 # =============================================================================
 # Stage 2: Extract Go toolchain for code execution (minimal)
 # =============================================================================
-FROM golang:1.21-alpine AS go-extractor
+FROM golang:1.24-alpine AS go-extractor
 
 # Copy only essential Go files needed for compilation
 RUN mkdir -p /go-minimal/bin /go-minimal/src /go-minimal/pkg && \
