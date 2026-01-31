@@ -871,18 +871,7 @@ func (h *Handlers) buildSmartRoadmap() []models.DayPlan {
 						{Name: "Write Policies", Link: "/topic/system-design/caching#write-policies"},
 					},
 				},
-				{
-					ID:          "d1s6",
-					Time:        "17:15 - 18:00",
-					Duration:    "45 mins",
-					Topic:       "Practice & Review",
-					Description: "Solve 2-3 mixed problems",
-					Link:        "/practice",
-					Icon:        "🔄",
-					Category:    "Review",
-					SubTopics: []models.SubTopic{
-						{Name: "Code Runner Practice", Link: "/practice"},
-						{Name: "Review Notes", Link: "/"},
+				{Name: "Review Notes", Link: "/"},
 					},
 				},
 			},
@@ -1064,21 +1053,6 @@ func (h *Handlers) buildSmartRoadmap() []models.DayPlan {
 					},
 				},
 				{
-					ID:          "d3s6",
-					Time:        "17:30 - 18:00",
-					Duration:    "30 mins",
-					Topic:       "DP Practice",
-					Description: "Solve one more DP problem",
-					Link:        "/practice",
-					Icon:        "🔄",
-					Category:    "Review",
-					SubTopics: []models.SubTopic{
-						{Name: "Practice Problems", Link: "/practice"},
-					},
-				},
-			},
-		},
-		{
 			Day:   4,
 			Title: "Graphs & Real-World Architectures",
 			Sessions: []models.StudySession{
@@ -1252,21 +1226,6 @@ func (h *Handlers) buildSmartRoadmap() []models.DayPlan {
 					},
 				},
 				{
-					ID:          "d5s6",
-					Time:        "17:30 - 18:00",
-					Duration:    "30 mins",
-					Topic:       "Practice Session",
-					Description: "Mixed problems",
-					Link:        "/practice",
-					Icon:        "🔄",
-					Category:    "Review",
-					SubTopics: []models.SubTopic{
-						{Name: "Code Runner", Link: "/practice"},
-					},
-				},
-			},
-		},
-		{
 			Day:   6,
 			Title: "Concurrency & Distributed Systems",
 			Sessions: []models.StudySession{

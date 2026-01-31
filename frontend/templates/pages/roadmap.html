@@ -7,16 +7,19 @@
 
         <div class="roadmap-controls">
             <button id="show-graph-btn" class="btn btn-secondary btn-sm" onclick="toggleGraphView()">
-                <span>📊</span> Show Progress Graph
+                <span>📊</span> Progress Graph
+            </button>
+            <button id="show-hierarchy-btn" class="btn btn-secondary btn-sm" onclick="toggleHierarchyView()">
+                <span>🌳</span> Topic Hierarchy
             </button>
             <button id="reset-progress-btn" class="btn btn-secondary btn-sm" onclick="resetProgress()">
-                <span>🔄</span> Reset All Progress
+                <span>🔄</span> Reset Progress
             </button>
         </div>
 
         <div class="roadmap-stats">
             <div class="stat-box">
-                <span class="stat-value" id="total-sessions">42</span>
+                <span class="stat-value" id="total-sessions">0</span>
                 <span class="stat-label">Total Sessions</span>
             </div>
             <div class="stat-box">
@@ -28,13 +31,13 @@
                 <span class="stat-label">Progress</span>
             </div>
             <div class="stat-box">
-                <span class="stat-value">7</span>
-                <span class="stat-label">Days</span>
+                <span class="stat-value" id="days-with-progress">0</span>
+                <span class="stat-label">Days Started</span>
             </div>
         </div>
     </div>
 
-    <!-- Graph View Modal -->
+    <!-- Progress Graph Modal -->
     <div id="graph-modal" class="graph-modal hidden">
         <div class="graph-modal-overlay" onclick="toggleGraphView()"></div>
         <div class="graph-modal-content">
@@ -43,7 +46,7 @@
                 <button class="graph-modal-close" onclick="toggleGraphView()">&times;</button>
             </div>
             <div class="graph-modal-body">
-                <canvas id="progress-chart"></canvas>
+                <canvas id="progress-chart" width="800" height="400"></canvas>
                 <div class="progress-summary">
                     <h3>Category Breakdown</h3>
                     <div id="category-stats"></div>
@@ -52,9 +55,24 @@
         </div>
     </div>
 
+    <!-- Topic Hierarchy Modal -->
+    <div id="hierarchy-modal" class="graph-modal hidden">
+        <div class="graph-modal-overlay" onclick="toggleHierarchyView()"></div>
+        <div class="graph-modal-content hierarchy-modal-large">
+            <div class="graph-modal-header">
+                <h2>Interactive Topic Hierarchy</h2>
+                <button class="graph-modal-close" onclick="toggleHierarchyView()">&times;</button>
+            </div>
+            <div class="graph-modal-body">
+                <p class="hierarchy-help">Click any node to navigate to that topic. Completed topics are highlighted in green, incomplete in gray.</p>
+                <div id="hierarchy-viz"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="roadmap-timeline">
         {{range .Roadmap}}
-        <div class="day-section">
+        <div class="day-section" data-day="{{.Day}}" id="day-{{.Day}}">
             <div class="day-header">
                 <div class="day-number">Day {{.Day}}</div>
                 <div class="day-title">{{.Title}}</div>
@@ -63,7 +81,7 @@
             <div class="sessions-container">
                 {{range .Sessions}}
                 <div class="session-wrapper">
-                    <div class="session-card {{.Category}}" data-session-id="{{.ID}}">
+                    <div class="session-card {{.Category}}" data-session-id="{{.ID}}" data-day="{{$.Day}}">
                         <div class="session-checkbox" onclick="toggleSession('{{.ID}}', event)">
                             <input type="checkbox" id="check-{{.ID}}" class="session-check" />
                             <label for="check-{{.ID}}"></label>
@@ -94,7 +112,7 @@
                     {{if .SubTopics}}
                     <div class="subtopics-list hidden" id="subtopics-{{.ID}}">
                         {{range .SubTopics}}
-                        <a href="{{.Link}}" class="subtopic-item">
+                        <a href="{{.Link}}" class="subtopic-item" data-parent-session="{{$.ID}}">
                             <span class="subtopic-bullet">•</span>
                             <span class="subtopic-name">{{.Name}}</span>
                             <span class="subtopic-arrow">→</span>
@@ -114,14 +132,15 @@
             <h2>Ready to Start Your Journey?</h2>
             <p>Begin with Day 1 and track your progress. Check off sessions as you complete them!</p>
             <div class="cta-buttons">
-                <a href="/200-problems" class="btn btn-primary">Start Day 1</a>
+                <a href="#day-1" class="btn btn-primary" onclick="scrollToDay(1)">Start Day 1</a>
                 <a href="/" class="btn btn-secondary">Back to Home</a>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 // Progress tracking with localStorage
 const STORAGE_KEY = 'roadmap_progress';
@@ -154,6 +173,7 @@ function toggleSession(sessionId, event) {
 
     saveProgress(progress);
     updateStats();
+    updateDayVisibility();
 }
 
 function toggleSubTopics(sessionId) {
@@ -164,7 +184,6 @@ function toggleSubTopics(sessionId) {
     if (subtopicsList.classList.contains('hidden')) {
         subtopicsList.classList.remove('hidden');
         toggleIcon.textContent = '▼';
-        const count = subtopicsList.querySelectorAll('.subtopic-item').length;
         toggleText.textContent = 'Hide Topics';
     } else {
         subtopicsList.classList.add('hidden');
@@ -178,11 +197,33 @@ function updateStats() {
     const progress = loadProgress();
     const totalSessions = document.querySelectorAll('.session-card').length;
     const completedSessions = Object.values(progress).filter(Boolean).length;
-    const progressPercent = Math.round((completedSessions / totalSessions) * 100);
+    const progressPercent = totalSessions > 0 ? Math.round((completedSessions / totalSessions) * 100) : 0;
+
+    // Count days with at least one completed session
+    const daySessions = {};
+    document.querySelectorAll('.session-card').forEach(card => {
+        const day = card.dataset.day;
+        const sessionId = card.dataset.sessionId;
+        if (!daySessions[day]) daySessions[day] = [];
+        daySessions[day].push(sessionId);
+    });
+
+    let daysWithProgress = 0;
+    Object.entries(daySessions).forEach(([day, sessions]) => {
+        if (sessions.some(sid => progress[sid])) {
+            daysWithProgress++;
+        }
+    });
 
     document.getElementById('total-sessions').textContent = totalSessions;
     document.getElementById('completed-sessions').textContent = completedSessions;
     document.getElementById('progress-percent').textContent = progressPercent + '%';
+    document.getElementById('days-with-progress').textContent = daysWithProgress + '/7';
+}
+
+function updateDayVisibility() {
+    // Hide days with no progress (optional - can be toggled)
+    // For now, we'll always show all days but can add a filter later
 }
 
 function resetProgress() {
@@ -198,6 +239,7 @@ function resetProgress() {
         });
 
         updateStats();
+        updateDayVisibility();
     }
 }
 
@@ -206,8 +248,22 @@ function toggleGraphView() {
     modal.classList.toggle('hidden');
 
     if (!modal.classList.contains('hidden')) {
-        renderProgressChart();
-        renderCategoryStats();
+        // Small delay to ensure modal is visible before rendering chart
+        setTimeout(() => {
+            renderProgressChart();
+            renderCategoryStats();
+        }, 100);
+    }
+}
+
+function toggleHierarchyView() {
+    const modal = document.getElementById('hierarchy-modal');
+    modal.classList.toggle('hidden');
+
+    if (!modal.classList.contains('hidden')) {
+        setTimeout(() => {
+            renderHierarchyVisualization();
+        }, 100);
     }
 }
 
@@ -218,23 +274,30 @@ function renderProgressChart() {
     // Count by category
     const categories = {};
     sessionCards.forEach(card => {
-        const category = card.classList[1]; // Second class is the category
+        const classList = Array.from(card.classList);
+        const category = classList.find(c => c !== 'session-card' && c !== 'completed');
         const sessionId = card.dataset.sessionId;
 
-        if (!categories[category]) {
+        if (category && !categories[category]) {
             categories[category] = { total: 0, completed: 0 };
         }
-        categories[category].total++;
-        if (progress[sessionId]) {
-            categories[category].completed++;
+        if (category) {
+            categories[category].total++;
+            if (progress[sessionId]) {
+                categories[category].completed++;
+            }
         }
     });
 
     const labels = Object.keys(categories);
     const completedData = labels.map(cat => categories[cat].completed);
-    const totalData = labels.map(cat => categories[cat].total);
+    const remainingData = labels.map(cat => categories[cat].total - categories[cat].completed);
 
     const ctx = document.getElementById('progress-chart');
+    if (!ctx) {
+        console.error('Canvas element not found');
+        return;
+    }
 
     // Destroy existing chart if any
     if (window.progressChart) {
@@ -249,30 +312,59 @@ function renderProgressChart() {
                 {
                     label: 'Completed',
                     data: completedData,
-                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 1
                 },
                 {
                     label: 'Remaining',
-                    data: labels.map((cat, i) => totalData[i] - completedData[i]),
+                    data: remainingData,
                     backgroundColor: 'rgba(229, 231, 235, 0.8)',
+                    borderColor: 'rgba(209, 213, 219, 1)',
+                    borderWidth: 1
                 }
             ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             scales: {
-                x: { stacked: true },
-                y: { stacked: true, beginAtZero: true }
+                x: {
+                    stacked: true,
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
             },
             plugins: {
                 title: {
                     display: true,
-                    text: 'Progress by Category'
+                    text: 'Progress by Category',
+                    font: {
+                        size: 16
+                    }
                 },
                 legend: {
                     display: true,
                     position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        footer: function(items) {
+                            const cat = items[0].label;
+                            const total = categories[cat].total;
+                            const completed = categories[cat].completed;
+                            const percent = Math.round((completed / total) * 100);
+                            return `Progress: ${percent}%`;
+                        }
+                    }
                 }
             }
         }
@@ -285,15 +377,18 @@ function renderCategoryStats() {
 
     const categories = {};
     sessionCards.forEach(card => {
-        const category = card.classList[1];
+        const classList = Array.from(card.classList);
+        const category = classList.find(c => c !== 'session-card' && c !== 'completed');
         const sessionId = card.dataset.sessionId;
 
-        if (!categories[category]) {
+        if (category && !categories[category]) {
             categories[category] = { total: 0, completed: 0 };
         }
-        categories[category].total++;
-        if (progress[sessionId]) {
-            categories[category].completed++;
+        if (category) {
+            categories[category].total++;
+            if (progress[sessionId]) {
+                categories[category].completed++;
+            }
         }
     });
 
@@ -315,6 +410,132 @@ function renderCategoryStats() {
     document.getElementById('category-stats').innerHTML = statsHtml;
 }
 
+function renderHierarchyVisualization() {
+    const container = document.getElementById('hierarchy-viz');
+    container.innerHTML = ''; // Clear previous
+
+    const progress = loadProgress();
+
+    // Build hierarchy data from the DOM
+    const hierarchyData = {
+        name: "7-Day Study Roadmap",
+        children: []
+    };
+
+    document.querySelectorAll('.day-section').forEach(daySection => {
+        const dayNum = daySection.dataset.day;
+        const dayTitle = daySection.querySelector('.day-title').textContent;
+
+        const dayNode = {
+            name: `Day ${dayNum}: ${dayTitle}`,
+            children: []
+        };
+
+        daySection.querySelectorAll('.session-card').forEach(session => {
+            const sessionId = session.dataset.sessionId;
+            const topic = session.querySelector('.session-header h3').textContent;
+            const link = session.querySelector('.session-content').closest('.session-wrapper').querySelector('.subtopic-item')?.href || '#';
+            const completed = progress[sessionId] || false;
+
+            const sessionNode = {
+                name: topic,
+                link: link,
+                completed: completed,
+                sessionId: sessionId,
+                children: []
+            };
+
+            // Add sub-topics
+            const subtopicsList = session.closest('.session-wrapper').querySelectorAll('.subtopic-item');
+            subtopicsList.forEach(subtopic => {
+                sessionNode.children.push({
+                    name: subtopic.querySelector('.subtopic-name').textContent,
+                    link: subtopic.href,
+                    completed: completed
+                });
+            });
+
+            dayNode.children.push(sessionNode);
+        });
+
+        hierarchyData.children.push(dayNode);
+    });
+
+    // D3 Tree Visualization
+    const width = container.clientWidth || 900;
+    const height = 1200;
+
+    const svg = d3.select(container)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    const g = svg.append('g')
+        .attr('transform', 'translate(50, 50)');
+
+    const tree = d3.tree()
+        .size([height - 100, width - 200]);
+
+    const root = d3.hierarchy(hierarchyData);
+    tree(root);
+
+    // Links
+    g.selectAll('.link')
+        .data(root.links())
+        .enter()
+        .append('path')
+        .attr('class', 'link')
+        .attr('d', d3.linkHorizontal()
+            .x(d => d.y)
+            .y(d => d.x))
+        .attr('fill', 'none')
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 2);
+
+    // Nodes
+    const node = g.selectAll('.node')
+        .data(root.descendants())
+        .enter()
+        .append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${d.y},${d.x})`);
+
+    node.append('circle')
+        .attr('r', 6)
+        .attr('fill', d => d.data.completed ? '#10b981' : '#d1d5db')
+        .attr('stroke', d => d.data.completed ? '#059669' : '#9ca3af')
+        .attr('stroke-width', 2)
+        .style('cursor', d => d.data.link ? 'pointer' : 'default')
+        .on('click', function(event, d) {
+            if (d.data.link && d.data.link !== '#') {
+                window.location.href = d.data.link;
+            }
+        });
+
+    node.append('text')
+        .attr('dy', '.31em')
+        .attr('x', d => d.children ? -12 : 12)
+        .attr('text-anchor', d => d.children ? 'end' : 'start')
+        .text(d => d.data.name)
+        .style('font-size', '12px')
+        .style('fill', d => d.data.completed ? '#065f46' : '#374151')
+        .style('font-weight', d => d.data.completed ? 'bold' : 'normal')
+        .style('cursor', d => d.data.link ? 'pointer' : 'default')
+        .on('click', function(event, d) {
+            if (d.data.link && d.data.link !== '#') {
+                window.location.href = d.data.link;
+            }
+        });
+}
+
+function scrollToDay(day) {
+    event.preventDefault();
+    const dayElement = document.getElementById('day-' + day);
+    if (dayElement) {
+        dayElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     const progress = loadProgress();
@@ -333,14 +554,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     updateStats();
+    updateDayVisibility();
 });
 
-// Close modal on Escape key
+// Close modals on Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-        const modal = document.getElementById('graph-modal');
-        if (!modal.classList.contains('hidden')) {
+        const graphModal = document.getElementById('graph-modal');
+        const hierarchyModal = document.getElementById('hierarchy-modal');
+        if (!graphModal.classList.contains('hidden')) {
             toggleGraphView();
+        }
+        if (!hierarchyModal.classList.contains('hidden')) {
+            toggleHierarchyView();
         }
     }
 });

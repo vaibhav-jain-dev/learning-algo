@@ -661,3 +661,72 @@
         font-size: 0.8rem;
     }
 }
+
+/* Hierarchy Modal Styles */
+.hierarchy-modal-large {
+    max-width: 95%;
+    width: 1200px;
+}
+
+.hierarchy-help {
+    text-align: center;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+#hierarchy-viz {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+#hierarchy-viz svg {
+    display: block;
+    margin: 0 auto;
+}
+
+#hierarchy-viz .node circle {
+    transition: all 0.3s ease;
+}
+
+#hierarchy-viz .node:hover circle {
+    r: 8;
+    stroke-width: 3;
+}
+
+#hierarchy-viz .node text {
+    user-select: none;
+}
+
+/* Days Started stat */
+#days-with-progress {
+    color: var(--color-primary);
+}
+
+/* Improved modal z-index */
+.graph-modal {
+    z-index: 2000;
+}
+
+.hierarchy-modal-large .graph-modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .hierarchy-modal-large {
+        width: 98%;
+        max-width: 98%;
+    }
+
+    #hierarchy-viz {
+        overflow-x: scroll;
+    }
+
+    .hierarchy-help {
+        font-size: 0.85rem;
+    }
+}
