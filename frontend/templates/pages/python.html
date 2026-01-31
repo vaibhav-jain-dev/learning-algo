@@ -2499,35 +2499,6 @@ html, body {
 
 <script>
 (function() {
-    // Navigation highlighting
-    const navLinks = document.querySelectorAll('.guide-nav-link');
-    const sections = document.querySelectorAll('.guide-section');
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-
-    // Scroll spy
-    window.addEventListener('scroll', function() {
-        let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 150;
-            if (pageYOffset >= sectionTop) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('data-section') === current) {
-                link.classList.add('active');
-            }
-        });
-    });
-
     // Run code buttons
     document.querySelectorAll('.run-code-btn').forEach(btn => {
         btn.addEventListener('click', function() {
