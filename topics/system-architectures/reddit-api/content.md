@@ -265,40 +265,68 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 
-                                ```
-                                ┌────────────────────┐
-                                │    API Gateway     │
-                                └─────────┬──────────┘
-                                │
-                                ┌──────────────────────┼──────────────────────┐
-                                │                      │                      │
-                                ▼                      ▼                      ▼
-                                ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
-                                │    POST     │       │   COMMENT   │       │    VOTE     │
-                                │   SERVICE   │       │   SERVICE   │       │   SERVICE   │
-                                │             │       │             │       │             │
-                                │  PostgreSQL │       │  PostgreSQL │       │   Redis     │
-                                │  (sharded)  │       │  (sharded)  │       │ + Cassandra │
-                                └──────┬──────┘       └──────┬──────┘       └──────┬──────┘
-                                │                     │                     │
-                                └─────────────────────┼─────────────────────┘
-                                │
-                                ┌───────▼───────┐
-                                │    KAFKA      │
-                                │  Event Bus    │
-                                └───────┬───────┘
-                                │
-                                ┌─────────────────────┼─────────────────────┐
-                                │                     │                     │
-                                ▼                     ▼                     ▼
-                                ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
-                                │    FEED     │       │   SEARCH    │       │NOTIFICATION │
-                                │   SERVICE   │       │   SERVICE   │       │   SERVICE   │
-                                │             │       │             │       │             │
-                                │   Redis +   │       │Elasticsearch│       │   Redis +   │
-                                │   Cassandra │       │             │       │   Firebase  │
-                                └─────────────┘       └─────────────┘       └─────────────┘
-                                ```
+<!-- API Gateway Layer -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px 32px; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); text-align: center;">
+<div style="font-size: 1.1rem;">API Gateway</div>
+<div style="font-size: 0.75rem; opacity: 0.9; margin-top: 4px;">Load Balancer + Rate Limiting</div>
+</div>
+</div>
+
+<!-- Arrow down -->
+<div style="display: flex; justify-content: center; margin: 8px 0;">
+<div style="width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 16px solid #64748b;"></div>
+</div>
+
+<!-- Core Services Layer -->
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 16px 20px; border-radius: 12px; min-width: 150px; text-align: center; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+<div style="font-weight: 600;">POST SERVICE</div>
+<div style="font-size: 0.75rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px;">PostgreSQL (sharded)</div>
+</div>
+<div style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; padding: 16px 20px; border-radius: 12px; min-width: 150px; text-align: center; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);">
+<div style="font-weight: 600;">COMMENT SERVICE</div>
+<div style="font-size: 0.75rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px;">PostgreSQL (sharded)</div>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 16px 20px; border-radius: 12px; min-width: 150px; text-align: center; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+<div style="font-weight: 600;">VOTE SERVICE</div>
+<div style="font-size: 0.75rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px;">Redis + Cassandra</div>
+</div>
+</div>
+
+<!-- Arrow down -->
+<div style="display: flex; justify-content: center; margin: 8px 0;">
+<div style="width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 16px solid #64748b;"></div>
+</div>
+
+<!-- Kafka Event Bus -->
+<div style="display: flex; justify-content: center; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 16px 48px; border-radius: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); text-align: center;">
+<div style="font-size: 1.1rem;">KAFKA Event Bus</div>
+<div style="font-size: 0.75rem; opacity: 0.9; margin-top: 4px;">Async Message Queue</div>
+</div>
+</div>
+
+<!-- Arrow down -->
+<div style="display: flex; justify-content: center; margin: 8px 0;">
+<div style="width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 16px solid #64748b;"></div>
+</div>
+
+<!-- Consumer Services Layer -->
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); color: white; padding: 16px 20px; border-radius: 12px; min-width: 150px; text-align: center; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);">
+<div style="font-weight: 600;">FEED SERVICE</div>
+<div style="font-size: 0.75rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px;">Redis + Cassandra</div>
+</div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: white; padding: 16px 20px; border-radius: 12px; min-width: 150px; text-align: center; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+<div style="font-weight: 600;">SEARCH SERVICE</div>
+<div style="font-size: 0.75rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px;">Elasticsearch</div>
+</div>
+<div style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); color: white; padding: 16px 20px; border-radius: 12px; min-width: 150px; text-align: center; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);">
+<div style="font-weight: 600;">NOTIFICATION</div>
+<div style="font-size: 0.75rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px;">Redis + Firebase</div>
+</div>
+</div>
 
 </div>
 
@@ -307,25 +335,41 @@ Design a social news aggregation and discussion platform like Reddit with subred
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">FEED RANKING ALGORITHM</h4>
 
-                                ```
-                                Hot Score Algorithm (Reddit-style):
+<!-- Hot Score Algorithm Formula -->
+<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 20px; margin-bottom: 20px; color: #e2e8f0; font-family: monospace;">
+<div style="font-weight: 600; color: #f59e0b; margin-bottom: 16px;">Hot Score Algorithm (Reddit-style):</div>
+<div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+<span style="color: #22c55e;">score</span> = log10(max(|ups - downs|, 1))
+</div>
+<div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+<span style="color: #3b82f6;">order</span> = sign(ups - downs)
+</div>
+<div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+<span style="color: #a855f7;">seconds</span> = epoch_seconds(created_at) - 1134028003
+</div>
+<div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px;">
+<span style="color: #ef4444;">hot_score</span> = round(score + order * seconds / 45000, 7)
+</div>
+</div>
 
-                                score = log10(max(|ups - downs|, 1))
-
-                                order = sign(ups - downs)
-
-                                seconds = epoch_seconds(created_at) - 1134028003
-
-                                hot_score = round(score + order * seconds / 45000, 7)
-
-                                ┌─────────────────────────────────────┐
-                                │         HOT SCORE FACTORS           │
-                                ├─────────────────────────────────────┤
-                                │  Vote Score: Higher = Better        │
-                                │  Time Decay: Newer = Better         │
-                                │  Controversy: Balanced = Featured   │
-                                └─────────────────────────────────────┘
-                                ```
+<!-- Hot Score Factors Box -->
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="font-weight: 700; color: #92400e; text-align: center; margin-bottom: 16px; font-size: 1.1rem;">HOT SCORE FACTORS</div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #22c55e; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">+</div>
+<div style="color: #78350f;"><strong>Vote Score:</strong> Higher = Better</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #3b82f6; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">&#9201;</div>
+<div style="color: #78350f;"><strong>Time Decay:</strong> Newer = Better</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="background: #a855f7; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">&#8644;</div>
+<div style="color: #78350f;"><strong>Controversy:</strong> Balanced = Featured</div>
+</div>
+</div>
+</div>
 
                                 ```python
                                 # Feed generation with caching
@@ -372,26 +416,87 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
-                                ```
-                                Comment Tree Structure:
+<!-- Comment Tree Structure Diagram -->
+<div style="margin-bottom: 24px;">
+<div style="font-weight: 600; color: #1e293b; margin-bottom: 16px;">Comment Tree Structure:</div>
 
-                                Post: "What's your favorite programming language?"
-                                │
-                                ├── Comment 1 (depth: 0, score: 150)
-                                │   ├── Reply 1.1 (depth: 1, score: 45)
-                                │   │   └── Reply 1.1.1 (depth: 2, score: 12)
-                                │   └── Reply 1.2 (depth: 1, score: 30)
-                                │
-                                ├── Comment 2 (depth: 0, score: 120)
-                                │   └── Reply 2.1 (depth: 1, score: 25)
-                                │
-                                └── Comment 3 (depth: 0, score: 80)
+<!-- Post -->
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; font-weight: 500;">
+Post: "What's your favorite programming language?"
+</div>
 
-                                Storage Strategy:
-                                - Materialized Path: /1/1.1/1.1.1
-                                - Allows efficient subtree queries
-                                - Easy depth calculation
-                                ```
+<!-- Comment 1 -->
+<div style="margin-left: 0; border-left: 3px solid #22c55e; padding-left: 16px; margin-bottom: 12px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 12px;">
+<span style="color: #166534; font-weight: 600;">Comment 1</span>
+<span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">depth: 0</span>
+<span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">score: 150</span>
+</div>
+<!-- Reply 1.1 -->
+<div style="margin-left: 20px; border-left: 3px solid #a855f7; padding-left: 16px; margin-top: 8px;">
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 8px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 12px;">
+<span style="color: #7c3aed; font-weight: 500;">Reply 1.1</span>
+<span style="background: #a855f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">depth: 1</span>
+<span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">score: 45</span>
+</div>
+<!-- Reply 1.1.1 -->
+<div style="margin-left: 20px; border-left: 3px solid #ec4899; padding-left: 16px; margin-top: 6px;">
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); padding: 6px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 10px; font-size: 0.9rem;">
+<span style="color: #be185d; font-weight: 500;">Reply 1.1.1</span>
+<span style="background: #ec4899; color: white; padding: 2px 6px; border-radius: 12px; font-size: 0.65rem;">depth: 2</span>
+<span style="background: #f59e0b; color: white; padding: 2px 6px; border-radius: 12px; font-size: 0.65rem;">score: 12</span>
+</div>
+</div>
+</div>
+<!-- Reply 1.2 -->
+<div style="margin-left: 20px; border-left: 3px solid #a855f7; padding-left: 16px; margin-top: 8px;">
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 8px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 12px;">
+<span style="color: #7c3aed; font-weight: 500;">Reply 1.2</span>
+<span style="background: #a855f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">depth: 1</span>
+<span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">score: 30</span>
+</div>
+</div>
+</div>
+
+<!-- Comment 2 -->
+<div style="margin-left: 0; border-left: 3px solid #22c55e; padding-left: 16px; margin-bottom: 12px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 12px;">
+<span style="color: #166534; font-weight: 600;">Comment 2</span>
+<span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">depth: 0</span>
+<span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">score: 120</span>
+</div>
+<!-- Reply 2.1 -->
+<div style="margin-left: 20px; border-left: 3px solid #a855f7; padding-left: 16px; margin-top: 8px;">
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 8px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 12px;">
+<span style="color: #7c3aed; font-weight: 500;">Reply 2.1</span>
+<span style="background: #a855f7; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">depth: 1</span>
+<span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">score: 25</span>
+</div>
+</div>
+</div>
+
+<!-- Comment 3 -->
+<div style="margin-left: 0; border-left: 3px solid #22c55e; padding-left: 16px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 14px; border-radius: 8px; display: inline-flex; align-items: center; gap: 12px;">
+<span style="color: #166534; font-weight: 600;">Comment 3</span>
+<span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">depth: 0</span>
+<span style="background: #f59e0b; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">score: 80</span>
+</div>
+</div>
+</div>
+
+<!-- Storage Strategy -->
+<div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border: 2px solid #0ea5e9; border-radius: 12px; padding: 16px;">
+<div style="font-weight: 700; color: #0369a1; margin-bottom: 12px;">Storage Strategy:</div>
+<div style="display: flex; flex-direction: column; gap: 8px; color: #0c4a6e;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #0ea5e9; color: white; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem;">/1/1.1/1.1.1</span>
+<span>Materialized Path</span>
+</div>
+<div>Allows efficient subtree queries</div>
+<div>Easy depth calculation</div>
+</div>
+</div>
 
                                 ```python
                                 # Efficient comment loading
@@ -448,42 +553,77 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-                                ```
-                                GLOBAL REDDIT INFRASTRUCTURE
-                                ┌────────────────────────────────────────────────────────────────┐
-                                │                                                                │
-                                │                    ┌──────────────────┐                        │
-                                │                    │  Global Traffic  │                        │
-                                │                    │    Manager       │                        │
-                                │                    └────────┬─────────┘                        │
-                                │                             │                                  │
-                                │         ┌───────────────────┼───────────────────┐              │
-                                │         ▼                   ▼                   ▼              │
-                                │   ┌──────────┐        ┌──────────┐        ┌──────────┐        │
-                                │   │  US-EAST │        │  EU-WEST │        │  AP-EAST │        │
-                                │   │  Region  │        │  Region  │        │  Region  │        │
-                                │   │          │        │          │        │          │        │
-                                │   │┌────────┐│        │┌────────┐│        │┌────────┐│        │
-                                │   ││  EKS   ││        ││  EKS   ││        ││  EKS   ││        │
-                                │   ││Cluster ││        ││Cluster ││        ││Cluster ││        │
-                                │   │└────────┘│        │└────────┘│        │└────────┘│        │
-                                │   │          │        │          │        │          │        │
-                                │   │┌────────┐│        │┌────────┐│        │┌────────┐│        │
-                                │   ││Cassandra│◀──────▶││Cassandra│◀──────▶││Cassandra││        │
-                                │   ││ (Multi-││        ││ Replica ││        ││ Replica ││        │
-                                │   ││ Master)││        │└────────┘│        │└────────┘│        │
-                                │   │└────────┘│        │          │        │          │        │
-                                │   └──────────┘        └──────────┘        └──────────┘        │
-                                │                                                                │
-                                │   ┌────────────────────────────────────────────────────────┐  │
-                                │   │              GLOBAL SERVICES                            │  │
-                                │   │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐  │  │
-                                │   │  │  Kafka   │  │   S3     │  │ Aurora   │  │ Redis  │  │  │
-                                │   │  │ (Global) │  │ (Global) │  │ Global   │  │ Global │  │  │
-                                │   │  └──────────┘  └──────────┘  └──────────┘  └────────┘  │  │
-                                │   └────────────────────────────────────────────────────────┘  │
-                                └────────────────────────────────────────────────────────────────┘
-                                ```
+<!-- Global Reddit Infrastructure Diagram -->
+<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 16px; padding: 24px; border: 3px solid #475569;">
+<div style="text-align: center; color: #f1f5f9; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px;">GLOBAL REDDIT INFRASTRUCTURE</div>
+
+<!-- Global Traffic Manager -->
+<div style="display: flex; justify-content: center; margin-bottom: 20px;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 14px 28px; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);">
+<div>Global Traffic Manager</div>
+</div>
+</div>
+
+<!-- Arrow down -->
+<div style="display: flex; justify-content: center; margin: 12px 0;">
+<div style="width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 14px solid #94a3b8;"></div>
+</div>
+
+<!-- Regional Clusters -->
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+<!-- US-EAST -->
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 12px; padding: 16px; min-width: 140px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+<div style="color: white; font-weight: 700; text-align: center; margin-bottom: 12px;">US-EAST</div>
+<div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: center;">
+<div style="color: white; font-size: 0.85rem; font-weight: 500;">EKS Cluster</div>
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; text-align: center;">
+<div style="color: white; font-size: 0.85rem; font-weight: 500;">Cassandra</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 0.7rem;">(Multi-Master)</div>
+</div>
+</div>
+
+<!-- EU-WEST -->
+<div style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); border-radius: 12px; padding: 16px; min-width: 140px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);">
+<div style="color: white; font-weight: 700; text-align: center; margin-bottom: 12px;">EU-WEST</div>
+<div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: center;">
+<div style="color: white; font-size: 0.85rem; font-weight: 500;">EKS Cluster</div>
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; text-align: center;">
+<div style="color: white; font-size: 0.85rem; font-weight: 500;">Cassandra</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 0.7rem;">Replica</div>
+</div>
+</div>
+
+<!-- AP-EAST -->
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; padding: 16px; min-width: 140px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+<div style="color: white; font-weight: 700; text-align: center; margin-bottom: 12px;">AP-EAST</div>
+<div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; margin-bottom: 8px; text-align: center;">
+<div style="color: white; font-size: 0.85rem; font-weight: 500;">EKS Cluster</div>
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 8px; text-align: center;">
+<div style="color: white; font-size: 0.85rem; font-weight: 500;">Cassandra</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 0.7rem;">Replica</div>
+</div>
+</div>
+</div>
+
+<!-- Replication arrows -->
+<div style="display: flex; justify-content: center; gap: 60px; margin-bottom: 20px;">
+<div style="color: #94a3b8; font-size: 0.8rem;">&#8644; Replication &#8644;</div>
+</div>
+
+<!-- Global Services -->
+<div style="background: linear-gradient(135deg, #475569 0%, #334155 100%); border-radius: 12px; padding: 16px; border: 2px solid #64748b;">
+<div style="color: #f1f5f9; font-weight: 600; text-align: center; margin-bottom: 12px;">GLOBAL SERVICES</div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;">Kafka (Global)</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;">S3 (Global)</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;">Aurora Global</div>
+<div style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); color: white; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;">Redis Global</div>
+</div>
+</div>
+</div>
 
 </div>
 
@@ -492,44 +632,98 @@ Design a social news aggregation and discussion platform like Reddit with subred
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
 <h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">HIGH-THROUGHPUT VOTING SYSTEM</h4>
 
-                                ```
-                                Vote Flow (2B votes/day = 23K votes/second):
+<!-- Vote Flow Diagram -->
+<div style="margin-bottom: 24px;">
+<div style="text-align: center; color: #64748b; font-weight: 500; margin-bottom: 16px;">Vote Flow (2B votes/day = 23K votes/second)</div>
 
-                                ┌─────────────┐
-                                │   Client    │
-                                │  (Vote +1)  │
-                                └──────┬──────┘
-                                │
-                                ▼
-                                ┌─────────────┐
-                                │ Vote Service│ ◀── Optimistic update to Redis
-                                │  (Stateless)│     (immediate response)
-                                └──────┬──────┘
-                                │
-                                ▼
-                                ┌─────────────┐
-                                │ Kafka Topic │ ◀── votes.raw (partitioned by post_id)
-                                │  (Buffer)   │
-                                └──────┬──────┘
-                                │
-                                ▼
-                                ┌─────────────┐
-                                │  Vote       │ ◀── Micro-batch aggregation
-                                │  Aggregator │     (every 100ms)
-                                └──────┬──────┘
-                                │
-                                ┌─────┴─────┐
-                                ▼           ▼
-                                ┌─────────┐ ┌─────────┐
-                                │Cassandra│ │  Redis  │
-                                │(Persist)│ │ (Cache) │
-                                └─────────┘ └─────────┘
+<!-- Client -->
+<div style="display: flex; justify-content: center; margin-bottom: 12px;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 12px 24px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+<div style="font-weight: 600;">Client</div>
+<div style="font-size: 0.8rem; opacity: 0.9;">(Vote +1)</div>
+</div>
+</div>
 
-                                Benefits:
-                                - Immediate feedback (optimistic)
-                                - High throughput (batching)
-                                - Eventual consistency (acceptable)
-                                ```
+<!-- Arrow -->
+<div style="display: flex; justify-content: center; margin: 8px 0;">
+<div style="width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 14px solid #64748b;"></div>
+</div>
+
+<!-- Vote Service with annotation -->
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 12px 24px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);">
+<div style="font-weight: 600;">Vote Service</div>
+<div style="font-size: 0.8rem; opacity: 0.9;">(Stateless)</div>
+</div>
+<div style="background: #dcfce7; padding: 8px 12px; border-radius: 8px; border-left: 3px solid #22c55e; font-size: 0.85rem; color: #166534;">
+Optimistic update to Redis<br/>(immediate response)
+</div>
+</div>
+
+<!-- Arrow -->
+<div style="display: flex; justify-content: center; margin: 8px 0;">
+<div style="width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 14px solid #64748b;"></div>
+</div>
+
+<!-- Kafka Topic with annotation -->
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 12px 24px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+<div style="font-weight: 600;">Kafka Topic</div>
+<div style="font-size: 0.8rem; opacity: 0.9;">(Buffer)</div>
+</div>
+<div style="background: #fee2e2; padding: 8px 12px; border-radius: 8px; border-left: 3px solid #ef4444; font-size: 0.85rem; color: #991b1b;">
+votes.raw<br/>(partitioned by post_id)
+</div>
+</div>
+
+<!-- Arrow -->
+<div style="display: flex; justify-content: center; margin: 8px 0;">
+<div style="width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 14px solid #64748b;"></div>
+</div>
+
+<!-- Vote Aggregator with annotation -->
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; padding: 12px 24px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);">
+<div style="font-weight: 600;">Vote Aggregator</div>
+</div>
+<div style="background: #f3e8ff; padding: 8px 12px; border-radius: 8px; border-left: 3px solid #a855f7; font-size: 0.85rem; color: #6b21a8;">
+Micro-batch aggregation<br/>(every 100ms)
+</div>
+</div>
+
+<!-- Arrow -->
+<div style="display: flex; justify-content: center; margin: 8px 0;">
+<div style="width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 14px solid #64748b;"></div>
+</div>
+
+<!-- Storage Layer -->
+<div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+<div style="font-weight: 600;">Cassandra</div>
+<div style="font-size: 0.8rem; opacity: 0.9;">(Persist)</div>
+</div>
+<div style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); color: white; padding: 12px 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);">
+<div style="font-weight: 600;">Redis</div>
+<div style="font-size: 0.8rem; opacity: 0.9;">(Cache)</div>
+</div>
+</div>
+
+<!-- Benefits -->
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #22c55e; border-radius: 12px; padding: 16px;">
+<div style="font-weight: 700; color: #166534; margin-bottom: 8px;">Benefits:</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px;">
+<div style="display: flex; align-items: center; gap: 6px; color: #166534;">
+<span style="color: #22c55e;">&#10003;</span> Immediate feedback (optimistic)
+</div>
+<div style="display: flex; align-items: center; gap: 6px; color: #166534;">
+<span style="color: #22c55e;">&#10003;</span> High throughput (batching)
+</div>
+<div style="display: flex; align-items: center; gap: 6px; color: #166534;">
+<span style="color: #22c55e;">&#10003;</span> Eventual consistency (acceptable)
+</div>
+</div>
+</div>
+</div>
 
                                 ```go
                                 // Vote aggregator (Kafka consumer)
@@ -609,55 +803,109 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px; margin: 16px 0;">
 
-                              ```
-                              Problem: Duplicate votes from race conditions
+<!-- Vote Consistency Diagram -->
+<div style="margin-bottom: 16px;">
+<div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 10px 16px; border-radius: 8px; border-left: 4px solid #ef4444;">
+<span style="font-weight: 600; color: #991b1b;">Problem:</span>
+<span style="color: #7f1d1d;"> Duplicate votes from race conditions</span>
+</div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 10px 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
+<span style="font-weight: 600; color: #166534;">Solution:</span>
+<span style="color: #14532d;"> Idempotency key</span>
+</div>
+</div>
 
-                              Solution: Idempotency key
-
-                              ┌─────────────────────────────────────────────────────────────┐
-                              │  Vote Request:                                               │
-                              │  {                                                           │
-                              │    "user_id": "u123",                                       │
-                              │    "target": "post:456",                                    │
-                              │    "value": 1,                                               │
-                              │    "idempotency_key": "u123:post:456:v1"  ← unique key      │
-                              │  }                                                           │
-                              │                                                              │
-                              │  Redis: SETNX idempotency:u123:post:456:v1 → 1 (success)   │
-                              │         SETNX idempotency:u123:post:456:v1 → 0 (duplicate) │
-                              └─────────────────────────────────────────────────────────────┘
-                              ```
+<div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 20px; color: #e2e8f0; font-family: monospace; font-size: 0.9rem;">
+<div style="color: #a855f7; font-weight: 600; margin-bottom: 12px;">Vote Request:</div>
+<div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+<div>{</div>
+<div style="padding-left: 16px;"><span style="color: #3b82f6;">"user_id"</span>: <span style="color: #22c55e;">"u123"</span>,</div>
+<div style="padding-left: 16px;"><span style="color: #3b82f6;">"target"</span>: <span style="color: #22c55e;">"post:456"</span>,</div>
+<div style="padding-left: 16px;"><span style="color: #3b82f6;">"value"</span>: <span style="color: #f59e0b;">1</span>,</div>
+<div style="padding-left: 16px;"><span style="color: #3b82f6;">"idempotency_key"</span>: <span style="color: #22c55e;">"u123:post:456:v1"</span> <span style="color: #f59e0b;">&larr; unique key</span></div>
+<div>}</div>
+</div>
+<div style="color: #ec4899; font-weight: 600; margin-bottom: 8px;">Redis:</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+<code style="background: rgba(34, 197, 94, 0.2); padding: 4px 8px; border-radius: 4px;">SETNX idempotency:u123:post:456:v1</code>
+<span style="color: #22c55e; font-weight: 600;">&rarr; 1 (success)</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+<code style="background: rgba(239, 68, 68, 0.2); padding: 4px 8px; border-radius: 4px;">SETNX idempotency:u123:post:456:v1</code>
+<span style="color: #ef4444; font-weight: 600;">&rarr; 0 (duplicate)</span>
+</div>
+</div>
+</div>
+</div>
 
 </div>
 
 ### 2. Hot Posts Problem
 
-                            ```
-                            Scenario: Viral post with 100K comments/minute
+<!-- Hot Posts Handling Diagram -->
+<div style="margin-bottom: 16px;">
+<div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 10px 16px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+<span style="font-weight: 600; color: #92400e;">Scenario:</span>
+<span style="color: #78350f;"> Viral post with 100K comments/minute</span>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 10px 16px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+<span style="font-weight: 600; color: #1e40af;">Solution:</span>
+<span style="color: #1e3a8a;"> Tiered caching + sampling</span>
+</div>
+</div>
 
-                            Solution: Tiered caching + sampling
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 12px; text-align: center; font-weight: 700;">HOT POST HANDLING</div>
 
-                            ┌─────────────────────────────────────────┐
-                            │           HOT POST HANDLING             │
-                            ├─────────────────────────────────────────┤
-                            │                                          │
-                            │  Tier 1: Edge Cache (30s TTL)           │
-                            │  ├── Top 100 comments                   │
-                            │  └── Score approximation                │
-                            │                                          │
-                            │  Tier 2: Regional Cache (5min TTL)      │
-                            │  ├── Full comment tree                  │
-                            │  └── Accurate scores                    │
-                            │                                          │
-                            │  Tier 3: Database                        │
-                            │  └── Source of truth                    │
-                            │                                          │
-                            │  Comment sampling for display:           │
-                            │  - Show top 200 only                    │
-                            │  - "Load more" fetches from cache       │
-                            │  - Real-time updates via WebSocket      │
-                            └─────────────────────────────────────────┘
-                            ```
+<!-- Tier 1 -->
+<div style="padding: 16px; border-bottom: 1px solid #e2e8f0;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+<div style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem;">Tier 1</div>
+<div style="color: #166534; font-weight: 600;">Edge Cache (30s TTL)</div>
+</div>
+<div style="display: flex; gap: 8px; margin-left: 24px; flex-wrap: wrap;">
+<span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem;">Top 100 comments</span>
+<span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem;">Score approximation</span>
+</div>
+</div>
+
+<!-- Tier 2 -->
+<div style="padding: 16px; border-bottom: 1px solid #e2e8f0;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem;">Tier 2</div>
+<div style="color: #92400e; font-weight: 600;">Regional Cache (5min TTL)</div>
+</div>
+<div style="display: flex; gap: 8px; margin-left: 24px; flex-wrap: wrap;">
+<span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem;">Full comment tree</span>
+<span style="background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem;">Accurate scores</span>
+</div>
+</div>
+
+<!-- Tier 3 -->
+<div style="padding: 16px; border-bottom: 1px solid #e2e8f0;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem;">Tier 3</div>
+<div style="color: #1e40af; font-weight: 600;">Database</div>
+</div>
+<div style="display: flex; gap: 8px; margin-left: 24px;">
+<span style="background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem;">Source of truth</span>
+</div>
+</div>
+
+<!-- Comment sampling -->
+<div style="padding: 16px; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);">
+<div style="color: #7c3aed; font-weight: 600; margin-bottom: 8px;">Comment sampling for display:</div>
+<div style="display: flex; flex-direction: column; gap: 6px; color: #6b21a8; font-size: 0.9rem;">
+<div>&bull; Show top 200 only</div>
+<div>&bull; "Load more" fetches from cache</div>
+<div>&bull; Real-time updates via WebSocket</div>
+</div>
+</div>
+</div>
+</div>
 
 ### 3. Subreddit Sharding
 
@@ -780,29 +1028,91 @@ Design a social news aggregation and discussion platform like Reddit with subred
 
 **Why Materialized Path for Comments?**
 
-                              ```
-                              Alternatives Analysis:
-                              ├── Adjacency List (parent_id only)
-                              │   ├── ✅ Simple writes
-                              │   ├── ❌ Recursive queries for tree loading (N+1 or CTE)
-                              │   └── Good for: < 100K comments, shallow nesting
-                              │
-                              ├── Nested Sets (left/right integers)
-                              │   ├── ❌ Expensive writes (rebalancing)
-                              │   ├── ✅ Single query for subtrees
-                              │   └── Good for: Read-heavy, rarely-changing trees
-                              │
-                              ├── Closure Table (ancestor/descendant pairs)
-                              │   ├── ❌ O(depth) storage overhead
-                              │   ├── ✅ Fast subtree queries
-                              │   └── Good for: Deep trees with frequent subtree operations
-                              │
-                              └── Materialized Path ("/1/2/3/")  ← CHOSEN
-                              ├── ✅ Single-query subtree (LIKE 'path%')
-                              ├── ✅ Easy depth calculation (count slashes)
-                              ├── ✅ No joins needed
-                              └── Trade-off: Path length limits, string operations
-                              ```
+<!-- Alternatives Analysis Diagram -->
+<div style="margin-top: 16px;">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 16px; font-size: 1.1rem;">Alternatives Analysis:</div>
+
+<!-- Adjacency List -->
+<div style="border-left: 3px solid #64748b; padding-left: 16px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 16px; border-radius: 8px;">
+<div style="font-weight: 600; color: #334155; margin-bottom: 8px;">Adjacency List (parent_id only)</div>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">PRO</span>
+<span style="color: #166534;">Simple writes</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">CON</span>
+<span style="color: #991b1b;">Recursive queries for tree loading (N+1 or CTE)</span>
+</div>
+<div style="color: #64748b; font-style: italic; margin-top: 4px;">Good for: &lt; 100K comments, shallow nesting</div>
+</div>
+</div>
+</div>
+
+<!-- Nested Sets -->
+<div style="border-left: 3px solid #64748b; padding-left: 16px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 16px; border-radius: 8px;">
+<div style="font-weight: 600; color: #334155; margin-bottom: 8px;">Nested Sets (left/right integers)</div>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">CON</span>
+<span style="color: #991b1b;">Expensive writes (rebalancing)</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">PRO</span>
+<span style="color: #166534;">Single query for subtrees</span>
+</div>
+<div style="color: #64748b; font-style: italic; margin-top: 4px;">Good for: Read-heavy, rarely-changing trees</div>
+</div>
+</div>
+</div>
+
+<!-- Closure Table -->
+<div style="border-left: 3px solid #64748b; padding-left: 16px; margin-bottom: 16px;">
+<div style="background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); padding: 12px 16px; border-radius: 8px;">
+<div style="font-weight: 600; color: #334155; margin-bottom: 8px;">Closure Table (ancestor/descendant pairs)</div>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">CON</span>
+<span style="color: #991b1b;">O(depth) storage overhead</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">PRO</span>
+<span style="color: #166534;">Fast subtree queries</span>
+</div>
+<div style="color: #64748b; font-style: italic; margin-top: 4px;">Good for: Deep trees with frequent subtree operations</div>
+</div>
+</div>
+</div>
+
+<!-- Materialized Path - CHOSEN -->
+<div style="border-left: 4px solid #22c55e; padding-left: 16px;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px; border-radius: 8px; border: 2px solid #22c55e;">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+<div style="font-weight: 700; color: #166534;">Materialized Path ("/1/2/3/")</div>
+<span style="background: #22c55e; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">CHOSEN</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">PRO</span>
+<span style="color: #166534;">Single-query subtree (LIKE 'path%')</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">PRO</span>
+<span style="color: #166534;">Easy depth calculation (count slashes)</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;">PRO</span>
+<span style="color: #166534;">No joins needed</span>
+</div>
+<div style="background: rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 6px; margin-top: 8px; color: #78350f;">
+<strong>Trade-off:</strong> Path length limits, string operations
+</div>
+</div>
+</div>
+</div>
+</div>
 
 </div>
 

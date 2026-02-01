@@ -25,120 +25,299 @@ Understanding arrays deeply means understanding memory layout, cache efficiency,
 
 Mastering array problems requires recognizing these fundamental patterns:
 
-<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h3 style="color: #1e293b; margin-top: 0;">Pattern Recognition Guide</h3>
-<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155; overflow-x: auto;">
-+------------------+-------------------------+---------------------------+
-|     Pattern      |      When to Use        |     Example Problems      |
-+------------------+-------------------------+---------------------------+
-| Two Pointers     | Sorted arrays, pairs,   | Two Sum, Three Sum,       |
-|                  | partitioning            | Container With Most Water |
-+------------------+-------------------------+---------------------------+
-| Sliding Window   | Contiguous subarrays,   | Max Subarray Sum,         |
-|                  | fixed/variable window   | Longest Substring         |
-+------------------+-------------------------+---------------------------+
-| Hash Map/Set     | Finding pairs, counting | Two Sum, First Duplicate, |
-|                  | duplicates, lookups     | Subarray Sum Equals K     |
-+------------------+-------------------------+---------------------------+
-| Prefix Sum       | Range queries, subarray | Zero Sum Subarray,        |
-|                  | sums, cumulative ops    | Contiguous Array          |
-+------------------+-------------------------+---------------------------+
-| Binary Search    | Sorted arrays, finding  | Search Insert Position,   |
-|                  | boundaries, rotated     | Find First and Last       |
-+------------------+-------------------------+---------------------------+
-| In-Place Modify  | O(1) space constraint,  | Move Zeroes, Dutch Flag,  |
-|                  | marking visited         | First Duplicate Value     |
-+------------------+-------------------------+---------------------------+
-</pre>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<!-- Two Pointers -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #3b82f6;">
+<div style="font-weight: 700; color: #1e40af;">Two Pointers</div>
+<div style="color: #1e3a8a; font-size: 0.9rem;">Sorted arrays, pairs, partitioning</div>
+<div style="color: #1e40af; font-size: 0.85rem;"><span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px;">Two Sum</span> <span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px;">Three Sum</span> <span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px;">Container With Most Water</span></div>
+</div>
+
+<!-- Sliding Window -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #22c55e;">
+<div style="font-weight: 700; color: #166534;">Sliding Window</div>
+<div style="color: #14532d; font-size: 0.9rem;">Contiguous subarrays, fixed/variable window</div>
+<div style="color: #166534; font-size: 0.85rem;"><span style="background: rgba(34,197,94,0.2); padding: 2px 6px; border-radius: 4px;">Max Subarray Sum</span> <span style="background: rgba(34,197,94,0.2); padding: 2px 6px; border-radius: 4px;">Longest Substring</span></div>
+</div>
+
+<!-- Hash Map/Set -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #a855f7;">
+<div style="font-weight: 700; color: #7c3aed;">Hash Map/Set</div>
+<div style="color: #6b21a8; font-size: 0.9rem;">Finding pairs, counting duplicates, lookups</div>
+<div style="color: #7c3aed; font-size: 0.85rem;"><span style="background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px;">Two Sum</span> <span style="background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px;">First Duplicate</span> <span style="background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px;">Subarray Sum Equals K</span></div>
+</div>
+
+<!-- Prefix Sum -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #f59e0b;">
+<div style="font-weight: 700; color: #92400e;">Prefix Sum</div>
+<div style="color: #78350f; font-size: 0.9rem;">Range queries, subarray sums, cumulative ops</div>
+<div style="color: #92400e; font-size: 0.85rem;"><span style="background: rgba(245,158,11,0.2); padding: 2px 6px; border-radius: 4px;">Zero Sum Subarray</span> <span style="background: rgba(245,158,11,0.2); padding: 2px 6px; border-radius: 4px;">Contiguous Array</span></div>
+</div>
+
+<!-- Binary Search -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #ef4444;">
+<div style="font-weight: 700; color: #991b1b;">Binary Search</div>
+<div style="color: #7f1d1d; font-size: 0.9rem;">Sorted arrays, finding boundaries, rotated</div>
+<div style="color: #991b1b; font-size: 0.85rem;"><span style="background: rgba(239,68,68,0.2); padding: 2px 6px; border-radius: 4px;">Search Insert Position</span> <span style="background: rgba(239,68,68,0.2); padding: 2px 6px; border-radius: 4px;">Find First and Last</span></div>
+</div>
+
+<!-- In-Place Modify -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #0ea5e9;">
+<div style="font-weight: 700; color: #0369a1;">In-Place Modify</div>
+<div style="color: #0c4a6e; font-size: 0.9rem;">O(1) space constraint, marking visited</div>
+<div style="color: #0369a1; font-size: 0.85rem;"><span style="background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px;">Move Zeroes</span> <span style="background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px;">Dutch Flag</span> <span style="background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px;">First Duplicate Value</span></div>
+</div>
+
+</div>
 </div>
 
 ### Pattern 1: Two Pointers
 The two-pointer technique uses two indices that move toward each other or in the same direction. It transforms O(n^2) brute force into O(n) solutions.
 
-<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Two Pointers Visualization</h4>
-<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-Finding pair with target sum = 13 in sorted array:
+<div style="color: #64748b; margin-bottom: 16px;">Finding pair with target sum = <span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">13</span> in sorted array:</div>
 
-Step 1:  L                          R
-  [1, 2, 3, 4, 6, 8, 9, 14, 15]
-  Sum = 1 + 15 = 16 > 13, move R left
+<!-- Step 1 -->
+<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="background: #3b82f6; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">Step 1</span>
+</div>
+<div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-family: monospace;">
+<span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;">L:1</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">2</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">3</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">4</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">6</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">8</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">9</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">14</span>
+<span style="background: #ef4444; color: white; padding: 4px 8px; border-radius: 4px;">R:15</span>
+</div>
+<div style="color: #64748b; font-size: 0.9rem; margin-top: 8px;">Sum = 1 + 15 = <span style="color: #ef4444; font-weight: 600;">16 &gt; 13</span>, move R left</div>
+</div>
 
-Step 2:  L                      R
-  [1, 2, 3, 4, 6, 8, 9, 14, 15]
-  Sum = 1 + 14 = 15 > 13, move R left
+<!-- Step 3 -->
+<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="background: #a855f7; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">Step 3</span>
+</div>
+<div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-family: monospace;">
+<span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;">L:1</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">2</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">3</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">4</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">6</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">8</span>
+<span style="background: #ef4444; color: white; padding: 4px 8px; border-radius: 4px;">R:9</span>
+<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: line-through;">14</span>
+<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: line-through;">15</span>
+</div>
+<div style="color: #64748b; font-size: 0.9rem; margin-top: 8px;">Sum = 1 + 9 = <span style="color: #3b82f6; font-weight: 600;">10 &lt; 13</span>, move L right</div>
+</div>
 
-Step 3:  L                  R
-  [1, 2, 3, 4, 6, 8, 9, 14, 15]
-  Sum = 1 + 9 = 10 < 13, move L right
+<!-- Step 6 - FOUND -->
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 2px solid #22c55e; border-radius: 8px; padding: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">Step 6 - FOUND!</span>
+</div>
+<div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-family: monospace;">
+<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: line-through;">1</span>
+<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: line-through;">2</span>
+<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: line-through;">3</span>
+<span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 700;">L:4</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">6</span>
+<span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px;">8</span>
+<span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 700;">R:9</span>
+<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: line-through;">14</span>
+<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; text-decoration: line-through;">15</span>
+</div>
+<div style="color: #166534; font-size: 0.9rem; margin-top: 8px; font-weight: 600;">Sum = 4 + 9 = 13 = target!</div>
+</div>
 
-Step 4:     L              R
-  [1, 2, 3, 4, 6, 8, 9, 14, 15]
-  Sum = 2 + 9 = 11 < 13, move L right
-
-Step 5:        L           R
-  [1, 2, 3, 4, 6, 8, 9, 14, 15]
-  Sum = 3 + 9 = 12 < 13, move L right
-
-Step 6:           L        R
-  [1, 2, 3, 4, 6, 8, 9, 14, 15]
-  Sum = 4 + 9 = 13 = target! FOUND!
-
-Key Insight: Each step eliminates either the smallest or largest
-remaining element, guaranteeing O(n) time complexity.
-</pre>
+<!-- Key Insight -->
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-left: 4px solid #3b82f6; padding: 12px 16px; margin-top: 16px; border-radius: 0 8px 8px 0;">
+<strong style="color: #1e40af;">Key Insight:</strong>
+<span style="color: #1e3a8a;"> Each step eliminates either the smallest or largest remaining element, guaranteeing O(n) time complexity.</span>
+</div>
 </div>
 
 ### Pattern 2: Sliding Window
 Sliding window maintains a contiguous subset of elements, expanding or shrinking based on conditions. It's optimal for substring and subarray problems.
 
-<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Sliding Window Visualization</h4>
-<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-Find maximum sum of subarray with size k=3:
-Array: [2, 1, 5, 1, 3, 2]
+<div style="color: #64748b; margin-bottom: 16px;">Find maximum sum of subarray with size <span style="background: #a855f7; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 600;">k=3</span></div>
 
-Window 1: [2, 1, 5] 1, 3, 2    Sum = 8
-  -------
-Window 2:  2 [1, 5, 1] 3, 2    Sum = 7  (remove 2, add 1)
-  -------
-Window 3:  2, 1 [5, 1, 3] 2    Sum = 9  (remove 1, add 3) MAX!
-  -------
-Window 4:  2, 1, 5 [1, 3, 2]   Sum = 6  (remove 5, add 2)
-  -------
+<div style="display: flex; flex-direction: column; gap: 12px;">
 
-Answer: 9
+<!-- Window 1 -->
+<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="background: #3b82f6; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">Window 1</span>
+<span style="background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem;">Sum = 8</span>
+</div>
+<div style="display: flex; gap: 4px; align-items: center; font-family: monospace;">
+<span style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #1d4ed8;">2</span>
+<span style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #1d4ed8;">1</span>
+<span style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #1d4ed8;">5</span>
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #64748b;">1</span>
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #64748b;">3</span>
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #64748b;">2</span>
+</div>
+</div>
 
-Optimization: Instead of recalculating sum O(k) each time,
-  slide window by subtracting left, adding right O(1)
-  Total: O(n) instead of O(n*k)
-</pre>
+<!-- Window 2 -->
+<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="background: #a855f7; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">Window 2</span>
+<span style="background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem;">Sum = 7</span>
+<span style="color: #64748b; font-size: 0.8rem;">(remove 2, add 1)</span>
+</div>
+<div style="display: flex; gap: 4px; align-items: center; font-family: monospace;">
+<span style="background: #fee2e2; padding: 6px 10px; border-radius: 4px; color: #ef4444; text-decoration: line-through;">2</span>
+<span style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #7c3aed;">1</span>
+<span style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #7c3aed;">5</span>
+<span style="background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #7c3aed;">1</span>
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #64748b;">3</span>
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #64748b;">2</span>
+</div>
+</div>
+
+<!-- Window 3 - MAX -->
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 2px solid #22c55e; border-radius: 8px; padding: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="background: #22c55e; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">Window 3 - MAX!</span>
+<span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: 700;">Sum = 9</span>
+<span style="color: #166534; font-size: 0.8rem;">(remove 1, add 3)</span>
+</div>
+<div style="display: flex; gap: 4px; align-items: center; font-family: monospace;">
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #94a3b8;">2</span>
+<span style="background: #fee2e2; padding: 6px 10px; border-radius: 4px; color: #ef4444; text-decoration: line-through;">1</span>
+<span style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #16a34a; font-weight: 700;">5</span>
+<span style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #16a34a; font-weight: 700;">1</span>
+<span style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #16a34a; font-weight: 700;">3</span>
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #64748b;">2</span>
+</div>
+</div>
+
+<!-- Window 4 -->
+<div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="background: #f59e0b; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">Window 4</span>
+<span style="background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem;">Sum = 6</span>
+<span style="color: #64748b; font-size: 0.8rem;">(remove 5, add 2)</span>
+</div>
+<div style="display: flex; gap: 4px; align-items: center; font-family: monospace;">
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #94a3b8;">2</span>
+<span style="background: #f1f5f9; padding: 6px 10px; border-radius: 4px; color: #94a3b8;">1</span>
+<span style="background: #fee2e2; padding: 6px 10px; border-radius: 4px; color: #ef4444; text-decoration: line-through;">5</span>
+<span style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #d97706;">1</span>
+<span style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #d97706;">3</span>
+<span style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 6px 10px; border-radius: 4px; border: 2px solid #d97706;">2</span>
+</div>
+</div>
+
+</div>
+
+<!-- Answer and Optimization -->
+<div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 12px 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
+<strong style="color: #166534;">Answer: 9</strong>
+</div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 12px 16px; border-radius: 8px; border-left: 4px solid #3b82f6; flex: 1; min-width: 200px;">
+<strong style="color: #1e40af;">Optimization:</strong>
+<span style="color: #1e3a8a;"> Slide window by subtracting left, adding right O(1). Total: O(n) instead of O(n*k)</span>
+</div>
+</div>
 </div>
 
 ### Pattern 3: Prefix Sum
 Prefix sums precompute cumulative totals, enabling O(1) range sum queries after O(n) preprocessing.
 
-<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Prefix Sum Visualization</h4>
-<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155;">
-Original:    [3,  1,  2,  5,  4]
-Index:        0   1   2   3   4
-Prefix Sum:  [3,  4,  6, 11, 15]
 
-Range Sum Query: sum(index 1 to 3)
-  = prefix[3] - prefix[0]
-  = 11 - 3 = 8
-  Verify: 1 + 2 + 5 = 8 ✓
+<!-- Original Array -->
+<div style="margin-bottom: 20px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="font-weight: 600; color: #64748b; width: 100px;">Original:</span>
+<div style="display: flex; gap: 4px; font-family: monospace;">
+<span style="background: #e2e8f0; padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center;">3</span>
+<span style="background: #e2e8f0; padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center;">1</span>
+<span style="background: #e2e8f0; padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center;">2</span>
+<span style="background: #e2e8f0; padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center;">5</span>
+<span style="background: #e2e8f0; padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center;">4</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="font-weight: 600; color: #64748b; width: 100px;">Index:</span>
+<div style="display: flex; gap: 4px; font-family: monospace; color: #94a3b8; font-size: 0.85rem;">
+<span style="padding: 8px 14px; min-width: 32px; text-align: center;">0</span>
+<span style="padding: 8px 14px; min-width: 32px; text-align: center;">1</span>
+<span style="padding: 8px 14px; min-width: 32px; text-align: center;">2</span>
+<span style="padding: 8px 14px; min-width: 32px; text-align: center;">3</span>
+<span style="padding: 8px 14px; min-width: 32px; text-align: center;">4</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span style="font-weight: 600; color: #f59e0b; width: 100px;">Prefix Sum:</span>
+<div style="display: flex; gap: 4px; font-family: monospace;">
+<span style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center; border: 2px solid #f59e0b; color: #92400e; font-weight: 600;">3</span>
+<span style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center; border: 2px solid #f59e0b; color: #92400e; font-weight: 600;">4</span>
+<span style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center; border: 2px solid #f59e0b; color: #92400e; font-weight: 600;">6</span>
+<span style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center; border: 2px solid #f59e0b; color: #92400e; font-weight: 600;">11</span>
+<span style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 8px 14px; border-radius: 4px; min-width: 32px; text-align: center; border: 2px solid #f59e0b; color: #92400e; font-weight: 600;">15</span>
+</div>
+</div>
+</div>
 
-Zero-Sum Subarray Detection:
-Array:       [4,  2, -3,  1,  6]
-Prefix Sum:  [4,  6,  3,  4, 10]
-  ^
-Same prefix sum (4) at index 0 and 3!
-Subarray [2, -3, 1] between indices 1-3 sums to 0.
+<!-- Range Sum Query -->
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #3b82f6; border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 12px;">Range Sum Query: sum(index 1 to 3)</div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-family: monospace; color: #1e3a8a;">
+<div>= prefix[3] - prefix[0]</div>
+<div>= <span style="background: #3b82f6; color: white; padding: 2px 8px; border-radius: 4px;">11</span> - <span style="background: #3b82f6; color: white; padding: 2px 8px; border-radius: 4px;">3</span> = <span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-weight: 700;">8</span></div>
+<div style="color: #166534;">Verify: 1 + 2 + 5 = 8 &#10003;</div>
+</div>
+</div>
 
-Key Insight: If prefix[i] == prefix[j], then sum(i+1, j) = 0
-</pre>
+<!-- Zero-Sum Subarray Detection -->
+<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border: 2px solid #a855f7; border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+<div style="font-weight: 700; color: #7c3aed; margin-bottom: 12px;">Zero-Sum Subarray Detection:</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<span style="font-weight: 600; color: #64748b; width: 100px;">Array:</span>
+<div style="display: flex; gap: 4px; font-family: monospace;">
+<span style="background: #e2e8f0; padding: 6px 10px; border-radius: 4px;">4</span>
+<span style="background: #a855f7; color: white; padding: 6px 10px; border-radius: 4px;">2</span>
+<span style="background: #a855f7; color: white; padding: 6px 10px; border-radius: 4px;">-3</span>
+<span style="background: #a855f7; color: white; padding: 6px 10px; border-radius: 4px;">1</span>
+<span style="background: #e2e8f0; padding: 6px 10px; border-radius: 4px;">6</span>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+<span style="font-weight: 600; color: #7c3aed; width: 100px;">Prefix Sum:</span>
+<div style="display: flex; gap: 4px; font-family: monospace;">
+<span style="background: #22c55e; color: white; padding: 6px 10px; border-radius: 4px; font-weight: 700; border: 2px solid #16a34a;">4</span>
+<span style="background: #f3e8ff; padding: 6px 10px; border-radius: 4px; color: #6b21a8;">6</span>
+<span style="background: #f3e8ff; padding: 6px 10px; border-radius: 4px; color: #6b21a8;">3</span>
+<span style="background: #22c55e; color: white; padding: 6px 10px; border-radius: 4px; font-weight: 700; border: 2px solid #16a34a;">4</span>
+<span style="background: #f3e8ff; padding: 6px 10px; border-radius: 4px; color: #6b21a8;">10</span>
+</div>
+</div>
+<div style="color: #6b21a8;">Same prefix sum (<span style="font-weight: 700;">4</span>) at index 0 and 3!</div>
+<div style="color: #6b21a8;">Subarray <span style="background: #a855f7; color: white; padding: 2px 6px; border-radius: 4px;">[2, -3, 1]</span> between indices 1-3 sums to 0.</div>
+</div>
+
+<!-- Key Insight -->
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #22c55e; padding: 12px 16px; border-radius: 0 8px 8px 0;">
+<strong style="color: #166534;">Key Insight:</strong>
+<span style="color: #14532d;"> If prefix[i] == prefix[j], then sum(i+1, j) = 0</span>
+</div>
 </div>
 
 ## Must-Know Problems with Solutions

@@ -29,28 +29,47 @@ BSTs are fundamental because they provide an elegant way to maintain sorted data
 
 ## Key Patterns
 
-<div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h3 style="color: #1e293b; margin-top: 0;">BST Pattern Recognition Guide</h3>
-<pre style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; color: #334155; overflow-x: auto;">
-+------------------------+---------------------------+-------------------------+
-|       Pattern          |       When to Use         |    Example Problems     |
-+------------------------+---------------------------+-------------------------+
-| BST Property           | Finding elements, closest | Search in BST, Find     |
-| Exploitation           | value, min/max finding    | Closest, Validate BST   |
-+------------------------+---------------------------+-------------------------+
-| In-Order Traversal     | Sorted order needed,      | Kth Smallest/Largest,   |
-|                        | range queries, k-th elem  | Convert to Sorted List  |
-+------------------------+---------------------------+-------------------------+
-| Range Validation       | Validating BST, checking  | Validate BST,           |
-|                        | constraints at each node  | Recover BST             |
-+------------------------+---------------------------+-------------------------+
-| Construction           | Building BST from arrays, | Sorted Array to BST,    |
-|                        | reconstruction            | Reconstruct Preorder    |
-+------------------------+---------------------------+-------------------------+
-| Successor/Predecessor  | Finding next/prev in      | BST Iterator, In-order  |
-|                        | sorted order              | Successor               |
-+------------------------+---------------------------+-------------------------+
-</pre>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+
+<!-- BST Property Exploitation -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #3b82f6;">
+<div style="font-weight: 700; color: #1e40af;">BST Property Exploitation</div>
+<div style="color: #1e3a8a; font-size: 0.9rem;">Finding elements, closest value, min/max finding</div>
+<div style="color: #1e40af; font-size: 0.85rem;"><span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px;">Search in BST</span> <span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px;">Find Closest</span> <span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px;">Validate BST</span></div>
+</div>
+
+<!-- In-Order Traversal -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #22c55e;">
+<div style="font-weight: 700; color: #166534;">In-Order Traversal</div>
+<div style="color: #14532d; font-size: 0.9rem;">Sorted order needed, range queries, k-th elem</div>
+<div style="color: #166534; font-size: 0.85rem;"><span style="background: rgba(34,197,94,0.2); padding: 2px 6px; border-radius: 4px;">Kth Smallest/Largest</span> <span style="background: rgba(34,197,94,0.2); padding: 2px 6px; border-radius: 4px;">Convert to Sorted List</span></div>
+</div>
+
+<!-- Range Validation -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #a855f7;">
+<div style="font-weight: 700; color: #7c3aed;">Range Validation</div>
+<div style="color: #6b21a8; font-size: 0.9rem;">Validating BST, checking constraints at each node</div>
+<div style="color: #7c3aed; font-size: 0.85rem;"><span style="background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px;">Validate BST</span> <span style="background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px;">Recover BST</span></div>
+</div>
+
+<!-- Construction -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #f59e0b;">
+<div style="font-weight: 700; color: #92400e;">Construction</div>
+<div style="color: #78350f; font-size: 0.9rem;">Building BST from arrays, reconstruction</div>
+<div style="color: #92400e; font-size: 0.85rem;"><span style="background: rgba(245,158,11,0.2); padding: 2px 6px; border-radius: 4px;">Sorted Array to BST</span> <span style="background: rgba(245,158,11,0.2); padding: 2px 6px; border-radius: 4px;">Reconstruct Preorder</span></div>
+</div>
+
+<!-- Successor/Predecessor -->
+<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 16px; border-radius: 10px; border-left: 4px solid #0ea5e9;">
+<div style="font-weight: 700; color: #0369a1;">Successor/Predecessor</div>
+<div style="color: #0c4a6e; font-size: 0.9rem;">Finding next/prev in sorted order</div>
+<div style="color: #0369a1; font-size: 0.85rem;"><span style="background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px;">BST Iterator</span> <span style="background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px;">In-order Successor</span></div>
+</div>
+
+</div>
 </div>
 
 ### Pattern 1: BST Property Exploitation
