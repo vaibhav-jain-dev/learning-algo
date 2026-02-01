@@ -236,6 +236,125 @@
         } else {
             initializeVisualizations();
         }
+
+        // ============================================
+        // GLOBAL ANCHOR LINKS FOR ALL HEADINGS
+        // Automatically adds IDs and anchor links to all headings
+        // ============================================
+        (function() {
+            // Slugify text to create URL-friendly IDs
+            function slugify(text) {
+                return text
+                    .toString()
+                    .toLowerCase()
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^\w\-]+/g, '')
+                    .replace(/\-\-+/g, '-')
+                    .replace(/^-+/, '')
+                    .replace(/-+$/, '');
+            }
+
+            // Track used IDs to handle duplicates
+            var usedIds = {};
+
+            // Create unique ID
+            function createUniqueId(baseId) {
+                if (!usedIds[baseId]) {
+                    usedIds[baseId] = 1;
+                    return baseId;
+                }
+                usedIds[baseId]++;
+                return baseId + '-' + usedIds[baseId];
+            }
+
+            // Create toast element for copy feedback (if not already exists)
+            var toast = document.querySelector('.anchor-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'anchor-toast';
+                toast.textContent = 'Link copied!';
+                toast.style.cssText = 'position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 10000; opacity: 0; transition: opacity 0.3s; pointer-events: none;';
+                document.body.appendChild(toast);
+            }
+
+            function showToast() {
+                toast.style.opacity = '1';
+                setTimeout(function() { toast.style.opacity = '0'; }, 2000);
+            }
+
+            function copyLink(id) {
+                var url = window.location.href.split('#')[0] + '#' + id;
+                navigator.clipboard.writeText(url).then(showToast).catch(function() {
+                    // Fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = url;
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try { document.execCommand('copy'); showToast(); } catch(e) {}
+                    document.body.removeChild(ta);
+                });
+            }
+
+            // Process all headings in main content area
+            var mainContent = document.querySelector('.main');
+            if (!mainContent) return;
+
+            var headings = mainContent.querySelectorAll('h1, h2, h3, h4');
+            headings.forEach(function(heading) {
+                // Skip if already has an anchor or is hidden
+                if (heading.querySelector('.heading-anchor') || heading.offsetParent === null) return;
+
+                // Get or create ID
+                var id = heading.id;
+                if (!id) {
+                    var text = heading.textContent.trim();
+                    // Remove any existing symbols/icons at start
+                    text = text.replace(/^[^\w]+/, '').trim();
+                    if (!text) return;
+                    id = createUniqueId(slugify(text));
+                    heading.id = id;
+                }
+
+                // Add anchor link
+                var anchor = document.createElement('a');
+                anchor.className = 'heading-anchor';
+                anchor.href = '#' + id;
+                anchor.setAttribute('aria-label', 'Link to this section');
+                anchor.style.cssText = 'opacity: 0; margin-right: 8px; color: #3b82f6; text-decoration: none; font-weight: normal; transition: opacity 0.2s;';
+                anchor.textContent = '#';
+
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    copyLink(id);
+                    history.pushState(null, null, '#' + id);
+                });
+
+                // Show anchor on heading hover
+                heading.style.position = 'relative';
+                heading.addEventListener('mouseenter', function() {
+                    anchor.style.opacity = '1';
+                });
+                heading.addEventListener('mouseleave', function() {
+                    anchor.style.opacity = '0';
+                });
+
+                heading.insertBefore(anchor, heading.firstChild);
+            });
+
+            // Handle initial hash - scroll to section
+            if (window.location.hash) {
+                var target = document.getElementById(window.location.hash.substring(1));
+                if (target) {
+                    setTimeout(function() {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+            }
+        })();
     </script>
 </body>
 </html>
