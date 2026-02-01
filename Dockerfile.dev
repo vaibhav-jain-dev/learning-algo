@@ -11,6 +11,7 @@
 FROM golang:1.21-alpine
 
 # Install minimal dependencies including wkhtmltopdf for PDF generation
+# wkhtmltopdf requires dependencies from community repo
 RUN apk add --no-cache \
     python3 \
     py3-pip \
@@ -18,6 +19,7 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     wget \
+    && apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     wkhtmltopdf \
     && rm -rf /var/cache/apk/*
 

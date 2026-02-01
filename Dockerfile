@@ -92,9 +92,11 @@ LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
 
 # Install minimal dependencies including wkhtmltopdf for PDF generation
+# wkhtmltopdf requires dependencies from community repo
 RUN apk add --no-cache \
     ca-certificates \
     wget \
+    && apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
     wkhtmltopdf \
     && rm -rf /var/cache/apk/* /tmp/*
 
