@@ -26,6 +26,35 @@
             background: white;
             max-width: 180mm;
             margin: 0 auto;
+            overflow-x: hidden;
+        }
+
+        /* Prevent overlapping content - be selective */
+        div, section, article, aside {
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Reset problematic positioning */
+        [style*="position: absolute"],
+        [style*="position: fixed"],
+        .fixed, .absolute, .sticky {
+            position: static !important;
+        }
+
+        /* Clear floats */
+        .clearfix::after,
+        div::after,
+        section::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Ensure all content is visible */
+        div, section, article, pre, code, blockquote {
+            overflow: visible !important;
+            max-width: 100%;
         }
 
         /* Page break controls */
@@ -166,10 +195,10 @@
             border: 1px solid #e1e4e8;
             border-radius: 4px;
             padding: 12px;
-            margin: 12px 0 16px 0;
+            margin: 16px 0 20px 0;
             font-size: 9pt;
             line-height: 1.4;
-            overflow-x: visible;
+            overflow: visible;
             white-space: pre-wrap;
             word-wrap: break-word;
             /* Prevent page breaks inside code blocks */
@@ -179,6 +208,11 @@
             page-break-before: avoid;
             break-before: avoid;
             max-width: 100%;
+            /* Ensure code blocks are visible and not covered */
+            display: block;
+            clear: both;
+            position: relative;
+            z-index: 1;
         }
 
         /* If code block is too long, allow breaking but optimize */
@@ -291,6 +325,11 @@
         [class*="m-"] {
             page-break-inside: avoid;
             break-inside: avoid;
+            display: block;
+            clear: both;
+            margin: 12px 0;
+            padding: 12px;
+            overflow: visible;
         }
 
         /* Comparison/strategy boxes - keep together */
