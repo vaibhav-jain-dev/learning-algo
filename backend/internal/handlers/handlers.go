@@ -6,6 +6,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -146,7 +147,7 @@ func (h *Handlers) TwoHundredProblemContent(c *fiber.Ctx) error {
 	goCode, _ := os.ReadFile(goPath)
 
 	return c.Render("partials/problem-content", fiber.Map{
-		"Description": buf.String(),
+		"Description": stripBorderStyles(buf.String()),
 		"PythonCode":  string(pythonCode),
 		"GolangCode":  string(goCode),
 		"Path":        path,
@@ -304,7 +305,8 @@ func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 	if err == nil && len(mdContent) > 0 {
 		var buf bytes.Buffer
 		if err := h.md.Convert(mdContent, &buf); err == nil {
-			contentHTML = buf.String()
+			// Strip inline border styles from HTML to allow CSS to control borders
+			contentHTML = stripBorderStyles(buf.String())
 			hasContent = true
 		}
 	}
@@ -353,7 +355,7 @@ func (h *Handlers) GetProblem(c *fiber.Ctx) error {
 	goCode, _ := os.ReadFile(goPath)
 
 	return c.JSON(fiber.Map{
-		"description": buf.String(),
+		"description": stripBorderStyles(buf.String()),
 		"python_code": string(pythonCode),
 		"golang_code": string(goCode),
 		"path":        path,
@@ -515,7 +517,7 @@ func (h *Handlers) ProblemContent(c *fiber.Ctx) error {
 	goCode, _ := os.ReadFile(goPath)
 
 	return c.Render("partials/problem-content", fiber.Map{
-		"Description": buf.String(),
+		"Description": stripBorderStyles(buf.String()),
 		"PythonCode":  string(pythonCode),
 		"GolangCode":  string(goCode),
 		"Path":        path,
@@ -684,6 +686,42 @@ func formatName(name string) string {
 	return strings.Join(words, " ")
 }
 
+// stripBorderStyles removes all border-related inline styles from HTML content
+// This is needed because markdown files contain inline HTML with border styles
+// that have higher CSS specificity than external stylesheets
+func stripBorderStyles(html string) string {
+	// Regex to find style attributes
+	styleRegex := regexp.MustCompile(`style\s*=\s*"([^"]*)"`)
+
+	return styleRegex.ReplaceAllStringFunc(html, func(match string) string {
+		// Extract the style content
+		styleMatch := styleRegex.FindStringSubmatch(match)
+		if len(styleMatch) < 2 {
+			return match
+		}
+
+		styleContent := styleMatch[1]
+
+		// Remove border-related properties (but keep border-radius)
+		// Match: border, border-top, border-right, border-bottom, border-left,
+		// border-width, border-style, border-color, and their variants
+		borderRegex := regexp.MustCompile(`\s*border(?:-(?:top|right|bottom|left))?(?:-(?:width|style|color))?\s*:\s*[^;]+;?\s*`)
+
+		cleanedStyle := borderRegex.ReplaceAllString(styleContent, "")
+
+		// Trim any leading/trailing whitespace and semicolons
+		cleanedStyle = strings.TrimSpace(cleanedStyle)
+		cleanedStyle = strings.Trim(cleanedStyle, ";")
+
+		// If no styles remain, remove the style attribute entirely
+		if cleanedStyle == "" {
+			return ""
+		}
+
+		return `style="` + cleanedStyle + `"`
+	})
+}
+
 // Microservices renders the microservices architecture page
 func (h *Handlers) Microservices(c *fiber.Ctx) error {
 	return c.Render("pages/microservices", fiber.Map{
@@ -793,7 +831,7 @@ func (h *Handlers) DeploymentGuide(c *fiber.Ctx) error {
 
 	return c.Render("pages/deployment-guide", fiber.Map{
 		"Title":   "Deployment Instructions",
-		"Content": buf.String(),
+		"Content": stripBorderStyles(buf.String()),
 	})
 }
 
