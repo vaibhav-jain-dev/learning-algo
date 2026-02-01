@@ -11,10 +11,10 @@
         </div>
     </div>
 
-    <!-- MAIN LAYOUT WITH SIDEBAR -->
-    <div class="guide-layout">
-        <!-- FIXED SIDEBAR NAVIGATION -->
-        <aside class="guide-sidebar python-sidebar">
+    <!-- ADHD-FRIENDLY THREE-COLUMN LAYOUT -->
+    <div class="adhd-layout">
+        <!-- LEFT NAVIGATION PANEL -->
+        <aside class="adhd-nav-panel">
             <div class="sidebar-header">Topics</div>
 
             <div class="sidebar-section">
@@ -41,7 +41,7 @@
         </aside>
 
         <!-- MAIN CONTENT AREA -->
-        <main class="guide-content">
+        <main class="adhd-main-content">
 
     <!-- CLICKABLE ROADMAP SECTION -->
     <section id="roadmap" class="roadmap-section">
@@ -414,6 +414,19 @@
             <p class="section-description">Python's type system, dynamic typing, and type hints</p>
         </div>
 
+        <!-- TL;DR Summary -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>Python is dynamically typed - no need to declare variable types</li>
+                <li>Type hints (PEP 484) improve code clarity and enable better IDE support</li>
+                <li>Core types: str, int, float, bool, list, dict, set, tuple</li>
+                <li>Functions are first-class objects - can be passed around like variables</li>
+                <li>Use *args for variable positional arguments, **kwargs for variable keyword arguments</li>
+                <li>Classes support dunder methods (__init__, __str__, etc.) for customization</li>
+            </ul>
+        </div>
+
         <div class="topic-block highlight-block">
             <div class="block-header">
                 <span class="block-icon">&#128161;</span>
@@ -742,6 +755,19 @@ print(f"Generator size: {gen_size} bytes")</code></pre>
         <div class="section-header">
             <h2><span class="section-icon">&#127873;</span> Python Decorators — Complete Visual Guide</h2>
             <p class="section-description">Master decorators with visual diagrams, practical examples, and common patterns</p>
+        </div>
+
+        <!-- TL;DR Summary -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>Decorators wrap functions to extend or modify behavior without changing source code</li>
+                <li>Syntax: @decorator above function definition is shorthand for func = decorator(func)</li>
+                <li>Common uses: logging, timing, authentication, caching, validation</li>
+                <li>Use functools.wraps to preserve original function metadata</li>
+                <li>Decorators can accept arguments: @decorator(args) creates decorator factory</li>
+                <li>Multiple decorators stack: @dec1 @dec2 applies dec2 first, then dec1</li>
+            </ul>
         </div>
 
         <!-- What is a Decorator -->
@@ -1086,6 +1112,90 @@ print(f"Doc: {greet_good.__doc__}")    # 'Says hello.' - Correct!</code></pre>
                 <button class="run-code-btn" data-language="python">Run Code</button>
             </div>
         </div>
+
+        <!-- Advanced: Class Decorators (Collapsible) -->
+        <div class="collapsible-section" data-section-id="class-decorators">
+            <div class="collapsible-header">
+                <h3>Advanced: Class Decorators & Stacking</h3>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="concept-section type-important">
+                    <h4>Class Decorators</h4>
+                    <p>Decorators can also be applied to classes to modify class behavior or add class-level functionality.</p>
+
+                    <div class="code-example">
+                        <pre><code class="language-python"># Class Decorators
+import functools
+
+# 1. Function decorator on class methods
+class DataProcessor:
+    @functools.lru_cache(maxsize=100)
+    def expensive_operation(self, n: int) -> int:
+        """Cached method - results are stored."""
+        print(f"Computing for {n}...")
+        return sum(range(n))
+
+# 2. Class decorator (decorates entire class)
+def singleton(cls):
+    """Ensure only one instance of class exists."""
+    instances = {}
+
+    @functools.wraps(cls)
+    def get_instance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+
+    return get_instance
+
+@singleton
+class Database:
+    def __init__(self, name: str):
+        self.name = name
+        print(f"Database '{name}' initialized")
+
+# Test singleton
+print("=== Singleton Pattern ===")
+db1 = Database("users")
+db2 = Database("products")  # Won't create new instance!
+print(f"Same instance? {db1 is db2}")  # True
+
+# 3. Stacking decorators (order matters!)
+def bold(func):
+    def wrapper():
+        return f"<b>{func()}</b>"
+    return wrapper
+
+def italic(func):
+    def wrapper():
+        return f"<i>{func()}</i>"
+    return wrapper
+
+@bold
+@italic
+def greet():
+    return "Hello"
+
+print("\n=== Stacked Decorators ===")
+print(greet())  # <b><i>Hello</i></b>
+# Execution order: italic first, then bold
+# Equivalent to: bold(italic(greet))</code></pre>
+                        <button class="run-code-btn" data-language="python">Run Code</button>
+                    </div>
+                </div>
+
+                <div class="concept-section type-warning">
+                    <h4>Decorator Stacking Order</h4>
+                    <p>When multiple decorators are stacked, they're applied <strong>bottom-to-top</strong>:</p>
+                    <ul>
+                        <li>@decorator1 @decorator2 def func() → decorator1(decorator2(func))</li>
+                        <li>The closest decorator to the function executes first</li>
+                        <li>Think of it like wrapping layers: innermost layer applied first</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- GENERATORS VISUAL GUIDE SECTION -->
@@ -1093,6 +1203,19 @@ print(f"Doc: {greet_good.__doc__}")    # 'Says hello.' - Correct!</code></pre>
         <div class="section-header">
             <h2><span class="section-icon">&#9889;</span> Python Generators — Complete Visual Guide</h2>
             <p class="section-description">Master generators and iterators with visual diagrams and practical examples</p>
+        </div>
+
+        <!-- TL;DR Summary -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>Generators produce values one at a time using yield, pausing between values</li>
+                <li>Memory efficient - don't store entire sequence in memory like lists</li>
+                <li>Use generator expressions: (x*2 for x in range(10)) for simple cases</li>
+                <li>yield from delegates to another generator, simplifying nested iteration</li>
+                <li>Perfect for large datasets, infinite sequences, or streaming data</li>
+                <li>Iterator protocol: __iter__() returns self, __next__() returns next value</li>
+            </ul>
         </div>
 
         <!-- What is a Generator -->
@@ -1387,6 +1510,109 @@ print(f"Flat: {flat}")</code></pre>
                 <button class="run-code-btn" data-language="python">Run Code</button>
             </div>
         </div>
+
+        <!-- Advanced: Iterator Protocol (Collapsible) -->
+        <div class="collapsible-section" data-section-id="iterator-protocol">
+            <div class="collapsible-header">
+                <h3>Advanced: Iterator Protocol & Custom Iterators</h3>
+                <span class="collapsible-icon">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="concept-section type-definition">
+                    <h4>The Iterator Protocol</h4>
+                    <p>Generators automatically implement the iterator protocol. Understanding it helps you create custom iterators.</p>
+
+                    <div class="code-with-explanation">
+                        <div class="explanation-panel">
+                            <h4>Iterator Requirements</h4>
+                            <ul>
+                                <li><strong>__iter__()</strong>: Returns the iterator object (usually self)</li>
+                                <li><strong>__next__()</strong>: Returns next value or raises StopIteration</li>
+                                <li>Used by for loops, comprehensions, and built-in functions</li>
+                                <li>Generators are syntactic sugar for this pattern</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-panel">
+                            <div class="code-example">
+                                <pre><code class="language-python"># Custom Iterator Class
+class Countdown:
+    """Iterator that counts down from n to 1."""
+
+    def __init__(self, start):
+                    self.current = start
+
+    def __iter__(self):
+        """Return iterator object (self)."""
+        return self
+
+    def __next__(self):
+        """Return next value or stop."""
+        if self.current <= 0:
+            raise StopIteration
+
+        value = self.current
+        self.current -= 1
+        return value
+
+# Usage
+print("=== Custom Iterator ===")
+for num in Countdown(5):
+    print(num)  # 5, 4, 3, 2, 1
+
+# Generator equivalent (much simpler!)
+def countdown_gen(n):
+    while n > 0:
+        yield n
+        n -= 1
+
+print("\n=== Generator Version ===")
+for num in countdown_gen(5):
+    print(num)  # Same output!</code></pre>
+                                <button class="run-code-btn" data-language="python">Run Code</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-section type-example">
+                    <h4>When to Use Each</h4>
+                    <div class="comparison-table-wrapper">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th class="comparison-col-a">Use Generator</th>
+                                    <th class="comparison-col-b">Use Iterator Class</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Simple iteration</strong></td>
+                                    <td class="comparison-col-a">✓ Preferred</td>
+                                    <td class="comparison-col-b">Overkill</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Complex state</strong></td>
+                                    <td class="comparison-col-a">Can work</td>
+                                    <td class="comparison-col-b">✓ Clearer</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Multiple methods</strong></td>
+                                    <td class="comparison-col-a">Limited</td>
+                                    <td class="comparison-col-b">✓ Full class</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Code length</strong></td>
+                                    <td class="comparison-col-a">✓ Shorter</td>
+                                    <td class="comparison-col-b">More verbose</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- INTERMEDIATE SECTION -->
@@ -1394,6 +1620,19 @@ print(f"Flat: {flat}")</code></pre>
         <div class="section-header">
             <h2><span class="section-icon">&#128295;</span> Intermediate Python</h2>
             <p class="section-description">Level up with decorators, context managers, and standard library</p>
+        </div>
+
+        <!-- TL;DR Summary -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>collections module: defaultdict (auto-default), Counter (counting), deque (fast both-end queue)</li>
+                <li>itertools: powerful iteration tools (chain, product, permutations, combinations)</li>
+                <li>functools: lru_cache (memoization), partial (partial application), reduce</li>
+                <li>Context managers (with statement) ensure cleanup - use for files, locks, connections</li>
+                <li>List comprehensions: [x*2 for x in lst if x > 0] - concise, readable, fast</li>
+                <li>pathlib.Path: modern, object-oriented file system paths</li>
+            </ul>
         </div>
 
         <div class="topic-block">
@@ -1633,6 +1872,80 @@ print(f"Person: {Person('Alice')}")</code></pre>
         <div class="section-header">
             <h2><span class="section-icon">&#128640;</span> Advanced Python</h2>
             <p class="section-description">Concurrency, testing, and production patterns</p>
+        </div>
+
+        <!-- TL;DR Summary -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>asyncio: async/await for concurrent I/O operations without threads</li>
+                <li>Threading: true parallelism for I/O-bound tasks (GIL limits CPU parallelism)</li>
+                <li>Multiprocessing: bypass GIL, use multiple CPU cores for CPU-bound tasks</li>
+                <li>pytest: modern testing framework with fixtures, parametrize, and clear assertions</li>
+                <li>unittest: built-in testing framework, class-based, follows xUnit pattern</li>
+                <li>Type hints + mypy: static type checking for better code quality and IDE support</li>
+            </ul>
+        </div>
+
+        <!-- Concurrency Comparison Table -->
+        <div class="concept-section type-example">
+            <h3>Concurrency Approaches Comparison</h3>
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th class="comparison-col-a">Threading</th>
+                            <th class="comparison-col-b">Multiprocessing</th>
+                            <th>asyncio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td class="comparison-col-a">I/O-bound tasks</td>
+                            <td class="comparison-col-b">CPU-bound tasks</td>
+                            <td>I/O-bound (many tasks)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GIL Impact</strong></td>
+                            <td class="comparison-col-a">Limited by GIL</td>
+                            <td class="comparison-col-b">Bypasses GIL</td>
+                            <td>Single-threaded (no GIL issue)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory</strong></td>
+                            <td class="comparison-col-a">Shared memory</td>
+                            <td class="comparison-col-b">Separate memory</td>
+                            <td>Shared memory</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Overhead</strong></td>
+                            <td class="comparison-col-a">Low</td>
+                            <td class="comparison-col-b">High (process creation)</td>
+                            <td>Very low</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scalability</strong></td>
+                            <td class="comparison-col-a">Moderate</td>
+                            <td class="comparison-col-b">Limited by CPU cores</td>
+                            <td>High (1000s of tasks)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Module</strong></td>
+                            <td class="comparison-col-a">threading, concurrent.futures</td>
+                            <td class="comparison-col-b">multiprocessing</td>
+                            <td>asyncio</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Example Use</strong></td>
+                            <td class="comparison-col-a">Web scraping, API calls</td>
+                            <td class="comparison-col-b">Image processing, calculations</td>
+                            <td>Web servers, many connections</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="topic-block highlight-block">
@@ -1944,8 +2257,240 @@ if __name__ == "__main__":
         </div>
     </section>
 
-        </main><!-- END guide-content -->
-    </div><!-- END guide-layout -->
+        </main><!-- END adhd-main-content -->
+
+        <!-- RIGHT QUICK REFERENCE PANEL -->
+        <aside class="adhd-quick-ref">
+            <div class="quick-ref-card">
+                <div class="quick-ref-header">Python Quick Reference</div>
+
+                <!-- Built-in Types -->
+                <div class="quick-ref-section">
+                    <h4 class="quick-ref-section-title">Built-in Types</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">str</span>
+                            <span class="quick-ref-value">Text: "hello"</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">int</span>
+                            <span class="quick-ref-value">Integer: 42</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">float</span>
+                            <span class="quick-ref-value">Decimal: 3.14</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">bool</span>
+                            <span class="quick-ref-value">True/False</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">list</span>
+                            <span class="quick-ref-value">[1, 2, 3]</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">dict</span>
+                            <span class="quick-ref-value">{"key": "val"}</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">set</span>
+                            <span class="quick-ref-value">{1, 2, 3}</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">tuple</span>
+                            <span class="quick-ref-value">(1, 2, 3)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Common Operations -->
+                <div class="quick-ref-section">
+                    <h4 class="quick-ref-section-title">Common Operations</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">len(x)</span>
+                            <span class="quick-ref-value">Length/size</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">str(x)</span>
+                            <span class="quick-ref-value">Convert to string</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">int(x)</span>
+                            <span class="quick-ref-value">Convert to int</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">sorted(x)</span>
+                            <span class="quick-ref-value">Sort iterable</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">enumerate(x)</span>
+                            <span class="quick-ref-value">Index + value</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">zip(a, b)</span>
+                            <span class="quick-ref-value">Pair iterables</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">range(n)</span>
+                            <span class="quick-ref-value">0 to n-1</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- List Methods -->
+                <div class="quick-ref-section">
+                    <h4 class="quick-ref-section-title">List Methods</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.append(x)</span>
+                            <span class="quick-ref-value">Add to end</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.extend(lst)</span>
+                            <span class="quick-ref-value">Add all items</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.insert(i, x)</span>
+                            <span class="quick-ref-value">Insert at index</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.pop()</span>
+                            <span class="quick-ref-value">Remove & return</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.remove(x)</span>
+                            <span class="quick-ref-value">Remove by value</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.sort()</span>
+                            <span class="quick-ref-value">Sort in-place</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.reverse()</span>
+                            <span class="quick-ref-value">Reverse in-place</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Dict Methods -->
+                <div class="quick-ref-section">
+                    <h4 class="quick-ref-section-title">Dict Methods</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.get(k, d)</span>
+                            <span class="quick-ref-value">Get with default</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.keys()</span>
+                            <span class="quick-ref-value">All keys</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.values()</span>
+                            <span class="quick-ref-value">All values</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.items()</span>
+                            <span class="quick-ref-value">Key-value pairs</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.pop(k)</span>
+                            <span class="quick-ref-value">Remove key</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.update(d)</span>
+                            <span class="quick-ref-value">Merge dicts</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- String Methods -->
+                <div class="quick-ref-section">
+                    <h4 class="quick-ref-section-title">String Methods</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.split()</span>
+                            <span class="quick-ref-value">Split to list</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.join(lst)</span>
+                            <span class="quick-ref-value">Join list</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.strip()</span>
+                            <span class="quick-ref-value">Remove whitespace</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.lower()</span>
+                            <span class="quick-ref-value">To lowercase</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.upper()</span>
+                            <span class="quick-ref-value">To uppercase</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.replace(a, b)</span>
+                            <span class="quick-ref-value">Replace substring</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">.startswith(x)</span>
+                            <span class="quick-ref-value">Prefix check</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Comprehensions -->
+                <div class="quick-ref-section">
+                    <h4 class="quick-ref-section-title">Comprehensions</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">[x for x in lst]</span>
+                            <span class="quick-ref-value">List comp</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">{x for x in lst}</span>
+                            <span class="quick-ref-value">Set comp</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">{k:v for...}</span>
+                            <span class="quick-ref-value">Dict comp</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">(x for x in lst)</span>
+                            <span class="quick-ref-value">Generator</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Common Patterns -->
+                <div class="quick-ref-section">
+                    <h4 class="quick-ref-section-title">Common Patterns</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">if __name__ == "__main__":</span>
+                            <span class="quick-ref-value">Entry point</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">with open(...) as f:</span>
+                            <span class="quick-ref-value">File handling</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">try/except/finally</span>
+                            <span class="quick-ref-value">Error handling</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">*args, **kwargs</span>
+                            <span class="quick-ref-value">Var arguments</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">lambda x: x*2</span>
+                            <span class="quick-ref-value">Anonymous func</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside><!-- END adhd-quick-ref -->
+    </div><!-- END adhd-layout -->
 </div><!-- END guide-page -->
 
 <style>

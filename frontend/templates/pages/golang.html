@@ -11,10 +11,10 @@
         </div>
     </div>
 
-    <!-- MAIN LAYOUT WITH SIDEBAR -->
-    <div class="guide-layout">
-        <!-- FIXED SIDEBAR NAVIGATION -->
-        <aside class="guide-sidebar">
+    <!-- ADHD-FRIENDLY LAYOUT WITH THREE COLUMNS -->
+    <div class="adhd-layout">
+        <!-- LEFT: TOPIC NAVIGATION -->
+        <aside class="adhd-nav-panel">
             <div class="sidebar-header">Topics</div>
 
             <div class="sidebar-section">
@@ -40,8 +40,8 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="guide-content">
+        <!-- CENTER: MAIN CONTENT (max-width 900px) -->
+        <main class="adhd-main-content">
     <section id="roadmap" class="roadmap-section">
         <h2 class="roadmap-title">Go Learning Roadmap</h2>
         <p class="roadmap-subtitle">Click topic titles to jump to content, or visit official docs</p>
@@ -382,6 +382,18 @@
             <p class="section-description">Go's type system, zero values, and type inference</p>
         </div>
 
+        <!-- TL;DR SUMMARY -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>Use := for short declaration (type inferred automatically)</li>
+                <li>All variables have zero values (0, "", false, nil)</li>
+                <li>Go is statically typed but feels dynamic with inference</li>
+                <li>Basic types: int, string, bool, float64</li>
+                <li>Package main + func main() = executable program</li>
+            </ul>
+        </div>
+
         <div class="topic-block highlight-block">
             <div class="block-header">
                 <span class="block-icon">&#128161;</span>
@@ -715,6 +727,14 @@ func main() {
             </div>
             <p>Slices and maps are Go's primary collection types. Understanding them is essential for API development.</p>
 
+            <!-- KEY CONCEPT: Slices vs Arrays -->
+            <div class="concept-section type-important">
+                <h4>Key Difference: Slice vs Array</h4>
+                <p><strong>Array:</strong> Fixed size, value type (copied when passed)</p>
+                <p><strong>Slice:</strong> Dynamic size, reference type (not copied, points to underlying array)</p>
+                <p>Use slices 99% of the time in Go!</p>
+            </div>
+
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -812,6 +832,18 @@ func main() {
         <div class="section-header">
             <h2><span class="section-icon">&#128204;</span> Go Pointers — Complete Visual Guide</h2>
             <p class="section-description">Master pointers with visual diagrams, practical examples, and interview traps</p>
+        </div>
+
+        <!-- TL;DR SUMMARY -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>&x gets the address of variable x (creates a pointer)</li>
+                <li>*p dereferences a pointer (gets the value it points to)</li>
+                <li>Pointers allow modifying data without copying it</li>
+                <li>Value receivers copy data, pointer receivers share it</li>
+                <li>Use pointers for large structs and when you need mutations</li>
+            </ul>
         </div>
 
         <!-- What is a Pointer -->
@@ -1070,6 +1102,39 @@ func main() {
     fmt.Println("num =", num)  // Output: 6 (changed!)
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
+            </div>
+
+            <!-- SIDE-BY-SIDE CODE + EXPLANATION -->
+            <div class="code-with-explanation">
+                <div class="explanation-panel">
+                    <h4>Understanding Pointer Modification</h4>
+                    <p>This example demonstrates why pointers are crucial:</p>
+                    <ul>
+                        <li><strong>Line 7:</strong> &num gets the memory address of num</li>
+                        <li><strong>Line 4:</strong> *x dereferences the pointer to access the actual value</li>
+                        <li><strong>Key insight:</strong> The function modifies the original variable, not a copy</li>
+                    </ul>
+                    <div class="concept-section type-important">
+                        <h4>Remember</h4>
+                        <p>Without the pointer (*int), the function would receive a copy and num would stay 5.</p>
+                    </div>
+                </div>
+
+                <div class="code-panel">
+                    <pre><code class="language-go">package main
+
+import "fmt"
+
+func addOne(x *int) {
+    *x++  // Modify original
+}
+
+func main() {
+    num := 5
+    addOne(&num)  // Pass address
+    fmt.Println(num)  // 6
+}</code></pre>
+                </div>
             </div>
         </div>
 
@@ -1678,6 +1743,14 @@ func main() {
             </div>
             <p>Go uses explicit error handling. Functions return errors as values - no exceptions.</p>
 
+            <!-- KEY CONCEPT: Error Handling Pattern -->
+            <div class="concept-section type-example">
+                <h4>The Go Error Pattern</h4>
+                <p><strong>Rule:</strong> Always check errors immediately after function calls</p>
+                <p><strong>Pattern:</strong> result, err := someFunc(); if err != nil { handle error }</p>
+                <p><strong>Why:</strong> Makes error paths explicit and visible</p>
+            </div>
+
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -1749,6 +1822,19 @@ func main() {
         <div class="section-header">
             <h2><span class="section-icon">&#128295;</span> Intermediate - Concurrency and Patterns</h2>
             <p class="section-description">Master Go's powerful concurrency model</p>
+        </div>
+
+        <!-- TL;DR SUMMARY -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>go f() starts a new goroutine (lightweight thread)</li>
+                <li>Channels connect goroutines: ch := make(chan int)</li>
+                <li>ch <- v sends, v := <-ch receives</li>
+                <li>select multiplexes multiple channel operations</li>
+                <li>Use sync.WaitGroup to wait for goroutines to finish</li>
+                <li>Use context.Context for cancellation and timeouts</li>
+            </ul>
         </div>
 
         <div class="topic-block highlight-block">
@@ -2000,13 +2086,20 @@ func main() {
             </div>
         </div>
 
-        <div class="topic-block">
-            <div class="block-header warning-header">
-                <span class="block-icon">&#9888;</span>
-                <h3>Common Concurrency Mistakes</h3>
+        <!-- COLLAPSIBLE SECTION: Advanced Concurrency Mistakes -->
+        <div class="collapsible-section" data-section-id="concurrency-mistakes">
+            <div class="collapsible-header">
+                <h3><span class="block-icon">&#9888;</span> Common Concurrency Mistakes (Advanced)</h3>
+                <span class="collapsible-icon">▼</span>
             </div>
+            <div class="collapsible-content">
+                <div class="topic-block">
+                    <div class="block-header warning-header">
+                        <span class="block-icon">&#9888;</span>
+                        <h4>Learn to Avoid These Common Pitfalls</h4>
+                    </div>
 
-            <h4>Mistake 1: Goroutine Leak</h4>
+                    <h4>Mistake 1: Goroutine Leak</h4>
             <div class="code-example">
                 <pre><code class="language-go">package main
 
@@ -2118,7 +2211,9 @@ func main() {
 }</code></pre>
                 <button class="run-code-btn" data-language="go">Run Code</button>
             </div>
-        </div>
+                </div><!-- END topic-block inside collapsible -->
+            </div><!-- END collapsible-content -->
+        </div><!-- END collapsible-section -->
 
         <div class="topic-block">
             <div class="block-header">
@@ -2252,6 +2347,18 @@ func main() {
         <div class="section-header">
             <h2><span class="section-icon">&#128640;</span> Advanced - Production Patterns</h2>
             <p class="section-description">Battle-tested patterns for high-performance APIs</p>
+        </div>
+
+        <!-- TL;DR SUMMARY -->
+        <div class="tldr-box">
+            <div class="tldr-header">TL;DR</div>
+            <ul class="tldr-list">
+                <li>Worker pools limit concurrency and manage resources</li>
+                <li>Fan-out/fan-in patterns distribute and collect work</li>
+                <li>Pipelines process data through stages with channels</li>
+                <li>Rate limiting prevents overwhelming downstream services</li>
+                <li>Graceful shutdown uses context and signal handling</li>
+            </ul>
         </div>
 
         <div class="topic-block">
@@ -2821,8 +2928,146 @@ func main() {
         </div>
     </section>
 
-        </main><!-- END guide-content -->
-    </div><!-- END guide-layout -->
+        </main><!-- END adhd-main-content -->
+
+        <!-- RIGHT: QUICK REFERENCE (sticky sidebar with Go syntax cheat sheet) -->
+        <aside class="adhd-quick-ref">
+            <div class="quick-ref-card">
+                <div class="quick-ref-header">Go Quick Reference</div>
+
+                <div class="quick-ref-section">
+                    <h4>Basic Syntax</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">:=</span>
+                            <span class="quick-ref-value">Short declaration</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">var x int</span>
+                            <span class="quick-ref-value">Variable with type</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">const</span>
+                            <span class="quick-ref-value">Immutable value</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="quick-ref-section">
+                    <h4>Pointers</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">&x</span>
+                            <span class="quick-ref-value">Address of x</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">*p</span>
+                            <span class="quick-ref-value">Dereference pointer</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="quick-ref-section">
+                    <h4>Functions</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">func f(x int) int</span>
+                            <span class="quick-ref-value">Function signature</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">(a, b int)</span>
+                            <span class="quick-ref-value">Multiple params</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">defer</span>
+                            <span class="quick-ref-value">Execute on return</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="quick-ref-section">
+                    <h4>Concurrency</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">go f()</span>
+                            <span class="quick-ref-value">Start goroutine</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">make(chan T)</span>
+                            <span class="quick-ref-value">Create channel</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">ch <- v</span>
+                            <span class="quick-ref-value">Send to channel</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">v := <-ch</span>
+                            <span class="quick-ref-value">Receive from channel</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">select</span>
+                            <span class="quick-ref-value">Multiplex channels</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="quick-ref-section">
+                    <h4>Data Structures</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">[]T</span>
+                            <span class="quick-ref-value">Slice of type T</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">map[K]V</span>
+                            <span class="quick-ref-value">Map K to V</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">struct{}</span>
+                            <span class="quick-ref-value">Custom type</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="quick-ref-section">
+                    <h4>Error Handling</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">if err != nil</span>
+                            <span class="quick-ref-value">Error check</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">errors.New()</span>
+                            <span class="quick-ref-value">Create error</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">fmt.Errorf()</span>
+                            <span class="quick-ref-value">Format error</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="quick-ref-section">
+                    <h4>Common Patterns</h4>
+                    <ul class="quick-ref-list">
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">sync.Mutex</span>
+                            <span class="quick-ref-value">Lock/Unlock</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">sync.WaitGroup</span>
+                            <span class="quick-ref-value">Wait for goroutines</span>
+                        </li>
+                        <li class="quick-ref-item">
+                            <span class="quick-ref-key">context.Context</span>
+                            <span class="quick-ref-value">Request context</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+    </div><!-- END adhd-layout -->
 </div><!-- END guide-page -->
 
 <style>

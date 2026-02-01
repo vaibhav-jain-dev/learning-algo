@@ -1,5 +1,18 @@
 # CAP Theorem
 
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>CAP Theorem: pick 2 of 3 - Consistency, Availability, or Partition tolerance</li>
+        <li>In practice, network partitions happen, so you choose CP (consistent) or AP (available)</li>
+        <li>CP systems (MongoDB, HBase): sacrifice availability for consistency during partitions</li>
+        <li>AP systems (Cassandra, DynamoDB): sacrifice consistency for availability during partitions</li>
+        <li>Modern systems use tunable consistency (eventual consistency spectrum)</li>
+    </ul>
+</div>
+
+<div class="concept-section type-definition">
+
 ## Overview
 
 The <span style="color: #16a34a; font-weight: 600;">CAP Theorem</span> is one of the most fundamental concepts in distributed systems design. Proposed by computer scientist Eric Brewer in 2000 and later proven by Seth Gilbert and Nancy Lynch, it states that a distributed data store can only provide two out of three guarantees simultaneously: <span style="color: #16a34a; font-weight: 600;">Consistency</span>, <span style="color: #16a34a; font-weight: 600;">Availability</span>, and <span style="color: #16a34a; font-weight: 600;">Partition Tolerance</span>.
@@ -32,7 +45,11 @@ The <span style="color: #16a34a; font-weight: 600;">CAP Theorem</span> is one of
 
 **The Simple Explanation**: Imagine you have data stored on multiple servers across the world. When a network cable gets cut between two data centers (a <span style="color: #16a34a; font-weight: 600;">partition</span>), you face a choice: either refuse some requests to keep data consistent, or accept requests but risk serving stale data. You cannot have both perfect consistency AND perfect availability when networks fail.
 
+</div>
+
 ---
+
+<div class="concept-section type-important">
 
 ## Why It Matters: Real Company Examples
 
@@ -62,7 +79,11 @@ Understanding CAP Theorem is crucial because it drives fundamental architecture 
 
 **Interview Insight**: Companies often ask "how would you design X?" The CAP theorem is usually the first design decision you need to articulate. Should your system prioritize never losing data (CP) or always being responsive (AP)?
 
+</div>
+
 ---
+
+<div class="concept-section type-definition">
 
 ## How It Works: The Three Guarantees
 

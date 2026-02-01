@@ -1,5 +1,5 @@
-<div class="sql-lessons-page">
-    <aside class="sidebar">
+<div class="adhd-layout">
+    <aside class="adhd-nav-panel">
         <div class="sidebar-header">
             <h2>Elasticsearch Curriculum</h2>
         </div>
@@ -203,7 +203,7 @@
         </div>
     </aside>
 
-    <div class="content">
+    <main class="adhd-main-content">
         <div id="lesson-content">
             <!-- Default: What is Elasticsearch lesson -->
             <div class="lesson">
@@ -370,7 +370,135 @@ packages  - Test packages (bundles of tests)</code></pre>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <aside class="adhd-quick-ref">
+        <div class="quick-ref-card">
+            <div class="quick-ref-header">Elasticsearch Quick Reference</div>
+            <ul class="quick-ref-list">
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">GET</span>
+                    <span class="quick-ref-value">Retrieve document by ID</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">POST</span>
+                    <span class="quick-ref-value">Create document (auto ID)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">PUT</span>
+                    <span class="quick-ref-value">Create/update document (manual ID)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">DELETE</span>
+                    <span class="quick-ref-value">Delete document or index</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_search</span>
+                    <span class="quick-ref-value">Search documents in index</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_bulk</span>
+                    <span class="quick-ref-value">Batch operations</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">match</span>
+                    <span class="quick-ref-value">Full-text search query</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">term</span>
+                    <span class="quick-ref-value">Exact value match</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">terms</span>
+                    <span class="quick-ref-value">Match any of multiple values</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">range</span>
+                    <span class="quick-ref-value">Numeric/date range query</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">bool</span>
+                    <span class="quick-ref-value">Combine queries (must, should, filter)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">match_phrase</span>
+                    <span class="quick-ref-value">Exact phrase search</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">multi_match</span>
+                    <span class="quick-ref-value">Search across multiple fields</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">exists</span>
+                    <span class="quick-ref-value">Check if field exists</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">wildcard</span>
+                    <span class="quick-ref-value">Pattern matching (* and ?)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">fuzzy</span>
+                    <span class="quick-ref-value">Typo-tolerant search</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">aggs</span>
+                    <span class="quick-ref-value">Aggregations (stats, buckets)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">sort</span>
+                    <span class="quick-ref-value">Order search results</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">from/size</span>
+                    <span class="quick-ref-value">Pagination parameters</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_source</span>
+                    <span class="quick-ref-value">Include/exclude fields</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">highlight</span>
+                    <span class="quick-ref-value">Highlight matching terms</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">filter</span>
+                    <span class="quick-ref-value">Filter results (no scoring)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_mapping</span>
+                    <span class="quick-ref-value">Get/set field mappings</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_settings</span>
+                    <span class="quick-ref-value">Index configuration</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">analyzer</span>
+                    <span class="quick-ref-value">Text analysis configuration</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_count</span>
+                    <span class="quick-ref-value">Count matching documents</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_update</span>
+                    <span class="quick-ref-value">Partial document update</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">_reindex</span>
+                    <span class="quick-ref-value">Copy documents to new index</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">script</span>
+                    <span class="quick-ref-value">Custom scripting (Painless)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">scroll</span>
+                    <span class="quick-ref-value">Paginate through large result sets</span>
+                </li>
+            </ul>
+        </div>
+    </aside>
 </div>
 
 <style>

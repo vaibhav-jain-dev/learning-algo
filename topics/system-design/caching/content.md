@@ -1,10 +1,27 @@
 # Caching
 
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Caching stores frequently accessed data in fast memory (100-1000x faster than disk/network)</li>
+        <li>Common strategies: Cache-Aside (lazy load), Write-Through (sync), Write-Behind (async)</li>
+        <li>Eviction policies: LRU (most popular), LFU, FIFO, TTL-based</li>
+        <li>Prevent stampede: use jittered TTLs, locking, or stale-while-revalidate</li>
+        <li>Best for read-heavy workloads (10:1 read/write ratio) with acceptable staleness</li>
+    </ul>
+</div>
+
+<div class="concept-section type-definition">
+
 ## Overview
 
 Caching is a technique that stores copies of frequently accessed data in a faster storage layer (like memory) to reduce latency and decrease load on the primary data source. Think of it as keeping your most-used tools on your desk instead of walking to the storage room every time you need them.
 
+</div>
+
 ---
+
+<div class="concept-section type-important">
 
 ## Why This Matters
 
@@ -32,7 +49,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 - **Scalability**: Handle traffic spikes without scaling expensive backend resources
 - **User Experience**: Users abandon sites that take more than 3 seconds to load
 
+</div>
+
 ---
+
+<div class="concept-section type-definition">
 
 ## Core Concepts
 
@@ -76,7 +97,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 | **Eviction** | Remove least-used books when shelf is full | Remove data when cache is full |
 | **Invalidation** | Remove outdated edition when new one arrives | Remove stale data after update |
 
+</div>
+
 ---
+
+<div class="concept-section type-definition">
 
 ## How It Works
 
@@ -215,7 +240,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 </div>
 </div>
 
+</div>
+
 ---
+
+<div class="concept-section type-warning">
 
 ## Real-Life Failure Story
 
@@ -243,7 +272,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 </div>
 </div>
 
+</div>
+
 ---
+
+<div class="concept-section type-warning">
 
 ## What to Watch Out For
 
@@ -273,7 +306,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 </div>
 </div>
 
+</div>
+
 ---
+
+<div class="concept-section type-important">
 
 ## Interview Deep Dive
 
@@ -309,7 +346,11 @@ Caching is a technique that stores copies of frequently accessed data in a faste
 </div>
 </div>
 
+</div>
+
 ---
+
+<div class="concept-section type-example">
 
 ## Code Implementation
 
@@ -557,6 +598,8 @@ class RedisCache:
             return self.client.delete(*keys)
         return 0
 ```
+
+</div>
 
 ---
 

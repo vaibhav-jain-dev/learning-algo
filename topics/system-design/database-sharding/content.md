@@ -1,5 +1,18 @@
 # Database Sharding
 
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Sharding splits large databases horizontally across multiple servers (shards)</li>
+        <li>Strategies: Range-based (age groups), Hash-based (userId % N), Geographic (region)</li>
+        <li>Shard key choice is critical - poor keys cause hotspots and difficult resharding</li>
+        <li>Challenges: cross-shard queries, distributed transactions, data rebalancing</li>
+        <li>Use when single database can't handle load (usually 100GB+ or 100k+ QPS)</li>
+    </ul>
+</div>
+
+<div class="concept-section type-definition">
+
 ## Overview
 
 <span style="color: #22c55e; font-weight: 600;">Database sharding</span> is a horizontal scaling technique that partitions data across multiple database instances, where each instance (shard) holds a subset of the total data. Unlike [[database-replication]](/topic/system-design/database-replication) which copies the same data everywhere, sharding divides data so each shard is responsible for different records.
@@ -12,7 +25,11 @@ Think of it like organizing a massive library: instead of one overwhelming build
 
 </div>
 
+</div>
+
 ---
+
+<div class="concept-section type-definition">
 
 ## Visual Architecture
 

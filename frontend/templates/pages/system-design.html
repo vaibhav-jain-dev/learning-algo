@@ -1,126 +1,253 @@
-<div class="topic-page">
-    <h1>System Design</h1>
-    <p class="page-description">Master distributed systems concepts with real-world examples</p>
+<div class="adhd-layout">
+    <!-- Left navigation panel -->
+    <aside class="adhd-nav-panel">
+        <div class="quick-ref-card">
+            <div class="quick-ref-header">Browse by Category</div>
+            <nav class="topic-nav">
+                <a href="#scalability" class="nav-category">
+                    <span>&#128200;</span> Scalability
+                </a>
+                <a href="#data-management" class="nav-category">
+                    <span>&#128190;</span> Data Management
+                </a>
+                <a href="#communication" class="nav-category">
+                    <span>&#128233;</span> Communication
+                </a>
+                <a href="#architecture" class="nav-category">
+                    <span>&#128230;</span> Architecture Patterns
+                </a>
+                <a href="#distributed" class="nav-category">
+                    <span>&#9651;</span> Distributed Systems
+                </a>
+                <a href="#performance" class="nav-category">
+                    <span>&#9889;</span> Performance
+                </a>
+            </nav>
+        </div>
+    </aside>
 
-    <div class="topic-grid">
-        <a href="/topic/system-design/load-balancing" class="topic-card">
-            <div class="topic-card-icon">&#9878;</div>
-            <h3>Load Balancing</h3>
-            <p>Distribute traffic across servers using algorithms like Round Robin, Least Connections, and Consistent Hashing.</p>
-            <div class="tags">
-                <span class="tag">Scalability</span>
-                <span class="tag">High Availability</span>
-            </div>
-        </a>
+    <!-- Main content area -->
+    <main class="adhd-main-content">
+        <div class="topic-page">
+            <h1>System Design</h1>
+            <p class="page-description">Master distributed systems concepts with real-world examples</p>
 
-        <a href="/topic/system-design/caching" class="topic-card">
-            <div class="topic-card-icon">&#128190;</div>
-            <h3>Caching</h3>
-            <p>Reduce latency and database load with caching strategies: LRU, LFU, Write-through, Write-back.</p>
-            <div class="tags">
-                <span class="tag">Performance</span>
-                <span class="tag">Redis</span>
+            <div class="tldr-box" style="margin-bottom: 2rem;">
+                <div class="tldr-header">What You'll Learn</div>
+                <ul class="tldr-list">
+                    <li>How to scale systems from 1 to 1 billion users</li>
+                    <li>Trade-offs between consistency, availability, and performance</li>
+                    <li>Real architectures used by Netflix, Amazon, Google, and Facebook</li>
+                    <li>Interview-ready explanations with diagrams and code examples</li>
+                </ul>
             </div>
-        </a>
 
-        <a href="/topic/system-design/database-sharding" class="topic-card">
-            <div class="topic-card-icon">&#128450;</div>
-            <h3>Database Sharding</h3>
-            <p>Horizontally partition data across multiple databases for scalability.</p>
-            <div class="tags">
-                <span class="tag">Databases</span>
-                <span class="tag">Partitioning</span>
-            </div>
-        </a>
+            <h2 id="scalability">Scalability & High Availability</h2>
+            <div class="topic-grid">
+                <a href="/topic/system-design/load-balancing" class="topic-card">
+                    <div class="topic-card-icon">&#9878;</div>
+                    <h3>Load Balancing</h3>
+                    <p>Distribute traffic across servers using algorithms like Round Robin, Least Connections, and Consistent Hashing.</p>
+                    <div class="tags">
+                        <span class="tag">Scalability</span>
+                        <span class="tag">High Availability</span>
+                    </div>
+                </a>
 
-        <a href="/topic/system-design/message-queues" class="topic-card">
-            <div class="topic-card-icon">&#128233;</div>
-            <h3>Message Queues</h3>
-            <p>Decouple services with async communication using Kafka, RabbitMQ, or SQS.</p>
-            <div class="tags">
-                <span class="tag">Async</span>
-                <span class="tag">Decoupling</span>
-            </div>
-        </a>
+                <a href="/topic/system-design/cdn" class="topic-card">
+                    <div class="topic-card-icon">&#127760;</div>
+                    <h3>CDN</h3>
+                    <p>Content Delivery Networks for low-latency static content delivery globally.</p>
+                    <div class="tags">
+                        <span class="tag">Performance</span>
+                        <span class="tag">Global</span>
+                    </div>
+                </a>
 
-        <a href="/topic/system-design/cap-theorem" class="topic-card">
-            <div class="topic-card-icon">&#9651;</div>
-            <h3>CAP Theorem</h3>
-            <p>Understand trade-offs between Consistency, Availability, and Partition tolerance.</p>
-            <div class="tags">
-                <span class="tag">Theory</span>
-                <span class="tag">Distributed</span>
-            </div>
-        </a>
+                <a href="/topic/system-design/api-gateway" class="topic-card">
+                    <div class="topic-card-icon">&#128679;</div>
+                    <h3>API Gateway</h3>
+                    <p>Central entry point for routing, authentication, rate limiting, and monitoring.</p>
+                    <div class="tags">
+                        <span class="tag">APIs</span>
+                        <span class="tag">Security</span>
+                    </div>
+                </a>
 
-        <a href="/topic/system-design/microservices" class="topic-card">
-            <div class="topic-card-icon">&#128230;</div>
-            <h3>Microservices</h3>
-            <p>Design loosely coupled services with independent deployment and scaling.</p>
-            <div class="tags">
-                <span class="tag">Architecture</span>
-                <span class="tag">Services</span>
+                <a href="/topic/system-design/rate-limiting" class="topic-card">
+                    <div class="topic-card-icon">&#9201;</div>
+                    <h3>Rate Limiting</h3>
+                    <p>Protect services from abuse with Token Bucket, Leaky Bucket, and Sliding Window algorithms.</p>
+                    <div class="tags">
+                        <span class="tag">Security</span>
+                        <span class="tag">Throttling</span>
+                    </div>
+                </a>
             </div>
-        </a>
 
-        <a href="/topic/system-design/api-gateway" class="topic-card">
-            <div class="topic-card-icon">&#128679;</div>
-            <h3>API Gateway</h3>
-            <p>Central entry point for routing, authentication, rate limiting, and monitoring.</p>
-            <div class="tags">
-                <span class="tag">APIs</span>
-                <span class="tag">Security</span>
-            </div>
-        </a>
+            <h2 id="data-management">Data Management & Storage</h2>
+            <div class="topic-grid">
+                <a href="/topic/system-design/database-sharding" class="topic-card">
+                    <div class="topic-card-icon">&#128450;</div>
+                    <h3>Database Sharding</h3>
+                    <p>Horizontally partition data across multiple databases for scalability.</p>
+                    <div class="tags">
+                        <span class="tag">Databases</span>
+                        <span class="tag">Partitioning</span>
+                    </div>
+                </a>
 
-        <a href="/topic/system-design/cdn" class="topic-card">
-            <div class="topic-card-icon">&#127760;</div>
-            <h3>CDN</h3>
-            <p>Content Delivery Networks for low-latency static content delivery globally.</p>
-            <div class="tags">
-                <span class="tag">Performance</span>
-                <span class="tag">Global</span>
-            </div>
-        </a>
+                <a href="/topic/system-design/database-replication" class="topic-card">
+                    <div class="topic-card-icon">&#128259;</div>
+                    <h3>Database Replication</h3>
+                    <p>Master-slave, multi-master, and synchronous vs asynchronous replication strategies.</p>
+                    <div class="tags">
+                        <span class="tag">Databases</span>
+                        <span class="tag">Reliability</span>
+                    </div>
+                </a>
 
-        <a href="/topic/system-design/database-replication" class="topic-card">
-            <div class="topic-card-icon">&#128259;</div>
-            <h3>Database Replication</h3>
-            <p>Master-slave, multi-master, and synchronous vs asynchronous replication strategies.</p>
-            <div class="tags">
-                <span class="tag">Databases</span>
-                <span class="tag">Reliability</span>
+                <a href="/topic/system-design/event-sourcing" class="topic-card">
+                    <div class="topic-card-icon">&#128220;</div>
+                    <h3>Event Sourcing</h3>
+                    <p>Store state changes as a sequence of events for audit trails and replay.</p>
+                    <div class="tags">
+                        <span class="tag">Architecture</span>
+                        <span class="tag">CQRS</span>
+                    </div>
+                </a>
             </div>
-        </a>
 
-        <a href="/topic/system-design/rate-limiting" class="topic-card">
-            <div class="topic-card-icon">&#9201;</div>
-            <h3>Rate Limiting</h3>
-            <p>Protect services from abuse with Token Bucket, Leaky Bucket, and Sliding Window algorithms.</p>
-            <div class="tags">
-                <span class="tag">Security</span>
-                <span class="tag">Throttling</span>
+            <h2 id="communication">Communication Patterns</h2>
+            <div class="topic-grid">
+                <a href="/topic/system-design/message-queues" class="topic-card">
+                    <div class="topic-card-icon">&#128233;</div>
+                    <h3>Message Queues</h3>
+                    <p>Decouple services with async communication using Kafka, RabbitMQ, or SQS.</p>
+                    <div class="tags">
+                        <span class="tag">Async</span>
+                        <span class="tag">Decoupling</span>
+                    </div>
+                </a>
             </div>
-        </a>
 
-        <a href="/topic/system-design/consensus-algorithms" class="topic-card">
-            <div class="topic-card-icon">&#129309;</div>
-            <h3>Consensus Algorithms</h3>
-            <p>Raft, Paxos, and leader election for distributed coordination.</p>
-            <div class="tags">
-                <span class="tag">Distributed</span>
-                <span class="tag">Coordination</span>
+            <h2 id="architecture">Architecture Patterns</h2>
+            <div class="topic-grid">
+                <a href="/topic/system-design/microservices" class="topic-card">
+                    <div class="topic-card-icon">&#128230;</div>
+                    <h3>Microservices</h3>
+                    <p>Design loosely coupled services with independent deployment and scaling.</p>
+                    <div class="tags">
+                        <span class="tag">Architecture</span>
+                        <span class="tag">Services</span>
+                    </div>
+                </a>
             </div>
-        </a>
 
-        <a href="/topic/system-design/event-sourcing" class="topic-card">
-            <div class="topic-card-icon">&#128220;</div>
-            <h3>Event Sourcing</h3>
-            <p>Store state changes as a sequence of events for audit trails and replay.</p>
-            <div class="tags">
-                <span class="tag">Architecture</span>
-                <span class="tag">CQRS</span>
+            <h2 id="distributed">Distributed Systems Theory</h2>
+            <div class="topic-grid">
+                <a href="/topic/system-design/cap-theorem" class="topic-card">
+                    <div class="topic-card-icon">&#9651;</div>
+                    <h3>CAP Theorem</h3>
+                    <p>Understand trade-offs between Consistency, Availability, and Partition tolerance.</p>
+                    <div class="tags">
+                        <span class="tag">Theory</span>
+                        <span class="tag">Distributed</span>
+                    </div>
+                </a>
+
+                <a href="/topic/system-design/consensus-algorithms" class="topic-card">
+                    <div class="topic-card-icon">&#129309;</div>
+                    <h3>Consensus Algorithms</h3>
+                    <p>Raft, Paxos, and leader election for distributed coordination.</p>
+                    <div class="tags">
+                        <span class="tag">Distributed</span>
+                        <span class="tag">Coordination</span>
+                    </div>
+                </a>
             </div>
-        </a>
-    </div>
+
+            <h2 id="performance">Performance Optimization</h2>
+            <div class="topic-grid">
+                <a href="/topic/system-design/caching" class="topic-card">
+                    <div class="topic-card-icon">&#128190;</div>
+                    <h3>Caching</h3>
+                    <p>Reduce latency and database load with caching strategies: LRU, LFU, Write-through, Write-back.</p>
+                    <div class="tags">
+                        <span class="tag">Performance</span>
+                        <span class="tag">Redis</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Right quick reference panel -->
+    <aside class="adhd-quick-ref">
+        <div class="quick-ref-card">
+            <div class="quick-ref-header">Design Trade-offs</div>
+            <ul class="quick-ref-list">
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Latency vs Throughput</span>
+                    <span class="quick-ref-value">Fast response or high volume?</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Consistency vs Availability</span>
+                    <span class="quick-ref-value">CAP theorem in action</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SQL vs NoSQL</span>
+                    <span class="quick-ref-value">ACID vs scalability</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Vertical vs Horizontal</span>
+                    <span class="quick-ref-value">Scale up or scale out?</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="quick-ref-card" style="margin-top: 1rem;">
+            <div class="quick-ref-header">Key Metrics</div>
+            <ul class="quick-ref-list">
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">QPS</span>
+                    <span class="quick-ref-value">Queries per second</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">P99 Latency</span>
+                    <span class="quick-ref-value">99th percentile response time</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Availability</span>
+                    <span class="quick-ref-value">Uptime percentage (99.9%)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">RTO/RPO</span>
+                    <span class="quick-ref-value">Recovery time & point objectives</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="quick-ref-card" style="margin-top: 1rem;">
+            <div class="quick-ref-header">Popular Tools</div>
+            <ul class="quick-ref-list">
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Redis</span>
+                    <span class="quick-ref-value">In-memory cache & pub/sub</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Kafka</span>
+                    <span class="quick-ref-value">Event streaming platform</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Nginx</span>
+                    <span class="quick-ref-value">Load balancer & reverse proxy</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">Cassandra</span>
+                    <span class="quick-ref-value">Distributed NoSQL database</span>
+                </li>
+            </ul>
+        </div>
+    </aside>
 </div>

@@ -1,22 +1,9 @@
-<div class="container mx-auto px-4 py-8 max-w-7xl" style="background: #2d3748; min-height: 100vh;">
-    <!-- Header -->
-    <div class="mb-8">
-        <div class="flex items-center gap-4 mb-4">
-            <a href="/redis" class="text-gray-400 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-            </a>
-            <h1 class="text-3xl font-bold text-white">Redis Lessons</h1>
+<div class="adhd-layout">
+    <aside class="adhd-nav-panel">
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 600; color: white; margin-bottom: 1rem;">Redis Curriculum</h2>
         </div>
-        <p class="text-gray-400">Master Redis in-memory data structures and commands</p>
-    </div>
-
-    <!-- Lessons Navigation -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <!-- Sidebar -->
-        <div class="lg:col-span-1">
-            <nav class="bg-gray-800 rounded-lg p-4 sticky top-4">
+        <nav>
                 <h3 class="text-lg font-semibold text-white mb-4">Curriculum</h3>
                 <ul class="space-y-2">
                     <li>
@@ -85,11 +72,24 @@
                         </a>
                     </li>
                 </ul>
-            </nav>
+        </nav>
+    </aside>
+
+    <main class="adhd-main-content">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+                <a href="/redis" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </a>
+                <h1 class="text-3xl font-bold text-white">Redis Lessons</h1>
+            </div>
+            <p class="text-gray-400">Master Redis in-memory data structures and commands</p>
         </div>
 
-        <!-- Main Content -->
-        <div class="lg:col-span-3 space-y-12">
+        <div class="space-y-12">
             <!-- Lesson 1: Fundamentals -->
             <section id="fundamentals" class="bg-gray-800 rounded-lg p-6">
                 <h2 class="text-2xl font-bold text-white mb-4">1. Redis Fundamentals</h2>
@@ -2165,7 +2165,135 @@ def get_with_swr(key, refresh_fn):
                 </a>
             </section>
         </div>
-    </div>
+    </main>
+
+    <aside class="adhd-quick-ref">
+        <div class="quick-ref-card">
+            <div class="quick-ref-header">Redis Quick Reference</div>
+            <ul class="quick-ref-list">
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SET</span>
+                    <span class="quick-ref-value">Set string value for key</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">GET</span>
+                    <span class="quick-ref-value">Get value by key</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">DEL</span>
+                    <span class="quick-ref-value">Delete one or more keys</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">EXISTS</span>
+                    <span class="quick-ref-value">Check if key exists</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">EXPIRE</span>
+                    <span class="quick-ref-value">Set key expiration in seconds</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">TTL</span>
+                    <span class="quick-ref-value">Get time to live in seconds</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">LPUSH</span>
+                    <span class="quick-ref-value">Push to list head (left)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">RPUSH</span>
+                    <span class="quick-ref-value">Push to list tail (right)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">LPOP</span>
+                    <span class="quick-ref-value">Pop from list head</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">LRANGE</span>
+                    <span class="quick-ref-value">Get list elements by range</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SADD</span>
+                    <span class="quick-ref-value">Add members to set</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SMEMBERS</span>
+                    <span class="quick-ref-value">Get all set members</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SINTER</span>
+                    <span class="quick-ref-value">Intersection of sets</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SUNION</span>
+                    <span class="quick-ref-value">Union of sets</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">HSET</span>
+                    <span class="quick-ref-value">Set hash field value</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">HGET</span>
+                    <span class="quick-ref-value">Get hash field value</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">HGETALL</span>
+                    <span class="quick-ref-value">Get all hash fields and values</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">ZADD</span>
+                    <span class="quick-ref-value">Add to sorted set with score</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">ZRANGE</span>
+                    <span class="quick-ref-value">Get sorted set by rank range</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">ZRANK</span>
+                    <span class="quick-ref-value">Get member rank in sorted set</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">INCR</span>
+                    <span class="quick-ref-value">Increment integer value by 1</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">DECR</span>
+                    <span class="quick-ref-value">Decrement integer value by 1</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">MULTI</span>
+                    <span class="quick-ref-value">Start transaction block</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">EXEC</span>
+                    <span class="quick-ref-value">Execute transaction</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">PUBLISH</span>
+                    <span class="quick-ref-value">Publish message to channel</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SUBSCRIBE</span>
+                    <span class="quick-ref-value">Subscribe to channel(s)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">KEYS</span>
+                    <span class="quick-ref-value">Find keys matching pattern</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SCAN</span>
+                    <span class="quick-ref-value">Iterate keys (production safe)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">FLUSHDB</span>
+                    <span class="quick-ref-value">Clear current database</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">INFO</span>
+                    <span class="quick-ref-value">Get server information</span>
+                </li>
+            </ul>
+        </div>
+    </aside>
 </div>
 
 <script>

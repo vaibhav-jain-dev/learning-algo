@@ -1,5 +1,5 @@
-<div class="sql-lessons-page">
-    <aside class="sidebar">
+<div class="adhd-layout">
+    <aside class="adhd-nav-panel">
         <div class="sidebar-header">
             <h2>SQL Curriculum</h2>
         </div>
@@ -283,7 +283,7 @@
         </div>
     </aside>
 
-    <div class="content">
+    <main class="adhd-main-content">
         <div id="lesson-content">
             <!-- Default: SELECT Basics lesson -->
             <div class="lesson">
@@ -637,7 +637,135 @@ FROM blood_tests;</code></pre>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <aside class="adhd-quick-ref">
+        <div class="quick-ref-card">
+            <div class="quick-ref-header">SQL Quick Reference</div>
+            <ul class="quick-ref-list">
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SELECT</span>
+                    <span class="quick-ref-value">Retrieve data from tables</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">WHERE</span>
+                    <span class="quick-ref-value">Filter rows with conditions</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">JOIN</span>
+                    <span class="quick-ref-value">Combine data from multiple tables</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">GROUP BY</span>
+                    <span class="quick-ref-value">Aggregate data by groups</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">HAVING</span>
+                    <span class="quick-ref-value">Filter grouped results</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">ORDER BY</span>
+                    <span class="quick-ref-value">Sort results ascending/descending</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">LIMIT</span>
+                    <span class="quick-ref-value">Restrict number of rows returned</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">INSERT</span>
+                    <span class="quick-ref-value">Add new rows to table</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">UPDATE</span>
+                    <span class="quick-ref-value">Modify existing rows</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">DELETE</span>
+                    <span class="quick-ref-value">Remove rows from table</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">COUNT()</span>
+                    <span class="quick-ref-value">Count rows or non-null values</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">SUM()</span>
+                    <span class="quick-ref-value">Total of numeric column</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">AVG()</span>
+                    <span class="quick-ref-value">Average of numeric column</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">MAX()/MIN()</span>
+                    <span class="quick-ref-value">Largest/smallest value</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">DISTINCT</span>
+                    <span class="quick-ref-value">Remove duplicate rows</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">AS</span>
+                    <span class="quick-ref-value">Create column/table aliases</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">LIKE</span>
+                    <span class="quick-ref-value">Pattern matching (% and _)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">IN</span>
+                    <span class="quick-ref-value">Match any value in list</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">BETWEEN</span>
+                    <span class="quick-ref-value">Range comparison (inclusive)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">IS NULL</span>
+                    <span class="quick-ref-value">Check for null values</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">CASE</span>
+                    <span class="quick-ref-value">Conditional logic in queries</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">COALESCE</span>
+                    <span class="quick-ref-value">Return first non-null value</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">ROW_NUMBER()</span>
+                    <span class="quick-ref-value">Assign unique row numbers</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">RANK()</span>
+                    <span class="quick-ref-value">Ranking with gaps for ties</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">DENSE_RANK()</span>
+                    <span class="quick-ref-value">Ranking without gaps</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">LAG()/LEAD()</span>
+                    <span class="quick-ref-value">Access previous/next row</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">PARTITION BY</span>
+                    <span class="quick-ref-value">Define window function groups</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">WITH (CTE)</span>
+                    <span class="quick-ref-value">Create temporary named result set</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">UNION</span>
+                    <span class="quick-ref-value">Combine query results (distinct)</span>
+                </li>
+                <li class="quick-ref-item">
+                    <span class="quick-ref-key">INDEX</span>
+                    <span class="quick-ref-value">Improve query performance</span>
+                </li>
+            </ul>
+        </div>
+    </aside>
 </div>
 
 <style>

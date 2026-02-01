@@ -9,8 +9,24 @@
     </div>
 
     {{if .HasContent}}
-    <div class="topic-content" id="topic-content">
-        {{safeHTML .Content}}
+    <!-- ADHD-friendly three-column layout -->
+    <div class="adhd-layout">
+        <!-- Left navigation panel (auto-populated by JavaScript) -->
+        <aside class="adhd-nav-panel">
+            <!-- JavaScript will auto-generate table of contents from H2/H3 headings -->
+        </aside>
+
+        <!-- Main content area -->
+        <main class="adhd-main-content">
+            <div class="topic-content" id="topic-content">
+                {{safeHTML .Content}}
+            </div>
+        </main>
+
+        <!-- Right quick reference panel (auto-populated by JavaScript) -->
+        <aside class="adhd-quick-ref">
+            <!-- JavaScript will auto-generate quick reference cards -->
+        </aside>
     </div>
     {{else}}
     <div class="coming-soon-card">

@@ -1,5 +1,18 @@
 # Load Balancing
 
+<div class="tldr-box">
+    <div class="tldr-header">TL;DR</div>
+    <ul class="tldr-list">
+        <li>Load balancers distribute traffic across servers for high availability and scalability</li>
+        <li>Layer 4 (TCP/UDP) is fast but basic; Layer 7 (HTTP) enables smart routing</li>
+        <li>Algorithms: Round Robin (simple), Least Connections (smart), Consistent Hashing (session affinity)</li>
+        <li>Health checks prevent routing to failed servers (active probes + passive monitoring)</li>
+        <li>Use hardware for highest throughput, software for flexibility, cloud for ease</li>
+    </ul>
+</div>
+
+<div class="concept-section type-definition">
+
 ## Overview
 
 Load balancing is the process of distributing incoming network traffic across multiple servers to ensure no single server becomes overwhelmed. Think of it like a traffic officer directing cars at a busy intersection - without proper direction, all cars would pile up in one lane while others remain empty.
@@ -17,7 +30,11 @@ At its core, a load balancer sits between clients and servers, acting as a rever
 
 <span style="color: #166534; font-weight: 600;">**Key Trade-off:**</span> Simplicity vs Intelligence. Simple algorithms (round-robin) are fast but may route to overloaded servers. Intelligent algorithms (least connections, adaptive) make better decisions but add latency and complexity.
 
+</div>
+
 ---
+
+<div class="concept-section type-important">
 
 ## Why Load Balancing Matters
 
@@ -57,7 +74,11 @@ At its core, a load balancer sits between clients and servers, acting as a rever
 </div>
 </div>
 
+</div>
+
 ---
+
+<div class="concept-section type-definition">
 
 ## Section 1: Layer 4 vs Layer 7 Load Balancing
 
