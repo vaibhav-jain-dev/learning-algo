@@ -34,89 +34,47 @@
     <link rel="stylesheet" href="/static/css/smart-widescreen.css">
     <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
 
-    <!-- CRITICAL: Border removal - override ALL border properties including individual sides -->
+    <!-- Clean CSS Reset - No external framework dependencies -->
     <style>
-        /* Reset ALL border properties - both shorthand and individual sides */
+        /* Universal border reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            border-width: 0;
+            border-style: solid;
+            border-color: transparent;
+        }
+
+        /* Card components - clean shadows only, no borders */
         .topic-card, .card, .quick-ref-card, .tldr-box,
         .concept-section, .collapsible-section, .comparison-column,
         .step-content, .progress-indicator, .table-of-contents,
-        .topic-page .topic-card, .adhd-layout .topic-card,
-        .topic-page .quick-ref-card, .adhd-layout .quick-ref-card,
-        .topic-page .tldr-box, .adhd-layout .tldr-box,
-        .topic-grid .topic-card, .topic-grid > a,
         .nav-category, .adhd-nav-panel, .adhd-quick-ref,
-        .quick-ref-header, .quick-ref-item, .concept-section-header,
-        .comparison-header, .collapsible-header, .topic-header {
-            border-top: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-left: none !important;
+        .topic-header, .content-box {
+            border: none !important;
             outline: none !important;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
+
+        /* Tags and badges - no borders or shadows */
         .tag, .badge, .topic-badge, .tags span {
-            border-top: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-left: none !important;
+            border: none !important;
             box-shadow: none !important;
         }
-        /* Override ALL borders inside content containers */
-        .topic-page *, .topic-page *::before, .topic-page *::after,
-        .adhd-layout *, .adhd-layout *::before, .adhd-layout *::after,
-        .topic-grid *, .topic-grid *::before, .topic-grid *::after,
-        .topic-detail-page *, .topic-detail-page *::before, .topic-detail-page *::after {
-            border-top-style: none !important;
-            border-right-style: none !important;
-            border-bottom-style: none !important;
-            border-left-style: none !important;
-            border-top-color: transparent !important;
-            border-right-color: transparent !important;
-            border-bottom-color: transparent !important;
-            border-left-color: transparent !important;
-        }
-        /* Preserve borders only for tables and code */
-        .topic-page table, .topic-page th, .topic-page td,
-        .topic-page pre, .topic-page code, .topic-page hr,
-        .adhd-layout table, .adhd-layout th, .adhd-layout td,
-        .adhd-layout pre, .adhd-layout code, .adhd-layout hr,
-        .topic-detail-page table, .topic-detail-page th, .topic-detail-page td,
-        .topic-detail-page pre, .topic-detail-page code, .topic-detail-page hr {
-            border-style: solid !important;
+
+        /* Allow borders only for semantic elements */
+        table, th, td { border-color: #e2e8f0; }
+        pre, code { border-color: #e2e8f0; }
+        hr { border-color: #e2e8f0; }
+        blockquote { border-left-color: #3b82f6; border-left-width: 4px; }
+
+        /* Mobile-first responsive utilities */
+        @media (max-width: 768px) {
+            .adhd-layout { display: block !important; }
+            .adhd-nav-panel, .adhd-quick-ref { display: none !important; }
+            .adhd-main-content { width: 100% !important; padding: 1rem !important; }
+            .topic-grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
         }
     </style>
-
-    <!-- Tailwind CSS config - MUST be set BEFORE the CDN script loads -->
-    <script>
-        // Configure Tailwind before it initializes
-        tailwind = {
-            config: {
-                corePlugins: {
-                    // Disable preflight's border reset that causes unwanted borders
-                    preflight: false
-                },
-                theme: {
-                    extend: {
-                        colors: {
-                            brand: {
-                                50: '#eff6ff',
-                                100: '#dbeafe',
-                                500: '#3b82f6',
-                                600: '#2563eb',
-                                700: '#1d4ed8'
-                            }
-                        },
-                        fontFamily: {
-                            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-                            mono: ['JetBrains Mono', 'SF Mono', 'Monaco', 'monospace']
-                        }
-                    }
-                }
-            }
-        };
-    </script>
-    <!-- Tailwind CSS - loaded after config is set -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
 
     <!-- HTMX - core functionality, loaded immediately but async -->
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
