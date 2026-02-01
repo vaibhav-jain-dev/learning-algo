@@ -37,6 +37,33 @@
             page-break-inside: avoid;
         }
 
+        /* Prevent breaking inside common structural elements */
+        .card, .box, .section, .panel, .container,
+        .comparison-item, .strategy-item, .example,
+        .note, .tip, .warning, .info, .alert,
+        div[class*="bg-"], div[class*="border"],
+        article, section, aside {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Keep headings with following content */
+        h1, h2, h3, h4, h5, h6 {
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        h1 + *, h2 + *, h3 + *, h4 + * {
+            page-break-before: avoid;
+            break-before: avoid;
+        }
+
+        /* Prevent orphans and widows */
+        p, li, div {
+            orphans: 3;
+            widows: 3;
+        }
+
         /* Header */
         .pdf-header {
             text-align: center;
@@ -133,20 +160,31 @@
             margin-bottom: 4px;
         }
 
-        /* Code blocks */
+        /* Code blocks - prevent breaking across pages */
         pre {
             background: #f6f8fa;
             border: 1px solid #e1e4e8;
             border-radius: 4px;
             padding: 12px;
-            margin: 12px 0;
+            margin: 12px 0 16px 0;
             font-size: 9pt;
             line-height: 1.4;
             overflow-x: visible;
             white-space: pre-wrap;
             word-wrap: break-word;
+            /* Prevent page breaks inside code blocks */
             page-break-inside: avoid;
+            break-inside: avoid;
+            /* Keep with preceding heading/text */
+            page-break-before: avoid;
+            break-before: avoid;
             max-width: 100%;
+        }
+
+        /* If code block is too long, allow breaking but optimize */
+        pre.long-code {
+            page-break-inside: auto;
+            break-inside: auto;
         }
 
         code {
@@ -163,6 +201,19 @@
         pre code {
             background: none;
             padding: 0;
+        }
+
+        /* Keep code block labels/titles with the code */
+        h1 + pre, h2 + pre, h3 + pre, h4 + pre,
+        p + pre, strong + pre {
+            page-break-before: avoid;
+            break-before: avoid;
+        }
+
+        /* Implementation/code section headings */
+        *:has(+ pre) {
+            page-break-after: avoid;
+            break-after: avoid;
         }
 
         /* Tables */
@@ -229,6 +280,24 @@
             max-width: 100%;
             height: auto;
             page-break-inside: avoid;
+        }
+
+        /* Colored boxes and cards - prevent breaking */
+        [style*="background-color"],
+        [style*="background:"],
+        [style*="border:"],
+        [class*="rounded"],
+        [class*="p-"],
+        [class*="m-"] {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Comparison/strategy boxes - keep together */
+        div:has(> h3), div:has(> h4),
+        div:has(> strong), div:has(> b) {
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         /* Hide interactive elements */
