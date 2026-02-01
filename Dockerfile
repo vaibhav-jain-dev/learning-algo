@@ -91,13 +91,22 @@ FROM python:3.12-alpine AS runtime
 LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
 
-# Install minimal dependencies including wkhtmltopdf for PDF generation
-# wkhtmltopdf requires dependencies from community repo
+# Install minimal dependencies and wkhtmltopdf for PDF generation
 RUN apk add --no-cache \
     ca-certificates \
     wget \
-    && apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    wkhtmltopdf \
+    fontconfig \
+    libgcc \
+    libstdc++ \
+    libx11 \
+    libxrender \
+    libxext \
+    libssl3 \
+    musl \
+    && wget -q -O /tmp/wkhtmltopdf.apk \
+    https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltopdf-0.12.6-1.alpine318.x86_64.apk \
+    && apk add --allow-untrusted /tmp/wkhtmltopdf.apk \
+    && rm -f /tmp/wkhtmltopdf.apk \
     && rm -rf /var/cache/apk/* /tmp/*
 
 # PYTHON DEPENDENCY CACHING: Copy requirements FIRST
