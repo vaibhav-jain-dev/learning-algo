@@ -34,6 +34,25 @@
     <link rel="stylesheet" href="/static/css/smart-widescreen.css">
     <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
 
+    <!-- CRITICAL: Border removal - highest priority inline styles -->
+    <style>
+        .topic-card, .card, .quick-ref-card, .tldr-box, .tag, .badge,
+        .concept-section, .collapsible-section, .comparison-column,
+        .step-content, .progress-indicator, .table-of-contents,
+        .topic-page .topic-card, .adhd-layout .topic-card,
+        .topic-page .quick-ref-card, .adhd-layout .quick-ref-card,
+        .topic-page .tldr-box, .adhd-layout .tldr-box,
+        .topic-grid .topic-card, .topic-grid > a {
+            border: none !important;
+            outline: none !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+        }
+        .tag, .badge, .topic-badge {
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+
     <!-- Tailwind CSS - loaded with low priority -->
     <script src="https://cdn.tailwindcss.com" defer></script>
     <script>
