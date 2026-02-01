@@ -613,3 +613,37 @@
         box-shadow: 0 0 0 2px var(--color-text-primary, #1e293b);
     }
 }
+
+/* ============================================
+   FINAL BORDER RESET - LOADED LAST FOR MAX SPECIFICITY
+   ============================================ */
+
+/* Remove all borders from main UI components */
+.topic-card,
+.card,
+.quick-ref-card,
+.tldr-box,
+.concept-section,
+.collapsible-section,
+.comparison-column,
+.step-content,
+.progress-indicator,
+.code-with-explanation,
+.table-of-contents,
+div.table-of-contents,
+.tag,
+.badge,
+.topic-badge,
+.nav-category,
+.topic-nav a {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Use subtle shadows for visual separation */
+.topic-card,
+.card,
+.quick-ref-card,
+.tldr-box {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
