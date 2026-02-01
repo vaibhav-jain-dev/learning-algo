@@ -96,7 +96,7 @@ FROM python:3.12-alpine AS runtime
 LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
 
-# Install minimal dependencies for wkhtmltopdf
+# Install minimal dependencies and fonts for wkhtmltopdf
 RUN apk add --no-cache \
     ca-certificates \
     wget \
@@ -108,7 +108,12 @@ RUN apk add --no-cache \
     libxext \
     libssl3 \
     libjpeg-turbo \
-    && rm -rf /var/cache/apk/*
+    # Add proper fonts for text rendering
+    ttf-freefont \
+    ttf-dejavu \
+    ttf-liberation \
+    && rm -rf /var/cache/apk/* \
+    && fc-cache -f
 
 # Copy wkhtmltopdf from official Alpine image
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
