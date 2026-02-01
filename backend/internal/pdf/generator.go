@@ -334,6 +334,33 @@ func (m *Manager) renderNode(pdf *gofpdf.Fpdf, node ast.Node, source []byte) {
 			pdf.Ln(2)
 			return ast.WalkSkipChildren, nil
 
+		case *ast.HTMLBlock:
+			// Extract text from HTML blocks (strips tags)
+			html := string(n.Text(source))
+			text := m.stripHTML(html)
+			text = m.sanitizeText(text)
+
+			if text != "" {
+				pdf.SetFont("Arial", "", 10)
+				pdf.SetTextColor(51, 51, 51)
+				pdf.MultiCell(0, 5, text, "", "L", false)
+				pdf.Ln(1)
+			}
+			return ast.WalkSkipChildren, nil
+
+		case *ast.RawHTML:
+			// Handle inline HTML - extract text only
+			html := string(n.Segments.Value(source))
+			text := m.stripHTML(html)
+			text = m.sanitizeText(text)
+
+			if text != "" {
+				pdf.SetFont("Arial", "", 10)
+				pdf.SetTextColor(51, 51, 51)
+				pdf.Write(5, text)
+			}
+			return ast.WalkSkipChildren, nil
+
 		case *ast.CodeBlock:
 			code := string(n.Text(source))
 			pdf.Ln(2)
@@ -479,6 +506,40 @@ func formatTopicName(slug string) string {
 		}
 	}
 	return strings.Join(words, " ")
+}
+
+// stripHTML removes HTML tags from text while preserving content
+func (m *Manager) stripHTML(html string) string {
+	// Remove style blocks entirely
+	html = regexp.MustCompile(`(?s)<style[^>]*>.*?</style>`).ReplaceAllString(html, "")
+
+	// Remove script blocks entirely
+	html = regexp.MustCompile(`(?s)<script[^>]*>.*?</script>`).ReplaceAllString(html, "")
+
+	// Remove HTML comments
+	html = regexp.MustCompile(`(?s)<!--.*?-->`).ReplaceAllString(html, "")
+
+	// Replace <br> and <br/> with newlines
+	html = regexp.MustCompile(`<br\s*/?>`).ReplaceAllString(html, "\n")
+
+	// Replace </li>, </p>, </div>, </h1-6> with newlines
+	html = regexp.MustCompile(`</(li|p|div|h[1-6]|tr)>`).ReplaceAllString(html, "\n")
+
+	// Remove all other HTML tags
+	html = regexp.MustCompile(`<[^>]+>`).ReplaceAllString(html, " ")
+
+	// Decode common HTML entities
+	html = strings.ReplaceAll(html, "&nbsp;", " ")
+	html = strings.ReplaceAll(html, "&amp;", "&")
+	html = strings.ReplaceAll(html, "&lt;", "<")
+	html = strings.ReplaceAll(html, "&gt;", ">")
+	html = strings.ReplaceAll(html, "&quot;", "\"")
+	html = strings.ReplaceAll(html, "&#8226;", "•")
+	html = strings.ReplaceAll(html, "&#8595;", "↓")
+	html = strings.ReplaceAll(html, "&rarr;", "→")
+	html = strings.ReplaceAll(html, "&larr;", "←")
+
+	return html
 }
 
 // sanitizeText removes or replaces problematic characters for PDF rendering
