@@ -1195,7 +1195,8 @@ a:hover {
     display: flex;
     flex-direction: column;
     background: var(--color-bg-primary);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: var(--radius-lg);
     padding: var(--space-4);
     transition: all var(--transition-normal);
@@ -1269,7 +1270,8 @@ a:hover {
     font-size: 0.7rem;
     padding: 4px 12px;
     background: var(--color-bg-tertiary);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: var(--radius-full);
     color: var(--color-text-secondary);
     font-weight: var(--font-semibold);

@@ -17,8 +17,36 @@
    PAGE STRUCTURE: 3-COLUMN ADHD LAYOUT
    ============================================ */
 
+/* Base layout - single column on smaller screens */
+.adhd-layout,
+.adhd-content-wrapper {
+    display: block;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Hide nav panel on medium screens - show only main content */
+@media (max-width: 1399px) {
+    .adhd-layout .adhd-nav-panel,
+    .adhd-content-wrapper .adhd-nav-panel {
+        display: none;
+    }
+
+    .adhd-layout .adhd-quick-ref,
+    .adhd-content-wrapper .adhd-quick-ref {
+        display: none;
+    }
+
+    .adhd-layout .adhd-main-content,
+    .adhd-content-wrapper .adhd-main-content {
+        max-width: 100%;
+    }
+}
+
 @media (min-width: 1400px) {
     /* Main container for ADHD-friendly 3-column layout */
+    .adhd-layout,
     .adhd-content-wrapper {
         display: grid;
         grid-template-columns: 280px minmax(auto, 800px) 320px;
@@ -58,7 +86,8 @@
 
 .concept-section {
     background: var(--color-bg-primary, #ffffff);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -110,7 +139,8 @@
 
 .tldr-box {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: 12px;
     padding: 1.5rem;
     margin: 1.5rem 0;
@@ -165,7 +195,8 @@
     border-radius: 12px;
     padding: 1.5rem;
     margin: 1.5rem 0;
-    border: none;
+    border: none !important;
+    outline: none !important;
 }
 
 .explanation-panel {
@@ -204,7 +235,8 @@
 
 .quick-ref-card {
     background: var(--color-bg-primary, #ffffff);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1rem;
@@ -271,7 +303,8 @@
     position: sticky;
     top: calc(var(--header-height, 64px) + 1rem);
     background: var(--color-bg-primary, #ffffff);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -312,7 +345,8 @@
    ============================================ */
 
 .collapsible-section {
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: 12px;
     margin-bottom: 1rem;
     overflow: hidden;
@@ -419,10 +453,17 @@
 
 .comparison-column {
     background: var(--color-bg-primary, #ffffff);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Allow left accent border for comparison columns */
+.comparison-column.positive,
+.comparison-column.negative {
+    border-left: 3px solid !important;
 }
 
 .comparison-column.positive {
@@ -488,7 +529,8 @@
 .step-content {
     flex: 1;
     background: var(--color-bg-primary, #ffffff);
-    border: none;
+    border: none !important;
+    outline: none !important;
     border-radius: 12px;
     padding: 1rem 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -563,11 +605,11 @@
     }
 }
 
-/* High contrast mode support */
+/* High contrast mode support - use stronger shadows instead of borders */
 @media (prefers-contrast: high) {
     .concept-section,
     .quick-ref-card,
     .tldr-box {
-        border-width: 3px;
+        box-shadow: 0 0 0 2px var(--color-text-primary, #1e293b);
     }
 }
