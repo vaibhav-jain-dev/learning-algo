@@ -1,6 +1,48 @@
-# Load Balancing
+# Load Balancing {#load-balancing}
 
-## Overview
+## Table of Contents {#table-of-contents}
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+<div>
+<strong style="color: #1e293b;">Fundamentals</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px; color: #475569; font-size: 14px;">
+<li><a href="#overview" style="color: #3b82f6; text-decoration: none;">Overview</a></li>
+<li><a href="#why-load-balancing-matters" style="color: #3b82f6; text-decoration: none;">Why Load Balancing Matters</a></li>
+<li><a href="#layer-4-vs-layer-7" style="color: #3b82f6; text-decoration: none;">Layer 4 vs Layer 7 Load Balancing</a></li>
+</ul>
+</div>
+<div>
+<strong style="color: #1e293b;">Algorithms</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px; color: #475569; font-size: 14px;">
+<li><a href="#load-balancing-algorithms" style="color: #3b82f6; text-decoration: none;">Load Balancing Algorithms</a></li>
+<li><a href="#round-robin-deep-dive" style="color: #3b82f6; text-decoration: none;">Round Robin Deep Dive</a></li>
+<li><a href="#consistent-hashing-deep-dive" style="color: #3b82f6; text-decoration: none;">Consistent Hashing Deep Dive</a></li>
+</ul>
+</div>
+<div>
+<strong style="color: #1e293b;">Operations</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px; color: #475569; font-size: 14px;">
+<li><a href="#health-checks" style="color: #3b82f6; text-decoration: none;">Health Checks</a></li>
+<li><a href="#session-persistence" style="color: #3b82f6; text-decoration: none;">Session Persistence</a></li>
+<li><a href="#connection-draining" style="color: #3b82f6; text-decoration: none;">Connection Draining</a></li>
+</ul>
+</div>
+<div>
+<strong style="color: #1e293b;">Reference</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px; color: #475569; font-size: 14px;">
+<li><a href="#edge-cases-failure-modes" style="color: #3b82f6; text-decoration: none;">Edge Cases & Failure Modes</a></li>
+<li><a href="#common-pitfalls" style="color: #3b82f6; text-decoration: none;">Common Pitfalls</a></li>
+<li><a href="#code-examples" style="color: #3b82f6; text-decoration: none;">Code Examples</a></li>
+<li><a href="#best-practices" style="color: #3b82f6; text-decoration: none;">Best Practices</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+---
+
+## Overview {#overview}
 
 Load balancing is the process of distributing incoming network traffic across multiple servers to ensure no single server becomes overwhelmed. Think of it like a traffic officer directing cars at a busy intersection - without proper direction, all cars would pile up in one lane while others remain empty.
 
@@ -19,7 +61,7 @@ At its core, a load balancer sits between clients and servers, acting as a rever
 
 ---
 
-## Why Load Balancing Matters
+## Why Load Balancing Matters {#why-load-balancing-matters}
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border-left: 4px solid #22c55e;">
 <h4 style="color: #166534; margin-top: 0;">Real-World Impact</h4>
@@ -34,7 +76,7 @@ At its core, a load balancer sits between clients and servers, acting as a rever
 </div>
 </div>
 
-### Key Benefits
+### Key Benefits {#key-benefits}
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
@@ -59,9 +101,9 @@ At its core, a load balancer sits between clients and servers, acting as a rever
 
 ---
 
-## Section 1: Layer 4 vs Layer 7 Load Balancing
+## Section 1: Layer 4 vs Layer 7 Load Balancing {#layer-4-vs-layer-7}
 
-### Deep Mechanics
+### Deep Mechanics {#l4-l7-deep-mechanics}
 
 The OSI model distinction between Layer 4 (Transport) and Layer 7 (Application) load balancing fundamentally changes what information is available for routing decisions and the performance characteristics of the load balancer.
 
@@ -158,7 +200,7 @@ The OSI model distinction between Layer 4 (Transport) and Layer 7 (Application) 
 </div>
 </div>
 
-### Layer 7 Routing Capabilities
+### Layer 7 Routing Capabilities {#layer-7-routing-capabilities}
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">Content-Based Routing Examples</h4>
@@ -184,7 +226,7 @@ experiment=variant  --> Experiment Servers (10%)</pre>
 </div>
 </div>
 
-### When to Choose L4 vs L7
+### When to Choose L4 vs L7 {#when-to-choose-l4-vs-l7}
 
 <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #92400e; margin-top: 0;">Decision Framework</h4>
@@ -217,7 +259,7 @@ experiment=variant  --> Experiment Servers (10%)</pre>
 </div>
 </div>
 
-### L4 vs L7 Interview Questions (3 Levels Deep)
+### L4 vs L7 Interview Questions (3 Levels Deep) {#l4-l7-interview-questions}
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is the difference between Layer 4 and Layer 7 load balancing?</h4>
@@ -239,9 +281,9 @@ experiment=variant  --> Experiment Servers (10%)</pre>
 
 ---
 
-## Section 2: Load Balancing Algorithms
+## Section 2: Load Balancing Algorithms {#load-balancing-algorithms}
 
-### Algorithm Deep Dive
+### Algorithm Deep Dive {#algorithm-deep-dive}
 
 The choice of load balancing algorithm fundamentally affects how traffic is distributed and how the system behaves under various conditions.
 
@@ -302,7 +344,126 @@ The choice of load balancing algorithm fundamentally affects how traffic is dist
 </div>
 </div>
 
-### Round Robin Deep Dive
+### Visual Algorithm Comparison {#visual-algorithm-comparison}
+
+<div class="flow-diagram" style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Load Balancing Algorithms Visualized</h4>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+
+<!-- Round Robin -->
+<div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #3b82f6;">
+<h5 style="color: #1e40af; margin: 0 0 16px 0; text-align: center;">Round Robin</h5>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box primary" style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #1e40af; min-width: 60px; text-align: center;">Req 1</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #3b82f6;"></div>
+<div class="flow-box success" style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534;">Server A</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box primary" style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #1e40af; min-width: 60px; text-align: center;">Req 2</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #3b82f6;"></div>
+<div class="flow-box primary" style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #1e40af;">Server B</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box primary" style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #1e40af; min-width: 60px; text-align: center;">Req 3</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #3b82f6;"></div>
+<div class="flow-box warning" style="background: #fef3c7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #92400e;">Server C</div>
+</div>
+</div>
+<div style="margin-top: 12px; padding: 8px; background: #f1f5f9; border-radius: 6px; font-size: 11px; color: #64748b; text-align: center;">
+Sequential rotation: A, B, C, A, B, C...
+</div>
+</div>
+
+<!-- Weighted Round Robin -->
+<div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+<h5 style="color: #166534; margin: 0 0 16px 0; text-align: center;">Weighted Round Robin</h5>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box success" style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #166534; flex: 1; text-align: center;">Server A (w=3)</div>
+<div style="background: #166534; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px;">60%</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box primary" style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #1e40af; flex: 1; text-align: center;">Server B (w=2)</div>
+<div style="background: #1e40af; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px;">40%</div>
+</div>
+</div>
+<div style="margin-top: 12px; display: flex; gap: 4px;">
+<div style="flex: 3; height: 8px; background: #22c55e; border-radius: 4px 0 0 4px;"></div>
+<div style="flex: 2; height: 8px; background: #3b82f6; border-radius: 0 4px 4px 0;"></div>
+</div>
+<div style="margin-top: 8px; font-size: 11px; color: #64748b; text-align: center;">
+Distribution based on server capacity
+</div>
+</div>
+
+<!-- Least Connections -->
+<div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #a855f7;">
+<h5 style="color: #7c3aed; margin: 0 0 16px 0; text-align: center;">Least Connections</h5>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="flex: 1; background: #f3e8ff; padding: 8px; border-radius: 6px; font-size: 12px; color: #7c3aed;">Server A</div>
+<div style="display: flex; gap: 2px;">
+<div style="width: 8px; height: 8px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 8px; height: 8px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 8px; height: 8px; background: #a855f7; border-radius: 50%;"></div>
+</div>
+<span style="font-size: 11px; color: #64748b;">3 conn</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="flex: 1; background: #dcfce7; padding: 8px; border-radius: 6px; font-size: 12px; color: #166534; border: 2px solid #22c55e;">Server B</div>
+<div style="display: flex; gap: 2px;">
+<div style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></div>
+</div>
+<span style="font-size: 11px; color: #166534; font-weight: 600;">1 conn (selected)</span>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="flex: 1; background: #f3e8ff; padding: 8px; border-radius: 6px; font-size: 12px; color: #7c3aed;">Server C</div>
+<div style="display: flex; gap: 2px;">
+<div style="width: 8px; height: 8px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 8px; height: 8px; background: #a855f7; border-radius: 50%;"></div>
+</div>
+<span style="font-size: 11px; color: #64748b;">2 conn</span>
+</div>
+</div>
+<div style="margin-top: 8px; font-size: 11px; color: #64748b; text-align: center;">
+Routes to server with minimum active connections
+</div>
+</div>
+
+<!-- IP Hash -->
+<div style="background: white; border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+<h5 style="color: #92400e; margin: 0 0 16px 0; text-align: center;">IP Hash / Consistent Hashing</h5>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box warning" style="background: #fef3c7; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #92400e;">192.168.1.10</div>
+<div style="font-size: 12px; color: #64748b;">hash</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #f59e0b;"></div>
+<div class="flow-box success" style="background: #dcfce7; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #166534;">Server A</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box warning" style="background: #fef3c7; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #92400e;">192.168.1.25</div>
+<div style="font-size: 12px; color: #64748b;">hash</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #f59e0b;"></div>
+<div class="flow-box primary" style="background: #dbeafe; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #1e40af;">Server B</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box warning" style="background: #fef3c7; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #92400e;">192.168.1.10</div>
+<div style="font-size: 12px; color: #64748b;">hash</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #f59e0b;"></div>
+<div class="flow-box success" style="background: #dcfce7; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #166534;">Server A</div>
+</div>
+</div>
+<div style="margin-top: 8px; font-size: 11px; color: #64748b; text-align: center;">
+Same client IP always routes to same server
+</div>
+</div>
+
+</div>
+</div>
+
+### Round Robin Deep Dive {#round-robin-deep-dive}
 
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 20px 0; border: 1px solid #e2e8f0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Round Robin Distribution Pattern</h4>
@@ -352,7 +513,7 @@ The choice of load balancing algorithm fundamentally affects how traffic is dist
 </div>
 </div>
 
-### Least Connections Implementation
+### Least Connections Implementation {#least-connections-implementation}
 
 ```python
 import heapq
@@ -452,7 +613,7 @@ class LeastConnectionsBalancer:
                 heapq.heapify(self._heap)
 ```
 
-### Consistent Hashing Deep Dive
+### Consistent Hashing Deep Dive {#consistent-hashing-deep-dive}
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 32px; margin: 24px 0;">
 <h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Consistent Hashing Ring with Virtual Nodes</h4>
@@ -519,7 +680,7 @@ class LeastConnectionsBalancer:
 </div>
 </div>
 
-### Consistent Hashing Implementation
+### Consistent Hashing Implementation {#consistent-hashing-implementation}
 
 ```python
 import hashlib
@@ -666,7 +827,7 @@ server = ring.get_server("user:12345")  # Consistent mapping
 replicas = ring.get_n_servers("user:12345", n=3)  # For replication
 ```
 
-### Algorithm Selection Interview Questions (3 Levels Deep)
+### Algorithm Selection Interview Questions (3 Levels Deep) {#algorithm-interview-questions}
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: When would you choose Least Connections over Round Robin?</h4>
@@ -688,9 +849,9 @@ replicas = ring.get_n_servers("user:12345", n=3)  # For replication
 
 ---
 
-## Section 3: Health Checks
+## Section 3: Health Checks {#health-checks}
 
-### Deep Mechanics
+### Deep Mechanics {#health-checks-deep-mechanics}
 
 Health checks are the nervous system of load balancing - they detect failed or degraded servers and automatically route traffic away before users experience errors.
 
@@ -728,7 +889,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 </div>
 </div>
 
-### Health Check Types
+### Health Check Types {#health-check-types}
 
 <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e293b; margin-top: 0;">Health Check Comparison</h4>
@@ -791,7 +952,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 </div>
 </div>
 
-### Health Check Configuration
+### Health Check Configuration {#health-check-configuration}
 
 <div style="background: #fff7ed; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #92400e; margin-top: 0;">Critical Configuration Parameters</h4>
@@ -851,7 +1012,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 </div>
 </div>
 
-### Health Check Edge Cases
+### Health Check Edge Cases {#health-check-edge-cases}
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #991b1b; margin-top: 0;">Critical Health Check Failures</h4>
@@ -879,7 +1040,7 @@ Health checks are the nervous system of load balancing - they detect failed or d
 </div>
 </div>
 
-### Health Check Interview Questions (3 Levels Deep)
+### Health Check Interview Questions (3 Levels Deep) {#health-check-interview-questions}
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What types of health checks should a load balancer perform?</h4>
@@ -901,9 +1062,9 @@ Health checks are the nervous system of load balancing - they detect failed or d
 
 ---
 
-## Section 4: Session Persistence (Sticky Sessions)
+## Section 4: Session Persistence (Sticky Sessions) {#session-persistence}
 
-### Deep Mechanics
+### Deep Mechanics {#session-persistence-deep-mechanics}
 
 Session persistence ensures that requests from the same client are routed to the same backend server. This is necessary when servers maintain client state that isn't shared across the cluster.
 
@@ -963,7 +1124,7 @@ Session persistence ensures that requests from the same client are routed to the
 </div>
 </div>
 
-### Problems with Sticky Sessions
+### Problems with Sticky Sessions {#problems-with-sticky-sessions}
 
 <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #991b1b; margin-top: 0;">Why Sticky Sessions Are Problematic</h4>
@@ -991,7 +1152,7 @@ Session persistence ensures that requests from the same client are routed to the
 </div>
 </div>
 
-### Better Alternative: Externalized Session State
+### Better Alternative: Externalized Session State {#externalized-session-state}
 
 <div style="background: #f0fdf4; border: 2px solid #22c55e; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #166534; margin-top: 0;">Externalized Session Architecture</h4>
@@ -1052,7 +1213,7 @@ Session persistence ensures that requests from the same client are routed to the
 </div>
 </div>
 
-### Session Persistence Interview Questions (3 Levels Deep)
+### Session Persistence Interview Questions (3 Levels Deep) {#session-persistence-interview-questions}
 
 <div style="background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 20px 0;">
 <h4 style="color: #1e40af; margin-top: 0;">Level 1: What is session persistence in load balancing and when is it needed?</h4>
@@ -1074,9 +1235,9 @@ Session persistence ensures that requests from the same client are routed to the
 
 ---
 
-## Section 5: Connection Draining and Graceful Shutdown
+## Section 5: Connection Draining and Graceful Shutdown {#connection-draining}
 
-### Deep Mechanics
+### Deep Mechanics {#connection-draining-deep-mechanics}
 
 Connection draining allows in-flight requests to complete before a server is removed from the pool, preventing request failures during deployments or scale-down events.
 
@@ -1124,7 +1285,174 @@ Connection draining allows in-flight requests to complete before a server is rem
 
 ---
 
-## Common Pitfalls
+## Edge Cases & Failure Modes {#edge-cases-failure-modes}
+
+<div class="flow-diagram" style="background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%); border-radius: 16px; padding: 32px; margin: 24px 0; border: 2px solid #ef4444;">
+<h4 style="color: #991b1b; text-align: center; margin: 0 0 24px 0;">Critical Failure Scenarios</h4>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+
+<!-- Thundering Herd -->
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<h5 style="color: #991b1b; margin: 0 0 12px 0;">Thundering Herd on Server Recovery</h5>
+<div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<div class="flow-box warning" style="background: #fef3c7; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #92400e;">Server recovers</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #ef4444;"></div>
+<div class="flow-box primary" style="background: #fee2e2; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #991b1b;">All queued requests flood in</div>
+</div>
+</div>
+<p style="color: #475569; font-size: 13px; margin: 0 0 8px 0;"><strong>Problem:</strong> When a server comes back online, all pending requests route to it simultaneously, causing immediate overload.</p>
+<p style="color: #166534; font-size: 13px; margin: 0;"><strong>Solution:</strong> Gradual traffic ramp-up (start at 10% weight), healthy threshold > 1, circuit breaker pattern.</p>
+</div>
+
+<!-- Split Brain -->
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<h5 style="color: #92400e; margin: 0 0 12px 0;">Split Brain in HA Load Balancers</h5>
+<div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 12px;">
+<div class="flow-box primary" style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; font-size: 11px; color: #1e40af; text-align: center;">LB Primary<br/><span style="font-size: 10px;">(thinks it's active)</span></div>
+<div style="display: flex; align-items: center; color: #ef4444; font-size: 20px;">X</div>
+<div class="flow-box warning" style="background: #fef3c7; padding: 8px 12px; border-radius: 6px; font-size: 11px; color: #92400e; text-align: center;">LB Secondary<br/><span style="font-size: 10px;">(thinks it's active)</span></div>
+</div>
+<p style="color: #475569; font-size: 13px; margin: 0 0 8px 0;"><strong>Problem:</strong> Network partition causes both LBs to think they're primary, routing traffic inconsistently.</p>
+<p style="color: #166534; font-size: 13px; margin: 0;"><strong>Solution:</strong> STONITH (Shoot The Other Node In The Head), quorum-based failover, or cloud-managed LB.</p>
+</div>
+
+<!-- Connection Exhaustion -->
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #a855f7;">
+<h5 style="color: #7c3aed; margin: 0 0 12px 0;">Connection Pool Exhaustion</h5>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+<div style="flex: 1; background: #f3e8ff; padding: 8px; border-radius: 6px;">
+<div style="display: flex; gap: 2px; flex-wrap: wrap;">
+<div style="width: 6px; height: 6px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 6px; height: 6px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 6px; height: 6px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 6px; height: 6px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 6px; height: 6px; background: #a855f7; border-radius: 50%;"></div>
+<div style="width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></div>
+</div>
+<div style="font-size: 10px; color: #7c3aed; margin-top: 4px;">Pool: 5/5 used + 1 waiting</div>
+</div>
+</div>
+<p style="color: #475569; font-size: 13px; margin: 0 0 8px 0;"><strong>Problem:</strong> Slow backend causes connection pool to fill up, blocking new requests.</p>
+<p style="color: #166534; font-size: 13px; margin: 0;"><strong>Solution:</strong> Connection timeouts, pool sizing per backend, queue limits with fast-fail.</p>
+</div>
+
+<!-- Cascading Failure -->
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #dc2626;">
+<h5 style="color: #dc2626; margin: 0 0 12px 0;">Cascading Failure</h5>
+<div style="display: flex; align-items: center; gap: 4px; margin-bottom: 12px; flex-wrap: wrap;">
+<div class="flow-box success" style="background: #fee2e2; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #991b1b;">S1 fails</div>
+<div style="color: #dc2626;">-></div>
+<div class="flow-box warning" style="background: #fef3c7; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #92400e;">S2 overloads</div>
+<div style="color: #dc2626;">-></div>
+<div class="flow-box warning" style="background: #fee2e2; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #991b1b;">S2 fails</div>
+<div style="color: #dc2626;">-></div>
+<div class="flow-box primary" style="background: #fee2e2; padding: 4px 8px; border-radius: 4px; font-size: 10px; color: #991b1b;">S3 fails</div>
+</div>
+<p style="color: #475569; font-size: 13px; margin: 0 0 8px 0;"><strong>Problem:</strong> One server failure shifts load to others, causing chain reaction of failures.</p>
+<p style="color: #166534; font-size: 13px; margin: 0;"><strong>Solution:</strong> Load shedding, rate limiting, circuit breakers, capacity planning for N-1.</p>
+</div>
+
+<!-- Hot Key Problem -->
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<h5 style="color: #1e40af; margin: 0 0 12px 0;">Hot Key with Consistent Hashing</h5>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+<div class="flow-box primary" style="background: #dbeafe; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #1e40af;">Celebrity user ID</div>
+<div class="flow-arrow" style="flex: 1; height: 2px; background: #3b82f6;"></div>
+<div class="flow-box warning" style="background: #fee2e2; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #991b1b; border: 2px solid #ef4444;">Server A (overloaded)</div>
+</div>
+<p style="color: #475569; font-size: 13px; margin: 0 0 8px 0;"><strong>Problem:</strong> Popular key always routes to same server, creating hotspot.</p>
+<p style="color: #166534; font-size: 13px; margin: 0;"><strong>Solution:</strong> Key salting, bounded load consistent hashing, request coalescing.</p>
+</div>
+
+<!-- Zombie Connections -->
+<div style="background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #22c55e;">
+<h5 style="color: #166534; margin: 0 0 12px 0;">Zombie Connections / Half-Open</h5>
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+<div class="flow-box primary" style="background: #dbeafe; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #1e40af;">LB</div>
+<div style="border-top: 2px dashed #64748b; flex: 1;"></div>
+<div style="font-size: 10px; color: #64748b;">thinks connected</div>
+<div style="border-top: 2px dashed #ef4444; flex: 1;"></div>
+<div class="flow-box warning" style="background: #f1f5f9; padding: 6px 10px; border-radius: 6px; font-size: 11px; color: #64748b;">Backend (crashed)</div>
+</div>
+<p style="color: #475569; font-size: 13px; margin: 0 0 8px 0;"><strong>Problem:</strong> Backend crashes without closing TCP; LB still routes traffic to dead connection.</p>
+<p style="color: #166534; font-size: 13px; margin: 0;"><strong>Solution:</strong> TCP keepalive, application-level heartbeats, connection timeouts.</p>
+</div>
+
+</div>
+</div>
+
+### Failure Detection & Recovery Flow {#failure-detection-recovery}
+
+<div class="flow-diagram" style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0; border: 1px solid #e2e8f0;">
+<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0;">Server Failure Detection & Recovery Timeline</h4>
+
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<!-- Timeline header -->
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+<div style="width: 120px; font-size: 12px; color: #64748b; text-align: right;">Time</div>
+<div style="flex: 1; display: flex; justify-content: space-between; font-size: 11px; color: #64748b;">
+<span>t=0</span>
+<span>t=5s</span>
+<span>t=10s</span>
+<span>t=15s</span>
+<span>t=20s</span>
+<span>t=25s</span>
+</div>
+</div>
+
+<!-- Server Status -->
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 120px; font-size: 12px; color: #1e293b; text-align: right; font-weight: 600;">Server Status</div>
+<div style="flex: 1; display: flex; height: 24px;">
+<div style="flex: 1; background: #22c55e; border-radius: 4px 0 0 4px;"></div>
+<div style="flex: 1; background: #ef4444;"></div>
+<div style="flex: 1; background: #ef4444;"></div>
+<div style="flex: 1; background: #f59e0b;"></div>
+<div style="flex: 1; background: #22c55e; border-radius: 0 4px 4px 0;"></div>
+</div>
+</div>
+
+<!-- Health Check -->
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 120px; font-size: 12px; color: #1e293b; text-align: right; font-weight: 600;">Health Check</div>
+<div style="flex: 1; display: flex; height: 24px; align-items: center;">
+<div style="flex: 1; display: flex; justify-content: center;"><span style="color: #22c55e; font-size: 14px;">PASS</span></div>
+<div style="flex: 1; display: flex; justify-content: center;"><span style="color: #ef4444; font-size: 14px;">FAIL 1</span></div>
+<div style="flex: 1; display: flex; justify-content: center;"><span style="color: #ef4444; font-size: 14px;">FAIL 2</span></div>
+<div style="flex: 1; display: flex; justify-content: center;"><span style="color: #f59e0b; font-size: 14px;">PASS 1</span></div>
+<div style="flex: 1; display: flex; justify-content: center;"><span style="color: #22c55e; font-size: 14px;">PASS 2</span></div>
+</div>
+</div>
+
+<!-- Traffic Routing -->
+<div style="display: flex; align-items: center; gap: 8px;">
+<div style="width: 120px; font-size: 12px; color: #1e293b; text-align: right; font-weight: 600;">Traffic Routing</div>
+<div style="flex: 1; display: flex; height: 24px;">
+<div style="flex: 1; background: #22c55e; border-radius: 4px 0 0 4px; display: flex; align-items: center; justify-content: center;"><span style="color: white; font-size: 10px;">ACTIVE</span></div>
+<div style="flex: 1; background: #22c55e; display: flex; align-items: center; justify-content: center;"><span style="color: white; font-size: 10px;">ACTIVE</span></div>
+<div style="flex: 1; background: #ef4444; display: flex; align-items: center; justify-content: center;"><span style="color: white; font-size: 10px;">REMOVED</span></div>
+<div style="flex: 1; background: #ef4444; display: flex; align-items: center; justify-content: center;"><span style="color: white; font-size: 10px;">REMOVED</span></div>
+<div style="flex: 1; background: #22c55e; border-radius: 0 4px 4px 0; display: flex; align-items: center; justify-content: center;"><span style="color: white; font-size: 10px;">ACTIVE</span></div>
+</div>
+</div>
+</div>
+
+<div style="margin-top: 16px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 12px; height: 12px; background: #22c55e; border-radius: 2px;"></div><span style="font-size: 11px; color: #64748b;">Healthy</span></div>
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 12px; height: 12px; background: #ef4444; border-radius: 2px;"></div><span style="font-size: 11px; color: #64748b;">Failed/Removed</span></div>
+<div style="display: flex; align-items: center; gap: 6px;"><div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 2px;"></div><span style="font-size: 11px; color: #64748b;">Recovering</span></div>
+</div>
+
+<div style="margin-top: 16px; padding: 12px; background: #fef3c7; border-radius: 8px;">
+<span style="color: #92400e; font-weight: 600;">Key Insight:</span> <span style="color: #78350f;">With 5s interval and threshold=2, detection takes 10s. Traffic continues to failed server during this window. Consider passive health checks (tracking real request failures) for faster detection.</span>
+</div>
+</div>
+
+---
+
+## Common Pitfalls {#common-pitfalls}
 
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #fecaca;">
 <h4 style="color: #991b1b; margin-top: 0;">Mistakes to Avoid</h4>
@@ -1152,9 +1480,9 @@ Connection draining allows in-flight requests to complete before a server is rem
 
 ---
 
-## Code Examples
+## Code Examples {#code-examples}
 
-### Go - Complete Load Balancer with Health Checks
+### Go - Complete Load Balancer with Health Checks {#go-load-balancer-example}
 
 ```go
 package main
@@ -1380,7 +1708,7 @@ func main() {
 }
 ```
 
-### Nginx Configuration - Production Load Balancing
+### Nginx Configuration - Production Load Balancing {#nginx-configuration}
 
 ```nginx
 # Upstream configuration with health checks and load balancing
@@ -1472,7 +1800,7 @@ server {
 
 ---
 
-## Best Practices
+## Best Practices {#best-practices}
 
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0; border: 1px solid #bbf7d0;">
 <h4 style="color: #166534; margin-top: 0;">Production Checklist</h4>
@@ -1530,7 +1858,7 @@ server {
 
 ---
 
-## Related Topics
+## Related Topics {#related-topics}
 
 - [[API Gateway]](/topic/system-design/api-gateway) - Layer 7 routing with authentication and transformation
 - [[Rate Limiting]](/topic/system-design/rate-limiting) - Protecting backends from overload

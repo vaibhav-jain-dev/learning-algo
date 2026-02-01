@@ -1,6 +1,49 @@
 # Design The Uber API
 
-## Problem Statement
+<nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+
+<h2 style="color: #1d4ed8; margin: 0 0 16px 0; font-size: 18px;">Table of Contents</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+
+<div>
+<h4 style="color: #475569; margin: 0 0 8px 0; font-size: 14px;">Core Components</h4>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 2;">
+<li><a href="#problem-statement" style="color: #3b82f6; text-decoration: none;">Problem Statement</a></li>
+<li><a href="#high-level-architecture" style="color: #3b82f6; text-decoration: none;">High-Level Architecture</a></li>
+<li><a href="#geospatial-indexing" style="color: #3b82f6; text-decoration: none;">1. Geospatial Indexing</a></li>
+<li><a href="#driver-matching" style="color: #3b82f6; text-decoration: none;">2. Driver Matching (Dispatch)</a></li>
+<li><a href="#surge-pricing" style="color: #3b82f6; text-decoration: none;">3. Surge Pricing</a></li>
+</ul>
+</div>
+
+<div>
+<h4 style="color: #475569; margin: 0 0 8px 0; font-size: 14px;">Services & State</h4>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 2;">
+<li><a href="#eta-calculation" style="color: #3b82f6; text-decoration: none;">4. ETA Calculation</a></li>
+<li><a href="#ride-state-machine" style="color: #3b82f6; text-decoration: none;">5. Ride State Machine</a></li>
+<li><a href="#system-integration-summary" style="color: #3b82f6; text-decoration: none;">System Integration Summary</a></li>
+<li><a href="#edge-cases-failure-modes" style="color: #3b82f6; text-decoration: none;">Edge Cases & Failure Modes</a></li>
+</ul>
+</div>
+
+<div>
+<h4 style="color: #475569; margin: 0 0 8px 0; font-size: 14px;">Scale & Decisions</h4>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 2;">
+<li><a href="#scale-strategy" style="color: #3b82f6; text-decoration: none;">Scale Strategy</a></li>
+<li><a href="#technology-decision-matrix" style="color: #3b82f6; text-decoration: none;">Technology Decision Matrix</a></li>
+<li><a href="#scaling-milestones" style="color: #3b82f6; text-decoration: none;">Scaling Milestones</a></li>
+<li><a href="#interview-red-flags-vs-strong-signals" style="color: #3b82f6; text-decoration: none;">Interview Red Flags vs. Strong Signals</a></li>
+</ul>
+</div>
+
+</div>
+
+</nav>
+
+---
+
+<h2 id="problem-statement">Problem Statement</h2>
 
 Design a ride-hailing platform that matches riders with drivers in real-time, handles millions of concurrent location updates, implements dynamic pricing based on supply-demand economics, and maintains ride state consistency across distributed services.
 
@@ -19,7 +62,7 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 
 ---
 
-## High-Level Architecture
+<h2 id="high-level-architecture">High-Level Architecture</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">UBER SYSTEM ARCHITECTURE</h3>
@@ -120,11 +163,11 @@ Design a ride-hailing platform that matches riders with drivers in real-time, ha
 
 ---
 
-## 1. Geospatial Indexing
+<h2 id="geospatial-indexing">1. Geospatial Indexing</h2>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Core Assumption**: Driver locations are ephemeral and change every 2-10 seconds, requiring in-memory indexing rather than disk-based spatial databases for real-time queries.</span>
 
-### The Fundamental Problem
+<h3 id="the-fundamental-problem">The Fundamental Problem</h3>
 
 When a rider requests a ride at coordinates (40.758, -73.985), the system must find available drivers within a configurable radius (typically 2-5km) in under 50ms. With 5 million active drivers globally updating locations every 4 seconds, this creates **1.25 million writes per second** to the geospatial index.
 
@@ -203,7 +246,7 @@ When a rider requests a ride at coordinates (40.758, -73.985), the system must f
 </div>
 </div>
 
-### Redis Geospatial Implementation
+<h3 id="redis-geospatial-implementation">Redis Geospatial Implementation</h3>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: Redis stores all data in memory, making it expensive at scale (~$0.02/driver/month) but providing sub-millisecond query latency that disk-based solutions cannot match.</span>
 
@@ -307,7 +350,7 @@ class GeospatialDriverIndex:
         return drivers
 ```
 
-### Interview Questions: Geospatial Indexing
+<h3 id="interview-questions-geospatial-indexing">Interview Questions: Geospatial Indexing</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
@@ -385,11 +428,11 @@ See also: [[Consistent Hashing]](/topics/distributed-systems/consistent-hashing)
 
 ---
 
-## 2. Driver Matching (Dispatch)
+<h2 id="driver-matching">2. Driver Matching (Dispatch)</h2>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Core Assumption**: The naive "assign nearest driver" approach leads to globally suboptimal outcomes. Assigning driver A to rider 1 might make driver B's assignment to rider 2 much worse.</span>
 
-### The Matching Problem
+<h3 id="the-matching-problem">The Matching Problem</h3>
 
 At any moment in Manhattan, there might be 500 pending ride requests and 300 available drivers. The goal is to minimize **total pickup time across all riders**, not just for any individual rider. This is the classic **assignment problem** from combinatorial optimization.
 
@@ -458,7 +501,7 @@ At any moment in Manhattan, there might be 500 pending ride requests and 300 ava
 </div>
 </div>
 
-### Hungarian Algorithm Implementation
+<h3 id="hungarian-algorithm-implementation">Hungarian Algorithm Implementation</h3>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Trade-off**: The Hungarian algorithm is O(n^3) which seems expensive, but for a 500x300 matrix, it completes in ~50ms. The optimization savings far exceed the computation cost.</span>
 
@@ -605,7 +648,7 @@ class BatchDispatcher:
         return angle_diff / 180.0
 ```
 
-### Interview Questions: Driver Matching
+<h3 id="interview-questions-driver-matching">Interview Questions: Driver Matching</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #a371f7;">
 
@@ -644,12 +687,34 @@ class BatchDispatcher:
   - **Connection lost**: Detect via heartbeat, auto-decline after 8 seconds
 
   **State machine transitions**:
-  ```
-  PENDING -> OFFERED -> { ACCEPTED | DECLINED | TIMEOUT }
-  |
-  v
-  DRIVER_ASSIGNED
-  ```
+
+<div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0;">
+<div class="flow-row" style="flex-wrap: wrap; gap: 12px;">
+<div class="flow-box neutral" style="min-width: 100px;">
+<div class="flow-box-title">PENDING</div>
+</div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-box warning" style="min-width: 100px;">
+<div class="flow-box-title">OFFERED</div>
+</div>
+<div class="flow-arrow">&#8594;</div>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+<div class="flow-box success" style="min-width: 100px;">
+<div class="flow-box-title">ACCEPTED</div>
+</div>
+<div class="flow-box error" style="min-width: 100px;">
+<div class="flow-box-title">DECLINED</div>
+</div>
+<div class="flow-box error" style="min-width: 100px;">
+<div class="flow-box-title">TIMEOUT</div>
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical" style="margin: 8px 0;">&#8595;</div>
+<div class="flow-box primary" style="min-width: 140px;">
+<div class="flow-box-title">DRIVER_ASSIGNED</div>
+</div>
+</div>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Design choice**: We don't lock the driver during the offer window. If they accept another ride (from a different platform), they simply won't accept ours.</span>
 
@@ -693,11 +758,11 @@ See also: [[Hungarian Algorithm]](/topics/algorithms/hungarian-algorithm), [[Ass
 
 ---
 
-## 3. Surge Pricing
+<h2 id="surge-pricing">3. Surge Pricing</h2>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Core Assumption**: Surge pricing is a market-clearing mechanism, not a profit-maximization tool. The goal is to balance supply and demand, not to extract maximum revenue during high-demand periods.</span>
 
-### The Economics of Surge
+<h3 id="the-economics-of-surge">The Economics of Surge</h3>
 
 When demand exceeds supply, surge pricing serves two economic functions:
 1. **Demand reduction**: Price-sensitive riders delay their trip or choose alternatives
@@ -761,7 +826,7 @@ When demand exceeds supply, surge pricing serves two economic functions:
 </div>
 </div>
 
-### Surge Pricing Implementation
+<h3 id="surge-pricing-implementation">Surge Pricing Implementation</h3>
 
 ```python
 class SurgePricingService:
@@ -942,7 +1007,7 @@ class SurgePricingService:
         }
 ```
 
-### Interview Questions: Surge Pricing
+<h3 id="interview-questions-surge-pricing">Interview Questions: Surge Pricing</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
@@ -1067,11 +1132,11 @@ See also: [[Market Mechanisms]](/topics/economics/market-mechanisms), [[Dynamic 
 
 ---
 
-## 4. ETA Calculation
+<h2 id="eta-calculation">4. ETA Calculation</h2>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Core Assumption**: Google Maps ETA is accurate for driving time, but Uber's ETA must account for: driver acceptance time, walking to vehicle, traffic changes during ride, and pickup location complexity (airport terminals, stadium exits).</span>
 
-### Components of Uber ETA
+<h3 id="components-of-uber-eta">Components of Uber ETA</h3>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">ETA DECOMPOSITION</h4>
@@ -1132,7 +1197,7 @@ See also: [[Market Mechanisms]](/topics/economics/market-mechanisms), [[Dynamic 
 </div>
 </div>
 
-### ETA Prediction Service
+<h3 id="eta-prediction-service">ETA Prediction Service</h3>
 
 ```python
 class ETAService:
@@ -1289,7 +1354,7 @@ class ETAService:
         self.redis.setex(cache_key, 1200, eta)
 ```
 
-### Interview Questions: ETA Calculation
+<h3 id="interview-questions-eta-calculation">Interview Questions: ETA Calculation</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
@@ -1389,11 +1454,11 @@ See also: [[Time Series Prediction]](/topics/ml/time-series), [[Routing Algorith
 
 ---
 
-## 5. Ride State Machine
+<h2 id="ride-state-machine">5. Ride State Machine</h2>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Core Assumption**: A ride's state must be consistent across all services (trip, payment, driver app, rider app) even when network partitions occur. We use event sourcing with idempotent state transitions.</span>
 
-### State Machine Definition
+<h3 id="state-machine-definition">State Machine Definition</h3>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #db61a2; text-align: center; margin: 0 0 24px 0;">RIDE STATE MACHINE</h4>
@@ -1477,7 +1542,7 @@ See also: [[Time Series Prediction]](/topics/ml/time-series), [[Routing Algorith
 </div>
 </div>
 
-### Event Sourced Implementation
+<h3 id="event-sourced-implementation">Event Sourced Implementation</h3>
 
 ```python
 from enum import Enum
@@ -1723,7 +1788,7 @@ class RideSaga:
             raise
 ```
 
-### Interview Questions: Ride State Machine
+<h3 id="interview-questions-ride-state-machine">Interview Questions: Ride State Machine</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #db61a2;">
 
@@ -1857,7 +1922,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
 ---
 
-## System Integration Summary
+<h2 id="system-integration-summary">System Integration Summary</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0;">END-TO-END RIDE FLOW</h4>
@@ -1934,7 +1999,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
 ---
 
-## Technology Decision Matrix
+<h2 id="technology-decision-matrix">Technology Decision Matrix</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -1951,12 +2016,12 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
 ---
 
-## Scaling Milestones
+<h2 id="scaling-milestones">Scaling Milestones</h2>
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Phase 1: College Town MVP ($300/month)
+<h3 id="phase-1-mvp">Phase 1: College Town MVP ($300/month)</h3>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 50 drivers, 500 rides/day, single city</span>
 
@@ -1966,7 +2031,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
     - **Maps**: Google Maps API (~$200/month)
     - **Real-time**: HTTP polling every 5 seconds
 
-### Phase 2: Regional Player ($50K/month)
+<h3 id="phase-2-regional">Phase 2: Regional Player ($50K/month)</h3>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5K drivers, 50K rides/day, 5 cities</span>
 
@@ -1976,7 +2041,7 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
     - **Maps**: Mix of Google + OSRM for bulk calculations
     - **Real-time**: WebSockets for active trips
 
-### Phase 3: Uber Scale ($10M+/month)
+<h3 id="phase-3-uber-scale">Phase 3: Uber Scale ($10M+/month)</h3>
 
 <span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px; border-left: 3px solid #00d4aa;">**Assumption**: 5M drivers, 20M rides/day, 1000+ cities</span>
 
@@ -1991,11 +2056,11 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
 ---
 
-## Interview Red Flags vs. Strong Signals
+<h2 id="interview-red-flags-vs-strong-signals">Interview Red Flags vs. Strong Signals</h2>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
 
 <div style="background: #3d1f1f; border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
 <div style="color: #f85149; font-weight: bold; margin-bottom: 16px;">Red Flags</div>
@@ -2029,7 +2094,372 @@ See also: [[Event Sourcing]](/topics/distributed-systems/event-sourcing), [[Saga
 
 ---
 
-## Further Reading
+<h2 id="edge-cases-failure-modes">Edge Cases & Failure Modes</h2>
+
+Understanding how a ride-hailing system handles failures is critical for system design interviews. This section covers the most important edge cases and their mitigation strategies.
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+<h3 id="gps-and-location-failures">GPS and Location Failures</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
+<div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">Driver GPS Signal Lost</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Scenario:</strong> Driver enters tunnel or parking garage during active trip.<br/><br/>
+<strong>Detection:</strong> No GPS update for >30 seconds.<br/><br/>
+<strong>Mitigation:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Use last known heading + speed for dead reckoning</li>
+<li>Fallback to cell tower triangulation (accuracy ~500m)</li>
+<li>Display "Location updating..." to rider</li>
+<li>Continue fare calculation using estimated route</li>
+</ul>
+</div>
+</div>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #f59e0b; font-weight: bold; margin-bottom: 12px;">GPS Spoofing Detection</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Scenario:</strong> Driver uses fake GPS app to appear in surge zones or manipulate distance.<br/><br/>
+<strong>Detection signals:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Impossible velocity (>150 km/h in city)</li>
+<li>Location jumps >1km between updates</li>
+<li>Mismatch with cell tower data</li>
+<li>Accelerometer shows no movement</li>
+</ul>
+<strong>Response:</strong> Flag account, investigate, potential deactivation.
+</div>
+</div>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; margin-bottom: 12px;">Rider Location Inaccuracy</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Scenario:</strong> Rider requests from inside large building; GPS shows street location.<br/><br/>
+<strong>Mitigation strategies:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Use saved pickup addresses for known buildings</li>
+<li>Allow manual pin adjustment with confirmation</li>
+<li>Driver app shows "Rider may be inside building"</li>
+<li>Enable in-app messaging for location clarification</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<h3 id="surge-pricing-edge-cases" style="margin-top: 32px;">Surge Pricing Edge Cases</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #ef4444;">
+<div style="color: #ef4444; font-weight: bold; margin-bottom: 12px;">Emergency Surge Disable</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Scenario:</strong> Natural disaster, terrorist attack, or major emergency.<br/><br/>
+<strong>Implementation:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Geofenced surge cap triggered by emergency services API</li>
+<li>Hard cap at 1.0x in affected areas</li>
+<li>Push notification to drivers: "Emergency zone - standard fares"</li>
+<li>Audit log for regulatory compliance</li>
+</ul>
+</div>
+</div>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #8b5cf6;">
+<div style="color: #8b5cf6; font-weight: bold; margin-bottom: 12px;">Surge Zone Boundary Gaming</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Scenario:</strong> Rider requests from low-surge area, walks 50m into high-surge zone for pickup.<br/><br/>
+<strong>Policy decisions:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Surge calculated at request time, not pickup time</li>
+<li>Price lock valid for 5 minutes after confirmation</li>
+<li>Large pickup drift triggers fare recalculation notification</li>
+</ul>
+</div>
+</div>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #10b981; font-weight: bold; margin-bottom: 12px;">Surge Expiration Mid-Ride</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Scenario:</strong> Surge drops from 2.0x to 1.0x during a long trip.<br/><br/>
+<strong>Fare policy:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Surge locked at confirmation time for entire trip</li>
+<li>Displayed as "Price locked at 2.0x" in rider app</li>
+<li>Driver still receives surge bonus (incentive alignment)</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<h3 id="payment-failures" style="margin-top: 32px;">Payment Failures</h3>
+
+<div class="flow-diagram" style="background: #fff; border-radius: 12px; padding: 24px; margin-top: 20px;">
+<h4 style="color: #475569; margin: 0 0 16px 0; font-size: 14px;">Payment Authorization Flow with Failure Handling</h4>
+<div class="flow-row" style="flex-wrap: wrap; gap: 16px;">
+<div class="flow-box info" style="min-width: 120px;">
+<div class="flow-box-title">Pre-Auth</div>
+<div class="flow-box-subtitle">Est. fare + 20%</div>
+</div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-box warning" style="min-width: 120px;">
+<div class="flow-box-title">Trip Active</div>
+<div class="flow-box-subtitle">Hold maintained</div>
+</div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-box success" style="min-width: 120px;">
+<div class="flow-box-title">Capture</div>
+<div class="flow-box-subtitle">Actual fare</div>
+</div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-box primary" style="min-width: 120px;">
+<div class="flow-box-title">Settlement</div>
+<div class="flow-box-subtitle">Driver payout</div>
+</div>
+</div>
+</div>
+
+<div style="margin-top: 20px; background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #f85149;">
+<div style="color: #f85149; font-weight: bold; margin-bottom: 12px;">Card Decline Scenarios</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<th style="text-align: left; padding: 8px; color: #475569;">Timing</th>
+<th style="text-align: left; padding: 8px; color: #475569;">Failure</th>
+<th style="text-align: left; padding: 8px; color: #475569;">Action</th>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 8px;">Pre-ride</td>
+<td style="padding: 8px;">Auth fails</td>
+<td style="padding: 8px;">Block request, prompt for new payment method</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 8px;">Mid-ride</td>
+<td style="padding: 8px;">Auth expires</td>
+<td style="padding: 8px;">Silent re-auth attempt; trip continues</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 8px;">Post-ride</td>
+<td style="padding: 8px;">Capture fails</td>
+<td style="padding: 8px;">Retry 3x over 24h; add to account balance; suspend if unpaid</td>
+</tr>
+</table>
+</div>
+</div>
+
+<h3 id="driver-behavior-edge-cases" style="margin-top: 32px;">Driver Behavior Edge Cases</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #f59e0b;">
+<div style="color: #f59e0b; font-weight: bold; margin-bottom: 12px;">Driver Cancellation Patterns</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Cherry-picking detection:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Track cancel rate by rider demographics</li>
+<li>Flag drivers with >15% cancel rate</li>
+<li>Monitor post-accept cancellations (worse than declines)</li>
+</ul>
+<strong>Consequences:</strong> Warning, timeout, potential deactivation.
+</div>
+</div>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; margin-bottom: 12px;">Long Route Manipulation</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Scenario:</strong> Driver takes 15-minute detour on 10-minute trip.<br/><br/>
+<strong>Detection & response:</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Compare actual route vs optimal route</li>
+<li>Flag deviations >20% without traffic justification</li>
+<li>Auto-refund excess fare to rider</li>
+<li>Deduct from driver earnings</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+</div>
+
+---
+
+<h2 id="scale-strategy">Scale Strategy</h2>
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+
+<p style="color: #475569; font-size: 14px; line-height: 1.8; margin-bottom: 24px;">
+A ride-hailing platform experiences dramatically different challenges at different scales. This section outlines when to make key architectural decisions and what triggers should prompt upgrades.
+</p>
+
+<h3 id="scale-triggers-matrix">Scale Triggers Matrix</h3>
+
+<div style="overflow-x: auto; margin-top: 20px;">
+<table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+<thead>
+<tr style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white;">
+<th style="padding: 12px; text-align: left; border-radius: 8px 0 0 0;">Metric</th>
+<th style="padding: 12px; text-align: left;">MVP Threshold</th>
+<th style="padding: 12px; text-align: left;">Growth Threshold</th>
+<th style="padding: 12px; text-align: left; border-radius: 0 8px 0 0;">Scale Threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background: #fff; border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; font-weight: 600; color: #1f2937;">Concurrent Drivers</td>
+<td style="padding: 12px; color: #475569;">< 500</td>
+<td style="padding: 12px; color: #475569;">500 - 50K</td>
+<td style="padding: 12px; color: #475569;">> 50K per region</td>
+</tr>
+<tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; font-weight: 600; color: #1f2937;">Requests per Second</td>
+<td style="padding: 12px; color: #475569;">< 10</td>
+<td style="padding: 12px; color: #475569;">10 - 1,000</td>
+<td style="padding: 12px; color: #475569;">> 1,000 per region</td>
+</tr>
+<tr style="background: #fff; border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; font-weight: 600; color: #1f2937;">Location Updates/sec</td>
+<td style="padding: 12px; color: #475569;">< 100</td>
+<td style="padding: 12px; color: #475569;">100 - 100K</td>
+<td style="padding: 12px; color: #475569;">> 100K globally</td>
+</tr>
+<tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; font-weight: 600; color: #1f2937;">Maps API Cost/Month</td>
+<td style="padding: 12px; color: #475569;">< $1K</td>
+<td style="padding: 12px; color: #475569;">$1K - $50K</td>
+<td style="padding: 12px; color: #475569;">> $50K</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h3 id="horizontal-scaling-strategies" style="margin-top: 32px;">Horizontal Scaling Strategies</h3>
+
+<div class="flow-diagram" style="background: #fff; border-radius: 12px; padding: 24px; margin-top: 20px;">
+<h4 style="color: #1d4ed8; margin: 0 0 20px 0; text-align: center;">Geographic Sharding Architecture</h4>
+<div class="flow-row" style="flex-wrap: wrap; gap: 20px; justify-content: center;">
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+<div class="flow-box primary" style="min-width: 200px;">
+<div class="flow-box-title">Global API Gateway</div>
+<div class="flow-box-subtitle">Route by lat/lng</div>
+</div>
+<div class="flow-arrow vertical">&#8595;</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div class="flow-box success" style="min-width: 140px;">
+<div class="flow-box-title">US-West Shard</div>
+<div class="flow-box-subtitle">SF, LA, Seattle</div>
+</div>
+<div class="flow-box success" style="min-width: 140px;">
+<div class="flow-box-title">US-East Shard</div>
+<div class="flow-box-subtitle">NYC, Boston, DC</div>
+</div>
+<div class="flow-box success" style="min-width: 140px;">
+<div class="flow-box-title">EU Shard</div>
+<div class="flow-box-subtitle">London, Paris, Berlin</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 24px;">
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #10b981;">
+<div style="color: #10b981; font-weight: bold; margin-bottom: 12px;">Cell-Based Isolation</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+Each geographic region operates as an independent cell with:
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Own Redis cluster for driver locations</li>
+<li>Own Kafka cluster for events</li>
+<li>Own PostgreSQL for trip data</li>
+<li>Cross-cell communication only for analytics</li>
+</ul>
+<strong>Blast radius:</strong> Cell failure affects only that region.
+</div>
+</div>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #3b82f6;">
+<div style="color: #3b82f6; font-weight: bold; margin-bottom: 12px;">Hot Spot Handling</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+Times Square, airports, stadiums create traffic spikes:
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Pre-provision capacity for known events</li>
+<li>Rate limit by H3 cell during extreme load</li>
+<li>Queue requests with position notification</li>
+<li>Dedicated matching workers for hot zones</li>
+</ul>
+</div>
+</div>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; border-left: 4px solid #8b5cf6;">
+<div style="color: #8b5cf6; font-weight: bold; margin-bottom: 12px;">Data Partitioning Strategy</div>
+<div style="color: #475569; font-size: 13px; line-height: 1.8;">
+<strong>Hot data (in Redis):</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Driver locations - partitioned by H3 cell</li>
+<li>Active trips - partitioned by trip_id</li>
+<li>Surge multipliers - partitioned by H3 cell</li>
+</ul>
+<strong>Cold data (in PostgreSQL):</strong>
+<ul style="margin: 8px 0 0 0; padding-left: 20px;">
+<li>Completed trips - partitioned by date</li>
+<li>User profiles - partitioned by user_id hash</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<h3 id="graceful-degradation" style="margin-top: 32px;">Graceful Degradation Playbook</h3>
+
+<div style="background: #fff; border-radius: 12px; padding: 20px; margin-top: 20px;">
+<table style="width: 100%; border-collapse: collapse;">
+<thead>
+<tr style="border-bottom: 2px solid #e2e8f0;">
+<th style="padding: 12px; text-align: left; color: #1f2937;">System Under Stress</th>
+<th style="padding: 12px; text-align: left; color: #1f2937;">Degradation Action</th>
+<th style="padding: 12px; text-align: left; color: #1f2937;">User Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #475569;">Matching Service</td>
+<td style="padding: 12px; color: #475569;">Switch from batch Hungarian to greedy nearest</td>
+<td style="padding: 12px; color: #475569;">+15% avg pickup time</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #475569;">Maps API</td>
+<td style="padding: 12px; color: #475569;">Use cached cell-to-cell ETAs</td>
+<td style="padding: 12px; color: #475569;">ETA accuracy drops 20%</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #475569;">Surge Service</td>
+<td style="padding: 12px; color: #475569;">Freeze current surge multipliers</td>
+<td style="padding: 12px; color: #475569;">Prices may not reflect real-time demand</td>
+</tr>
+<tr style="border-bottom: 1px solid #e2e8f0;">
+<td style="padding: 12px; color: #475569;">Payment Service</td>
+<td style="padding: 12px; color: #475569;">Allow rides on credit (trusted users)</td>
+<td style="padding: 12px; color: #475569;">Delayed charging, fraud risk</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #475569;">Real-time Tracking</td>
+<td style="padding: 12px; color: #475569;">Reduce update frequency to 15s</td>
+<td style="padding: 12px; color: #475569;">Jumpier map animation</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+---
+
+<h2 id="further-reading">Further Reading</h2>
 
 - [[Consistent Hashing]](/topics/distributed-systems/consistent-hashing) - Understand geographic sharding
 - [[Event Sourcing]](/topics/distributed-systems/event-sourcing) - Deep dive on event-driven state
