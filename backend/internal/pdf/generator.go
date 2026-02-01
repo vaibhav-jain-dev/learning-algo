@@ -1,16 +1,14 @@
 package pdf
 
 import (
-	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/chromedp/cdproto/page"
-	"github.com/chromedp/chromedp"
 	"github.com/google/uuid"
 )
 
@@ -131,22 +129,12 @@ func (m *Manager) ProcessJob(jobID string, topicPaths []string) {
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				m.updateJob(jobID, "failed", 0, fmt.Sprintf("Panic: %v", r), "")
+				m.updateJob(jobID, "failed", 0, "", fmt.Sprintf("Panic: %v", r))
 			}
 		}()
 
 		// Update to processing
 		m.updateJob(jobID, "processing", 10, "Initializing PDF generation...", "")
-
-		// Build URL to print view
-		topicsQuery := ""
-		for i, path := range topicPaths {
-			if i > 0 {
-				topicsQuery += ","
-			}
-			topicsQuery += path
-		}
-		printURL := fmt.Sprintf("%s/pdf/print?topics=%s", m.baseURL, topicsQuery)
 
 		// Generate filename
 		filename := "dsalgo-topics.pdf"
@@ -161,7 +149,7 @@ func (m *Manager) ProcessJob(jobID string, topicPaths []string) {
 
 		// Generate PDF
 		pdfPath := filepath.Join(m.pdfDir, filename)
-		err := m.generatePDF(jobID, printURL, pdfPath)
+		err := m.generatePDF(jobID, topicPaths, pdfPath)
 		if err != nil {
 			m.updateJob(jobID, "failed", 0, "", err.Error())
 			return
@@ -177,57 +165,64 @@ func (m *Manager) ProcessJob(jobID string, topicPaths []string) {
 	}()
 }
 
-// generatePDF uses chromedp to navigate to URL and generate PDF
-func (m *Manager) generatePDF(jobID, url, outputPath string) error {
-	m.updateJob(jobID, "processing", 30, "Launching browser...", "")
+// generatePDF uses wkhtmltopdf to generate PDF with full HTML/CSS support (colors, gradients, etc.)
+func (m *Manager) generatePDF(jobID string, topicPaths []string, outputPath string) error {
+	m.updateJob(jobID, "processing", 20, "Building PDF URL...", "")
 
-	// Create context
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
+	if len(topicPaths) == 0 {
+		return fmt.Errorf("no topics provided")
+	}
 
-	// Set timeout
-	ctx, cancel = context.WithTimeout(ctx, 2*time.Minute)
-	defer cancel()
+	// Build URL to print view
+	topicsQuery := ""
+	for i, path := range topicPaths {
+		if i > 0 {
+			topicsQuery += ","
+		}
+		topicsQuery += path
+	}
 
-	m.updateJob(jobID, "processing", 50, "Rendering content...", "")
+	// Use baseURL to generate the print view URL
+	printURL := fmt.Sprintf("%s/pdf/print?topics=%s", m.baseURL, topicsQuery)
 
-	var buf []byte
-	err := chromedp.Run(ctx,
-		chromedp.Navigate(url),
-		chromedp.Sleep(2*time.Second), // Let content render fully
-		chromedp.ActionFunc(func(ctx context.Context) error {
-			var err error
-			buf, _, err = page.PrintToPDF().
-				WithPrintBackground(true).
-				WithPreferCSSPageSize(true).
-				WithPaperWidth(8.27).  // A4 width in inches
-				WithPaperHeight(11.69). // A4 height in inches
-				WithMarginTop(0.59).    // 15mm
-				WithMarginBottom(0.79). // 20mm
-				WithMarginLeft(0.59).   // 15mm
-				WithMarginRight(0.59).  // 15mm
-				WithDisplayHeaderFooter(true).
-				WithHeaderTemplate("<div></div>"). // Empty header
-				WithFooterTemplate(`<div style="font-size:8px; text-align:center; width:100%; margin:0 auto;">
-					<span style="float:left; margin-left:15mm;"></span>
-					<span style="margin:0 auto;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
-					<span style="float:right; margin-right:15mm;">DSAlgo Learning Platform</span>
-				</div>`).
-				Do(ctx)
-			return err
-		}),
+	m.updateJob(jobID, "processing", 40, fmt.Sprintf("Generating PDF from %s...", printURL), "")
+
+	// Use wkhtmltopdf to generate PDF (WebKit-based, NOT Chromium)
+	// This preserves ALL colors, gradients, and CSS styling
+	cmd := exec.Command("wkhtmltopdf",
+		"--page-size", "A4",
+		"--margin-top", "15mm",
+		"--margin-bottom", "20mm",
+		"--margin-left", "15mm",
+		"--margin-right", "15mm",
+		"--footer-center", "Page [page] of [topage]",
+		"--footer-font-size", "8",
+		"--footer-spacing", "5",
+		"--enable-local-file-access",
+		"--no-stop-slow-scripts",
+		"--javascript-delay", "2000", // Wait 2s for content to load
+		printURL,
+		outputPath,
 	)
 
+	// Capture output for debugging
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("chromedp error: %w", err)
+		return fmt.Errorf("wkhtmltopdf failed: %w\nOutput: %s", err, string(output))
 	}
 
-	m.updateJob(jobID, "processing", 80, "Saving PDF file...", "")
+	m.updateJob(jobID, "processing", 80, "Verifying PDF...", "")
 
-	// Write PDF to file
-	if err := os.WriteFile(outputPath, buf, 0644); err != nil {
-		return fmt.Errorf("failed to write PDF: %w", err)
+	// Verify file was created and has content
+	info, err := os.Stat(outputPath)
+	if err != nil {
+		return fmt.Errorf("PDF file not created: %w", err)
 	}
+	if info.Size() == 0 {
+		return fmt.Errorf("PDF file is empty")
+	}
+
+	m.updateJob(jobID, "processing", 90, fmt.Sprintf("PDF created successfully (%d KB, %d topics)", info.Size()/1024, len(topicPaths)), "")
 
 	return nil
 }

@@ -1,12 +1,47 @@
 # Design Dunzo Logistics
 
-## Problem Statement
+## Table of Contents {#toc}
+
+<div class="diagram-container" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
+<div style="width: 100%; max-width: 800px;">
+
+### Overview
+- [Problem Statement](#problem-statement)
+- [High-Level Architecture](#high-level-architecture)
+- [Order Flow](#order-flow)
+
+### Scaling Phases
+- [Phase 1: Starting Phase](#phase-1-starting-phase)
+- [Phase 2: Medium Scale](#phase-2-medium-scale)
+- [Phase 3: Dunzo Scale](#phase-3-dunzo-scale)
+
+### Technical Deep Dives
+- [AWS Technologies & Alternatives](#aws-technologies-alternatives)
+- [Distributed Systems Considerations](#distributed-systems)
+- [Scaling Strategies](#scaling-strategies)
+- [Edge Cases & Failure Modes](#edge-cases-failure-modes)
+
+### Interview Preparation
+- [Interview Deep Dive Questions](#interview-deep-dive)
+- [Why This Technology?](#why-this-technology)
+- [When Simpler Solutions Work](#simpler-solutions)
+- [Trade-off Analysis & Mitigation](#trade-off-analysis)
+- [Interview Tips](#interview-tips)
+- [Red Flags vs Impressive Statements](#red-flags-impressive)
+- [Quick Reference Card](#quick-reference)
+
+</div>
+</div>
+
+---
+
+## Problem Statement {#problem-statement}
 
 Design a hyperlocal delivery platform that enables pick-up and drop services, grocery delivery, and package delivery within a city.
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #00c853;">
 
-### Core Requirements
+### Core Requirements {#core-requirements}
 - **Multi-category Delivery**: Groceries, food, packages, documents
 - **Real-time Tracking**: Live location of delivery partners
 - **Route Optimization**: Efficient multi-stop routing
@@ -18,190 +53,195 @@ Design a hyperlocal delivery platform that enables pick-up and drop services, gr
 
 ---
 
-## High-Level Architecture
+## High-Level Architecture {#high-level-architecture}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0;">HYPERLOCAL DELIVERY ARCHITECTURE</h3>
+<div class="diagram-container">
+<div class="flow-diagram">
 
-<div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%;">HYPERLOCAL DELIVERY ARCHITECTURE</h4>
 
 <!-- Customer Layer -->
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 16px 32px; border: 2px solid #4ade80; text-align: center;">
-<div style="color: #4ade80; font-weight: bold; font-size: 14px;">CUSTOMERS</div>
-<div style="color: #d1fae5; font-size: 12px;">Mobile App</div>
+<div class="flow-box success">
+<div class="flow-box-title">CUSTOMERS</div>
+<div class="flow-box-subtitle">Mobile App</div>
 </div>
 
-<div style="color: #6b7280; font-size: 24px;">|</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Three Apps Row -->
-<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #60a5fa; text-align: center; min-width: 100px;">
-<div style="color: #60a5fa; font-weight: bold; font-size: 13px;">Customer App</div>
+<div class="flow-row">
+<div class="flow-box info">
+<div class="flow-box-title">Customer App</div>
 </div>
-<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #f97316; text-align: center; min-width: 100px;">
-<div style="color: #f97316; font-weight: bold; font-size: 13px;">Partner App</div>
+<div class="flow-box orange">
+<div class="flow-box-title">Partner App</div>
 </div>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 10px; padding: 14px 20px; border: 2px solid #a855f7; text-align: center; min-width: 100px;">
-<div style="color: #a855f7; font-weight: bold; font-size: 13px;">Merchant App</div>
+<div class="flow-box purple">
+<div class="flow-box-title">Merchant App</div>
 </div>
 </div>
 
-<div style="color: #6b7280; font-size: 24px;">|</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- API Gateway -->
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 16px 48px; border: 2px solid #9ca3af; text-align: center;">
-<div style="color: #e5e7eb; font-weight: bold; font-size: 14px;">API GATEWAY</div>
+<div class="flow-box neutral">
+<div class="flow-box-title">API GATEWAY</div>
 </div>
 
-<div style="color: #6b7280; font-size: 24px;">|</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Core Services Row -->
-<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+<div class="flow-row">
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 12px; padding: 16px; border: 2px solid #3b82f6; min-width: 140px;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">ORDER SERVICE</div>
-<div style="color: #93c5fd; font-size: 11px; line-height: 1.6;">
-- Create orders<br/>
-- Calculate pricing<br/>
-- Manage status
-</div>
+<div class="flow-box primary">
+<div class="flow-box-title">ORDER SERVICE</div>
+<div class="flow-box-subtitle">Create orders | Calculate pricing | Manage status</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 12px; padding: 16px; border: 2px solid #f97316; min-width: 140px;">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">DISPATCH SERVICE</div>
-<div style="color: #fed7aa; font-size: 11px; line-height: 1.6;">
-- Partner matching<br/>
-- Assignment logic<br/>
-- Order batching
-</div>
+<div class="flow-box warning">
+<div class="flow-box-title">DISPATCH SERVICE</div>
+<div class="flow-box-subtitle">Partner matching | Assignment | Order batching</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1a3d2d 0%, #2a5a3d 100%); border-radius: 12px; padding: 16px; border: 2px solid #22c55e; min-width: 140px;">
-<div style="color: #22c55e; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 8px;">TRACKING SERVICE</div>
-<div style="color: #bbf7d0; font-size: 11px; line-height: 1.6;">
-- Live location<br/>
-- ETA calculation<br/>
-- Trip history
-</div>
+<div class="flow-box success">
+<div class="flow-box-title">TRACKING SERVICE</div>
+<div class="flow-box-subtitle">Live location | ETA calculation | Trip history</div>
 </div>
 
 </div>
 
-<div style="color: #6b7280; font-size: 24px;">|</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Routing Service -->
-<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 12px; padding: 16px 24px; border: 2px solid #a855f7; text-align: center;">
-<div style="color: #a855f7; font-weight: bold; font-size: 13px; margin-bottom: 6px;">ROUTING SERVICE</div>
-<div style="color: #e9d5ff; font-size: 11px;">Route Optimization | Multi-stop | Traffic Analysis</div>
+<div class="flow-box purple">
+<div class="flow-box-title">ROUTING SERVICE</div>
+<div class="flow-box-subtitle">Route Optimization | Multi-stop | Traffic Analysis</div>
 </div>
 
-<div style="color: #6b7280; font-size: 24px;">|</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Kafka -->
-<div style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); border-radius: 12px; padding: 14px 40px; border: 2px solid #fbbf24; text-align: center;">
-<div style="color: #fbbf24; font-weight: bold; font-size: 14px;">KAFKA</div>
-<div style="color: #fef3c7; font-size: 11px;">Event Streaming</div>
+<div class="flow-box warning" style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); color: #fbbf24; border-color: #fbbf24;">
+<div class="flow-box-title">KAFKA</div>
+<div class="flow-box-subtitle" style="color: #fef3c7;">Event Streaming</div>
 </div>
 
 </div>
-
 </div>
 
 ---
 
-## Order Flow
+## Order Flow {#order-flow}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
-<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0;">HYPERLOCAL DELIVERY FLOW</h4>
+<div class="diagram-container">
+<div class="flow-diagram">
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; border: 2px solid #6b7280;">
-
-<div style="color: #e5e7eb; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #374151;">ORDER LIFECYCLE</div>
-
-<div style="display: flex; flex-direction: column; gap: 16px;">
+<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0; width: 100%;">ORDER LIFECYCLE</h4>
 
 <!-- Step 1: Order Creation -->
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #3b82f6;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 13px; margin-bottom: 8px;">1. ORDER CREATION</div>
-<div style="color: #bfdbfe; font-size: 12px; line-height: 1.8;">
+<div class="data-card data-card-accent info" style="width: 100%; max-width: 500px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">1. ORDER CREATION</span>
+<span class="diagram-badge info">INITIATE</span>
+</div>
+<div class="data-card-description">
 - Validate addresses (pickup + drops)<br/>
 - Calculate distance and route<br/>
 - Apply dynamic pricing (surge multiplier)<br/>
 - Reserve payment authorization
 </div>
 </div>
+</div>
 
-<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Step 2: Partner Matching -->
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #f97316;">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 8px;">2. PARTNER MATCHING</div>
-<div style="color: #fed7aa; font-size: 12px; line-height: 1.8;">
+<div class="data-card data-card-accent warning" style="width: 100%; max-width: 500px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">2. PARTNER MATCHING</span>
+<span class="diagram-badge warning">DISPATCH</span>
+</div>
+<div class="data-card-description">
 Find best partner based on:<br/>
 - Distance to pickup location<br/>
 - Current load (active orders)<br/>
 - Partner rating/performance score<br/>
 - Vehicle type requirements<br/><br/>
-<span style="color: #fbbf24;">Matching radius: 3km -> 5km -> 7km (expanding circles)</span>
+<strong style="color: #f59e0b;">Matching radius: 3km -> 5km -> 7km (expanding circles)</strong>
+</div>
 </div>
 </div>
 
-<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Step 3: Pickup Phase -->
-<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #a855f7;">
-<div style="color: #a855f7; font-weight: bold; font-size: 13px; margin-bottom: 8px;">3. PICKUP PHASE</div>
-<div style="color: #e9d5ff; font-size: 12px; line-height: 1.8;">
+<div class="data-card data-card-accent purple" style="width: 100%; max-width: 500px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">3. PICKUP PHASE</span>
+<span class="diagram-badge purple">COLLECT</span>
+</div>
+<div class="data-card-description">
 - Partner accepts/rejects offer (30s timeout)<br/>
 - Navigate to pickup location<br/>
 - Confirm pickup with OTP/photo verification
 </div>
 </div>
+</div>
 
-<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Step 4: Delivery Phase -->
-<div style="background: linear-gradient(135deg, #1a3d2d 0%, #2a5a3d 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 13px; margin-bottom: 8px;">4. DELIVERY PHASE</div>
-<div style="color: #bbf7d0; font-size: 12px; line-height: 1.8;">
+<div class="data-card data-card-accent success" style="width: 100%; max-width: 500px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">4. DELIVERY PHASE</span>
+<span class="diagram-badge success">TRANSIT</span>
+</div>
+<div class="data-card-description">
 - Optimized route to drop location(s)<br/>
 - Real-time tracking shared with customer<br/>
 - Confirm delivery with OTP/photo
 </div>
 </div>
+</div>
 
-<div style="text-align: center; color: #6b7280; font-size: 18px;">v</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Step 5: Completion -->
-<div style="background: linear-gradient(135deg, #3d3d1f 0%, #5a5a2d 100%); border-radius: 10px; padding: 16px; border-left: 4px solid #eab308;">
-<div style="color: #eab308; font-weight: bold; font-size: 13px; margin-bottom: 8px;">5. COMPLETION</div>
-<div style="color: #fef9c3; font-size: 12px; line-height: 1.8;">
+<div class="data-card data-card-accent orange" style="width: 100%; max-width: 500px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">5. COMPLETION</span>
+<span class="diagram-badge orange">DONE</span>
+</div>
+<div class="data-card-description">
 - Process final payment<br/>
 - Update partner earnings<br/>
 - Request ratings from both parties
 </div>
 </div>
-
 </div>
 
 </div>
-
 </div>
 
 ---
 
-## Phase 1: Starting Phase
+## Phase 1: Starting Phase {#phase-1-starting-phase}
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Assumptions
+### Assumptions {#phase1-assumptions}
 - **Cities**: 1-3
 - **Partners**: 100-1,000
 - **Orders**: 1,000-10,000/day
 - **Budget**: $5,000 - $25,000/month
 
-### Monolithic Architecture
+### Monolithic Architecture {#phase1-architecture}
 
 ```python
 class OrderService:
@@ -299,68 +339,86 @@ class DispatchService:
 
 ---
 
-## Phase 2: Medium Scale
+## Phase 2: Medium Scale {#phase-2-medium-scale}
 
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Route Optimization
+### Route Optimization {#route-optimization}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div class="diagram-container">
+<div class="flow-diagram">
 
-<div style="color: #1d4ed8; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px;">MULTI-STOP ROUTE OPTIMIZATION</div>
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%;">MULTI-STOP ROUTE OPTIMIZATION</h4>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280; margin-bottom: 20px;">
+<div style="width: 100%; max-width: 600px; margin-bottom: 20px;">
+<p style="text-align: center; color: #64748b; font-weight: 600;">Problem: Partner has multiple orders to deliver</p>
+</div>
 
-<div style="color: #e5e7eb; font-weight: bold; margin-bottom: 12px;">Problem: Partner has multiple orders to deliver</div>
+<div class="flow-row" style="width: 100%;">
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
-
-<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #ef4444;">
-<div style="color: #ef4444; font-weight: bold; font-size: 12px; margin-bottom: 8px;">NAIVE ROUTE</div>
-<div style="color: #fecaca; font-size: 11px; line-height: 1.8;">
+<div class="data-card data-card-accent error" style="flex: 1; min-width: 250px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">NAIVE ROUTE</span>
+<span class="diagram-badge error">INEFFICIENT</span>
+</div>
+<div class="data-card-description">
 Order A: Pickup P1 -> Drop D1<br/>
 Order B: Pickup P2 -> Drop D2<br/>
 Order C: Pickup P3 -> Drop D3<br/><br/>
 Route: P1 -> D1 -> P2 -> D2 -> P3 -> D3<br/>
-<span style="color: #f87171; font-weight: bold;">Total: 15 km</span>
+<strong style="color: #ef4444;">Total: 15 km</strong>
+</div>
 </div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border: 1px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">OPTIMIZED ROUTE (TSP-like)</div>
-<div style="color: #bbf7d0; font-size: 11px; line-height: 1.8;">
+<div class="data-card data-card-accent success" style="flex: 1; min-width: 250px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">OPTIMIZED ROUTE (TSP-like)</span>
+<span class="diagram-badge success">EFFICIENT</span>
+</div>
+<div class="data-card-description">
 Batch pickups, then optimize drops<br/><br/>
 Route: P1 -> P2 -> P3 -> D2 -> D1 -> D3<br/><br/>
-<span style="color: #4ade80; font-weight: bold;">Total: 10 km (33% savings)</span>
+<strong style="color: #10b981;">Total: 10 km (33% savings)</strong>
+</div>
 </div>
 </div>
 
 </div>
 
-<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #eab308; margin-top: 16px;">
-<div style="color: #eab308; font-weight: bold; font-size: 12px; margin-bottom: 8px;">CONSTRAINTS</div>
-<div style="color: #fef9c3; font-size: 11px; line-height: 1.8;">
+<div class="data-card data-card-accent warning" style="width: 100%; max-width: 600px; margin-top: 20px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">CONSTRAINTS</span>
+</div>
+<div class="data-card-description">
 - Pickup must happen before drop for same order (precedence)<br/>
 - Consider time windows (food freshness, customer availability)<br/>
 - Capacity limits (weight, size, vehicle type)
 </div>
 </div>
-
 </div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 14px; border: 1px solid #3b82f6;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">ALGORITHM</div>
-<div style="color: #bfdbfe; font-size: 11px; line-height: 1.8;">
+<div class="data-card data-card-accent info" style="width: 100%; max-width: 600px; margin-top: 16px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">ALGORITHM</span>
+</div>
+<div class="data-card-description">
 Modified TSP with precedence constraints<br/>
 - Use Google OR-Tools / OSRM for routing<br/>
 - Heuristic: Nearest neighbor with 2-opt improvement
 </div>
 </div>
-
 </div>
 
-### Order Batching
+</div>
+</div>
+
+### Order Batching {#order-batching}
 
 ```python
 class BatchingService:
@@ -423,57 +481,52 @@ class BatchingService:
         return batch
 ```
 
-### Partner Location Tracking
+### Partner Location Tracking {#location-tracking}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+<div class="diagram-container">
+<div class="flow-diagram">
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
-
-<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">LOCATION TRACKING PIPELINE</div>
-
-<div style="display: flex; flex-direction: column; gap: 12px;">
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%;">LOCATION TRACKING PIPELINE</h4>
 
 <!-- Partner App -->
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 12px; border: 1px solid #f97316; text-align: center;">
-<div style="color: #f97316; font-weight: bold; font-size: 12px;">Partner App</div>
-<div style="color: #fed7aa; font-size: 10px;">GPS update every 5 seconds (when active)</div>
+<div class="flow-box orange">
+<div class="flow-box-title">Partner App</div>
+<div class="flow-box-subtitle">GPS update every 5 seconds (when active)</div>
 </div>
 
-<div style="text-align: center; color: #6b7280;">v</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Location Service -->
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 12px; border: 1px solid #3b82f6; text-align: center;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px;">Location Service (WebSocket)</div>
-<div style="color: #bfdbfe; font-size: 10px;">Batch updates every 3 seconds</div>
+<div class="flow-box primary">
+<div class="flow-box-title">Location Service (WebSocket)</div>
+<div class="flow-box-subtitle">Batch updates every 3 seconds</div>
 </div>
 
-<div style="text-align: center; color: #6b7280;">v</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- Redis -->
-<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #ef4444;">
-<div style="color: #ef4444; font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center;">REDIS</div>
-<div style="color: #fecaca; font-size: 10px; font-family: monospace; line-height: 1.8;">
+<div class="flow-box error">
+<div class="flow-box-title">REDIS</div>
+<div class="flow-box-subtitle" style="font-family: monospace; font-size: 10px;">
 GEOADD partners:active lng lat partner_id<br/>
 HSET partner:{id}:location lat lng timestamp speed<br/>
-<span style="color: #fbbf24;">TTL: 60 seconds (offline if no update)</span>
+<strong style="color: #fbbf24;">TTL: 60 seconds (offline if no update)</strong>
 </div>
 </div>
 
-<div style="text-align: center; color: #6b7280;">v (Publish location changes)</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<p style="color: #64748b; font-size: 12px; margin: 0;">Publish location changes</p>
 
 <!-- Kafka -->
-<div style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); border-radius: 8px; padding: 14px; border: 1px solid #fbbf24;">
-<div style="color: #fbbf24; font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center;">KAFKA</div>
-<div style="color: #fef3c7; font-size: 10px;">
+<div class="flow-box warning" style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); color: #fbbf24; border-color: #fbbf24;">
+<div class="flow-box-title">KAFKA</div>
+<div class="flow-box-subtitle" style="color: #fef3c7;">
 Topic: partner.locations<br/><br/>
-<span style="font-weight: bold;">Consumers:</span> ETA Calculator | Customer Tracker | Analytics
+<strong>Consumers:</strong> ETA Calculator | Customer Tracker | Analytics
 </div>
 </div>
 
 </div>
-
-</div>
-
 </div>
 
 </div>
@@ -481,83 +534,77 @@ Topic: partner.locations<br/><br/>
 
 ---
 
-## Phase 3: Dunzo Scale
+## Phase 3: Dunzo Scale {#phase-3-dunzo-scale}
 
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Assumptions
+### Assumptions {#phase3-assumptions}
 - **Cities**: 25+
 - **Partners**: 50,000+
 - **Orders**: 1M+/day
 - **Merchants**: 100,000+
 
-### City-Based Microservices
+### City-Based Microservices {#city-microservices}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0;">
+<div class="diagram-container">
+<div class="flow-diagram">
 
-<div style="color: #a855f7; font-weight: bold; font-size: 16px; text-align: center; margin-bottom: 20px;">DUNZO MULTI-CITY ARCHITECTURE</div>
-
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; border: 2px solid #6b7280;">
+<h4 style="color: #a855f7; text-align: center; margin: 0 0 24px 0; width: 100%;">DUNZO MULTI-CITY ARCHITECTURE</h4>
 
 <!-- Global Layer -->
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 10px; padding: 16px; border: 2px solid #3b82f6; margin-bottom: 16px;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 12px;">GLOBAL LAYER</div>
-<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #60a5fa;">
-<div style="color: #60a5fa; font-size: 11px; font-weight: bold;">User Service</div>
+<div class="data-card" style="width: 100%; max-width: 700px; border: 2px solid #3b82f6;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #3b82f6;">GLOBAL LAYER</span>
 </div>
-<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #22c55e;">
-<div style="color: #22c55e; font-size: 11px; font-weight: bold;">Payment Service</div>
-</div>
-<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #f97316;">
-<div style="color: #f97316; font-size: 11px; font-weight: bold;">Marketing Service</div>
-</div>
-<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #ec4899;">
-<div style="color: #ec4899; font-size: 11px; font-weight: bold;">Merchant Platform</div>
-</div>
-<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #eab308;">
-<div style="color: #eab308; font-size: 11px; font-weight: bold;">Partner Platform</div>
-</div>
-<div style="background: #f8fafc; border-radius: 6px; padding: 8px 14px; border: 1px solid #a855f7;">
-<div style="color: #a855f7; font-size: 11px; font-weight: bold;">Analytics Platform</div>
+<div class="flow-row" style="margin-top: 12px;">
+<span class="diagram-badge info">User Service</span>
+<span class="diagram-badge success">Payment Service</span>
+<span class="diagram-badge orange">Marketing Service</span>
+<span class="diagram-badge pink">Merchant Platform</span>
+<span class="diagram-badge warning">Partner Platform</span>
+<span class="diagram-badge purple">Analytics Platform</span>
 </div>
 </div>
 </div>
 
-<div style="text-align: center; color: #6b7280; margin: 12px 0;">|</div>
+<div class="flow-arrow vertical">&#x2193;</div>
 
 <!-- City Clusters -->
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #3d2f4d 100%); border-radius: 10px; padding: 16px; border: 2px solid #a855f7;">
-<div style="color: #a855f7; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 12px;">CITY CLUSTERS</div>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+<div class="data-card" style="width: 100%; max-width: 700px; border: 2px solid #a855f7;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #a855f7;">CITY CLUSTERS</span>
+</div>
+<div class="flow-row" style="margin-top: 12px;">
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #22c55e; min-width: 120px; text-align: center;">
-<div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 6px;">BANGALORE</div>
-<div style="color: #bbf7d0; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
-<div style="color: #4ade80; font-size: 10px; margin-top: 6px; font-weight: bold;">15K partners</div>
+<div class="flow-box success" style="min-width: 150px;">
+<div class="flow-box-title">BANGALORE</div>
+<div class="flow-box-subtitle">Order | Dispatch | Track</div>
+<div style="margin-top: 8px;"><span class="diagram-badge success">15K partners</span></div>
 </div>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #f97316; min-width: 120px; text-align: center;">
-<div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 6px;">MUMBAI</div>
-<div style="color: #fed7aa; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
-<div style="color: #fb923c; font-size: 10px; margin-top: 6px; font-weight: bold;">12K partners</div>
+<div class="flow-box orange" style="min-width: 150px;">
+<div class="flow-box-title">MUMBAI</div>
+<div class="flow-box-subtitle">Order | Dispatch | Track</div>
+<div style="margin-top: 8px;"><span class="diagram-badge orange">12K partners</span></div>
 </div>
 
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6; min-width: 120px; text-align: center;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 6px;">DELHI</div>
-<div style="color: #bfdbfe; font-size: 10px; line-height: 1.6;">Order | Dispatch | Track</div>
-<div style="color: #60a5fa; font-size: 10px; margin-top: 6px; font-weight: bold;">10K partners</div>
-</div>
-
-</div>
-</div>
-
+<div class="flow-box info" style="min-width: 150px;">
+<div class="flow-box-title">DELHI</div>
+<div class="flow-box-subtitle">Order | Dispatch | Track</div>
+<div style="margin-top: 8px;"><span class="diagram-badge info">10K partners</span></div>
 </div>
 
 </div>
+</div>
+</div>
 
-### ML-Based ETA Prediction
+</div>
+</div>
+
+### ML-Based ETA Prediction {#ml-eta-prediction}
 
 ```python
 class ETAService:
@@ -613,9 +660,9 @@ class ETAService:
 
 ---
 
-## AWS Technologies & Alternatives
+## AWS Technologies & Alternatives {#aws-technologies-alternatives}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div class="diagram-container">
 
 | Component | AWS Service | Alternative | Trade-offs |
 |-----------|-------------|-------------|------------|
@@ -630,86 +677,617 @@ class ETAService:
 
 ---
 
-## Distributed Systems Considerations
+## Distributed Systems Considerations {#distributed-systems}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px;">
 
-### 1. Order Assignment Consistency
+### 1. Order Assignment Consistency {#assignment-consistency}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
-
-<div style="color: #f97316; font-weight: bold; margin-bottom: 12px;">Challenge: Multiple dispatchers trying to assign same partner</div>
-<div style="color: #22c55e; font-weight: bold; margin-bottom: 16px;">Solution: Distributed lock on partner</div>
-
-<div style="color: #e5e7eb; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #374151;">PARTNER ASSIGNMENT FLOW</div>
-
-<div style="display: flex; flex-direction: column; gap: 10px;">
-
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #3b82f6;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px;">STEP 1: Acquire Lock</div>
-<div style="color: #bfdbfe; font-size: 11px; font-family: monospace;">SETNX partner_lock:{id} order_id EX 30</div>
+<div class="data-card data-card-accent warning" style="margin-bottom: 16px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #f97316;">Challenge</span>
+</div>
+<div class="data-card-description">Multiple dispatchers trying to assign same partner</div>
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #eab308;">
-<div style="color: #eab308; font-weight: bold; font-size: 11px;">STEP 2: If Lock Acquired</div>
-<div style="color: #fef9c3; font-size: 11px;">- Check partner still available<br/>- Send offer to partner app<br/>- Wait for response (30s timeout)</div>
+<div class="data-card data-card-accent success" style="margin-bottom: 24px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #10b981;">Solution</span>
+</div>
+<div class="data-card-description">Distributed lock on partner</div>
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 11px;">STEP 3: If Partner Accepts</div>
-<div style="color: #bbf7d0; font-size: 11px;">- Create assignment<br/>- Update partner status<br/>- Release lock</div>
+<div class="flow-diagram" style="padding: 0;">
+
+<h5 style="text-align: center; color: #64748b; margin-bottom: 16px;">PARTNER ASSIGNMENT FLOW</h5>
+
+<div class="data-card data-card-accent info" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">STEP 1: Acquire Lock</div>
+<div class="data-card-description" style="font-family: monospace;">SETNX partner_lock:{id} order_id EX 30</div>
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #ef4444;">
-<div style="color: #ef4444; font-weight: bold; font-size: 11px;">STEP 4: If Partner Rejects/Timeout</div>
-<div style="color: #fecaca; font-size: 11px;">- Release lock<br/>- Try next partner in scored list</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+
+<div class="data-card data-card-accent warning" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">STEP 2: If Lock Acquired</div>
+<div class="data-card-description">
+- Check partner still available<br/>
+- Send offer to partner app<br/>
+- Wait for response (30s timeout)
+</div>
+</div>
+</div>
+
+<div class="flow-arrow vertical">&#x2193;</div>
+
+<div class="data-card data-card-accent success" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">STEP 3: If Partner Accepts</div>
+<div class="data-card-description">
+- Create assignment<br/>
+- Update partner status<br/>
+- Release lock
+</div>
+</div>
+</div>
+
+<div class="flow-arrow vertical">&#x2193;</div>
+
+<div class="data-card data-card-accent error" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">STEP 4: If Partner Rejects/Timeout</div>
+<div class="data-card-description">
+- Release lock<br/>
+- Try next partner in scored list
+</div>
+</div>
+</div>
+
+</div>
+
+### 2. Location Update at Scale {#location-scale}
+
+<div class="data-card data-card-accent warning" style="margin: 24px 0;">
+<div class="data-card-content">
+<div class="data-card-title" style="color: #f97316;">50K partners x 1 update/5s = 10K updates/second</div>
+</div>
+</div>
+
+<div class="flow-row" style="gap: 12px;">
+
+<div class="flow-box info" style="flex: 1;">
+<div class="flow-box-title">Ingestion</div>
+<div class="flow-box-subtitle">Redis Streams for high-throughput writes</div>
+</div>
+
+<div class="flow-box success" style="flex: 1;">
+<div class="flow-box-title">Persistence</div>
+<div class="flow-box-subtitle">Batch writes to PostgreSQL every minute</div>
+</div>
+
+<div class="flow-box orange" style="flex: 1;">
+<div class="flow-box-title">Real-time</div>
+<div class="flow-box-subtitle">Served from Redis only (hot data)</div>
+</div>
+
+<div class="flow-box purple" style="flex: 1;">
+<div class="flow-box-title">Historical</div>
+<div class="flow-box-subtitle">TimescaleDB for time-series analytics</div>
 </div>
 
 </div>
 
 </div>
-
-### 2. Location Update at Scale
-
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
-
-<div style="color: #f97316; font-weight: bold; margin-bottom: 12px;">50K partners x 1 update/5s = 10K updates/second</div>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #3b82f6;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Ingestion</div>
-<div style="color: #bfdbfe; font-size: 10px;">Redis Streams for high-throughput writes</div>
-</div>
-
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Persistence</div>
-<div style="color: #bbf7d0; font-size: 10px;">Batch writes to PostgreSQL every minute</div>
-</div>
-
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #f97316;">
-<div style="color: #f97316; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Real-time</div>
-<div style="color: #fed7aa; font-size: 10px;">Served from Redis only (hot data)</div>
-</div>
-
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #a855f7;">
-<div style="color: #a855f7; font-weight: bold; font-size: 11px; margin-bottom: 6px;">Historical</div>
-<div style="color: #e9d5ff; font-size: 10px;">TimescaleDB for time-series analytics</div>
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 ---
 
-## Interview Deep Dive Questions
+## Scaling Strategies {#scaling-strategies}
+
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px;">
+
+### Horizontal Scaling Approach {#horizontal-scaling}
+
+<div class="flow-diagram" style="padding: 0; margin-bottom: 24px;">
+
+<div class="flow-row">
+<div class="flow-box primary" style="flex: 1;">
+<div class="flow-box-title">Geographic Sharding</div>
+<div class="flow-box-subtitle">Partition by city/region</div>
+</div>
+<div class="flow-box success" style="flex: 1;">
+<div class="flow-box-title">Read Replicas</div>
+<div class="flow-box-subtitle">Scale read-heavy operations</div>
+</div>
+<div class="flow-box warning" style="flex: 1;">
+<div class="flow-box-title">Caching Layers</div>
+<div class="flow-box-subtitle">Redis for hot data</div>
+</div>
+</div>
+
+</div>
+
+### Database Scaling Strategy {#db-scaling}
+
+| Scale Level | Orders/Day | Strategy | Database Setup |
+|-------------|------------|----------|----------------|
+| **Startup** | < 10K | Single instance | PostgreSQL primary |
+| **Growth** | 10K-100K | Read replicas | 1 primary + 2 replicas |
+| **Scale** | 100K-500K | Functional sharding | Separate DBs per domain |
+| **Enterprise** | 500K+ | Geographic sharding | DB cluster per city |
+
+### Caching Strategy {#caching-strategy}
+
+<div class="data-card data-card-accent info" style="margin: 16px 0;">
+<div class="data-card-content">
+<div class="data-card-title">Multi-Layer Cache Architecture</div>
+<div class="data-card-description">
+
+**L1 - Application Cache (in-memory)**
+- Partner availability status
+- Recent order lookups
+- TTL: 5-10 seconds
+
+**L2 - Redis Cache (distributed)**
+- Partner locations (GEOADD)
+- Active order details
+- Session data
+- TTL: 30-60 seconds
+
+**L3 - CDN Cache (edge)**
+- Static merchant data
+- Menu/catalog information
+- TTL: 5-15 minutes
+
+</div>
+</div>
+</div>
+
+### Event-Driven Architecture {#event-driven}
+
+```python
+class EventDrivenDispatch:
+    """
+    Kafka-based event-driven dispatch system for scale.
+    """
+
+    TOPICS = {
+        'order_created': 'orders.created',
+        'partner_available': 'partners.availability',
+        'location_updated': 'partners.locations',
+        'assignment_completed': 'dispatch.assignments'
+    }
+
+    def __init__(self):
+        self.producer = KafkaProducer(
+            bootstrap_servers=['kafka-1:9092', 'kafka-2:9092'],
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            acks='all',  # Wait for all replicas
+            retries=3
+        )
+
+    def publish_order_created(self, order):
+        """Publish order for async processing."""
+        event = {
+            'event_type': 'ORDER_CREATED',
+            'order_id': order.id,
+            'pickup': order.pickup.to_dict(),
+            'drops': [d.to_dict() for d in order.drops],
+            'category': order.category,
+            'created_at': order.created_at.isoformat(),
+            'city_id': order.city_id  # For partitioning
+        }
+
+        # Partition by city for locality
+        self.producer.send(
+            self.TOPICS['order_created'],
+            key=order.city_id.encode(),
+            value=event
+        )
+
+    def consume_and_dispatch(self, city_id):
+        """City-specific consumer for order dispatch."""
+        consumer = KafkaConsumer(
+            self.TOPICS['order_created'],
+            bootstrap_servers=['kafka-1:9092'],
+            group_id=f'dispatch-{city_id}',
+            auto_offset_reset='earliest'
+        )
+
+        for message in consumer:
+            order_event = json.loads(message.value)
+            if order_event['city_id'] == city_id:
+                self.process_dispatch(order_event)
+```
+
+### Auto-Scaling Configuration {#auto-scaling}
+
+<div class="flow-row" style="gap: 12px; margin: 16px 0;">
+
+<div class="data-card data-card-accent info" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">API Gateway</div>
+<div class="data-card-description">
+Scale on: Request rate<br/>
+Min: 2, Max: 20<br/>
+Target: 1000 RPS/instance
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent success" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Dispatch Workers</div>
+<div class="data-card-description">
+Scale on: Queue depth<br/>
+Min: 3, Max: 50<br/>
+Target: < 100 pending orders
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent warning" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Location Service</div>
+<div class="data-card-description">
+Scale on: WebSocket connections<br/>
+Min: 2, Max: 30<br/>
+Target: 5K connections/instance
+</div>
+</div>
+</div>
+
+</div>
+
+### Load Shedding Strategy {#load-shedding}
+
+```python
+class LoadShedder:
+    """
+    Graceful degradation during high load.
+    """
+
+    def __init__(self, redis_client):
+        self.redis = redis_client
+        self.thresholds = {
+            'normal': 0.7,      # 70% capacity
+            'elevated': 0.85,   # 85% capacity
+            'critical': 0.95    # 95% capacity
+        }
+
+    def get_system_load(self):
+        """Calculate current system load."""
+        metrics = {
+            'cpu': self.get_avg_cpu_usage(),
+            'memory': self.get_avg_memory_usage(),
+            'queue_depth': self.get_dispatch_queue_depth(),
+            'latency_p99': self.get_api_latency_p99()
+        }
+
+        # Weighted average
+        return (
+            metrics['cpu'] * 0.3 +
+            metrics['memory'] * 0.2 +
+            min(metrics['queue_depth'] / 1000, 1) * 0.3 +
+            min(metrics['latency_p99'] / 500, 1) * 0.2
+        )
+
+    def should_shed_load(self, request_type):
+        """Determine if request should be shed."""
+        load = self.get_system_load()
+
+        if load < self.thresholds['normal']:
+            return False  # Accept all requests
+
+        if load >= self.thresholds['critical']:
+            # Only accept critical requests
+            return request_type not in ['payment', 'emergency']
+
+        if load >= self.thresholds['elevated']:
+            # Shed non-essential requests
+            return request_type in ['analytics', 'recommendations', 'promotions']
+
+        return False
+
+    def apply_degraded_mode(self, order):
+        """Apply degraded processing during high load."""
+        return {
+            'skip_ml_scoring': True,      # Use simple distance matching
+            'reduce_batch_wait': True,    # Don't wait for batching
+            'simplified_eta': True,       # Use historical avg, not ML
+            'skip_promotions': True       # Don't calculate discounts
+        }
+```
+
+</div>
+</div>
+
+---
+
+## Edge Cases & Failure Modes {#edge-cases-failure-modes}
+
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px;">
+
+### Critical Failure Scenarios {#critical-failures}
+
+<div class="flow-diagram" style="padding: 0;">
+
+<div class="data-card data-card-accent error" style="width: 100%; margin-bottom: 16px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Partner Cancels Mid-Delivery</span>
+<span class="diagram-badge error">CRITICAL</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Customer has been charged, package in transit<br/>
+<strong>Detection:</strong> GPS anomaly, explicit cancellation, connectivity loss > 3 min<br/>
+<strong>Recovery:</strong> Rescue protocol - find nearby partner within 1-2km radius<br/>
+<strong>SLA:</strong> Reassignment within 4 minutes, 94% rescue success rate
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent error" style="width: 100%; margin-bottom: 16px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Redis Location Cache Down</span>
+<span class="diagram-badge error">HIGH</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Cannot find nearby partners for assignment<br/>
+<strong>Detection:</strong> Health check failure, connection timeouts<br/>
+<strong>Recovery:</strong> Fallback to PostgreSQL with last known locations (stale but functional)<br/>
+<strong>RTO:</strong> 30 seconds with automatic failover
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent warning" style="width: 100%; margin-bottom: 16px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Partner App Loses Connectivity</span>
+<span class="diagram-badge warning">MEDIUM</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Stale location data, missed assignment offers<br/>
+<strong>Detection:</strong> No GPS update for 60+ seconds<br/>
+<strong>Recovery:</strong> Mark partner as "unreachable", queue SMS notification, offline order queue<br/>
+<strong>RTO:</strong> Partner reconnects or manual reassignment after 2 minutes
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent warning" style="width: 100%; margin-bottom: 16px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Kafka Consumer Lag</span>
+<span class="diagram-badge warning">MEDIUM</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Delayed order processing, customer waiting<br/>
+<strong>Detection:</strong> Consumer lag > 1000 messages, processing time > 30s<br/>
+<strong>Recovery:</strong> Auto-scaling consumers, priority queue bypass for urgent orders<br/>
+<strong>RTO:</strong> < 2 minutes with proper alerting
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent info" style="width: 100%; margin-bottom: 16px;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: ML ETA Model Returns Outliers</span>
+<span class="diagram-badge info">LOW</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Unrealistic customer expectations (ETA: 2 min for 10km)<br/>
+<strong>Detection:</strong> ETA outside 2 standard deviations from historical average<br/>
+<strong>Recovery:</strong> Rule-based bounds checking, fallback to distance-based calculation<br/>
+<strong>RTO:</strong> Immediate with outlier detection
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent info" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Payment Gateway Timeout</span>
+<span class="diagram-badge info">LOW</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Order stuck in pending state<br/>
+<strong>Detection:</strong> Payment API response > 5 seconds<br/>
+<strong>Recovery:</strong> Async payment processing, proceed with delivery on credit for trusted customers<br/>
+<strong>RTO:</strong> Retry queue with 3x attempts over 5 minutes
+</div>
+</div>
+</div>
+
+</div>
+
+### Edge Case Handling {#edge-case-handling}
+
+<div style="margin-top: 24px;">
+
+#### 1. No Partners Available {#no-partners}
+
+```python
+class NoPartnerHandler:
+    """Handle scenarios when no partners are available."""
+
+    def handle_no_partner(self, order):
+        strategies = [
+            self.expand_search_radius,      # 3km -> 5km -> 7km -> 10km
+            self.offer_incentive_bonus,     # Extra Rs 50 for accepting
+            self.wait_and_retry,            # Wait 2 min, retry
+            self.suggest_scheduled_delivery, # Offer later time slot
+            self.refund_and_apologize       # Last resort
+        ]
+
+        for strategy in strategies:
+            result = strategy(order)
+            if result.success:
+                return result
+
+        return self.escalate_to_operations(order)
+
+    def expand_search_radius(self, order, max_radius=10):
+        for radius in [3, 5, 7, 10]:
+            partners = self.find_partners(order.pickup, radius)
+            if partners:
+                return StrategyResult(
+                    success=True,
+                    partners=partners,
+                    extra_eta=self.calculate_extra_eta(radius)
+                )
+        return StrategyResult(success=False)
+```
+
+#### 2. Duplicate Order Detection {#duplicate-orders}
+
+```python
+class DuplicateOrderDetector:
+    """Prevent accidental duplicate orders."""
+
+    def is_duplicate(self, customer_id, order_details):
+        # Check for recent similar orders
+        recent_orders = Order.query.filter(
+            Order.customer_id == customer_id,
+            Order.created_at > now() - timedelta(minutes=5),
+            Order.status.in_(['PENDING', 'ASSIGNED', 'IN_TRANSIT'])
+        ).all()
+
+        for existing in recent_orders:
+            similarity = self.calculate_similarity(existing, order_details)
+            if similarity > 0.9:  # 90% similar
+                return True, existing
+
+        return False, None
+
+    def calculate_similarity(self, existing, new):
+        pickup_match = haversine(existing.pickup, new['pickup']) < 0.1  # 100m
+        drop_match = haversine(existing.drops[0], new['drops'][0]) < 0.1
+        category_match = existing.category == new['category']
+
+        return (pickup_match + drop_match + category_match) / 3
+```
+
+#### 3. GPS Spoofing Detection {#gps-spoofing}
+
+```python
+class GPSSpoofingDetector:
+    """Detect fraudulent GPS manipulation."""
+
+    def validate_location_update(self, partner_id, new_location):
+        history = self.get_recent_locations(partner_id, minutes=5)
+
+        if not history:
+            return True  # First update
+
+        last_location = history[-1]
+
+        # Check 1: Impossible speed
+        time_diff = (new_location.timestamp - last_location.timestamp).seconds
+        distance = haversine(last_location, new_location)
+        speed_kmh = (distance / time_diff) * 3600 if time_diff > 0 else 0
+
+        if speed_kmh > 120:  # > 120 km/h on two-wheeler
+            self.flag_suspicious(partner_id, 'IMPOSSIBLE_SPEED', speed_kmh)
+            return False
+
+        # Check 2: Location jump (teleportation)
+        if distance > 5 and time_diff < 60:  # 5km in < 1 min
+            self.flag_suspicious(partner_id, 'LOCATION_JUMP', distance)
+            return False
+
+        # Check 3: Stationary but claiming movement
+        if self.is_pattern_suspicious(history + [new_location]):
+            self.flag_suspicious(partner_id, 'PATTERN_ANOMALY')
+            return False
+
+        return True
+```
+
+#### 4. Order Value Mismatch {#value-mismatch}
+
+```python
+class OrderValueValidator:
+    """Handle discrepancies in order value."""
+
+    def validate_merchant_order(self, order, merchant_confirmation):
+        discrepancy = abs(order.estimated_value - merchant_confirmation.actual_value)
+        discrepancy_pct = discrepancy / order.estimated_value
+
+        if discrepancy_pct <= 0.1:  # < 10% difference
+            return self.proceed_with_adjustment(order, merchant_confirmation)
+
+        if discrepancy_pct <= 0.25:  # 10-25% difference
+            return self.request_customer_confirmation(order, merchant_confirmation)
+
+        # > 25% difference - likely wrong order
+        return self.escalate_to_support(order, merchant_confirmation)
+```
+
+</div>
+
+### Disaster Recovery {#disaster-recovery}
+
+<div class="flow-row" style="gap: 12px; margin-top: 24px;">
+
+<div class="data-card data-card-accent error" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Complete City Outage</div>
+<div class="data-card-description">
+<strong>RTO:</strong> 15 minutes<br/>
+<strong>RPO:</strong> 30 seconds<br/>
+<strong>Action:</strong> Failover to backup region, notify all active partners/customers
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent warning" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Database Corruption</div>
+<div class="data-card-description">
+<strong>RTO:</strong> 30 minutes<br/>
+<strong>RPO:</strong> 5 minutes<br/>
+<strong>Action:</strong> Point-in-time recovery, replay Kafka events
+</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent info" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Third-Party API Failure</div>
+<div class="data-card-description">
+<strong>RTO:</strong> Immediate<br/>
+<strong>RPO:</strong> N/A<br/>
+<strong>Action:</strong> Circuit breaker, fallback to cached/degraded mode
+</div>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+---
+
+## Interview Deep Dive Questions {#interview-deep-dive}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f39c12;">
 
-### 1. "How do you optimize multi-stop routes?"
+### 1. "How do you optimize multi-stop routes?" {#question-route-optimization}
 
 **What They're Probing**: Understanding of TSP variants, real-world constraints, computational complexity trade-offs
 
@@ -749,7 +1327,7 @@ class ETAService:
 
 ---
 
-### 2. "Why not just use Google Maps routing API for everything?"
+### 2. "Why not just use Google Maps routing API for everything?" {#question-google-maps}
 
 **What They're Probing**: Cost awareness, understanding of API limitations, ability to build vs. buy
 
@@ -793,7 +1371,7 @@ class ETAService:
 
 ---
 
-### 3. "How do you handle rider assignment at scale?"
+### 3. "How do you handle rider assignment at scale?" {#question-rider-assignment}
 
 **What They're Probing**: Distributed systems knowledge, consistency vs. availability trade-offs, real-world matching systems
 
@@ -862,7 +1440,7 @@ class ETAService:
 
 ---
 
-### 4. "How do you ensure delivery partner earnings are fair and predictable?"
+### 4. "How do you ensure delivery partner earnings are fair and predictable?" {#question-partner-earnings}
 
 **What They're Probing**: Understanding of gig economy dynamics, incentive design, operational sustainability
 
@@ -938,7 +1516,7 @@ class ETAService:
 
 ---
 
-### 5. "What happens when a partner cancels mid-delivery?"
+### 5. "What happens when a partner cancels mid-delivery?" {#question-mid-delivery-cancel}
 
 **What They're Probing**: Failure handling, customer experience protection, operational resilience
 
@@ -1031,11 +1609,12 @@ class ETAService:
 
 ---
 
-## Why This Technology?
+## Why This Technology? {#why-this-technology}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px;">
 
-### Technology Decision Matrix
+### Technology Decision Matrix {#tech-decision-matrix}
 
 | Decision | Options Considered | Chosen | Why |
 |----------|-------------------|--------|-----|
@@ -1046,68 +1625,71 @@ class ETAService:
 | **Assignment Algorithm** | FIFO, Nearest, Scored | Scored | Balances partner experience, customer wait time, operational efficiency |
 | **Real-time Updates** | Polling, WebSocket, SSE | WebSocket | Bi-directional needed for partner app, SSE for customer tracking |
 
-### When to Upgrade Technology
+### When to Upgrade Technology {#when-to-upgrade}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div class="flow-diagram" style="padding: 0; gap: 12px;">
 
-<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">TECHNOLOGY EVOLUTION TRIGGERS</div>
-
-<div style="display: flex; flex-direction: column; gap: 12px;">
-
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #3b82f6;">
-<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px;">PostgreSQL Location Queries -> Redis GEO</div>
+<div class="data-card data-card-accent info" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">PostgreSQL Location Queries -> Redis GEO</span>
 </div>
-<div style="color: #bfdbfe; font-size: 11px; margin-top: 6px;">
+<div class="data-card-description">
 <strong>Trigger:</strong> > 100 location queries/second<br/>
 <strong>Sign:</strong> Database CPU > 70% during peak
 </div>
 </div>
-
-<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #22c55e;">
-<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-<div style="color: #22c55e; font-weight: bold; font-size: 12px;">Simple Distance Matching -> ML-based Scoring</div>
 </div>
-<div style="color: #bbf7d0; font-size: 11px; margin-top: 6px;">
+
+<div class="data-card data-card-accent success" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">Simple Distance Matching -> ML-based Scoring</span>
+</div>
+<div class="data-card-description">
 <strong>Trigger:</strong> > 500 partners in single city<br/>
 <strong>Sign:</strong> Partner utilization variance > 40%
 </div>
 </div>
-
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #f97316;">
-<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-<div style="color: #f97316; font-weight: bold; font-size: 12px;">Google Maps API -> Self-hosted OSRM</div>
 </div>
-<div style="color: #fed7aa; font-size: 11px; margin-top: 6px;">
+
+<div class="data-card data-card-accent warning" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">Google Maps API -> Self-hosted OSRM</span>
+</div>
+<div class="data-card-description">
 <strong>Trigger:</strong> > $5000/month in Maps API costs<br/>
 <strong>Sign:</strong> Route API calls > 500K/month
 </div>
 </div>
-
-<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #a855f7;">
-<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-<div style="color: #a855f7; font-weight: bold; font-size: 12px;">Monolithic Dispatch -> City-sharded Services</div>
 </div>
-<div style="color: #e9d5ff; font-size: 11px; margin-top: 6px;">
+
+<div class="data-card data-card-accent purple" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">Monolithic Dispatch -> City-sharded Services</span>
+</div>
+<div class="data-card-description">
 <strong>Trigger:</strong> > 3 cities with different peak patterns<br/>
 <strong>Sign:</strong> One city's surge affecting another's performance
 </div>
 </div>
-
 </div>
 
 </div>
 
+</div>
 </div>
 
 ---
 
-## When Simpler Solutions Work
+## When Simpler Solutions Work {#simpler-solutions}
 
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0;">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px;">
 
-### Reality Check: You Probably Don't Need This Complexity
+### Reality Check: You Probably Don't Need This Complexity {#reality-check}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #00c853;">
 
@@ -1128,7 +1710,7 @@ class ETAService:
 
 </div>
 
-### When You DON'T Need ML Route Optimization
+### When You DON'T Need ML Route Optimization {#no-ml-needed}
 
 | Scenario | Simple Alternative | Why It Works |
 |----------|-------------------|--------------|
@@ -1137,51 +1719,34 @@ class ETAService:
 | Predictable routes | Pre-computed route templates | Same store -> same areas daily |
 | Low-density areas | Nearest neighbor heuristic | Optimal isn't much better |
 
-### The "$300/Month Delivery Platform" Stack
+### The "$300/Month Delivery Platform" Stack {#budget-stack}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div class="diagram-container">
+<div style="width: 100%;">
 
-<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">STARTUP STACK (Works up to 500 orders/day)</div>
+<h4 style="text-align: center; color: #64748b; margin-bottom: 16px;">STARTUP STACK (Works up to 500 orders/day)</h4>
 
-<div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 16px;">
+| Component | Cost |
+|-----------|------|
+| Frontend: React/Flutter app | $0 |
+| Backend: Single Node.js/Django server | $50/mo |
+| Database: Managed PostgreSQL (basic) | $50/mo |
+| Maps: Google Maps API (free tier + basic) | $100/mo |
+| SMS/Notifications: Twilio | $50/mo |
+| Hosting: Single VPS or basic cloud | $50/mo |
+| **Total** | **~$300/month** |
 
-<div style="color: #60a5fa; font-size: 12px;">Frontend: React/Flutter app</div>
-<div style="color: #4ade80; font-size: 12px; text-align: right;">$0</div>
-
-<div style="color: #60a5fa; font-size: 12px;">Backend: Single Node.js/Django server</div>
-<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
-
-<div style="color: #60a5fa; font-size: 12px;">Database: Managed PostgreSQL (basic)</div>
-<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
-
-<div style="color: #60a5fa; font-size: 12px;">Maps: Google Maps API (free tier + basic)</div>
-<div style="color: #4ade80; font-size: 12px; text-align: right;">$100/mo</div>
-
-<div style="color: #60a5fa; font-size: 12px;">SMS/Notifications: Twilio</div>
-<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
-
-<div style="color: #60a5fa; font-size: 12px;">Hosting: Single VPS or basic cloud</div>
-<div style="color: #4ade80; font-size: 12px; text-align: right;">$50/mo</div>
-
-</div>
-
-<div style="border-top: 1px solid #374151; padding-top: 12px; display: flex; justify-content: space-between;">
-<div style="color: #fbbf24; font-weight: bold; font-size: 14px;">Total:</div>
-<div style="color: #fbbf24; font-weight: bold; font-size: 14px;">~$300/month</div>
-</div>
-
-<div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #374151;">
-<div style="color: #9ca3af; font-size: 11px; line-height: 1.8;">
+<div style="margin-top: 16px; color: #64748b; font-size: 14px;">
 <strong>Assignment:</strong> Manual or simple FIFO queue<br/>
 <strong>Routing:</strong> Google Maps Directions API<br/>
 <strong>Tracking:</strong> Store lat/lng in PostgreSQL, poll every 30s<br/>
 <strong>Batching:</strong> Manual by dispatcher
 </div>
-</div>
 
 </div>
+</div>
 
-### Real-World Examples of Simpler Approaches
+### Real-World Examples of Simpler Approaches {#simpler-examples}
 
 **DoorDash (early days)**:
 - Simple zone-based assignment for most markets
@@ -1198,48 +1763,56 @@ class ETAService:
 - Daily route planning by human dispatcher
 - Phone calls for status updates
 
-### Questions to Ask Before Building Complexity
+### Questions to Ask Before Building Complexity {#complexity-questions}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div class="flow-row" style="gap: 12px;">
 
-<div style="display: grid; gap: 16px;">
-
-<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #a855f7;">
-<div style="color: #a855f7; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before building ML-based dispatch:</div>
-<div style="color: #e9d5ff; font-size: 11px; line-height: 1.8;">
+<div class="data-card data-card-accent purple" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Before building ML-based dispatch:</div>
+<div class="data-card-description">
 - Do we have > 500 concurrent active partners?<br/>
 - Is partner utilization variance > 30%?<br/>
 - Do we have 3+ months of historical data?
 </div>
 </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #3b82f6;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before building real-time route optimization:</div>
-<div style="color: #bfdbfe; font-size: 11px; line-height: 1.8;">
+<div class="data-card data-card-accent info" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Before building real-time route optimization:</div>
+<div class="data-card-description">
 - Do partners regularly have 3+ stops?<br/>
 - Are we losing > 5% revenue to inefficient routing?<br/>
 - Do we have traffic data integration?
 </div>
 </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before sharding by city:</div>
-<div style="color: #bbf7d0; font-size: 11px; line-height: 1.8;">
+</div>
+
+<div class="flow-row" style="gap: 12px; margin-top: 12px;">
+
+<div class="data-card data-card-accent success" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Before sharding by city:</div>
+<div class="data-card-description">
 - Do we have > 3 cities?<br/>
 - Are cities in different timezones with different peaks?<br/>
 - Is single database CPU > 60% at peak?
 </div>
 </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #f97316;">
-<div style="color: #f97316; font-weight: bold; font-size: 12px; margin-bottom: 8px;">Before building custom routing engine:</div>
-<div style="color: #fed7aa; font-size: 11px; line-height: 1.8;">
+<div class="data-card data-card-accent warning" style="flex: 1;">
+<div class="data-card-content">
+<div class="data-card-title">Before building custom routing engine:</div>
+<div class="data-card-description">
 - Are Maps API costs > $5000/month?<br/>
 - Do we need vehicle-specific routing (bikes vs cars)?<br/>
 - Is Google's routing inadequate for our geography?
 </div>
 </div>
-
 </div>
 
 </div>
@@ -1249,11 +1822,12 @@ class ETAService:
 
 ---
 
-## Trade-off Analysis & Mitigation
+## Trade-off Analysis & Mitigation {#trade-off-analysis}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px;">
 
-### Critical Trade-offs in Logistics Platform Design
+### Critical Trade-offs in Logistics Platform Design {#critical-tradeoffs}
 
 | Trade-off | Option A | Option B | Our Choice | Mitigation |
 |-----------|----------|----------|------------|------------|
@@ -1263,64 +1837,68 @@ class ETAService:
 | **Cost vs Coverage** | Minimize partner payments | Guarantee earnings | Zone-based guarantees | Higher guarantees in underserved areas only |
 | **Consistency vs Availability** | Strong consistency for assignment | Accept some double-assignment | Optimistic locking with reconciliation | Automated conflict resolution, customer notification |
 
-### Failure Mode Analysis
+### Failure Mode Analysis {#failure-mode-analysis}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
+<div class="flow-diagram" style="padding: 0; gap: 12px;">
 
-<div style="color: #e5e7eb; font-weight: bold; font-size: 14px; text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #374151;">FAILURE MODES AND MITIGATIONS</div>
-
-<div style="display: flex; flex-direction: column; gap: 12px;">
-
-<div style="background: linear-gradient(135deg, #3d1f1f 0%, #4d2f2f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #ef4444;">
-<div style="color: #ef4444; font-weight: bold; font-size: 12px;">FAILURE: Redis location cache goes down</div>
-<div style="color: #fecaca; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<div class="data-card data-card-accent error" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Redis location cache goes down</div>
+<div class="data-card-description">
 <strong>Impact:</strong> Can't find nearby partners<br/>
 <strong>Mitigation:</strong> Fallback to PostgreSQL with last known locations<br/>
 <strong>RTO:</strong> 30 seconds with automatic failover
 </div>
 </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #f97316;">
-<div style="color: #f97316; font-weight: bold; font-size: 12px;">FAILURE: Partner app loses connectivity</div>
-<div style="color: #fed7aa; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<div class="data-card data-card-accent warning" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Partner app loses connectivity</div>
+<div class="data-card-description">
 <strong>Impact:</strong> Stale location, missed assignments<br/>
 <strong>Mitigation:</strong> Offline queue, SMS fallback for critical orders<br/>
 <strong>RTO:</strong> Partner reconnects or manual reassignment
 </div>
 </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #eab308;">
-<div style="color: #eab308; font-weight: bold; font-size: 12px;">FAILURE: Kafka consumer lag</div>
-<div style="color: #fef9c3; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<div class="data-card data-card-accent orange" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Kafka consumer lag</div>
+<div class="data-card-description">
 <strong>Impact:</strong> Delayed order processing<br/>
 <strong>Mitigation:</strong> Auto-scaling consumers, priority queue bypass<br/>
 <strong>RTO:</strong> < 2 minutes with lag alerting at 1000 messages
 </div>
 </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #a855f7;">
-<div style="color: #a855f7; font-weight: bold; font-size: 12px;">FAILURE: ML ETA model returns outliers</div>
-<div style="color: #e9d5ff; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<div class="data-card data-card-accent purple" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: ML ETA model returns outliers</div>
+<div class="data-card-description">
 <strong>Impact:</strong> Unrealistic customer expectations<br/>
 <strong>Mitigation:</strong> Rule-based bounds checking, fallback to historical avg<br/>
 <strong>RTO:</strong> Immediate with outlier detection
 </div>
 </div>
+</div>
 
-<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 14px; border-left: 3px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 12px;">FAILURE: Payment gateway timeout</div>
-<div style="color: #bbf7d0; font-size: 11px; margin-top: 6px; line-height: 1.6;">
+<div class="data-card data-card-accent success" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Payment gateway timeout</div>
+<div class="data-card-description">
 <strong>Impact:</strong> Order stuck in pending<br/>
 <strong>Mitigation:</strong> Async payment, proceed with delivery on credit<br/>
 <strong>RTO:</strong> Retry queue with 3x attempts over 5 minutes
 </div>
 </div>
-
 </div>
 
 </div>
 
-### Scaling Bottlenecks and Solutions
+### Scaling Bottlenecks and Solutions {#scaling-bottlenecks}
 
 | Bottleneck | Symptom | Threshold | Solution |
 |------------|---------|-----------|----------|
@@ -1331,14 +1909,15 @@ class ETAService:
 | WebSocket connections | Memory exhaustion | 50K connections | Sticky sessions, connection pooling |
 
 </div>
+</div>
 
 ---
 
-## Interview Tips
+## Interview Tips {#interview-tips}
 
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-### Key Discussion Points
+### Key Discussion Points {#key-discussion-points}
 
 1. **Dispatch algorithm**: Matching partners to orders with scoring
 2. **Route optimization**: Multi-stop TSP with precedence constraints
@@ -1348,7 +1927,7 @@ class ETAService:
 6. **Failure handling**: Mid-delivery cancellations, reassignment
 7. **City-based scaling**: When and how to shard by geography
 
-### Common Follow-ups
+### Common Follow-ups {#common-followups}
 
 - How do you handle partner unavailability mid-delivery?
 - How do you implement cash-on-delivery reconciliation?
@@ -1360,13 +1939,15 @@ class ETAService:
 
 ---
 
-## Red Flags vs Impressive Statements
+## Red Flags vs Impressive Statements {#red-flags-impressive}
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px;">
 
-### Red Flags (What NOT to Say)
+### Red Flags (What NOT to Say) {#red-flags}
 
-<div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #ff6b6b;">
+<div class="data-card data-card-accent error" style="margin-bottom: 24px;">
+<div class="data-card-content">
 
 | Statement | Why It's a Red Flag |
 |-----------|-------------------|
@@ -1380,10 +1961,12 @@ class ETAService:
 | "The algorithm finds the optimal route" | TSP is NP-hard; we use heuristics |
 
 </div>
+</div>
 
-### Impressive Statements (What Shows Depth)
+### Impressive Statements (What Shows Depth) {#impressive-statements}
 
-<div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5d4a 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border-left: 4px solid #00c853;">
+<div class="data-card data-card-accent success" style="margin-bottom: 24px;">
+<div class="data-card-content">
 
 | Statement | Why It Impresses |
 |-----------|-----------------|
@@ -1399,56 +1982,66 @@ class ETAService:
 | "At 100K orders/day, Google Maps routing costs $15-30K/month" | Quantified decision making |
 
 </div>
-
-### The "10x Engineer" Answer Pattern
-
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #6b7280;">
-
-<div style="display: flex; flex-direction: column; gap: 12px;">
-
-<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #3b82f6;">
-<div style="color: #3b82f6; font-weight: bold; font-size: 11px;">1. ACKNOWLEDGE COMPLEXITY</div>
-<div style="color: #bfdbfe; font-size: 11px; margin-top: 4px;">"This is essentially a real-time matching marketplace with geographical constraints..."</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #1f3d2d 0%, #2f4d3d 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #22c55e;">
-<div style="color: #22c55e; font-weight: bold; font-size: 11px;">2. START SIMPLE</div>
-<div style="color: #bbf7d0; font-size: 11px; margin-top: 4px;">"For MVP, FIFO assignment with basic distance filtering handles 80% of cases..."</div>
+### The "10x Engineer" Answer Pattern {#answer-pattern}
+
+<div class="flow-diagram" style="padding: 0; gap: 12px;">
+
+<div class="data-card data-card-accent info" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">1. ACKNOWLEDGE COMPLEXITY</div>
+<div class="data-card-description">"This is essentially a real-time matching marketplace with geographical constraints..."</div>
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #4a2c1a 0%, #5a3c2a 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #f97316;">
-<div style="color: #f97316; font-weight: bold; font-size: 11px;">3. IDENTIFY TRIGGERS</div>
-<div style="color: #fed7aa; font-size: 11px; margin-top: 4px;">"When we hit 500+ concurrent partners, simple matching creates utilization variance..."</div>
+<div class="data-card data-card-accent success" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">2. START SIMPLE</div>
+<div class="data-card-description">"For MVP, FIFO assignment with basic distance filtering handles 80% of cases..."</div>
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1f5a 0%, #4d2f6a 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #a855f7;">
-<div style="color: #a855f7; font-weight: bold; font-size: 11px;">4. PROPOSE EVOLUTION</div>
-<div style="color: #e9d5ff; font-size: 11px; margin-top: 4px;">"Then we introduce scored matching, but keep FIFO as fallback during system stress..."</div>
+<div class="data-card data-card-accent warning" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">3. IDENTIFY TRIGGERS</div>
+<div class="data-card-description">"When we hit 500+ concurrent partners, simple matching creates utilization variance..."</div>
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d3d1f 0%, #4d4d2f 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #eab308;">
-<div style="color: #eab308; font-weight: bold; font-size: 11px;">5. QUANTIFY TRADE-OFFS</div>
-<div style="color: #fef9c3; font-size: 11px; margin-top: 4px;">"ML routing saves ~15% distance but adds 200ms latency and requires 3 months of training data..."</div>
+<div class="data-card data-card-accent purple" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">4. PROPOSE EVOLUTION</div>
+<div class="data-card-description">"Then we introduce scored matching, but keep FIFO as fallback during system stress..."</div>
+</div>
 </div>
 
-<div style="background: linear-gradient(135deg, #3d1f3d 0%, #4d2f4d 100%); border-radius: 8px; padding: 12px; border-left: 3px solid #ec4899;">
-<div style="color: #ec4899; font-weight: bold; font-size: 11px;">6. SHOW INDUSTRY AWARENESS</div>
-<div style="color: #fbcfe8; font-size: 11px; margin-top: 4px;">"This is similar to how Uber evolved from simple dispatch to their Marketplace team's algorithms..."</div>
+<div class="data-card data-card-accent orange" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">5. QUANTIFY TRADE-OFFS</div>
+<div class="data-card-description">"ML routing saves ~15% distance but adds 200ms latency and requires 3 months of training data..."</div>
+</div>
+</div>
+
+<div class="data-card data-card-accent pink" style="width: 100%;">
+<div class="data-card-content">
+<div class="data-card-title">6. SHOW INDUSTRY AWARENESS</div>
+<div class="data-card-description">"This is similar to how Uber evolved from simple dispatch to their Marketplace team's algorithms..."</div>
+</div>
 </div>
 
 </div>
 
 </div>
-
 </div>
 
 ---
 
-## Quick Reference Card
+## Quick Reference Card {#quick-reference}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #58a6ff;">
 
-### Numbers to Remember
+### Numbers to Remember {#numbers-to-remember}
 
 | Metric | Threshold | Action |
 |--------|-----------|--------|
@@ -1463,7 +2056,7 @@ class ETAService:
 | Batch window | 5 minutes max | Customer patience limit |
 | Redis GEO TTL | 60 seconds | Mark partner offline |
 
-### Tech Stack Quick Reference
+### Tech Stack Quick Reference {#tech-stack-reference}
 
 | Scale | Database | Cache | Queue | Routing |
 |-------|----------|-------|-------|---------|

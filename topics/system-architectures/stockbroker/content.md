@@ -1,6 +1,44 @@
 # Design a Stockbroker System
 
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
+<nav class="toc-container" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border: 1px solid #e2e8f0;">
+
+## Table of Contents
+
+- [Problem Statement](#problem-statement)
+- [Section 1: Order Matching Engine](#section-1-order-matching-engine)
+  - [Core Concept](#matching-core-concept)
+  - [Order Book Data Structure](#order-book-data-structure)
+  - [Implementation](#matching-implementation)
+  - [Edge Cases in Order Matching](#matching-edge-cases)
+  - [Interview Questions](#matching-interview-questions)
+- [Section 2: Market Data Feeds](#section-2-market-data-feeds)
+  - [Core Concept](#market-data-core-concept)
+  - [Multicast Distribution](#multicast-distribution)
+  - [Handling Packet Loss](#handling-packet-loss)
+  - [Interview Questions](#market-data-interview-questions)
+- [Section 3: Trade Settlement](#section-3-trade-settlement)
+  - [Core Concept](#settlement-core-concept)
+  - [Settlement Lifecycle](#settlement-lifecycle)
+  - [Failure Scenarios](#settlement-failure-scenarios)
+  - [Interview Questions](#settlement-interview-questions)
+- [Section 4: Latency Optimization](#section-4-latency-optimization)
+  - [Core Concept](#latency-core-concept)
+  - [Latency Breakdown](#latency-breakdown)
+  - [Optimization Techniques](#optimization-techniques)
+  - [Interview Questions](#latency-interview-questions)
+- [Section 5: Regulatory Compliance](#section-5-regulatory-compliance)
+  - [Core Concept](#compliance-core-concept)
+  - [Key Requirements](#compliance-requirements)
+  - [Audit Trail Architecture](#audit-trail-architecture)
+  - [Interview Questions](#compliance-interview-questions)
+- [Edge Cases & Failure Modes](#edge-cases-failure-modes)
+- [Scaling Strategies](#scaling-strategies)
+- [Cross-Cutting Concerns](#cross-cutting-concerns)
+- [Related Topics](#related-topics)
+
+</nav>
+
+<div id="problem-statement" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
 ## Problem Statement
 
@@ -17,11 +55,11 @@ Design a real-time electronic trading platform that enables order execution, mar
 
 ---
 
-## Section 1: Order Matching Engine
+<h2 id="section-1-order-matching-engine">Section 1: Order Matching Engine</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Core Concept: The Heart of Every Exchange
+<h3 id="matching-core-concept">Core Concept: The Heart of Every Exchange</h3>
 
 The order matching engine is the central component that receives orders, maintains the order book, and executes trades when buy and sell orders cross. It must be **deterministic** (same inputs always produce same outputs), **fair** (first-in-first-out at each price level), and **fast** (sub-microsecond for competitive exchanges).
 
@@ -34,7 +72,7 @@ The matching engine assumes **price-time priority** (also called FIFO): orders a
 
 </div>
 
-### Internal Mechanism: Order Book Data Structure
+<h3 id="order-book-data-structure">Internal Mechanism: Order Book Data Structure</h3>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
@@ -86,7 +124,7 @@ The matching engine assumes **price-time priority** (also called FIFO): orders a
 
 </div>
 
-### Implementation: Optimal Data Structures
+<h3 id="matching-implementation">Implementation: Optimal Data Structures</h3>
 
 The choice of data structure directly impacts matching latency. See [[data-structures]](/topics/data-structures) for fundamentals.
 
@@ -139,7 +177,7 @@ class OrderBook:
 
 </div>
 
-### Edge Cases in Order Matching
+<h3 id="matching-edge-cases">Edge Cases in Order Matching</h3>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
 
@@ -165,7 +203,7 @@ class OrderBook:
 
 </div>
 
-### 3-Level Recursive Interview Questions: Matching Engine
+<h3 id="matching-interview-questions">3-Level Recursive Interview Questions: Matching Engine</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
@@ -274,11 +312,11 @@ For case 2, the remaining quantity is typically cancelled (not added to book, si
 
 ---
 
-## Section 2: Market Data Feeds
+<h2 id="section-2-market-data-feeds">Section 2: Market Data Feeds</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Core Concept: Publishing Price Information
+<h3 id="market-data-core-concept">Core Concept: Publishing Price Information</h3>
 
 Market data feeds distribute real-time price information to subscribers. This includes:
 - **Level 1 (L1)**: Best bid, best ask, last trade price
@@ -294,55 +332,54 @@ Unlike order execution (which requires strong consistency), market data display 
 
 </div>
 
-### Internal Mechanism: Multicast Distribution
+<h3 id="multicast-distribution">Internal Mechanism: Multicast Distribution</h3>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div class="diagram-container" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-<div style="display: flex; flex-direction: column; gap: 16px;">
-
-<div style="display: flex; align-items: center; gap: 20px;">
-<div style="background: #f85149; min-width: 120px; padding: 16px; border-radius: 8px; text-align: center;">
-<div style="color: white; font-weight: 700;">Matching Engine</div>
+<div class="flow-diagram">
+<div class="flow-row">
+<div class="flow-box error" style="min-width: 150px;">
+<div class="flow-box-title">Matching Engine</div>
+<div class="flow-box-subtitle">Trade Events</div>
 </div>
-<div style="color: #58a6ff; font-size: 24px;">&#8594;</div>
-<div style="background: #8957e5; min-width: 140px; padding: 16px; border-radius: 8px; text-align: center;">
-<div style="color: white; font-weight: 700;">Market Data Gateway</div>
-<div style="color: rgba(255,255,255,0.7); font-size: 11px;">Normalizes, sequences</div>
-</div>
-</div>
-
-<div style="display: flex; justify-content: center;">
-<div style="color: #a371f7; font-size: 24px;">&#8595;</div>
-</div>
-
-<div style="display: flex; justify-content: center;">
-<div style="background: rgba(137, 87, 229, 0.2); border: 2px solid #a371f7; padding: 16px 40px; border-radius: 8px; text-align: center;">
-<div style="color: #a371f7; font-weight: 700;">UDP Multicast</div>
-<div style="color: #8b949e; font-size: 12px;">239.255.0.0/16</div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-box purple" style="min-width: 180px;">
+<div class="flow-box-title">Market Data Gateway</div>
+<div class="flow-box-subtitle">Normalizes, sequences</div>
 </div>
 </div>
 
-<div style="display: flex; justify-content: center; gap: 20px;">
-<div style="color: #a371f7; font-size: 24px;">&#8601;</div>
-<div style="color: #a371f7; font-size: 24px;">&#8595;</div>
-<div style="color: #a371f7; font-size: 24px;">&#8600;</div>
+<div class="flow-row">
+<div class="flow-arrow vertical">&#8595;</div>
 </div>
 
-<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: #f8fafc; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
-<div style="color: #7ee787; font-weight: 600;">Subscriber 1</div>
-<div style="color: #8b949e; font-size: 11px;">HFT Firm</div>
-</div>
-<div style="background: #f8fafc; border: 2px solid #58a6ff; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
-<div style="color: #58a6ff; font-weight: 600;">Subscriber 2</div>
-<div style="color: #8b949e; font-size: 11px;">Retail Broker</div>
-</div>
-<div style="background: #f8fafc; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 100px;">
-<div style="color: #f0883e; font-weight: 600;">Subscriber 3</div>
-<div style="color: #8b949e; font-size: 11px;">Data Vendor</div>
+<div class="flow-row">
+<div class="flow-box primary" style="min-width: 200px;">
+<div class="flow-box-title">UDP Multicast</div>
+<div class="flow-box-subtitle">239.255.0.0/16</div>
 </div>
 </div>
 
+<div class="flow-row">
+<div class="flow-arrow">&#8601;</div>
+<div class="flow-arrow vertical">&#8595;</div>
+<div class="flow-arrow">&#8600;</div>
+</div>
+
+<div class="flow-row">
+<div class="flow-box success" style="min-width: 120px;">
+<div class="flow-box-title">Subscriber 1</div>
+<div class="flow-box-subtitle">HFT Firm</div>
+</div>
+<div class="flow-box info" style="min-width: 120px;">
+<div class="flow-box-title">Subscriber 2</div>
+<div class="flow-box-subtitle">Retail Broker</div>
+</div>
+<div class="flow-box warning" style="min-width: 120px;">
+<div class="flow-box-title">Subscriber 3</div>
+<div class="flow-box-subtitle">Data Vendor</div>
+</div>
+</div>
 </div>
 
 </div>
@@ -362,7 +399,7 @@ Unlike order execution (which requires strong consistency), market data display 
 
 </div>
 
-### Handling Packet Loss in UDP Feeds
+<h3 id="handling-packet-loss">Handling Packet Loss in UDP Feeds</h3>
 
 UDP is unreliable by design. Market data systems implement their own reliability layer:
 
@@ -400,7 +437,7 @@ class MarketDataReceiver:
 
 </div>
 
-### 3-Level Recursive Interview Questions: Market Data
+<h3 id="market-data-interview-questions">3-Level Recursive Interview Questions: Market Data</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
@@ -483,11 +520,11 @@ During that 450-microsecond window, the HFT firm can:
 
 ---
 
-## Section 3: Trade Settlement
+<h2 id="section-3-trade-settlement">Section 3: Trade Settlement</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Core Concept: From Trade to Transfer
+<h3 id="settlement-core-concept">Core Concept: From Trade to Transfer</h3>
 
 Settlement is the process of transferring ownership of securities and cash between buyer and seller after a trade executes. In the US, equities settle T+1 (trade date plus one business day). This delay exists for operational and risk management reasons.
 
@@ -500,59 +537,59 @@ Modern settlement assumes a central clearing house (like DTCC in the US) acts as
 
 </div>
 
-### Internal Mechanism: Settlement Lifecycle
+<h3 id="settlement-lifecycle">Internal Mechanism: Settlement Lifecycle</h3>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div class="diagram-container" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-<div style="display: flex; flex-direction: column; gap: 12px;">
+<div class="flow-diagram">
 
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #238636; min-width: 80px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-<span style="color: white; font-weight: 700;">T</span>
+<div class="flow-row" style="width: 100%;">
+<div class="flow-box success" style="min-width: 80px;">
+<div class="flow-box-title">T</div>
 </div>
-<div style="flex: 1; background: rgba(35, 134, 54, 0.2); border-radius: 8px; padding: 12px;">
-<div style="color: #7ee787; font-weight: 600;">Trade Execution</div>
+<div style="flex: 1; background: rgba(16, 185, 129, 0.15); border-radius: 8px; padding: 12px; margin-left: 16px;">
+<div style="color: #10b981; font-weight: 600;">Trade Execution</div>
 <div style="color: #8b949e; font-size: 13px;">Matching engine executes trade. Both parties receive execution report. Trade is "locked in" but not yet settled.</div>
 </div>
 </div>
 
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #1f6feb; min-width: 80px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-<span style="color: white; font-weight: 700;">T+0</span>
+<div class="flow-row" style="width: 100%;">
+<div class="flow-box info" style="min-width: 80px;">
+<div class="flow-box-title">T+0</div>
 </div>
-<div style="flex: 1; background: rgba(31, 111, 235, 0.2); border-radius: 8px; padding: 12px;">
-<div style="color: #58a6ff; font-weight: 600;">Trade Capture & Matching</div>
-<div style="color: #8b949e; font-size: 13px;">Both brokers submit trade details to clearing house. System validates both sides agree on terms (symbol, quantity, price). Discrepancies flagged for manual resolution.</div>
-</div>
-</div>
-
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #8957e5; min-width: 80px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-<span style="color: white; font-weight: 700;">T+0</span>
-</div>
-<div style="flex: 1; background: rgba(137, 87, 229, 0.2); border-radius: 8px; padding: 12px;">
-<div style="color: #a371f7; font-weight: 600;">Novation</div>
-<div style="color: #8b949e; font-size: 13px;">CCP becomes counterparty. Original trade (Broker A ↔ Broker B) becomes two trades: (Broker A ↔ CCP) and (CCP ↔ Broker B).</div>
+<div style="flex: 1; background: rgba(59, 130, 246, 0.15); border-radius: 8px; padding: 12px; margin-left: 16px;">
+<div style="color: #3b82f6; font-weight: 600;">Trade Capture & Matching</div>
+<div style="color: #8b949e; font-size: 13px;">Both brokers submit trade details to clearing house. System validates both sides agree on terms (symbol, quantity, price).</div>
 </div>
 </div>
 
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #f0883e; min-width: 80px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-<span style="color: white; font-weight: 700;">T+0</span>
+<div class="flow-row" style="width: 100%;">
+<div class="flow-box purple" style="min-width: 80px;">
+<div class="flow-box-title">T+0</div>
 </div>
-<div style="flex: 1; background: rgba(240, 136, 62, 0.2); border-radius: 8px; padding: 12px;">
-<div style="color: #f0883e; font-weight: 600;">Netting</div>
+<div style="flex: 1; background: rgba(139, 92, 246, 0.15); border-radius: 8px; padding: 12px; margin-left: 16px;">
+<div style="color: #8b5cf6; font-weight: 600;">Novation</div>
+<div style="color: #8b949e; font-size: 13px;">CCP becomes counterparty. Original trade (Broker A to Broker B) becomes two trades: (Broker A to CCP) and (CCP to Broker B).</div>
+</div>
+</div>
+
+<div class="flow-row" style="width: 100%;">
+<div class="flow-box warning" style="min-width: 80px;">
+<div class="flow-box-title">T+0</div>
+</div>
+<div style="flex: 1; background: rgba(245, 158, 11, 0.15); border-radius: 8px; padding: 12px; margin-left: 16px;">
+<div style="color: #f59e0b; font-weight: 600;">Netting</div>
 <div style="color: #8b949e; font-size: 13px;">If Broker A bought 1000 AAPL and sold 800 AAPL today, net obligation is receive 200 AAPL. Reduces settlement volume by ~98%.</div>
 </div>
 </div>
 
-<div style="display: flex; align-items: center; gap: 16px;">
-<div style="background: #f85149; min-width: 80px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-<span style="color: white; font-weight: 700;">T+1</span>
+<div class="flow-row" style="width: 100%;">
+<div class="flow-box error" style="min-width: 80px;">
+<div class="flow-box-title">T+1</div>
 </div>
-<div style="flex: 1; background: rgba(248, 81, 73, 0.2); border-radius: 8px; padding: 12px;">
-<div style="color: #f85149; font-weight: 600;">Settlement</div>
-<div style="color: #8b949e; font-size: 13px;">DVP (Delivery vs Payment): Securities and cash move simultaneously. Buyer's account credited with shares, debited cash. Seller opposite. This is the moment of legal ownership transfer.</div>
+<div style="flex: 1; background: rgba(239, 68, 68, 0.15); border-radius: 8px; padding: 12px; margin-left: 16px;">
+<div style="color: #ef4444; font-weight: 600;">Settlement (DVP)</div>
+<div style="color: #8b949e; font-size: 13px;">Delivery vs Payment: Securities and cash move simultaneously. Buyer's account credited with shares, debited cash. This is the moment of legal ownership transfer.</div>
 </div>
 </div>
 
@@ -574,7 +611,7 @@ Theoretically, blockchain-based systems could enable T+0 settlement. Why doesn't
 
 </div>
 
-### Failure Scenarios in Settlement
+<h3 id="settlement-failure-scenarios">Failure Scenarios in Settlement</h3>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
 
@@ -600,7 +637,7 @@ Theoretically, blockchain-based systems could enable T+0 settlement. Why doesn't
 
 </div>
 
-### 3-Level Recursive Interview Questions: Settlement
+<h3 id="settlement-interview-questions">3-Level Recursive Interview Questions: Settlement</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
@@ -694,11 +731,11 @@ Risk reduction: Instead of $10M in gross exposure, only $200K in net exposure ne
 
 ---
 
-## Section 4: Latency Optimization
+<h2 id="section-4-latency-optimization">Section 4: Latency Optimization</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Core Concept: The Speed Arms Race
+<h3 id="latency-core-concept">Core Concept: The Speed Arms Race</h3>
 
 In electronic trading, latency directly translates to profitability. A 1-millisecond advantage can mean capturing favorable prices before competitors. Modern HFT systems target single-digit microsecond latency.
 
@@ -711,51 +748,51 @@ Each microsecond of improvement costs exponentially more to achieve. Going from 
 
 </div>
 
-### Latency Breakdown by Component
+<h3 id="latency-breakdown">Latency Breakdown by Component</h3>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div class="diagram-container" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-<div style="display: flex; flex-direction: column; gap: 8px;">
+<div class="flow-diagram" style="gap: 8px;">
 
-<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(248, 81, 73, 0.1); border-radius: 8px;">
+<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(248, 81, 73, 0.1); border-radius: 8px; width: 100%;">
 <div style="color: #f85149; font-weight: 600;">Network (cross-country)</div>
 <div style="color: #f85149; font-weight: 700;">~20,000 us</div>
 <div style="height: 8px; background: #f85149; border-radius: 4px;"></div>
 </div>
 
-<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(240, 136, 62, 0.1); border-radius: 8px;">
+<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(240, 136, 62, 0.1); border-radius: 8px; width: 100%;">
 <div style="color: #f0883e; font-weight: 600;">Network (co-located)</div>
 <div style="color: #f0883e; font-weight: 700;">~5-50 us</div>
 <div style="height: 8px; background: #f0883e; border-radius: 4px; width: 2%;"></div>
 </div>
 
-<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(137, 87, 229, 0.1); border-radius: 8px;">
+<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(137, 87, 229, 0.1); border-radius: 8px; width: 100%;">
 <div style="color: #a371f7; font-weight: 600;">Kernel network stack</div>
 <div style="color: #a371f7; font-weight: 700;">~10-50 us</div>
 <div style="height: 8px; background: #a371f7; border-radius: 4px; width: 2%;"></div>
 </div>
 
-<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(88, 166, 255, 0.1); border-radius: 8px;">
+<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(88, 166, 255, 0.1); border-radius: 8px; width: 100%;">
 <div style="color: #58a6ff; font-weight: 600;">Application processing</div>
 <div style="color: #58a6ff; font-weight: 700;">~1-10 us</div>
 <div style="height: 8px; background: #58a6ff; border-radius: 4px; width: 0.5%;"></div>
 </div>
 
-<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(126, 231, 135, 0.1); border-radius: 8px;">
+<div style="display: grid; grid-template-columns: 200px 100px 1fr; align-items: center; gap: 16px; padding: 12px; background: rgba(126, 231, 135, 0.1); border-radius: 8px; width: 100%;">
 <div style="color: #7ee787; font-weight: 600;">Memory access (cache hit)</div>
 <div style="color: #7ee787; font-weight: 700;">~0.0004 us</div>
 <div style="height: 8px; background: #7ee787; border-radius: 4px; width: 0.01%;"></div>
 </div>
 
-</div>
-
-<div style="text-align: center; margin-top: 20px; padding: 16px; background: rgba(248, 81, 73, 0.1); border-radius: 8px;">
+<div style="text-align: center; margin-top: 20px; padding: 16px; background: rgba(248, 81, 73, 0.1); border-radius: 8px; width: 100%;">
 <span style="color: #f85149; font-weight: 600;">Key Insight: Network is the dominant factor. Co-location eliminates the biggest variable.</span>
 </div>
 
 </div>
 
-### Optimization Techniques by Layer
+</div>
+
+<h3 id="optimization-techniques">Optimization Techniques by Layer</h3>
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
@@ -802,7 +839,7 @@ Each microsecond of improvement costs exponentially more to achieve. Going from 
 
 </div>
 
-### 3-Level Recursive Interview Questions: Latency
+<h3 id="latency-interview-questions">3-Level Recursive Interview Questions: Latency</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
@@ -903,11 +940,11 @@ Measure each segment independently. The segment with highest variance is often m
 
 ---
 
-## Section 5: Regulatory Compliance
+<h2 id="section-5-regulatory-compliance">Section 5: Regulatory Compliance</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Core Concept: The Rules of Engagement
+<h3 id="compliance-core-concept">Core Concept: The Rules of Engagement</h3>
 
 Financial markets are heavily regulated to ensure fairness, prevent fraud, and maintain systemic stability. Key regulations affecting stockbroker systems:
 
@@ -925,7 +962,7 @@ Regulators assume that once a record is written to the audit trail, it cannot be
 
 </div>
 
-### Key Compliance Requirements
+<h3 id="compliance-requirements">Key Compliance Requirements</h3>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
 
@@ -983,44 +1020,42 @@ Regulators assume that once a record is written to the audit trail, it cannot be
 
 </div>
 
-### Internal Mechanism: Audit Trail Architecture
+<h3 id="audit-trail-architecture">Internal Mechanism: Audit Trail Architecture</h3>
 
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+<div class="diagram-container" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
 
-<div style="display: flex; flex-direction: column; gap: 16px;">
+<div class="flow-diagram">
 
-<div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: #58a6ff; min-width: 150px; padding: 16px; border-radius: 8px; text-align: center;">
-<div style="color: white; font-weight: 700;">Trading System</div>
+<div class="flow-row">
+<div class="flow-box info" style="min-width: 150px;">
+<div class="flow-box-title">Trading System</div>
+<div class="flow-box-subtitle">Order Events</div>
 </div>
-<div style="color: #58a6ff; font-size: 24px;">&#8594;</div>
-<div style="background: #a371f7; min-width: 150px; padding: 16px; border-radius: 8px; text-align: center;">
-<div style="color: white; font-weight: 700;">Event Stream</div>
-<div style="color: rgba(255,255,255,0.7); font-size: 11px;">Kafka (immutable log)</div>
+<div class="flow-arrow">&#8594;</div>
+<div class="flow-box purple" style="min-width: 150px;">
+<div class="flow-box-title">Event Stream</div>
+<div class="flow-box-subtitle">Kafka (immutable log)</div>
 </div>
-</div>
-
-<div style="display: flex; justify-content: center; gap: 40px;">
-<div style="color: #a371f7; font-size: 24px;">&#8601;</div>
-<div style="color: #a371f7; font-size: 24px;">&#8595;</div>
-<div style="color: #a371f7; font-size: 24px;">&#8600;</div>
 </div>
 
-<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-<div style="background: #f8fafc; border: 2px solid #7ee787; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
-<div style="color: #7ee787; font-weight: 600;">Hot Storage</div>
-<div style="color: #8b949e; font-size: 11px;">TimescaleDB</div>
-<div style="color: #8b949e; font-size: 11px;">90 days online</div>
+<div class="flow-row">
+<div class="flow-arrow">&#8601;</div>
+<div class="flow-arrow vertical">&#8595;</div>
+<div class="flow-arrow">&#8600;</div>
 </div>
-<div style="background: #f8fafc; border: 2px solid #f0883e; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
-<div style="color: #f0883e; font-weight: 600;">Warm Storage</div>
-<div style="color: #8b949e; font-size: 11px;">S3 + Athena</div>
-<div style="color: #8b949e; font-size: 11px;">7 years queryable</div>
+
+<div class="flow-row">
+<div class="flow-box success" style="min-width: 140px;">
+<div class="flow-box-title">Hot Storage</div>
+<div class="flow-box-subtitle">TimescaleDB - 90 days</div>
 </div>
-<div style="background: #f8fafc; border: 2px solid #f85149; padding: 16px; border-radius: 8px; text-align: center; min-width: 140px;">
-<div style="color: #f85149; font-weight: 600;">Cold Archive</div>
-<div style="color: #8b949e; font-size: 11px;">Glacier Deep Archive</div>
-<div style="color: #8b949e; font-size: 11px;">Permanent retention</div>
+<div class="flow-box warning" style="min-width: 140px;">
+<div class="flow-box-title">Warm Storage</div>
+<div class="flow-box-subtitle">S3 + Athena - 7 years</div>
+</div>
+<div class="flow-box error" style="min-width: 140px;">
+<div class="flow-box-title">Cold Archive</div>
+<div class="flow-box-subtitle">Glacier - Permanent</div>
 </div>
 </div>
 
@@ -1087,7 +1122,7 @@ Regulatory timestamps must be accurate to prevent disputes and enable cross-syst
 
 </div>
 
-### 3-Level Recursive Interview Questions: Compliance
+<h3 id="compliance-interview-questions">3-Level Recursive Interview Questions: Compliance</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #f85149;">
 
@@ -1159,8 +1194,8 @@ Regulatory timestamps must be accurate to prevent disputes and enable cross-syst
 
 **Architecture**:
 ```
-Orders → Kafka → Flink Jobs → Alerts → Investigation Queue
-                    ↓
+Orders -> Kafka -> Flink Jobs -> Alerts -> Investigation Queue
+                    |
               State Store (per-account metrics)
 ```
 
@@ -1190,11 +1225,329 @@ Orders → Kafka → Flink Jobs → Alerts → Investigation Queue
 
 ---
 
-## Cross-Cutting Concerns
+<h2 id="edge-cases-failure-modes">Edge Cases & Failure Modes</h2>
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #ef4444;">
+
+Understanding failure modes is critical for building resilient trading systems. This section catalogs common edge cases and their mitigations.
+
+<h3 id="order-handling-failures">Order Handling Failures</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0;">
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+<div style="color: #ef4444; font-weight: 700; margin-bottom: 8px;">Fat Finger Orders</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">User accidentally enters 10,000 shares instead of 100, or $1,000 price instead of $100.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Price collars (reject if >5% from last trade), notional value limits, confirmation dialogs for large orders, cooling-off period for unusual sizes.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+<div style="color: #ef4444; font-weight: 700; margin-bottom: 8px;">Duplicate Order Submission</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Network timeout causes client to retry, but original order already processed.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Client-generated idempotency key on each order. Server rejects duplicates within time window. Return cached response for retried requests.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+<div style="color: #ef4444; font-weight: 700; margin-bottom: 8px;">Stale Quote Execution</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Order executed against quote that had already been cancelled/updated.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Optimistic locking with version numbers. Check order book version before and after match. Reject if version changed during processing.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+<div style="color: #ef4444; font-weight: 700; margin-bottom: 8px;">Partial Fill Abandonment</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Large order partially fills, remaining quantity sits unfilled as market moves away.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Immediate-or-Cancel (IOC) or Fill-or-Kill (FOK) order types. TWAP/VWAP algorithms for large orders. Alert thresholds for aged unfilled orders.</div>
+</div>
+</div>
+
+</div>
+
+<h3 id="system-failures">System Failures</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0;">
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #f59e0b; font-weight: 700; margin-bottom: 8px;">Matching Engine Crash Mid-Match</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Engine crashes after debiting buyer but before crediting seller.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Write-ahead logging with transaction boundaries. On recovery, complete or rollback partial transactions. Use saga pattern with compensating transactions.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #f59e0b; font-weight: 700; margin-bottom: 8px;">Network Partition (Split Brain)</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Primary and secondary matching engines both accept orders, causing duplicate executions.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Consensus protocol (Raft/Paxos) for leader election. Fencing tokens to reject stale leader's operations. Prefer unavailability over inconsistency (CP system).</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #f59e0b; font-weight: 700; margin-bottom: 8px;">Clock Drift</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Servers have different time, causing out-of-order timestamps and fairness violations.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">PTP time sync with <1us accuracy. Logical clocks (Lamport timestamps) as backup. Monitor drift and alert if exceeds threshold.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #f59e0b; font-weight: 700; margin-bottom: 8px;">Message Queue Backpressure</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Sudden volume spike overwhelms message queue, causing cascading delays.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Bounded queues with drop policy for non-critical messages. Priority queues for order flow. Auto-scaling consumers. Load shedding for market data updates.</div>
+</div>
+</div>
+
+</div>
+
+<h3 id="market-condition-failures">Market Condition Failures</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0;">
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px;">
+<div style="color: #8b5cf6; font-weight: 700; margin-bottom: 8px;">Flash Crash</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Cascading sell orders cause price to drop 90% in seconds.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Circuit breakers halt trading at 7%, 13%, 20% drops. Limit-up/limit-down bands. Volatility auctions instead of continuous matching.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px;">
+<div style="color: #8b5cf6; font-weight: 700; margin-bottom: 8px;">Liquidity Dry-Up</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Market makers withdraw during high volatility, leaving no buyers/sellers.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Market maker obligations (minimum quote requirements). Designated market makers with last-resort obligations. Widen price bands during volatility.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px;">
+<div style="color: #8b5cf6; font-weight: 700; margin-bottom: 8px;">Erroneous Trade (Clearly Erroneous)</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Trade executes at price clearly outside market (e.g., $0.01 for a $100 stock).</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Clearly erroneous trade rules allow cancellation within time window. Automatic detection and flagging. Busting requires exchange/regulatory approval.</div>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px;">
+<div style="color: #8b5cf6; font-weight: 700; margin-bottom: 8px;">Corporate Action Mishandling</div>
+<div style="color: #8b949e; font-size: 13px; margin-bottom: 12px;">Stock split occurs but system still uses old price/quantity, causing massive over/under fills.</div>
+<div style="background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px;">
+<div style="color: #10b981; font-weight: 600; font-size: 12px;">MITIGATION</div>
+<div style="color: #8b949e; font-size: 12px;">Corporate action database with effective dates. Automated adjustment of open orders. Halt trading in affected symbol during corporate action processing.</div>
+</div>
+</div>
+
+</div>
+
+</div>
+
+---
+
+<h2 id="scaling-strategies">Scaling Strategies</h2>
+
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #10b981;">
+
+Scaling a stockbroker system requires different strategies for different components, as each has unique latency and consistency requirements.
+
+<h3 id="horizontal-scaling">Horizontal Scaling Patterns</h3>
+
+<div class="diagram-container" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0;">
+
+<div class="flow-diagram">
+<div style="text-align: center; margin-bottom: 16px; color: #10b981; font-weight: 700;">Partition by Symbol Strategy</div>
+
+<div class="flow-row">
+<div class="flow-box primary" style="min-width: 180px;">
+<div class="flow-box-title">Order Gateway</div>
+<div class="flow-box-subtitle">Routes by symbol hash</div>
+</div>
+</div>
+
+<div class="flow-row">
+<div class="flow-arrow">&#8601;</div>
+<div class="flow-arrow vertical">&#8595;</div>
+<div class="flow-arrow">&#8600;</div>
+</div>
+
+<div class="flow-row">
+<div class="flow-box success" style="min-width: 140px;">
+<div class="flow-box-title">Engine A</div>
+<div class="flow-box-subtitle">AAPL-GOOG</div>
+</div>
+<div class="flow-box success" style="min-width: 140px;">
+<div class="flow-box-title">Engine B</div>
+<div class="flow-box-subtitle">GOOGL-MSFT</div>
+</div>
+<div class="flow-box success" style="min-width: 140px;">
+<div class="flow-box-title">Engine C</div>
+<div class="flow-box-subtitle">MSFT-ZZZZ</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
+
+**Component-Specific Scaling Strategies:**
+
+| Component | Scaling Strategy | Key Consideration |
+|-----------|-----------------|-------------------|
+| **Matching Engine** | Partition by symbol | Single-threaded per symbol for determinism |
+| **Market Data** | Fan-out with multicast | Conflation to reduce bandwidth |
+| **Order Gateway** | Stateless horizontal | Sticky sessions for in-flight orders |
+| **Risk Engine** | Read replicas | Eventual consistency acceptable for reads |
+| **Audit Trail** | Append-only sharding | Partition by time for efficient archival |
+| **Settlement** | Batch processing | Nightly batch scales with trade volume |
+
+</div>
+
+<h3 id="vertical-scaling">Vertical Scaling Optimizations</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0;">
+
+<div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 12px; padding: 20px;">
+<div style="color: #10b981; font-weight: 700; margin-bottom: 12px;">CPU Optimization</div>
+<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<li>CPU pinning with isolcpus</li>
+<li>Disable hyperthreading for matching threads</li>
+<li>NUMA-aware memory allocation</li>
+<li>Busy-polling instead of interrupt-driven I/O</li>
+</ul>
+</div>
+
+<div style="background: rgba(59, 130, 246, 0.1); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+<div style="color: #3b82f6; font-weight: 700; margin-bottom: 12px;">Memory Optimization</div>
+<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<li>Huge pages (2MB) to reduce TLB misses</li>
+<li>Pre-allocate all data structures at startup</li>
+<li>Object pooling to eliminate GC</li>
+<li>Memory-mapped files for large datasets</li>
+</ul>
+</div>
+
+<div style="background: rgba(139, 92, 246, 0.1); border: 2px solid #8b5cf6; border-radius: 12px; padding: 20px;">
+<div style="color: #8b5cf6; font-weight: 700; margin-bottom: 12px;">Network Optimization</div>
+<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<li>Kernel bypass with DPDK</li>
+<li>RDMA for inter-server communication</li>
+<li>Hardware timestamping NICs</li>
+<li>Jumbo frames for bulk transfers</li>
+</ul>
+</div>
+
+<div style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #f59e0b; font-weight: 700; margin-bottom: 12px;">Storage Optimization</div>
+<ul style="color: #8b949e; font-size: 13px; margin: 0; padding-left: 20px;">
+<li>NVMe SSDs with direct I/O</li>
+<li>Append-only write patterns</li>
+<li>Tiered storage (hot/warm/cold)</li>
+<li>Compression for archival data</li>
+</ul>
+</div>
+
+</div>
+
+<h3 id="capacity-planning">Capacity Planning Guidelines</h3>
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
+
+**Traffic Estimation Formula:**
+
+```
+Peak Orders/Second = (Daily Volume * Peak Multiplier) / Trading Seconds
+                   = (10M orders * 5x) / 23,400 seconds
+                   = ~2,140 orders/second
+
+With 10x headroom for spikes: Target capacity = 21,400 orders/second
+```
+
+**Resource Sizing:**
+
+| Metric | Baseline | 10x Growth Target |
+|--------|----------|-------------------|
+| Orders/day | 10M | 100M |
+| Peak orders/sec | 2,000 | 20,000 |
+| Market data msgs/sec | 1M | 10M |
+| Concurrent connections | 10K | 100K |
+| Storage/day (audit) | 50 GB | 500 GB |
+| Matching engine servers | 4 (1 per symbol range) | 40 |
+| Market data fanout | 10 servers | 100 servers |
+
+</div>
+
+<h3 id="disaster-recovery">Disaster Recovery</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0;">
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #10b981; border-radius: 12px; padding: 20px;">
+<div style="color: #10b981; font-weight: 700; margin-bottom: 12px;">Hot Standby (Active-Passive)</div>
+<div style="color: #8b949e; font-size: 13px;">
+<p><strong>RTO:</strong> < 5 seconds</p>
+<p><strong>RPO:</strong> 0 (synchronous replication)</p>
+<p>Standby replays event log in real-time. On primary failure, promote standby. Highest cost, lowest risk.</p>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+<div style="color: #3b82f6; font-weight: 700; margin-bottom: 12px;">Warm Standby</div>
+<div style="color: #8b949e; font-size: 13px;">
+<p><strong>RTO:</strong> < 5 minutes</p>
+<p><strong>RPO:</strong> < 1 minute (async replication)</p>
+<p>Standby receives batched updates. On failure, catch up from last checkpoint, then take over. Balance of cost and recovery time.</p>
+</div>
+</div>
+
+<div style="background: var(--color-bg-primary, #ffffff); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+<div style="color: #f59e0b; font-weight: 700; margin-bottom: 12px;">Cold Standby</div>
+<div style="color: #8b949e; font-size: 13px;">
+<p><strong>RTO:</strong> < 1 hour</p>
+<p><strong>RPO:</strong> < 1 hour</p>
+<p>Infrastructure provisioned but not running. On failure, restore from backup and replay logs. Lowest cost, highest risk.</p>
+</div>
+</div>
+
+</div>
+
+<div style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin: 20px 0;">
+
+**Critical DR Considerations for Trading Systems:**
+
+1. **Geographic diversity**: DR site must be in different seismic zone, power grid, and network backbone
+2. **Regulatory requirements**: Some jurisdictions require DR site within country borders
+3. **Failover testing**: Monthly failover drills to DR site (outside market hours)
+4. **Data sovereignty**: Audit data may need to remain in specific jurisdictions
+5. **Communication plan**: Clear runbook for notifying clients, regulators, and counterparties
+
+</div>
+
+</div>
+
+---
+
+<h2 id="cross-cutting-concerns">Cross-Cutting Concerns</h2>
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Distributed Systems Patterns Applied
+<h3 id="distributed-patterns">Distributed Systems Patterns Applied</h3>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
 
@@ -1215,7 +1568,7 @@ Separate write path (order submission) from read path (portfolio queries). Allow
 <div style="background: rgba(137, 87, 229, 0.1); border: 1px solid #a371f7; border-radius: 12px; padding: 20px;">
 <div style="color: #a371f7; font-weight: 700; margin-bottom: 12px;">Saga Pattern</div>
 <div style="color: #8b949e; font-size: 13px;">
-Multi-step transactions (order → risk check → match → settle) implemented as sequence of local transactions with compensating actions. See [[saga-pattern]](/topics/system-design/saga-pattern).
+Multi-step transactions (order -> risk check -> match -> settle) implemented as sequence of local transactions with compensating actions. See [[saga-pattern]](/topics/system-design/saga-pattern).
 </div>
 </div>
 
@@ -1228,7 +1581,7 @@ External dependencies (exchange connections, payment gateways) wrapped in circui
 
 </div>
 
-### Technology Stack Summary
+<h3 id="technology-stack">Technology Stack Summary</h3>
 
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0;">
 
@@ -1245,7 +1598,7 @@ External dependencies (exchange connections, payment gateways) wrapped in circui
 
 </div>
 
-### Final Interview Synthesis Question
+<h3 id="final-synthesis">Final Interview Synthesis Question</h3>
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #e94560;">
 
@@ -1290,7 +1643,7 @@ External dependencies (exchange connections, payment gateways) wrapped in circui
 
 ---
 
-## Related Topics
+<h2 id="related-topics">Related Topics</h2>
 
 - [[order-types]](/topics/trading/order-types) - Market, limit, stop orders explained
 - [[market-microstructure]](/topics/trading/market-microstructure) - How markets work at the millisecond level

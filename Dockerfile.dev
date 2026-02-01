@@ -8,16 +8,32 @@
 #
 # IMPORTANT: Requires Docker BuildKit (DOCKER_BUILDKIT=1 or Docker 23.0+)
 
+# Get wkhtmltopdf from official Alpine image
+FROM surnet/alpine-wkhtmltopdf:3.20.3-0.12.6-full AS wkhtmltopdf
+
 FROM golang:1.21-alpine
 
-# Install minimal dependencies
+# Install minimal dependencies for wkhtmltopdf
 RUN apk add --no-cache \
     python3 \
     py3-pip \
     git \
     nodejs \
     npm \
+    wget \
+    fontconfig \
+    libgcc \
+    libstdc++ \
+    libx11 \
+    libxrender \
+    libxext \
+    libssl3 \
+    libjpeg-turbo \
     && rm -rf /var/cache/apk/*
+
+# Copy wkhtmltopdf from official Alpine image
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+RUN wkhtmltopdf --version
 
 # Install air for Go hot reload
 RUN go install github.com/air-verse/air@latest

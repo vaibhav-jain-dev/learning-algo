@@ -268,13 +268,13 @@ async function generatePdf() {
     if (loading) loading.classList.remove('hidden');
     if (generateBtn) generateBtn.disabled = true;
 
-    try {
-        // Load html2pdf library first
-        await loadHtml2PdfLib();
+    let ws = null;
 
-        // Fetch all selected topics content
-        console.log('Fetching content for', selectedTopics.length, 'topic(s)...');
-        const topicContents = [];
+    try {
+        // Extract topic paths from selectedTopics
+        const topicPaths = selectedTopics.map(t => t.path);
+
+        console.log('Generating PDF for', topicPaths.length, 'topic(s):', topicPaths);
 
         // Create PDF generation job
         const response = await fetch('/api/pdf/generate', {
@@ -282,7 +282,7 @@ async function generatePdf() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ topicPaths })
+            body: JSON.stringify({ topicPaths: topicPaths })
         });
 
         if (!response.ok) {
@@ -357,7 +357,7 @@ async function generatePdf() {
         }
 
         // Show error to user
-        alert(`Failed to generate PDF: ${error.message}\n\nPlease try again or select fewer topics.`);
+        alert(`Failed to generate PDF: ${error.message}\n\nPlease try again.`);
     } finally {
         // Reset button state
         if (btnText) btnText.classList.remove('hidden');

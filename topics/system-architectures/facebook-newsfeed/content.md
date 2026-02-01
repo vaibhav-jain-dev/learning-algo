@@ -1,12 +1,142 @@
 # Design Facebook News Feed
 
-## Problem Statement
+<style>
+/* Flow Diagram Styles */
+.flow-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 12px;
+    margin: 16px 0;
+    overflow-x: auto;
+}
+.flow-diagram.horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.flow-box {
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    min-width: 120px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.flow-box.primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+}
+.flow-box.success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    border: none;
+}
+.flow-box.warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border: none;
+}
+.flow-box.danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+}
+.flow-box.purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    border: none;
+}
+.flow-box.light {
+    background: white;
+    border: 2px solid #e2e8f0;
+    color: #1e293b;
+}
+.flow-arrow {
+    font-size: 20px;
+    color: #64748b;
+    font-weight: bold;
+}
+.flow-arrow.vertical {
+    transform: rotate(90deg);
+}
+@media (max-width: 768px) {
+    .flow-diagram {
+        padding: 12px;
+    }
+    .flow-box {
+        padding: 8px 12px;
+        min-width: 80px;
+        font-size: 12px;
+    }
+    .flow-diagram.horizontal {
+        flex-direction: column;
+    }
+}
+</style>
+
+---
+
+## Table of Contents
+
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+
+- [Problem Statement](#problem-statement)
+  - [Core Requirements](#core-requirements)
+  - [Critical Assumptions](#critical-assumptions)
+- [High-Level Architecture](#high-level-architecture)
+  - [Feed System Component Flow](#feed-system-component-flow)
+- [Fan-out Strategies](#fan-out-strategies)
+  - [Fan-out-on-Write (Push Model)](#fan-out-on-write)
+  - [Fan-out-on-Read (Pull Model)](#fan-out-on-read)
+  - [Hybrid Model](#hybrid-model)
+- [Ranking Algorithms](#ranking-algorithms)
+  - [Evolution of Feed Ranking](#evolution-of-ranking)
+  - [EdgeRank: The Foundation](#edgerank)
+  - [Modern ML-Based Ranking](#ml-ranking)
+- [Caching Strategies](#caching-strategies)
+  - [Multi-Layer Cache Architecture](#multi-layer-cache)
+  - [Feed Cache Implementation](#feed-cache-implementation)
+  - [Cache Stampede Prevention](#cache-stampede)
+  - [TAO: Facebook's Graph-Aware Cache](#tao-cache)
+- [Social Graph Traversal](#social-graph-traversal)
+  - [Graph Storage Patterns](#graph-storage-patterns)
+  - [Efficient Friend-of-Friend Queries](#friend-of-friend)
+  - [Graph Partitioning for Scale](#graph-partitioning)
+- [Edge Cases & Failure Modes](#edge-cases-failure-modes)
+  - [Celebrity Posting Spike](#celebrity-spike)
+  - [Cache Stampede Scenarios](#cache-stampede-scenarios)
+  - [Social Graph Inconsistencies](#graph-inconsistencies)
+  - [Ranking Model Failures](#ranking-failures)
+  - [Data Center Failover](#datacenter-failover)
+- [Scaling Strategies](#scaling-strategies)
+  - [Horizontal Scaling Patterns](#horizontal-scaling)
+  - [Data Partitioning Strategy](#data-partitioning)
+  - [Geographic Distribution](#geographic-distribution)
+  - [Capacity Planning](#capacity-planning)
+- [Interview Deep Dive](#interview-deep-dive)
+  - [Fan-out Strategy Questions](#fanout-questions)
+  - [Ranking Algorithm Questions](#ranking-questions)
+  - [Caching Strategy Questions](#caching-questions)
+  - [Social Graph Questions](#graph-questions)
+- [Cross-Referenced Concepts](#cross-references)
+- [Design Decision Summary](#design-summary)
+
+</div>
+
+---
+
+## Problem Statement {#problem-statement}
 
 Design a personalized news feed system that aggregates, ranks, and delivers relevant content from a user's social connections in near real-time at massive scale.
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0; border-left: 4px solid #1877f2;">
 
-### Core Requirements
+### Core Requirements {#core-requirements}
 
 | Requirement | Target | Implication |
 |-------------|--------|-------------|
@@ -20,7 +150,7 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
-### Critical Assumptions
+### Critical Assumptions {#critical-assumptions}
 
 **Assumption 1: Read-Heavy Workload**
 - Typical ratio: 100:1 reads to writes
@@ -46,11 +176,43 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 
 ---
 
-## High-Level Architecture
+## High-Level Architecture {#high-level-architecture}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Feed System Component Flow
+### Feed System Component Flow {#feed-system-component-flow}
+
+<div class="flow-diagram">
+    <div class="flow-box primary" style="width: 200px;">
+        <strong>User Posts Content</strong><br>
+        <span style="font-size: 11px;">API Gateway</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box success" style="width: 200px;">
+        <strong>Ingestion Layer</strong><br>
+        <span style="font-size: 11px;">Validate & Persist</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box warning" style="width: 200px;">
+        <strong>Fan-out Layer</strong><br>
+        <span style="font-size: 11px;">Push to Followers</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box purple" style="width: 200px;">
+        <strong>Aggregation Layer</strong><br>
+        <span style="font-size: 11px;">Merge Sources</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box danger" style="width: 200px;">
+        <strong>Ranking Layer</strong><br>
+        <span style="font-size: 11px;">ML Scoring</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box primary" style="width: 200px;">
+        <strong>Serving Layer</strong><br>
+        <span style="font-size: 11px;">Cache & Deliver</span>
+    </div>
+</div>
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
 
@@ -124,15 +286,36 @@ Design a personalized news feed system that aggregates, ranks, and delivers rele
 
 ---
 
-## Fan-out Strategies: The Core Design Decision
+## Fan-out Strategies: The Core Design Decision {#fan-out-strategies}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Fan-out-on-Write (Push Model)
+### Fan-out-on-Write (Push Model) {#fan-out-on-write}
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Mechanism**: When a user posts, immediately write the post ID to every follower's pre-computed feed list.
+
+<div class="flow-diagram horizontal">
+    <div class="flow-box success">
+        <strong>User Posts</strong>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box light">
+        <strong>Get Followers</strong><br>
+        <span style="font-size: 10px;">Social Graph</span>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box warning">
+        <strong>Queue Jobs</strong><br>
+        <span style="font-size: 10px;">Async</span>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box primary">
+        <strong>Write to Feeds</strong><br>
+        <span style="font-size: 10px;">Redis ZADD</span>
+    </div>
+</div>
 
 ```python
 class FanOutOnWriteService:
@@ -195,11 +378,31 @@ class FanOutOnWriteService:
 
 </div>
 
-### Fan-out-on-Read (Pull Model)
+### Fan-out-on-Read (Pull Model) {#fan-out-on-read}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Mechanism**: When a user requests their feed, dynamically fetch posts from all accounts they follow and merge/rank on the fly.
+
+<div class="flow-diagram horizontal">
+    <div class="flow-box primary">
+        <strong>User Requests Feed</strong>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box light">
+        <strong>Get Following</strong><br>
+        <span style="font-size: 10px;">Social Graph</span>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box warning">
+        <strong>Parallel Fetch</strong><br>
+        <span style="font-size: 10px;">Posts from Each</span>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box success">
+        <strong>Merge & Rank</strong>
+    </div>
+</div>
 
 ```python
 class FanOutOnReadService:
@@ -272,11 +475,39 @@ class FanOutOnReadService:
 
 </div>
 
-### Hybrid Model (Facebook/Twitter Approach)
+### Hybrid Model (Facebook/Twitter Approach) {#hybrid-model}
 
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
 **Mechanism**: Use push for normal users, pull for celebrities. The threshold is tunable based on write capacity.
+
+<div class="flow-diagram">
+    <div class="flow-box purple" style="width: 220px;">
+        <strong>New Post Created</strong>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box light" style="width: 220px;">
+        <strong>Check Follower Count</strong>
+    </div>
+    <div style="display: flex; gap: 40px; align-items: flex-start; margin: 10px 0;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; color: #22c55e;">< 10K followers</span>
+            <div class="flow-arrow">&#8595;</div>
+            <div class="flow-box success">
+                <strong>PUSH</strong><br>
+                <span style="font-size: 10px;">Full Fan-out</span>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; color: #f59e0b;">>= 10K followers</span>
+            <div class="flow-arrow">&#8595;</div>
+            <div class="flow-box warning">
+                <strong>PULL</strong><br>
+                <span style="font-size: 10px;">Index Only</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 ```python
 class HybridFanOutService:
@@ -406,13 +637,33 @@ def calculate_optimal_threshold(
 
 ---
 
-## Ranking Algorithms
+## Ranking Algorithms {#ranking-algorithms}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Evolution of Feed Ranking
+### Evolution of Feed Ranking {#evolution-of-ranking}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram horizontal">
+    <div class="flow-box light">
+        <strong>Phase 1</strong><br>
+        <span style="font-size: 10px;">Chronological</span><br>
+        <span style="font-size: 9px; color: #64748b;">Pre-2009</span>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box warning">
+        <strong>Phase 2</strong><br>
+        <span style="font-size: 10px;">EdgeRank</span><br>
+        <span style="font-size: 9px; color: #64748b;">2009-2013</span>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box success">
+        <strong>Phase 3</strong><br>
+        <span style="font-size: 10px;">ML Models</span><br>
+        <span style="font-size: 9px; color: #64748b;">2013-Present</span>
+    </div>
+</div>
 
 **Phase 1: Chronological (Pre-2009)**
 - Simply sort by timestamp
@@ -431,7 +682,7 @@ def calculate_optimal_threshold(
 
 </div>
 
-### EdgeRank: The Foundation
+### EdgeRank: The Foundation {#edgerank}
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -538,9 +789,34 @@ class EdgeRankScorer:
 
 </div>
 
-### Modern ML-Based Ranking
+### Modern ML-Based Ranking {#ml-ranking}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram">
+    <div class="flow-box light" style="width: 280px;">
+        <strong>Stage 1: Candidate Generation</strong><br>
+        <span style="font-size: 11px;">1000s &#8594; 500 candidates</span><br>
+        <span style="font-size: 10px; color: #64748b;">Rules + Lightweight Models</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box warning" style="width: 280px;">
+        <strong>Stage 2: First-Pass Ranking</strong><br>
+        <span style="font-size: 11px;">500 &#8594; 50 candidates</span><br>
+        <span style="font-size: 10px; color: #64748b;">Two-Tower Neural Network</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box success" style="width: 280px;">
+        <strong>Stage 3: Final Ranking</strong><br>
+        <span style="font-size: 11px;">50 &#8594; 20 candidates</span><br>
+        <span style="font-size: 10px; color: #64748b;">Heavy Model (10K+ features)</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box primary" style="width: 280px;">
+        <strong>Post-Processing</strong><br>
+        <span style="font-size: 11px;">Diversity, Dedup, Business Rules</span>
+    </div>
+</div>
 
 ```python
 class MLRankingPipeline:
@@ -777,13 +1053,35 @@ class MultiObjectiveRanker:
 
 ---
 
-## Caching Strategies
+## Caching Strategies {#caching-strategies}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Multi-Layer Cache Architecture
+### Multi-Layer Cache Architecture {#multi-layer-cache}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram">
+    <div class="flow-box primary" style="width: 220px;">
+        <strong>L1: Client/CDN Edge</strong><br>
+        <span style="font-size: 11px;">< 10ms | 1KB/user</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box success" style="width: 220px;">
+        <strong>L2: Regional Cache</strong><br>
+        <span style="font-size: 11px;">< 20ms | 10KB/user</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box warning" style="width: 220px;">
+        <strong>L3: Central Cache</strong><br>
+        <span style="font-size: 11px;">< 50ms | 100KB/user</span>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box danger" style="width: 220px;">
+        <strong>L4: Database</strong><br>
+        <span style="font-size: 11px;">< 200ms | Source of Truth</span>
+    </div>
+</div>
 
 **Cache Hierarchy** (See [[caching]](/topics/system-design/caching) for fundamentals):
 
@@ -796,7 +1094,7 @@ class MultiObjectiveRanker:
 
 </div>
 
-### Feed Cache Implementation
+### Feed Cache Implementation {#feed-cache-implementation}
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -951,9 +1249,27 @@ class FeedCacheService:
 
 </div>
 
-### Cache Stampede Prevention
+### Cache Stampede Prevention {#cache-stampede}
 
 <div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid #ea580c; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram horizontal">
+    <div class="flow-box danger">
+        <strong>Cache Expires</strong>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box light">
+        <strong>1000s of Requests</strong>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box warning">
+        <strong>All Hit DB</strong>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box danger">
+        <strong>DB Overwhelmed</strong>
+    </div>
+</div>
 
 ```python
 class StampedePreventionCache:
@@ -1075,9 +1391,31 @@ class StampedePreventionCache:
 
 </div>
 
-### TAO: Facebook's Graph-Aware Cache
+### TAO: Facebook's Graph-Aware Cache {#tao-cache}
 
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram">
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px;">
+        <div class="flow-box purple">
+            <strong>Leader Cache</strong><br>
+            <span style="font-size: 10px;">Handles Writes</span>
+        </div>
+        <div class="flow-box light">
+            <strong>Follower Cache 1</strong><br>
+            <span style="font-size: 10px;">Read Replica</span>
+        </div>
+        <div class="flow-box light">
+            <strong>Follower Cache 2</strong><br>
+            <span style="font-size: 10px;">Read Replica</span>
+        </div>
+    </div>
+    <div class="flow-arrow">&#8595;</div>
+    <div class="flow-box warning" style="width: 200px;">
+        <strong>MySQL Cluster</strong><br>
+        <span style="font-size: 10px;">Source of Truth</span>
+    </div>
+</div>
 
 ```python
 class TAOCache:
@@ -1288,11 +1626,11 @@ class TAOCache:
 
 ---
 
-## Social Graph Traversal
+## Social Graph Traversal {#social-graph-traversal}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
-### Graph Storage Patterns
+### Graph Storage Patterns {#graph-storage-patterns}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1307,7 +1645,7 @@ class TAOCache:
 
 </div>
 
-### Efficient Friend-of-Friend Queries
+### Efficient Friend-of-Friend Queries {#friend-of-friend}
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1459,9 +1797,24 @@ class SocialGraphService:
 
 </div>
 
-### Graph Partitioning for Scale
+### Graph Partitioning for Scale {#graph-partitioning}
 
 <div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid #ea580c; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram horizontal">
+    <div class="flow-box warning">
+        <strong>User A's Shard</strong><br>
+        <span style="font-size: 10px;">A follows B, C</span>
+    </div>
+    <div class="flow-box success">
+        <strong>User B's Shard</strong><br>
+        <span style="font-size: 10px;">B followed by A</span>
+    </div>
+    <div class="flow-box primary">
+        <strong>User C's Shard</strong><br>
+        <span style="font-size: 10px;">C followed by A</span>
+    </div>
+</div>
 
 ```python
 class GraphPartitioningStrategy:
@@ -1546,11 +1899,563 @@ class GraphPartitioningStrategy:
 
 ---
 
-## Interview Deep Dive: 3-Level Recursive Questions
+## Edge Cases & Failure Modes {#edge-cases-failure-modes}
+
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #ef4444;">
+
+### Celebrity Posting Spike {#celebrity-spike}
+
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+**Scenario**: A celebrity with 50M followers posts during a major event (Super Bowl, election night).
+
+<div class="flow-diagram horizontal">
+    <div class="flow-box danger">
+        <strong>Celebrity Posts</strong>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box warning">
+        <strong>50M Feed Requests</strong><br>
+        <span style="font-size: 10px;">Within seconds</span>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-box light">
+        <strong>Cache Miss Storm</strong>
+    </div>
+</div>
+
+**Problems**:
+- Push model: 50M writes overwhelm fan-out workers
+- Pull model: Cache not yet warm, DB overloaded
+- Celebrity post cache: Single hot key, potential hotspot
+
+**Mitigations**:
+
+```python
+class CelebrityPostHandler:
+    def on_celebrity_post(self, post: Post):
+        # 1. Pre-warm cache BEFORE announcing post
+        self._warm_celebrity_cache(post)
+
+        # 2. Use multiple cache replicas with consistent hashing
+        cache_keys = [f"celeb:{post.author_id}:{i}" for i in range(10)]
+        for key in cache_keys:
+            self.cache.set(key, post, ttl=300)
+
+        # 3. Rate limit notifications to followers
+        self._staged_notification_rollout(post, batch_size=10000)
+
+        # 4. Circuit breaker on fan-out service
+        if self.fanout_queue.depth > self.QUEUE_THRESHOLD:
+            self._enable_pull_only_mode(post.author_id)
+```
+
+**Key Insight**: For celebrities, switch to pull-only mode during spikes. The content cache handles the read load; don't try to push.
+
+</div>
+
+### Cache Stampede Scenarios {#cache-stampede-scenarios}
+
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+**Scenario**: Regional cache cluster fails, 10M users' feed caches are cold.
+
+**Problems**:
+- 10M simultaneous cache misses
+- All requests hit central cache, then DB
+- Cascading failure across tiers
+
+**Mitigations**:
+
+```python
+class CacheResilienceHandler:
+    def handle_regional_cache_failure(self, region: str):
+        # 1. Enable stale serving from backup region
+        self._enable_cross_region_reads(region)
+
+        # 2. Implement request coalescing
+        # Multiple requests for same key share one computation
+        self.enable_request_coalescing()
+
+        # 3. Gradual cache warming (not all at once)
+        for user_batch in self._get_active_users_batched(region):
+            self._schedule_cache_warmup(user_batch, delay=random.uniform(0, 60))
+
+        # 4. Serve degraded feed (fewer items, no personalization)
+        self._enable_degraded_feed_mode(region)
+```
+
+**Degraded Feed Strategy**:
+- Serve top 10 global trending posts (single cache key)
+- Gradually add personalization as caches warm
+- Users see "We're catching up on your feed" message
+
+</div>
+
+### Social Graph Inconsistencies {#graph-inconsistencies}
+
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+**Scenario**: User A blocks User B, but due to replication lag, B still sees A's posts.
+
+**Problems**:
+- Privacy violation
+- User trust damage
+- Potential legal issues (GDPR, harassment cases)
+
+**Mitigations**:
+
+```python
+class PrivacyEnforcementService:
+    def on_block_action(self, blocker_id: str, blocked_id: str):
+        # 1. SYNCHRONOUS write to all regions (critical path)
+        self._sync_write_block_relationship(blocker_id, blocked_id)
+
+        # 2. Immediately invalidate blocked user's feed cache
+        self._invalidate_feed_cache(blocked_id)
+
+        # 3. Add to real-time block list (checked on every feed request)
+        self.realtime_blocklist.add(blocker_id, blocked_id)
+
+        # 4. Remove existing content from blocked user's cached feed
+        self._scrub_content_from_feed(blocked_id, blocker_id)
+
+    def get_feed_with_privacy_check(self, user_id: str) -> List[Post]:
+        feed = self._get_cached_feed(user_id)
+
+        # ALWAYS check real-time blocklist (not cached)
+        blocked_by = self.realtime_blocklist.get_blockers(user_id)
+
+        # Filter out posts from anyone who blocked this user
+        return [p for p in feed if p.author_id not in blocked_by]
+```
+
+**Key Insight**: Privacy operations are ALWAYS synchronous and bypass cache. Accept higher latency for correctness.
+
+</div>
+
+### Ranking Model Failures {#ranking-failures}
+
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+**Scenario**: ML inference service goes down or returns garbage predictions.
+
+**Problems**:
+- No personalization
+- Random or broken feed ordering
+- User engagement drops
+
+**Mitigations**:
+
+```python
+class RankingFallbackService:
+    def rank_with_fallback(self, user_id: str, candidates: List[Post]) -> List[Post]:
+        try:
+            # Try ML ranking with timeout
+            with timeout(50):  # 50ms max
+                return self.ml_ranker.rank(user_id, candidates)
+        except (TimeoutError, MLServiceError) as e:
+            self.metrics.increment('ranking_fallback', tags={'reason': str(e)})
+            return self._fallback_ranking(user_id, candidates)
+
+    def _fallback_ranking(self, user_id: str, candidates: List[Post]) -> List[Post]:
+        """
+        Fallback ranking when ML is unavailable.
+
+        Strategy: Use simple heuristics that don't require ML.
+        """
+        scored = []
+
+        for post in candidates:
+            score = 0.0
+
+            # Recency (most important fallback signal)
+            hours_old = (time.time() - post.created_at) / 3600
+            score += 1.0 / (1.0 + hours_old)
+
+            # Engagement velocity (if available)
+            if post.like_count > 0:
+                score += 0.3 * math.log1p(post.like_count)
+
+            # Direct friend boost
+            if self._is_friend(user_id, post.author_id):
+                score *= 1.5
+
+            scored.append((post, score))
+
+        scored.sort(key=lambda x: x[1], reverse=True)
+        return [post for post, _ in scored]
+```
+
+**Fallback Hierarchy**:
+1. Full ML model (default)
+2. Lightweight model (if heavy model fails)
+3. Rule-based scoring (if all ML fails)
+4. Chronological (if all else fails)
+
+</div>
+
+### Data Center Failover {#datacenter-failover}
+
+<div style="background: white; border: 1px solid #fca5a5; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+**Scenario**: Entire data center goes offline (power failure, natural disaster).
+
+<div class="flow-diagram">
+    <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;">
+        <div class="flow-box danger" style="text-decoration: line-through;">
+            <strong>US-EAST (Down)</strong>
+        </div>
+        <div class="flow-box success">
+            <strong>US-WEST (Primary)</strong>
+        </div>
+        <div class="flow-box primary">
+            <strong>EU-WEST (Backup)</strong>
+        </div>
+    </div>
+</div>
+
+**Problems**:
+- Users in affected region need to be routed elsewhere
+- Cross-region latency increases
+- Replication lag may cause stale data
+
+**Mitigations**:
+
+```python
+class DataCenterFailoverService:
+    def handle_dc_failure(self, failed_dc: str):
+        # 1. Update DNS to route traffic away from failed DC
+        self._update_dns_routing(failed_dc, active=False)
+
+        # 2. Identify users assigned to failed DC
+        affected_users = self._get_users_by_dc(failed_dc)
+
+        # 3. Pre-warm caches in backup DC for affected users
+        backup_dc = self._get_nearest_healthy_dc(failed_dc)
+        for user_batch in batch(affected_users, 10000):
+            self._warm_user_caches_async(backup_dc, user_batch)
+
+        # 4. Enable cross-region read for consistency
+        self._enable_leader_reads_for_affected_users(affected_users)
+
+        # 5. Pause non-critical writes to reduce load
+        self._pause_background_jobs(backup_dc)
+
+    def get_feed_during_failover(self, user_id: str) -> List[Post]:
+        # Accept slightly stale data during failover
+        feed = self._get_feed_from_any_dc(user_id, max_staleness=300)
+
+        if not feed:
+            # Return global trending as absolute fallback
+            return self._get_trending_posts(limit=20)
+
+        return feed
+```
+
+**Recovery Strategy**:
+1. Immediate: Route traffic to healthy DCs
+2. Short-term: Serve degraded/stale content
+3. Medium-term: Warm caches in backup regions
+4. Long-term: Full recovery once DC is back
+
+</div>
+</div>
+
+---
+
+## Scaling Strategies {#scaling-strategies}
+
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #22c55e;">
+
+### Horizontal Scaling Patterns {#horizontal-scaling}
+
+<div style="background: white; border: 1px solid #86efac; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram">
+    <div style="text-align: center; margin-bottom: 16px;">
+        <strong style="color: #16a34a;">Scaling Each Layer Independently</strong>
+    </div>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+        <div class="flow-box primary">
+            <strong>API Gateway</strong><br>
+            <span style="font-size: 10px;">Stateless, auto-scale</span>
+        </div>
+        <div class="flow-box success">
+            <strong>Fan-out Workers</strong><br>
+            <span style="font-size: 10px;">Scale with queue depth</span>
+        </div>
+        <div class="flow-box warning">
+            <strong>Ranking Service</strong><br>
+            <span style="font-size: 10px;">CPU-bound, GPU optional</span>
+        </div>
+        <div class="flow-box purple">
+            <strong>Cache Cluster</strong><br>
+            <span style="font-size: 10px;">Memory-bound</span>
+        </div>
+    </div>
+</div>
+
+```python
+class ScalingController:
+    """
+    Automatic scaling based on service-specific metrics.
+    """
+
+    SCALING_RULES = {
+        'api_gateway': {
+            'metric': 'requests_per_second',
+            'scale_up_threshold': 10000,
+            'scale_down_threshold': 2000,
+            'instances_per_10k_rps': 5,
+        },
+        'fanout_workers': {
+            'metric': 'queue_depth',
+            'scale_up_threshold': 100000,
+            'scale_down_threshold': 10000,
+            'instances_per_100k_messages': 10,
+        },
+        'ranking_service': {
+            'metric': 'p99_latency_ms',
+            'scale_up_threshold': 80,  # 80ms
+            'scale_down_threshold': 30,
+            'min_instances': 20,  # Always keep warm
+        },
+        'cache_cluster': {
+            'metric': 'memory_usage_percent',
+            'scale_up_threshold': 75,
+            'scale_down_threshold': 40,
+            'shard_size_gb': 64,
+        },
+    }
+
+    def evaluate_scaling(self, service: str) -> ScalingDecision:
+        rule = self.SCALING_RULES[service]
+        current_metric = self.metrics.get(service, rule['metric'])
+        current_instances = self.get_instance_count(service)
+
+        if current_metric > rule['scale_up_threshold']:
+            return ScalingDecision(
+                action='scale_up',
+                target_instances=self._calculate_target(service, current_metric)
+            )
+        elif current_metric < rule['scale_down_threshold']:
+            return ScalingDecision(
+                action='scale_down',
+                target_instances=max(
+                    rule.get('min_instances', 2),
+                    current_instances - 2
+                )
+            )
+
+        return ScalingDecision(action='maintain')
+```
+
+**Scaling Triggers by Component**:
+
+| Component | Primary Metric | Secondary Metric | Scale Factor |
+|-----------|---------------|------------------|--------------|
+| API Gateway | RPS | Error rate | +5 instances per 10K RPS |
+| Fan-out Workers | Queue depth | Processing time | +10 per 100K messages |
+| Ranking Service | p99 latency | CPU usage | +2 when >80ms p99 |
+| Feed Cache | Memory usage | Cache hit rate | +1 shard per 75% memory |
+| Content Cache | Memory usage | Eviction rate | +1 shard per 10% eviction |
+
+</div>
+
+### Data Partitioning Strategy {#data-partitioning}
+
+<div style="background: white; border: 1px solid #86efac; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+```python
+class DataPartitioningStrategy:
+    """
+    Different data types require different partitioning strategies.
+    """
+
+    # Feed data: Partition by user_id
+    # Reason: A user's feed is always accessed together
+    def get_feed_partition(self, user_id: str) -> int:
+        return consistent_hash(user_id) % self.NUM_FEED_PARTITIONS
+
+    # Post content: Partition by post_id
+    # Reason: Posts are accessed independently, need even distribution
+    def get_content_partition(self, post_id: str) -> int:
+        return consistent_hash(post_id) % self.NUM_CONTENT_PARTITIONS
+
+    # Social graph: Partition by user_id with edge replication
+    # Reason: User's connections accessed together, but need reverse lookups
+    def get_graph_partition(self, user_id: str) -> int:
+        return consistent_hash(user_id) % self.NUM_GRAPH_PARTITIONS
+
+    # Time-series data (engagement): Partition by time + user
+    # Reason: Range queries by time are common
+    def get_timeseries_partition(self, user_id: str, timestamp: int) -> int:
+        time_bucket = timestamp // (24 * 3600)  # Daily buckets
+        return consistent_hash(f"{user_id}:{time_bucket}") % self.NUM_TS_PARTITIONS
+```
+
+**Partition Sizing Guidelines**:
+
+| Data Type | Partition Size | Partition Count | Rebalancing Strategy |
+|-----------|---------------|-----------------|---------------------|
+| Feed lists | 10GB per shard | 100-1000 | Consistent hashing |
+| Post content | 100GB per shard | 1000-10000 | Range-based |
+| Social graph | 50GB per shard | 100-500 | Hash + replication |
+| Time-series | 50GB per shard | 1000+ | Time-range partitions |
+
+</div>
+
+### Geographic Distribution {#geographic-distribution}
+
+<div style="background: white; border: 1px solid #86efac; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+<div class="flow-diagram">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <strong style="color: #16a34a;">Multi-Region Architecture</strong>
+    </div>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+        <div style="background: #dcfce7; border-radius: 12px; padding: 16px; text-align: center;">
+            <strong>US-EAST</strong><br>
+            <span style="font-size: 11px;">Primary for Americas</span><br>
+            <div style="margin-top: 8px;">
+                <span class="flow-box success" style="padding: 4px 8px; font-size: 10px;">Leader DB</span>
+            </div>
+        </div>
+        <div style="background: #dbeafe; border-radius: 12px; padding: 16px; text-align: center;">
+            <strong>EU-WEST</strong><br>
+            <span style="font-size: 11px;">Primary for Europe</span><br>
+            <div style="margin-top: 8px;">
+                <span class="flow-box primary" style="padding: 4px 8px; font-size: 10px;">Follower DB</span>
+            </div>
+        </div>
+        <div style="background: #fef3c7; border-radius: 12px; padding: 16px; text-align: center;">
+            <strong>AP-SOUTH</strong><br>
+            <span style="font-size: 11px;">Primary for Asia</span><br>
+            <div style="margin-top: 8px;">
+                <span class="flow-box warning" style="padding: 4px 8px; font-size: 10px;">Follower DB</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+```python
+class GeoDistributionService:
+    """
+    Route requests to nearest region while maintaining consistency.
+    """
+
+    REGIONS = {
+        'us-east': {'primary': True, 'serves': ['NA', 'SA']},
+        'eu-west': {'primary': False, 'serves': ['EU', 'AF']},
+        'ap-south': {'primary': False, 'serves': ['AS', 'OC']},
+    }
+
+    def route_read_request(self, user_id: str, user_region: str) -> str:
+        """
+        Route reads to nearest region (latency-optimized).
+        """
+        return self._get_nearest_region(user_region)
+
+    def route_write_request(self, user_id: str, operation: str) -> str:
+        """
+        Route writes based on consistency requirements.
+        """
+        if operation in ['block_user', 'delete_post', 'privacy_change']:
+            # Critical operations: write to all regions synchronously
+            return 'all_regions'
+        else:
+            # Normal operations: write to primary, async replicate
+            return 'us-east'
+
+    def handle_cross_region_read(self, user_id: str, local_region: str):
+        """
+        Handle case where user's data primary is in different region.
+        """
+        user_primary = self._get_user_primary_region(user_id)
+
+        if user_primary == local_region:
+            return self._read_local(user_id)
+        else:
+            # Check local cache first (may be slightly stale)
+            cached = self._read_local_cache(user_id)
+            if cached and cached.age_seconds < 60:
+                return cached
+
+            # Fallback to cross-region read
+            return self._read_from_region(user_id, user_primary)
+```
+
+**Geographic Consistency Model**:
+
+| Operation | Consistency | Latency | Implementation |
+|-----------|-------------|---------|----------------|
+| Read own feed | Strong | Low | Read from primary region |
+| Read others' posts | Eventual | Low | Read from local cache |
+| Post creation | Strong | Medium | Write to primary, async replicate |
+| Block/Privacy | Strong | High | Synchronous multi-region write |
+
+</div>
+
+### Capacity Planning {#capacity-planning}
+
+<div style="background: white; border: 1px solid #86efac; border-radius: 12px; padding: 24px; margin: 16px 0;">
+
+```python
+class CapacityPlanner:
+    """
+    Estimate infrastructure requirements based on scale.
+    """
+
+    def estimate_for_scale(self, daily_active_users: int) -> CapacityEstimate:
+        # Feed requests
+        feed_requests_per_day = daily_active_users * 20  # 20 feed opens/user/day
+        peak_qps = feed_requests_per_day / 86400 * 3  # 3x average for peak
+
+        # Storage
+        posts_per_user_per_day = 0.5
+        posts_per_day = daily_active_users * posts_per_user_per_day
+        post_size_kb = 2  # Average post metadata size
+
+        # Feed cache
+        feed_entries_per_user = 500  # Post IDs
+        bytes_per_entry = 8
+        feed_cache_gb = (daily_active_users * feed_entries_per_user * bytes_per_entry) / 1e9
+
+        # Content cache
+        hot_posts = posts_per_day * 7  # Last 7 days
+        content_cache_gb = (hot_posts * post_size_kb) / 1e6
+
+        return CapacityEstimate(
+            api_servers=math.ceil(peak_qps / 2000),  # 2000 RPS per server
+            fanout_workers=math.ceil(posts_per_day / 10000),  # 10K posts/worker/day
+            ranking_servers=math.ceil(peak_qps / 500),  # 500 rankings/sec/server
+            feed_cache_nodes=math.ceil(feed_cache_gb / 64),  # 64GB per node
+            content_cache_nodes=math.ceil(content_cache_gb / 64),
+            database_shards=math.ceil(daily_active_users / 10_000_000),  # 10M users/shard
+        )
+```
+
+**Capacity Reference Table**:
+
+| Scale | DAU | Peak QPS | API Servers | Cache Nodes | DB Shards |
+|-------|-----|----------|-------------|-------------|-----------|
+| Startup | 100K | 500 | 2 | 2 | 1 |
+| Growth | 1M | 5K | 10 | 8 | 2 |
+| Scale | 10M | 50K | 50 | 32 | 10 |
+| Large | 100M | 500K | 300 | 200 | 50 |
+| Facebook | 2B | 10M | 5000+ | 3000+ | 500+ |
+
+</div>
+</div>
+
+---
+
+## Interview Deep Dive: 3-Level Recursive Questions {#interview-deep-dive}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #f0883e;">
 
-### Section 1: Fan-out Strategy Questions
+### Section 1: Fan-out Strategy Questions {#fanout-questions}
 
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #22c55e; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1602,7 +2507,7 @@ In practice, celebrity posts are so frequently accessed that cache misses are ra
 
 </div>
 
-### Section 2: Ranking Algorithm Questions
+### Section 2: Ranking Algorithm Questions {#ranking-questions}
 
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1665,7 +2570,7 @@ There's a freshness trade-off: streaming updates have seconds of delay, batch up
 
 </div>
 
-### Section 3: Caching Strategy Questions
+### Section 3: Caching Strategy Questions {#caching-questions}
 
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1725,7 +2630,7 @@ The real scaling secret is that most data is cold. 99.8% cache hit rate means we
 
 </div>
 
-### Section 4: Social Graph Questions
+### Section 4: Social Graph Questions {#graph-questions}
 
 <div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border: 1px solid #ea580c; border-radius: 12px; padding: 24px; margin: 16px 0;">
 
@@ -1796,7 +2701,7 @@ The practical answer is: use user-based sharding with bidirectional edges, hide 
 
 ---
 
-## Cross-Referenced Concepts
+## Cross-Referenced Concepts {#cross-references}
 
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0;">
 
@@ -1826,7 +2731,7 @@ The practical answer is: use user-based sharding with bidirectional edges, hide 
 
 ---
 
-## Design Decision Summary
+## Design Decision Summary {#design-summary}
 
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 32px; margin: 20px 0; border-left: 4px solid #7c3aed;">
 
