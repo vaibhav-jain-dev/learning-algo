@@ -17,63 +17,121 @@
 }
 
 /* ============================================
-   TOPIC DETAIL PAGES - MAGAZINE LAYOUT
+   TOPIC DETAIL PAGES - SMART ARCHITECTURE LAYOUTS
    ============================================ */
 
-/* Add wrapper for topic content */
-.topic-content-wrapper {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    max-width: var(--max-content-width);
+/* Topic detail pages need more space for diagrams */
+.topic-detail-page {
+    max-width: 900px; /* Default for text-heavy content */
     margin: 0 auto;
     padding: 0 1rem;
 }
 
-/* On widescreen, add side panel for TOC */
+/* System design and architecture pages need wider space */
+.topic-detail-page.architecture-content,
+.topic-detail-page.system-design-content {
+    max-width: 1200px; /* More space for diagrams */
+}
+
 @media (min-width: 1400px) {
-    .topic-content-wrapper {
-        grid-template-columns: minmax(auto, var(--reading-width)) var(--side-panel-width);
-        gap: 3rem;
+    .topic-detail-page.architecture-content,
+    .topic-detail-page.system-design-content {
+        max-width: 1400px; /* Even more on widescreen */
     }
+}
 
-    /* Main content stays at reading width */
-    .topic-content-wrapper > .main-content {
-        max-width: var(--reading-width);
-    }
+/* Text content stays comfortable */
+.topic-content > p,
+.topic-content > ul:not(.topic-meta),
+.topic-content > ol {
+    max-width: 75ch; /* ~750px, comfortable reading */
+}
 
-    /* Side panel for table of contents */
-    .topic-content-wrapper > .side-panel {
-        position: sticky;
-        top: calc(var(--header-height) + 1rem);
-        align-self: start;
-        max-height: calc(100vh - var(--header-height) - 2rem);
-        overflow-y: auto;
+/* Tables and diagrams can use more space */
+.topic-content table,
+.topic-content div[style*="display: grid"],
+.topic-content div[style*="display: flex"] {
+    max-width: 1200px;
+}
+
+@media (min-width: 1400px) {
+    .topic-content div[style*="display: flex; flex-direction: column; align-items: center"],
+    .topic-content div[style*="ARCHITECTURE"],
+    .topic-content div[style*="DIAGRAM"] {
+        max-width: 1400px !important;
     }
 }
 
 /* ============================================
-   UNIFIED LESSONS - TWO-COLUMN SMART LAYOUT
+   UNIFIED LESSONS - SMART DATABASE LESSONS LAYOUT
    ============================================ */
 
+/* Comfortable reading width for lesson text */
+.unified-lessons .lesson {
+    max-width: 750px;
+}
+
+/* Lesson text stays narrow */
+.unified-lessons .lesson > p,
+.unified-lessons .lesson > ul,
+.unified-lessons .lesson > ol,
+.unified-lessons .lesson > h2,
+.unified-lessons .lesson > h3 {
+    max-width: 75ch; /* ~750px */
+}
+
+/* Query editors and code blocks can be wider */
+.unified-lessons .lesson .inline-sql-editor,
+.unified-lessons .lesson .inline-editor-wrapper,
+.unified-lessons .lesson .example-query,
+.unified-lessons .lesson pre,
+.unified-lessons .lesson .code-example {
+    max-width: 900px;
+}
+
+/* Tables use available space */
+.unified-lessons .lesson table {
+    max-width: 900px;
+}
+
+/* Query workspace with side panel on widescreen */
 @media (min-width: 1400px) {
-    .unified-lessons .lesson {
-        max-width: var(--reading-width);
+    .query-workspace {
+        display: grid;
+        grid-template-columns: 900px 1fr;
+        gap: 2rem;
+        max-width: 1400px;
     }
 
-    /* Tables and code blocks can be wider */
-    .unified-lessons .lesson table,
-    .unified-lessons .lesson .code-example,
-    .unified-lessons .lesson pre {
-        max-width: var(--wide-reading-width);
+    .query-editor-section {
+        /* Query editor stays at 900px */
     }
 
-    /* Side-by-side comparisons use full width */
+    .query-results-panel {
+        position: sticky;
+        top: calc(var(--header-height, 64px) + 1rem);
+        align-self: start;
+        max-height: calc(100vh - var(--header-height, 64px) - 2rem);
+        overflow-y: auto;
+        background: var(--color-bg-secondary, #f8fafc);
+        border-radius: var(--radius-lg, 0.75rem);
+        padding: 1rem;
+        border: 1px solid var(--color-border, #e2e8f0);
+    }
+
+    /* Side-by-side comparisons */
     .unified-lessons .lesson .comparison-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 2rem;
-        max-width: var(--wide-reading-width);
+        max-width: 900px;
+    }
+}
+
+/* Mobile: Stack query and results vertically */
+@media (max-width: 1399px) {
+    .query-workspace {
+        display: block;
     }
 }
 
@@ -122,37 +180,78 @@
 }
 
 /* ============================================
-   GUIDE PAGES - OPTIMAL LAYOUT
+   GUIDE PAGES - OPTIMAL LAYOUT (Go/Python)
    ============================================ */
 
-@media (min-width: 1200px) {
+.guide-layout {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
+}
+
+.guide-sidebar {
+    position: sticky;
+    top: 1rem;
+    width: 240px;
+    min-width: 240px;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    align-self: flex-start;
+    flex-shrink: 0;
+}
+
+.guide-content {
+    flex: 1;
+    min-width: 0;
+    max-width: 900px; /* Limit for comfortable reading */
+}
+
+/* Tables, roadmap grids, and code can be wider */
+.guide-content table,
+.guide-content .roadmap-grid,
+.guide-content pre,
+.guide-content .code-example {
+    max-width: 1000px;
+}
+
+/* SVG diagrams can use more space */
+.guide-content .visual-memory-diagram,
+.guide-content .visual-example-diagram {
+    max-width: 100%;
+}
+
+@media (min-width: 1400px) {
     .guide-layout {
-        display: grid;
-        grid-template-columns: 260px minmax(auto, var(--reading-width)) 1fr;
-        gap: 2rem;
         max-width: 1800px;
-        margin: 0 auto;
-        padding: 0 2rem;
     }
 
-    /* Left sidebar - navigation */
-    .guide-layout > .guide-sidebar {
-        position: sticky;
-        top: calc(var(--header-height) + 1rem);
-        align-self: start;
+    .guide-content {
+        max-width: 1000px;
     }
 
-    /* Main content - comfortable reading width */
-    .guide-layout > .guide-content {
-        max-width: var(--reading-width);
+    /* Diagrams can break out slightly */
+    .guide-content .visual-memory-diagram svg,
+    .guide-content .visual-example-diagram svg {
+        max-width: 110%;
+        margin-left: -5%;
+    }
+}
+
+@media (max-width: 900px) {
+    .guide-layout {
+        flex-direction: column;
     }
 
-    /* Right panel - hidden by default, can be used for TOC */
-    .guide-layout > .guide-right-panel {
-        position: sticky;
-        top: calc(var(--header-height) + 1rem);
-        align-self: start;
-        display: block;
+    .guide-sidebar {
+        position: static;
+        width: 100%;
+        max-height: 200px;
+        overflow-x: auto;
+        overflow-y: hidden;
     }
 }
 
