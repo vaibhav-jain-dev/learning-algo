@@ -175,6 +175,10 @@ func (m *Manager) ProcessJob(jobID string, topicPaths []string) {
 func (m *Manager) generatePDF(jobID string, topicPaths []string, outputPath string) error {
 	m.updateJob(jobID, "processing", 20, "Reading topic content...", "")
 
+	if len(topicPaths) == 0 {
+		return fmt.Errorf("no topics provided")
+	}
+
 	// Create PDF with A4 size
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.SetMargins(15, 15, 15)
@@ -193,14 +197,18 @@ func (m *Manager) generatePDF(jobID string, topicPaths []string, outputPath stri
 		pdf.CellFormat(0, 10, fmt.Sprintf("Page %d", pdf.PageNo()), "", 0, "C", false, 0, "")
 	})
 
+	processedTopics := 0
+
 	// Process each topic
 	for i, topicPath := range topicPaths {
 		m.updateJob(jobID, "processing", 30+int(float64(i)/float64(len(topicPaths))*40),
-			fmt.Sprintf("Processing topic %d/%d...", i+1, len(topicPaths)), "")
+			fmt.Sprintf("Processing topic %d/%d: %s", i+1, len(topicPaths), topicPath), "")
 
 		// Read markdown content
 		parts := strings.Split(topicPath, "/")
 		if len(parts) != 2 {
+			m.updateJob(jobID, "processing", 30+int(float64(i)/float64(len(topicPaths))*40),
+				fmt.Sprintf("Skipping invalid topic path: %s", topicPath), "")
 			continue
 		}
 		category := parts[0]
@@ -209,28 +217,51 @@ func (m *Manager) generatePDF(jobID string, topicPaths []string, outputPath stri
 		contentPath := filepath.Join("./topics", category, topic, "content.md")
 		mdContent, err := os.ReadFile(contentPath)
 		if err != nil {
-			return fmt.Errorf("failed to read %s: %w", topicPath, err)
+			return fmt.Errorf("failed to read %s at %s: %w", topicPath, contentPath, err)
 		}
 
-		// Add new page for each topic (except first)
-		if i > 0 {
-			pdf.AddPage()
-		} else {
-			pdf.AddPage()
+		if len(mdContent) == 0 {
+			m.updateJob(jobID, "processing", 30+int(float64(i)/float64(len(topicPaths))*40),
+				fmt.Sprintf("Warning: %s has no content", topicPath), "")
+			continue
 		}
+
+		// Add new page for each topic
+		pdf.AddPage()
 
 		// Add topic title
 		topicTitle := formatTopicName(topic)
 		m.renderTopicToPDF(pdf, topicTitle, string(mdContent))
+		processedTopics++
+	}
+
+	if processedTopics == 0 {
+		return fmt.Errorf("no topics were successfully processed")
 	}
 
 	m.updateJob(jobID, "processing", 80, "Finalizing PDF...", "")
 
+	// Check for PDF errors before saving
+	if err := pdf.Error(); err != nil {
+		return fmt.Errorf("PDF generation error: %w", err)
+	}
+
 	// Save PDF
 	err := pdf.OutputFileAndClose(outputPath)
 	if err != nil {
-		return fmt.Errorf("failed to save PDF: %w", err)
+		return fmt.Errorf("failed to save PDF to %s: %w", outputPath, err)
 	}
+
+	// Verify file was created and has content
+	info, err := os.Stat(outputPath)
+	if err != nil {
+		return fmt.Errorf("PDF file not created: %w", err)
+	}
+	if info.Size() == 0 {
+		return fmt.Errorf("PDF file is empty")
+	}
+
+	m.updateJob(jobID, "processing", 90, fmt.Sprintf("PDF created successfully (%d KB, %d topics)", info.Size()/1024, processedTopics), "")
 
 	return nil
 }
@@ -265,7 +296,11 @@ func (m *Manager) renderNode(pdf *gofpdf.Fpdf, node ast.Node, source []byte) {
 		switch n := n.(type) {
 		case *ast.Heading:
 			level := n.Level
-			text := string(n.Text(source))
+			text := m.sanitizeText(string(n.Text(source)))
+
+			if text == "" {
+				return ast.WalkSkipChildren, nil
+			}
 
 			pdf.Ln(3)
 			switch level {
@@ -287,6 +322,12 @@ func (m *Manager) renderNode(pdf *gofpdf.Fpdf, node ast.Node, source []byte) {
 
 		case *ast.Paragraph:
 			text := m.extractText(n, source)
+			text = m.sanitizeText(text)
+
+			if text == "" {
+				return ast.WalkSkipChildren, nil
+			}
+
 			pdf.SetFont("Arial", "", 10)
 			pdf.SetTextColor(51, 51, 51)
 			pdf.MultiCell(0, 5, text, "", "J", false)
@@ -438,6 +479,35 @@ func formatTopicName(slug string) string {
 		}
 	}
 	return strings.Join(words, " ")
+}
+
+// sanitizeText removes or replaces problematic characters for PDF rendering
+func (m *Manager) sanitizeText(text string) string {
+	// Remove null bytes and other control characters except newlines and tabs
+	text = strings.Map(func(r rune) rune {
+		if r == '\n' || r == '\t' || r == '\r' {
+			return r
+		}
+		if r < 32 {
+			return -1 // Remove control characters
+		}
+		// Replace common problematic characters
+		switch r {
+		case '\u0000': // NULL
+			return -1
+		case '\ufeff': // BOM
+			return -1
+		case '\u200b', '\u200c', '\u200d': // Zero-width characters
+			return -1
+		}
+		return r
+	}, text)
+
+	// Clean up excessive whitespace
+	text = regexp.MustCompile(`\s+`).ReplaceAllString(text, " ")
+	text = strings.TrimSpace(text)
+
+	return text
 }
 
 // updateJob updates a job's status and notifies subscribers
