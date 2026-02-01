@@ -647,3 +647,42 @@ div.table-of-contents,
 .tldr-box {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
+
+/* ============================================
+   NUCLEAR OPTION - UNIVERSAL BORDER REMOVAL
+   For pages using .topic-page, .adhd-layout, .topic-grid
+   ============================================ */
+
+/* Remove borders from ALL elements inside main content containers */
+.topic-page *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr),
+.adhd-layout *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr),
+.topic-grid *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr) {
+    border: none !important;
+}
+
+/* Re-apply shadows for cards */
+.topic-page .topic-card,
+.topic-page .quick-ref-card,
+.topic-page .tldr-box,
+.adhd-layout .topic-card,
+.adhd-layout .quick-ref-card,
+.adhd-layout .tldr-box,
+.topic-grid .topic-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Allow border-radius (not border) */
+.topic-page *,
+.adhd-layout *,
+.topic-grid * {
+    border-radius: inherit;
+}
+
+/* Preserve semantic borders only */
+.topic-page .highlight-box,
+.adhd-layout .highlight-box {
+    border-left: 3px solid !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+}
