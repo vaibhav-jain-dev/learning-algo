@@ -255,6 +255,10 @@ func main() {
 	api.Get("/topics", h.GetAllTopics)
 	api.Get("/debug/topics", h.DebugTopics)
 
+	// PDF generation routes
+	api.Post("/pdf/generate", h.GeneratePDF)
+	api.Get("/pdf/download/:jobId", h.DownloadPDF)
+
 	// HTMX partial routes
 	htmx := app.Group("/htmx")
 	htmx.Get("/problem-tree", h.ProblemTree)
@@ -309,6 +313,9 @@ func main() {
 		}
 		return fiber.ErrUpgradeRequired
 	})
+
+	// WebSocket for PDF generation progress
+	app.Get("/ws/pdf/:jobId", websocket.New(h.PDFWebSocket))
 
 	app.Get("/ws/execute", websocket.New(func(c *websocket.Conn) {
 		defer c.Close()
