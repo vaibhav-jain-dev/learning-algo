@@ -402,7 +402,7 @@
         });
 
         toc.appendChild(tocList);
-        toc.style.cssText = 'background: var(--bg-secondary); padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border-color);';
+        toc.style.cssText = 'background: var(--bg-secondary, #f8fafc); padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; border: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);';
 
         // Insert TOC after first h2 or at the start
         var firstH2 = content.querySelector('h2');
