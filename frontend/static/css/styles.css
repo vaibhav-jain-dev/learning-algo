@@ -2717,3 +2717,61 @@ pre[style*="background"] {
         justify-content: center !important;
     }
 }
+
+/* ============================================
+   GLOBAL BORDER REMOVAL OVERRIDES
+   Applied at the end for maximum specificity
+   ============================================ */
+
+/* Cards and boxes - no borders, use shadows for separation */
+.topic-card,
+.card,
+.quick-ref-card,
+.tldr-box,
+.concept-section,
+.collapsible-section,
+.comparison-column,
+.step-content,
+.progress-indicator,
+.code-with-explanation,
+.table-of-contents,
+div.table-of-contents {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Tags and badges */
+.tag,
+.badge,
+.topic-badge {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Navigation elements */
+.nav-category,
+.topic-nav,
+.topic-nav a {
+    border: none !important;
+}
+
+/* Ensure box-shadow is used for visual separation */
+.topic-card,
+.quick-ref-card,
+.tldr-box {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Allow specific accent borders for semantic meaning */
+.concept-section.type-definition,
+.concept-section.type-example,
+.concept-section.type-warning,
+.concept-section.type-important,
+.comparison-column.positive,
+.comparison-column.negative,
+.highlight-box {
+    border-left: 3px solid !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+}
