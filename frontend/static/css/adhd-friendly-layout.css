@@ -58,11 +58,11 @@
 
 .concept-section {
     background: var(--color-bg-primary, #ffffff);
-    border: 2px solid var(--color-border, #e2e8f0);
+    border: none;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 /* Section header with icon and color */
@@ -72,7 +72,7 @@
     gap: 0.75rem;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--color-border, #e2e8f0);
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
 }
 
 .concept-icon {
@@ -87,21 +87,21 @@
     color: var(--color-text-primary, #0f172a);
 }
 
-/* Color-coded section types */
+/* Color-coded section types - subtle left accent only */
 .concept-section.type-definition {
-    border-left: 4px solid #3b82f6; /* Blue - Learning */
+    border-left: 3px solid #3b82f6;
 }
 
 .concept-section.type-example {
-    border-left: 4px solid #10b981; /* Green - Examples */
+    border-left: 3px solid #10b981;
 }
 
 .concept-section.type-warning {
-    border-left: 4px solid #f59e0b; /* Orange - Caution */
+    border-left: 3px solid #f59e0b;
 }
 
 .concept-section.type-important {
-    border-left: 4px solid #ef4444; /* Red - Critical */
+    border-left: 3px solid #ef4444;
 }
 
 /* ============================================
@@ -109,11 +109,12 @@
    ============================================ */
 
 .tldr-box {
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    border: 2px solid #3b82f6;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: none;
     border-radius: 12px;
     padding: 1.5rem;
     margin: 1.5rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .tldr-header {
@@ -164,7 +165,7 @@
     border-radius: 12px;
     padding: 1.5rem;
     margin: 1.5rem 0;
-    border: 2px solid var(--color-border, #e2e8f0);
+    border: none;
 }
 
 .explanation-panel {
@@ -203,11 +204,11 @@
 
 .quick-ref-card {
     background: var(--color-bg-primary, #ffffff);
-    border: 2px solid #10b981;
+    border: none;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1rem;
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .quick-ref-header {
@@ -219,7 +220,7 @@
     color: #059669;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #10b981;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
 }
 
 .quick-ref-header::before {
@@ -270,11 +271,12 @@
     position: sticky;
     top: calc(var(--header-height, 64px) + 1rem);
     background: var(--color-bg-primary, #ffffff);
-    border: 2px solid var(--color-border, #e2e8f0);
+    border: none;
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1rem;
     z-index: 10;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .progress-header {
@@ -310,10 +312,12 @@
    ============================================ */
 
 .collapsible-section {
-    border: 2px solid var(--color-border, #e2e8f0);
+    border: none;
     border-radius: 12px;
     margin-bottom: 1rem;
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: var(--color-bg-primary, #ffffff);
 }
 
 .collapsible-header {
@@ -370,7 +374,7 @@
     padding: 1rem 1.5rem;
     border-radius: 8px;
     margin: 1rem 0;
-    border-left: 4px solid;
+    border-left: 3px solid;
 }
 
 .highlight-box.type-tip {
@@ -415,18 +419,19 @@
 
 .comparison-column {
     background: var(--color-bg-primary, #ffffff);
-    border: 2px solid var(--color-border, #e2e8f0);
+    border: none;
     border-radius: 12px;
     padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .comparison-column.positive {
-    border-color: #10b981;
+    border-left: 3px solid #10b981;
     background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
 }
 
 .comparison-column.negative {
-    border-color: #ef4444;
+    border-left: 3px solid #ef4444;
     background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
 }
 
@@ -438,17 +443,15 @@
     font-size: 1.1rem;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 2px solid;
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
 }
 
 .comparison-column.positive .comparison-header {
     color: #059669;
-    border-color: #10b981;
 }
 
 .comparison-column.negative .comparison-header {
     color: #dc2626;
-    border-color: #ef4444;
 }
 
 /* ============================================
@@ -485,9 +488,10 @@
 .step-content {
     flex: 1;
     background: var(--color-bg-primary, #ffffff);
-    border: 2px solid var(--color-border, #e2e8f0);
+    border: none;
     border-radius: 12px;
     padding: 1rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .step-title {

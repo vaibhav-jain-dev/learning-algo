@@ -1195,14 +1195,14 @@ a:hover {
     display: flex;
     flex-direction: column;
     background: var(--color-bg-primary);
-    border: 1px solid var(--color-border);
+    border: none;
     border-radius: var(--radius-lg);
     padding: var(--space-4);
     transition: all var(--transition-normal);
     text-decoration: none;
     color: inherit;
     cursor: pointer;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     position: relative;
     overflow: hidden;
 }
@@ -1213,16 +1213,15 @@ a:hover {
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 3px;
     background: linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-secondary));
     opacity: 0;
     transition: opacity var(--transition-normal);
 }
 
 .topic-card:hover {
-    box-shadow: var(--shadow-xl);
-    border-color: var(--color-brand-primary);
-    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
 .topic-card:hover::before {
@@ -1269,10 +1268,10 @@ a:hover {
 .tag {
     font-size: 0.7rem;
     padding: 4px 12px;
-    background: linear-gradient(135deg, var(--color-info-bg) 0%, var(--color-bg-tertiary) 100%);
-    border: 1px solid var(--color-brand-primary);
+    background: var(--color-bg-tertiary);
+    border: none;
     border-radius: var(--radius-full);
-    color: var(--color-brand-primary);
+    color: var(--color-text-secondary);
     font-weight: var(--font-semibold);
     transition: all var(--transition-fast);
     text-transform: uppercase;
