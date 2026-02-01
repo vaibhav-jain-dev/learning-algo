@@ -1,0 +1,569 @@
+/* ============================================
+   ADHD-FRIENDLY CONTENT LAYOUTS
+   Cognitive load reduction through smart visual design
+   ============================================ */
+
+/* ============================================
+   CORE PRINCIPLES FOR ADHD
+   1. Visual chunking - Clear sections with borders/colors
+   2. Side-by-side context - Code + explanation together
+   3. Sticky quick reference - Always visible cheat sheet
+   4. Progress indicators - Know where you are
+   5. Collapsible details - Hide complexity until needed
+   6. TL;DR sections - Summary first, details optional
+   ============================================ */
+
+/* ============================================
+   PAGE STRUCTURE: 3-COLUMN ADHD LAYOUT
+   ============================================ */
+
+@media (min-width: 1400px) {
+    /* Main container for ADHD-friendly 3-column layout */
+    .adhd-content-wrapper {
+        display: grid;
+        grid-template-columns: 280px minmax(auto, 800px) 320px;
+        gap: 2rem;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    /* Left: Navigation (always visible) */
+    .adhd-nav-panel {
+        position: sticky;
+        top: calc(var(--header-height, 64px) + 1rem);
+        align-self: start;
+        max-height: calc(100vh - var(--header-height, 64px) - 2rem);
+        overflow-y: auto;
+    }
+
+    /* Center: Main content (readable width) */
+    .adhd-main-content {
+        max-width: 800px;
+    }
+
+    /* Right: Quick reference (sticky cheat sheet) */
+    .adhd-quick-ref {
+        position: sticky;
+        top: calc(var(--header-height, 64px) + 1rem);
+        align-self: start;
+        max-height: calc(100vh - var(--header-height, 64px) - 2rem);
+        overflow-y: auto;
+    }
+}
+
+/* ============================================
+   VISUAL CHUNKING - Section Cards
+   ============================================ */
+
+.concept-section {
+    background: var(--color-bg-primary, #ffffff);
+    border: 2px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Section header with icon and color */
+.concept-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--color-border, #e2e8f0);
+}
+
+.concept-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.concept-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-text-primary, #0f172a);
+}
+
+/* Color-coded section types */
+.concept-section.type-definition {
+    border-left: 4px solid #3b82f6; /* Blue - Learning */
+}
+
+.concept-section.type-example {
+    border-left: 4px solid #10b981; /* Green - Examples */
+}
+
+.concept-section.type-warning {
+    border-left: 4px solid #f59e0b; /* Orange - Caution */
+}
+
+.concept-section.type-important {
+    border-left: 4px solid #ef4444; /* Red - Critical */
+}
+
+/* ============================================
+   TL;DR SUMMARY BOXES
+   ============================================ */
+
+.tldr-box {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.tldr-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1e40af;
+    margin-bottom: 1rem;
+}
+
+.tldr-header::before {
+    content: "⚡";
+    font-size: 1.5rem;
+}
+
+.tldr-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tldr-list li {
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.tldr-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* ============================================
+   SIDE-BY-SIDE: CODE + EXPLANATION
+   ============================================ */
+
+.code-with-explanation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    background: var(--color-bg-secondary, #f8fafc);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border: 2px solid var(--color-border, #e2e8f0);
+}
+
+.explanation-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.explanation-panel h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text-primary, #0f172a);
+    font-size: 1rem;
+}
+
+.explanation-panel p {
+    margin: 0;
+    color: var(--color-text-secondary, #64748b);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.code-panel {
+    position: relative;
+}
+
+/* Mobile: Stack vertically */
+@media (max-width: 1199px) {
+    .code-with-explanation {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   STICKY QUICK REFERENCE PANEL
+   ============================================ */
+
+.quick-ref-card {
+    background: var(--color-bg-primary, #ffffff);
+    border: 2px solid #10b981;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+
+.quick-ref-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #059669;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #10b981;
+}
+
+.quick-ref-header::before {
+    content: "📌";
+    font-size: 1.25rem;
+}
+
+.quick-ref-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.quick-ref-item {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border-light, #f1f5f9);
+}
+
+.quick-ref-item:last-child {
+    border-bottom: none;
+}
+
+.quick-ref-key {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85rem;
+    background: #f0fdf4;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    color: #166534;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.quick-ref-value {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary, #64748b);
+    line-height: 1.4;
+}
+
+/* ============================================
+   PROGRESS INDICATOR
+   ============================================ */
+
+.progress-indicator {
+    position: sticky;
+    top: calc(var(--header-height, 64px) + 1rem);
+    background: var(--color-bg-primary, #ffffff);
+    border: 2px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    z-index: 10;
+}
+
+.progress-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-secondary, #64748b);
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--color-bg-tertiary, #f1f5f9);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #94a3b8);
+    text-align: center;
+}
+
+/* ============================================
+   COLLAPSIBLE SECTIONS
+   ============================================ */
+
+.collapsible-section {
+    border: 2px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: var(--color-bg-secondary, #f8fafc);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+}
+
+.collapsible-header:hover {
+    background: var(--color-bg-hover, #e2e8f0);
+}
+
+.collapsible-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.collapsible-icon {
+    transition: transform 0.2s;
+}
+
+.collapsible-section.expanded .collapsible-icon {
+    transform: rotate(90deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.collapsible-section.expanded .collapsible-content {
+    max-height: 5000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.collapsible-body {
+    padding: 1.5rem;
+}
+
+/* ============================================
+   VISUAL ANCHORS - Highlight Boxes
+   ============================================ */
+
+.highlight-box {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border-left: 4px solid;
+}
+
+.highlight-box.type-tip {
+    background: #f0fdf4;
+    border-color: #10b981;
+}
+
+.highlight-box.type-warning {
+    background: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.highlight-box.type-danger {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+.highlight-box.type-info {
+    background: #eff6ff;
+    border-color: #3b82f6;
+}
+
+.highlight-box-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+/* ============================================
+   COMPARISON TABLES - Visual Clarity
+   ============================================ */
+
+.comparison-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.comparison-column {
+    background: var(--color-bg-primary, #ffffff);
+    border: 2px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.comparison-column.positive {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.comparison-column.negative {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+}
+
+.comparison-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid;
+}
+
+.comparison-column.positive .comparison-header {
+    color: #059669;
+    border-color: #10b981;
+}
+
+.comparison-column.negative .comparison-header {
+    color: #dc2626;
+    border-color: #ef4444;
+}
+
+/* ============================================
+   STEP-BY-STEP VISUAL FLOW
+   ============================================ */
+
+.step-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.step-item {
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+}
+
+.step-number {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.step-content {
+    flex: 1;
+    background: var(--color-bg-primary, #ffffff);
+    border: 2px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+}
+
+.step-title {
+    font-weight: 700;
+    color: var(--color-text-primary, #0f172a);
+    margin-bottom: 0.5rem;
+}
+
+.step-description {
+    color: var(--color-text-secondary, #64748b);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ============================================
+   MOBILE ADAPTATIONS
+   ============================================ */
+
+@media (max-width: 1399px) {
+    .adhd-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .adhd-nav-panel,
+    .adhd-quick-ref {
+        position: static;
+        max-height: none;
+    }
+
+    .adhd-quick-ref {
+        order: 1; /* Show quick ref at top on mobile */
+    }
+
+    .adhd-main-content {
+        order: 2;
+    }
+
+    .adhd-nav-panel {
+        order: 3; /* Nav at bottom on mobile */
+    }
+}
+
+@media (max-width: 767px) {
+    .comparison-table {
+        grid-template-columns: 1fr;
+    }
+
+    .step-item {
+        flex-direction: column;
+    }
+
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ============================================
+   FOCUS AIDS
+   ============================================ */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .collapsible-content,
+    .collapsible-icon,
+    .progress-fill {
+        transition: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .concept-section,
+    .quick-ref-card,
+    .tldr-box {
+        border-width: 3px;
+    }
+}
