@@ -1,0 +1,404 @@
+/* ============================================
+   RESPONSIVE ENHANCEMENTS
+   Fixes for mobile (iPhone 15) and desktop widescreen utilization
+   ============================================ */
+
+/* ============================================
+   DESKTOP WIDESCREEN IMPROVEMENTS
+   ============================================ */
+
+/* Desktop - Better space utilization (1200px+) */
+@media (min-width: 1200px) {
+    :root {
+        --max-content-width: 1400px;
+        --sidebar-width: 320px;
+    }
+
+    /* Topic pages - expand to use more space */
+    .topic-page {
+        max-width: var(--max-content-width);
+        padding: 0 2rem;
+    }
+
+    /* Guide layout - wider sidebar and better content spacing */
+    .guide-layout {
+        max-width: var(--max-content-width);
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .guide-sidebar {
+        width: 280px;
+        min-width: 280px;
+    }
+
+    /* Learn subject pages - better grid layouts */
+    .learn-subject-page {
+        max-width: var(--max-content-width);
+    }
+
+    .algorithm-cards,
+    .ds-grid,
+    .approach-container,
+    .term-grid,
+    .brain-branches {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    /* Topic grid - 3 columns on desktop */
+    .topic-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    /* System design and architecture pages */
+    .unified-lessons,
+    .unified-dashboard {
+        max-width: var(--max-content-width);
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+}
+
+/* Extra Large Screens (1600px+) - Maximize space usage */
+@media (min-width: 1600px) {
+    :root {
+        --max-content-width: 1800px;
+        --sidebar-width: 350px;
+    }
+
+    .topic-page,
+    .guide-layout,
+    .learn-subject-page,
+    .unified-lessons,
+    .unified-dashboard {
+        max-width: var(--max-content-width);
+    }
+
+    .guide-sidebar {
+        width: 320px;
+        min-width: 320px;
+    }
+
+    /* 4-column grids on very large screens */
+    .topic-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+    }
+
+    .algorithm-cards,
+    .ds-grid,
+    .brain-branches {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+
+    /* Home cards */
+    .home .cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Ultra Wide Screens (2000px+) */
+@media (min-width: 2000px) {
+    :root {
+        --max-content-width: 2000px;
+    }
+
+    .topic-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .algorithm-cards,
+    .ds-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+}
+
+/* ============================================
+   MOBILE IMPROVEMENTS (iPhone 15 and similar)
+   ============================================ */
+
+/* iPhone 15 and similar devices (390x844) */
+@media (max-width: 430px) {
+    :root {
+        --header-height: 56px;
+        --text-base: 1rem; /* Keep base size readable */
+    }
+
+    /* Better spacing on small screens */
+    .main {
+        padding: 0.75rem;
+    }
+
+    /* Topic pages - mobile friendly */
+    .topic-page {
+        padding: 0;
+    }
+
+    .topic-page h1 {
+        font-size: 1.5rem;
+        padding: 0 0.75rem;
+        line-height: 1.3;
+    }
+
+    .page-description {
+        font-size: 0.9rem;
+        padding: 0 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Topic cards - full width on mobile */
+    .topic-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0 0.5rem;
+    }
+
+    .topic-card {
+        padding: 1rem;
+    }
+
+    .topic-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .topic-card p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* Guide layout - stack on mobile */
+    .guide-layout {
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+    }
+
+    .guide-sidebar {
+        position: relative;
+        width: 100%;
+        max-height: none;
+        top: 0;
+        margin-bottom: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0.75rem;
+        background: var(--color-bg-secondary);
+    }
+
+    /* Horizontal scrolling sidebar on mobile */
+    .guide-sidebar .sidebar-section {
+        display: inline-block;
+        margin-right: 1.5rem;
+        margin-bottom: 0;
+        vertical-align: top;
+        min-width: 160px;
+    }
+
+    .sidebar-link {
+        white-space: nowrap;
+        padding: 0.5rem 0.75rem;
+        display: block;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        border-radius: 6px;
+        margin-bottom: 0.25rem;
+    }
+
+    .guide-content {
+        padding: 0 0.75rem;
+    }
+
+    /* Better touch targets */
+    button,
+    .btn,
+    a.btn,
+    .nav-pill,
+    .nav-item {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+    }
+
+    /* Navigation improvements */
+    .nav-pill {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+
+    /* Code blocks - readable font size */
+    pre, code {
+        font-size: 0.8rem !important;
+        line-height: 1.5;
+    }
+
+    pre {
+        padding: 0.75rem;
+        overflow-x: auto;
+    }
+
+    /* Learn subject pages */
+    .learn-subject-page {
+        padding: 0.5rem;
+    }
+
+    .subject-section {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Roadmap cards */
+    .roadmap-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .roadmap-card {
+        padding: 0.75rem;
+    }
+}
+
+/* Tablet Portrait (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .topic-page,
+    .guide-layout,
+    .learn-subject-page {
+        padding: 0 1.5rem;
+    }
+
+    .topic-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .guide-sidebar {
+        width: 240px;
+        min-width: 240px;
+    }
+
+    .algorithm-cards,
+    .ds-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================================
+   GUIDE PAGES - UNIFIED MOBILE BEHAVIOR
+   ============================================ */
+
+@media (max-width: 900px) {
+    .guide-layout {
+        flex-direction: column;
+    }
+
+    .guide-sidebar {
+        position: static;
+        width: 100%;
+        max-height: 200px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        padding: 1rem;
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .guide-sidebar .sidebar-section {
+        display: inline-block;
+        min-width: 180px;
+    }
+
+    .sidebar-link {
+        border-left: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.25rem;
+        transition: all 0.2s;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+
+/* Focus states for keyboard navigation */
+@media (prefers-reduced-motion: no-preference) {
+    .sidebar-link,
+    .nav-pill,
+    .topic-card,
+    button {
+        transition: all 0.2s ease-in-out;
+    }
+}
+
+/* Ensure focus is always visible */
+a:focus-visible,
+button:focus-visible,
+.sidebar-link:focus-visible,
+.nav-pill:focus-visible {
+    outline: 3px solid var(--color-brand-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ============================================
+   PRINT OPTIMIZATIONS
+   ============================================ */
+
+@media print {
+    .guide-sidebar,
+    .sidebar,
+    .mobile-menu-btn {
+        display: none !important;
+    }
+
+    .guide-layout,
+    .topic-page,
+    .learn-subject-page {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .guide-content {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE DEVICES
+   ============================================ */
+
+@media (max-width: 900px) and (orientation: landscape) {
+    .guide-sidebar {
+        max-height: 120px;
+    }
+
+    .header {
+        height: 48px;
+    }
+
+    :root {
+        --header-height: 48px;
+    }
+}
+
+/* ============================================
+   HIGH DPI DISPLAYS
+   ============================================ */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Ensure text remains crisp on retina displays */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
