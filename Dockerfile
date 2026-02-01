@@ -106,13 +106,16 @@ RUN apk add --no-cache \
     libxext \
     libssl3 \
     libjpeg-turbo \
-    && wget -q -O /tmp/wkhtmltopdf.tar.xz \
+    && rm -rf /var/cache/apk/*
+
+# Download and install wkhtmltopdf separately for better error visibility
+RUN wget -O /tmp/wkhtmltopdf.tar.xz \
     https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox-0.12.6.1-3.alpine_linux_x86-64.tar.xz \
     && tar -xf /tmp/wkhtmltopdf.tar.xz -C /tmp \
-    && mv /tmp/wkhtmltox/bin/wkhtmltopdf /usr/local/bin/ \
+    && cp /tmp/wkhtmltox/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf \
     && chmod +x /usr/local/bin/wkhtmltopdf \
-    && rm -rf /tmp/wkhtmltopdf.tar.xz /tmp/wkhtmltox \
-    && rm -rf /var/cache/apk/*
+    && wkhtmltopdf --version \
+    && rm -rf /tmp/wkhtmltopdf.tar.xz /tmp/wkhtmltox
 
 # PYTHON DEPENDENCY CACHING: Copy requirements FIRST
 # Only rebuilds when requirements.txt changes
