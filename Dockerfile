@@ -83,7 +83,12 @@ RUN if [ -f package.json ] && grep -q '"build"' package.json; then \
     fi
 
 # =============================================================================
-# Stage 4: Minimal Python runtime
+# Stage 4: Get wkhtmltopdf from official Alpine image
+# =============================================================================
+FROM surnet/alpine-wkhtmltopdf:3.20.3-0.12.6-full AS wkhtmltopdf
+
+# =============================================================================
+# Stage 5: Minimal Python runtime
 # =============================================================================
 FROM python:3.12-alpine AS runtime
 
@@ -91,13 +96,10 @@ FROM python:3.12-alpine AS runtime
 LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
 
-# Install minimal dependencies and wkhtmltopdf for PDF generation
-# Using static binary build for better compatibility across Alpine versions
+# Install minimal dependencies for wkhtmltopdf
 RUN apk add --no-cache \
     ca-certificates \
     wget \
-    tar \
-    xz \
     fontconfig \
     libgcc \
     libstdc++ \
@@ -108,14 +110,9 @@ RUN apk add --no-cache \
     libjpeg-turbo \
     && rm -rf /var/cache/apk/*
 
-# Download and install wkhtmltopdf separately for better error visibility
-RUN wget -O /tmp/wkhtmltopdf.tar.xz \
-    https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox-0.12.6.1-3.alpine_linux_x86-64.tar.xz \
-    && tar -xf /tmp/wkhtmltopdf.tar.xz -C /tmp \
-    && cp /tmp/wkhtmltox/bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf \
-    && chmod +x /usr/local/bin/wkhtmltopdf \
-    && wkhtmltopdf --version \
-    && rm -rf /tmp/wkhtmltopdf.tar.xz /tmp/wkhtmltox
+# Copy wkhtmltopdf from official Alpine image
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
+RUN wkhtmltopdf --version
 
 # PYTHON DEPENDENCY CACHING: Copy requirements FIRST
 # Only rebuilds when requirements.txt changes
