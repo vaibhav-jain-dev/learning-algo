@@ -375,5 +375,56 @@
             }
         })();
     </script>
+
+    <!-- FORCE BORDER REMOVAL - Runs after ALL CSS loads including Tailwind -->
+    <script>
+        (function() {
+            function removeBorders() {
+                var selectors = [
+                    '.topic-card', '.card', '.quick-ref-card', '.tldr-box',
+                    '.tag', '.badge', '.topic-badge', '.table-of-contents',
+                    '.concept-section', '.collapsible-section', '.comparison-column',
+                    '.step-content', '.progress-indicator', '.nav-category'
+                ];
+
+                selectors.forEach(function(selector) {
+                    var elements = document.querySelectorAll(selector);
+                    elements.forEach(function(el) {
+                        el.style.setProperty('border', 'none', 'important');
+                        el.style.setProperty('outline', 'none', 'important');
+                    });
+                });
+
+                // Also target any element inside topic-page, adhd-layout, topic-grid
+                var containers = document.querySelectorAll('.topic-page, .adhd-layout, .topic-grid');
+                containers.forEach(function(container) {
+                    var children = container.querySelectorAll('*');
+                    children.forEach(function(child) {
+                        var tag = child.tagName.toLowerCase();
+                        if (tag !== 'table' && tag !== 'th' && tag !== 'td' &&
+                            tag !== 'pre' && tag !== 'code' && tag !== 'hr') {
+                            child.style.setProperty('border', 'none', 'important');
+                        }
+                    });
+                });
+            }
+
+            // Run immediately
+            removeBorders();
+
+            // Run after DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', removeBorders);
+            }
+
+            // Run after full page load (including Tailwind)
+            window.addEventListener('load', function() {
+                removeBorders();
+                // Run again after a short delay to catch any late-loading styles
+                setTimeout(removeBorders, 100);
+                setTimeout(removeBorders, 500);
+            });
+        })();
+    </script>
 </body>
 </html>
