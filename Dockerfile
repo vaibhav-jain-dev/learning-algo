@@ -96,6 +96,8 @@ LABEL app.name="dsalgo-learn-platform"
 RUN apk add --no-cache \
     ca-certificates \
     wget \
+    tar \
+    xz \
     fontconfig \
     libgcc \
     libstdc++ \
