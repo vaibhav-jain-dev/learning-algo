@@ -109,6 +109,9 @@
         var id = heading.getAttribute('id');
         if (!id) return;
 
+        // Skip if already has an anchor (added by global script in main.html)
+        if (heading.querySelector('.heading-anchor')) return;
+
         // Create anchor link element
         var anchor = document.createElement('a');
         anchor.className = 'heading-anchor';
