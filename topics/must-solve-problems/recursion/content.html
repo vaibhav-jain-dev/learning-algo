@@ -1,0 +1,815 @@
+<h1 id="recursion">Recursion</h1>
+<h2 id="overview">Overview</h2>
+<p>Recursion is a problem-solving technique where a function calls itself to solve smaller instances of the same problem. It's fundamental to many algorithms and data structures.</p>
+<h2 id="key-concepts--terminology">Key Concepts &amp; Terminology</h2>
+<h3 id="core-components">Core Components</h3>
+<ul>
+<li><strong>Base Case</strong>: Condition to stop recursion</li>
+<li><strong>Recursive Case</strong>: Breaking problem into smaller subproblems</li>
+<li><strong>Call Stack</strong>: Memory storing function calls</li>
+</ul>
+<h3 id="types-of-recursion">Types of Recursion</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direct</td>
+<td>Function calls itself</td>
+</tr>
+<tr>
+<td>Indirect</td>
+<td>Function A calls B, B calls A</td>
+</tr>
+<tr>
+<td>Tail</td>
+<td>Recursive call is last operation</td>
+</tr>
+<tr>
+<td>Tree</td>
+<td>Multiple recursive calls per invocation</td>
+</tr>
+</tbody>
+</table>
+<h3 id="recursion-vs-iteration">Recursion vs Iteration</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Recursion</th>
+<th>Iteration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Readability</td>
+<td>Often cleaner</td>
+<td>Can be verbose</td>
+</tr>
+<tr>
+<td>Space</td>
+<td>O(n) stack</td>
+<td>O(1) typically</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>Function call overhead</td>
+<td>Generally faster</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>Stack overflow</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="common-patterns">Common Patterns</h3>
+<ol>
+<li><strong>Decrease and Conquer</strong>: Reduce by 1 (factorial, Fibonacci)</li>
+<li><strong>Divide and Conquer</strong>: Split in half (merge sort, binary search)</li>
+<li><strong>Backtracking</strong>: Try all possibilities (permutations, sudoku)</li>
+<li><strong>Dynamic Programming</strong>: Memoize recursive solutions</li>
+</ol>
+<h3 id="tips-for-writing-recursion">Tips for Writing Recursion</h3>
+<ol>
+<li>Define clear base case(s)</li>
+<li>Ensure progress toward base case</li>
+<li>Trust the recursive call</li>
+<li>Consider memoization for overlapping subproblems</li>
+</ol>
+<hr />
+<h2 id="problems">Problems</h2>
+<h3 id="1-nth-fibonacci">1. Nth Fibonacci</h3>
+<p><strong>Difficulty:</strong> Easy</p>
+<p><strong>Problem Statement:</strong><br />
+Return the nth Fibonacci number (0-indexed).</p>
+<p><strong>Example:</strong></p>
+<pre><code>F(0) = 0, F(1) = 1
+F(n) = F(n-1) + F(n-2)
+
+Input: n = 6
+Output: 8 (0, 1, 1, 2, 3, 5, 8)
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Base cases: F(0) = 0, F(1) = 1</li>
+<li>Naive recursion is O(2^n), use memoization</li>
+<li>Iterative is O(n) time, O(1) space</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python"># Recursive with memoization
+def getNthFib(n, memo={}):
+    &quot;&quot;&quot;
+    Time Complexity: O(n)
+    Space Complexity: O(n)
+    &quot;&quot;&quot;
+    if n in memo:
+        return memo[n]
+    if n &lt;= 1:
+        return 0 if n == 0 else 1
+
+    memo[n] = getNthFib(n - 1, memo) + getNthFib(n - 2, memo)
+    return memo[n]
+
+# Iterative (optimal)
+def getNthFibIterative(n):
+    &quot;&quot;&quot;
+    Time Complexity: O(n)
+    Space Complexity: O(1)
+    &quot;&quot;&quot;
+    if n &lt;= 1:
+        return 0 if n == 0 else 1
+
+    prev2, prev1 = 0, 1
+    for _ in range(2, n + 1):
+        prev2, prev1 = prev1, prev2 + prev1
+
+    return prev1
+
+# Test
+print(getNthFib(6))  # 8
+print(getNthFibIterative(6))  # 8
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func getNthFib(n int) int {
+    if n &lt;= 1 {
+        if n == 0 {
+            return 0
+        }
+        return 1
+    }
+
+    prev2, prev1 := 0, 1
+    for i := 2; i &lt;= n; i++ {
+        prev2, prev1 = prev1, prev2+prev1
+    }
+
+    return prev1
+}
+
+func main() {
+    fmt.Println(getNthFib(6)) // 8
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Climbing Stairs</strong> - Similar recurrence</li>
+<li><strong>Tribonacci Number</strong> - Three previous numbers</li>
+<li><strong>House Robber</strong> - DP on Fibonacci-like recurrence</li>
+</ol>
+</details>
+<hr />
+<h3 id="2-product-sum">2. Product Sum</h3>
+<p><strong>Difficulty:</strong> Easy</p>
+<p><strong>Problem Statement:</strong><br />
+Calculate the product sum of a nested array. Each element's depth is multiplied.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input: [5, 2, [7, -1], 3, [6, [-13, 8], 4]]
+Output: 12
+
+Calculation:
+5 + 2 + 2*(7-1) + 3 + 2*(6 + 3*(-13+8) + 4)
+= 5 + 2 + 12 + 3 + 2*(6 - 15 + 4)
+= 5 + 2 + 12 + 3 + 2*(-5)
+= 12
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Use depth parameter in recursion</li>
+<li>If element is list, recurse with depth + 1</li>
+<li>Multiply result by current depth</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def productSum(array, depth=1):
+    &quot;&quot;&quot;
+    Time Complexity: O(n) where n is total elements
+    Space Complexity: O(d) where d is max depth
+    &quot;&quot;&quot;
+    total = 0
+
+    for element in array:
+        if isinstance(element, list):
+            total += productSum(element, depth + 1)
+        else:
+            total += element
+
+    return total * depth
+
+# Test
+array = [5, 2, [7, -1], 3, [6, [-13, 8], 4]]
+print(productSum(array))  # 12
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func productSum(array []interface{}) int {
+    return productSumHelper(array, 1)
+}
+
+func productSumHelper(array []interface{}, depth int) int {
+    total := 0
+
+    for _, element := range array {
+        switch v := element.(type) {
+        case int:
+            total += v
+        case []interface{}:
+            total += productSumHelper(v, depth+1)
+        }
+    }
+
+    return total * depth
+}
+
+func main() {
+    array := []interface{}{5, 2, []interface{}{7, -1}, 3}
+    fmt.Println(productSum(array))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Nested List Weight Sum</strong> - LeetCode version</li>
+<li><strong>Nested List Weight Sum II</strong> - Reversed weights</li>
+<li><strong>Flatten Nested List Iterator</strong> - Iterator on nested list</li>
+</ol>
+</details>
+<hr />
+<h3 id="3-permutations">3. Permutations</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Generate all permutations of an array.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input: [1, 2, 3]
+Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>For each position, try all remaining elements</li>
+<li>Swap elements and recurse</li>
+<li>Backtrack by swapping back</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def getPermutations(array):
+    &quot;&quot;&quot;
+    Time Complexity: O(n! * n)
+    Space Complexity: O(n! * n)
+    &quot;&quot;&quot;
+    permutations = []
+    if len(array) == 0:
+        return permutations
+
+    permutationsHelper(0, array, permutations)
+    return permutations
+
+def permutationsHelper(i, array, permutations):
+    if i == len(array) - 1:
+        permutations.append(array[:])
+        return
+
+    for j in range(i, len(array)):
+        array[i], array[j] = array[j], array[i]
+        permutationsHelper(i + 1, array, permutations)
+        array[i], array[j] = array[j], array[i]  # Backtrack
+
+# Alternative: Build permutation
+def getPermutations2(array):
+    result = []
+
+    def backtrack(current, remaining):
+        if not remaining:
+            result.append(current[:])
+            return
+
+        for i in range(len(remaining)):
+            current.append(remaining[i])
+            backtrack(current, remaining[:i] + remaining[i+1:])
+            current.pop()
+
+    backtrack([], array)
+    return result
+
+# Test
+print(getPermutations([1, 2, 3]))
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func getPermutations(array []int) [][]int {
+    permutations := [][]int{}
+    if len(array) == 0 {
+        return permutations
+    }
+
+    permutationsHelper(0, array, &amp;permutations)
+    return permutations
+}
+
+func permutationsHelper(i int, array []int, permutations *[][]int) {
+    if i == len(array)-1 {
+        perm := make([]int, len(array))
+        copy(perm, array)
+        *permutations = append(*permutations, perm)
+        return
+    }
+
+    for j := i; j &lt; len(array); j++ {
+        array[i], array[j] = array[j], array[i]
+        permutationsHelper(i+1, array, permutations)
+        array[i], array[j] = array[j], array[i]
+    }
+}
+
+func main() {
+    fmt.Println(getPermutations([]int{1, 2, 3}))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Permutations II</strong> - With duplicates</li>
+<li><strong>Next Permutation</strong> - Lexicographically next</li>
+<li><strong>Permutation Sequence</strong> - Kth permutation</li>
+</ol>
+</details>
+<hr />
+<h3 id="4-powerset">4. Powerset</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Generate all subsets (power set) of an array.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input: [1, 2, 3]
+Output: [[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Each element can be included or excluded</li>
+<li>Iterative: for each element, add to all existing subsets</li>
+<li>Recursive: branch for include/exclude</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def powerset(array):
+    &quot;&quot;&quot;
+    Time Complexity: O(n * 2^n)
+    Space Complexity: O(n * 2^n)
+    &quot;&quot;&quot;
+    subsets = [[]]
+
+    for element in array:
+        # Add element to all existing subsets
+        for i in range(len(subsets)):
+            subsets.append(subsets[i] + [element])
+
+    return subsets
+
+# Recursive approach
+def powersetRecursive(array, idx=None):
+    if idx is None:
+        idx = len(array) - 1
+
+    if idx &lt; 0:
+        return [[]]
+
+    subsets = powersetRecursive(array, idx - 1)
+    element = array[idx]
+
+    # Add element to all existing subsets
+    new_subsets = []
+    for subset in subsets:
+        new_subsets.append(subset + [element])
+
+    return subsets + new_subsets
+
+# Test
+print(powerset([1, 2, 3]))
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func powerset(array []int) [][]int {
+    subsets := [][]int{{}}
+
+    for _, element := range array {
+        length := len(subsets)
+        for i := 0; i &lt; length; i++ {
+            newSubset := make([]int, len(subsets[i])+1)
+            copy(newSubset, subsets[i])
+            newSubset[len(newSubset)-1] = element
+            subsets = append(subsets, newSubset)
+        }
+    }
+
+    return subsets
+}
+
+func main() {
+    fmt.Println(powerset([]int{1, 2, 3}))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Subsets II</strong> - With duplicates</li>
+<li><strong>Combination Sum</strong> - Subsets summing to target</li>
+<li><strong>Letter Combinations of Phone Number</strong></li>
+</ol>
+</details>
+<hr />
+<h3 id="5-phone-number-mnemonics">5. Phone Number Mnemonics</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Generate all possible letter combinations for a phone number.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input: &quot;23&quot;
+Output: [&quot;ad&quot;, &quot;ae&quot;, &quot;af&quot;, &quot;bd&quot;, &quot;be&quot;, &quot;bf&quot;, &quot;cd&quot;, &quot;ce&quot;, &quot;cf&quot;]
+
+Mapping: 2=&quot;abc&quot;, 3=&quot;def&quot;, 4=&quot;ghi&quot;, etc.
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Map each digit to its letters</li>
+<li>For each digit, try all possible letters</li>
+<li>Backtracking to build combinations</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def phoneNumberMnemonics(phoneNumber):
+    &quot;&quot;&quot;
+    Time Complexity: O(4^n * n)
+    Space Complexity: O(4^n * n)
+    &quot;&quot;&quot;
+    digit_to_letters = {
+        '0': '0', '1': '1',
+        '2': 'abc', '3': 'def',
+        '4': 'ghi', '5': 'jkl',
+        '6': 'mno', '7': 'pqrs',
+        '8': 'tuv', '9': 'wxyz'
+    }
+
+    result = []
+    current = [''] * len(phoneNumber)
+
+    def backtrack(idx):
+        if idx == len(phoneNumber):
+            result.append(''.join(current))
+            return
+
+        digit = phoneNumber[idx]
+        letters = digit_to_letters[digit]
+
+        for letter in letters:
+            current[idx] = letter
+            backtrack(idx + 1)
+
+    backtrack(0)
+    return result
+
+# Test
+print(phoneNumberMnemonics(&quot;23&quot;))
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+var digitToLetters = map[byte]string{
+    '0': &quot;0&quot;, '1': &quot;1&quot;,
+    '2': &quot;abc&quot;, '3': &quot;def&quot;,
+    '4': &quot;ghi&quot;, '5': &quot;jkl&quot;,
+    '6': &quot;mno&quot;, '7': &quot;pqrs&quot;,
+    '8': &quot;tuv&quot;, '9': &quot;wxyz&quot;,
+}
+
+func phoneNumberMnemonics(phoneNumber string) []string {
+    result := []string{}
+    current := make([]byte, len(phoneNumber))
+
+    var backtrack func(idx int)
+    backtrack = func(idx int) {
+        if idx == len(phoneNumber) {
+            result = append(result, string(current))
+            return
+        }
+
+        digit := phoneNumber[idx]
+        letters := digitToLetters[digit]
+
+        for i := 0; i &lt; len(letters); i++ {
+            current[idx] = letters[i]
+            backtrack(idx + 1)
+        }
+    }
+
+    backtrack(0)
+    return result
+}
+
+func main() {
+    fmt.Println(phoneNumberMnemonics(&quot;23&quot;))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Letter Combinations of Phone Number</strong> - LeetCode version</li>
+<li><strong>Generate Parentheses</strong> - Valid parentheses</li>
+<li><strong>Combination Sum</strong> - Numbers summing to target</li>
+</ol>
+</details>
+<hr />
+<h3 id="6-staircase-traversal">6. Staircase Traversal</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Count ways to climb n stairs taking 1 to maxSteps at a time.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input: height = 4, maxSteps = 2
+Output: 5
+
+Ways: [1,1,1,1], [1,1,2], [1,2,1], [2,1,1], [2,2]
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>ways(n) = sum of ways(n-1) to ways(n-maxSteps)</li>
+<li>Use memoization or tabulation</li>
+<li>Optimize with sliding window</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def staircaseTraversal(height, maxSteps):
+    &quot;&quot;&quot;
+    Time Complexity: O(height * maxSteps)
+    Space Complexity: O(height)
+    &quot;&quot;&quot;
+    # DP with sliding window
+    if height &lt;= 1:
+        return 1
+
+    ways = [0] * (height + 1)
+    ways[0] = 1
+    ways[1] = 1
+
+    window_sum = ways[0] + ways[1]
+
+    for i in range(2, height + 1):
+        ways[i] = window_sum
+
+        # Update window
+        window_sum += ways[i]
+        if i &gt;= maxSteps:
+            window_sum -= ways[i - maxSteps]
+
+    return ways[height]
+
+# Memoization approach
+def staircaseTraversalMemo(height, maxSteps, memo={}):
+    if height in memo:
+        return memo[height]
+    if height &lt;= 1:
+        return 1
+
+    ways = 0
+    for step in range(1, min(maxSteps, height) + 1):
+        ways += staircaseTraversalMemo(height - step, maxSteps, memo)
+
+    memo[height] = ways
+    return ways
+
+# Test
+print(staircaseTraversal(4, 2))  # 5
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func staircaseTraversal(height, maxSteps int) int {
+    if height &lt;= 1 {
+        return 1
+    }
+
+    ways := make([]int, height+1)
+    ways[0] = 1
+    ways[1] = 1
+
+    windowSum := ways[0] + ways[1]
+
+    for i := 2; i &lt;= height; i++ {
+        ways[i] = windowSum
+        windowSum += ways[i]
+        if i &gt;= maxSteps {
+            windowSum -= ways[i-maxSteps]
+        }
+    }
+
+    return ways[height]
+}
+
+func main() {
+    fmt.Println(staircaseTraversal(4, 2)) // 5
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Climbing Stairs</strong> - maxSteps = 2</li>
+<li><strong>Min Cost Climbing Stairs</strong> - With costs</li>
+<li><strong>Decode Ways</strong> - String decoding</li>
+</ol>
+</details>
+<hr />
+<h3 id="7-11-more-mediumhard-problems">7-11. More Medium/Hard Problems</h3>
+<details>
+<summary><strong>Blackjack Probability</strong></summary>
+<p>Calculate probability of busting in blackjack.</p>
+<pre><code class="language-python">def blackjackProbability(target, startingHand):
+    &quot;&quot;&quot;
+    Probability of going over target starting with startingHand
+    &quot;&quot;&quot;
+    memo = {}
+
+    def calculate(current):
+        if current &gt; target:
+            return 1.0
+        if current + 4 &gt;= target:  # Must stand
+            return 0.0
+        if current in memo:
+            return memo[current]
+
+        total_probability = 0.0
+        for card in range(1, 11):
+            total_probability += 0.1 * calculate(current + card)
+
+        memo[current] = total_probability
+        return total_probability
+
+    return round(calculate(startingHand), 3)
+</code></pre>
+</details>
+<details>
+<summary><strong>Solve Sudoku (Very Hard)</strong></summary>
+<p>Solve a Sudoku puzzle using backtracking.</p>
+<pre><code class="language-python">def solveSudoku(board):
+    def isValid(board, row, col, num):
+        # Check row
+        if num in board[row]:
+            return False
+        # Check column
+        for r in range(9):
+            if board[r][col] == num:
+                return False
+        # Check 3x3 box
+        boxRow, boxCol = 3 * (row // 3), 3 * (col // 3)
+        for r in range(boxRow, boxRow + 3):
+            for c in range(boxCol, boxCol + 3):
+                if board[r][c] == num:
+                    return False
+        return True
+
+    def solve(board):
+        for row in range(9):
+            for col in range(9):
+                if board[row][col] == 0:
+                    for num in range(1, 10):
+                        if isValid(board, row, col, num):
+                            board[row][col] = num
+                            if solve(board):
+                                return True
+                            board[row][col] = 0
+                    return False
+        return True
+
+    solve(board)
+    return board
+</code></pre>
+</details>
+<details>
+<summary><strong>Lowest Common Manager</strong></summary>
+<p>Find lowest manager who manages both employees.</p>
+<pre><code class="language-python">def getLowestCommonManager(topManager, reportOne, reportTwo):
+    def getInfo(manager):
+        numReports = 0
+        lowestManager = None
+
+        for report in manager.directReports:
+            info = getInfo(report)
+            if info['lowestManager']:
+                return info
+            numReports += info['numReports']
+
+        if manager == reportOne or manager == reportTwo:
+            numReports += 1
+
+        if numReports == 2:
+            lowestManager = manager
+
+        return {'numReports': numReports, 'lowestManager': lowestManager}
+
+    return getInfo(topManager)['lowestManager']
+</code></pre>
+</details>
+<details>
+<summary><strong>Interweaving Strings</strong></summary>
+<p>Check if string3 is interleaving of string1 and string2.</p>
+<pre><code class="language-python">def interweavingStrings(one, two, three):
+    if len(three) != len(one) + len(two):
+        return False
+
+    cache = [[None] * (len(two) + 1) for _ in range(len(one) + 1)]
+
+    def check(i, j, k):
+        if cache[i][j] is not None:
+            return cache[i][j]
+
+        if k == len(three):
+            return True
+
+        if i &lt; len(one) and one[i] == three[k]:
+            if check(i + 1, j, k + 1):
+                cache[i][j] = True
+                return True
+
+        if j &lt; len(two) and two[j] == three[k]:
+            if check(i, j + 1, k + 1):
+                cache[i][j] = True
+                return True
+
+        cache[i][j] = False
+        return False
+
+    return check(0, 0, 0)
+</code></pre>
+</details>
+<hr />
+<h2 id="practice-tips">Practice Tips</h2>
+<h3 id="recursion-checklist">Recursion Checklist</h3>
+<ul>
+<li><input disabled="" type="checkbox" /> Identified base case(s)</li>
+<li><input disabled="" type="checkbox" /> Recursive call moves toward base case</li>
+<li><input disabled="" type="checkbox" /> Correct combination of subproblem results</li>
+<li><input disabled="" type="checkbox" /> Considered memoization for overlapping subproblems</li>
+</ul>
+<h3 id="common-patterns-1">Common Patterns</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linear Recursion</td>
+<td>Factorial, Fibonacci</td>
+</tr>
+<tr>
+<td>Tree Recursion</td>
+<td>Permutations, Powerset</td>
+</tr>
+<tr>
+<td>Backtracking</td>
+<td>Sudoku, N-Queens</td>
+</tr>
+<tr>
+<td>Divide &amp; Conquer</td>
+<td>Merge Sort, Quick Sort</td>
+</tr>
+</tbody>
+</table>
+<h3 id="debugging-tips">Debugging Tips</h3>
+<ol>
+<li>Print recursive calls with parameters</li>
+<li>Trace through small examples by hand</li>
+<li>Verify base cases handle all termination conditions</li>
+<li>Check that recursive calls make progress</li>
+</ol>

@@ -1,0 +1,2127 @@
+<h1 id="event-sourcing">Event Sourcing</h1>
+<h2 id="overview">Overview</h2>
+<p><span style="color:#10b981"><strong>Event Sourcing</strong></span> is an architectural pattern where you store all changes to application state as a sequence of <span style="color:#10b981"><strong>immutable events</strong></span>, rather than storing just the current state. Think of it like a bank statement - instead of just showing your current balance, it shows every transaction that led to that balance.</p>
+<p>When you need the current state, you <span style="color:#10b981"><strong>replay all events</strong></span> from the beginning (or from a snapshot) to reconstruct it. This gives you a complete audit trail and the ability to understand exactly how you got to any particular state.</p>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="margin-top: 0; color: #166534">Core Principle</h4>
+<div style="font-size: 18px; font-weight: 500; color: #15803d">
+    "Don't store state. Store the facts that led to that state."
+</div>
+<div style="margin-top: 12px; color: #475569">
+    Events are immutable historical facts. The current state is a left-fold over the event stream.
+</div>
+</div>
+<hr />
+<h2 id="why-this-matters">Why This Matters</h2>
+<h3 id="real-company-examples">Real Company Examples</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Companies Using Event Sourcing</h4>
+<div style="display: grid; gap: 16px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Netflix - Viewing History</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Netflix stores every play, pause, seek, and completion event. This enables "Continue Watching" features, personalized recommendations, and analytics on viewing patterns across millions of users.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Stripe - Payment Processing</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Every payment state change is an event: created, authorized, captured, refunded. This provides complete audit trails for financial compliance and enables rebuilding payment states for dispute resolution.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">LinkedIn - Activity Feed</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Posts, likes, comments, and shares are all events. This enables building multiple views (feed, notifications, analytics) from the same event stream without duplicating business logic.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">LMAX Exchange - Financial Trading</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Processes 6 million transactions/second with sub-millisecond latency using event sourcing. Complete audit trail built-in, with ability to replay any trading day for debugging or compliance.</div>
+</div>
+</div>
+</div>
+<p><strong>Key Benefits:</strong></p>
+<ul>
+<li><span style="color:#10b981"><strong>Complete audit trail</strong></span>: Every change is recorded with timestamp and context</li>
+<li><span style="color:#10b981"><strong>Temporal queries</strong></span>: Answer &quot;what was the state at time X?&quot;</li>
+<li><span style="color:#10b981"><strong>Debugging</strong></span>: Replay events to reproduce bugs exactly</li>
+<li><span style="color:#10b981"><strong>Flexibility</strong></span>: Build new read models from existing events</li>
+<li><span style="color:#10b981"><strong>Compliance</strong></span>: Financial and healthcare regulations often require event history</li>
+</ul>
+<hr />
+<h2 id="core-concepts-deep-dive">Core Concepts Deep Dive</h2>
+<h3 id="the-event-store">The Event Store</h3>
+<p>The <span style="color:#10b981"><strong>Event Store</strong></span> is the heart of an event-sourced system - an append-only log that stores all events in the order they occurred.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Event Store Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 4px; margin: 20px 0">
+<div style="background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 16px 20px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center">
+<div>
+<div style="font-weight: 600">Event Stream: order-12345</div>
+<div style="font-size: 12px; opacity: 0.9">Aggregate ID identifies the stream</div>
+</div>
+<div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px">
+  Append-Only
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af; padding: 10px 16px; font-size: 12px; font-weight: 600">
+<div>Version</div>
+<div>Event Type</div>
+<div>Timestamp</div>
+<div>Data (JSON)</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #ecfdf5; padding: 10px 16px; font-size: 13px">
+<div style="color: #065f46; font-weight: 600">1</div>
+<div style="color: #047857">OrderCreated</div>
+<div style="color: #6b7280">10:00:01</div>
+<div style="color: #374151; font-family: monospace; font-size: 11px">{customer: "C1"}</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #f0fdf4; padding: 10px 16px; font-size: 13px">
+<div style="color: #065f46; font-weight: 600">2</div>
+<div style="color: #047857">ItemAdded</div>
+<div style="color: #6b7280">10:00:05</div>
+<div style="color: #374151; font-family: monospace; font-size: 11px">{sku: "ABC", qty: 2}</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #ecfdf5; padding: 10px 16px; font-size: 13px">
+<div style="color: #065f46; font-weight: 600">3</div>
+<div style="color: #047857">ItemAdded</div>
+<div style="color: #6b7280">10:00:12</div>
+<div style="color: #374151; font-family: monospace; font-size: 11px">{sku: "XYZ", qty: 1}</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #f0fdf4; padding: 10px 16px; font-size: 13px">
+<div style="color: #065f46; font-weight: 600">4</div>
+<div style="color: #047857">OrderSubmitted</div>
+<div style="color: #6b7280">10:00:30</div>
+<div style="color: #374151; font-family: monospace; font-size: 11px">{total: 150.00}</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 1fr 100px 140px; background: #fef3c7; padding: 10px 16px; font-size: 13px;border-radius: 0 0 8px 8px">
+<div style="color: #92400e; font-weight: 600">5</div>
+<div style="color: #b45309">PaymentReceived</div>
+<div style="color: #6b7280">10:01:15</div>
+<div style="color: #374151; font-family: monospace; font-size: 11px">{amount: 150.00}</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px; text-align: center">
+<div style="font-size: 24px; font-weight: 700; color: #1d4ed8">Immutable</div>
+<div style="font-size: 13px; color: #3b82f6; margin-top: 4px">Events never change once written</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 16px; text-align: center">
+<div style="font-size: 24px; font-weight: 700; color: #15803d">Ordered</div>
+<div style="font-size: 13px; color: #22c55e; margin-top: 4px">Version number ensures ordering</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center">
+<div style="font-size: 24px; font-weight: 700; color: #b45309">Complete</div>
+<div style="font-size: 13px; color: #f59e0b; margin-top: 4px">Full history preserved forever</div>
+</div>
+</div>
+</div>
+<p><strong>Event Store Key Properties:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+<th>Why It Matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span style="color:#10b981"><strong>Append-only</strong></span></td>
+<td>Events can only be added, never modified or deleted</td>
+<td>Guarantees audit integrity, simplifies concurrency</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Optimistic Concurrency</strong></span></td>
+<td>Version check on write prevents conflicts</td>
+<td>Multiple writers can't corrupt stream</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Partitioned by Aggregate</strong></span></td>
+<td>Each aggregate has its own event stream</td>
+<td>Enables parallel processing, isolation</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Global Ordering</strong></span></td>
+<td>Global sequence number across all streams</td>
+<td>Enables consistent projections</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="snapshots">Snapshots</h3>
+<p><span style="color:#10b981"><strong>Snapshots</strong></span> are periodic saves of aggregate state that optimize event replay performance.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Snapshot Strategy</h4>
+<div style="display: flex; align-items: stretch; gap: 4px; margin: 20px 0">
+<div style="flex: 1; display: flex; flex-direction: column">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 0 0 0; text-align: center; font-size: 13px; color: #991b1b; font-weight: 600">Without Snapshots</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 0 8px; flex: 1">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d">Event 1</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d">Event 2</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d">...</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d">Event 999</div>
+<div style="background: #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d">Event 1000</div>
+</div>
+<div style="margin-top: 12px; padding: 8px; background: #fee2e2; border-radius: 4px; text-align: center">
+<div style="font-size: 12px; color: #991b1b; font-weight: 600">Replay ALL 1000 events</div>
+<div style="font-size: 11px; color: #b91c1c">Slow startup time</div>
+</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; padding: 0 8px; color: #64748b; font-size: 20px">vs</div>
+<div style="flex: 1; display: flex; flex-direction: column">
+<div style="background: #d1fae5; padding: 12px; border-radius: 0 8px 0 0; text-align: center; font-size: 13px; color: #065f46; font-weight: 600">With Snapshots</div>
+<div style="background: #ecfdf5; padding: 16px; border-radius: 0 0 8px 0; flex: 1">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="background: #86efac; padding: 10px; border-radius: 4px; text-align: center">
+<div style="font-size: 12px; color: #065f46; font-weight: 600">Snapshot @ v900</div>
+<div style="font-size: 10px; color: #047857">Full state saved</div>
+</div>
+<div style="color: #6b7280; text-align: center; font-size: 11px">load</div>
+<div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534">Event 901</div>
+<div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534">...</div>
+<div style="background: #bbf7d0; padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #166534">Event 1000</div>
+</div>
+<div style="margin-top: 12px; padding: 8px; background: #d1fae5; border-radius: 4px; text-align: center">
+<div style="font-size: 12px; color: #065f46; font-weight: 600">Replay only 100 events</div>
+<div style="font-size: 11px; color: #047857">10x faster startup</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Snapshot Strategies:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>When to Snapshot</th>
+<th>Trade-offs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span style="color:#10b981"><strong>Count-based</strong></span></td>
+<td>Every N events (e.g., 100)</td>
+<td>Simple, predictable</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Time-based</strong></span></td>
+<td>Every N minutes/hours</td>
+<td>Consistent timing</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>On-demand</strong></span></td>
+<td>When replay takes too long</td>
+<td>Adaptive, efficient</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Background</strong></span></td>
+<td>Async process creates snapshots</td>
+<td>No write path impact</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="projections">Projections</h3>
+<p><span style="color:#10b981"><strong>Projections</strong></span> transform the event stream into read-optimized views (also called <span style="color:#10b981"><strong>read models</strong></span>).</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Multiple Projections from Single Event Stream</h4>
+<div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0">
+    <!-- Event Stream -->
+<div style="background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 16px 24px; border-radius: 12px; text-align: center">
+<div style="font-weight: 600; font-size: 16px">Event Stream</div>
+<div style="font-size: 13px; opacity: 0.9; margin-top: 4px">OrderCreated, ItemAdded, PaymentReceived, OrderShipped...</div>
+</div>
+<pre><code>&lt;!-- Arrows --&gt;
+</code></pre>
+<div style="display: flex; justify-content: space-around; color: #8b5cf6">
+<div style="text-align: center">
+<div style="font-size: 24px">|</div>
+<div style="font-size: 20px">V</div>
+</div>
+<div style="text-align: center">
+<div style="font-size: 24px">|</div>
+<div style="font-size: 20px">V</div>
+</div>
+<div style="text-align: center">
+<div style="font-size: 24px">|</div>
+<div style="font-size: 20px">V</div>
+</div>
+</div>
+<pre><code>&lt;!-- Projections --&gt;
+</code></pre>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px">
+<div style="background: #eff6ff;border-radius: 12px; padding: 16px">
+<div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Order Summary</div>
+<div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569">
+  {<br>
+  &nbsp;&nbsp;orderId: "123",<br>
+  &nbsp;&nbsp;status: "shipped",<br>
+  &nbsp;&nbsp;total: $150<br>
+  }
+</div>
+<div style="margin-top: 8px; font-size: 12px; color: #3b82f6">Optimized for: Order details page</div>
+</div>
+<div style="background: #f0fdf4;border-radius: 12px; padding: 16px">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px">Customer Orders</div>
+<div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569">
+  {<br>
+  &nbsp;&nbsp;customerId: "C1",<br>
+  &nbsp;&nbsp;orders: [123, 456],<br>
+  &nbsp;&nbsp;totalSpent: $500<br>
+  }
+</div>
+<div style="margin-top: 8px; font-size: 12px; color: #22c55e">Optimized for: Customer dashboard</div>
+</div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px">
+<div style="color: #b45309; font-weight: 600; margin-bottom: 8px">Sales Analytics</div>
+<div style="background: white; border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px; color: #475569">
+  {<br>
+  &nbsp;&nbsp;date: "2024-01",<br>
+  &nbsp;&nbsp;revenue: $50K,<br>
+  &nbsp;&nbsp;orderCount: 340<br>
+  }
+</div>
+<div style="margin-top: 8px; font-size: 12px; color: #f59e0b">Optimized for: Reports</div>
+</div>
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Projection Characteristics</div>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 13px; color: #475569">
+<div>Derived from events (can rebuild anytime)</div>
+<div>Eventually consistent with event store</div>
+<div>Optimized for specific query patterns</div>
+<div>Can use different storage technologies</div>
+</div>
+</div>
+</div>
+<p><strong>Projection Types:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span style="color:#10b981"><strong>Live Projection</strong></span></td>
+<td>Updated in real-time as events occur</td>
+<td>User-facing queries</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Catch-up Projection</strong></span></td>
+<td>Periodically catches up with event stream</td>
+<td>Batch analytics</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>One-time Projection</strong></span></td>
+<td>Built once for specific analysis</td>
+<td>Ad-hoc reports</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="cqrs-integration">CQRS Integration</h3>
+<p><span style="color:#10b981"><strong>CQRS (Command Query Responsibility Segregation)</strong></span> separates read and write operations into different models. Event Sourcing and CQRS are natural partners - see <a href="/topic/design-patterns/cqrs">[CQRS Pattern]</a> for detailed coverage.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Event Sourcing + CQRS Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; margin: 20px 0">
+  <!-- Top Row: Commands and Queries -->
+<div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px">
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 20px; border-radius: 12px; text-align: center">
+<div style="font-weight: 700; font-size: 18px">Commands</div>
+<div style="font-size: 13px; opacity: 0.9; margin-top: 8px">PlaceOrder, AddItem, CancelOrder</div>
+<div style="margin-top: 12px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px; font-size: 12px">
+  Write Path
+</div>
+</div>
+<div></div>
+<div style="background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); color: white; padding: 20px; border-radius: 12px; text-align: center">
+<div style="font-weight: 700; font-size: 18px">Queries</div>
+<div style="font-size: 13px; opacity: 0.9; margin-top: 8px">GetOrder, ListOrders, GetAnalytics</div>
+<div style="margin-top: 12px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px; font-size: 12px">
+  Read Path
+</div>
+</div>
+</div>
+  <!-- Arrows -->
+<div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px; text-align: center; color: #64748b">
+<div style="font-size: 20px">|<br>V</div>
+<div></div>
+<div style="font-size: 20px">^<br>|</div>
+</div>
+  <!-- Middle: Domain + Projections -->
+<div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px">
+<div style="background: #fef3c7;padding: 16px; border-radius: 12px; text-align: center">
+<div style="color: #b45309; font-weight: 600">Domain / Aggregates</div>
+<div style="font-size: 12px; color: #92400e; margin-top: 4px">Business logic, validation</div>
+</div>
+<div></div>
+<div style="background: #dbeafe;padding: 16px; border-radius: 12px; text-align: center">
+<div style="color: #1d4ed8; font-weight: 600">Projections / Read Models</div>
+<div style="font-size: 12px; color: #2563eb; margin-top: 4px">Denormalized, query-optimized</div>
+</div>
+</div>
+  <!-- Arrows -->
+<div style="display: grid; grid-template-columns: 1fr 80px 1fr; gap: 16px; text-align: center; color: #64748b">
+<div style="font-size: 20px">|<br>V</div>
+<div style="font-size: 20px"><br>----></div>
+<div style="font-size: 20px">^<br>|</div>
+</div>
+  <!-- Event Store -->
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 20px; border-radius: 12px; text-align: center">
+<div style="font-weight: 700; font-size: 18px">Event Store</div>
+<div style="font-size: 13px; opacity: 0.9; margin-top: 8px">Append-only log of all domain events</div>
+<div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px">
+<div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px">Source of Truth</div>
+<div style="background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; font-size: 12px">Publishes Events</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Why Combine Event Sourcing with CQRS?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Benefit</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span style="color:#10b981"><strong>Independent Scaling</strong></span></td>
+<td>Scale read and write sides separately based on load</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Optimized Models</strong></span></td>
+<td>Write model for consistency, read models for queries</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Multiple Views</strong></span></td>
+<td>Create any number of projections from same events</td>
+</tr>
+<tr>
+<td><span style="color:#10b981"><strong>Simpler Code</strong></span></td>
+<td>Each side focused on single responsibility</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="event-versioning">Event Versioning</h3>
+<p><span style="color:#10b981"><strong>Event Versioning</strong></span> handles schema evolution when event structures need to change over time.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Event Schema Evolution Strategies</h4>
+<div style="display: grid; gap: 16px; margin: 20px 0">
+  <!-- Upcasting -->
+<div style="background: #ecfdf5; border-radius: 12px; padding: 20px">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px">
+<div style="color: #065f46; font-weight: 700; font-size: 16px">1. Upcasting (Recommended)</div>
+<div style="background: #d1fae5; color: #065f46; padding: 4px 12px; border-radius: 20px; font-size: 12px">Best Practice</div>
+</div>
+<div style="color: #047857; font-size: 14px; margin-bottom: 12px">Transform old events to new schema on-the-fly during read</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="background: white;border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px">
+<div style="color: #6b7280; font-size: 10px; margin-bottom: 4px">V1 (stored)</div>
+  {name: "Alice"}
+</div>
+<div style="color: #10b981; font-size: 20px">-></div>
+<div style="background: white;border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px">
+<div style="color: #6b7280; font-size: 10px; margin-bottom: 4px">V2 (upcasted)</div>
+  {owner: "Alice"}
+</div>
+<div style="color: #10b981; font-size: 20px">-></div>
+<div style="background: white;border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px">
+<div style="color: #6b7280; font-size: 10px; margin-bottom: 4px">V3 (upcasted)</div>
+  {owner: "Alice", currency: "USD"}
+</div>
+</div>
+</div>
+  <!-- Weak Schema -->
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px">
+<div style="color: #1d4ed8; font-weight: 700; font-size: 16px; margin-bottom: 8px">2. Weak Schema / Optional Fields</div>
+<div style="color: #2563eb; font-size: 14px; margin-bottom: 12px">Design events with optional fields, use defaults for missing data</div>
+<div style="background: white;border-radius: 6px; padding: 10px; font-family: monospace; font-size: 12px; color: #475569">
+  event.data.get("currency", "USD")  # Default if not present
+</div>
+</div>
+  <!-- New Event Type -->
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px">
+<div style="color: #b45309; font-weight: 700; font-size: 16px; margin-bottom: 8px">3. New Event Type</div>
+<div style="color: #92400e; font-size: 14px; margin-bottom: 12px">Create new event type for breaking changes, handle both in projections</div>
+<div style="display: flex; gap: 12px">
+<div style="background: white;border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px">OrderPlacedV1</div>
+<div style="background: white;border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px">OrderPlacedV2</div>
+</div>
+</div>
+</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-top: 16px">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px">Golden Rule: Never Modify Stored Events</div>
+<div style="color: #7f1d1d; font-size: 14px">Events are immutable historical facts. Transform on read, never on write.</div>
+</div>
+</div>
+<hr />
+<h3 id="replay-strategies">Replay Strategies</h3>
+<p><span style="color:#10b981"><strong>Event Replay</strong></span> is the process of re-processing events to rebuild state or projections.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Replay Strategies Comparison</h4>
+<div style="display: grid; gap: 16px; margin: 20px 0">
+  <!-- Full Replay -->
+<div style="background: white;border-radius: 12px; overflow: hidden">
+<div style="background: #3b82f6; color: white; padding: 12px 20px; font-weight: 600">
+  Full Replay
+</div>
+<div style="padding: 16px">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+<div>
+<div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px">When to Use</div>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569">
+<li>Rebuilding projection from scratch</li>
+<li>Fixing bugs in projection logic</li>
+<li>Creating new projection</li>
+</ul>
+</div>
+<div>
+<div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px">Considerations</div>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569">
+<li>Can be slow for large streams</li>
+<li>Run during off-peak hours</li>
+<li>Consider parallelization</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+  <!-- Partial Replay -->
+<div style="background: white;border-radius: 12px; overflow: hidden">
+<div style="background: #22c55e; color: white; padding: 12px 20px; font-weight: 600">
+  Partial Replay (from Snapshot)
+</div>
+<div style="padding: 16px">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+<div>
+<div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px">When to Use</div>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569">
+<li>Loading aggregate for command</li>
+<li>Recovery after crash</li>
+<li>Hot standby sync</li>
+</ul>
+</div>
+<div>
+<div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px">Considerations</div>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569">
+<li>Requires snapshot management</li>
+<li>Trade-off: storage vs speed</li>
+<li>Snapshot frequency tuning</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+  <!-- Parallel Replay -->
+<div style="background: white;border-radius: 12px; overflow: hidden">
+<div style="background: #8b5cf6; color: white; padding: 12px 20px; font-weight: 600">
+  Parallel Replay
+</div>
+<div style="padding: 16px">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+<div>
+<div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px">When to Use</div>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569">
+<li>Massive event volumes</li>
+<li>Time-critical rebuilds</li>
+<li>Multi-tenant systems</li>
+</ul>
+</div>
+<div>
+<div style="font-size: 13px; color: #1e293b; font-weight: 600; margin-bottom: 8px">Considerations</div>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #475569">
+<li>Partition by aggregate ID</li>
+<li>Merge results carefully</li>
+<li>Handle cross-aggregate queries</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="how-it-works">How It Works</h2>
+<h3 id="traditional-vs-event-sourcing">Traditional vs Event Sourcing</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">State Storage Comparison</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px">Traditional (CRUD)</div>
+<div style="background: white;border-radius: 4px; padding: 12px; font-family: monospace; font-size: 13px; color: #475569">
+  User: {<br>
+  &nbsp;&nbsp;id: 123,<br>
+  &nbsp;&nbsp;name: "Alice",<br>
+  &nbsp;&nbsp;balance: 150<br>
+  }
+</div>
+<div style="color: #64748b; font-size: 13px; margin-top: 8px">Only current state stored. History is lost.</div>
+</div>
+<div style="background: #ecfdf5; border-radius: 8px; padding: 16px">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 12px">Event Sourcing</div>
+<div style="background: white;border-radius: 4px; padding: 12px; font-family: monospace; font-size: 12px; color: #047857">
+  1. AccountCreated {id: 123, name: "Alice"}<br>
+  2. MoneyDeposited {amount: 200}<br>
+  3. MoneyWithdrawn {amount: 50}<br>
+<div style="color: #10b981; margin-top: 8px">Replay = balance: 150</div>
+</div>
+<div style="color: #059669; font-size: 13px; margin-top: 8px">Complete history. Can rebuild any point in time.</div>
+</div>
+</div>
+</div>
+<h3 id="core-components">Core Components</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Event Sourcing Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
+<div style="font-weight: 600">Command</div>
+<div style="font-size: 12px">User Intent</div>
+</div>
+<div style="color: #64748b">-></div>
+<div style="background: #8b5cf6; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
+<div style="font-weight: 600">Aggregate</div>
+<div style="font-size: 12px">Business Logic</div>
+</div>
+<div style="color: #64748b">-></div>
+<div style="background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
+<div style="font-weight: 600">Event</div>
+<div style="font-size: 12px">Fact Recorded</div>
+</div>
+</div>
+<div style="display: flex; align-items: flex-start; gap: 16px; margin-left: 300px">
+<div style="color: #64748b">|<br>V</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-left: 240px">
+<div style="background: #f59e0b; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
+<div style="font-weight: 600">Event Store</div>
+<div style="font-size: 12px">Append-Only Log</div>
+</div>
+<div style="color: #64748b">-></div>
+<div style="background: #ec4899; color: white; padding: 12px 20px; border-radius: 8px; min-width: 120px; text-align: center">
+<div style="font-weight: 600">Projection</div>
+<div style="font-size: 12px">Read Model</div>
+</div>
+</div>
+</div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 13px">
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
+<div style="color: #1e293b; font-weight: 600">Event Store</div>
+<div style="color: #64748b">Immutable, append-only log of all events</div>
+</div>
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
+<div style="color: #1e293b; font-weight: 600">Aggregate</div>
+<div style="color: #64748b">Domain entity that produces and applies events</div>
+</div>
+<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
+<div style="color: #1e293b; font-weight: 600">Projection</div>
+<div style="color: #64748b">Read model built by processing events</div>
+</div>
+</div>
+</div>
+<h3 id="event-flow">Event Flow</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Processing a Command</h4>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #eff6ff; border-radius: 8px">
+<div style="background: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">1</div>
+<div style="color: #1e40af"><strong>Load Events:</strong> Retrieve all events for the aggregate from the event store</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f5f3ff; border-radius: 8px">
+<div style="background: #8b5cf6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">2</div>
+<div style="color: #5b21b6"><strong>Replay Events:</strong> Apply each event to rebuild current state</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px">
+<div style="background: #10b981; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">3</div>
+<div style="color: #065f46"><strong>Validate Command:</strong> Check if command is valid against current state</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fef3c7; border-radius: 8px">
+<div style="background: #f59e0b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">4</div>
+<div style="color: #92400e"><strong>Produce Events:</strong> Generate new events representing state changes</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fce7f3; border-radius: 8px">
+<div style="background: #ec4899; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">5</div>
+<div style="color: #9d174d"><strong>Persist Events:</strong> Append new events to event store (with optimistic concurrency)</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f1f5f9; border-radius: 8px">
+<div style="background: #64748b; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">6</div>
+<div style="color: #334155"><strong>Update Projections:</strong> Asynchronously update read models</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="real-life-failure-story">Real-Life Failure Story</h2>
+<h3 id="lmax-exchange-architecture-evolution">LMAX Exchange Architecture Evolution</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">How Event Sourcing Solved a Performance Crisis</h4>
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+<div style="color: #991b1b; font-weight: 600">The Challenge</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px">
+  LMAX, a financial exchange, needed to process 6 million orders per second with microsecond latency. Traditional database-backed systems couldn't handle the throughput requirements, and they needed complete audit trails for regulatory compliance.
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 600">Traditional Approach Problems</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">
+<div style="padding: 4px 0">Database writes: 1-10ms latency (too slow)</div>
+<div style="padding: 4px 0">Audit logging: Separate system, consistency issues</div>
+<div style="padding: 4px 0">Recovery: Complex, incomplete state restoration</div>
+<div style="padding: 4px 0">Debugging: No way to replay production issues</div>
+</div>
+</div>
+<div style="background: #ecfdf5; border-radius: 8px; padding: 16px">
+<div style="color: #065f46; font-weight: 600">Event Sourcing Solution</div>
+<div style="color: #047857; font-size: 14px; margin-top: 8px">
+<div>1. All state changes stored as events in an append-only journal</div>
+<div>2. In-memory processing with journal replay for recovery</div>
+<div>3. Complete audit trail built into the architecture</div>
+<div>4. Can replay any day's events to reproduce issues</div>
+<div style="margin-top: 8px; font-weight: 600">Result: 6 million transactions/second with less than 1ms latency</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="implementation">Implementation</h2>
+<h3 id="complete-event-sourcing-system">Complete Event Sourcing System</h3>
+<pre><code>                                              ```python
+                                              from dataclasses import dataclass, field
+                                              from datetime import datetime
+                                              from typing import List, Dict, Optional, Any, Callable
+                                              from abc import ABC, abstractmethod
+                                              import uuid
+                                              import json
+
+
+                                              # ============ Events ============
+
+                                              @dataclass
+                                              class Event:
+                                              &quot;&quot;&quot;Base class for all domain events.&quot;&quot;&quot;
+                                              event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+                                              aggregate_id: str = &quot;&quot;
+                                              aggregate_type: str = &quot;&quot;
+                                              event_type: str = &quot;&quot;
+                                              data: Dict[str, Any] = field(default_factory=dict)
+                                              metadata: Dict[str, Any] = field(default_factory=dict)
+                                              version: int = 0
+                                              timestamp: datetime = field(default_factory=datetime.utcnow)
+
+                                              def to_dict(self) -&gt; dict:
+                                              return {
+                                              &quot;event_id&quot;: self.event_id,
+                                              &quot;aggregate_id&quot;: self.aggregate_id,
+                                              &quot;aggregate_type&quot;: self.aggregate_type,
+                                              &quot;event_type&quot;: self.event_type,
+                                              &quot;data&quot;: self.data,
+                                              &quot;metadata&quot;: self.metadata,
+                                              &quot;version&quot;: self.version,
+                                              &quot;timestamp&quot;: self.timestamp.isoformat()
+                                              }
+
+
+                                              # ============ Event Store ============
+
+                                              class EventStore:
+                                              &quot;&quot;&quot;
+                                              Append-only store for events with optimistic concurrency.
+
+                                              In production, use EventStoreDB, PostgreSQL, or Kafka.
+                                              &quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              self._events: List[Event] = []
+                                              self._streams: Dict[str, List[Event]] = {}
+                                              self._subscribers: List[Callable[[Event], None]] = []
+
+                                              def append(self, aggregate_id: str, events: List[Event],
+                                              expected_version: int) -&gt; None:
+                                              &quot;&quot;&quot;
+                                              Append events with optimistic concurrency control.
+
+                                              Raises ConcurrencyError if expected_version doesn't match.
+                                              &quot;&quot;&quot;
+                                              if aggregate_id not in self._streams:
+                                              self._streams[aggregate_id] = []
+
+                                              current_version = len(self._streams[aggregate_id])
+
+                                              if expected_version != current_version:
+                                              raise ConcurrencyError(
+                                              f&quot;Expected version {expected_version}, &quot;
+                                              f&quot;but stream is at version {current_version}&quot;
+                                              )
+
+                                              for i, event in enumerate(events):
+                                              event.version = current_version + i + 1
+                                              event.aggregate_id = aggregate_id
+                                              self._events.append(event)
+                                              self._streams[aggregate_id].append(event)
+
+                                              # Notify subscribers
+                                              for subscriber in self._subscribers:
+                                              subscriber(event)
+
+                                              def get_events(self, aggregate_id: str,
+                                              from_version: int = 0) -&gt; List[Event]:
+                                              &quot;&quot;&quot;Get events for an aggregate starting from a version.&quot;&quot;&quot;
+                                              if aggregate_id not in self._streams:
+                                              return []
+
+                                              return [e for e in self._streams[aggregate_id]
+                                              if e.version &gt; from_version]
+
+                                              def get_all_events(self, from_position: int = 0) -&gt; List[Event]:
+                                              &quot;&quot;&quot;Get all events across all aggregates (for projections).&quot;&quot;&quot;
+                                              return self._events[from_position:]
+
+                                              def subscribe(self, handler: Callable[[Event], None]) -&gt; None:
+                                              &quot;&quot;&quot;Subscribe to new events (for real-time projections).&quot;&quot;&quot;
+                                              self._subscribers.append(handler)
+
+
+                                              class ConcurrencyError(Exception):
+                                              &quot;&quot;&quot;Raised when optimistic concurrency check fails.&quot;&quot;&quot;
+                                              pass
+
+
+                                              # ============ Aggregates ============
+
+                                              class Aggregate(ABC):
+                                              &quot;&quot;&quot;
+                                              Base class for domain aggregates.
+
+                                              Aggregates produce events and rebuild state from events.
+                                              &quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              self.id: str = &quot;&quot;
+                                              self.version: int = 0
+                                              self._pending_events: List[Event] = []
+
+                                              @abstractmethod
+                                              def apply(self, event: Event) -&gt; None:
+                                              &quot;&quot;&quot;Apply an event to update aggregate state.&quot;&quot;&quot;
+                                              pass
+
+                                              def load_from_events(self, events: List[Event]) -&gt; None:
+                                              &quot;&quot;&quot;Reconstruct aggregate state by replaying events.&quot;&quot;&quot;
+                                              for event in events:
+                                              self.apply(event)
+                                              self.version = event.version
+
+                                              def add_event(self, event_type: str, data: dict) -&gt; None:
+                                              &quot;&quot;&quot;Record a new event (to be persisted).&quot;&quot;&quot;
+                                              event = Event(
+                                              aggregate_type=self.__class__.__name__,
+                                              event_type=event_type,
+                                              data=data,
+                                              version=self.version + len(self._pending_events) + 1
+                                              )
+                                              self._pending_events.append(event)
+                                              self.apply(event)
+
+                                              def get_pending_events(self) -&gt; List[Event]:
+                                              return self._pending_events.copy()
+
+                                              def clear_pending_events(self) -&gt; None:
+                                              self._pending_events.clear()
+
+
+                                              class BankAccount(Aggregate):
+                                              &quot;&quot;&quot;
+                                              Example aggregate: A bank account with event-sourced state.
+                                              &quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              super().__init__()
+                                              self.owner: str = &quot;&quot;
+                                              self.balance: float = 0.0
+                                              self.is_closed: bool = False
+                                              self.transaction_count: int = 0
+
+                                              def apply(self, event: Event) -&gt; None:
+                                              &quot;&quot;&quot;Apply event to update account state.&quot;&quot;&quot;
+                                              if event.event_type == &quot;AccountOpened&quot;:
+                                              self.id = event.aggregate_id or event.data.get(&quot;account_id&quot;, &quot;&quot;)
+                                              self.owner = event.data[&quot;owner&quot;]
+                                              self.balance = event.data.get(&quot;initial_balance&quot;, 0.0)
+
+                                              elif event.event_type == &quot;MoneyDeposited&quot;:
+                                              self.balance += event.data[&quot;amount&quot;]
+                                              self.transaction_count += 1
+
+                                              elif event.event_type == &quot;MoneyWithdrawn&quot;:
+                                              self.balance -= event.data[&quot;amount&quot;]
+                                              self.transaction_count += 1
+
+                                              elif event.event_type == &quot;AccountClosed&quot;:
+                                              self.is_closed = True
+
+                                              # Command handlers
+
+                                              @classmethod
+                                              def open(cls, account_id: str, owner: str,
+                                              initial_balance: float = 0.0) -&gt; &quot;BankAccount&quot;:
+                                              &quot;&quot;&quot;Command: Open a new account.&quot;&quot;&quot;
+                                              account = cls()
+                                              account.id = account_id
+                                              account.add_event(&quot;AccountOpened&quot;, {
+                                              &quot;account_id&quot;: account_id,
+                                              &quot;owner&quot;: owner,
+                                              &quot;initial_balance&quot;: initial_balance
+                                              })
+                                              return account
+
+                                              def deposit(self, amount: float, description: str = &quot;&quot;) -&gt; None:
+                                              &quot;&quot;&quot;Command: Deposit money into account.&quot;&quot;&quot;
+                                              if self.is_closed:
+                                              raise InvalidOperationError(&quot;Cannot deposit to closed account&quot;)
+                                              if amount &lt;= 0:
+                                              raise InvalidOperationError(&quot;Deposit amount must be positive&quot;)
+
+                                              self.add_event(&quot;MoneyDeposited&quot;, {
+                                              &quot;amount&quot;: amount,
+                                              &quot;description&quot;: description
+                                              })
+
+                                              def withdraw(self, amount: float, description: str = &quot;&quot;) -&gt; None:
+                                              &quot;&quot;&quot;Command: Withdraw money from account.&quot;&quot;&quot;
+                                              if self.is_closed:
+                                              raise InvalidOperationError(&quot;Cannot withdraw from closed account&quot;)
+                                              if amount &lt;= 0:
+                                              raise InvalidOperationError(&quot;Withdrawal amount must be positive&quot;)
+                                              if amount &gt; self.balance:
+                                              raise InvalidOperationError(
+                                              f&quot;Insufficient funds. Balance: {self.balance}, &quot;
+                                              f&quot;Requested: {amount}&quot;
+                                              )
+
+                                              self.add_event(&quot;MoneyWithdrawn&quot;, {
+                                              &quot;amount&quot;: amount,
+                                              &quot;description&quot;: description
+                                              })
+
+                                              def close(self) -&gt; None:
+                                              &quot;&quot;&quot;Command: Close the account.&quot;&quot;&quot;
+                                              if self.is_closed:
+                                              raise InvalidOperationError(&quot;Account is already closed&quot;)
+                                              if self.balance != 0:
+                                              raise InvalidOperationError(
+                                              &quot;Cannot close account with non-zero balance&quot;
+                                              )
+
+                                              self.add_event(&quot;AccountClosed&quot;, {})
+
+
+                                              class InvalidOperationError(Exception):
+                                              &quot;&quot;&quot;Raised when a command violates business rules.&quot;&quot;&quot;
+                                              pass
+
+
+                                              # ============ Repository ============
+
+                                              class Repository:
+                                              &quot;&quot;&quot;
+                                              Repository pattern for loading and saving aggregates.
+                                              &quot;&quot;&quot;
+
+                                              def __init__(self, event_store: EventStore, aggregate_class: type):
+                                              self.event_store = event_store
+                                              self.aggregate_class = aggregate_class
+
+                                              def get(self, aggregate_id: str) -&gt; Optional[Aggregate]:
+                                              &quot;&quot;&quot;Load an aggregate by replaying its events.&quot;&quot;&quot;
+                                              events = self.event_store.get_events(aggregate_id)
+
+                                              if not events:
+                                              return None
+
+                                              aggregate = self.aggregate_class()
+                                              aggregate.load_from_events(events)
+                                              return aggregate
+
+                                              def save(self, aggregate: Aggregate) -&gt; None:
+                                              &quot;&quot;&quot;Persist pending events with optimistic concurrency.&quot;&quot;&quot;
+                                              pending = aggregate.get_pending_events()
+
+                                              if not pending:
+                                              return
+
+                                              expected_version = aggregate.version - len(pending)
+                                              self.event_store.append(aggregate.id, pending, expected_version)
+                                              aggregate.clear_pending_events()
+
+
+                                              # ============ Projections ============
+
+                                              class Projection(ABC):
+                                              &quot;&quot;&quot;
+                                              Base class for read model projections.
+
+                                              Projections build queryable views from events.
+                                              &quot;&quot;&quot;
+
+                                              @abstractmethod
+                                              def handle(self, event: Event) -&gt; None:
+                                              &quot;&quot;&quot;Process an event to update the projection.&quot;&quot;&quot;
+                                              pass
+
+
+                                              class AccountBalanceProjection(Projection):
+                                              &quot;&quot;&quot;Simple projection: account_id -&gt; balance.&quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              self.balances: Dict[str, float] = {}
+
+                                              def handle(self, event: Event) -&gt; None:
+                                              if event.event_type == &quot;AccountOpened&quot;:
+                                              self.balances[event.aggregate_id] = event.data.get(
+                                              &quot;initial_balance&quot;, 0.0
+                                              )
+                                              elif event.event_type == &quot;MoneyDeposited&quot;:
+                                              self.balances[event.aggregate_id] += event.data[&quot;amount&quot;]
+                                              elif event.event_type == &quot;MoneyWithdrawn&quot;:
+                                              self.balances[event.aggregate_id] -= event.data[&quot;amount&quot;]
+                                              elif event.event_type == &quot;AccountClosed&quot;:
+                                              del self.balances[event.aggregate_id]
+
+                                              def get_balance(self, account_id: str) -&gt; Optional[float]:
+                                              return self.balances.get(account_id)
+
+
+                                              class AccountSummaryProjection(Projection):
+                                              &quot;&quot;&quot;Rich projection with multiple fields per account.&quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              self.accounts: Dict[str, dict] = {}
+
+                                              def handle(self, event: Event) -&gt; None:
+                                              if event.event_type == &quot;AccountOpened&quot;:
+                                              self.accounts[event.aggregate_id] = {
+                                              &quot;owner&quot;: event.data[&quot;owner&quot;],
+                                              &quot;balance&quot;: event.data.get(&quot;initial_balance&quot;, 0.0),
+                                              &quot;transaction_count&quot;: 0,
+                                              &quot;opened_at&quot;: event.timestamp,
+                                              &quot;last_activity&quot;: event.timestamp,
+                                              &quot;status&quot;: &quot;active&quot;
+                                              }
+
+                                              elif event.event_type in [&quot;MoneyDeposited&quot;, &quot;MoneyWithdrawn&quot;]:
+                                              account = self.accounts.get(event.aggregate_id)
+                                              if account:
+                                              delta = event.data[&quot;amount&quot;]
+                                              if event.event_type == &quot;MoneyWithdrawn&quot;:
+                                              delta = -delta
+                                              account[&quot;balance&quot;] += delta
+                                              account[&quot;transaction_count&quot;] += 1
+                                              account[&quot;last_activity&quot;] = event.timestamp
+
+                                              elif event.event_type == &quot;AccountClosed&quot;:
+                                              account = self.accounts.get(event.aggregate_id)
+                                              if account:
+                                              account[&quot;status&quot;] = &quot;closed&quot;
+                                              account[&quot;closed_at&quot;] = event.timestamp
+
+                                              def get_account(self, account_id: str) -&gt; Optional[dict]:
+                                              return self.accounts.get(account_id)
+
+                                              def get_active_accounts(self) -&gt; List[dict]:
+                                              return [a for a in self.accounts.values() if a[&quot;status&quot;] == &quot;active&quot;]
+
+
+                                              class ProjectionManager:
+                                              &quot;&quot;&quot;Manages multiple projections and keeps them in sync.&quot;&quot;&quot;
+
+                                              def __init__(self, event_store: EventStore):
+                                              self.event_store = event_store
+                                              self.projections: List[Projection] = []
+                                              self.position: int = 0
+
+                                              def register(self, projection: Projection) -&gt; None:
+                                              &quot;&quot;&quot;Register a projection to receive events.&quot;&quot;&quot;
+                                              self.projections.append(projection)
+
+                                              def rebuild_all(self) -&gt; None:
+                                              &quot;&quot;&quot;Rebuild all projections from scratch.&quot;&quot;&quot;
+                                              self.position = 0
+                                              for projection in self.projections:
+                                              projection.__init__()  # Reset state
+                                              self.catch_up()
+
+                                              def catch_up(self) -&gt; None:
+                                              &quot;&quot;&quot;Process any new events since last catch_up.&quot;&quot;&quot;
+                                              events = self.event_store.get_all_events(self.position)
+
+                                              for event in events:
+                                              for projection in self.projections:
+                                              projection.handle(event)
+                                              self.position += 1
+
+
+                                              # ============ Snapshots ============
+
+                                              @dataclass
+                                              class Snapshot:
+                                              &quot;&quot;&quot;Snapshot of aggregate state for faster loading.&quot;&quot;&quot;
+                                              aggregate_id: str
+                                              aggregate_type: str
+                                              version: int
+                                              state: dict
+                                              created_at: datetime = field(default_factory=datetime.utcnow)
+
+
+                                              class SnapshotStore:
+                                              &quot;&quot;&quot;Store for aggregate snapshots.&quot;&quot;&quot;
+
+                                              def __init__(self, snapshot_frequency: int = 100):
+                                              self.snapshots: Dict[str, Snapshot] = {}
+                                              self.snapshot_frequency = snapshot_frequency
+
+                                              def should_snapshot(self, version: int) -&gt; bool:
+                                              return version % self.snapshot_frequency == 0
+
+                                              def save(self, aggregate: Aggregate, state: dict) -&gt; None:
+                                              &quot;&quot;&quot;Save a snapshot of the aggregate.&quot;&quot;&quot;
+                                              self.snapshots[aggregate.id] = Snapshot(
+                                              aggregate_id=aggregate.id,
+                                              aggregate_type=aggregate.__class__.__name__,
+                                              version=aggregate.version,
+                                              state=state
+                                              )
+
+                                              def get(self, aggregate_id: str) -&gt; Optional[Snapshot]:
+                                              &quot;&quot;&quot;Get the latest snapshot for an aggregate.&quot;&quot;&quot;
+                                              return self.snapshots.get(aggregate_id)
+
+
+                                              # ============ Usage Example ============
+
+                                              def main():
+                                              # Set up infrastructure
+                                              event_store = EventStore()
+                                              repo = Repository(event_store, BankAccount)
+
+                                              # Set up projections
+                                              balance_projection = AccountBalanceProjection()
+                                              summary_projection = AccountSummaryProjection()
+                                              projection_manager = ProjectionManager(event_store)
+                                              projection_manager.register(balance_projection)
+                                              projection_manager.register(summary_projection)
+
+                                              # Subscribe projections to real-time updates
+                                              event_store.subscribe(balance_projection.handle)
+                                              event_store.subscribe(summary_projection.handle)
+
+                                              # Create and use an account
+                                              account = BankAccount.open(&quot;acc-001&quot;, &quot;Alice&quot;, initial_balance=100.0)
+                                              repo.save(account)
+
+                                              # Perform operations
+                                              account.deposit(50.0, &quot;Paycheck&quot;)
+                                              account.withdraw(30.0, &quot;Groceries&quot;)
+                                              repo.save(account)
+
+                                              # Query via projection (fast)
+                                              balance = balance_projection.get_balance(&quot;acc-001&quot;)
+                                              print(f&quot;Balance from projection: ${balance}&quot;)  # $120.0
+
+                                              # Query via aggregate (replay events)
+                                              loaded = repo.get(&quot;acc-001&quot;)
+                                              print(f&quot;Balance from replay: ${loaded.balance}&quot;)  # $120.0
+
+                                              # Get rich account data
+                                              summary = summary_projection.get_account(&quot;acc-001&quot;)
+                                              print(f&quot;Transaction count: {summary['transaction_count']}&quot;)  # 2
+
+
+                                              if __name__ == &quot;__main__&quot;:
+                                              main()
+                                              ```
+</code></pre>
+<h3 id="event-schema-evolution">Event Schema Evolution</h3>
+<pre><code>                                              ```python
+                                              class EventUpcaster:
+                                              &quot;&quot;&quot;
+                                              Transform old event schemas to current version.
+
+                                              Never modify stored events - upcast on read instead.
+                                              &quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              self.upcasters = {}
+
+                                              def register(self, event_type: str, from_version: int,
+                                              upcaster: Callable[[dict], dict]) -&gt; None:
+                                              &quot;&quot;&quot;Register an upcaster for a specific event type and version.&quot;&quot;&quot;
+                                              key = (event_type, from_version)
+                                              self.upcasters[key] = upcaster
+
+                                              def upcast(self, event: dict) -&gt; dict:
+                                              &quot;&quot;&quot;Apply all necessary upcasters to bring event to current schema.&quot;&quot;&quot;
+                                              event_type = event[&quot;event_type&quot;]
+                                              version = event.get(&quot;schema_version&quot;, 1)
+
+                                              while True:
+                                              key = (event_type, version)
+                                              if key not in self.upcasters:
+                                              break
+
+                                              event = self.upcasters[key](event)
+                                              version += 1
+
+                                              event[&quot;schema_version&quot;] = version
+                                              return event
+
+
+                                              # Example: Evolving AccountOpened event
+                                              def upcast_account_opened_v1_to_v2(event: dict) -&gt; dict:
+                                              &quot;&quot;&quot;V1 had 'name', V2 renamed to 'owner'.&quot;&quot;&quot;
+                                              data = event[&quot;data&quot;].copy()
+                                              data[&quot;owner&quot;] = data.pop(&quot;name&quot;, &quot;Unknown&quot;)
+                                              return {**event, &quot;data&quot;: data}
+
+
+                                              def upcast_account_opened_v2_to_v3(event: dict) -&gt; dict:
+                                              &quot;&quot;&quot;V3 added 'currency' field with default.&quot;&quot;&quot;
+                                              data = event[&quot;data&quot;].copy()
+                                              data.setdefault(&quot;currency&quot;, &quot;USD&quot;)
+                                              return {**event, &quot;data&quot;: data}
+
+
+                                              # Usage
+                                              upcaster = EventUpcaster()
+                                              upcaster.register(&quot;AccountOpened&quot;, 1, upcast_account_opened_v1_to_v2)
+                                              upcaster.register(&quot;AccountOpened&quot;, 2, upcast_account_opened_v2_to_v3)
+                                              ```
+</code></pre>
+<hr />
+<h2 id="3-level-recursive-interview-questions">3-Level Recursive Interview Questions</h2>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<h3 style="margin-top: 0; color: #1e40af">Deep Interview Q&A: Event Sourcing Mastery</h3>
+<p style="color: #475569">3-level recursive questions that demonstrate deep understanding</p>
+</div>
+<h3 id="q1-when-should-you-use-event-sourcing-vs-traditional-crud">Q1: When should you use Event Sourcing vs traditional CRUD?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Use Event Sourcing when:</strong></p>
+<ul>
+<li><span style="color:#10b981"><strong>Complete audit trail</strong></span> is a requirement (finance, healthcare, legal)</li>
+<li>You need <span style="color:#10b981"><strong>temporal queries</strong></span> (&quot;what was the state on March 15?&quot;)<br />
+- Complex domain with many state transitions<br />
+- Multiple read models needed from the same data<br />
+- Debugging production issues requires exact replay</li>
+</ul>
+<p><strong>Use CRUD when:</strong><br />
+- Simple domain with straightforward state<br />
+- No audit requirements<br />
+- High-frequency updates to same records<br />
+- Team unfamiliar with event sourcing patterns<br />
+- Query patterns are simple and predictable</p>
+<div style="background: #eff6ff;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Follow-up L2: What are the hidden costs of Event Sourcing that teams often underestimate?</div>
+<div style="color: #1e40af; font-size: 14px">
+<p><strong>Hidden costs include:</strong></p>
+<ol>
+<li><span style="color:#10b981"><strong>Event schema evolution complexity</strong></span> - Every schema change requires upcasting logic</li>
+<li><span style="color:#10b981"><strong>Storage growth</strong></span> - Events never deleted, requires archival strategy</li>
+<li><span style="color:#10b981"><strong>Eventual consistency UX</strong></span> - UI must handle projection lag gracefully</li>
+<li><span style="color:#10b981"><strong>Testing complexity</strong></span> - Need to test event replay, projections, upcasters</li>
+<li><span style="color:#10b981"><strong>Operational overhead</strong></span> - Monitoring projection lag, snapshot health, replay times</li>
+</ol>
+<div style="background: #dbeafe;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 4px">Follow-up L3: How would you migrate from CRUD to Event Sourcing for a live system?</div>
+<div style="color: #1e40af; font-size: 13px">
+<p><strong>Migration Strategy (Strangler Fig Pattern):</strong></p>
+<ol>
+<li><strong>Dual-write phase</strong>: Write to both old DB and new event store</li>
+<li><strong>Shadow projection</strong>: Build projections from events, compare with old DB</li>
+<li><strong>Read migration</strong>: Gradually shift reads to projections</li>
+<li><strong>Write migration</strong>: Route new writes only to event store</li>
+<li><strong>Backfill</strong>: Generate synthetic events for historical data</li>
+<li><strong>Decommission</strong>: Remove old CRUD system</li>
+</ol>
+<p><strong>Key considerations:</strong><br />
+- Use <a href="/topic/system-design/cdc">[Change Data Capture]</a> to generate events from existing DB changes<br />
+- Maintain idempotency keys to handle duplicate events<br />
+- Plan for rollback if projections show data inconsistencies</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h3 id="q2-how-do-you-handle-large-event-streams-efficiently">Q2: How do you handle large event streams efficiently?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Answer:</strong></p>
+<ol>
+<li>
+<p><strong>Snapshots</strong>: Periodically save aggregate state. Load from snapshot + replay only newer events.<br />
+<code>python def load_with_snapshot(aggregate_id): snapshot = snapshot_store.get(aggregate_id) if snapshot: aggregate.restore_from_snapshot(snapshot) events = event_store.get_events(aggregate_id, from_version=snapshot.version) else: events = event_store.get_events(aggregate_id) aggregate.load_from_events(events) </code></p>
+</li>
+<li>
+<p><strong>Event archiving</strong>: Move old events to cold storage, keep recent events hot</p>
+</li>
+<li>
+<p><strong>Aggregate design</strong>: Keep aggregates small with bounded event streams</p>
+</li>
+<li>
+<p><strong>Parallel projection rebuild</strong>: Partition events and process in parallel</p>
+</li>
+</ol>
+<div style="background: #f0fdf4;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px">Follow-up L2: When should you take snapshots and what trade-offs are involved?</div>
+<div style="color: #166534; font-size: 14px">
+<p><strong>Snapshot Frequency Trade-offs:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Frequency</th>
+<th>Storage Cost</th>
+<th>Load Time</th>
+<th>Complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every 10 events</td>
+<td>High</td>
+<td>Fastest</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Every 100 events</td>
+<td>Medium</td>
+<td>Fast</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Every 1000 events</td>
+<td>Low</td>
+<td>Slower</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Adaptive (time-based)</td>
+<td>Variable</td>
+<td>Predictable</td>
+<td>High</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When NOT to snapshot:</strong><br />
+- Aggregates with few events (&lt; 50)<br />
+- Events are small and replay is fast<br />
+- Write-heavy with infrequent reads</p>
+<p><strong>Snapshot strategies:</strong></p>
+<ul>
+<li><span style="color:#10b981"><strong>Count-based</strong></span>: Every N events - simple and predictable</li>
+<li><span style="color:#10b981"><strong>Time-based</strong></span>: Every N hours - consistent timing</li>
+<li><span style="color:#10b981"><strong>Adaptive</strong></span>: When replay time exceeds threshold - efficient but complex</li>
+</ul>
+<div style="background: #dcfce7;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle snapshot invalidation when aggregate logic changes?</div>
+<div style="color: #166534; font-size: 13px">
+<p><strong>Snapshot Versioning Strategy:</strong></p>
+<pre><code>                                                        ```python
+                                                        @dataclass
+                                                        class Snapshot:
+                                                        aggregate_id: str
+                                                        version: int
+                                                        schema_version: int  # Snapshot schema version
+                                                        state: dict
+
+                                                        class SnapshotAwareRepository:
+                                                        CURRENT_SCHEMA_VERSION = 3
+
+                                                        def load(self, aggregate_id: str) -&gt; Aggregate:
+                                                        snapshot = self.snapshot_store.get(aggregate_id)
+
+                                                        if snapshot and snapshot.schema_version == self.CURRENT_SCHEMA_VERSION:
+                                                        # Valid snapshot - use it
+                                                        aggregate = self.restore_from_snapshot(snapshot)
+                                                        events = self.event_store.get_events(
+                                                        aggregate_id, from_version=snapshot.version
+                                                        )
+                                                        else:
+                                                        # Stale snapshot - full replay
+                                                        aggregate = self.aggregate_class()
+                                                        events = self.event_store.get_events(aggregate_id)
+
+                                                        aggregate.load_from_events(events)
+
+                                                        # Optionally create new snapshot
+                                                        if self.should_snapshot(aggregate):
+                                                        self.create_snapshot(aggregate)
+
+                                                        return aggregate
+                                                        ```
+</code></pre>
+<p><strong>Handling logic changes:</strong></p>
+<ol>
+<li>Increment <code>CURRENT_SCHEMA_VERSION</code> when aggregate <code>apply()</code> logic changes</li>
+<li>Background job rebuilds snapshots with new version</li>
+<li>Use <a href="/topic/system-design/deployment-strategies">[Blue-Green Deployment]</a> to avoid serving stale reads during transition</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h3 id="q3-how-do-you-ensure-consistency-between-the-event-store-and-projections">Q3: How do you ensure consistency between the event store and projections?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Answer:</strong></p>
+<p>Projections are <span style="color:#10b981"><strong>eventually consistent</strong></span> by design. To manage this:</p>
+<ol>
+<li><strong>Idempotent handlers</strong>: Projections must handle duplicate events safely</li>
+<li><strong>Position tracking</strong>: Store the last processed event position</li>
+<li><strong>Replay capability</strong>: Rebuild projections from events at any time</li>
+<li><strong>Ordering guarantees</strong>: Process events in order per aggregate</li>
+</ol>
+<p>For stronger consistency, use the <span style="color:#10b981"><strong>Outbox Pattern</strong></span>:<br />
+- Write events to database table in same transaction as projection update<br />
+- Background process publishes events to message bus</p>
+<div style="background: #fef3c7;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #b45309; font-weight: 600; margin-bottom: 8px">Follow-up L2: How do you handle projection lag in user-facing applications?</div>
+<div style="color: #92400e; font-size: 14px">
+<p><strong>Strategies for handling eventual consistency in UX:</strong></p>
+<ol>
+<li>
+<p><strong>Read-your-writes consistency</strong>: After command, poll projection until updated<br />
+```python<br />
+async def place_order_and_wait(order_data):<br />
+event_version = await command_handler.place_order(order_data)</p>
+<pre><code>                                               # Wait for projection to catch up
+                                               while True:
+                                               projection = await order_projection.get(order_data.id)
+                                               if projection and projection.version &gt;= event_version:
+                                               return projection
+                                               await asyncio.sleep(0.1)
+                                               ```
+</code></pre>
+</li>
+<li>
+<p><strong>Optimistic UI updates</strong>: Update UI immediately, sync later</p>
+</li>
+<li>
+<p><strong>Version tokens</strong>: Return event version, client includes in subsequent reads</p>
+</li>
+<li>
+<p><strong>Dedicated read-after-write projection</strong>: Synchronous projection for immediate consistency</p>
+</li>
+</ol>
+<div style="background: #fde68a;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you design idempotent projection handlers for exactly-once semantics?</div>
+<div style="color: #92400e; font-size: 13px">
+<p><strong>Idempotent Projection Pattern:</strong></p>
+<pre><code>                                                        ```python
+                                                        class IdempotentProjection:
+                                                        def __init__(self, db):
+                                                        self.db = db
+
+                                                        def handle(self, event: Event) -&gt; None:
+                                                        # Check if event already processed
+                                                        if self._is_processed(event.event_id):
+                                                        return  # Skip duplicate
+
+                                                        # Process event and mark as processed atomically
+                                                        with self.db.transaction():
+                                                        self._apply_event(event)
+                                                        self._mark_processed(event.event_id, event.version)
+
+                                                        def _is_processed(self, event_id: str) -&gt; bool:
+                                                        return self.db.exists(
+                                                        &quot;processed_events&quot;,
+                                                        {&quot;event_id&quot;: event_id}
+                                                        )
+
+                                                        def _mark_processed(self, event_id: str, version: int) -&gt; None:
+                                                        self.db.insert(&quot;processed_events&quot;, {
+                                                        &quot;event_id&quot;: event_id,
+                                                        &quot;version&quot;: version,
+                                                        &quot;processed_at&quot;: datetime.utcnow()
+                                                        })
+                                                        ```
+</code></pre>
+<p><strong>Key techniques:</strong></p>
+<ul>
+<li>
+<p><span style="color:#10b981"><strong>Deduplication table</strong></span>: Track processed event IDs</p>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Idempotency keys</strong></span>: Use event_id as natural idempotency key</p>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Upsert operations</strong></span>: Use <code>INSERT ... ON CONFLICT UPDATE</code></p>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Version checks</strong></span>: Only apply if version &gt; current</p>
+<p>See also: <a href="/topic/system-design/distributed-transactions">[Distributed Transactions]</a> for related patterns</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h3 id="q4-how-do-you-handle-event-schema-changes">Q4: How do you handle event schema changes?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Answer:</strong></p>
+<p><strong>Golden Rule</strong>: <span style="color:#10b981">Never modify stored events</span>. Events are immutable facts.</p>
+<p><strong>Strategies:</strong></p>
+<ol>
+<li><strong>Upcasting</strong>: Transform old events to new schema on read</li>
+<li><strong>Event versioning</strong>: Include schema_version in events</li>
+<li><strong>Copy-and-transform</strong>: Create new events from old (for major changes)</li>
+<li><strong>Weak schema</strong>: Design events with optional fields</li>
+</ol>
+<p><strong>Example upcaster chain:</strong><br />
+<code>V1: {name: &quot;Alice&quot;} -&gt; V2: {owner: &quot;Alice&quot;} -&gt; V3: {owner: &quot;Alice&quot;, currency: &quot;USD&quot;}</code></p>
+<div style="background: #f5f3ff;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #6d28d9; font-weight: 600; margin-bottom: 8px">Follow-up L2: What happens when an upcaster has a bug that corrupts projected data?</div>
+<div style="color: #5b21b6; font-size: 14px">
+<p><strong>Recovery Strategy:</strong></p>
+<ol>
+<li><strong>Fix the upcaster</strong>: Correct the transformation logic</li>
+<li><strong>Rebuild projections</strong>: Full replay from events with corrected upcaster</li>
+<li><strong>No data loss</strong>: Original events unchanged, only projections affected</li>
+</ol>
+<p><strong>Prevention techniques:</strong><br />
+- Unit test upcasters with sample events from each version<br />
+- Keep old event samples in test fixtures<br />
+- Integration test full replay path<br />
+- Monitor projection checksums after deployments</p>
+<pre><code>                                                    ```python
+                                                    def test_upcaster_chain():
+                                                    v1_event = {&quot;event_type&quot;: &quot;AccountOpened&quot;, &quot;data&quot;: {&quot;name&quot;: &quot;Alice&quot;}}
+
+                                                    result = upcaster.upcast(v1_event)
+
+                                                    assert result[&quot;data&quot;][&quot;owner&quot;] == &quot;Alice&quot;
+                                                    assert result[&quot;data&quot;][&quot;currency&quot;] == &quot;USD&quot;
+                                                    assert result[&quot;schema_version&quot;] == 3
+                                                    ```
+</code></pre>
+<div style="background: #ede9fe;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #5b21b6; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle breaking changes that can't be upcasted?</div>
+<div style="color: #5b21b6; font-size: 13px">
+<p><strong>Strategies for non-upcastable changes:</strong></p>
+<ol>
+<li>
+<p><strong>Create new event type</strong>: <code>OrderPlacedV2</code> alongside <code>OrderPlacedV1</code><br />
+- Projections handle both types<br />
+- New code emits V2, old events remain V1</p>
+</li>
+<li>
+<p><strong>Compensating events</strong>: Emit correction events<br />
+```python<br />
+# Original event (wrong)<br />
+OrderPlaced {amount: 100}  # Should have been 110</p>
+<pre><code>                                                   # Compensation event
+                                                   OrderAmountCorrected {
+                                                   original_event_id: &quot;evt-123&quot;,
+                                                   old_amount: 100,
+                                                   new_amount: 110,
+                                                   reason: &quot;Pricing bug fix&quot;
+                                                   }
+                                                   ```
+</code></pre>
+</li>
+<li>
+<p><strong>Event store migration</strong> (last resort):<br />
+- Create new event store with transformed events<br />
+- Use <a href="/topic/system-design/deployment-strategies">[Blue-Green Deployment]</a> to switch<br />
+- Keep old store for audit/legal requirements</p>
+</li>
+</ol>
+<p><strong>When to use each:</strong><br />
+- New event type: Semantic changes (new fields change meaning)<br />
+- Compensating events: Data corrections, business adjustments<br />
+- Migration: Fundamental structural changes, compliance requirements</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h3 id="q5-what-is-cqrs-and-how-does-it-relate-to-event-sourcing">Q5: What is CQRS and how does it relate to Event Sourcing?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Answer:</strong></p>
+<p><span style="color:#10b981"><strong>CQRS (Command Query Responsibility Segregation)</strong></span> separates read and write models:<br />
+- <strong>Write side</strong>: Receives commands, produces events<br />
+- <strong>Read side</strong>: Optimized projections for queries</p>
+<p>Event Sourcing and CQRS are complementary:<br />
+- Event Sourcing provides the write model (append-only event log)<br />
+- CQRS provides multiple read models (projections built from events)</p>
+<p><strong>Benefits together:</strong><br />
+- Write model optimized for consistency (events)<br />
+- Read models optimized for specific queries (denormalized views)<br />
+- Can scale read and write sides independently</p>
+<div style="background: #fce7f3;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #9d174d; font-weight: 600; margin-bottom: 8px">Follow-up L2: When would you use Event Sourcing without CQRS, or CQRS without Event Sourcing?</div>
+<div style="color: #831843; font-size: 14px">
+<p><strong>Event Sourcing without CQRS:</strong><br />
+- Single, simple read model sufficient<br />
+- Audit trail is primary requirement, not query flexibility<br />
+- Example: Compliance logging system</p>
+<p><strong>CQRS without Event Sourcing:</strong><br />
+- Need read/write separation for scaling<br />
+- Traditional database on write side is sufficient<br />
+- Example: E-commerce product catalog (read-heavy, simple writes)</p>
+<pre><code>                                                    ```
+                                                    CQRS without ES:
+                                                    [Command] -&gt; [Write DB] -&gt; [Change Data Capture] -&gt; [Read DB]
+                                                    |                                      |
+                                                    Normalized                           Denormalized
+                                                    ```
+</code></pre>
+<div style="background: #fdf2f8;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #9d174d; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle cross-aggregate queries in an Event Sourced CQRS system?</div>
+<div style="color: #831843; font-size: 13px">
+<p><strong>Cross-Aggregate Query Strategies:</strong></p>
+<ol>
+<li>
+<p><strong>Denormalized projection</strong>: Build read model spanning aggregates<br />
+```python<br />
+class CustomerOrdersProjection:<br />
+&quot;&quot;&quot;Combines Customer and Order aggregate data.&quot;&quot;&quot;</p>
+<pre><code>                                                   def handle(self, event: Event):
+                                                   if event.event_type == &quot;CustomerCreated&quot;:
+                                                   self.data[event.aggregate_id] = {
+                                                   &quot;customer_name&quot;: event.data[&quot;name&quot;],
+                                                   &quot;orders&quot;: []
+                                                   }
+                                                   elif event.event_type == &quot;OrderPlaced&quot;:
+                                                   customer_id = event.data[&quot;customer_id&quot;]
+                                                   self.data[customer_id][&quot;orders&quot;].append({
+                                                   &quot;order_id&quot;: event.aggregate_id,
+                                                   &quot;total&quot;: event.data[&quot;total&quot;]
+                                                   })
+                                                   ```
+</code></pre>
+</li>
+<li>
+<p><strong>Composite ID projection</strong>: Key by combination of aggregate IDs</p>
+</li>
+<li>
+<p><strong>GraphQL/API composition</strong>: Combine projections at API layer</p>
+</li>
+<li>
+<p><strong>Event-carried state transfer</strong>: Include related data in events<br />
+<code>python OrderPlaced { order_id: &quot;ord-123&quot;, customer_id: &quot;cust-456&quot;, customer_name: &quot;Alice&quot;,  # Denormalized for projection total: 150.00 } </code></p>
+</li>
+</ol>
+<p><strong>Trade-offs:</strong><br />
+- Denormalized projections: Faster queries, more storage, eventual consistency<br />
+- API composition: Flexible, slower, consistent at query time</p>
+<p>See <a href="/topic/system-design/api-gateway">[API Gateway]</a> for aggregation patterns</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h3 id="q6-how-do-you-implement-replay-for-debugging-production-issues">Q6: How do you implement replay for debugging production issues?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Answer:</strong></p>
+<p><strong>Production Replay Strategy:</strong></p>
+<ol>
+<li>
+<p><strong>Copy events</strong> to isolated environment</p>
+</li>
+<li>
+<p><strong>Replay with instrumentation</strong>: Add logging/breakpoints</p>
+</li>
+<li>
+<p><strong>Time-travel debugging</strong>: Stop at specific event, inspect state</p>
+</li>
+<li>
+<p><strong>Hypothesis testing</strong>: Modify event data to test fixes</p>
+<pre><code>                                           ```python
+                                           class DebuggingReplayer:
+                                           def replay_until(self, aggregate_id: str, target_version: int,
+                                           breakpoint_fn: Callable[[Event, Aggregate], bool] = None):
+                                           aggregate = self.aggregate_class()
+                                           events = self.event_store.get_events(aggregate_id)
+
+                                           for event in events:
+                                           if event.version &gt; target_version:
+                                           break
+
+                                           print(f&quot;Applying: {event.event_type} v{event.version}&quot;)
+                                           aggregate.apply(event)
+
+                                           if breakpoint_fn and breakpoint_fn(event, aggregate):
+                                           print(f&quot;Breakpoint hit at v{event.version}&quot;)
+                                           import pdb; pdb.set_trace()
+
+                                           return aggregate
+                                           ```
+</code></pre>
+</li>
+</ol>
+<div style="background: #fef2f2;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px">Follow-up L2: How do you handle side effects during replay (sending emails, API calls)?</div>
+<div style="color: #7f1d1d; font-size: 14px">
+<p><strong>Side Effect Management:</strong></p>
+<ol>
+<li>
+<p><strong>Separate side effects from state changes</strong>:<br />
+```python<br />
+class OrderAggregate:<br />
+def place_order(self, data):<br />
+# State change - replayed<br />
+self.add_event(&quot;OrderPlaced&quot;, data)</p>
+<pre><code>                                               # Side effects handled separately by process manager
+                                               class OrderProcessManager:
+                                               def handle(self, event: Event):
+                                               if event.event_type == &quot;OrderPlaced&quot;:
+                                               if not self.is_replay_mode:
+                                               self.email_service.send_confirmation(event.data)
+                                               ```
+</code></pre>
+</li>
+<li>
+<p><strong>Event handlers track execution</strong>:<br />
+<code>python class IdempotentEmailHandler: def handle(self, event: Event): if self.already_sent(event.event_id): return  # Skip during replay self.send_email(event) self.mark_sent(event.event_id) </code></p>
+</li>
+<li>
+<p><strong>Replay mode flag</strong>: Disable side effects during rebuild</p>
+</li>
+</ol>
+<div style="background: #fee2e2;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle time-dependent logic during replay?</div>
+<div style="color: #7f1d1d; font-size: 13px">
+<p><strong>Time-Dependent Replay Strategies:</strong></p>
+<p><strong>Problem:</strong> Code like <code>if datetime.now() &gt; event.timestamp + timedelta(days=30)</code> behaves differently during replay.</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Use event timestamp, not system time</strong>:<br />
+<code>python class OrderAggregate: def apply(self, event: Event): if event.event_type == &quot;OrderPlaced&quot;: # Use event time, not now() self.placed_at = event.timestamp self.expires_at = event.timestamp + timedelta(days=30) </code></p>
+</li>
+<li>
+<p><strong>Clock abstraction</strong>:<br />
+```python<br />
+class EventSourcedAggregate:<br />
+def <strong>init</strong>(self, clock: Callable[[], datetime] = datetime.utcnow):<br />
+self.clock = clock</p>
+<pre><code>                                                   def current_time(self) -&gt; datetime:
+                                                   return self.clock()
+
+                                                   # During replay, inject event timestamp as clock
+                                                   def replay_clock(event: Event):
+                                                   return lambda: event.timestamp
+                                                   ```
+</code></pre>
+</li>
+<li>
+<p><strong>Time events</strong>: Model time passage as events<br />
+<code>python # Instead of checking &quot;now &gt; 30 days after order&quot; # Emit explicit event when expiration occurs DailyExpirationCheck {} OrderExpired {order_id: &quot;123&quot;, reason: &quot;30 day limit&quot;} </code></p>
+</li>
+</ol>
+<p>See <a href="/topic/design-patterns/saga">[Saga Pattern]</a> for handling long-running processes</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h3 id="q7-what-are-the-best-practices-for-event-design">Q7: What are the best practices for event design?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Answer:</strong></p>
+<p><strong>Event Design Principles:</strong></p>
+<ol>
+<li>
+<p><span style="color:#10b981"><strong>Past tense naming</strong></span>: Events are facts that happened<br />
+- Good: <code>OrderPlaced</code>, <code>PaymentReceived</code><br />
+- Bad: <code>PlaceOrder</code>, <code>ProcessPayment</code></p>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Self-contained</strong></span>: Include all data needed to understand the change<br />
+```python<br />
+# Good - self-contained<br />
+OrderPlaced {<br />
+order_id: &quot;123&quot;,<br />
+customer_id: &quot;456&quot;,<br />
+items: [{sku: &quot;ABC&quot;, qty: 2, price: 25.00}],<br />
+total: 50.00<br />
+}</p>
+<pre><code>                                             # Bad - requires lookup
+                                             OrderPlaced {order_id: &quot;123&quot;}  # Missing context
+                                             ```
+</code></pre>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Domain language</strong></span>: Use business terms, not technical<br />
+- Good: <code>SubscriptionRenewed</code><br />
+- Bad: <code>SubscriptionRowUpdated</code></p>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Granular events</strong></span>: One event per business fact<br />
+- Good: <code>ItemAddedToCart</code>, <code>ItemRemovedFromCart</code><br />
+- Bad: <code>CartUpdated</code> (loses specific intent)</p>
+</li>
+</ol>
+<div style="background: #ecfdf5;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 8px">Follow-up L2: How much data should an event contain - minimal or denormalized?</div>
+<div style="color: #047857; font-size: 14px">
+<p><strong>The Tension:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Minimal Events</th>
+<th>Denormalized Events</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Smaller storage</td>
+<td>Larger storage</td>
+</tr>
+<tr>
+<td>Projections need lookups</td>
+<td>Self-contained for projections</td>
+</tr>
+<tr>
+<td>Schema changes easier</td>
+<td>More data to upcast</td>
+</tr>
+<tr>
+<td>Consistent with source</td>
+<td>May drift from source</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended approach</strong>: <span style="color:#10b981"><strong>Event-Carried State Transfer</strong></span></p>
+<p>Include data that:</p>
+<ol>
+<li>
+<p>Is needed by multiple projections</p>
+</li>
+<li>
+<p>Won't change after event (immutable references)</p>
+</li>
+<li>
+<p>Would require expensive lookups</p>
+<pre><code>                                               ```python
+                                               # Good balance
+                                               OrderPlaced {
+                                               order_id: &quot;123&quot;,
+                                               customer_id: &quot;456&quot;,
+                                               customer_name: &quot;Alice&quot;,  # Denormalized - needed for display
+                                               items: [...],
+                                               total: 50.00,
+                                               currency: &quot;USD&quot;
+                                               }
+                                               ```
+</code></pre>
+</li>
+</ol>
+<div style="background: #d1fae5;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle large payloads like file uploads in events?</div>
+<div style="color: #047857; font-size: 13px">
+<p><strong>Large Payload Strategies:</strong></p>
+<ol>
+<li>
+<p><strong>Reference pattern</strong>: Store payload externally, event contains reference<br />
+<code>python DocumentUploaded { document_id: &quot;doc-123&quot;, storage_location: &quot;s3://bucket/doc-123.pdf&quot;,  # Reference content_hash: &quot;sha256:abc...&quot;, size_bytes: 5242880, metadata: {filename: &quot;contract.pdf&quot;, mime: &quot;application/pdf&quot;} } </code></p>
+</li>
+<li>
+<p><strong>Claim check pattern</strong>: Similar but with expiring claim<br />
+<code>python LargeOrderReceived { order_id: &quot;123&quot;, claim_check: &quot;claims/order-123&quot;,  # Temporary storage claim_expires_at: &quot;2024-01-15T00:00:00Z&quot; } </code></p>
+</li>
+<li>
+<p><strong>Event chunking</strong> (for very large events):<br />
+<code>python DataImportStarted {import_id: &quot;imp-1&quot;, total_chunks: 100} DataChunkReceived {import_id: &quot;imp-1&quot;, chunk: 1, data: [...]} DataChunkReceived {import_id: &quot;imp-1&quot;, chunk: 2, data: [...]} DataImportCompleted {import_id: &quot;imp-1&quot;} </code></p>
+</li>
+</ol>
+<p><strong>Storage considerations:</strong><br />
+- Event store for metadata and references<br />
+- Blob storage (S3, GCS) for large payloads<br />
+- Content-addressable storage for deduplication</p>
+<p>See <a href="/topic/system-design/object-storage">[Object Storage]</a> for blob storage patterns</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h3 id="q8-how-do-you-test-event-sourced-systems">Q8: How do you test event-sourced systems?</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Answer:</strong></p>
+<p><strong>Testing Layers:</strong></p>
+<ol>
+<li>
+<p><span style="color:#10b981"><strong>Aggregate unit tests</strong></span>: Given events, when command, then events<br />
+```python<br />
+def test_withdraw_from_account():<br />
+# Given<br />
+account = BankAccount()<br />
+account.load_from_events([<br />
+Event(event_type=&quot;AccountOpened&quot;, data={&quot;owner&quot;: &quot;Alice&quot;, &quot;initial_balance&quot;: 100})<br />
+])</p>
+<pre><code>                                             # When
+                                             account.withdraw(30)
+
+                                             # Then
+                                             pending = account.get_pending_events()
+                                             assert len(pending) == 1
+                                             assert pending[0].event_type == &quot;MoneyWithdrawn&quot;
+                                             assert pending[0].data[&quot;amount&quot;] == 30
+                                             ```
+</code></pre>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Projection tests</strong></span>: Given events, projection state matches</p>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Integration tests</strong></span>: Full command -&gt; event store -&gt; projection flow</p>
+</li>
+<li>
+<p><span style="color:#10b981"><strong>Upcaster tests</strong></span>: Old events transform correctly</p>
+</li>
+</ol>
+<div style="background: #eff6ff;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Follow-up L2: How do you write integration tests that verify eventual consistency?</div>
+<div style="color: #1e40af; font-size: 14px">
+<p><strong>Eventual Consistency Testing:</strong></p>
+<pre><code>                                                    ```python
+                                                    @pytest.fixture
+                                                    def event_sourced_system():
+                                                    event_store = InMemoryEventStore()
+                                                    projection = OrderProjection()
+                                                    event_store.subscribe(projection.handle)
+                                                    return event_store, projection
+
+                                                    def test_projection_eventually_consistent(event_sourced_system):
+                                                    event_store, projection = event_sourced_system
+
+                                                    # When: Place order via command
+                                                    order = Order.create(&quot;order-1&quot;, customer_id=&quot;cust-1&quot;, total=100)
+                                                    event_store.append(&quot;order-1&quot;, order.pending_events, expected_version=0)
+
+                                                    # Then: Projection reflects change (sync subscription)
+                                                    result = projection.get_order(&quot;order-1&quot;)
+                                                    assert result[&quot;total&quot;] == 100
+
+                                                    def test_projection_handles_out_of_order_events(event_sourced_system):
+                                                    &quot;&quot;&quot;Verify projection handles events arriving out of order.&quot;&quot;&quot;
+                                                    event_store, projection = event_sourced_system
+
+                                                    # Simulate out-of-order delivery
+                                                    events = [
+                                                    Event(event_type=&quot;ItemAdded&quot;, version=2),
+                                                    Event(event_type=&quot;OrderCreated&quot;, version=1),  # Arrives second
+                                                    ]
+
+                                                    for event in events:
+                                                    projection.handle(event)
+
+                                                    # Projection should buffer/reorder correctly
+                                                    assert projection.get_order(&quot;order-1&quot;) is not None
+                                                    ```
+</code></pre>
+<div style="background: #dbeafe;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you implement property-based testing for event-sourced aggregates?</div>
+<div style="color: #1e40af; font-size: 13px">
+<p><strong>Property-Based Testing with Hypothesis:</strong></p>
+<pre><code>                                                        ```python
+                                                        from hypothesis import given, strategies as st
+                                                        from hypothesis.stateful import RuleBasedStateMachine, rule
+
+                                                        class BankAccountStateMachine(RuleBasedStateMachine):
+                                                        &quot;&quot;&quot;Property: Replaying events always produces same state.&quot;&quot;&quot;
+
+                                                        def __init__(self):
+                                                        super().__init__()
+                                                        self.account = BankAccount.open(&quot;test&quot;, &quot;Alice&quot;, initial_balance=1000)
+                                                        self.event_store = InMemoryEventStore()
+
+                                                        @rule(amount=st.floats(min_value=0.01, max_value=100))
+                                                        def deposit(self, amount):
+                                                        self.account.deposit(amount)
+                                                        self._verify_replay_consistency()
+
+                                                        @rule(amount=st.floats(min_value=0.01, max_value=100))
+                                                        def withdraw(self, amount):
+                                                        if amount &lt;= self.account.balance:
+                                                        self.account.withdraw(amount)
+                                                        self._verify_replay_consistency()
+
+                                                        def _verify_replay_consistency(self):
+                                                        # Save events
+                                                        events = self.account.get_pending_events()
+                                                        self.event_store.append(self.account.id, events,
+                                                        expected_version=self.account.version - len(events))
+                                                        self.account.clear_pending_events()
+
+                                                        # Replay and compare
+                                                        replayed = BankAccount()
+                                                        replayed.load_from_events(
+                                                        self.event_store.get_events(self.account.id)
+                                                        )
+
+                                                        assert replayed.balance == self.account.balance
+                                                        assert replayed.version == self.account.version
+
+                                                        TestBankAccount = BankAccountStateMachine.TestCase
+                                                        ```
+</code></pre>
+<p><strong>Properties to test:</strong><br />
+- Replay produces identical state<br />
+- Events are idempotent when applied<br />
+- Concurrent commands with same expected_version fail<br />
+- Upcasters are reversible (can downcast for testing)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="common-mistakes">Common Mistakes</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Event Sourcing Anti-Patterns</h4>
+<div style="display: grid; gap: 12px">
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Storing CRUD operations as events</div>
+<div style="color: #7f1d1d; font-size: 14px">Events should represent domain facts ("OrderPlaced"), not database operations ("OrderRowInserted"). Capture business intent, not technical actions.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Large aggregates with too many events</div>
+<div style="color: #7f1d1d; font-size: 14px">If an aggregate has thousands of events, loading becomes slow. Use snapshots, or redesign aggregates to be smaller and more focused.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Modifying stored events</div>
+<div style="color: #7f1d1d; font-size: 14px">Events are immutable historical facts. Use upcasting to transform old schemas on read, never modify the stored event data.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Non-idempotent projection handlers</div>
+<div style="color: #7f1d1d; font-size: 14px">Projections may receive duplicate events during replays or failures. Handlers must produce the same result when applied multiple times.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Querying the event store directly</div>
+<div style="color: #7f1d1d; font-size: 14px">Event stores are optimized for append and replay, not ad-hoc queries. Build projections for query needs instead of scanning events.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Ignoring eventual consistency in UX</div>
+<div style="color: #7f1d1d; font-size: 14px">Projections lag behind writes. Design UI to handle this - show optimistic updates, indicate "syncing" state, or use read-your-writes consistency.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Coupling aggregates through events</div>
+<div style="color: #7f1d1d; font-size: 14px">One aggregate should not directly consume another's events. Use sagas or process managers to coordinate across boundaries. See [[Saga Pattern]](/topic/design-patterns/saga).</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Missing correlation/causation IDs</div>
+<div style="color: #7f1d1d; font-size: 14px">Without tracking which command caused which events, debugging distributed flows becomes nearly impossible. Always include correlation_id in event metadata.</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="event-store-technologies-comparison">Event Store Technologies Comparison</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Choosing an Event Store</h4>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+  <thead>
+<tr style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #1e40af">
+<th style="padding: 12px; text-align: left; border-radius: 8px 0 0 0">Technology</th>
+<th style="padding: 12px; text-align: left">Best For</th>
+<th style="padding: 12px; text-align: left">Strengths</th>
+<th style="padding: 12px; text-align: left; border-radius: 0 8px 0 0">Limitations</th>
+</tr>
+  </thead>
+  <tbody>
+<tr style="background: #f1f5f9">
+<td style="padding: 12px; font-weight: 600; color: #3b82f6">EventStoreDB</td>
+<td style="padding: 12px">Purpose-built ES</td>
+<td style="padding: 12px">Projections built-in, optimized for ES patterns</td>
+<td style="padding: 12px">Specialized knowledge required</td>
+</tr>
+<tr style="background: white">
+<td style="padding: 12px; font-weight: 600; color: #22c55e">PostgreSQL</td>
+<td style="padding: 12px">Teams with SQL expertise</td>
+<td style="padding: 12px">Familiar, transactional, JSONB support</td>
+<td style="padding: 12px">Manual optimistic concurrency</td>
+</tr>
+<tr style="background: #f1f5f9">
+<td style="padding: 12px; font-weight: 600; color: #f59e0b">Apache Kafka</td>
+<td style="padding: 12px">High-throughput streaming</td>
+<td style="padding: 12px">Scalable, built-in pub/sub</td>
+<td style="padding: 12px">No per-aggregate ordering guarantee</td>
+</tr>
+<tr style="background: white">
+<td style="padding: 12px; font-weight: 600; color: #8b5cf6">DynamoDB</td>
+<td style="padding: 12px">Serverless, AWS ecosystem</td>
+<td style="padding: 12px">Managed, scalable, streams for projections</td>
+<td style="padding: 12px">25 item transaction limit</td>
+</tr>
+<tr style="background: #f1f5f9">
+<td style="padding: 12px; font-weight: 600; color: #ec4899">Marten (.NET)</td>
+<td style="padding: 12px">.NET applications</td>
+<td style="padding: 12px">PostgreSQL-backed, strong tooling</td>
+<td style="padding: 12px">.NET specific</td>
+</tr>
+  </tbody>
+</table>
+</div>
+</div>
+<hr />
+<h2 id="quick-reference-card">Quick Reference Card</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Event Sourcing Cheat Sheet</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Event Design Principles</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">Events are past tense facts (OrderPlaced)</div>
+<div style="padding: 4px 0">Include all data needed to understand the change</div>
+<div style="padding: 4px 0">Events are immutable - never modify</div>
+<div style="padding: 4px 0">Use domain language, not technical terms</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Event Store Technologies</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>EventStoreDB:</strong> Purpose-built for ES</div>
+<div style="padding: 4px 0"><strong>PostgreSQL:</strong> With append-only table</div>
+<div style="padding: 4px 0"><strong>Kafka:</strong> As an event log</div>
+<div style="padding: 4px 0"><strong>DynamoDB:</strong> With version attribute</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Performance Strategies</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">Snapshots every N events (50-100)</div>
+<div style="padding: 4px 0">Keep aggregates small</div>
+<div style="padding: 4px 0">Parallel projection rebuilds</div>
+<div style="padding: 4px 0">Archive old events to cold storage</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Consistency Patterns</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>Optimistic concurrency:</strong> Version checks</div>
+<div style="padding: 4px 0"><strong>Projections:</strong> Eventually consistent</div>
+<div style="padding: 4px 0"><strong>Outbox pattern:</strong> Reliable publishing</div>
+<div style="padding: 4px 0"><strong>Idempotency:</strong> Safe replay</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="related-topics">Related Topics</h2>
+<pre><code>                                              - [[CQRS Pattern]](/topic/design-patterns/cqrs) - Separating read and write models
+                                              - [[Message Queues]](/topic/system-design/message-queues) - Publishing events to subscribers
+                                              - [[Distributed Locking]](/topic/system-design/distributed-locking) - Concurrency control
+                                              - [[Saga Pattern]](/topic/design-patterns/saga) - Coordinating distributed transactions
+                                              - [[API Gateway]](/topic/system-design/api-gateway) - Aggregating read models
+                                              - [[Change Data Capture]](/topic/system-design/cdc) - Generating events from databases
+                                              - [[Microservices Event Strategies]](/topic/microservices/event-strategies) - Event-driven architecture patterns
+</code></pre>

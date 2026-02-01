@@ -1,0 +1,1072 @@
+<h1 id="graphs">Graphs</h1>
+<h2 id="overview">Overview</h2>
+<p>Graphs are versatile data structures consisting of vertices (nodes) and edges. They model relationships and connections, used in social networks, maps, dependencies, and countless applications.</p>
+<h2 id="key-concepts--terminology">Key Concepts &amp; Terminology</h2>
+<h3 id="graph-types">Graph Types</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Directed</td>
+<td>Edges have direction (A→B)</td>
+</tr>
+<tr>
+<td>Undirected</td>
+<td>Edges are bidirectional</td>
+</tr>
+<tr>
+<td>Weighted</td>
+<td>Edges have costs/distances</td>
+</tr>
+<tr>
+<td>Unweighted</td>
+<td>All edges have equal cost</td>
+</tr>
+<tr>
+<td>Cyclic</td>
+<td>Contains at least one cycle</td>
+</tr>
+<tr>
+<td>Acyclic</td>
+<td>No cycles (DAG if directed)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="representations">Representations</h3>
+<ul>
+<li><strong>Adjacency List</strong>: Space O(V+E), lookup O(degree)</li>
+<li><strong>Adjacency Matrix</strong>: Space O(V²), lookup O(1)</li>
+<li><strong>Edge List</strong>: Space O(E), good for sparse graphs</li>
+</ul>
+<h3 id="core-algorithms">Core Algorithms</h3>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Use Case</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BFS</td>
+<td>Shortest path (unweighted), level traversal</td>
+<td>O(V+E)</td>
+</tr>
+<tr>
+<td>DFS</td>
+<td>Path finding, cycle detection, topological sort</td>
+<td>O(V+E)</td>
+</tr>
+<tr>
+<td>Dijkstra</td>
+<td>Shortest path (weighted, positive)</td>
+<td>O((V+E)logV)</td>
+</tr>
+<tr>
+<td>Bellman-Ford</td>
+<td>Shortest path (negative weights)</td>
+<td>O(VE)</td>
+</tr>
+<tr>
+<td>Floyd-Warshall</td>
+<td>All-pairs shortest path</td>
+<td>O(V³)</td>
+</tr>
+<tr>
+<td>Kruskal/Prim</td>
+<td>Minimum spanning tree</td>
+<td>O(ElogE)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="common-patterns">Common Patterns</h3>
+<ol>
+<li><strong>BFS for shortest path</strong> in unweighted graphs</li>
+<li><strong>DFS for connectivity</strong> and path existence</li>
+<li><strong>Topological sort</strong> for dependencies</li>
+<li><strong>Union-Find</strong> for connected components</li>
+</ol>
+<h3 id="boundary-conditions">Boundary Conditions</h3>
+<ol>
+<li>Empty graph</li>
+<li>Single node</li>
+<li>Disconnected components</li>
+<li>Self-loops</li>
+<li>Parallel edges</li>
+</ol>
+<hr />
+<h2 id="problems">Problems</h2>
+<h3 id="1-depth-first-search">1. Depth-First Search</h3>
+<p><strong>Difficulty:</strong> Easy</p>
+<p><strong>Problem Statement:</strong><br />
+Implement DFS traversal on a graph represented as an adjacency list.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Graph:
+    A
+  / | \
+ B  C  D
+/ \    / \
+E  F  G   H
+
+DFS from A: [A, B, E, F, C, D, G, H]
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Visit current node first</li>
+<li>Recursively visit all unvisited children</li>
+<li>Track visited to avoid cycles</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">class Node:
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+
+    def addChild(self, name):
+        self.children.append(Node(name))
+        return self
+
+    def depthFirstSearch(self, array):
+        &quot;&quot;&quot;
+        Time Complexity: O(V + E)
+        Space Complexity: O(V)
+        &quot;&quot;&quot;
+        array.append(self.name)
+        for child in self.children:
+            child.depthFirstSearch(array)
+        return array
+
+# Test
+root = Node(&quot;A&quot;)
+root.addChild(&quot;B&quot;).addChild(&quot;C&quot;).addChild(&quot;D&quot;)
+root.children[0].addChild(&quot;E&quot;).addChild(&quot;F&quot;)
+root.children[2].addChild(&quot;G&quot;).addChild(&quot;H&quot;)
+
+print(root.depthFirstSearch([]))  # ['A', 'B', 'E', 'F', 'C', 'D', 'G', 'H']
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type Node struct {
+    Name     string
+    Children []*Node
+}
+
+func (n *Node) AddChild(name string) *Node {
+    child := &amp;Node{Name: name}
+    n.Children = append(n.Children, child)
+    return n
+}
+
+func (n *Node) DepthFirstSearch(array []string) []string {
+    array = append(array, n.Name)
+    for _, child := range n.Children {
+        array = child.DepthFirstSearch(array)
+    }
+    return array
+}
+
+func main() {
+    root := &amp;Node{Name: &quot;A&quot;}
+    root.AddChild(&quot;B&quot;).AddChild(&quot;C&quot;).AddChild(&quot;D&quot;)
+    fmt.Println(root.DepthFirstSearch([]string{}))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Number of Islands</strong> - DFS on grid</li>
+<li><strong>Clone Graph</strong> - DFS with cloning</li>
+<li><strong>Path Sum III</strong> - DFS with prefix sum</li>
+</ol>
+</details>
+<hr />
+<h3 id="2-breadth-first-search">2. Breadth-First Search</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Implement BFS traversal returning nodes level by level.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Graph:
+    A
+  / | \
+ B  C  D
+/ \    / \
+E  F  G   H
+
+BFS from A: [A, B, C, D, E, F, G, H]
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Use a queue (FIFO)</li>
+<li>Process all nodes at current level before next</li>
+<li>Track visited to avoid revisiting</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">from collections import deque
+
+class Node:
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+
+    def addChild(self, name):
+        self.children.append(Node(name))
+        return self
+
+    def breadthFirstSearch(self, array):
+        &quot;&quot;&quot;
+        Time Complexity: O(V + E)
+        Space Complexity: O(V)
+        &quot;&quot;&quot;
+        queue = deque([self])
+
+        while queue:
+            node = queue.popleft()
+            array.append(node.name)
+
+            for child in node.children:
+                queue.append(child)
+
+        return array
+
+# Test
+root = Node(&quot;A&quot;)
+root.addChild(&quot;B&quot;).addChild(&quot;C&quot;).addChild(&quot;D&quot;)
+root.children[0].addChild(&quot;E&quot;).addChild(&quot;F&quot;)
+
+print(root.breadthFirstSearch([]))  # ['A', 'B', 'C', 'D', 'E', 'F']
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type Node struct {
+    Name     string
+    Children []*Node
+}
+
+func (n *Node) BreadthFirstSearch(array []string) []string {
+    queue := []*Node{n}
+
+    for len(queue) &gt; 0 {
+        node := queue[0]
+        queue = queue[1:]
+
+        array = append(array, node.Name)
+
+        for _, child := range node.Children {
+            queue = append(queue, child)
+        }
+    }
+
+    return array
+}
+
+func main() {
+    root := &amp;Node{Name: &quot;A&quot;}
+    root.Children = []*Node{{Name: &quot;B&quot;}, {Name: &quot;C&quot;}}
+    fmt.Println(root.BreadthFirstSearch([]string{}))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Shortest Path in Binary Matrix</strong> - BFS on grid</li>
+<li><strong>Word Ladder</strong> - BFS for transformation</li>
+<li><strong>Rotting Oranges</strong> - Multi-source BFS</li>
+</ol>
+</details>
+<hr />
+<h3 id="3-single-cycle-check">3. Single Cycle Check</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Determine if the array represents a single cycle where following jumps visits each element exactly once and returns to start.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input: [2, 3, 1, -4, -4, 2]
+Output: true
+
+0 -&gt; 2 -&gt; 3 -&gt; -1 -&gt; -5 -&gt; 1 -&gt; 0 (visits all once)
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Start at index 0</li>
+<li>Make n jumps and track visited count</li>
+<li>Must visit each element exactly once and return to 0</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def hasSingleCycle(array):
+    &quot;&quot;&quot;
+    Time Complexity: O(n)
+    Space Complexity: O(1)
+    &quot;&quot;&quot;
+    n = len(array)
+    num_visited = 0
+    current_idx = 0
+
+    while num_visited &lt; n:
+        if num_visited &gt; 0 and current_idx == 0:
+            return False  # Back to start too early
+
+        num_visited += 1
+        current_idx = getNextIdx(current_idx, array)
+
+    return current_idx == 0
+
+def getNextIdx(current_idx, array):
+    jump = array[current_idx]
+    next_idx = (current_idx + jump) % len(array)
+    return next_idx
+
+# Test
+print(hasSingleCycle([2, 3, 1, -4, -4, 2]))  # True
+print(hasSingleCycle([2, 2, -1]))  # True
+print(hasSingleCycle([1, 1, 1, 1, 2]))  # False
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func hasSingleCycle(array []int) bool {
+    n := len(array)
+    numVisited := 0
+    currentIdx := 0
+
+    for numVisited &lt; n {
+        if numVisited &gt; 0 &amp;&amp; currentIdx == 0 {
+            return false
+        }
+        numVisited++
+        currentIdx = getNextIdx(currentIdx, array)
+    }
+
+    return currentIdx == 0
+}
+
+func getNextIdx(currentIdx int, array []int) int {
+    n := len(array)
+    jump := array[currentIdx]
+    nextIdx := (currentIdx + jump) % n
+    if nextIdx &lt; 0 {
+        nextIdx += n
+    }
+    return nextIdx
+}
+
+func main() {
+    fmt.Println(hasSingleCycle([]int{2, 3, 1, -4, -4, 2})) // true
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Linked List Cycle</strong> - Floyd's algorithm</li>
+<li><strong>Circular Array Loop</strong> - LeetCode version</li>
+<li><strong>Happy Number</strong> - Cycle detection</li>
+</ol>
+</details>
+<hr />
+<h3 id="4-river-sizes">4. River Sizes</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Find the sizes of all rivers (connected 1s) in a matrix.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input:
+[
+  [1, 0, 0, 1, 0],
+  [1, 0, 1, 0, 0],
+  [0, 0, 1, 0, 1],
+  [1, 0, 1, 0, 1],
+  [1, 0, 1, 1, 0]
+]
+Output: [1, 2, 2, 2, 5]
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Iterate through matrix</li>
+<li>When finding unvisited 1, do BFS/DFS to find river size</li>
+<li>Mark visited cells to avoid recounting</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def riverSizes(matrix):
+    &quot;&quot;&quot;
+    Time Complexity: O(m * n)
+    Space Complexity: O(m * n)
+    &quot;&quot;&quot;
+    sizes = []
+    visited = [[False] * len(matrix[0]) for _ in range(len(matrix))]
+
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if not visited[i][j] and matrix[i][j] == 1:
+                size = exploreRiver(matrix, visited, i, j)
+                sizes.append(size)
+
+    return sorted(sizes)
+
+def exploreRiver(matrix, visited, row, col):
+    size = 0
+    stack = [(row, col)]
+
+    while stack:
+        r, c = stack.pop()
+
+        if visited[r][c]:
+            continue
+
+        visited[r][c] = True
+
+        if matrix[r][c] == 0:
+            continue
+
+        size += 1
+
+        # Add neighbors
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 &lt;= nr &lt; len(matrix) and 0 &lt;= nc &lt; len(matrix[0]):
+                if not visited[nr][nc]:
+                    stack.append((nr, nc))
+
+    return size
+
+# Test
+matrix = [
+    [1, 0, 0, 1, 0],
+    [1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1],
+    [1, 0, 1, 1, 0]
+]
+print(riverSizes(matrix))  # [1, 2, 2, 2, 5]
+</code></pre>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sort&quot;
+)
+
+func riverSizes(matrix [][]int) []int {
+    sizes := []int{}
+    visited := make([][]bool, len(matrix))
+    for i := range visited {
+        visited[i] = make([]bool, len(matrix[0]))
+    }
+
+    for i := 0; i &lt; len(matrix); i++ {
+        for j := 0; j &lt; len(matrix[0]); j++ {
+            if !visited[i][j] &amp;&amp; matrix[i][j] == 1 {
+                size := exploreRiver(matrix, visited, i, j)
+                sizes = append(sizes, size)
+            }
+        }
+    }
+
+    sort.Ints(sizes)
+    return sizes
+}
+
+func exploreRiver(matrix [][]int, visited [][]bool, row, col int) int {
+    size := 0
+    stack := [][]int{{row, col}}
+
+    for len(stack) &gt; 0 {
+        node := stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
+        r, c := node[0], node[1]
+
+        if visited[r][c] {
+            continue
+        }
+        visited[r][c] = true
+
+        if matrix[r][c] == 0 {
+            continue
+        }
+        size++
+
+        directions := [][]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+        for _, d := range directions {
+            nr, nc := r+d[0], c+d[1]
+            if nr &gt;= 0 &amp;&amp; nr &lt; len(matrix) &amp;&amp; nc &gt;= 0 &amp;&amp; nc &lt; len(matrix[0]) &amp;&amp; !visited[nr][nc] {
+                stack = append(stack, []int{nr, nc})
+            }
+        }
+    }
+
+    return size
+}
+
+func main() {
+    matrix := [][]int{
+        {1, 0, 0, 1, 0},
+        {1, 0, 1, 0, 0},
+    }
+    fmt.Println(riverSizes(matrix))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Number of Islands</strong> - LeetCode version</li>
+<li><strong>Max Area of Island</strong> - Find largest island</li>
+<li><strong>Flood Fill</strong> - Change connected region</li>
+</ol>
+</details>
+<hr />
+<h3 id="5-youngest-common-ancestor">5. Youngest Common Ancestor</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Find the youngest (deepest) common ancestor of two nodes.</p>
+<p><strong>Example:</strong></p>
+<pre><code>          A
+        / | \
+       B  C  D
+      / \   / \
+     E   F G   H
+    / \
+   I   J
+
+Nodes: E, I
+Output: E (I's ancestor is E, E's ancestor is itself)
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Find depth of both nodes</li>
+<li>Bring deeper node to same level</li>
+<li>Move both up until they meet</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">class AncestralTree:
+    def __init__(self, name):
+        self.name = name
+        self.ancestor = None
+
+def getYoungestCommonAncestor(topAncestor, descendantOne, descendantTwo):
+    &quot;&quot;&quot;
+    Time Complexity: O(D) where D is depth
+    Space Complexity: O(1)
+    &quot;&quot;&quot;
+    depth1 = getDepth(descendantOne, topAncestor)
+    depth2 = getDepth(descendantTwo, topAncestor)
+
+    # Bring to same level
+    if depth1 &gt; depth2:
+        return getAncestor(descendantOne, descendantTwo, depth1 - depth2)
+    else:
+        return getAncestor(descendantTwo, descendantOne, depth2 - depth1)
+
+def getDepth(node, topAncestor):
+    depth = 0
+    while node != topAncestor:
+        depth += 1
+        node = node.ancestor
+    return depth
+
+def getAncestor(lower, higher, diff):
+    # Move lower up by diff levels
+    while diff &gt; 0:
+        lower = lower.ancestor
+        diff -= 1
+
+    # Move both up until they meet
+    while lower != higher:
+        lower = lower.ancestor
+        higher = higher.ancestor
+
+    return lower
+</code></pre>
+<pre><code class="language-go">package main
+
+type AncestralTree struct {
+    Name     string
+    Ancestor *AncestralTree
+}
+
+func getYoungestCommonAncestor(top, one, two *AncestralTree) *AncestralTree {
+    depth1 := getDepth(one, top)
+    depth2 := getDepth(two, top)
+
+    if depth1 &gt; depth2 {
+        return getAncestor(one, two, depth1-depth2)
+    }
+    return getAncestor(two, one, depth2-depth1)
+}
+
+func getDepth(node, top *AncestralTree) int {
+    depth := 0
+    for node != top {
+        depth++
+        node = node.Ancestor
+    }
+    return depth
+}
+
+func getAncestor(lower, higher *AncestralTree, diff int) *AncestralTree {
+    for diff &gt; 0 {
+        lower = lower.Ancestor
+        diff--
+    }
+
+    for lower != higher {
+        lower = lower.Ancestor
+        higher = higher.Ancestor
+    }
+
+    return lower
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Lowest Common Ancestor of Binary Tree</strong> - No parent pointers</li>
+<li><strong>LCA of BST</strong> - Use BST property</li>
+<li><strong>LCA of Deepest Leaves</strong> - Special case</li>
+</ol>
+</details>
+<hr />
+<h3 id="6-remove-islands">6. Remove Islands</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Remove all islands (1s not connected to border) from a matrix.</p>
+<p><strong>Example:</strong></p>
+<pre><code>Input:                    Output:
+[1, 0, 0, 0, 0, 0]       [1, 0, 0, 0, 0, 0]
+[0, 1, 0, 1, 1, 1]       [0, 0, 0, 1, 1, 1]
+[0, 0, 1, 0, 1, 0]  -&gt;   [0, 0, 0, 0, 1, 0]
+[1, 1, 0, 0, 1, 0]       [1, 1, 0, 0, 1, 0]
+[1, 0, 1, 1, 0, 0]       [1, 0, 0, 0, 0, 0]
+[1, 0, 0, 0, 0, 1]       [1, 0, 0, 0, 0, 1]
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Mark all 1s connected to border as &quot;safe&quot;</li>
+<li>DFS/BFS from border 1s</li>
+<li>Convert remaining 1s to 0s</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def removeIslands(matrix):
+    &quot;&quot;&quot;
+    Time Complexity: O(m * n)
+    Space Complexity: O(m * n)
+    &quot;&quot;&quot;
+    rows, cols = len(matrix), len(matrix[0])
+
+    # Mark border-connected 1s as 2
+    for i in range(rows):
+        for j in range(cols):
+            is_border = i == 0 or i == rows - 1 or j == 0 or j == cols - 1
+            if is_border and matrix[i][j] == 1:
+                markConnected(matrix, i, j)
+
+    # Convert: 2 -&gt; 1 (border-connected), 1 -&gt; 0 (islands)
+    for i in range(rows):
+        for j in range(cols):
+            if matrix[i][j] == 1:
+                matrix[i][j] = 0
+            elif matrix[i][j] == 2:
+                matrix[i][j] = 1
+
+    return matrix
+
+def markConnected(matrix, row, col):
+    stack = [(row, col)]
+
+    while stack:
+        r, c = stack.pop()
+
+        if matrix[r][c] != 1:
+            continue
+
+        matrix[r][c] = 2
+
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 &lt;= nr &lt; len(matrix) and 0 &lt;= nc &lt; len(matrix[0]):
+                stack.append((nr, nc))
+
+# Test
+matrix = [
+    [1, 0, 0, 0, 0, 0],
+    [0, 1, 0, 1, 1, 1],
+    [0, 0, 1, 0, 1, 0],
+    [1, 1, 0, 0, 1, 0],
+    [1, 0, 1, 1, 0, 0],
+    [1, 0, 0, 0, 0, 1]
+]
+result = removeIslands(matrix)
+for row in result:
+    print(row)
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func removeIslands(matrix [][]int) [][]int {
+    rows, cols := len(matrix), len(matrix[0])
+
+    // Mark border-connected 1s
+    for i := 0; i &lt; rows; i++ {
+        for j := 0; j &lt; cols; j++ {
+            isBorder := i == 0 || i == rows-1 || j == 0 || j == cols-1
+            if isBorder &amp;&amp; matrix[i][j] == 1 {
+                markConnected(matrix, i, j)
+            }
+        }
+    }
+
+    // Convert
+    for i := 0; i &lt; rows; i++ {
+        for j := 0; j &lt; cols; j++ {
+            if matrix[i][j] == 1 {
+                matrix[i][j] = 0
+            } else if matrix[i][j] == 2 {
+                matrix[i][j] = 1
+            }
+        }
+    }
+
+    return matrix
+}
+
+func markConnected(matrix [][]int, row, col int) {
+    stack := [][]int{{row, col}}
+    directions := [][]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+
+    for len(stack) &gt; 0 {
+        cell := stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
+        r, c := cell[0], cell[1]
+
+        if matrix[r][c] != 1 {
+            continue
+        }
+        matrix[r][c] = 2
+
+        for _, d := range directions {
+            nr, nc := r+d[0], c+d[1]
+            if nr &gt;= 0 &amp;&amp; nr &lt; len(matrix) &amp;&amp; nc &gt;= 0 &amp;&amp; nc &lt; len(matrix[0]) {
+                stack = append(stack, []int{nr, nc})
+            }
+        }
+    }
+}
+
+func main() {
+    matrix := [][]int{
+        {1, 0, 0, 0, 0, 0},
+        {0, 1, 0, 1, 1, 1},
+    }
+    fmt.Println(removeIslands(matrix))
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Surrounded Regions</strong> - LeetCode O/X version</li>
+<li><strong>Number of Enclaves</strong> - Count cells in islands</li>
+<li><strong>Pacific Atlantic Water Flow</strong> - Flow from borders</li>
+</ol>
+</details>
+<hr />
+<h3 id="7-cycle-in-graph">7. Cycle In Graph</h3>
+<p><strong>Difficulty:</strong> Medium</p>
+<p><strong>Problem Statement:</strong><br />
+Detect if a directed graph contains a cycle.</p>
+<p><strong>Example:</strong></p>
+<pre><code>edges = [
+  [1, 3],  # 0 -&gt; 1, 0 -&gt; 3
+  [2, 3, 4],  # 1 -&gt; 2, 1 -&gt; 3, 1 -&gt; 4
+  [0],  # 2 -&gt; 0 (creates cycle!)
+  [],
+  [2, 5],
+  []
+]
+Output: true (0 -&gt; 1 -&gt; 2 -&gt; 0)
+</code></pre>
+<details>
+<summary><strong>Hints</strong></summary>
+<ol>
+<li>Use DFS with three states: unvisited, visiting, visited</li>
+<li>Cycle exists if we reach a &quot;visiting&quot; node</li>
+<li>Mark &quot;visited&quot; when all descendants explored</li>
+</ol>
+</details>
+<details>
+<summary><strong>Solution</strong></summary>
+<pre><code class="language-python">def cycleInGraph(edges):
+    &quot;&quot;&quot;
+    Time Complexity: O(V + E)
+    Space Complexity: O(V)
+    &quot;&quot;&quot;
+    WHITE, GRAY, BLACK = 0, 1, 2
+    colors = [WHITE] * len(edges)
+
+    def hasCycle(node):
+        colors[node] = GRAY  # Visiting
+
+        for neighbor in edges[node]:
+            if colors[neighbor] == GRAY:  # Back edge
+                return True
+            if colors[neighbor] == WHITE:
+                if hasCycle(neighbor):
+                    return True
+
+        colors[node] = BLACK  # Visited
+        return False
+
+    for node in range(len(edges)):
+        if colors[node] == WHITE:
+            if hasCycle(node):
+                return True
+
+    return False
+
+# Test
+edges = [
+    [1, 3],
+    [2, 3, 4],
+    [0],
+    [],
+    [2, 5],
+    []
+]
+print(cycleInGraph(edges))  # True
+</code></pre>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+const (
+    WHITE = 0
+    GRAY  = 1
+    BLACK = 2
+)
+
+func cycleInGraph(edges [][]int) bool {
+    colors := make([]int, len(edges))
+
+    var hasCycle func(node int) bool
+    hasCycle = func(node int) bool {
+        colors[node] = GRAY
+
+        for _, neighbor := range edges[node] {
+            if colors[neighbor] == GRAY {
+                return true
+            }
+            if colors[neighbor] == WHITE {
+                if hasCycle(neighbor) {
+                    return true
+                }
+            }
+        }
+
+        colors[node] = BLACK
+        return false
+    }
+
+    for node := 0; node &lt; len(edges); node++ {
+        if colors[node] == WHITE {
+            if hasCycle(node) {
+                return true
+            }
+        }
+    }
+
+    return false
+}
+
+func main() {
+    edges := [][]int{
+        {1, 3},
+        {2, 3, 4},
+        {0},
+        {},
+        {2, 5},
+        {},
+    }
+    fmt.Println(cycleInGraph(edges)) // true
+}
+</code></pre>
+</details>
+<details>
+<summary><strong>Similar Problems</strong></summary>
+<ol>
+<li><strong>Course Schedule</strong> - Prerequisite cycles</li>
+<li><strong>Course Schedule II</strong> - Topological sort</li>
+<li><strong>Redundant Connection</strong> - Find cycle edge</li>
+</ol>
+</details>
+<hr />
+<h3 id="8-11-more-mediumhard-problems">8-11. More Medium/Hard Problems</h3>
+<details>
+<summary><strong>Minimum Passes Of Matrix</strong></summary>
+<p>Find minimum passes to convert all negatives to positives (adjacent to positive).</p>
+<pre><code class="language-python">from collections import deque
+
+def minimumPassesOfMatrix(matrix):
+    passes = 0
+    positives = deque()
+
+    # Find initial positives
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if matrix[i][j] &gt; 0:
+                positives.append((i, j))
+
+    while positives:
+        size = len(positives)
+        changed = False
+
+        for _ in range(size):
+            r, c = positives.popleft()
+
+            for dr, dc in [(-1,0), (1,0), (0,-1), (0,1)]:
+                nr, nc = r + dr, c + dc
+                if 0 &lt;= nr &lt; len(matrix) and 0 &lt;= nc &lt; len(matrix[0]):
+                    if matrix[nr][nc] &lt; 0:
+                        matrix[nr][nc] *= -1
+                        positives.append((nr, nc))
+                        changed = True
+
+        if changed:
+            passes += 1
+
+    # Check if any negatives remain
+    for row in matrix:
+        for val in row:
+            if val &lt; 0:
+                return -1
+
+    return passes
+</code></pre>
+</details>
+<details>
+<summary><strong>Two-Colorable</strong></summary>
+<p>Check if graph is bipartite (can be 2-colored).</p>
+<pre><code class="language-python">def twoColorable(edges):
+    colors = [None] * len(edges)
+    stack = [(0, True)]
+
+    while stack:
+        node, color = stack.pop()
+
+        if colors[node] is not None:
+            if colors[node] != color:
+                return False
+            continue
+
+        colors[node] = color
+
+        for neighbor in edges[node]:
+            stack.append((neighbor, not color))
+
+    return True
+</code></pre>
+</details>
+<details>
+<summary><strong>Boggle Board (Hard)</strong></summary>
+<p>Find all words from dictionary in a grid.</p>
+<pre><code class="language-python">def boggleBoard(board, words):
+    trie = buildTrie(words)
+    found = set()
+
+    for i in range(len(board)):
+        for j in range(len(board[0])):
+            explore(board, i, j, trie, found, set())
+
+    return list(found)
+
+def explore(board, r, c, node, found, visited):
+    if (r, c) in visited:
+        return
+    if r &lt; 0 or r &gt;= len(board) or c &lt; 0 or c &gt;= len(board[0]):
+        return
+
+    char = board[r][c]
+    if char not in node:
+        return
+
+    visited.add((r, c))
+    node = node[char]
+
+    if &quot;*&quot; in node:
+        found.add(node[&quot;*&quot;])
+
+    for dr, dc in [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]:
+        explore(board, r+dr, c+dc, node, found, visited)
+
+    visited.remove((r, c))
+</code></pre>
+</details>
+<hr />
+<h2 id="practice-tips">Practice Tips</h2>
+<h3 id="graph-problem-categories">Graph Problem Categories</h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Traversal</td>
+<td>BFS, DFS, level order</td>
+</tr>
+<tr>
+<td>Shortest Path</td>
+<td>Dijkstra, BFS (unweighted)</td>
+</tr>
+<tr>
+<td>Cycle Detection</td>
+<td>DFS coloring, Union-Find</td>
+</tr>
+<tr>
+<td>Connectivity</td>
+<td>Union-Find, DFS</td>
+</tr>
+<tr>
+<td>Topological Sort</td>
+<td>Course schedule, build order</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-use-what">When to Use What</h3>
+<ul>
+<li><strong>BFS</strong>: Shortest path (unweighted), level-by-level processing</li>
+<li><strong>DFS</strong>: Path existence, cycle detection, topological sort</li>
+<li><strong>Union-Find</strong>: Dynamic connectivity, MST (Kruskal's)</li>
+<li><strong>Dijkstra</strong>: Shortest path with positive weights</li>
+</ul>

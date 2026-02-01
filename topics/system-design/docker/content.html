@@ -1,0 +1,788 @@
+<h1 id="docker">Docker</h1>
+<h2 id="overview">Overview</h2>
+<p>Docker is a platform for developing, shipping, and running applications in containers. <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">Containers package an application with all its dependencies, ensuring it runs consistently across any environment</span>.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Docker Architecture</h4>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
+<div style="background: #3b82f6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">Docker Client</div>
+<div style="font-size: 12px; opacity: 0.9">docker CLI</div>
+</div>
+<div style="display: flex; align-items: center; font-size: 24px">→</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">Docker Daemon</div>
+<div style="font-size: 12px; opacity: 0.9">dockerd</div>
+</div>
+<div style="display: flex; align-items: center; font-size: 24px">→</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px">Containers</div>
+<div style="background: #f97316; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px">Images</div>
+<div style="background: #06b6d4; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px">Volumes</div>
+</div>
+</div>
+</div>
+<h3 id="key-concepts">Key Concepts</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px">
+<div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Image</div>
+<div style="color: #475569; font-size: 14px">Read-only template with instructions for creating a container. Built from Dockerfile.</div>
+</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 16px">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px">Container</div>
+<div style="color: #475569; font-size: 14px">Running instance of an image. Isolated process with its own filesystem, networking.</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px">
+<div style="color: #b45309; font-weight: 600; margin-bottom: 8px">Volume</div>
+<div style="color: #475569; font-size: 14px">Persistent storage that exists outside container lifecycle. Data survives container deletion.</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="essential-docker-commands">Essential Docker Commands</h2>
+<h3 id="container-lifecycle">Container Lifecycle</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Running Containers</h4>
+<pre><code class="language-bash"># Run a container (pulls image if not local)
+docker run nginx
+# What it does: Creates and starts a new container from the nginx image
+
+# Run in detached mode (background)
+docker run -d nginx
+# What it does: Runs container in background, returns container ID
+
+# Run with custom name
+docker run -d --name my-nginx nginx
+# What it does: Names the container &quot;my-nginx&quot; instead of random name
+
+# Run with port mapping
+docker run -d -p 8080:80 nginx
+# What it does: Maps host port 8080 to container port 80
+# Access via: http://localhost:8080
+
+# Run with multiple port mappings
+docker run -d -p 8080:80 -p 8443:443 nginx
+# What it does: Maps multiple ports
+
+# Run with environment variables
+docker run -d -e MYSQL_ROOT_PASSWORD=secret mysql
+# What it does: Sets environment variable inside container
+
+# Run with environment file
+docker run -d --env-file .env my-app
+# What it does: Loads all variables from .env file
+
+# Run interactively with terminal
+docker run -it ubuntu bash
+# What it does: -i = interactive, -t = pseudo-TTY, opens bash shell
+# Exit with: exit or Ctrl+D
+
+# Run and remove container when it exits
+docker run --rm nginx echo &quot;hello&quot;
+# What it does: Automatically removes container after it stops
+
+# Run with resource limits
+docker run -d --memory=&quot;512m&quot; --cpus=&quot;1.0&quot; nginx
+# What it does: Limits container to 512MB RAM and 1 CPU core
+
+# Run with restart policy
+docker run -d --restart=always nginx
+# What it does: Automatically restarts container if it crashes or host reboots
+# Options: no, on-failure, always, unless-stopped
+</code></pre>
+</div>
+<h3 id="managing-containers">Managing Containers</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Container Management</h4>
+<pre><code class="language-bash"># List running containers
+docker ps
+# What it does: Shows all running containers with ID, image, status, ports
+
+# List all containers (including stopped)
+docker ps -a
+# What it does: Shows all containers, including stopped ones
+
+# List container IDs only
+docker ps -q
+# What it does: Returns only container IDs (useful for scripting)
+
+# Stop a container
+docker stop &lt;container_id or name&gt;
+  # What it does: Sends SIGTERM, waits 10s, then SIGKILL
+
+  # Stop container immediately
+  docker kill &lt;container&gt;
+    # What it does: Sends SIGKILL immediately
+
+    # Start a stopped container
+    docker start &lt;container&gt;
+      # What it does: Starts a previously stopped container
+
+      # Restart a container
+      docker restart &lt;container&gt;
+        # What it does: Stops and starts the container
+
+        # Remove a stopped container
+        docker rm &lt;container&gt;
+          # What it does: Deletes the container (must be stopped first)
+
+          # Force remove running container
+          docker rm -f &lt;container&gt;
+            # What it does: Stops and removes container in one command
+
+            # Remove all stopped containers
+            docker container prune
+            # What it does: Removes all containers that are not running
+
+            # Remove all containers (running and stopped)
+            docker rm -f $(docker ps -aq)
+            # What it does: Force removes all containers
+            ```
+&lt;/div&gt;
+
+### Container Inspection &amp; Debugging
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Debugging Commands&lt;/h4&gt;
+
+            ```bash
+            # View container logs
+            docker logs &lt;container&gt;
+              # What it does: Shows stdout/stderr from container
+
+              # Follow logs in real-time
+              docker logs -f &lt;container&gt;
+                # What it does: Streams new log entries as they occur
+
+                # Show last N lines of logs
+                docker logs --tail 100 &lt;container&gt;
+                  # What it does: Shows only last 100 lines
+
+                  # Show logs with timestamps
+                  docker logs -t &lt;container&gt;
+                    # What it does: Prepends timestamp to each log line
+
+                    # Execute command in running container
+                    docker exec -it &lt;container&gt; bash
+                      # What it does: Opens interactive bash shell in container
+
+                      # Execute single command
+                      docker exec &lt;container&gt; ls /app
+                        # What it does: Runs ls /app and exits
+
+                        # Inspect container details
+                        docker inspect &lt;container&gt;
+                          # What it does: Returns detailed JSON with all container config
+
+                          # Get specific info with format
+                          docker inspect --format='{{.NetworkSettings.IPAddress}}' &lt;container&gt;
+                            # What it does: Returns only the container's IP address
+
+                            # View container resource usage
+                            docker stats
+                            # What it does: Live stream of container CPU, memory, network I/O
+
+                            # View stats for specific container
+                            docker stats &lt;container&gt;
+                              # What it does: Stats for one container only
+
+                              # View running processes in container
+                              docker top &lt;container&gt;
+                                # What it does: Shows processes running inside container
+
+                                # Copy files from container to host
+                                docker cp &lt;container&gt;:/path/to/file ./local-path
+                                  # What it does: Copies file from container to local filesystem
+
+                                  # Copy files from host to container
+                                  docker cp ./local-file &lt;container&gt;:/path/in/container
+                                    # What it does: Copies local file into container
+
+                                    # View container filesystem changes
+                                    docker diff &lt;container&gt;
+                                      # What it does: Shows files added/changed/deleted since container started
+                                      ```
+&lt;/div&gt;
+
+### Working with Images
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Image Commands&lt;/h4&gt;
+
+                                      ```bash
+                                      # List local images
+                                      docker images
+                                      # What it does: Shows all images stored locally
+
+                                      # List images with filter
+                                      docker images --filter &quot;dangling=true&quot;
+                                      # What it does: Shows untagged images (can be cleaned up)
+
+                                      # Pull image from registry
+                                      docker pull nginx
+                                      # What it does: Downloads nginx:latest from Docker Hub
+
+                                      # Pull specific version
+                                      docker pull nginx:1.21-alpine
+                                      # What it does: Downloads specific tag
+
+                                      # Push image to registry
+                                      docker push myuser/myapp:1.0
+                                      # What it does: Uploads image to registry (requires login)
+
+                                      # Tag an image
+                                      docker tag nginx:latest myregistry.com/nginx:v1
+                                      # What it does: Creates new tag pointing to same image
+
+                                      # Remove an image
+                                      docker rmi nginx
+                                      # What it does: Deletes image from local storage
+
+                                      # Remove unused images
+                                      docker image prune
+                                      # What it does: Removes dangling (untagged) images
+
+                                      # Remove all unused images
+                                      docker image prune -a
+                                      # What it does: Removes all images not used by containers
+
+                                      # View image history/layers
+                                      docker history nginx
+                                      # What it does: Shows layers that make up the image
+
+                                      # Inspect image details
+                                      docker image inspect nginx
+                                      # What it does: Returns detailed JSON about image
+
+                                      # Save image to tar file
+                                      docker save nginx &gt; nginx.tar
+                                      # What it does: Exports image to tar archive
+
+                                      # Load image from tar file
+                                      docker load &lt; nginx.tar
+                                      # What it does: Imports image from tar archive
+                                      ```
+&lt;/div&gt;
+
+### Building Images
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Build Commands&lt;/h4&gt;
+
+                                      ```bash
+                                      # Build image from Dockerfile in current directory
+                                      docker build -t myapp:1.0 .
+                                      # What it does: Builds image tagged &quot;myapp:1.0&quot; from ./Dockerfile
+
+                                      # Build with different Dockerfile
+                                      docker build -t myapp -f Dockerfile.prod .
+                                      # What it does: Uses Dockerfile.prod instead of Dockerfile
+
+                                      # Build with build arguments
+                                      docker build --build-arg VERSION=1.0 -t myapp .
+                                      # What it does: Passes build-time variable to Dockerfile ARG
+
+                                      # Build without cache
+                                      docker build --no-cache -t myapp .
+                                      # What it does: Forces rebuild of all layers
+
+                                      # Build for different platform
+                                      docker build --platform linux/amd64 -t myapp .
+                                      # What it does: Builds for specific architecture (useful on M1 Macs)
+
+                                      # Build and push in one command (buildx)
+                                      docker buildx build --push -t myuser/myapp:1.0 .
+                                      # What it does: Builds and pushes to registry
+
+                                      # View build cache
+                                      docker builder prune
+                                      # What it does: Removes build cache to free space
+                                      ```
+&lt;/div&gt;
+
+### Volumes &amp; Storage
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Volume Commands&lt;/h4&gt;
+
+                                      ```bash
+                                      # Create a volume
+                                      docker volume create mydata
+                                      # What it does: Creates named volume for persistent storage
+
+                                      # List volumes
+                                      docker volume ls
+                                      # What it does: Shows all volumes
+
+                                      # Inspect volume
+                                      docker volume inspect mydata
+                                      # What it does: Shows volume details including mount point
+
+                                      # Remove volume
+                                      docker volume rm mydata
+                                      # What it does: Deletes volume (must not be in use)
+
+                                      # Remove unused volumes
+                                      docker volume prune
+                                      # What it does: Removes all volumes not attached to containers
+
+                                      # Run container with volume
+                                      docker run -d -v mydata:/app/data nginx
+                                      # What it does: Mounts named volume &quot;mydata&quot; at /app/data
+
+                                      # Run with bind mount (host directory)
+                                      docker run -d -v /host/path:/container/path nginx
+                                      # What it does: Mounts host directory into container
+
+                                      # Run with read-only mount
+                                      docker run -d -v /host/path:/container/path:ro nginx
+                                      # What it does: Mounts as read-only
+
+                                      # Run with tmpfs mount (memory)
+                                      docker run -d --tmpfs /tmp nginx
+                                      # What it does: Creates temporary filesystem in memory
+                                      ```
+&lt;/div&gt;
+
+### Networking
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Network Commands&lt;/h4&gt;
+
+                                      ```bash
+                                      # List networks
+                                      docker network ls
+                                      # What it does: Shows all Docker networks
+
+                                      # Create network
+                                      docker network create mynet
+                                      # What it does: Creates bridge network for container communication
+
+                                      # Create network with subnet
+                                      docker network create --subnet=172.20.0.0/16 mynet
+                                      # What it does: Creates network with specific IP range
+
+                                      # Run container on specific network
+                                      docker run -d --network mynet nginx
+                                      # What it does: Attaches container to custom network
+
+                                      # Connect running container to network
+                                      docker network connect mynet &lt;container&gt;
+                                        # What it does: Adds container to additional network
+
+                                        # Disconnect from network
+                                        docker network disconnect mynet &lt;container&gt;
+                                          # What it does: Removes container from network
+
+                                          # Inspect network
+                                          docker network inspect mynet
+                                          # What it does: Shows network details and connected containers
+
+                                          # Remove network
+                                          docker network rm mynet
+                                          # What it does: Deletes network (must have no containers)
+
+                                          # Remove unused networks
+                                          docker network prune
+                                          # What it does: Removes all unused networks
+                                          ```
+
+&lt;div style=&quot;background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px;&quot;&gt;
+&lt;div style=&quot;font-weight: 600; color: #1e293b; margin-bottom: 8px;&quot;&gt;Network Types&lt;/div&gt;
+&lt;div style=&quot;font-size: 14px; color: #475569;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;bridge:&lt;/strong&gt; Default. Containers can communicate via IP or container name&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;host:&lt;/strong&gt; Container shares host's network stack directly&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;none:&lt;/strong&gt; No networking&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;overlay:&lt;/strong&gt; Multi-host networking (Docker Swarm)&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+### Docker Compose
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Compose Commands&lt;/h4&gt;
+
+                                          ```bash
+                                          # Start services defined in docker-compose.yml
+                                          docker compose up
+                                          # What it does: Creates and starts all services
+
+                                          # Start in detached mode
+                                          docker compose up -d
+                                          # What it does: Runs services in background
+
+                                          # Start specific service
+                                          docker compose up -d web
+                                          # What it does: Starts only the &quot;web&quot; service
+
+                                          # Build and start
+                                          docker compose up -d --build
+                                          # What it does: Rebuilds images before starting
+
+                                          # Stop services
+                                          docker compose down
+                                          # What it does: Stops and removes containers, networks
+
+                                          # Stop and remove volumes too
+                                          docker compose down -v
+                                          # What it does: Also removes volumes (data loss!)
+
+                                          # View service logs
+                                          docker compose logs
+                                          docker compose logs -f web
+                                          # What it does: Shows logs for all or specific service
+
+                                          # List running services
+                                          docker compose ps
+                                          # What it does: Shows status of services
+
+                                          # Execute command in service
+                                          docker compose exec web bash
+                                          # What it does: Opens shell in running service container
+
+                                          # Run one-off command
+                                          docker compose run web npm test
+                                          # What it does: Runs command in new container
+
+                                          # Scale service
+                                          docker compose up -d --scale web=3
+                                          # What it does: Runs 3 instances of web service
+
+                                          # Pull latest images
+                                          docker compose pull
+                                          # What it does: Pulls latest versions of all images
+
+                                          # Validate compose file
+                                          docker compose config
+                                          # What it does: Validates and shows resolved config
+                                          ```
+&lt;/div&gt;
+
+---
+
+## Dockerfile Best Practices
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Example Dockerfile&lt;/h4&gt;
+
+                                          ```dockerfile
+                                          # Use specific version, prefer slim/alpine images
+                                          FROM node:18-alpine
+
+                                          # Set working directory
+                                          WORKDIR /app
+
+                                          # Copy package files first (better layer caching)
+                                          COPY package*.json ./
+
+                                          # Install dependencies
+                                          RUN npm ci --only=production
+
+                                          # Copy application code
+                                          COPY . .
+
+                                          # Create non-root user for security
+                                          RUN addgroup -S appgroup &amp;&amp; adduser -S appuser -G appgroup
+                                          USER appuser
+
+                                          # Expose port (documentation)
+                                          EXPOSE 3000
+
+                                          # Health check
+                                          HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+                                          CMD wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1
+
+                                          # Start command
+                                          CMD [&quot;node&quot;, &quot;server.js&quot;]
+                                          ```
+
+&lt;div style=&quot;background: #f0fdf4; border-radius: 8px; padding: 16px; margin-top: 16px;&quot;&gt;
+&lt;div style=&quot;font-weight: 600; color: #15803d; margin-bottom: 8px;&quot;&gt;Key Dockerfile Instructions&lt;/div&gt;
+&lt;div style=&quot;font-size: 14px; color: #475569;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;FROM:&lt;/strong&gt; Base image to build upon&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;WORKDIR:&lt;/strong&gt; Set working directory for subsequent commands&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;COPY:&lt;/strong&gt; Copy files from host to image&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;RUN:&lt;/strong&gt; Execute command during build (creates layer)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;ENV:&lt;/strong&gt; Set environment variable&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;ARG:&lt;/strong&gt; Build-time variable&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;EXPOSE:&lt;/strong&gt; Document which ports the container listens on&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;CMD:&lt;/strong&gt; Default command when container starts&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;ENTRYPOINT:&lt;/strong&gt; Configure container as executable&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+### Multi-Stage Build
+
+&lt;span style=&quot;background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;&quot;&gt;Multi-stage builds reduce final image size by separating build and runtime environments&lt;/span&gt;.
+
+                                        ```dockerfile
+                                        # Build stage
+                                        FROM node:18 AS builder
+                                        WORKDIR /app
+                                        COPY package*.json ./
+                                        RUN npm ci
+                                        COPY . .
+                                        RUN npm run build
+
+                                        # Production stage
+                                        FROM node:18-alpine
+                                        WORKDIR /app
+                                        COPY --from=builder /app/dist ./dist
+                                        COPY --from=builder /app/node_modules ./node_modules
+                                        USER node
+                                        CMD [&quot;node&quot;, &quot;dist/server.js&quot;]
+                                        ```
+
+---
+
+## Docker Compose Example
+
+                                        ```yaml
+                                        version: '3.8'
+
+                                        services:
+                                        web:
+                                        build: .
+                                        ports:
+                                        - &quot;3000:3000&quot;
+                                        environment:
+                                        - NODE_ENV=production
+                                        - DATABASE_URL=postgres://db:5432/myapp
+                                        depends_on:
+                                        - db
+                                        - redis
+                                        restart: unless-stopped
+                                        healthcheck:
+                                        test: [&quot;CMD&quot;, &quot;wget&quot;, &quot;-q&quot;, &quot;--spider&quot;, &quot;http://localhost:3000/health&quot;]
+                                        interval: 30s
+                                        timeout: 10s
+                                        retries: 3
+
+                                        db:
+                                        image: postgres:15-alpine
+                                        volumes:
+                                        - postgres_data:/var/lib/postgresql/data
+                                        environment:
+                                        - POSTGRES_DB=myapp
+                                        - POSTGRES_USER=user
+                                        - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+                                        secrets:
+                                        - db_password
+
+                                        redis:
+                                        image: redis:7-alpine
+                                        volumes:
+                                        - redis_data:/data
+                                        command: redis-server --appendonly yes
+
+                                        volumes:
+                                        postgres_data:
+                                        redis_data:
+
+                                        secrets:
+                                        db_password:
+                                        file: ./secrets/db_password.txt
+
+                                        networks:
+                                        default:
+                                        driver: bridge
+                                        ```
+
+---
+
+## System Cleanup
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Cleanup Commands&lt;/h4&gt;
+
+                                          ```bash
+                                          # View Docker disk usage
+                                          docker system df
+                                          # What it does: Shows space used by images, containers, volumes
+
+                                          # Remove all unused data
+                                          docker system prune
+                                          # What it does: Removes stopped containers, unused networks, dangling images
+
+                                          # Remove everything unused (aggressive)
+                                          docker system prune -a --volumes
+                                          # What it does: Also removes unused images and volumes (careful!)
+
+                                          # Clean specific resources
+                                          docker container prune   # Remove stopped containers
+                                          docker image prune -a    # Remove unused images
+                                          docker volume prune      # Remove unused volumes
+                                          docker network prune     # Remove unused networks
+                                          docker builder prune     # Remove build cache
+                                          ```
+&lt;/div&gt;
+
+---
+
+## Interview Deep Dive
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+
+### Q1: What's the difference between CMD and ENTRYPOINT?
+
+**Answer:**
+
+| Aspect | CMD | ENTRYPOINT |
+|--------|-----|------------|
+| Purpose | Provides default arguments | Defines the executable |
+| Override | Replaced entirely by run args | Run args appended to it |
+| Use case | Default command, easily overridable | Container as specific tool |
+
+                                          ```dockerfile
+                                          # CMD only - easily overridden
+                                          FROM ubuntu
+                                          CMD [&quot;echo&quot;, &quot;hello&quot;]
+                                          # docker run myimage         → &quot;hello&quot;
+                                          # docker run myimage ls      → runs &quot;ls&quot; instead
+
+                                          # ENTRYPOINT + CMD combo
+                                          FROM ubuntu
+                                          ENTRYPOINT [&quot;echo&quot;]
+                                          CMD [&quot;hello&quot;]
+                                          # docker run myimage         → &quot;hello&quot;
+                                          # docker run myimage world   → &quot;world&quot; (replaces CMD)
+
+                                          # ENTRYPOINT exec form for signals
+                                          ENTRYPOINT [&quot;python&quot;, &quot;app.py&quot;]  # Correct - receives SIGTERM
+                                          ENTRYPOINT python app.py         # Wrong - runs in shell, no signals
+                                          ```
+
+&lt;span style=&quot;background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;&quot;&gt;Key insight: Use exec form [&quot;cmd&quot;, &quot;arg&quot;] for proper signal handling and PID 1&lt;/span&gt;.
+
+&lt;/div&gt;
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+
+### Q2: How do containers achieve isolation?
+
+**Answer:**
+
+Docker uses Linux kernel features for isolation:
+
+1. **Namespaces** - Isolate system resources
+                                          - PID: Process isolation
+                                          - NET: Network isolation
+                                          - MNT: Filesystem mount points
+                                          - UTS: Hostname and domain
+                                          - IPC: Inter-process communication
+                                          - USER: User/group IDs
+
+2. **Cgroups** - Limit resource usage
+                                          - CPU, memory, disk I/O limits
+                                          - Prevent container from consuming all host resources
+
+3. **Union Filesystem** - Layered filesystem
+                                          - Copy-on-write for efficiency
+                                          - Shared base layers between containers
+
+&lt;span style=&quot;background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;&quot;&gt;Trade-off: Containers share kernel with host - less isolation than VMs but more efficient&lt;/span&gt;.
+
+&lt;/div&gt;
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+
+### Q3: How do you optimize Docker image size?
+
+**Answer:**
+
+1. **Use slim/alpine base images**: `node:18-alpine` vs `node:18`
+2. **Multi-stage builds**: Separate build and runtime
+3. **Order Dockerfile commands**: Put frequently changing last
+4. **Combine RUN commands**: Reduce layers
+5. **Clean up in same layer**: `RUN apt-get update &amp;&amp; apt-get install -y pkg &amp;&amp; rm -rf /var/lib/apt/lists/*`
+6. **Use .dockerignore**: Exclude unnecessary files
+7. **Don't install dev dependencies**: `npm ci --only=production`
+
+                                          ```dockerfile
+                                          # Bad - 1.2GB
+                                          FROM node:18
+                                          COPY . .
+                                          RUN npm install
+
+                                          # Good - 180MB
+                                          FROM node:18-alpine AS builder
+                                          WORKDIR /app
+                                          COPY package*.json ./
+                                          RUN npm ci
+                                          COPY . .
+                                          RUN npm run build
+
+                                          FROM node:18-alpine
+                                          WORKDIR /app
+                                          COPY --from=builder /app/dist ./dist
+                                          COPY --from=builder /app/package*.json ./
+                                          RUN npm ci --only=production
+                                          CMD [&quot;node&quot;, &quot;dist/index.js&quot;]
+                                          ```
+
+&lt;/div&gt;
+
+---
+
+## Quick Reference Card
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Docker Cheat Sheet&lt;/h4&gt;
+&lt;div style=&quot;display: grid; grid-template-columns: 1fr 1fr; gap: 24px;&quot;&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Container Commands&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569; font-family: monospace;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker run -d -p 80:80 nginx&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker ps / docker ps -a&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker logs -f &amp;lt;container&amp;gt;&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker exec -it &amp;lt;container&amp;gt; sh&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker stop/start/restart&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker rm &amp;lt;container&amp;gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Image Commands&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569; font-family: monospace;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker build -t name:tag .&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker images&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker pull/push&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker tag source target&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker rmi &amp;lt;image&amp;gt;&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker image prune -a&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Compose Commands&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569; font-family: monospace;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker compose up -d&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker compose down&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker compose logs -f&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker compose ps&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker compose exec svc sh&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker compose build&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Cleanup Commands&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569; font-family: monospace;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker system df&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker system prune -a&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker volume prune&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker network prune&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker container prune&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;docker builder prune&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+---
+
+## Related Topics
+
+                                        - [[Kubernetes]](/topic/system-design/kubernetes) - Container orchestration
+                                        - [[Microservices]](/topic/system-design/microservices) - Service architecture
+                                        - [[CI/CD]](/topic/system-design/code-deployment) - Deployment pipelines
+</code></pre>

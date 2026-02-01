@@ -1,0 +1,1999 @@
+<h1 id="in-memory-file-system-design">In-Memory File System Design</h1>
+<h2 id="problem-statement">Problem Statement</h2>
+<p>Design and implement an in-memory file system that supports hierarchical organization, CRUD operations on files and directories, path resolution, permissions, and search capabilities. This problem tests deep understanding of tree data structures, the Composite design pattern, and operating systems fundamentals.</p>
+<p>This appears frequently at FAANG companies (LeetCode 588) and can be extended to cover distributed file systems, making it a multi-layered interview topic.</p>
+<hr />
+<h2 id="core-mental-model">Core Mental Model</h2>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Unified Tree Abstraction</div>
+<div style="color: #1e293b; font-size: 15px; line-height: 1.8">
+<p>A file system is fundamentally a <strong>rooted tree</strong> where:</p>
+<ul>
+<li><strong>Every node is either a leaf (file) or an internal node (directory)</strong></li>
+<li><strong>Paths are sequences of edge labels from root to target</strong></li>
+<li><strong>The tree supports uniform operations on heterogeneous node types</strong></li>
+</ul>
+<p>This abstraction enables the <strong>Composite Pattern</strong>: treating individual objects (files) and compositions (directories) uniformly. The key insight is that both files and directories are &quot;entries&quot; in a parent directory's namespace.</p>
+</div>
+</div>
+<hr />
+<h2 id="section-1-the-composite-pattern-deep-dive">Section 1: The Composite Pattern Deep Dive</h2>
+<h3 id="11-pattern-structure-and-intent">1.1 Pattern Structure and Intent</h3>
+<p>The Composite Pattern is the architectural backbone of every file system implementation. It allows clients to treat individual objects and compositions uniformly through a common interface.</p>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Composite Pattern Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: center">
+<div style="background: #eff6ff;border-radius: 12px; padding: 20px 40px; text-align: center; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3)">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px">FileSystemEntry</div>
+<div style="color: #1e40af; font-size: 12px; margin-top: 8px">Abstract Component</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 12px; font-family: monospace; text-align: left">
++ getName(): String<br/>
++ getPath(): String<br/>
++ getSize(): Long<br/>
++ getParent(): Entry<br/>
++ isDirectory(): Boolean<br/>
++ accept(Visitor): void
+</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center">
+<div style="color: #64748b; font-size: 24px">|</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap">
+<div style="background: #f0fdf4;border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3)">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px">File</div>
+<div style="color: #166534; font-size: 11px; margin-top: 4px">Leaf Component</div>
+<div style="color: #166534; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left">
+- content: byte[]<br/>
+- mimeType: String<br/>
++ read(): byte[]<br/>
++ write(data): void<br/>
++ getSize(): contentLen
+</div>
+</div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3)">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px">Directory</div>
+<div style="color: #92400e; font-size: 11px; margin-top: 4px">Composite Component</div>
+<div style="color: #92400e; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left">
+- children: Map&lt;String, Entry&gt;<br/>
++ add(Entry): void<br/>
++ remove(name): Entry<br/>
++ getChild(name): Entry<br/>
++ getSize(): sum(children)
+</div>
+</div>
+</div>
+</div>
+</div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #854d0e; font-weight: bold; margin-bottom: 12px">Key Insight: Uniform Interface, Polymorphic Behavior</div>
+<div style="color: #713f12; font-size: 14px; line-height: 1.8">
+<p>The power of Composite lies in <strong>behavioral polymorphism</strong>:</p>
+<ul>
+<li><code>getSize()</code> on a File returns content length</li>
+<li><code>getSize()</code> on a Directory recursively sums children's sizes</li>
+<li>Client code calls <code>entry.getSize()</code> without knowing the concrete type</li>
+</ul>
+<p>This enables recursive algorithms to naturally traverse the tree without type-checking.</p>
+</div>
+</div>
+<h3 id="12-design-trade-offs-in-component-interface">1.2 Design Trade-offs in Component Interface</h3>
+<div style="background: #fff7ed; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9a3412; font-weight: bold; margin-bottom: 12px">Critical Design Decision: Where to Place Child Management</div>
+<div style="color: #7c2d12; font-size: 14px; line-height: 1.8">
+<p><strong>Option A: Methods in Base Class (Transparency)</strong></p>
+<pre><code class="language-python">class FileSystemEntry:
+    def add(self, child): raise NotImplementedError
+    def remove(self, name): raise NotImplementedError
+</code></pre>
+<ul>
+<li>Pro: Uniform interface; clients never need to cast</li>
+<li>Con: Files must throw exceptions for child operations (LSP violation)</li>
+</ul>
+<p><strong>Option B: Methods Only in Directory (Safety)</strong></p>
+<pre><code class="language-python">class Directory(FileSystemEntry):
+    def add(self, child): ...  # Only Directory has this
+</code></pre>
+<ul>
+<li>Pro: Type-safe; no invalid operations possible</li>
+<li>Con: Clients must cast to Directory to add children</li>
+</ul>
+<p><strong>Industry Standard</strong>: Most real file systems (POSIX, Windows) use Option B with explicit type checking via <code>isDirectory()</code>. The trade-off favors safety over transparency because invalid operations (adding child to file) should be <strong>compile-time errors</strong>, not runtime exceptions.</p>
+</div>
+</div>
+<h3 id="13-interview-questions-composite-pattern">1.3 Interview Questions: Composite Pattern</h3>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
+<p><strong>Q1.1</strong>: Why is Composite Pattern preferred over simple inheritance for file systems?</p>
+<p><strong>Expected Answer</strong>: Composite enables <strong>recursive structure handling</strong>. A directory can contain both files and other directories, and operations like <code>getSize()</code> or <code>delete()</code> naturally recurse through the tree. Simple inheritance would require explicit tree traversal logic at every call site.</p>
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Design Trade-offs</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1.2</strong>: How would you handle the case where <code>addChild()</code> is called on a File?</p>
+<p><strong>Follow-up</strong>: What are the implications of throwing <code>UnsupportedOperationException</code> vs. not having the method at all?</p>
+<p><strong>Expected Answer</strong>:</p>
+<ul>
+<li><strong>Throwing exception</strong>: Violates Liskov Substitution Principle; base class promises a method that subclass cannot fulfill</li>
+<li><strong>Not having method</strong>: Requires runtime type checking (<code>if (entry instanceof Directory)</code>)</li>
+<li><strong>Best practice</strong>: Use the <strong>Visitor Pattern</strong> for operations that differ by type, keeping the base interface minimal</li>
+</ul>
+<p><strong>Follow-up 2</strong>: Show how Visitor Pattern solves this.</p>
+<pre><code class="language-python">class FileSystemVisitor:
+    def visit_file(self, file): pass
+    def visit_directory(self, directory): pass
+
+class SizeCalculator(FileSystemVisitor):
+    def visit_file(self, file):
+        return len(file.content)
+    def visit_directory(self, directory):
+        return sum(child.accept(self) for child in directory.children)
+</code></pre>
+</div>
+</div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: System Design Integration</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
+<p><strong>Q1.3</strong>: In a distributed file system like HDFS, how does the Composite pattern manifest differently?</p>
+<p><strong>Follow-up</strong>: How would you modify the pattern to support file blocks distributed across nodes?</p>
+<p><strong>Expected Answer</strong>:<br />
+In HDFS, the <strong>NameNode</strong> maintains the Composite tree structure (metadata only), while actual file content is split into <strong>blocks</strong> distributed across <strong>DataNodes</strong>.</p>
+<p>The pattern modification:</p>
+<pre><code class="language-python">class DistributedFile(FileSystemEntry):
+    def __init__(self, name):
+        self.blocks: List[BlockLocation] = []  # (block_id, [datanode_addresses])
+
+    def read(self, offset, length):
+        # 1. Determine which blocks contain the range
+        # 2. Contact DataNodes in parallel
+        # 3. Reconstruct data from block fragments
+</code></pre>
+<p><strong>Key insight</strong>: The Composite pattern handles the <strong>namespace</strong> (tree structure), but a separate <strong>block management layer</strong> handles data distribution. This separation enables:</p>
+<ul>
+<li>NameNode high availability (metadata replication)</li>
+<li>DataNode horizontal scaling (add nodes for capacity)</li>
+<li>Block replication factor independent of directory structure</li>
+</ul>
+</div>
+</div>
+<hr />
+<h2 id="section-2-file-vs-directory---internal-mechanisms">Section 2: File vs. Directory - Internal Mechanisms</h2>
+<h3 id="21-fundamental-differences">2.1 Fundamental Differences</h3>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">File vs. Directory Comparison</h4>
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap">
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #166534; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">File (Leaf Node)</div>
+<div style="color: #334155; font-size: 13px; line-height: 2">
+<strong>Purpose:</strong> Store arbitrary byte sequences<br/>
+<strong>Children:</strong> None (terminal node)<br/>
+<strong>Size semantics:</strong> Content byte length<br/>
+<strong>I/O operations:</strong> read(), write(), append(), truncate()<br/>
+<strong>Metadata:</strong> mime-type, encoding, checksum<br/>
+<strong>Special types:</strong> Regular, symlink, device, socket, pipe
+</div>
+</div>
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #b45309; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">Directory (Composite Node)</div>
+<div style="color: #334155; font-size: 13px; line-height: 2">
+<strong>Purpose:</strong> Namespace for child entries<br/>
+<strong>Children:</strong> Map of name to FileSystemEntry<br/>
+<strong>Size semantics:</strong> Entry count or recursive sum<br/>
+<strong>Operations:</strong> list(), addChild(), removeChild(), lookup()<br/>
+<strong>Metadata:</strong> Entry count, last modified<br/>
+<strong>Special entries:</strong> "." (self), ".." (parent)
+</div>
+</div>
+</div>
+</div>
+<h3 id="22-the-inode-abstraction">2.2 The Inode Abstraction</h3>
+<div style="background: #f0f9ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #0c4a6e; font-weight: bold; margin-bottom: 12px">Real-World Insight: Separating Name from Content</div>
+<div style="color: #164e63; font-size: 14px; line-height: 1.8">
+<p>In Unix-like systems, files have two distinct components:</p>
+<ol>
+<li><strong>Directory Entry (dentry)</strong>: Maps name to inode number within a directory</li>
+<li><strong>Inode</strong>: Contains metadata and data block pointers (name-independent)</li>
+</ol>
+<p>This separation enables <strong>hard links</strong>: multiple directory entries pointing to the same inode. The file's content persists until the <strong>link count</strong> drops to zero.</p>
+<pre><code class="language-python">class Inode:
+    def __init__(self, inode_number):
+        self.inode_number = inode_number
+        self.link_count = 1
+        self.permissions = 0o644
+        self.owner_uid = 0
+        self.group_gid = 0
+        self.size = 0
+        self.data_blocks = []  # Block pointers
+        self.atime = None  # Last access
+        self.mtime = None  # Last modification
+        self.ctime = None  # Last status change
+
+class DirectoryEntry:
+    def __init__(self, name, inode_number):
+        self.name = name
+        self.inode_number = inode_number
+</code></pre>
+<p><strong>Design Implication</strong>: For interview purposes, you can simplify by merging name into the node. But mention the inode abstraction to demonstrate deep understanding.</p>
+</div>
+</div>
+<h3 id="23-interview-questions-file-vs-directory">2.3 Interview Questions: File vs. Directory</h3>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1</strong>: What data structure would you use to store children in a directory, and why?</p>
+<p><strong>Expected Answer</strong>:</p>
+<ul>
+<li><strong>HashMap/Dictionary</strong>: O(1) lookup by name (most common choice)</li>
+<li><strong>TreeMap/SortedDict</strong>: O(log n) lookup but maintains sorted order (useful if <code>ls</code> must be sorted)</li>
+<li><strong>Trie</strong>: Efficient prefix matching for glob patterns, but complex</li>
+</ul>
+<p>For interviews, HashMap is the standard choice. Mention sorting can be done at query time if needed.</p>
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Edge Cases and Semantics</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.2</strong>: What happens when you delete a file that has hard links? What about when you delete an open file?</p>
+<p><strong>Expected Answer</strong>:</p>
+<ul>
+<li><strong>Hard links</strong>: Deleting removes one directory entry, decrements link count. File data persists until link_count = 0.</li>
+<li><strong>Open file deletion</strong>: In Unix, the directory entry is removed immediately, but the inode and data persist until all file descriptors are closed. The file becomes &quot;unlinked but not deleted.&quot;</li>
+</ul>
+<pre><code class="language-python">def delete(self, path):
+    entry = self.resolve(path)
+    parent = entry.parent
+    parent.remove_child(entry.name)
+    entry.inode.link_count -= 1
+
+    if entry.inode.link_count == 0 and entry.inode.open_count == 0:
+        self.free_blocks(entry.inode.data_blocks)
+        self.free_inode(entry.inode.inode_number)
+</code></pre>
+<p><strong>Follow-up</strong>: How does this differ in Windows?<br />
+Windows uses a &quot;delete pending&quot; state; the file cannot be deleted while open (common source of &quot;file in use&quot; errors).</p>
+</div>
+</div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: System Design</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.3</strong>: How would you implement sparse files, and what are the trade-offs?</p>
+<p><strong>Expected Answer</strong>:<br />
+A sparse file has &quot;holes&quot; - regions that contain only zeros but don't consume disk space.</p>
+<pre><code class="language-python">class SparseFile:
+    def __init__(self):
+        self.blocks = {}  # offset -&gt; data_block (only allocated blocks)
+        self.logical_size = 0
+
+    def write(self, offset, data):
+        block_num = offset // BLOCK_SIZE
+        self.blocks[block_num] = data
+        self.logical_size = max(self.logical_size, offset + len(data))
+
+    def read(self, offset, length):
+        block_num = offset // BLOCK_SIZE
+        if block_num in self.blocks:
+            return self.blocks[block_num]
+        return b'\x00' * BLOCK_SIZE  # Return zeros for holes
+</code></pre>
+<p><strong>Trade-offs</strong>:</p>
+<ul>
+<li><strong>Pro</strong>: Efficient storage for files with large zero regions (VM images, databases)</li>
+<li><strong>Con</strong>: Fragmentation; copying sparse files may &quot;expand&quot; them; backup tools must be sparse-aware</li>
+<li><strong>Implementation detail</strong>: <code>lseek(SEEK_HOLE)</code> and <code>lseek(SEEK_DATA)</code> allow efficient sparse file traversal</li>
+</ul>
+</div>
+</div>
+<hr />
+<h2 id="section-3-path-resolution---the-critical-algorithm">Section 3: Path Resolution - The Critical Algorithm</h2>
+<h3 id="31-path-resolution-mechanics">3.1 Path Resolution Mechanics</h3>
+<p>Path resolution is the process of converting a string path like <code>/home/user/documents/file.txt</code> into a reference to the actual file system node. This is the <strong>most frequently called operation</strong> in any file system.</p>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Path Resolution Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px">
+<div style="background: #dbeafe; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px">Input Path</div>
+<div style="color: #3b82f6; font-size: 11px; font-family: monospace; margin-top: 4px">/home/user/file.txt</div>
+</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #b45309; font-weight: bold; font-size: 13px">Tokenize</div>
+<div style="color: #d97706; font-size: 11px; font-family: monospace; margin-top: 4px">["home", "user", "file.txt"]</div>
+</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #166534; font-weight: bold; font-size: 13px">Traverse</div>
+<div style="color: #22c55e; font-size: 11px; font-family: monospace; margin-top: 4px">root->home->user->file</div>
+</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #fce7f3; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #9d174d; font-weight: bold; font-size: 13px">Return Node</div>
+<div style="color: #ec4899; font-size: 11px; font-family: monospace; margin-top: 4px">FileNode @ 0x7f...</div>
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 12px">
+<div style="color: #475569; font-size: 13px; font-weight: bold; margin-bottom: 8px">At Each Step, Check:</div>
+<div style="color: #64748b; font-size: 12px; line-height: 1.8">
+1. Does the child exist in current directory? (FileNotFoundError)<br/>
+2. Is current node a directory? (NotADirectoryError if traversing through file)<br/>
+3. Do we have execute permission on directory? (PermissionError)<br/>
+4. Is this a symbolic link? (Follow or return based on flags)
+</div>
+</div>
+</div>
+</div>
+<h3 id="32-implementation-with-edge-cases">3.2 Implementation with Edge Cases</h3>
+<pre><code class="language-python">from typing import Optional, List, Tuple
+from enum import Enum, auto
+
+class PathResolutionError(Exception):
+    pass
+
+class ResolutionFlags(Enum):
+    FOLLOW_SYMLINKS = auto()      # Follow final symlink
+    FOLLOW_ALL_SYMLINKS = auto()  # Follow all symlinks in path
+    CREATE_PARENTS = auto()       # mkdir -p behavior
+    NO_FOLLOW = auto()            # lstat behavior
+
+class PathResolver:
+    &quot;&quot;&quot;
+    Resolves string paths to file system nodes.
+
+    Handles: absolute paths, relative paths, &quot;..&quot;, &quot;.&quot;, symlinks,
+    permission checks, and path normalization.
+    &quot;&quot;&quot;
+
+    MAX_SYMLINK_DEPTH = 40  # Prevent infinite symlink loops
+
+    def __init__(self, root: 'Directory', cwd: 'Directory'):
+        self.root = root
+        self.cwd = cwd
+
+    def resolve(
+        self,
+        path: str,
+        flags: set = None,
+        check_permissions: bool = True
+    ) -&gt; 'FileSystemEntry':
+        &quot;&quot;&quot;
+        Resolve a path to its target node.
+
+        Args:
+            path: Absolute or relative path
+            flags: Set of ResolutionFlags
+            check_permissions: Whether to verify execute permission on directories
+
+        Returns:
+            The target FileSystemEntry
+
+        Raises:
+            FileNotFoundError: Component doesn't exist
+            NotADirectoryError: Non-directory in path prefix
+            PermissionError: No execute permission on directory
+            OSError: Symlink loop detected
+        &quot;&quot;&quot;
+        flags = flags or {ResolutionFlags.FOLLOW_SYMLINKS}
+
+        # Normalize and tokenize
+        components = self._normalize_path(path)
+
+        # Start from root or cwd
+        current = self.root if path.startswith('/') else self.cwd
+        symlink_count = 0
+
+        for i, component in enumerate(components):
+            is_last = (i == len(components) - 1)
+
+            # Handle special directories
+            if component == '.':
+                continue
+            elif component == '..':
+                current = current.parent if current.parent else current
+                continue
+
+            # Must be a directory to traverse
+            if not current.is_directory():
+                raise NotADirectoryError(
+                    f&quot;Not a directory: {'/'.join(components[:i])}&quot;
+                )
+
+            # Permission check: need execute to traverse directory
+            if check_permissions and not current.can_execute(self._get_current_user()):
+                raise PermissionError(
+                    f&quot;Permission denied: {current.get_path()}&quot;
+                )
+
+            # Lookup child
+            child = current.get_child(component)
+            if child is None:
+                if ResolutionFlags.CREATE_PARENTS in flags and not is_last:
+                    child = Directory(component)
+                    current.add_child(child)
+                else:
+                    raise FileNotFoundError(
+                        f&quot;No such file or directory: {path}&quot;
+                    )
+
+            # Handle symlinks
+            if child.is_symlink():
+                should_follow = (
+                    ResolutionFlags.FOLLOW_ALL_SYMLINKS in flags or
+                    (is_last and ResolutionFlags.FOLLOW_SYMLINKS in flags)
+                )
+
+                if should_follow:
+                    symlink_count += 1
+                    if symlink_count &gt; self.MAX_SYMLINK_DEPTH:
+                        raise OSError(f&quot;Too many levels of symbolic links: {path}&quot;)
+
+                    # Resolve symlink target (may be relative to symlink's parent)
+                    target_path = child.target
+                    if not target_path.startswith('/'):
+                        target_path = current.get_path() + '/' + target_path
+
+                    child = self.resolve(target_path, flags, check_permissions)
+
+            current = child
+
+        return current
+
+    def _normalize_path(self, path: str) -&gt; List[str]:
+        &quot;&quot;&quot;
+        Normalize path: handle //, trailing /, etc.
+
+        Does NOT resolve . or .. here - that requires traversal
+        to handle symlinks correctly.
+        &quot;&quot;&quot;
+        if not path:
+            return []
+
+        # Split and filter empty components (handles // and trailing /)
+        components = [c for c in path.split('/') if c]
+
+        return components
+
+    def _get_current_user(self):
+        &quot;&quot;&quot;Return current user context for permission checks.&quot;&quot;&quot;
+        # In real implementation, this comes from process credentials
+        return self.current_user
+</code></pre>
+<h3 id="33-critical-edge-cases">3.3 Critical Edge Cases</h3>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Edge Cases That Break Naive Implementations</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Input</th>
+<th>Correct Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Empty path</strong></td>
+<td><code>&quot;&quot;</code></td>
+<td>Return cwd (or error)</td>
+</tr>
+<tr>
+<td><strong>Root only</strong></td>
+<td><code>&quot;/&quot;</code></td>
+<td>Return root directory</td>
+</tr>
+<tr>
+<td><strong>Double slash</strong></td>
+<td><code>&quot;/home//user&quot;</code></td>
+<td>Same as <code>/home/user</code></td>
+</tr>
+<tr>
+<td><strong>Trailing slash</strong></td>
+<td><code>&quot;/home/user/&quot;</code></td>
+<td>Same as <code>/home/user</code> (for dirs)</td>
+</tr>
+<tr>
+<td><strong>Parent of root</strong></td>
+<td><code>&quot;/..&quot;</code></td>
+<td>Return root (can't go above)</td>
+</tr>
+<tr>
+<td><strong>Symlink loop</strong></td>
+<td><code>a-&gt;b, b-&gt;a</code></td>
+<td>Detect and error after N iterations</td>
+</tr>
+<tr>
+<td><strong>Dangling symlink</strong></td>
+<td><code>link -&gt; /nonexistent</code></td>
+<td>Error or return symlink node</td>
+</tr>
+<tr>
+<td><strong>Relative symlink</strong></td>
+<td><code>link -&gt; ../file</code></td>
+<td>Resolve relative to symlink's parent</td>
+</tr>
+<tr>
+<td><strong>Permission in path</strong></td>
+<td><code>/secret/file</code></td>
+<td>Error if no +x on <code>/secret</code></td>
+</tr>
+<tr>
+<td><strong>File in path</strong></td>
+<td><code>/file.txt/subdir</code></td>
+<td>NotADirectoryError</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #854d0e; font-weight: bold; margin-bottom: 12px">Why "." and ".." Can't Be Pre-normalized</div>
+<div style="color: #713f12; font-size: 14px; line-height: 1.8">
+<p>A common mistake is to normalize <code>a/b/../c</code> to <code>a/c</code> before traversal. This is <strong>incorrect</strong> when symlinks are involved:</p>
+<pre><code>/dir/link -&gt; /other/path
+/dir/link/../file
+</code></pre>
+<p>Naive normalization: <code>/dir/file</code> (WRONG)<br />
+Correct resolution: <code>/other/file</code> (follows symlink first, then goes to parent)</p>
+<p><strong>Rule</strong>: Only handle <code>.</code> and <code>..</code> during traversal, after resolving each component.</p>
+</div>
+</div>
+<h3 id="34-interview-questions-path-resolution">3.4 Interview Questions: Path Resolution</h3>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
+<p><strong>Q3.1</strong>: What is the time complexity of path resolution, and what dominates the cost in practice?</p>
+<p><strong>Expected Answer</strong>:</p>
+<ul>
+<li><strong>Theoretical</strong>: O(path_length * lookup_time) = O(k * 1) = O(k) with hash maps</li>
+<li><strong>Practical</strong>: Directory entry lookup is often the bottleneck. In real file systems, this involves disk I/O for directory blocks.</li>
+<li><strong>Optimization</strong>: <strong>dentry cache</strong> (dcache in Linux) caches resolved path-&gt;inode mappings. Most path resolutions hit the cache and avoid traversal entirely.</li>
+</ul>
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Symlinks and Edge Cases</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q3.2</strong>: How do you detect and prevent symlink loops? What's the standard limit?</p>
+<p><strong>Expected Answer</strong>:<br />
+Track symlink resolution count during traversal. POSIX systems typically limit to <strong>40</strong> (SYMLOOP_MAX). When exceeded, return ELOOP.</p>
+<pre><code class="language-python">def resolve_with_loop_detection(self, path):
+    return self._resolve(path, symlink_count=0)
+
+def _resolve(self, path, symlink_count):
+    if symlink_count &gt; 40:
+        raise OSError(errno.ELOOP, &quot;Too many symbolic links&quot;)
+    # ... resolve, incrementing symlink_count when following
+</code></pre>
+<p><strong>Follow-up</strong>: What if someone creates a very long chain (not a loop) of 100 symlinks?<br />
+Same limit applies - prevents both loops and excessive indirection. The limit is about <strong>complexity</strong>, not just cycles.</p>
+</div>
+</div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: Race Conditions (TOCTOU)</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
+<p><strong>Q3.3</strong>: Explain the TOCTOU vulnerability in path resolution and how real file systems mitigate it.</p>
+<p><strong>Expected Answer</strong>:<br />
+<strong>TOCTOU</strong> (Time-Of-Check-Time-Of-Use): Between checking a path and using the result, the path could change.</p>
+<pre><code class="language-python"># Vulnerable code
+if os.path.exists(&quot;/tmp/safe_file&quot;):  # Check
+    data = open(&quot;/tmp/safe_file&quot;).read()  # Use - file might be different!
+</code></pre>
+<p>An attacker could replace <code>/tmp/safe_file</code> with a symlink to <code>/etc/passwd</code> between check and use.</p>
+<p><strong>Mitigations</strong>:</p>
+<ol>
+<li><strong>openat()</strong> system calls: Open parent directory, then operate relative to file descriptor (fd doesn't change even if path does)</li>
+<li><strong>O_NOFOLLOW</strong>: Refuse to follow symlinks</li>
+<li><strong>fstat()</strong> after open: Verify file is what you expect (inode, device)</li>
+<li><strong>Atomic operations</strong>: Use rename() for atomic updates</li>
+</ol>
+<pre><code class="language-python"># Safe pattern using openat
+dir_fd = os.open(&quot;/tmp&quot;, os.O_RDONLY | os.O_DIRECTORY)
+fd = os.open(&quot;safe_file&quot;, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=dir_fd)
+# fd now refers to exactly the file at /tmp/safe_file, not a symlink target
+</code></pre>
+<p><strong>See also</strong>: <a href="/topics/machine-coding/file-system/symlinks">[symlinks]</a>, <a href="/topics/system-design/security">[security-patterns]</a></p>
+</div>
+</div>
+<hr />
+<h2 id="section-4-permission-model">Section 4: Permission Model</h2>
+<h3 id="41-unix-permission-fundamentals">4.1 Unix Permission Fundamentals</h3>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Permission Bit Layout</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: center; gap: 4px; flex-wrap: wrap">
+<div style="background: #fee2e2;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #991b1b; font-weight: bold; font-size: 14px">Special</div>
+<div style="color: #dc2626; font-size: 20px; font-family: monospace; margin-top: 4px">sst</div>
+<div style="color: #f87171; font-size: 10px; margin-top: 4px">setuid/gid/sticky</div>
+</div>
+<div style="background: #dbeafe;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px">Owner</div>
+<div style="color: #2563eb; font-size: 20px; font-family: monospace; margin-top: 4px">rwx</div>
+<div style="color: #60a5fa; font-size: 10px; margin-top: 4px">7 = 111</div>
+</div>
+<div style="background: #dcfce7;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #166534; font-weight: bold; font-size: 14px">Group</div>
+<div style="color: #16a34a; font-size: 20px; font-family: monospace; margin-top: 4px">rwx</div>
+<div style="color: #4ade80; font-size: 10px; margin-top: 4px">5 = 101</div>
+</div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #b45309; font-weight: bold; font-size: 14px">Other</div>
+<div style="color: #d97706; font-size: 20px; font-family: monospace; margin-top: 4px">rwx</div>
+<div style="color: #fbbf24; font-size: 10px; margin-top: 4px">4 = 100</div>
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 8px">
+<div style="color: #334155; font-size: 13px; line-height: 1.8">
+<strong>For Files:</strong> r=read content, w=write content, x=execute as program<br/>
+<strong>For Directories:</strong> r=list entries, w=create/delete entries, x=traverse (access children)
+</div>
+</div>
+</div>
+</div>
+<h3 id="42-permission-checking-algorithm">4.2 Permission Checking Algorithm</h3>
+<div style="background: #fff7ed; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9a3412; font-weight: bold; margin-bottom: 12px">Critical: Permission Check Order</div>
+<div style="color: #7c2d12; font-size: 14px; line-height: 1.8">
+<p>Permission checking is <strong>not</strong> a simple OR of all applicable bits. The order matters:</p>
+<ol>
+<li><strong>Root user (uid 0)</strong>: Bypass all permission checks (except execute without any x bit)</li>
+<li><strong>Owner match</strong>: If process uid == file owner uid, use owner bits ONLY</li>
+<li><strong>Group match</strong>: If process gid in file's groups, use group bits ONLY</li>
+<li><strong>Other</strong>: Use other bits</li>
+</ol>
+<p><strong>Key insight</strong>: If you're the owner but owner has no read permission, you <strong>cannot</strong> read even if group/other have read permission. Owner bits take precedence and <strong>exclude</strong> group/other checks.</p>
+</div>
+</div>
+<pre><code class="language-python">class Permissions:
+    &quot;&quot;&quot;
+    Unix-style permission model.
+
+    Bit layout:
+    - Bits 0-2: Other (rwx)
+    - Bits 3-5: Group (rwx)
+    - Bits 6-8: Owner (rwx)
+    - Bits 9-11: Special (sticky, setgid, setuid)
+    &quot;&quot;&quot;
+
+    READ = 0o4
+    WRITE = 0o2
+    EXECUTE = 0o1
+
+    SETUID = 0o4000
+    SETGID = 0o2000
+    STICKY = 0o1000
+
+    def __init__(self, mode: int = 0o644):
+        self.mode = mode
+
+    def check(
+        self,
+        required: int,  # e.g., READ, WRITE, or READ | WRITE
+        user: 'User',
+        entry: 'FileSystemEntry'
+    ) -&gt; bool:
+        &quot;&quot;&quot;
+        Check if user has required permissions on entry.
+
+        Returns True if access is granted, False otherwise.
+        &quot;&quot;&quot;
+        # Root bypasses checks (except execute needs at least one x bit)
+        if user.uid == 0:
+            if required == self.EXECUTE:
+                return (self.mode &amp; 0o111) != 0  # Any execute bit set
+            return True
+
+        # Determine which permission class applies
+        if user.uid == entry.owner_uid:
+            # Owner - use bits 6-8
+            applicable = (self.mode &gt;&gt; 6) &amp; 0o7
+        elif entry.group_gid in user.groups:
+            # Group member - use bits 3-5
+            applicable = (self.mode &gt;&gt; 3) &amp; 0o7
+        else:
+            # Other - use bits 0-2
+            applicable = self.mode &amp; 0o7
+
+        # Check if all required bits are present
+        return (applicable &amp; required) == required
+</code></pre>
+<h3 id="43-special-permission-bits">4.3 Special Permission Bits</h3>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Setuid, Setgid, and Sticky Bit</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>On File</th>
+<th>On Directory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Setuid (4000)</strong></td>
+<td>Execute as file owner (e.g., <code>/usr/bin/passwd</code>)</td>
+<td>No effect</td>
+</tr>
+<tr>
+<td><strong>Setgid (2000)</strong></td>
+<td>Execute as file group</td>
+<td>New files inherit directory's group</td>
+</tr>
+<tr>
+<td><strong>Sticky (1000)</strong></td>
+<td>No effect (historically: keep in swap)</td>
+<td>Only owner can delete their files (e.g., <code>/tmp</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Security implications</strong>:</p>
+<ul>
+<li>Setuid root programs are high-value attack targets</li>
+<li>Sticky bit on <code>/tmp</code> prevents users from deleting each other's files</li>
+<li>Setgid directories enable team collaboration with shared group ownership</li>
+</ul>
+</div>
+</div>
+<h3 id="44-interview-questions-permissions">4.4 Interview Questions: Permissions</h3>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
+<p><strong>Q4.1</strong>: What permission is needed to delete a file?</p>
+<p><strong>Expected Answer</strong>:<br />
+You need <strong>write permission on the parent directory</strong>, not on the file itself. Deleting modifies the directory's entry list. The file's own permissions only protect its content.</p>
+<p>This is why you can delete a read-only file if you have write permission on its directory.</p>
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Execute Permission Nuances</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q4.2</strong>: A directory has permissions <code>rwx------</code> (700). User A is the owner. User B is not the owner but knows a file <code>/secret/known.txt</code> exists. Can User B read it?</p>
+<p><strong>Expected Answer</strong>:<br />
+No. User B cannot <strong>traverse</strong> the directory (no execute permission for others). Even with the full path, path resolution fails at <code>/secret</code> with PermissionError.</p>
+<p><strong>Follow-up</strong>: What if the directory is <code>r-x------</code> (500)?<br />
+User B still cannot access. Owner can read and traverse, but group/other have no permissions. The owner bits apply exclusively when uid matches.</p>
+<p><strong>Follow-up 2</strong>: What if <code>/secret/known.txt</code> has permissions <code>777</code>?<br />
+Still no access. Permission checks happen at <strong>every component</strong> of the path. The file's generous permissions are irrelevant if you can't reach it.</p>
+</div>
+</div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: ACLs and Capability-Based Security</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
+<p><strong>Q4.3</strong>: What are the limitations of Unix permissions, and how do ACLs address them?</p>
+<p><strong>Expected Answer</strong>:<br />
+<strong>Unix permission limitations</strong>:</p>
+<ul>
+<li>Only 3 categories (owner, one group, others)</li>
+<li>Can't grant access to specific users who aren't owner</li>
+<li>Can't have multiple groups with different permissions</li>
+</ul>
+<p><strong>ACLs (Access Control Lists)</strong> extend this:</p>
+<pre><code># setfacl -m u:alice:rw file.txt
+user::rw-
+user:alice:rw-     # Specific user entry
+group::r--
+group:devs:rw-     # Specific group entry
+mask::rw-          # Maximum permissions for named users/groups
+other::---
+</code></pre>
+<p><strong>Trade-offs</strong>:</p>
+<ul>
+<li>ACLs are more expressive but complex</li>
+<li>Performance: ACL checks are slower than bit masking</li>
+<li>Portability: ACL formats vary across systems</li>
+</ul>
+<p><strong>Capability-based alternative</strong> (used in Android, Capsicum):<br />
+Instead of checking &quot;who is asking?&quot;, grant <strong>capabilities</strong> (unforgeable tokens) that authorize specific operations. No ambient authority - processes only have explicitly delegated powers.</p>
+<p><strong>See also</strong>: <a href="/topics/system-design/security/access-control">[access-control]</a></p>
+</div>
+</div>
+<hr />
+<h2 id="section-5-search-operations">Section 5: Search Operations</h2>
+<h3 id="51-file-system-search-patterns">5.1 File System Search Patterns</h3>
+<p>Search operations in file systems fall into two categories:</p>
+<ol>
+<li><strong>Traversal-based</strong>: Walk the tree and filter (find, ls -R)</li>
+<li><strong>Index-based</strong>: Precomputed indexes for fast lookup (locate, mdfind)</li>
+</ol>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Search Strategy Comparison</h4>
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap">
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #6d28d9; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">Traversal (DFS/BFS)</div>
+<div style="color: #334155; font-size: 13px; line-height: 1.8">
+<strong>Time:</strong> O(N) where N = total entries<br/>
+<strong>Space:</strong> O(depth) for DFS, O(width) for BFS<br/>
+<strong>Freshness:</strong> Always current<br/>
+<strong>Use when:</strong> Need current state, one-time search<br/>
+<strong>Example:</strong> <code>find /home -name "*.log"</code>
+</div>
+</div>
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #be185d; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">Index-based</div>
+<div style="color: #334155; font-size: 13px; line-height: 1.8">
+<strong>Build time:</strong> O(N) initial, O(1) per update<br/>
+<strong>Query time:</strong> O(log N) to O(1)<br/>
+<strong>Freshness:</strong> May be stale<br/>
+<strong>Use when:</strong> Repeated queries, accept staleness<br/>
+<strong>Example:</strong> <code>locate myfile</code>
+</div>
+</div>
+</div>
+</div>
+<h3 id="52-implementing-recursive-search">5.2 Implementing Recursive Search</h3>
+<pre><code class="language-python">from typing import List, Callable, Generator, Optional
+from dataclasses import dataclass
+from enum import Enum
+import fnmatch
+import re
+
+class SearchType(Enum):
+    NAME = &quot;name&quot;           # Match file name
+    NAME_REGEX = &quot;regex&quot;    # Regex on name
+    CONTENT = &quot;content&quot;     # Search file contents
+    SIZE = &quot;size&quot;           # Filter by size
+    TYPE = &quot;type&quot;           # File or directory
+    MODIFIED = &quot;modified&quot;   # Modification time
+
+@dataclass
+class SearchCriteria:
+    search_type: SearchType
+    pattern: str
+    value: any = None  # For comparisons (size, time)
+
+class FileSystemSearch:
+    &quot;&quot;&quot;
+    Search implementation supporting multiple criteria and traversal strategies.
+    &quot;&quot;&quot;
+
+    def find(
+        self,
+        root: 'Directory',
+        criteria: List[SearchCriteria],
+        max_depth: Optional[int] = None,
+        follow_symlinks: bool = False
+    ) -&gt; Generator['FileSystemEntry', None, None]:
+        &quot;&quot;&quot;
+        Find entries matching all criteria using DFS.
+
+        Yields matching entries as they're found (memory efficient).
+        &quot;&quot;&quot;
+        yield from self._dfs_search(root, criteria, 0, max_depth, follow_symlinks)
+
+    def _dfs_search(
+        self,
+        current: 'FileSystemEntry',
+        criteria: List[SearchCriteria],
+        depth: int,
+        max_depth: Optional[int],
+        follow_symlinks: bool
+    ) -&gt; Generator['FileSystemEntry', None, None]:
+
+        # Check depth limit
+        if max_depth is not None and depth &gt; max_depth:
+            return
+
+        # Handle symlinks
+        if current.is_symlink():
+            if follow_symlinks:
+                try:
+                    current = current.resolve_target()
+                except (FileNotFoundError, OSError):
+                    return  # Broken or looping symlink
+            else:
+                # Match against symlink itself, don't traverse
+                if self._matches_all(current, criteria):
+                    yield current
+                return
+
+        # Check if current entry matches
+        if self._matches_all(current, criteria):
+            yield current
+
+        # Recurse into directories
+        if current.is_directory():
+            try:
+                for child in current.list_children():
+                    yield from self._dfs_search(
+                        child, criteria, depth + 1, max_depth, follow_symlinks
+                    )
+            except PermissionError:
+                pass  # Skip directories we can't read
+
+    def _matches_all(
+        self,
+        entry: 'FileSystemEntry',
+        criteria: List[SearchCriteria]
+    ) -&gt; bool:
+        &quot;&quot;&quot;Check if entry matches ALL criteria.&quot;&quot;&quot;
+        return all(self._matches(entry, c) for c in criteria)
+
+    def _matches(self, entry: 'FileSystemEntry', criterion: SearchCriteria) -&gt; bool:
+        if criterion.search_type == SearchType.NAME:
+            # Glob pattern matching
+            return fnmatch.fnmatch(entry.name, criterion.pattern)
+
+        elif criterion.search_type == SearchType.NAME_REGEX:
+            return re.search(criterion.pattern, entry.name) is not None
+
+        elif criterion.search_type == SearchType.TYPE:
+            if criterion.pattern == 'f':
+                return entry.is_file()
+            elif criterion.pattern == 'd':
+                return entry.is_directory()
+            elif criterion.pattern == 'l':
+                return entry.is_symlink()
+
+        elif criterion.search_type == SearchType.SIZE:
+            # pattern like &quot;+100M&quot; (larger than 100MB) or &quot;-1K&quot; (smaller than 1KB)
+            return self._check_size(entry, criterion.pattern)
+
+        elif criterion.search_type == SearchType.CONTENT:
+            # Only search file contents
+            if not entry.is_file():
+                return False
+            try:
+                content = entry.read()
+                return criterion.pattern in content
+            except (PermissionError, IOError):
+                return False
+
+        return False
+
+    def _check_size(self, entry: 'FileSystemEntry', pattern: str) -&gt; bool:
+        &quot;&quot;&quot;Parse size pattern like +100M, -1K, 500.&quot;&quot;&quot;
+        size = entry.get_size()
+
+        if pattern.startswith('+'):
+            threshold = self._parse_size(pattern[1:])
+            return size &gt; threshold
+        elif pattern.startswith('-'):
+            threshold = self._parse_size(pattern[1:])
+            return size &lt; threshold
+        else:
+            threshold = self._parse_size(pattern)
+            return size == threshold
+
+    def _parse_size(self, s: str) -&gt; int:
+        &quot;&quot;&quot;Parse size with optional suffix (K, M, G).&quot;&quot;&quot;
+        multipliers = {'K': 1024, 'M': 1024**2, 'G': 1024**3}
+        if s[-1] in multipliers:
+            return int(s[:-1]) * multipliers[s[-1]]
+        return int(s)
+</code></pre>
+<h3 id="53-glob-pattern-matching">5.3 Glob Pattern Matching</h3>
+<div style="background: #f0f9ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #0c4a6e; font-weight: bold; margin-bottom: 12px">Glob vs. Regex: Know the Difference</div>
+<div style="color: #164e63; font-size: 14px; line-height: 1.8">
+<table>
+<thead>
+<tr>
+<th>Glob</th>
+<th>Regex Equivalent</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*</code></td>
+<td><code>.*</code></td>
+<td>Match any characters (except path separator)</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td><code>.</code></td>
+<td>Match single character</td>
+</tr>
+<tr>
+<td><code>[abc]</code></td>
+<td><code>[abc]</code></td>
+<td>Match one of the characters</td>
+</tr>
+<tr>
+<td><code>[!abc]</code></td>
+<td><code>[^abc]</code></td>
+<td>Match any except these characters</td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>N/A</td>
+<td>Match across path separators (recursive)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Implementation note</strong>: Glob patterns are typically converted to regex or matched with specialized algorithms. The <code>**</code> pattern requires special handling for directory recursion.</p>
+<pre><code class="language-python">def glob_to_regex(pattern: str) -&gt; str:
+    &quot;&quot;&quot;Convert glob pattern to regex.&quot;&quot;&quot;
+    regex = ''
+    i = 0
+    while i &lt; len(pattern):
+        c = pattern[i]
+        if c == '*':
+            if i + 1 &lt; len(pattern) and pattern[i + 1] == '*':
+                regex += '.*'  # ** matches everything including /
+                i += 1
+            else:
+                regex += '[^/]*'  # * matches non-slash characters
+        elif c == '?':
+            regex += '[^/]'
+        elif c == '[':
+            # Find closing bracket
+            j = i + 1
+            if j &lt; len(pattern) and pattern[j] == '!':
+                regex += '[^'
+                j += 1
+            else:
+                regex += '['
+            while j &lt; len(pattern) and pattern[j] != ']':
+                regex += pattern[j]
+                j += 1
+            regex += ']'
+            i = j
+        elif c in '.^$+{}|()\\':
+            regex += '\\' + c  # Escape regex special chars
+        else:
+            regex += c
+        i += 1
+    return f'^{regex}$'
+</code></pre>
+</div>
+</div>
+<h3 id="54-building-search-indexes">5.4 Building Search Indexes</h3>
+<p>For frequently queried file systems, building indexes dramatically improves performance.</p>
+<pre><code class="language-python">from collections import defaultdict
+from typing import Set, Dict
+
+class FileSystemIndex:
+    &quot;&quot;&quot;
+    Inverted index for fast file system searches.
+
+    Maintains:
+    - Name index: name -&gt; set of paths
+    - Extension index: ext -&gt; set of paths
+    - Size index: size_bucket -&gt; set of paths
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.name_index: Dict[str, Set[str]] = defaultdict(set)
+        self.extension_index: Dict[str, Set[str]] = defaultdict(set)
+        self.name_trigrams: Dict[str, Set[str]] = defaultdict(set)
+
+    def build(self, root: 'Directory'):
+        &quot;&quot;&quot;Build index by traversing entire tree.&quot;&quot;&quot;
+        self._index_entry(root)
+        for child in self._traverse(root):
+            self._index_entry(child)
+
+    def _index_entry(self, entry: 'FileSystemEntry'):
+        path = entry.get_path()
+        name = entry.name.lower()
+
+        # Exact name
+        self.name_index[name].add(path)
+
+        # Extension
+        if '.' in name:
+            ext = name.rsplit('.', 1)[1]
+            self.extension_index[ext].add(path)
+
+        # Trigrams for fuzzy search
+        padded = f&quot;  {name}  &quot;
+        for i in range(len(padded) - 2):
+            trigram = padded[i:i+3]
+            self.name_trigrams[trigram].add(path)
+
+    def search_by_name(self, name: str) -&gt; Set[str]:
+        &quot;&quot;&quot;Exact name lookup.&quot;&quot;&quot;
+        return self.name_index.get(name.lower(), set())
+
+    def search_by_extension(self, ext: str) -&gt; Set[str]:
+        &quot;&quot;&quot;Find all files with given extension.&quot;&quot;&quot;
+        return self.extension_index.get(ext.lower(), set())
+
+    def fuzzy_search(self, query: str, threshold: float = 0.6) -&gt; List[str]:
+        &quot;&quot;&quot;
+        Trigram-based fuzzy search.
+
+        Returns paths where trigram overlap exceeds threshold.
+        &quot;&quot;&quot;
+        query = query.lower()
+        padded = f&quot;  {query}  &quot;
+        query_trigrams = {padded[i:i+3] for i in range(len(padded) - 2)}
+
+        # Find candidate paths
+        candidates = defaultdict(int)
+        for trigram in query_trigrams:
+            for path in self.name_trigrams.get(trigram, []):
+                candidates[path] += 1
+
+        # Calculate similarity and filter
+        results = []
+        for path, matches in candidates.items():
+            similarity = matches / len(query_trigrams)
+            if similarity &gt;= threshold:
+                results.append((path, similarity))
+
+        return [path for path, _ in sorted(results, key=lambda x: -x[1])]
+
+    # Index maintenance
+    def add_entry(self, entry: 'FileSystemEntry'):
+        &quot;&quot;&quot;Add new entry to index (incremental update).&quot;&quot;&quot;
+        self._index_entry(entry)
+
+    def remove_entry(self, path: str, name: str):
+        &quot;&quot;&quot;Remove entry from index.&quot;&quot;&quot;
+        self.name_index[name.lower()].discard(path)
+        if '.' in name:
+            ext = name.rsplit('.', 1)[1]
+            self.extension_index[ext.lower()].discard(path)
+        # Remove from trigram index...
+</code></pre>
+<h3 id="55-interview-questions-search-operations">5.5 Interview Questions: Search Operations</h3>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
+<p><strong>Q5.1</strong>: Why does <code>find</code> use DFS rather than BFS?</p>
+<p><strong>Expected Answer</strong>:</p>
+<ol>
+<li><strong>Memory efficiency</strong>: DFS uses O(depth) stack space; BFS uses O(branching_factor^depth) queue space. File systems can have millions of files.</li>
+<li><strong>Streaming results</strong>: DFS can yield results as found; BFS must explore entire level before deeper files</li>
+<li><strong>Depth limits work naturally</strong>: <code>-maxdepth</code> is trivial with DFS stack depth tracking</li>
+<li><strong>Locality</strong>: DFS tends to read directory blocks sequentially, which can be faster for disk-based systems</li>
+</ol>
+</div>
+</div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Optimization</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q5.2</strong>: The <code>locate</code> command returns results in milliseconds for millions of files. How does it work?</p>
+<p><strong>Expected Answer</strong>:<br />
+<code>locate</code> uses a precomputed database (<code>/var/lib/mlocate/mlocate.db</code>) built by <code>updatedb</code>:</p>
+<ol>
+<li><strong>Index structure</strong>: Stores full paths with compression (incremental encoding since paths share prefixes)</li>
+<li><strong>Updates</strong>: <code>updatedb</code> runs periodically (usually daily via cron)</li>
+<li><strong>Query</strong>: Binary search or scan through compressed database</li>
+<li><strong>Trade-off</strong>: Results may be stale (deleted files still appear, new files missing)</li>
+</ol>
+<p><strong>Follow-up</strong>: How would you design an index that stays fresh?</p>
+<p>Use <strong>inotify</strong> (Linux) or <strong>FSEvents</strong> (macOS) to watch for changes:</p>
+<pre><code class="language-python">import inotify.adapters
+
+notifier = inotify.adapters.InotifyTree('/home')
+for event in notifier.event_gen():
+    if event:
+        (_, type_names, path, filename) = event
+        if 'IN_CREATE' in type_names:
+            index.add_entry(path, filename)
+        elif 'IN_DELETE' in type_names:
+            index.remove_entry(path, filename)
+</code></pre>
+<p>Trade-off: Watch descriptors are limited; may need to re-scan subtrees periodically.</p>
+</div>
+</div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: Distributed Search</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
+<p><strong>Q5.3</strong>: How would you implement search across a distributed file system with petabytes of data?</p>
+<p><strong>Expected Answer</strong>:</p>
+<p><strong>Architecture</strong>:</p>
+<ol>
+<li><strong>Partitioned index</strong>: Each node indexes its local files</li>
+<li><strong>Metadata service</strong>: Knows which nodes have which directory subtrees</li>
+<li><strong>Query routing</strong>: Broadcast to relevant nodes or use metadata to target</li>
+</ol>
+<p><strong>Search flow</strong>:</p>
+<pre><code>Client: find /data/logs -name &quot;error*&quot;
+
+1. Query metadata service: &quot;which nodes have /data/logs subtree?&quot;
+2. Metadata returns: [node1, node2, node5]
+3. Fan-out query to those nodes in parallel
+4. Each node searches local index/files
+5. Merge results at coordinator
+6. Stream to client
+</code></pre>
+<p><strong>Optimizations</strong>:</p>
+<ul>
+<li><strong>Bloom filters</strong>: Quick negative check before index lookup</li>
+<li><strong>Caching</strong>: Hot paths cached at multiple levels</li>
+<li><strong>Locality</strong>: Route queries to nodes closest to client</li>
+</ul>
+<p><strong>At scale</strong> (like Google's search over code):</p>
+<ul>
+<li>Precomputed trigram indexes</li>
+<li>Sharding by path hash or content</li>
+<li>Approximate results acceptable (return top matches fast)</li>
+</ul>
+<p><strong>See also</strong>: <a href="/topics/system-design/distributed-systems">[distributed-systems]</a>, <a href="/topics/databases/indexing">[indexing]</a></p>
+</div>
+</div>
+<hr />
+<h2 id="section-6-complete-implementation">Section 6: Complete Implementation</h2>
+<h3 id="61-production-ready-code">6.1 Production-Ready Code</h3>
+<pre><code class="language-python">from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional, Generator, Set
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import IntFlag
+from threading import RLock
+import re
+
+# ============== Permission System ==============
+
+class Permission(IntFlag):
+    NONE = 0
+    EXECUTE = 1
+    WRITE = 2
+    READ = 4
+
+    @classmethod
+    def from_octal(cls, mode: int) -&gt; 'PermissionSet':
+        return PermissionSet(
+            owner=(mode &gt;&gt; 6) &amp; 0o7,
+            group=(mode &gt;&gt; 3) &amp; 0o7,
+            other=mode &amp; 0o7
+        )
+
+@dataclass
+class PermissionSet:
+    owner: int = 0o7  # rwx
+    group: int = 0o5  # r-x
+    other: int = 0o5  # r-x
+    special: int = 0  # setuid/setgid/sticky
+
+    def to_octal(self) -&gt; int:
+        return (self.special &lt;&lt; 9) | (self.owner &lt;&lt; 6) | (self.group &lt;&lt; 3) | self.other
+
+    def check(self, required: Permission, uid: int, gid: int,
+              owner_uid: int, owner_gid: int) -&gt; bool:
+        # Root bypass
+        if uid == 0:
+            if required == Permission.EXECUTE:
+                return bool((self.owner | self.group | self.other) &amp; Permission.EXECUTE)
+            return True
+
+        # Determine applicable permissions
+        if uid == owner_uid:
+            applicable = self.owner
+        elif gid == owner_gid:
+            applicable = self.group
+        else:
+            applicable = self.other
+
+        return (applicable &amp; required) == required
+
+    def __str__(self) -&gt; str:
+        def bits_to_str(bits: int, special_char: str = '') -&gt; str:
+            r = 'r' if bits &amp; Permission.READ else '-'
+            w = 'w' if bits &amp; Permission.WRITE else '-'
+            x = 'x' if bits &amp; Permission.EXECUTE else '-'
+            return f&quot;{r}{w}{x}&quot;
+
+        return bits_to_str(self.owner) + bits_to_str(self.group) + bits_to_str(self.other)
+
+# ============== File System Entries ==============
+
+@dataclass
+class Metadata:
+    created_at: datetime = field(default_factory=datetime.now)
+    modified_at: datetime = field(default_factory=datetime.now)
+    accessed_at: datetime = field(default_factory=datetime.now)
+    permissions: PermissionSet = field(default_factory=PermissionSet)
+    owner_uid: int = 0
+    owner_gid: int = 0
+
+class FileSystemEntry(ABC):
+    &quot;&quot;&quot;
+    Abstract base class for file system entries.
+    Implements the Component in Composite Pattern.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str, parent: Optional['Directory'] = None):
+        self.name = name
+        self.parent = parent
+        self.metadata = Metadata()
+
+    @abstractmethod
+    def get_size(self) -&gt; int:
+        &quot;&quot;&quot;Return size in bytes.&quot;&quot;&quot;
+        pass
+
+    @abstractmethod
+    def is_directory(self) -&gt; bool:
+        pass
+
+    def is_file(self) -&gt; bool:
+        return not self.is_directory() and not self.is_symlink()
+
+    def is_symlink(self) -&gt; bool:
+        return False
+
+    def get_path(self) -&gt; str:
+        &quot;&quot;&quot;Get absolute path to this entry.&quot;&quot;&quot;
+        if self.parent is None:
+            return '/'
+        parent_path = self.parent.get_path()
+        if parent_path == '/':
+            return f'/{self.name}'
+        return f'{parent_path}/{self.name}'
+
+    def can_read(self, uid: int, gid: int) -&gt; bool:
+        return self.metadata.permissions.check(
+            Permission.READ, uid, gid,
+            self.metadata.owner_uid, self.metadata.owner_gid
+        )
+
+    def can_write(self, uid: int, gid: int) -&gt; bool:
+        return self.metadata.permissions.check(
+            Permission.WRITE, uid, gid,
+            self.metadata.owner_uid, self.metadata.owner_gid
+        )
+
+    def can_execute(self, uid: int, gid: int) -&gt; bool:
+        return self.metadata.permissions.check(
+            Permission.EXECUTE, uid, gid,
+            self.metadata.owner_uid, self.metadata.owner_gid
+        )
+
+    def touch(self):
+        &quot;&quot;&quot;Update modification time.&quot;&quot;&quot;
+        self.metadata.modified_at = datetime.now()
+
+class File(FileSystemEntry):
+    &quot;&quot;&quot;
+    Leaf node representing a file with content.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str, parent: Optional['Directory'] = None):
+        super().__init__(name, parent)
+        self._content: bytes = b''
+
+    def get_size(self) -&gt; int:
+        return len(self._content)
+
+    def is_directory(self) -&gt; bool:
+        return False
+
+    def read(self) -&gt; bytes:
+        self.metadata.accessed_at = datetime.now()
+        return self._content
+
+    def read_text(self, encoding: str = 'utf-8') -&gt; str:
+        return self.read().decode(encoding)
+
+    def write(self, content: bytes) -&gt; None:
+        self._content = content
+        self.touch()
+
+    def write_text(self, content: str, encoding: str = 'utf-8') -&gt; None:
+        self.write(content.encode(encoding))
+
+    def append(self, content: bytes) -&gt; None:
+        self._content += content
+        self.touch()
+
+    def truncate(self, size: int = 0) -&gt; None:
+        self._content = self._content[:size]
+        self.touch()
+
+class Directory(FileSystemEntry):
+    &quot;&quot;&quot;
+    Composite node containing other entries.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str, parent: Optional['Directory'] = None):
+        super().__init__(name, parent)
+        self._children: Dict[str, FileSystemEntry] = {}
+
+    def get_size(self) -&gt; int:
+        &quot;&quot;&quot;Return total size of all descendants.&quot;&quot;&quot;
+        return sum(child.get_size() for child in self._children.values())
+
+    def is_directory(self) -&gt; bool:
+        return True
+
+    def add_child(self, entry: FileSystemEntry) -&gt; None:
+        if entry.name in self._children:
+            raise FileExistsError(f&quot;Entry already exists: {entry.name}&quot;)
+        entry.parent = self
+        self._children[entry.name] = entry
+        self.touch()
+
+    def remove_child(self, name: str) -&gt; Optional[FileSystemEntry]:
+        child = self._children.pop(name, None)
+        if child:
+            child.parent = None
+            self.touch()
+        return child
+
+    def get_child(self, name: str) -&gt; Optional[FileSystemEntry]:
+        return self._children.get(name)
+
+    def list_children(self) -&gt; List[FileSystemEntry]:
+        return list(self._children.values())
+
+    def list_names(self, sorted: bool = True) -&gt; List[str]:
+        names = list(self._children.keys())
+        return builtins_sorted(names) if sorted else names
+
+    def __contains__(self, name: str) -&gt; bool:
+        return name in self._children
+
+    def __iter__(self):
+        return iter(self._children.values())
+
+class SymbolicLink(FileSystemEntry):
+    &quot;&quot;&quot;
+    Symbolic link pointing to another path.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str, target: str, parent: Optional['Directory'] = None):
+        super().__init__(name, parent)
+        self.target = target
+
+    def get_size(self) -&gt; int:
+        return len(self.target.encode('utf-8'))
+
+    def is_directory(self) -&gt; bool:
+        return False
+
+    def is_symlink(self) -&gt; bool:
+        return True
+
+# ============== File System ==============
+
+# Import built-in sorted before it gets shadowed
+import builtins
+builtins_sorted = builtins.sorted
+
+class FileSystem:
+    &quot;&quot;&quot;
+    Thread-safe in-memory file system.
+
+    Supports:
+    - Unix-like path operations (ls, mkdir, touch, rm)
+    - Permission checking
+    - Symbolic links
+    - Search operations
+    &quot;&quot;&quot;
+
+    MAX_SYMLINK_DEPTH = 40
+
+    def __init__(self):
+        self.root = Directory('')
+        self.root.parent = None  # Root's parent is itself conceptually
+        self._lock = RLock()
+        self._current_uid = 0
+        self._current_gid = 0
+
+    def set_user(self, uid: int, gid: int):
+        &quot;&quot;&quot;Set current user context for permission checks.&quot;&quot;&quot;
+        self._current_uid = uid
+        self._current_gid = gid
+
+    # ===== Path Resolution =====
+
+    def _parse_path(self, path: str) -&gt; List[str]:
+        &quot;&quot;&quot;Split path into components, handling edge cases.&quot;&quot;&quot;
+        if not path:
+            return []
+        return [c for c in path.split('/') if c and c != '.']
+
+    def resolve(
+        self,
+        path: str,
+        follow_symlinks: bool = True,
+        create_parents: bool = False
+    ) -&gt; FileSystemEntry:
+        &quot;&quot;&quot;
+        Resolve path to entry.
+
+        Raises:
+            FileNotFoundError: Path doesn't exist
+            NotADirectoryError: Non-directory in path
+            PermissionError: No execute permission on directory
+            OSError: Symlink loop
+        &quot;&quot;&quot;
+        with self._lock:
+            components = self._parse_path(path)
+
+            if not components:
+                return self.root
+
+            current = self.root
+            symlink_count = 0
+
+            for i, component in enumerate(components):
+                is_last = (i == len(components) - 1)
+
+                # Handle parent reference
+                if component == '..':
+                    current = current.parent if current.parent else current
+                    continue
+
+                # Must be directory to traverse
+                if not current.is_directory():
+                    raise NotADirectoryError(f&quot;Not a directory: {current.get_path()}&quot;)
+
+                # Permission check
+                if not current.can_execute(self._current_uid, self._current_gid):
+                    raise PermissionError(f&quot;Permission denied: {current.get_path()}&quot;)
+
+                child = current.get_child(component)
+
+                if child is None:
+                    if create_parents and not is_last:
+                        child = Directory(component)
+                        current.add_child(child)
+                    else:
+                        raise FileNotFoundError(f&quot;No such file or directory: {path}&quot;)
+
+                # Handle symlinks
+                if child.is_symlink() and (follow_symlinks or not is_last):
+                    symlink_count += 1
+                    if symlink_count &gt; self.MAX_SYMLINK_DEPTH:
+                        raise OSError(f&quot;Too many levels of symbolic links: {path}&quot;)
+
+                    target = child.target
+                    if not target.startswith('/'):
+                        target = current.get_path().rstrip('/') + '/' + target
+
+                    if is_last:
+                        child = self.resolve(target, follow_symlinks)
+                    else:
+                        remaining = '/'.join(components[i+1:])
+                        return self.resolve(f&quot;{target}/{remaining}&quot;, follow_symlinks)
+
+                current = child
+
+            return current
+
+    # ===== Core Operations =====
+
+    def ls(self, path: str = '/') -&gt; List[str]:
+        &quot;&quot;&quot;List directory contents or return file name.&quot;&quot;&quot;
+        with self._lock:
+            entry = self.resolve(path)
+
+            if not entry.can_read(self._current_uid, self._current_gid):
+                raise PermissionError(f&quot;Permission denied: {path}&quot;)
+
+            if entry.is_directory():
+                return entry.list_names(sorted=True)
+            return [entry.name]
+
+    def mkdir(self, path: str, parents: bool = True) -&gt; Directory:
+        &quot;&quot;&quot;Create directory, optionally with parents.&quot;&quot;&quot;
+        with self._lock:
+            components = self._parse_path(path)
+            if not components:
+                raise ValueError(&quot;Cannot create root directory&quot;)
+
+            current = self.root
+
+            for i, component in enumerate(components):
+                is_last = (i == len(components) - 1)
+
+                if not current.is_directory():
+                    raise NotADirectoryError(f&quot;Not a directory: {current.get_path()}&quot;)
+
+                child = current.get_child(component)
+
+                if child is None:
+                    if not current.can_write(self._current_uid, self._current_gid):
+                        raise PermissionError(f&quot;Permission denied: {current.get_path()}&quot;)
+
+                    if parents or is_last:
+                        child = Directory(component)
+                        current.add_child(child)
+                    else:
+                        raise FileNotFoundError(f&quot;Parent doesn't exist: {path}&quot;)
+                elif child.is_file():
+                    raise FileExistsError(f&quot;File exists: {child.get_path()}&quot;)
+
+                current = child
+
+            return current
+
+    def touch(self, path: str) -&gt; File:
+        &quot;&quot;&quot;Create empty file or update modification time.&quot;&quot;&quot;
+        with self._lock:
+            components = self._parse_path(path)
+            if not components:
+                raise ValueError(&quot;Cannot create file at root&quot;)
+
+            parent_path = '/' + '/'.join(components[:-1])
+            filename = components[-1]
+
+            try:
+                parent = self.resolve(parent_path)
+            except FileNotFoundError:
+                parent = self.mkdir(parent_path)
+
+            if not parent.is_directory():
+                raise NotADirectoryError(f&quot;Not a directory: {parent_path}&quot;)
+
+            existing = parent.get_child(filename)
+
+            if existing is None:
+                if not parent.can_write(self._current_uid, self._current_gid):
+                    raise PermissionError(f&quot;Permission denied: {parent_path}&quot;)
+                new_file = File(filename)
+                parent.add_child(new_file)
+                return new_file
+            elif existing.is_file():
+                existing.touch()
+                return existing
+            else:
+                raise IsADirectoryError(f&quot;Is a directory: {path}&quot;)
+
+    def write_file(self, path: str, content: str) -&gt; File:
+        &quot;&quot;&quot;Create or overwrite file with content.&quot;&quot;&quot;
+        with self._lock:
+            f = self.touch(path)
+            if not f.can_write(self._current_uid, self._current_gid):
+                raise PermissionError(f&quot;Permission denied: {path}&quot;)
+            f.write_text(content)
+            return f
+
+    def read_file(self, path: str) -&gt; str:
+        &quot;&quot;&quot;Read file content as string.&quot;&quot;&quot;
+        with self._lock:
+            entry = self.resolve(path)
+
+            if entry.is_directory():
+                raise IsADirectoryError(f&quot;Is a directory: {path}&quot;)
+
+            if not entry.can_read(self._current_uid, self._current_gid):
+                raise PermissionError(f&quot;Permission denied: {path}&quot;)
+
+            return entry.read_text()
+
+    def rm(self, path: str, recursive: bool = False) -&gt; None:
+        &quot;&quot;&quot;Remove file or directory.&quot;&quot;&quot;
+        with self._lock:
+            if path == '/':
+                raise PermissionError(&quot;Cannot remove root directory&quot;)
+
+            entry = self.resolve(path, follow_symlinks=False)
+            parent = entry.parent
+
+            if not parent.can_write(self._current_uid, self._current_gid):
+                raise PermissionError(f&quot;Permission denied: {parent.get_path()}&quot;)
+
+            if entry.is_directory() and entry.list_children():
+                if not recursive:
+                    raise OSError(f&quot;Directory not empty: {path}&quot;)
+
+            parent.remove_child(entry.name)
+
+    def mv(self, src: str, dst: str) -&gt; None:
+        &quot;&quot;&quot;Move/rename file or directory.&quot;&quot;&quot;
+        with self._lock:
+            src_entry = self.resolve(src, follow_symlinks=False)
+            src_parent = src_entry.parent
+
+            # Check source parent write permission
+            if not src_parent.can_write(self._current_uid, self._current_gid):
+                raise PermissionError(f&quot;Permission denied: {src_parent.get_path()}&quot;)
+
+            dst_components = self._parse_path(dst)
+            dst_parent_path = '/' + '/'.join(dst_components[:-1])
+            dst_name = dst_components[-1]
+
+            try:
+                dst_parent = self.resolve(dst_parent_path)
+            except FileNotFoundError:
+                raise FileNotFoundError(f&quot;Destination parent doesn't exist: {dst}&quot;)
+
+            # Check destination parent write permission
+            if not dst_parent.can_write(self._current_uid, self._current_gid):
+                raise PermissionError(f&quot;Permission denied: {dst_parent.get_path()}&quot;)
+
+            # Check if destination exists
+            existing = dst_parent.get_child(dst_name)
+            if existing:
+                if existing.is_directory():
+                    # Move into directory
+                    dst_parent = existing
+                    dst_name = src_entry.name
+                else:
+                    dst_parent.remove_child(dst_name)
+
+            # Perform move
+            src_parent.remove_child(src_entry.name)
+            src_entry.name = dst_name
+            dst_parent.add_child(src_entry)
+
+    def symlink(self, target: str, link_path: str) -&gt; SymbolicLink:
+        &quot;&quot;&quot;Create symbolic link.&quot;&quot;&quot;
+        with self._lock:
+            components = self._parse_path(link_path)
+            if not components:
+                raise ValueError(&quot;Cannot create symlink at root&quot;)
+
+            parent_path = '/' + '/'.join(components[:-1])
+            link_name = components[-1]
+
+            parent = self.resolve(parent_path)
+
+            if not parent.can_write(self._current_uid, self._current_gid):
+                raise PermissionError(f&quot;Permission denied: {parent_path}&quot;)
+
+            link = SymbolicLink(link_name, target)
+            parent.add_child(link)
+            return link
+
+    # ===== Search Operations =====
+
+    def find(
+        self,
+        path: str = '/',
+        name_pattern: str = None,
+        entry_type: str = None,
+        max_depth: int = None
+    ) -&gt; Generator[FileSystemEntry, None, None]:
+        &quot;&quot;&quot;
+        Find entries matching criteria.
+
+        Args:
+            path: Starting directory
+            name_pattern: Glob pattern for name
+            entry_type: 'f' for files, 'd' for directories, 'l' for symlinks
+            max_depth: Maximum recursion depth
+        &quot;&quot;&quot;
+        import fnmatch
+
+        with self._lock:
+            start = self.resolve(path)
+
+            if not start.is_directory():
+                if self._matches(start, name_pattern, entry_type):
+                    yield start
+                return
+
+            yield from self._find_recursive(start, name_pattern, entry_type, 0, max_depth)
+
+    def _find_recursive(
+        self,
+        current: Directory,
+        name_pattern: str,
+        entry_type: str,
+        depth: int,
+        max_depth: int
+    ) -&gt; Generator[FileSystemEntry, None, None]:
+
+        if max_depth is not None and depth &gt; max_depth:
+            return
+
+        for child in current.list_children():
+            if self._matches(child, name_pattern, entry_type):
+                yield child
+
+            if child.is_directory():
+                yield from self._find_recursive(
+                    child, name_pattern, entry_type, depth + 1, max_depth
+                )
+
+    def _matches(self, entry: FileSystemEntry, name_pattern: str, entry_type: str) -&gt; bool:
+        import fnmatch
+
+        if name_pattern and not fnmatch.fnmatch(entry.name, name_pattern):
+            return False
+
+        if entry_type:
+            if entry_type == 'f' and not entry.is_file():
+                return False
+            if entry_type == 'd' and not entry.is_directory():
+                return False
+            if entry_type == 'l' and not entry.is_symlink():
+                return False
+
+        return True
+
+
+# ============== Usage Example ==============
+
+if __name__ == &quot;__main__&quot;:
+    fs = FileSystem()
+
+    # Create directory structure
+    fs.mkdir(&quot;/home/user/documents&quot;)
+    fs.mkdir(&quot;/home/user/downloads&quot;)
+
+    # Create files
+    fs.write_file(&quot;/home/user/documents/notes.txt&quot;, &quot;My notes\nLine 2&quot;)
+    fs.write_file(&quot;/home/user/documents/report.md&quot;, &quot;# Report\n\nContent here.&quot;)
+
+    # Create symlink
+    fs.symlink(&quot;/home/user/documents&quot;, &quot;/home/user/docs&quot;)
+
+    # List directory
+    print(&quot;ls /home/user:&quot;, fs.ls(&quot;/home/user&quot;))
+
+    # Read file through symlink
+    print(&quot;cat (via symlink):&quot;, fs.read_file(&quot;/home/user/docs/notes.txt&quot;))
+
+    # Search
+    print(&quot;\nFind all .txt files:&quot;)
+    for entry in fs.find(&quot;/&quot;, name_pattern=&quot;*.txt&quot;):
+        print(f&quot;  {entry.get_path()}&quot;)
+
+    # Permissions example
+    fs.set_user(1000, 1000)  # Switch to non-root user
+    try:
+        fs.mkdir(&quot;/etc/secure&quot;)
+    except PermissionError as e:
+        print(f&quot;\nPermission denied: {e}&quot;)
+</code></pre>
+<hr />
+<h2 id="section-7-common-mistakes-and-anti-patterns">Section 7: Common Mistakes and Anti-Patterns</h2>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="color: #991b1b; font-weight: bold; font-size: 16px; margin-bottom: 16px">Interview Red Flags</div>
+<table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Why It's Wrong</th>
+<th>Better Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Using <code>is_file</code> boolean instead of polymorphism</td>
+<td>Forces type checking everywhere</td>
+<td>Use abstract <code>is_directory()</code> method</td>
+</tr>
+<tr>
+<td>Pre-normalizing <code>..</code> in paths</td>
+<td>Breaks with symlinks</td>
+<td>Resolve <code>..</code> during traversal</td>
+</tr>
+<tr>
+<td>Single lock for entire file system</td>
+<td>Massive contention</td>
+<td>Lock per directory or use readers-writer locks</td>
+</tr>
+<tr>
+<td>Storing full path in each node</td>
+<td>O(n^2) space for deep trees</td>
+<td>Compute path dynamically via parent pointers</td>
+</tr>
+<tr>
+<td>Not handling symlink loops</td>
+<td>Infinite loop crashes</td>
+<td>Track depth counter, fail at limit</td>
+</tr>
+<tr>
+<td>Returning mutable internal collections</td>
+<td>Caller can corrupt state</td>
+<td>Return copies or immutable views</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h2 id="section-8-extension-points">Section 8: Extension Points</h2>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="color: #166534; font-weight: bold; font-size: 16px; margin-bottom: 16px">Follow-up Features to Discuss</div>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Key Considerations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Snapshots/Versioning</strong></td>
+<td>Copy-on-write semantics, version chains</td>
+</tr>
+<tr>
+<td><strong>Quotas</strong></td>
+<td>Track space per user/directory, fail writes at limit</td>
+</tr>
+<tr>
+<td><strong>Watch/Notify</strong></td>
+<td>Observer pattern for file change notifications</td>
+</tr>
+<tr>
+<td><strong>Extended Attributes</strong></td>
+<td>Key-value metadata beyond standard fields</td>
+</tr>
+<tr>
+<td><strong>Compression</strong></td>
+<td>Transparent compression, trade CPU for space</td>
+</tr>
+<tr>
+<td><strong>Deduplication</strong></td>
+<td>Content-addressable storage, refcounting</td>
+</tr>
+<tr>
+<td><strong>FUSE Integration</strong></td>
+<td>Expose as real filesystem via FUSE</td>
+</tr>
+</tbody>
+</table>
+<p><strong>See also</strong>: <a href="/topics/system-design/storage/cow">[copy-on-write]</a>, <a href="/topics/system-design/storage/dfs">[distributed-file-systems]</a></p>
+</div>
+<hr />
+<h2 id="complexity-summary">Complexity Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Time Complexity</th>
+<th>Space Complexity</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>resolve(path)</td>
+<td>O(path_depth)</td>
+<td>O(1)</td>
+<td>Hash lookup per component</td>
+</tr>
+<tr>
+<td>ls(path)</td>
+<td>O(depth + n log n)</td>
+<td>O(n)</td>
+<td>Sorting children</td>
+</tr>
+<tr>
+<td>mkdir(path)</td>
+<td>O(depth)</td>
+<td>O(depth)</td>
+<td>New nodes on path</td>
+</tr>
+<tr>
+<td>read_file</td>
+<td>O(depth + content)</td>
+<td>O(content)</td>
+<td>Content copied</td>
+</tr>
+<tr>
+<td>write_file</td>
+<td>O(depth + content)</td>
+<td>O(content)</td>
+<td>Content stored</td>
+</tr>
+<tr>
+<td>rm(path)</td>
+<td>O(depth)</td>
+<td>O(1)</td>
+<td>Just unlink</td>
+</tr>
+<tr>
+<td>rm -r (recursive)</td>
+<td>O(subtree_size)</td>
+<td>O(depth)</td>
+<td>Visit all nodes</td>
+</tr>
+<tr>
+<td>find</td>
+<td>O(n)</td>
+<td>O(depth)</td>
+<td>Visit all matching</td>
+</tr>
+<tr>
+<td>find (indexed)</td>
+<td>O(matches)</td>
+<td>O(index_size)</td>
+<td>Precomputed index</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="related-topics">Related Topics</h2>
+<ul>
+<li><a href="/topics/design-patterns/structural/composite">[composite-pattern]</a> - Full pattern deep dive</li>
+<li><a href="/topics/data-structures/trie">[trie]</a> - Path prefix optimization</li>
+<li><a href="/topics/algorithms/tree-traversal">[tree-traversal]</a> - DFS/BFS algorithms</li>
+<li><a href="/topics/operating-systems/permissions">[unix-permissions]</a> - Complete permission model</li>
+<li><a href="/topics/system-design/storage/dfs">[distributed-file-systems]</a> - HDFS, GFS architecture</li>
+</ul>

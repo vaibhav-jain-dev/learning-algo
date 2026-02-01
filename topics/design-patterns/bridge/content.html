@@ -1,0 +1,943 @@
+<h1 id="bridge-pattern">Bridge Pattern</h1>
+<h2 id="overview">Overview</h2>
+<p>The Bridge pattern separates an abstraction from its implementation, allowing them to vary independently. It prevents a &quot;Cartesian product&quot; explosion of classes when you have multiple dimensions of variation. Instead of creating every possible combination, you compose abstraction and implementation at runtime.</p>
+<p><strong>Difficulty:</strong> Intermediate-Advanced<br />
+<strong>Category:</strong> Structural Pattern<br />
+<strong>First Documented:</strong> GoF (1994)</p>
+<hr />
+<h2 id="simple-explanation-the-remote-control-analogy">Simple Explanation: The Remote Control Analogy</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem">Think of Universal Remote Controls</h3>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7">
+    Imagine you have different types of remotes (basic, advanced) and different devices (TV, radio, streaming box). Without the Bridge pattern, you'd need:
+</p>
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin: 16px 0">
+<strong style="color: #dc2626">Without Bridge (Class Explosion):</strong>
+<div style="color: #7f1d1d; font-size: 0.9rem; margin-top: 8px">
+  BasicTVRemote, BasicRadioRemote, BasicStreamingRemote,<br>
+  AdvancedTVRemote, AdvancedRadioRemote, AdvancedStreamingRemote<br>
+<strong>= 6 classes (2 remotes x 3 devices)</strong>
+</div>
+</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin: 16px 0">
+<strong style="color: #166534">With Bridge (Composition):</strong>
+<div style="color: #14532d; font-size: 0.9rem; margin-top: 8px">
+  2 Remote classes + 3 Device classes<br>
+<strong>= 5 classes total, any combination works!</strong>
+</div>
+</div>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7">
+The <strong>Remote (Abstraction)</strong> doesn't care about the device details. It just calls methods like <code>turnOn()</code>, <code>setVolume()</code>. The <strong>Device (Implementation)</strong> handles the specifics.
+</p>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px">
+<strong style="color: #0f172a">The Key Insight:</strong>
+<span style="color: #334155"> Bridge decouples "what you want to do" (abstraction) from "how it's done" (implementation). You can add new remotes or new devices without changing the other side.</span>
+</div>
+</div>
+<hr />
+<h2 id="real-company-usage">Real Company Usage</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
+<table>
+<thead>
+<tr>
+<th>Company</th>
+<th>How They Use Bridge Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>JDBC (Java)</strong></td>
+<td>Driver interface (Bridge) connects to different databases (MySQL, PostgreSQL, Oracle)</td>
+</tr>
+<tr>
+<td><strong>Graphics Libraries</strong></td>
+<td>Shapes (abstraction) render through different backends (OpenGL, DirectX, Vulkan)</td>
+</tr>
+<tr>
+<td><strong>Notification Systems</strong></td>
+<td>Notification types (urgent, normal) sent via different channels (email, SMS, push)</td>
+</tr>
+<tr>
+<td><strong>Cloud Providers</strong></td>
+<td>Storage abstraction works with S3, GCS, Azure Blob implementations</td>
+</tr>
+<tr>
+<td><strong>Payment Systems</strong></td>
+<td>Payment methods (card, wallet) process through different gateways (Stripe, PayPal)</td>
+</tr>
+<tr>
+<td><strong>Logging Frameworks</strong></td>
+<td>Logger levels (debug, info) output to different destinations (file, console, remote)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h2 id="the-class-explosion-problem">The Class Explosion Problem</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem">Why Bridge Matters: Avoiding Class Explosion</h4>
+<p style="color: #334155; text-align: center; margin-bottom: 20px">
+  Imagine shapes that need to be drawn in different colors:
+</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px">
+  <!-- Without Bridge -->
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px">
+<h5 style="color: #dc2626; margin-top: 0">Without Bridge (Inheritance)</h5>
+<div style="font-family: monospace; font-size: 0.8rem; color: #7f1d1d; line-height: 1.8">
+  Shape<br>
+  ├── RedCircle<br>
+  ├── BlueCircle<br>
+  ├── GreenCircle<br>
+  ├── RedSquare<br>
+  ├── BlueSquare<br>
+  ├── GreenSquare<br>
+  ├── RedTriangle<br>
+  ├── BlueTriangle<br>
+  └── GreenTriangle<br>
+</div>
+<div style="background: #fee2e2; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #991b1b; font-weight: 600">
+  3 shapes x 3 colors = 9 classes
+</div>
+<div style="color: #b91c1c; font-size: 0.85rem; margin-top: 8px">
+  Add 1 color? +3 classes<br>
+  Add 1 shape? +3 classes
+</div>
+</div>
+  <!-- With Bridge -->
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px">
+<h5 style="color: #166534; margin-top: 0">With Bridge (Composition)</h5>
+<div style="font-family: monospace; font-size: 0.8rem; color: #14532d; line-height: 1.8">
+  Shape (has Color)<br>
+  ├── Circle<br>
+  ├── Square<br>
+  └── Triangle<br>
+  <br>
+  Color (interface)<br>
+  ├── Red<br>
+  ├── Blue<br>
+  └── Green<br>
+</div>
+<div style="background: #bbf7d0; padding: 10px; border-radius: 6px; margin-top: 12px; text-align: center; color: #166534; font-weight: 600">
+  3 shapes + 3 colors = 6 classes
+</div>
+<div style="color: #15803d; font-size: 0.85rem; margin-top: 8px">
+  Add 1 color? +1 class<br>
+  Add 1 shape? +1 class
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="pattern-structure">Pattern Structure</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem">Bridge Pattern Structure</h4>
+<div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; margin: 24px 0">
+  <!-- Abstraction Side -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px">
+<div style="color: #3b82f6; font-weight: 600; font-size: 0.9rem">ABSTRACTION</div>
+<div style="background: #dbeafe;border-radius: 12px; width: 200px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15)">
+<div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0">Abstraction</div>
+<div style="padding: 16px; color: #1e3a8a; font-size: 0.85rem">
+<code>- implementation</code><br>
+<code>+ operation()</code>
+</div>
+</div>
+<div style="color: #3b82f6; font-size: 1.5rem">&#9651;</div>
+<div style="background: #eff6ff;border-radius: 12px; width: 200px">
+<div style="background: #93c5fd; color: #1e40af; padding: 10px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0; font-size: 0.9rem">RefinedAbstraction</div>
+<div style="padding: 12px; color: #1e40af; font-size: 0.85rem">
+<code>+ extendedOp()</code>
+</div>
+</div>
+</div>
+  <!-- Bridge Arrow -->
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 40px">
+<div style="color: #64748b; font-size: 0.8rem; margin-bottom: 4px">has-a</div>
+<div style="color: #64748b; font-size: 2rem">&#8594;</div>
+<div style="color: #64748b; font-size: 0.8rem; margin-top: 4px">(bridge)</div>
+</div>
+  <!-- Implementation Side -->
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px">
+<div style="color: #22c55e; font-weight: 600; font-size: 0.9rem">IMPLEMENTATION</div>
+<div style="background: #dcfce7;border-radius: 12px; width: 200px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15)">
+<div style="background: #22c55e; color: white; padding: 12px; font-weight: 700; text-align: center; border-radius: 10px 10px 0 0">Implementor</div>
+<div style="padding: 16px; color: #166534; font-size: 0.85rem">
+<code>+ operationImpl()</code>
+</div>
+</div>
+<div style="color: #22c55e; font-size: 1.5rem">&#9651;</div>
+<div style="display: flex; gap: 12px">
+<div style="background: #f0fdf4;border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center">
+  ConcreteImplA
+</div>
+<div style="background: #f0fdf4;border-radius: 10px; padding: 12px; color: #166534; font-size: 0.8rem; text-align: center">
+  ConcreteImplB
+</div>
+</div>
+</div>
+</div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px">
+<strong style="color: #0f172a">Flow:</strong>
+<span style="color: #334155"> Abstraction holds a reference to Implementor. When client calls <code>operation()</code>, Abstraction delegates to <code>implementation.operationImpl()</code>.</span>
+</div>
+</div>
+<hr />
+<h2 id="when-to-use-bridge-pattern">When to Use Bridge Pattern</h2>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<h3 id="good-use-cases">Good Use Cases</h3>
+<ol>
+<li><strong>Two Dimensions of Variation</strong> - When both abstraction and implementation can change</li>
+<li><strong>Avoiding Class Explosion</strong> - M abstractions x N implementations would create M*N classes</li>
+<li><strong>Runtime Binding</strong> - Need to switch implementations at runtime</li>
+<li><strong>Cross-Platform Code</strong> - Same abstraction, different platform implementations</li>
+<li><strong>Database Drivers</strong> - Same query interface, different database backends</li>
+<li><strong>UI Themes</strong> - Same components, different rendering engines</li>
+</ol>
+</div>
+<hr />
+<h2 id="anti-patterns-when-not-to-use">Anti-Patterns: When NOT to Use</h2>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<h3 id="common-mistakes">Common Mistakes</h3>
+<ol>
+<li><strong>Single Dimension</strong> - If only implementation varies, use simple Strategy pattern</li>
+<li><strong>Stable Abstraction</strong> - If abstraction won't change, inheritance might be simpler</li>
+<li><strong>Over-Abstraction</strong> - Adding bridge for hypothetical future flexibility</li>
+<li><strong>Confusion with Adapter</strong> - Adapter makes interfaces compatible; Bridge separates concerns</li>
+</ol>
+</div>
+<pre><code>                                              ```python
+                                              # OVERKILL: Bridge for single implementation
+                                              class ShapeAbstraction:
+                                              def __init__(self, impl):
+                                              self.impl = impl
+
+                                              class OnlyOneRenderer:  # Only one implementation exists!
+                                              def render(self): pass
+
+                                              # BETTER: Just use direct implementation
+                                              class Shape:
+                                              def render(self): pass
+                                              ```
+</code></pre>
+<hr />
+<h2 id="python-implementation">Python Implementation</h2>
+<h3 id="classic-bridge-notification-system">Classic Bridge: Notification System</h3>
+<pre><code>                                              ```python
+                                              from abc import ABC, abstractmethod
+                                              from dataclasses import dataclass
+                                              from typing import List, Optional
+                                              from datetime import datetime
+                                              from enum import Enum
+
+
+                                              # Implementation Interface
+                                              class NotificationSender(ABC):
+                                              &quot;&quot;&quot;
+                                              Implementation hierarchy - HOW to send notifications.
+                                              Each sender knows the details of one delivery channel.
+                                              &quot;&quot;&quot;
+
+                                              @abstractmethod
+                                              def send(self, recipient: str, title: str, message: str) -&gt; bool:
+                                              &quot;&quot;&quot;Send notification through this channel.&quot;&quot;&quot;
+                                              pass
+
+                                              @abstractmethod
+                                              def supports_attachments(self) -&gt; bool:
+                                              &quot;&quot;&quot;Check if this channel supports attachments.&quot;&quot;&quot;
+                                              pass
+
+
+                                              # Concrete Implementations
+                                              class EmailSender(NotificationSender):
+                                              &quot;&quot;&quot;Send notifications via email.&quot;&quot;&quot;
+
+                                              def __init__(self, smtp_host: str, smtp_port: int = 587):
+                                              self.smtp_host = smtp_host
+                                              self.smtp_port = smtp_port
+
+                                              def send(self, recipient: str, title: str, message: str) -&gt; bool:
+                                              print(f&quot;[EMAIL] To: {recipient}&quot;)
+                                              print(f&quot;[EMAIL] Subject: {title}&quot;)
+                                              print(f&quot;[EMAIL] Body: {message[:50]}...&quot;)
+                                              # In production: actual SMTP sending
+                                              return True
+
+                                              def supports_attachments(self) -&gt; bool:
+                                              return True
+
+
+                                              class SMSSender(NotificationSender):
+                                              &quot;&quot;&quot;Send notifications via SMS.&quot;&quot;&quot;
+
+                                              def __init__(self, api_key: str, from_number: str):
+                                              self.api_key = api_key
+                                              self.from_number = from_number
+
+                                              def send(self, recipient: str, title: str, message: str) -&gt; bool:
+                                              # SMS combines title and message due to length limits
+                                              sms_text = f&quot;{title}: {message}&quot;[:160]
+                                              print(f&quot;[SMS] To: {recipient}&quot;)
+                                              print(f&quot;[SMS] From: {self.from_number}&quot;)
+                                              print(f&quot;[SMS] Text: {sms_text}&quot;)
+                                              return True
+
+                                              def supports_attachments(self) -&gt; bool:
+                                              return False  # SMS doesn't support attachments
+
+
+                                              class PushNotificationSender(NotificationSender):
+                                              &quot;&quot;&quot;Send push notifications to mobile devices.&quot;&quot;&quot;
+
+                                              def __init__(self, fcm_key: str):
+                                              self.fcm_key = fcm_key
+
+                                              def send(self, recipient: str, title: str, message: str) -&gt; bool:
+                                              print(f&quot;[PUSH] Device: {recipient}&quot;)
+                                              print(f&quot;[PUSH] Title: {title}&quot;)
+                                              print(f&quot;[PUSH] Body: {message[:100]}&quot;)
+                                              return True
+
+                                              def supports_attachments(self) -&gt; bool:
+                                              return False
+
+
+                                              class SlackSender(NotificationSender):
+                                              &quot;&quot;&quot;Send notifications to Slack channels.&quot;&quot;&quot;
+
+                                              def __init__(self, webhook_url: str):
+                                              self.webhook_url = webhook_url
+
+                                              def send(self, recipient: str, title: str, message: str) -&gt; bool:
+                                              print(f&quot;[SLACK] Channel: {recipient}&quot;)
+                                              print(f&quot;[SLACK] *{title}*&quot;)
+                                              print(f&quot;[SLACK] {message}&quot;)
+                                              return True
+
+                                              def supports_attachments(self) -&gt; bool:
+                                              return True
+
+
+                                              # Abstraction
+                                              class Notification(ABC):
+                                              &quot;&quot;&quot;
+                                              Abstraction hierarchy - WHAT kind of notification.
+                                              Knows about notification semantics, not delivery details.
+                                              &quot;&quot;&quot;
+
+                                              def __init__(self, sender: NotificationSender):
+                                              self._sender = sender
+
+                                              @abstractmethod
+                                              def notify(self, recipient: str, **kwargs) -&gt; bool:
+                                              &quot;&quot;&quot;Send the notification.&quot;&quot;&quot;
+                                              pass
+
+
+                                              # Refined Abstractions
+                                              class AlertNotification(Notification):
+                                              &quot;&quot;&quot;Urgent alert that requires immediate attention.&quot;&quot;&quot;
+
+                                              def __init__(self, sender: NotificationSender, severity: str = &quot;HIGH&quot;):
+                                              super().__init__(sender)
+                                              self.severity = severity
+
+                                              def notify(self, recipient: str, title: str, message: str,
+                                              error_code: Optional[str] = None) -&gt; bool:
+                                              # Format as alert
+                                              alert_title = f&quot;[{self.severity}] ALERT: {title}&quot;
+                                              alert_message = message
+                                              if error_code:
+                                              alert_message += f&quot;\n\nError Code: {error_code}&quot;
+                                              alert_message += f&quot;\n\nTime: {datetime.now().isoformat()}&quot;
+
+                                              return self._sender.send(recipient, alert_title, alert_message)
+
+
+                                              class ReminderNotification(Notification):
+                                              &quot;&quot;&quot;Friendly reminder notification.&quot;&quot;&quot;
+
+                                              def notify(self, recipient: str, title: str, message: str,
+                                              due_date: Optional[datetime] = None) -&gt; bool:
+                                              reminder_title = f&quot;Reminder: {title}&quot;
+                                              reminder_message = message
+                                              if due_date:
+                                              reminder_message += f&quot;\n\nDue: {due_date.strftime('%Y-%m-%d %H:%M')}&quot;
+
+                                              return self._sender.send(recipient, reminder_title, reminder_message)
+
+
+                                              class PromotionalNotification(Notification):
+                                              &quot;&quot;&quot;Marketing promotional notification.&quot;&quot;&quot;
+
+                                              def __init__(self, sender: NotificationSender, campaign_id: str):
+                                              super().__init__(sender)
+                                              self.campaign_id = campaign_id
+
+                                              def notify(self, recipient: str, title: str, message: str,
+                                              discount_code: Optional[str] = None) -&gt; bool:
+                                              promo_title = f&quot;Special Offer: {title}&quot;
+                                              promo_message = message
+                                              if discount_code:
+                                              promo_message += f&quot;\n\nUse code: {discount_code}&quot;
+                                              promo_message += f&quot;\n\n[Campaign: {self.campaign_id}]&quot;
+
+                                              return self._sender.send(recipient, promo_title, promo_message)
+
+
+                                              class DigestNotification(Notification):
+                                              &quot;&quot;&quot;Aggregated digest of multiple items.&quot;&quot;&quot;
+
+                                              def notify(self, recipient: str, title: str,
+                                              items: List[str]) -&gt; bool:
+                                              digest_title = f&quot;Daily Digest: {title}&quot;
+                                              digest_message = &quot;Here's your summary:\n\n&quot;
+                                              for i, item in enumerate(items, 1):
+                                              digest_message += f&quot;{i}. {item}\n&quot;
+
+                                              return self._sender.send(recipient, digest_title, digest_message)
+
+
+                                              # Usage - any notification type can use any sender
+                                              print(&quot;=== Alert via Email ===&quot;)
+                                              email_sender = EmailSender(&quot;smtp.company.com&quot;)
+                                              alert = AlertNotification(email_sender, severity=&quot;CRITICAL&quot;)
+                                              alert.notify(
+                                              &quot;ops-team@company.com&quot;,
+                                              title=&quot;Database Connection Failed&quot;,
+                                              message=&quot;Primary database is not responding&quot;,
+                                              error_code=&quot;DB-001&quot;
+                                              )
+
+                                              print(&quot;\n=== Reminder via SMS ===&quot;)
+                                              sms_sender = SMSSender(&quot;api_key_123&quot;, &quot;+1555123456&quot;)
+                                              reminder = ReminderNotification(sms_sender)
+                                              reminder.notify(
+                                              &quot;+1555987654&quot;,
+                                              title=&quot;Team Meeting&quot;,
+                                              message=&quot;Don't forget the quarterly review&quot;,
+                                              due_date=datetime(2024, 3, 15, 14, 0)
+                                              )
+
+                                              print(&quot;\n=== Promotion via Push ===&quot;)
+                                              push_sender = PushNotificationSender(&quot;fcm_key_abc&quot;)
+                                              promo = PromotionalNotification(push_sender, campaign_id=&quot;SPRING2024&quot;)
+                                              promo.notify(
+                                              &quot;device_token_xyz&quot;,
+                                              title=&quot;Spring Sale!&quot;,
+                                              message=&quot;Get 30% off all items this weekend&quot;,
+                                              discount_code=&quot;SPRING30&quot;
+                                              )
+
+                                              print(&quot;\n=== Digest via Slack ===&quot;)
+                                              slack_sender = SlackSender(&quot;https://hooks.slack.com/...&quot;)
+                                              digest = DigestNotification(slack_sender)
+                                              digest.notify(
+                                              &quot;#daily-updates&quot;,
+                                              title=&quot;Repository Activity&quot;,
+                                              items=[&quot;5 new pull requests&quot;, &quot;12 issues closed&quot;, &quot;3 releases published&quot;]
+                                              )
+                                              ```
+</code></pre>
+<h3 id="production-example-database-abstraction">Production Example: Database Abstraction</h3>
+<pre><code>                                              ```python
+                                              from abc import ABC, abstractmethod
+                                              from typing import Dict, List, Any, Optional
+                                              from dataclasses import dataclass
+                                              import json
+
+
+                                              @dataclass
+                                              class QueryResult:
+                                              &quot;&quot;&quot;Standardized query result.&quot;&quot;&quot;
+                                              rows: List[Dict[str, Any]]
+                                              affected_count: int
+                                              execution_time_ms: float
+
+
+                                              # Implementation Interface
+                                              class DatabaseDriver(ABC):
+                                              &quot;&quot;&quot;
+                                              Implementation - database-specific operations.
+                                              Each driver knows how to communicate with one database type.
+                                              &quot;&quot;&quot;
+
+                                              @abstractmethod
+                                              def connect(self, connection_string: str) -&gt; bool:
+                                              pass
+
+                                              @abstractmethod
+                                              def disconnect(self) -&gt; None:
+                                              pass
+
+                                              @abstractmethod
+                                              def execute_query(self, sql: str, params: tuple = ()) -&gt; QueryResult:
+                                              pass
+
+                                              @abstractmethod
+                                              def execute_many(self, sql: str, params_list: List[tuple]) -&gt; int:
+                                              pass
+
+                                              @abstractmethod
+                                              def begin_transaction(self) -&gt; None:
+                                              pass
+
+                                              @abstractmethod
+                                              def commit(self) -&gt; None:
+                                              pass
+
+                                              @abstractmethod
+                                              def rollback(self) -&gt; None:
+                                              pass
+
+
+                                              # Concrete Implementation: PostgreSQL
+                                              class PostgreSQLDriver(DatabaseDriver):
+                                              &quot;&quot;&quot;PostgreSQL-specific implementation.&quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              self._connection = None
+
+                                              def connect(self, connection_string: str) -&gt; bool:
+                                              print(f&quot;[PostgreSQL] Connecting to {connection_string}&quot;)
+                                              # In production: psycopg2.connect(connection_string)
+                                              self._connection = {&quot;type&quot;: &quot;postgresql&quot;, &quot;connected&quot;: True}
+                                              return True
+
+                                              def disconnect(self) -&gt; None:
+                                              print(&quot;[PostgreSQL] Disconnecting&quot;)
+                                              self._connection = None
+
+                                              def execute_query(self, sql: str, params: tuple = ()) -&gt; QueryResult:
+                                              print(f&quot;[PostgreSQL] Executing: {sql}&quot;)
+                                              print(f&quot;[PostgreSQL] Params: {params}&quot;)
+                                              # Simulated result
+                                              return QueryResult(
+                                              rows=[{&quot;id&quot;: 1, &quot;name&quot;: &quot;test&quot;}],
+                                              affected_count=1,
+                                              execution_time_ms=5.2
+                                              )
+
+                                              def execute_many(self, sql: str, params_list: List[tuple]) -&gt; int:
+                                              print(f&quot;[PostgreSQL] Batch executing {len(params_list)} rows&quot;)
+                                              return len(params_list)
+
+                                              def begin_transaction(self) -&gt; None:
+                                              print(&quot;[PostgreSQL] BEGIN TRANSACTION&quot;)
+
+                                              def commit(self) -&gt; None:
+                                              print(&quot;[PostgreSQL] COMMIT&quot;)
+
+                                              def rollback(self) -&gt; None:
+                                              print(&quot;[PostgreSQL] ROLLBACK&quot;)
+
+
+                                              # Concrete Implementation: SQLite
+                                              class SQLiteDriver(DatabaseDriver):
+                                              &quot;&quot;&quot;SQLite-specific implementation.&quot;&quot;&quot;
+
+                                              def __init__(self):
+                                              self._connection = None
+
+                                              def connect(self, connection_string: str) -&gt; bool:
+                                              print(f&quot;[SQLite] Opening database: {connection_string}&quot;)
+                                              self._connection = {&quot;type&quot;: &quot;sqlite&quot;, &quot;file&quot;: connection_string}
+                                              return True
+
+                                              def disconnect(self) -&gt; None:
+                                              print(&quot;[SQLite] Closing database&quot;)
+                                              self._connection = None
+
+                                              def execute_query(self, sql: str, params: tuple = ()) -&gt; QueryResult:
+                                              print(f&quot;[SQLite] Executing: {sql}&quot;)
+                                              return QueryResult(
+                                              rows=[{&quot;id&quot;: 1, &quot;value&quot;: &quot;sqlite_test&quot;}],
+                                              affected_count=1,
+                                              execution_time_ms=1.0
+                                              )
+
+                                              def execute_many(self, sql: str, params_list: List[tuple]) -&gt; int:
+                                              print(f&quot;[SQLite] executemany with {len(params_list)} items&quot;)
+                                              return len(params_list)
+
+                                              def begin_transaction(self) -&gt; None:
+                                              print(&quot;[SQLite] BEGIN&quot;)
+
+                                              def commit(self) -&gt; None:
+                                              print(&quot;[SQLite] COMMIT&quot;)
+
+                                              def rollback(self) -&gt; None:
+                                              print(&quot;[SQLite] ROLLBACK&quot;)
+
+
+                                              # Abstraction
+                                              class Repository(ABC):
+                                              &quot;&quot;&quot;
+                                              Abstraction - high-level data access patterns.
+                                              Knows about domain concepts, not database specifics.
+                                              &quot;&quot;&quot;
+
+                                              def __init__(self, driver: DatabaseDriver, connection_string: str):
+                                              self._driver = driver
+                                              self._connection_string = connection_string
+                                              self._connected = False
+
+                                              def __enter__(self):
+                                              self._driver.connect(self._connection_string)
+                                              self._connected = True
+                                              return self
+
+                                              def __exit__(self, exc_type, exc_val, exc_tb):
+                                              if exc_type:
+                                              self._driver.rollback()
+                                              self._driver.disconnect()
+                                              self._connected = False
+
+                                              @abstractmethod
+                                              def find_by_id(self, id: int) -&gt; Optional[Dict]:
+                                              pass
+
+                                              @abstractmethod
+                                              def find_all(self, limit: int = 100) -&gt; List[Dict]:
+                                              pass
+
+                                              @abstractmethod
+                                              def save(self, entity: Dict) -&gt; int:
+                                              pass
+
+
+                                              # Refined Abstraction: User Repository
+                                              class UserRepository(Repository):
+                                              &quot;&quot;&quot;User-specific data access.&quot;&quot;&quot;
+
+                                              def find_by_id(self, id: int) -&gt; Optional[Dict]:
+                                              result = self._driver.execute_query(
+                                              &quot;SELECT * FROM users WHERE id = %s&quot;,
+                                              (id,)
+                                              )
+                                              return result.rows[0] if result.rows else None
+
+                                              def find_all(self, limit: int = 100) -&gt; List[Dict]:
+                                              result = self._driver.execute_query(
+                                              &quot;SELECT * FROM users LIMIT %s&quot;,
+                                              (limit,)
+                                              )
+                                              return result.rows
+
+                                              def find_by_email(self, email: str) -&gt; Optional[Dict]:
+                                              result = self._driver.execute_query(
+                                              &quot;SELECT * FROM users WHERE email = %s&quot;,
+                                              (email,)
+                                              )
+                                              return result.rows[0] if result.rows else None
+
+                                              def save(self, entity: Dict) -&gt; int:
+                                              if &quot;id&quot; in entity:
+                                              self._driver.execute_query(
+                                              &quot;UPDATE users SET name=%s, email=%s WHERE id=%s&quot;,
+                                              (entity[&quot;name&quot;], entity[&quot;email&quot;], entity[&quot;id&quot;])
+                                              )
+                                              return entity[&quot;id&quot;]
+                                              else:
+                                              result = self._driver.execute_query(
+                                              &quot;INSERT INTO users (name, email) VALUES (%s, %s) RETURNING id&quot;,
+                                              (entity[&quot;name&quot;], entity[&quot;email&quot;])
+                                              )
+                                              return result.rows[0][&quot;id&quot;]
+
+
+                                              # Refined Abstraction: Audit Log Repository
+                                              class AuditLogRepository(Repository):
+                                              &quot;&quot;&quot;Audit log data access with specialized methods.&quot;&quot;&quot;
+
+                                              def find_by_id(self, id: int) -&gt; Optional[Dict]:
+                                              result = self._driver.execute_query(
+                                              &quot;SELECT * FROM audit_logs WHERE id = %s&quot;,
+                                              (id,)
+                                              )
+                                              return result.rows[0] if result.rows else None
+
+                                              def find_all(self, limit: int = 100) -&gt; List[Dict]:
+                                              result = self._driver.execute_query(
+                                              &quot;SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT %s&quot;,
+                                              (limit,)
+                                              )
+                                              return result.rows
+
+                                              def find_by_user(self, user_id: int, limit: int = 50) -&gt; List[Dict]:
+                                              result = self._driver.execute_query(
+                                              &quot;SELECT * FROM audit_logs WHERE user_id = %s ORDER BY created_at DESC LIMIT %s&quot;,
+                                              (user_id, limit)
+                                              )
+                                              return result.rows
+
+                                              def save(self, entity: Dict) -&gt; int:
+                                              result = self._driver.execute_query(
+                                              &quot;INSERT INTO audit_logs (user_id, action, details) VALUES (%s, %s, %s) RETURNING id&quot;,
+                                              (entity[&quot;user_id&quot;], entity[&quot;action&quot;], json.dumps(entity.get(&quot;details&quot;, {})))
+                                              )
+                                              return result.rows[0][&quot;id&quot;]
+
+
+                                              # Usage - same repository code works with any database
+                                              print(&quot;=== PostgreSQL in Production ===&quot;)
+                                              pg_driver = PostgreSQLDriver()
+                                              with UserRepository(pg_driver, &quot;postgresql://localhost/myapp&quot;) as user_repo:
+                                              user = user_repo.find_by_email(&quot;alice@example.com&quot;)
+                                              user_repo.save({&quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;alice@example.com&quot;})
+
+                                              print(&quot;\n=== SQLite in Testing ===&quot;)
+                                              sqlite_driver = SQLiteDriver()
+                                              with UserRepository(sqlite_driver, &quot;:memory:&quot;) as user_repo:
+                                              user = user_repo.find_by_id(1)
+                                              user_repo.save({&quot;name&quot;: &quot;Test User&quot;, &quot;email&quot;: &quot;test@example.com&quot;})
+                                              ```
+</code></pre>
+<hr />
+<h2 id="bridge-vs-related-patterns">Bridge vs Related Patterns</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px">
+<h4 style="color: #1e40af; margin-top: 0">Bridge</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px">Separates abstraction from implementation.</p>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #1e40af">Purpose:</strong> <span style="color: #1e3a8a">Decouple two hierarchies</span><br>
+<strong style="color: #1e40af">When:</strong> <span style="color: #1e3a8a">Both sides vary independently</span>
+</div>
+</div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px">
+<h4 style="color: #166534; margin-top: 0">Strategy</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px">Swaps algorithms at runtime.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #166534">Purpose:</strong> <span style="color: #14532d">Algorithm variation</span><br>
+<strong style="color: #166534">When:</strong> <span style="color: #14532d">Only implementation varies</span>
+</div>
+</div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px">
+<h4 style="color: #92400e; margin-top: 0">Adapter</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px">Makes interfaces compatible.</p>
+<div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #92400e">Purpose:</strong> <span style="color: #78350f">Interface conversion</span><br>
+<strong style="color: #92400e">When:</strong> <span style="color: #78350f">After design (retrofit)</span>
+</div>
+</div>
+</div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 20px">
+<strong style="color: #0f172a">Key Distinction:</strong>
+<ul style="color: #334155; margin-bottom: 0">
+<li><strong>Bridge:</strong> Designed upfront to separate abstraction from implementation</li>
+<li><strong>Adapter:</strong> Applied after the fact to make things work together</li>
+<li><strong>Strategy:</strong> Single hierarchy with swappable algorithms</li>
+</ul>
+</div>
+</div>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h3 id="conceptual-questions">Conceptual Questions</h3>
+<details style="margin-bottom: 12px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0">Q1: What problem does Bridge solve that inheritance cannot?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155">
+<strong>The Class Explosion Problem:</strong>
+  <br><br>
+  With inheritance, if you have M abstractions and N implementations, you need M x N classes:
+<ul>
+<li>3 shapes x 4 colors = 12 classes</li>
+<li>Add 1 color = 3 more classes</li>
+</ul>
+<p>With Bridge (composition), you need M + N classes:</p>
+<ul>
+<li>3 shapes + 4 colors = 7 classes</li>
+<li>Add 1 color = 1 more class</li>
+</ul>
+<p><strong>Additional benefits:</strong></p>
+<ul>
+<li>Can change implementation at runtime</li>
+<li>Abstraction and implementation can evolve independently</li>
+<li>Better adherence to Single Responsibility Principle</li>
+</ul>
+</div>
+</details>
+<details style="margin-bottom: 12px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0">Q2: How is Bridge different from Strategy?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155">
+<strong>Strategy:</strong> Single dimension of variation (just algorithms)
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0">
+  Context --uses--> Strategy
+  |
+  +------+------+
+  |             |
+  StrategyA     StrategyB
+</pre>
+<p><strong>Bridge:</strong> Two dimensions of variation (abstraction AND implementation)</p>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin: 8px 0">
+  Abstraction --has--> Implementor
+  |                    |
+  +-----+-----+        +-----+-----+
+  |                    |
+  RefinedA  RefinedB    ImplA    ImplB
+</pre>
+<p><strong>Rule of thumb:</strong> If your abstraction hierarchy is just Context with no subclasses, you probably want Strategy, not Bridge.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0">Q3: When would you choose Bridge over Adapter?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155">
+<strong>Bridge:</strong> Use during initial design
+<ul>
+<li>You anticipate multiple abstractions AND implementations</li>
+<li>You want to decouple two hierarchies from the start</li>
+<li>Both sides will evolve independently</li>
+</ul>
+<p><strong>Adapter:</strong> Use after the fact</p>
+<ul>
+<li>You have existing incompatible interfaces</li>
+<li>You're integrating legacy code or third-party libraries</li>
+<li>You want to make something work without modifying it</li>
+</ul>
+<p><strong>Key difference:</strong> Bridge is intentional separation; Adapter is a compatibility fix.</p>
+</div>
+</details>
+<h3 id="coding-questions">Coding Questions</h3>
+<details style="margin-bottom: 12px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0">Q4: Design a logging system using Bridge</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155">
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto">
+# Implementation - WHERE to log
+  class LogOutput(ABC):
+  @abstractmethod
+  def write(self, message: str): pass
+<p>class FileOutput(LogOutput):<br />
+def write(self, message): print(f&quot;[FILE] {message}&quot;)</p>
+<p>class ConsoleOutput(LogOutput):<br />
+def write(self, message): print(f&quot;[CONSOLE] {message}&quot;)</p>
+<p>class RemoteOutput(LogOutput):<br />
+def write(self, message): print(f&quot;[REMOTE] {message}&quot;)</p>
+<h1 id="abstraction---what-to-log">Abstraction - WHAT to log</h1>
+<p>class Logger(ABC):<br />
+def <strong>init</strong>(self, output: LogOutput):<br />
+self._output = output</p>
+<p>@abstractmethod<br />
+def log(self, message: str): pass</p>
+<p>class SimpleLogger(Logger):<br />
+def log(self, message):<br />
+self._output.write(message)</p>
+<p>class TimestampLogger(Logger):<br />
+def log(self, message):<br />
+from datetime import datetime<br />
+self._output.write(f&quot;[{datetime.now()}] {message}&quot;)</p>
+<h1 id="usage">Usage</h1>
+<p>logger = TimestampLogger(FileOutput())<br />
+logger.log(&quot;Application started&quot;)<br />
+</pre></p>
+</div>
+</details>
+<details style="margin-bottom: 12px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px 0">Q5: How would you test a Bridge implementation?</summary>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 8px; color: #334155">
+<strong>Testing strategies:</strong>
+<ol>
+<li><strong>Test abstractions with mock implementations:</strong> Verify abstraction calls implementation correctly</li>
+<li><strong>Test implementations independently:</strong> Unit test each concrete implementation</li>
+<li><strong>Integration tests:</strong> Test real abstraction + implementation combinations</li>
+</ol>
+<pre style="background: #e2e8f0; padding: 12px; border-radius: 6px">
+  def test_alert_notification_formats_message():
+  mock_sender = Mock(spec=NotificationSender)
+  mock_sender.send.return_value = True
+<p>alert = AlertNotification(mock_sender, severity=&quot;HIGH&quot;)<br />
+alert.notify(&quot;user@test.com&quot;, &quot;Test&quot;, &quot;Message&quot;)</p>
+<h1 id="verify-abstraction-formatted-the-message">Verify abstraction formatted the message</h1>
+<p>call_args = mock_sender.send.call_args<br />
+assert &quot;[HIGH] ALERT:&quot; in call_args[0][1]</p>
+<p>def test_email_sender_sends_email():<br />
+sender = EmailSender(&quot;smtp.test.com&quot;)<br />
+result = sender.send(&quot;to@test.com&quot;, &quot;Subject&quot;, &quot;Body&quot;)<br />
+assert result == True<br />
+</pre></p>
+</div>
+</details>
+</div>
+<hr />
+<h2 id="common-mistakes-1">Common Mistakes</h2>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h3 id="mistake-1-bridge-without-two-hierarchies">Mistake 1: Bridge Without Two Hierarchies</h3>
+<pre><code>                                                          ```python
+                                                          # BAD: Only implementation varies (use Strategy instead)
+                                                          class Report:
+                                                          def __init__(self, formatter):
+                                                          self.formatter = formatter
+
+                                                          def generate(self, data):
+                                                          return self.formatter.format(data)
+
+                                                          # There's no Report hierarchy - just use Strategy!
+
+                                                          # GOOD: Actual Bridge with two hierarchies
+                                                          class Report(ABC):  # Abstraction hierarchy
+                                                          def __init__(self, formatter):
+                                                          self.formatter = formatter
+
+                                                          class SalesReport(Report): pass    # Refined abstraction
+                                                          class InventoryReport(Report): pass  # Refined abstraction
+                                                          ```
+</code></pre>
+<h3 id="mistake-2-leaking-implementation-details">Mistake 2: Leaking Implementation Details</h3>
+<pre><code>                                                          ```python
+                                                          # BAD: Abstraction exposes implementation details
+                                                          class Notification:
+                                                          def send(self, recipient, message):
+                                                          # Exposing SMTP-specific details!
+                                                          return self._sender.send_smtp(recipient, message, self.smtp_port)
+
+                                                          # GOOD: Abstraction doesn't know implementation details
+                                                          class Notification:
+                                                          def send(self, recipient, message):
+                                                          return self._sender.send(recipient, message)
+                                                          ```
+</code></pre>
+<h3 id="mistake-3-tight-coupling-in-abstraction">Mistake 3: Tight Coupling in Abstraction</h3>
+<pre><code>                                                          ```python
+                                                          # BAD: Abstraction depends on concrete implementation
+                                                          class Notification:
+                                                          def __init__(self):
+                                                          self._sender = EmailSender()  # Hard-coded!
+
+                                                          # GOOD: Inject the implementation
+                                                          class Notification:
+                                                          def __init__(self, sender: NotificationSender):
+                                                          self._sender = sender
+                                                          ```
+</code></pre>
+</div>
+<hr />
+<h2 id="key-takeaways">Key Takeaways</h2>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<ol>
+<li>
+<p><strong>Bridge = Two Hierarchies</strong> - Abstraction AND Implementation both vary</p>
+</li>
+<li>
+<p><strong>Prevents Class Explosion</strong> - M + N classes instead of M x N</p>
+</li>
+<li>
+<p><strong>Composition Over Inheritance</strong> - Abstraction holds reference to implementation</p>
+</li>
+<li>
+<p><strong>Design-Time Pattern</strong> - Plan for it upfront, unlike Adapter</p>
+</li>
+<li>
+<p><strong>Runtime Flexibility</strong> - Can switch implementations without changing abstractions</p>
+</li>
+<li>
+<p><strong>Not Always Needed</strong> - If only one dimension varies, use simpler patterns</p>
+</li>
+</ol>
+</div>
+<hr />
+<h2 id="related-patterns">Related Patterns</h2>
+<pre><code>                                                        - [Adapter](/topic/design-patterns/adapter) - Makes interfaces compatible (after the fact)
+                                                        - [Strategy](/topic/design-patterns/strategy) - Swappable algorithms (single dimension)
+                                                        - [Abstract Factory](/topic/design-patterns/abstract-factory) - Can create bridge components
+                                                        - [Decorator](/topic/design-patterns/decorator) - Can be combined with Bridge
+</code></pre>

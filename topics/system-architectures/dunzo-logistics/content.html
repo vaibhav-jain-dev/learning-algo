@@ -1,0 +1,2256 @@
+<h1 id="design-dunzo-logistics">Design Dunzo Logistics</h1>
+<h2 id="table-of-contents-toc">Table of Contents {#toc}</h2>
+<div class="diagram-container" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)">
+<div style="width: 100%; max-width: 800px">
+<h3 id="overview">Overview</h3>
+<ul>
+<li><a href="#problem-statement">Problem Statement</a></li>
+<li><a href="#high-level-architecture">High-Level Architecture</a></li>
+<li><a href="#order-flow">Order Flow</a></li>
+</ul>
+<h3 id="scaling-phases">Scaling Phases</h3>
+<ul>
+<li><a href="#phase-1-starting-phase">Phase 1: Starting Phase</a></li>
+<li><a href="#phase-2-medium-scale">Phase 2: Medium Scale</a></li>
+<li><a href="#phase-3-dunzo-scale">Phase 3: Dunzo Scale</a></li>
+</ul>
+<h3 id="technical-deep-dives">Technical Deep Dives</h3>
+<ul>
+<li><a href="#aws-technologies-alternatives">AWS Technologies &amp; Alternatives</a></li>
+<li><a href="#distributed-systems">Distributed Systems Considerations</a></li>
+<li><a href="#scaling-strategies">Scaling Strategies</a></li>
+<li><a href="#edge-cases-failure-modes">Edge Cases &amp; Failure Modes</a></li>
+</ul>
+<h3 id="interview-preparation">Interview Preparation</h3>
+<ul>
+<li><a href="#interview-deep-dive">Interview Deep Dive Questions</a></li>
+<li><a href="#why-this-technology">Why This Technology?</a></li>
+<li><a href="#simpler-solutions">When Simpler Solutions Work</a></li>
+<li><a href="#trade-off-analysis">Trade-off Analysis &amp; Mitigation</a></li>
+<li><a href="#interview-tips">Interview Tips</a></li>
+<li><a href="#red-flags-impressive">Red Flags vs Impressive Statements</a></li>
+<li><a href="#quick-reference">Quick Reference Card</a></li>
+</ul>
+</div>
+</div>
+<hr />
+<h2 id="problem-statement-problem-statement">Problem Statement {#problem-statement}</h2>
+<p>Design a hyperlocal delivery platform that enables pick-up and drop services, grocery delivery, and package delivery within a city.</p>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h3 id="core-requirements-core-requirements">Core Requirements {#core-requirements}</h3>
+<ul>
+<li><strong>Multi-category Delivery</strong>: Groceries, food, packages, documents</li>
+<li><strong>Real-time Tracking</strong>: Live location of delivery partners</li>
+<li><strong>Route Optimization</strong>: Efficient multi-stop routing</li>
+<li><strong>Partner Management</strong>: Onboarding, earnings, performance</li>
+<li><strong>Dynamic Pricing</strong>: Distance, time, demand-based</li>
+<li><strong>Merchant Integration</strong>: Store inventory, order management</li>
+</ul>
+</div>
+<hr />
+<h2 id="high-level-architecture-high-level-architecture">High-Level Architecture {#high-level-architecture}</h2>
+<div class="diagram-container">
+<div class="flow-diagram">
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%">HYPERLOCAL DELIVERY ARCHITECTURE</h4>
+<!-- Customer Layer -->
+<div class="flow-box success">
+<div class="flow-box-title">CUSTOMERS</div>
+<div class="flow-box-subtitle">Mobile App</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Three Apps Row -->
+<div class="flow-row">
+<div class="flow-box info">
+<div class="flow-box-title">Customer App</div>
+</div>
+<div class="flow-box orange">
+<div class="flow-box-title">Partner App</div>
+</div>
+<div class="flow-box purple">
+<div class="flow-box-title">Merchant App</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- API Gateway -->
+<div class="flow-box neutral">
+<div class="flow-box-title">API GATEWAY</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Core Services Row -->
+<div class="flow-row">
+<div class="flow-box primary">
+<div class="flow-box-title">ORDER SERVICE</div>
+<div class="flow-box-subtitle">Create orders | Calculate pricing | Manage status</div>
+</div>
+<div class="flow-box warning">
+<div class="flow-box-title">DISPATCH SERVICE</div>
+<div class="flow-box-subtitle">Partner matching | Assignment | Order batching</div>
+</div>
+<div class="flow-box success">
+<div class="flow-box-title">TRACKING SERVICE</div>
+<div class="flow-box-subtitle">Live location | ETA calculation | Trip history</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Routing Service -->
+<div class="flow-box purple">
+<div class="flow-box-title">ROUTING SERVICE</div>
+<div class="flow-box-subtitle">Route Optimization | Multi-stop | Traffic Analysis</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Kafka -->
+<div class="flow-box warning" style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); color: #fbbf24">
+<div class="flow-box-title">KAFKA</div>
+<div class="flow-box-subtitle" style="color: #fef3c7">Event Streaming</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="order-flow-order-flow">Order Flow {#order-flow}</h2>
+<div class="diagram-container">
+<div class="flow-diagram">
+<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0; width: 100%">ORDER LIFECYCLE</h4>
+<!-- Step 1: Order Creation -->
+<div class="data-card data-card-accent info" style="width: 100%; max-width: 500px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">1. ORDER CREATION</span>
+<span class="diagram-badge info">INITIATE</span>
+</div>
+<div class="data-card-description">
+- Validate addresses (pickup + drops)<br/>
+- Calculate distance and route<br/>
+- Apply dynamic pricing (surge multiplier)<br/>
+- Reserve payment authorization
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Step 2: Partner Matching -->
+<div class="data-card data-card-accent warning" style="width: 100%; max-width: 500px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">2. PARTNER MATCHING</span>
+<span class="diagram-badge warning">DISPATCH</span>
+</div>
+<div class="data-card-description">
+Find best partner based on:<br/>
+- Distance to pickup location<br/>
+- Current load (active orders)<br/>
+- Partner rating/performance score<br/>
+- Vehicle type requirements<br/><br/>
+<strong style="color: #f59e0b">Matching radius: 3km -> 5km -> 7km (expanding circles)</strong>
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Step 3: Pickup Phase -->
+<div class="data-card data-card-accent purple" style="width: 100%; max-width: 500px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">3. PICKUP PHASE</span>
+<span class="diagram-badge purple">COLLECT</span>
+</div>
+<div class="data-card-description">
+- Partner accepts/rejects offer (30s timeout)<br/>
+- Navigate to pickup location<br/>
+- Confirm pickup with OTP/photo verification
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Step 4: Delivery Phase -->
+<div class="data-card data-card-accent success" style="width: 100%; max-width: 500px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">4. DELIVERY PHASE</span>
+<span class="diagram-badge success">TRANSIT</span>
+</div>
+<div class="data-card-description">
+- Optimized route to drop location(s)<br/>
+- Real-time tracking shared with customer<br/>
+- Confirm delivery with OTP/photo
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Step 5: Completion -->
+<div class="data-card data-card-accent orange" style="width: 100%; max-width: 500px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">5. COMPLETION</span>
+<span class="diagram-badge orange">DONE</span>
+</div>
+<div class="data-card-description">
+- Process final payment<br/>
+- Update partner earnings<br/>
+- Request ratings from both parties
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="phase-1-starting-phase-phase-1-starting-phase">Phase 1: Starting Phase {#phase-1-starting-phase}</h2>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<h3 id="assumptions-phase1-assumptions">Assumptions {#phase1-assumptions}</h3>
+<ul>
+<li><strong>Cities</strong>: 1-3</li>
+<li><strong>Partners</strong>: 100-1,000</li>
+<li><strong>Orders</strong>: 1,000-10,000/day</li>
+<li><strong>Budget</strong>: $5,000 - $25,000/month</li>
+</ul>
+<h3 id="monolithic-architecture-phase1-architecture">Monolithic Architecture {#phase1-architecture}</h3>
+<pre><code class="language-python">class OrderService:
+    def create_order(self, customer_id, pickup, drops, category):
+        # Validate addresses
+        pickup_geo = self.geocode(pickup)
+        drops_geo = [self.geocode(d) for d in drops]
+
+        # Calculate route
+        route = self.calculate_route(pickup_geo, drops_geo)
+
+        # Calculate price
+        base_price = self.get_base_price(category)
+        distance_price = route.distance_km * self.price_per_km
+        time_price = route.estimated_minutes * self.price_per_minute
+
+        # Apply surge if applicable
+        surge = self.get_surge_multiplier(pickup_geo)
+
+        total = (base_price + distance_price + time_price) * surge
+
+        # Create order
+        order = Order.create(
+            customer_id=customer_id,
+            pickup=pickup_geo,
+            drops=drops_geo,
+            route=route,
+            category=category,
+            price=total,
+            surge_multiplier=surge,
+            status='PENDING'
+        )
+
+        # Reserve payment
+        PaymentService().reserve(customer_id, total)
+
+        # Start partner matching
+        self.dispatch_service.find_partner(order)
+
+        return order
+
+
+class DispatchService:
+    def find_partner(self, order):
+        &quot;&quot;&quot;Find and assign best available partner.&quot;&quot;&quot;
+        search_radius = 3  # km
+
+        while search_radius &lt;= 10:
+            partners = self.get_available_partners(
+                order.pickup,
+                radius_km=search_radius
+            )
+
+            if partners:
+                # Score and rank partners
+                scored = []
+                for partner in partners:
+                    score = self.calculate_partner_score(partner, order)
+                    scored.append((partner, score))
+
+                scored.sort(key=lambda x: x[1], reverse=True)
+
+                # Try to assign to top partners
+                for partner, _ in scored[:5]:
+                    if self.offer_order(partner, order):
+                        return
+
+            # Expand search radius
+            search_radius += 2
+            time.sleep(10)
+
+        # No partner found - notify customer
+        self.notify_no_partner(order)
+
+    def calculate_partner_score(self, partner, order):
+        # Distance score (closer is better)
+        distance = haversine(partner.location, order.pickup)
+        distance_score = max(0, 100 - distance * 10)
+
+        # Rating score
+        rating_score = partner.rating * 20
+
+        # Acceptance rate score
+        acceptance_score = partner.acceptance_rate * 50
+
+        # Current load penalty
+        current_orders = len(partner.active_orders)
+        load_penalty = current_orders * 20
+
+        return distance_score + rating_score + acceptance_score - load_penalty
+</code></pre>
+</div>
+</div>
+<hr />
+<h2 id="phase-2-medium-scale-phase-2-medium-scale">Phase 2: Medium Scale {#phase-2-medium-scale}</h2>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<h3 id="route-optimization-route-optimization">Route Optimization {#route-optimization}</h3>
+<div class="diagram-container">
+<div class="flow-diagram">
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%">MULTI-STOP ROUTE OPTIMIZATION</h4>
+<div style="width: 100%; max-width: 600px; margin-bottom: 20px">
+<p style="text-align: center; color: #64748b; font-weight: 600">Problem: Partner has multiple orders to deliver</p>
+</div>
+<div class="flow-row" style="width: 100%">
+<div class="data-card data-card-accent error" style="flex: 1; min-width: 250px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">NAIVE ROUTE</span>
+<span class="diagram-badge error">INEFFICIENT</span>
+</div>
+<div class="data-card-description">
+Order A: Pickup P1 -> Drop D1<br/>
+Order B: Pickup P2 -> Drop D2<br/>
+Order C: Pickup P3 -> Drop D3<br/><br/>
+Route: P1 -> D1 -> P2 -> D2 -> P3 -> D3<br/>
+<strong style="color: #ef4444">Total: 15 km</strong>
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent success" style="flex: 1; min-width: 250px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">OPTIMIZED ROUTE (TSP-like)</span>
+<span class="diagram-badge success">EFFICIENT</span>
+</div>
+<div class="data-card-description">
+Batch pickups, then optimize drops<br/><br/>
+Route: P1 -> P2 -> P3 -> D2 -> D1 -> D3<br/><br/>
+<strong style="color: #10b981">Total: 10 km (33% savings)</strong>
+</div>
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="width: 100%; max-width: 600px; margin-top: 20px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">CONSTRAINTS</span>
+</div>
+<div class="data-card-description">
+- Pickup must happen before drop for same order (precedence)<br/>
+- Consider time windows (food freshness, customer availability)<br/>
+- Capacity limits (weight, size, vehicle type)
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent info" style="width: 100%; max-width: 600px; margin-top: 16px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">ALGORITHM</span>
+</div>
+<div class="data-card-description">
+Modified TSP with precedence constraints<br/>
+- Use Google OR-Tools / OSRM for routing<br/>
+- Heuristic: Nearest neighbor with 2-opt improvement
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="order-batching-order-batching">Order Batching {#order-batching}</h3>
+<pre><code class="language-python">class BatchingService:
+    &quot;&quot;&quot;
+    Combine multiple orders for single partner.
+    &quot;&quot;&quot;
+
+    def find_batchable_orders(self, order):
+        &quot;&quot;&quot;Find orders that can be batched together.&quot;&quot;&quot;
+        pending_orders = Order.query.filter(
+            Order.status == 'PENDING',
+            Order.created_at &gt; now() - timedelta(minutes=5)
+        ).all()
+
+        batchable = []
+        for candidate in pending_orders:
+            if self.can_batch(order, candidate):
+                batchable.append(candidate)
+
+        return batchable
+
+    def can_batch(self, order_a, order_b):
+        # Same general area
+        pickup_distance = haversine(order_a.pickup, order_b.pickup)
+        if pickup_distance &gt; 2:  # km
+            return False
+
+        # Drops in similar direction
+        drop_distance = haversine(order_a.drops[0], order_b.drops[0])
+        if drop_distance &gt; 3:  # km
+            return False
+
+        # Same category (can't batch food with documents)
+        if order_a.category != order_b.category:
+            return False
+
+        # Time window compatible
+        time_diff = abs((order_a.created_at - order_b.created_at).total_seconds())
+        if time_diff &gt; 300:  # 5 minutes
+            return False
+
+        return True
+
+    def create_batch(self, orders):
+        # Calculate optimized route
+        route = self.optimize_route(orders)
+
+        # Create batch
+        batch = Batch.create(
+            orders=[o.id for o in orders],
+            optimized_route=route,
+            estimated_time=route.total_time
+        )
+
+        # Update orders
+        for order in orders:
+            order.batch_id = batch.id
+            order.save()
+
+        return batch
+</code></pre>
+<h3 id="partner-location-tracking-location-tracking">Partner Location Tracking {#location-tracking}</h3>
+<div class="diagram-container">
+<div class="flow-diagram">
+<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%">LOCATION TRACKING PIPELINE</h4>
+<!-- Partner App -->
+<div class="flow-box orange">
+<div class="flow-box-title">Partner App</div>
+<div class="flow-box-subtitle">GPS update every 5 seconds (when active)</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Location Service -->
+<div class="flow-box primary">
+<div class="flow-box-title">Location Service (WebSocket)</div>
+<div class="flow-box-subtitle">Batch updates every 3 seconds</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- Redis -->
+<div class="flow-box error">
+<div class="flow-box-title">REDIS</div>
+<div class="flow-box-subtitle" style="font-family: monospace; font-size: 10px">
+GEOADD partners:active lng lat partner_id<br/>
+HSET partner:{id}:location lat lng timestamp speed<br/>
+<strong style="color: #fbbf24">TTL: 60 seconds (offline if no update)</strong>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<p style="color: #64748b; font-size: 12px; margin: 0">Publish location changes</p>
+<!-- Kafka -->
+<div class="flow-box warning" style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); color: #fbbf24">
+<div class="flow-box-title">KAFKA</div>
+<div class="flow-box-subtitle" style="color: #fef3c7">
+Topic: partner.locations<br/><br/>
+<strong>Consumers:</strong> ETA Calculator | Customer Tracker | Analytics
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="phase-3-dunzo-scale-phase-3-dunzo-scale">Phase 3: Dunzo Scale {#phase-3-dunzo-scale}</h2>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<h3 id="assumptions-phase3-assumptions">Assumptions {#phase3-assumptions}</h3>
+<ul>
+<li><strong>Cities</strong>: 25+</li>
+<li><strong>Partners</strong>: 50,000+</li>
+<li><strong>Orders</strong>: 1M+/day</li>
+<li><strong>Merchants</strong>: 100,000+</li>
+</ul>
+<h3 id="city-based-microservices-city-microservices">City-Based Microservices {#city-microservices}</h3>
+<div class="diagram-container">
+<div class="flow-diagram">
+<h4 style="color: #a855f7; text-align: center; margin: 0 0 24px 0; width: 100%">DUNZO MULTI-CITY ARCHITECTURE</h4>
+<!-- Global Layer -->
+<div class="data-card" style="width: 100%; max-width: 700px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #3b82f6">GLOBAL LAYER</span>
+</div>
+<div class="flow-row" style="margin-top: 12px">
+<span class="diagram-badge info">User Service</span>
+<span class="diagram-badge success">Payment Service</span>
+<span class="diagram-badge orange">Marketing Service</span>
+<span class="diagram-badge pink">Merchant Platform</span>
+<span class="diagram-badge warning">Partner Platform</span>
+<span class="diagram-badge purple">Analytics Platform</span>
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<!-- City Clusters -->
+<div class="data-card" style="width: 100%; max-width: 700px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #a855f7">CITY CLUSTERS</span>
+</div>
+<div class="flow-row" style="margin-top: 12px">
+<div class="flow-box success" style="min-width: 150px">
+<div class="flow-box-title">BANGALORE</div>
+<div class="flow-box-subtitle">Order | Dispatch | Track</div>
+<div style="margin-top: 8px"><span class="diagram-badge success">15K partners</span></div>
+</div>
+<div class="flow-box orange" style="min-width: 150px">
+<div class="flow-box-title">MUMBAI</div>
+<div class="flow-box-subtitle">Order | Dispatch | Track</div>
+<div style="margin-top: 8px"><span class="diagram-badge orange">12K partners</span></div>
+</div>
+<div class="flow-box info" style="min-width: 150px">
+<div class="flow-box-title">DELHI</div>
+<div class="flow-box-subtitle">Order | Dispatch | Track</div>
+<div style="margin-top: 8px"><span class="diagram-badge info">10K partners</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="ml-based-eta-prediction-ml-eta-prediction">ML-Based ETA Prediction {#ml-eta-prediction}</h3>
+<pre><code class="language-python">class ETAService:
+    &quot;&quot;&quot;
+    Machine learning based ETA prediction.
+    &quot;&quot;&quot;
+
+    def predict_eta(self, origin, destination, time_of_day):
+        # Features
+        features = {
+            'distance': self.calculate_distance(origin, destination),
+            'hour': time_of_day.hour,
+            'day_of_week': time_of_day.weekday(),
+            'is_peak_hour': self.is_peak_hour(time_of_day),
+            'weather': self.get_weather(origin),
+            'traffic_index': self.get_traffic_index(origin, destination),
+            'historical_avg': self.get_historical_avg(origin, destination, time_of_day),
+            'zone_congestion': self.get_zone_congestion(origin),
+        }
+
+        # ML model prediction
+        predicted_minutes = self.ml_model.predict(features)
+
+        # Add buffer based on confidence
+        confidence = self.ml_model.predict_confidence(features)
+        buffer = (1 - confidence) * 5  # 0-5 min buffer
+
+        return {
+            'eta_minutes': int(predicted_minutes + buffer),
+            'confidence': confidence,
+            'traffic_level': features['traffic_index']
+        }
+
+    def update_live_eta(self, order_id, partner_location):
+        &quot;&quot;&quot;Update ETA based on current partner location.&quot;&quot;&quot;
+        order = Order.get(order_id)
+        remaining_stops = self.get_remaining_stops(order)
+
+        total_eta = 0
+        current_location = partner_location
+
+        for stop in remaining_stops:
+            eta = self.predict_eta(current_location, stop, now())
+            stop_time = 3 if stop.is_pickup else 2  # minutes
+            total_eta += eta['eta_minutes'] + stop_time
+            current_location = stop
+
+        return total_eta
+</code></pre>
+</div>
+</div>
+<hr />
+<h2 id="aws-technologies--alternatives-aws-technologies-alternatives">AWS Technologies &amp; Alternatives {#aws-technologies-alternatives}</h2>
+<div class="diagram-container">
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>AWS Service</th>
+<th>Alternative</th>
+<th>Trade-offs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Location</strong></td>
+<td>Location Service</td>
+<td>Google Maps Platform</td>
+<td>Google: Better in India</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>-</td>
+<td>OSRM, Valhalla</td>
+<td>OSRM: Free, customizable</td>
+</tr>
+<tr>
+<td><strong>Database</strong></td>
+<td>Aurora</td>
+<td>CockroachDB</td>
+<td>Aurora: Managed</td>
+</tr>
+<tr>
+<td><strong>Cache</strong></td>
+<td>ElastiCache</td>
+<td>Redis Enterprise</td>
+<td>ElastiCache: Simpler</td>
+</tr>
+<tr>
+<td><strong>ML</strong></td>
+<td>SageMaker</td>
+<td>Vertex AI</td>
+<td>SageMaker: AWS native</td>
+</tr>
+<tr>
+<td><strong>Events</strong></td>
+<td>MSK</td>
+<td>Kafka</td>
+<td>MSK: Managed Kafka</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h2 id="distributed-systems-considerations-distributed-systems">Distributed Systems Considerations {#distributed-systems}</h2>
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px">
+<h3 id="1-order-assignment-consistency-assignment-consistency">1. Order Assignment Consistency {#assignment-consistency}</h3>
+<div class="data-card data-card-accent warning" style="margin-bottom: 16px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #f97316">Challenge</span>
+</div>
+<div class="data-card-description">Multiple dispatchers trying to assign same partner</div>
+</div>
+</div>
+<div class="data-card data-card-accent success" style="margin-bottom: 24px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title" style="color: #10b981">Solution</span>
+</div>
+<div class="data-card-description">Distributed lock on partner</div>
+</div>
+</div>
+<div class="flow-diagram" style="padding: 0">
+<h5 style="text-align: center; color: #64748b; margin-bottom: 16px">PARTNER ASSIGNMENT FLOW</h5>
+<div class="data-card data-card-accent info" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">STEP 1: Acquire Lock</div>
+<div class="data-card-description" style="font-family: monospace">SETNX partner_lock:{id} order_id EX 30</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">STEP 2: If Lock Acquired</div>
+<div class="data-card-description">
+- Check partner still available<br/>
+- Send offer to partner app<br/>
+- Wait for response (30s timeout)
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">STEP 3: If Partner Accepts</div>
+<div class="data-card-description">
+- Create assignment<br/>
+- Update partner status<br/>
+- Release lock
+</div>
+</div>
+</div>
+<div class="flow-arrow vertical">&#x2193;</div>
+<div class="data-card data-card-accent error" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">STEP 4: If Partner Rejects/Timeout</div>
+<div class="data-card-description">
+- Release lock<br/>
+- Try next partner in scored list
+</div>
+</div>
+</div>
+</div>
+<h3 id="2-location-update-at-scale-location-scale">2. Location Update at Scale {#location-scale}</h3>
+<div class="data-card data-card-accent warning" style="margin: 24px 0">
+<div class="data-card-content">
+<div class="data-card-title" style="color: #f97316">50K partners x 1 update/5s = 10K updates/second</div>
+</div>
+</div>
+<div class="flow-row" style="gap: 12px">
+<div class="flow-box info" style="flex: 1">
+<div class="flow-box-title">Ingestion</div>
+<div class="flow-box-subtitle">Redis Streams for high-throughput writes</div>
+</div>
+<div class="flow-box success" style="flex: 1">
+<div class="flow-box-title">Persistence</div>
+<div class="flow-box-subtitle">Batch writes to PostgreSQL every minute</div>
+</div>
+<div class="flow-box orange" style="flex: 1">
+<div class="flow-box-title">Real-time</div>
+<div class="flow-box-subtitle">Served from Redis only (hot data)</div>
+</div>
+<div class="flow-box purple" style="flex: 1">
+<div class="flow-box-title">Historical</div>
+<div class="flow-box-subtitle">TimescaleDB for time-series analytics</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="scaling-strategies-scaling-strategies">Scaling Strategies {#scaling-strategies}</h2>
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px">
+<h3 id="horizontal-scaling-approach-horizontal-scaling">Horizontal Scaling Approach {#horizontal-scaling}</h3>
+<div class="flow-diagram" style="padding: 0; margin-bottom: 24px">
+<div class="flow-row">
+<div class="flow-box primary" style="flex: 1">
+<div class="flow-box-title">Geographic Sharding</div>
+<div class="flow-box-subtitle">Partition by city/region</div>
+</div>
+<div class="flow-box success" style="flex: 1">
+<div class="flow-box-title">Read Replicas</div>
+<div class="flow-box-subtitle">Scale read-heavy operations</div>
+</div>
+<div class="flow-box warning" style="flex: 1">
+<div class="flow-box-title">Caching Layers</div>
+<div class="flow-box-subtitle">Redis for hot data</div>
+</div>
+</div>
+</div>
+<h3 id="database-scaling-strategy-db-scaling">Database Scaling Strategy {#db-scaling}</h3>
+<table>
+<thead>
+<tr>
+<th>Scale Level</th>
+<th>Orders/Day</th>
+<th>Strategy</th>
+<th>Database Setup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Startup</strong></td>
+<td>&lt; 10K</td>
+<td>Single instance</td>
+<td>PostgreSQL primary</td>
+</tr>
+<tr>
+<td><strong>Growth</strong></td>
+<td>10K-100K</td>
+<td>Read replicas</td>
+<td>1 primary + 2 replicas</td>
+</tr>
+<tr>
+<td><strong>Scale</strong></td>
+<td>100K-500K</td>
+<td>Functional sharding</td>
+<td>Separate DBs per domain</td>
+</tr>
+<tr>
+<td><strong>Enterprise</strong></td>
+<td>500K+</td>
+<td>Geographic sharding</td>
+<td>DB cluster per city</td>
+</tr>
+</tbody>
+</table>
+<h3 id="caching-strategy-caching-strategy">Caching Strategy {#caching-strategy}</h3>
+<div class="data-card data-card-accent info" style="margin: 16px 0">
+<div class="data-card-content">
+<div class="data-card-title">Multi-Layer Cache Architecture</div>
+<div class="data-card-description">
+<p><strong>L1 - Application Cache (in-memory)</strong></p>
+<ul>
+<li>Partner availability status</li>
+<li>Recent order lookups</li>
+<li>TTL: 5-10 seconds</li>
+</ul>
+<p><strong>L2 - Redis Cache (distributed)</strong></p>
+<ul>
+<li>Partner locations (GEOADD)</li>
+<li>Active order details</li>
+<li>Session data</li>
+<li>TTL: 30-60 seconds</li>
+</ul>
+<p><strong>L3 - CDN Cache (edge)</strong></p>
+<ul>
+<li>Static merchant data</li>
+<li>Menu/catalog information</li>
+<li>TTL: 5-15 minutes</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="event-driven-architecture-event-driven">Event-Driven Architecture {#event-driven}</h3>
+<pre><code class="language-python">class EventDrivenDispatch:
+    &quot;&quot;&quot;
+    Kafka-based event-driven dispatch system for scale.
+    &quot;&quot;&quot;
+
+    TOPICS = {
+        'order_created': 'orders.created',
+        'partner_available': 'partners.availability',
+        'location_updated': 'partners.locations',
+        'assignment_completed': 'dispatch.assignments'
+    }
+
+    def __init__(self):
+        self.producer = KafkaProducer(
+            bootstrap_servers=['kafka-1:9092', 'kafka-2:9092'],
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+            acks='all',  # Wait for all replicas
+            retries=3
+        )
+
+    def publish_order_created(self, order):
+        &quot;&quot;&quot;Publish order for async processing.&quot;&quot;&quot;
+        event = {
+            'event_type': 'ORDER_CREATED',
+            'order_id': order.id,
+            'pickup': order.pickup.to_dict(),
+            'drops': [d.to_dict() for d in order.drops],
+            'category': order.category,
+            'created_at': order.created_at.isoformat(),
+            'city_id': order.city_id  # For partitioning
+        }
+
+        # Partition by city for locality
+        self.producer.send(
+            self.TOPICS['order_created'],
+            key=order.city_id.encode(),
+            value=event
+        )
+
+    def consume_and_dispatch(self, city_id):
+        &quot;&quot;&quot;City-specific consumer for order dispatch.&quot;&quot;&quot;
+        consumer = KafkaConsumer(
+            self.TOPICS['order_created'],
+            bootstrap_servers=['kafka-1:9092'],
+            group_id=f'dispatch-{city_id}',
+            auto_offset_reset='earliest'
+        )
+
+        for message in consumer:
+            order_event = json.loads(message.value)
+            if order_event['city_id'] == city_id:
+                self.process_dispatch(order_event)
+</code></pre>
+<h3 id="auto-scaling-configuration-auto-scaling">Auto-Scaling Configuration {#auto-scaling}</h3>
+<div class="flow-row" style="gap: 12px; margin: 16px 0">
+<div class="data-card data-card-accent info" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">API Gateway</div>
+<div class="data-card-description">
+Scale on: Request rate<br/>
+Min: 2, Max: 20<br/>
+Target: 1000 RPS/instance
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent success" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Dispatch Workers</div>
+<div class="data-card-description">
+Scale on: Queue depth<br/>
+Min: 3, Max: 50<br/>
+Target: < 100 pending orders
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Location Service</div>
+<div class="data-card-description">
+Scale on: WebSocket connections<br/>
+Min: 2, Max: 30<br/>
+Target: 5K connections/instance
+</div>
+</div>
+</div>
+</div>
+<h3 id="load-shedding-strategy-load-shedding">Load Shedding Strategy {#load-shedding}</h3>
+<pre><code class="language-python">class LoadShedder:
+    &quot;&quot;&quot;
+    Graceful degradation during high load.
+    &quot;&quot;&quot;
+
+    def __init__(self, redis_client):
+        self.redis = redis_client
+        self.thresholds = {
+            'normal': 0.7,      # 70% capacity
+            'elevated': 0.85,   # 85% capacity
+            'critical': 0.95    # 95% capacity
+        }
+
+    def get_system_load(self):
+        &quot;&quot;&quot;Calculate current system load.&quot;&quot;&quot;
+        metrics = {
+            'cpu': self.get_avg_cpu_usage(),
+            'memory': self.get_avg_memory_usage(),
+            'queue_depth': self.get_dispatch_queue_depth(),
+            'latency_p99': self.get_api_latency_p99()
+        }
+
+        # Weighted average
+        return (
+            metrics['cpu'] * 0.3 +
+            metrics['memory'] * 0.2 +
+            min(metrics['queue_depth'] / 1000, 1) * 0.3 +
+            min(metrics['latency_p99'] / 500, 1) * 0.2
+        )
+
+    def should_shed_load(self, request_type):
+        &quot;&quot;&quot;Determine if request should be shed.&quot;&quot;&quot;
+        load = self.get_system_load()
+
+        if load &lt; self.thresholds['normal']:
+            return False  # Accept all requests
+
+        if load &gt;= self.thresholds['critical']:
+            # Only accept critical requests
+            return request_type not in ['payment', 'emergency']
+
+        if load &gt;= self.thresholds['elevated']:
+            # Shed non-essential requests
+            return request_type in ['analytics', 'recommendations', 'promotions']
+
+        return False
+
+    def apply_degraded_mode(self, order):
+        &quot;&quot;&quot;Apply degraded processing during high load.&quot;&quot;&quot;
+        return {
+            'skip_ml_scoring': True,      # Use simple distance matching
+            'reduce_batch_wait': True,    # Don't wait for batching
+            'simplified_eta': True,       # Use historical avg, not ML
+            'skip_promotions': True       # Don't calculate discounts
+        }
+</code></pre>
+</div>
+</div>
+<hr />
+<h2 id="edge-cases--failure-modes-edge-cases-failure-modes">Edge Cases &amp; Failure Modes {#edge-cases-failure-modes}</h2>
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px">
+<h3 id="critical-failure-scenarios-critical-failures">Critical Failure Scenarios {#critical-failures}</h3>
+<div class="flow-diagram" style="padding: 0">
+<div class="data-card data-card-accent error" style="width: 100%; margin-bottom: 16px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Partner Cancels Mid-Delivery</span>
+<span class="diagram-badge error">CRITICAL</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Customer has been charged, package in transit<br/>
+<strong>Detection:</strong> GPS anomaly, explicit cancellation, connectivity loss > 3 min<br/>
+<strong>Recovery:</strong> Rescue protocol - find nearby partner within 1-2km radius<br/>
+<strong>SLA:</strong> Reassignment within 4 minutes, 94% rescue success rate
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent error" style="width: 100%; margin-bottom: 16px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Redis Location Cache Down</span>
+<span class="diagram-badge error">HIGH</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Cannot find nearby partners for assignment<br/>
+<strong>Detection:</strong> Health check failure, connection timeouts<br/>
+<strong>Recovery:</strong> Fallback to PostgreSQL with last known locations (stale but functional)<br/>
+<strong>RTO:</strong> 30 seconds with automatic failover
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="width: 100%; margin-bottom: 16px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Partner App Loses Connectivity</span>
+<span class="diagram-badge warning">MEDIUM</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Stale location data, missed assignment offers<br/>
+<strong>Detection:</strong> No GPS update for 60+ seconds<br/>
+<strong>Recovery:</strong> Mark partner as "unreachable", queue SMS notification, offline order queue<br/>
+<strong>RTO:</strong> Partner reconnects or manual reassignment after 2 minutes
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="width: 100%; margin-bottom: 16px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Kafka Consumer Lag</span>
+<span class="diagram-badge warning">MEDIUM</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Delayed order processing, customer waiting<br/>
+<strong>Detection:</strong> Consumer lag > 1000 messages, processing time > 30s<br/>
+<strong>Recovery:</strong> Auto-scaling consumers, priority queue bypass for urgent orders<br/>
+<strong>RTO:</strong> < 2 minutes with proper alerting
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent info" style="width: 100%; margin-bottom: 16px">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: ML ETA Model Returns Outliers</span>
+<span class="diagram-badge info">LOW</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Unrealistic customer expectations (ETA: 2 min for 10km)<br/>
+<strong>Detection:</strong> ETA outside 2 standard deviations from historical average<br/>
+<strong>Recovery:</strong> Rule-based bounds checking, fallback to distance-based calculation<br/>
+<strong>RTO:</strong> Immediate with outlier detection
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent info" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">FAILURE: Payment Gateway Timeout</span>
+<span class="diagram-badge info">LOW</span>
+</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Order stuck in pending state<br/>
+<strong>Detection:</strong> Payment API response > 5 seconds<br/>
+<strong>Recovery:</strong> Async payment processing, proceed with delivery on credit for trusted customers<br/>
+<strong>RTO:</strong> Retry queue with 3x attempts over 5 minutes
+</div>
+</div>
+</div>
+</div>
+<h3 id="edge-case-handling-edge-case-handling">Edge Case Handling {#edge-case-handling}</h3>
+<div style="margin-top: 24px">
+<h4 id="1-no-partners-available-no-partners">1. No Partners Available {#no-partners}</h4>
+<pre><code class="language-python">class NoPartnerHandler:
+    &quot;&quot;&quot;Handle scenarios when no partners are available.&quot;&quot;&quot;
+
+    def handle_no_partner(self, order):
+        strategies = [
+            self.expand_search_radius,      # 3km -&gt; 5km -&gt; 7km -&gt; 10km
+            self.offer_incentive_bonus,     # Extra Rs 50 for accepting
+            self.wait_and_retry,            # Wait 2 min, retry
+            self.suggest_scheduled_delivery, # Offer later time slot
+            self.refund_and_apologize       # Last resort
+        ]
+
+        for strategy in strategies:
+            result = strategy(order)
+            if result.success:
+                return result
+
+        return self.escalate_to_operations(order)
+
+    def expand_search_radius(self, order, max_radius=10):
+        for radius in [3, 5, 7, 10]:
+            partners = self.find_partners(order.pickup, radius)
+            if partners:
+                return StrategyResult(
+                    success=True,
+                    partners=partners,
+                    extra_eta=self.calculate_extra_eta(radius)
+                )
+        return StrategyResult(success=False)
+</code></pre>
+<h4 id="2-duplicate-order-detection-duplicate-orders">2. Duplicate Order Detection {#duplicate-orders}</h4>
+<pre><code class="language-python">class DuplicateOrderDetector:
+    &quot;&quot;&quot;Prevent accidental duplicate orders.&quot;&quot;&quot;
+
+    def is_duplicate(self, customer_id, order_details):
+        # Check for recent similar orders
+        recent_orders = Order.query.filter(
+            Order.customer_id == customer_id,
+            Order.created_at &gt; now() - timedelta(minutes=5),
+            Order.status.in_(['PENDING', 'ASSIGNED', 'IN_TRANSIT'])
+        ).all()
+
+        for existing in recent_orders:
+            similarity = self.calculate_similarity(existing, order_details)
+            if similarity &gt; 0.9:  # 90% similar
+                return True, existing
+
+        return False, None
+
+    def calculate_similarity(self, existing, new):
+        pickup_match = haversine(existing.pickup, new['pickup']) &lt; 0.1  # 100m
+        drop_match = haversine(existing.drops[0], new['drops'][0]) &lt; 0.1
+        category_match = existing.category == new['category']
+
+        return (pickup_match + drop_match + category_match) / 3
+</code></pre>
+<h4 id="3-gps-spoofing-detection-gps-spoofing">3. GPS Spoofing Detection {#gps-spoofing}</h4>
+<pre><code class="language-python">class GPSSpoofingDetector:
+    &quot;&quot;&quot;Detect fraudulent GPS manipulation.&quot;&quot;&quot;
+
+    def validate_location_update(self, partner_id, new_location):
+        history = self.get_recent_locations(partner_id, minutes=5)
+
+        if not history:
+            return True  # First update
+
+        last_location = history[-1]
+
+        # Check 1: Impossible speed
+        time_diff = (new_location.timestamp - last_location.timestamp).seconds
+        distance = haversine(last_location, new_location)
+        speed_kmh = (distance / time_diff) * 3600 if time_diff &gt; 0 else 0
+
+        if speed_kmh &gt; 120:  # &gt; 120 km/h on two-wheeler
+            self.flag_suspicious(partner_id, 'IMPOSSIBLE_SPEED', speed_kmh)
+            return False
+
+        # Check 2: Location jump (teleportation)
+        if distance &gt; 5 and time_diff &lt; 60:  # 5km in &lt; 1 min
+            self.flag_suspicious(partner_id, 'LOCATION_JUMP', distance)
+            return False
+
+        # Check 3: Stationary but claiming movement
+        if self.is_pattern_suspicious(history + [new_location]):
+            self.flag_suspicious(partner_id, 'PATTERN_ANOMALY')
+            return False
+
+        return True
+</code></pre>
+<h4 id="4-order-value-mismatch-value-mismatch">4. Order Value Mismatch {#value-mismatch}</h4>
+<pre><code class="language-python">class OrderValueValidator:
+    &quot;&quot;&quot;Handle discrepancies in order value.&quot;&quot;&quot;
+
+    def validate_merchant_order(self, order, merchant_confirmation):
+        discrepancy = abs(order.estimated_value - merchant_confirmation.actual_value)
+        discrepancy_pct = discrepancy / order.estimated_value
+
+        if discrepancy_pct &lt;= 0.1:  # &lt; 10% difference
+            return self.proceed_with_adjustment(order, merchant_confirmation)
+
+        if discrepancy_pct &lt;= 0.25:  # 10-25% difference
+            return self.request_customer_confirmation(order, merchant_confirmation)
+
+        # &gt; 25% difference - likely wrong order
+        return self.escalate_to_support(order, merchant_confirmation)
+</code></pre>
+</div>
+<h3 id="disaster-recovery-disaster-recovery">Disaster Recovery {#disaster-recovery}</h3>
+<div class="flow-row" style="gap: 12px; margin-top: 24px">
+<div class="data-card data-card-accent error" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Complete City Outage</div>
+<div class="data-card-description">
+<strong>RTO:</strong> 15 minutes<br/>
+<strong>RPO:</strong> 30 seconds<br/>
+<strong>Action:</strong> Failover to backup region, notify all active partners/customers
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Database Corruption</div>
+<div class="data-card-description">
+<strong>RTO:</strong> 30 minutes<br/>
+<strong>RPO:</strong> 5 minutes<br/>
+<strong>Action:</strong> Point-in-time recovery, replay Kafka events
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent info" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Third-Party API Failure</div>
+<div class="data-card-description">
+<strong>RTO:</strong> Immediate<br/>
+<strong>RPO:</strong> N/A<br/>
+<strong>Action:</strong> Circuit breaker, fallback to cached/degraded mode
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="interview-deep-dive-questions-interview-deep-dive">Interview Deep Dive Questions {#interview-deep-dive}</h2>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h3 id="1-how-do-you-optimize-multi-stop-routes-question-route-optimization">1. &quot;How do you optimize multi-stop routes?&quot; {#question-route-optimization}</h3>
+<p><strong>What They're Probing</strong>: Understanding of TSP variants, real-world constraints, computational complexity trade-offs</p>
+<p><strong>Strong Answer</strong>:</p>
+<blockquote>
+<p>&quot;Multi-stop routing in hyperlocal logistics is fundamentally a <strong>Precedence-Constrained Traveling Salesman Problem (PC-TSP)</strong> - one of the most computationally challenging problems in operations research. Let me walk you through our approach with a concrete scenario.</p>
+<p><strong>Real-World Scenario</strong>: Imagine a partner has accepted 3 orders simultaneously:</p>
+<ul>
+<li><strong>Order A</strong>: Pick up medicines from Apollo Pharmacy (P1) and deliver to Mrs. Sharma (D1) - 2.3 km away</li>
+<li><strong>Order B</strong>: Pick up groceries from BigBasket hub (P2) and deliver to Mr. Patel (D2) - 1.8 km away</li>
+<li><strong>Order C</strong>: Pick up documents from a law firm (P3) and deliver to a bank (D3) - 3.1 km away</li>
+</ul>
+<p><strong>The Naive Approach</strong> would be sequential: P1-&gt;D1-&gt;P2-&gt;D2-&gt;P3-&gt;D3, covering approximately 15.2 km and taking 48 minutes.</p>
+<p><strong>Our Optimized Approach</strong> considers <strong>50+ variables</strong> including:</p>
+<ul>
+<li><strong>Geographic clustering</strong>: P1 and P3 are only 400m apart, so batch those pickups</li>
+<li><strong>Traffic patterns</strong>: The route from D2 to D3 passes through a high-congestion zone at 6pm - avoid during peak</li>
+<li><strong>Time sensitivity</strong>: Medicines have higher priority than documents</li>
+<li><strong>Road network topology</strong>: One-way streets, no-entry zones, construction areas</li>
+<li><strong>Partner vehicle type</strong>: Two-wheeler can take shortcuts a car cannot</li>
+</ul>
+<p><strong>Step-by-step optimization</strong>:</p>
+<ol>
+<li><strong>Build a distance matrix</strong>: Pre-compute travel times between all 6 points (P1, P2, P3, D1, D2, D3) = 30 pairs</li>
+<li><strong>Apply precedence constraints</strong>: P1 must come before D1, P2 before D2, P3 before D3</li>
+<li><strong>Generate initial solution</strong>: Use Nearest Neighbor heuristic - start at partner location, go to closest unvisited point respecting precedence</li>
+<li><strong>Improve with 2-opt/3-opt</strong>: Iteratively swap edges to reduce total distance</li>
+<li><strong>Apply Or-opt moves</strong>: Relocate single stops or pairs to better positions</li>
+</ol>
+<p><strong>Optimized route</strong>: Partner Location -&gt; P1 -&gt; P3 -&gt; P2 -&gt; D2 -&gt; D1 -&gt; D3, covering only 10.1 km (33% reduction) and 32 minutes.</p>
+<p><strong>Technical implementation</strong>: We use Google OR-Tools for the constraint solver, with OSRM providing the road-network-aware distance matrix. The entire optimization runs in under 200ms for up to 8 stops. For real-time recalculation when new orders arrive mid-route, we use <strong>insertion heuristics</strong> rather than full re-optimization - finding the best position to insert the new pickup-drop pair takes only 15ms.</p>
+<p><strong>Key insight for interviews</strong>: We pre-compute travel time matrices between the top 500 pickup points (stores, restaurants, hubs) during off-peak hours. This cached matrix handles 70% of routes instantly without calling the routing API.&quot;</p>
+</blockquote>
+<p><strong>When Simpler Works</strong>:</p>
+<blockquote>
+<p>&quot;For partners with fewer than 3 stops, optimization provides marginal benefit - maybe 500m savings. We use simple point-to-point Google Maps directions. Instacart operated this way until 2016. The complexity is only justified when you have high-density areas with consistent multi-stop routes.&quot;</p>
+</blockquote>
+<hr />
+<h3 id="2-why-not-just-use-google-maps-routing-api-for-everything-question-google-maps">2. &quot;Why not just use Google Maps routing API for everything?&quot; {#question-google-maps}</h3>
+<p><strong>What They're Probing</strong>: Cost awareness, understanding of API limitations, ability to build vs. buy</p>
+<p><strong>Strong Answer</strong>:</p>
+<blockquote>
+<p>&quot;This is a classic build-vs-buy decision where the answer changes dramatically with scale. Let me break down the economics and technical limitations.</p>
+<p><strong>Cost Analysis at Scale</strong>:</p>
+<ul>
+<li>Google Maps Directions API: $5 per 1,000 requests (after free tier)</li>
+<li>Routes API with optimization: $10 per 1,000 requests</li>
+</ul>
+<p><strong>Concrete calculation for Dunzo-scale (100K orders/day)</strong>:</p>
+<ul>
+<li>Initial route calculation: 100K requests/day</li>
+<li>Real-time re-routing (average 3x per order due to traffic/delays): 300K requests/day</li>
+<li>ETA updates every 2 minutes for 30-minute average delivery: 1.5M requests/day</li>
+<li><strong>Total</strong>: ~2M API calls/day = 60M/month = <strong>$300K-600K/year just for routing</strong></li>
+</ul>
+<p><strong>Technical Limitations of Google Maps API</strong>:</p>
+<ol>
+<li>
+<p><strong>No precedence constraints</strong>: Google's optimization assumes you can visit waypoints in any order. It doesn't understand that pickup P1 MUST happen before drop D1. We'd need to post-process and potentially invalidate their optimization.</p>
+</li>
+<li>
+<p><strong>Limited waypoints</strong>: The API caps at 25 waypoints per request. For batched orders with 8+ stops, we need multiple calls and manual stitching.</p>
+</li>
+<li>
+<p><strong>No vehicle-specific routing for two-wheelers</strong>: Google optimizes for cars. In Indian cities, two-wheelers can use service roads, narrow lanes, and shortcuts that cut 20% off car routes.</p>
+</li>
+<li>
+<p><strong>Rate limits</strong>: 50 requests/second default limit causes queueing during surge periods.</p>
+</li>
+</ol>
+<p><strong>Our Hybrid Approach</strong>:</p>
+<ul>
+<li><strong>OSRM (Open Source Routing Machine)</strong> self-hosted for base routing: Handles 500+ requests/second on a $200/month server, unlimited usage</li>
+<li><strong>Custom two-wheeler profile</strong>: We trained OSRM with GPS traces from 10,000 actual delivery trips to learn rider shortcuts</li>
+<li><strong>Google Maps only for</strong>: Customer-facing ETA display (trust factor), geocoding (address to coordinates), and new city launches before we have local data</li>
+</ul>
+<p><strong>When to switch</strong>:</p>
+<ul>
+<li><strong>&lt; 1,000 orders/day</strong>: Google Maps is fine. $300-500/month is cheaper than DevOps overhead for OSRM</li>
+<li><strong>1,000-10,000 orders/day</strong>: Hybrid approach - OSRM for internal routing, Google for customer display</li>
+<li><strong>&gt; 10,000 orders/day</strong>: Full OSRM with Google only for geocoding</li>
+</ul>
+<p><strong>DoorDash case study</strong>: They used pure Google Maps until 2017 (~5K orders/day in SF), then built their own routing engine. Their routing costs dropped 85% while accuracy improved because they incorporated restaurant preparation time and driver wait patterns that Google couldn't model.&quot;</p>
+</blockquote>
+<p><strong>When Simpler Works</strong>:</p>
+<blockquote>
+<p>&quot;For a startup doing 500 orders/day, the $200/month Google Maps bill is nothing compared to the 2 engineering weeks to set up OSRM correctly. Premature optimization here is a real trap - I've seen startups spend 3 months building custom routing before product-market fit.&quot;</p>
+</blockquote>
+<hr />
+<h3 id="3-how-do-you-handle-rider-assignment-at-scale-question-rider-assignment">3. &quot;How do you handle rider assignment at scale?&quot; {#question-rider-assignment}</h3>
+<p><strong>What They're Probing</strong>: Distributed systems knowledge, consistency vs. availability trade-offs, real-world matching systems</p>
+<p><strong>Strong Answer</strong>:</p>
+<blockquote>
+<p>&quot;Rider assignment is the heart of any delivery platform - it's essentially a <strong>real-time distributed auction system</strong> where orders compete for riders and riders compete for orders. The core challenge is preventing <strong>double-assignment</strong> while maintaining sub-second response times.</p>
+<p><strong>The Double-Assignment Problem in Detail</strong>:<br />
+Imagine at 7:15 PM, Order #A and Order #B are both created within 50ms of each other. Both orders identify Rider #123 as the best match (he's equidistant from both pickups). Without coordination:</p>
+<ul>
+<li>Dispatcher process 1 checks: 'Is Rider #123 available?' -&gt; Yes</li>
+<li>Dispatcher process 2 checks: 'Is Rider #123 available?' -&gt; Yes (race condition!)</li>
+<li>Both send assignment offers to Rider #123</li>
+<li>Rider accepts Order #A</li>
+<li>Order #B thinks it's assigned but rider never shows -&gt; customer waiting 15+ minutes</li>
+</ul>
+<p><strong>Our Multi-Layer Solution</strong>:</p>
+<p><strong>Layer 1: Geographic Sharding</strong></p>
+<ul>
+<li>India is divided into 25 city clusters</li>
+<li>Bangalore dispatchers NEVER compete with Mumbai dispatchers (different Redis instances, different Kafka partitions)</li>
+<li>Within Bangalore, we further partition into 12 zones (~50 sq km each)</li>
+<li><strong>Benefit</strong>: 90% of matching happens within a single zone with no cross-zone coordination</li>
+</ul>
+<p><strong>Layer 2: Distributed Locking</strong></p>
+<pre><code>SETNX rider_lock:123 order_id_A EX 30
+</code></pre>
+<ul>
+<li>Lock TTL: 30 seconds (covers offer + acceptance window)</li>
+<li>If lock fails, immediately try next-best rider (pre-computed list of top 5)</li>
+<li>Lock is released on: acceptance, rejection, or timeout</li>
+</ul>
+<p><strong>Layer 3: Scoring Algorithm (50+ features)</strong><br />
+The scoring function weights:</p>
+<ul>
+<li><strong>Distance to pickup (40%)</strong>: Closer riders provide faster pickup, better customer experience</li>
+<li><strong>Acceptance rate (25%)</strong>: Riders who frequently reject waste matching cycles</li>
+<li><strong>Current load (15%)</strong>: Riders with 1 active order can take a second; riders with 2 are at capacity</li>
+<li><strong>Rating (10%)</strong>: Higher-rated riders for premium customers or high-value orders</li>
+<li><strong>Earnings balance (10%)</strong>: If a rider has had a slow hour, boost their score to maintain fair earnings distribution</li>
+</ul>
+<p><strong>Concrete Example</strong>:<br />
+Order: Pickup from Koramangala, drop to Indiranagar (4 km)<br />
+Available riders within 3km radius: 8 riders</p>
+<table>
+<thead>
+<tr>
+<th>Rider</th>
+<th>Distance</th>
+<th>Accept Rate</th>
+<th>Current Orders</th>
+<th>Rating</th>
+<th>Score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>0.8 km</td>
+<td>92%</td>
+<td>0</td>
+<td>4.8</td>
+<td>87.2</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>1.2 km</td>
+<td>88%</td>
+<td>1</td>
+<td>4.9</td>
+<td>71.5</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>0.5 km</td>
+<td>65%</td>
+<td>0</td>
+<td>4.2</td>
+<td>68.3</td>
+</tr>
+</tbody>
+</table>
+<p>R1 wins despite R3 being closer because R3's low acceptance rate (65%) suggests they might reject this order too.</p>
+<p><strong>Layer 4: Graceful Degradation</strong><br />
+During surge (Friday 8 PM dinner rush):</p>
+<ul>
+<li>Switch from 'best match' to 'good enough match'</li>
+<li>Accept first rider within 2 km with &gt;70% acceptance rate</li>
+<li>Skip scoring computation entirely</li>
+<li><strong>Result</strong>: Matching time drops from 400ms to 50ms, throughput increases 8x</li>
+</ul>
+<p><strong>Failure Scenarios</strong>:</p>
+<ol>
+<li><strong>Redis lock server down</strong>: Fall back to PostgreSQL advisory locks (slower but consistent)</li>
+<li><strong>Rider app loses connectivity during assignment</strong>: Order goes to 'pending_confirmation' state, auto-reassign after 60 seconds</li>
+<li><strong>Zone server overload</strong>: Spill to adjacent zone's rider pool (riders near zone boundaries can serve both)&quot;</li>
+</ol>
+</blockquote>
+<p><strong>When Simpler Works</strong>:</p>
+<blockquote>
+<p>&quot;For &lt; 50 orders/hour, a human dispatcher with a WhatsApp group is more reliable than any algorithm. I've seen local courier services where the dispatcher literally calls the nearest rider. FIFO assignment (first available rider gets next order) works fine until you hit 200+ concurrent orders - that's when utilization variance becomes a problem worth solving.&quot;</p>
+</blockquote>
+<hr />
+<h3 id="4-how-do-you-ensure-delivery-partner-earnings-are-fair-and-predictable-question-partner-earnings">4. &quot;How do you ensure delivery partner earnings are fair and predictable?&quot; {#question-partner-earnings}</h3>
+<p><strong>What They're Probing</strong>: Understanding of gig economy dynamics, incentive design, operational sustainability</p>
+<p><strong>Strong Answer</strong>:</p>
+<blockquote>
+<p>&quot;Partner earnings directly drive <strong>supply reliability</strong> - if riders can't make predictable income, they churn to competitors or quit gig work entirely. This is the #1 operational challenge for any delivery platform. Let me walk through our comprehensive earnings framework.</p>
+<p><strong>The Core Insight</strong>: Partners optimize for <strong>earnings-per-hour</strong>, not earnings-per-delivery. A $5 delivery that takes 45 minutes is worse than a $3 delivery that takes 15 minutes.</p>
+<p><strong>Multi-Component Earnings Model</strong>:</p>
+<p><strong>1. Base Fare</strong>: Fixed amount per delivery category</p>
+<ul>
+<li>Documents: Rs 25 ($0.30)</li>
+<li>Groceries: Rs 35 ($0.42)</li>
+<li>Food: Rs 40 ($0.48) - higher because of wait times at restaurants</li>
+</ul>
+<p><strong>2. Distance Pay</strong>: Rs 8/km ($0.10/km) for distance beyond first 2 km</p>
+<ul>
+<li>Example: 6 km delivery = Rs 8 * 4 = Rs 32 extra</li>
+</ul>
+<p><strong>3. Time Pay</strong>: Rs 2/minute ($0.024/min) for wait time &gt; 5 minutes</p>
+<ul>
+<li>Compensates for slow restaurant prep, customer not answering door</li>
+</ul>
+<p><strong>4. Surge Bonus</strong>: 1.2x - 2.5x multiplier during high demand</p>
+<ul>
+<li>Friday 7-9 PM: 1.5x</li>
+<li>Rain: 2.0x</li>
+<li>Cricket match ending: 1.8x</li>
+</ul>
+<p><strong>5. Tips</strong>: 100% go to partner (platform takes no cut)</p>
+<p><strong>6. Incentives</strong>: Gamified bonuses</p>
+<ul>
+<li>Complete 10 orders before 2 PM: Rs 100 bonus</li>
+<li>50 orders in a week: Rs 500 bonus</li>
+<li>Perfect 5-star week: Rs 200 bonus</li>
+</ul>
+<p><strong>Concrete Earnings Example</strong>:<br />
+Rahul works 8 hours on a Friday:</p>
+<ul>
+<li>Completes 12 deliveries</li>
+<li>Base fares: Rs 420</li>
+<li>Distance pay: Rs 180</li>
+<li>Wait time pay: Rs 45</li>
+<li>Surge bonuses: Rs 95</li>
+<li>Tips: Rs 120</li>
+<li>Daily incentive (12 orders): Rs 150</li>
+<li><strong>Total: Rs 1,010 (~$12) for 8 hours = Rs 126/hour</strong></li>
+</ul>
+<p><strong>Minimum Guarantee System</strong>:</p>
+<ul>
+<li>During peak slots (12-2 PM, 7-10 PM), we guarantee Rs 150/hour if rider maintains:
+<ul>
+<li>80%+ acceptance rate</li>
+<li>&lt; 5% cancellation rate</li>
+<li>Online for full slot duration</li>
+</ul>
+</li>
+<li>If Rahul only earned Rs 800 organically in 8 peak hours (Rs 100/hour), we top up Rs 400 to reach Rs 150/hour guaranteed minimum</li>
+</ul>
+<p><strong>Batching for Efficiency</strong>:<br />
+When user orders from 3 different stores in same area (common for party prep), we batch them:</p>
+<ul>
+<li>Single partner picks up from all 3 stores</li>
+<li>Partner earns 3x base fare but only 1x distance (since drops are close)</li>
+<li>Partner completes 3 orders in 40 minutes instead of 3 separate trips taking 90 minutes</li>
+<li><strong>Earnings jump from Rs 20/order to Rs 35/order equivalent</strong></li>
+</ul>
+<p><strong>Transparency Features</strong>:</p>
+<ul>
+<li>Before accepting, partner sees: estimated earnings, pickup/drop locations, expected time</li>
+<li>Weekly earnings summary email with breakdown</li>
+<li>'Earnings estimator' in app: 'If you work 6 PM - 10 PM today, you'll likely earn Rs 500-650'</li>
+</ul>
+<p><strong>Anti-Gaming Measures</strong>:</p>
+<ul>
+<li>GPS verification at pickup/drop (prevents fake deliveries)</li>
+<li>Photo proof of delivery</li>
+<li>Customer confirmation codes</li>
+<li>AI detection of anomalous patterns (same rider, same customer, repeated orders)&quot;</li>
+</ul>
+</blockquote>
+<p><strong>When Simpler Works</strong>:</p>
+<blockquote>
+<p>&quot;For low-volume local delivery services, a flat Rs 50 per delivery regardless of distance works fine. The complexity of variable pricing only matters when you have partners choosing between orders and you need to incentivize less desirable deliveries (long distance, bad weather, difficult parking areas).&quot;</p>
+</blockquote>
+<hr />
+<h3 id="5-what-happens-when-a-partner-cancels-mid-delivery-question-mid-delivery-cancel">5. &quot;What happens when a partner cancels mid-delivery?&quot; {#question-mid-delivery-cancel}</h3>
+<p><strong>What They're Probing</strong>: Failure handling, customer experience protection, operational resilience</p>
+<p><strong>Strong Answer</strong>:</p>
+<blockquote>
+<p>&quot;Mid-delivery cancellation is our most critical failure mode - the customer has already been charged, they're expecting delivery, and their package is literally in transit with someone who's abandoning it. This scenario occurs in 0.3% of orders but generates 15% of customer complaints. Here's our comprehensive playbook.</p>
+<p><strong>Detection Before Explicit Cancellation</strong> (catching issues early):</p>
+<ol>
+<li>
+<p><strong>GPS Anomaly Detection</strong>:</p>
+<ul>
+<li>Partner stationary &gt; 8 minutes not at a stop location -&gt; Alert</li>
+<li>Partner moving away from destination -&gt; Alert</li>
+<li>Partner's heading consistently opposite to route -&gt; Alert</li>
+<li>GPS signal lost &gt; 3 minutes -&gt; Alert</li>
+</ul>
+</li>
+<li>
+<p><strong>Behavioral Signals</strong>:</p>
+<ul>
+<li>Partner opens 'Cancel' screen but doesn't confirm (hesitation)</li>
+<li>Partner calls support -&gt; Route to 'save the delivery' team</li>
+<li>Partner's speed suddenly drops to 0 in non-traffic area</li>
+</ul>
+</li>
+</ol>
+<p><strong>The Rescue Protocol</strong> (step-by-step):</p>
+<p><strong>T+0 (Cancellation detected)</strong>:</p>
+<ul>
+<li>Order enters 'IN_TRANSIT_REASSIGNING' state</li>
+<li>Customer notification: 'Your delivery partner had an emergency. We're assigning a new partner immediately. Your order is safe.'</li>
+<li>Do NOT show 'cancelled' status - customer sees 'Finding new partner...'</li>
+</ul>
+<p><strong>T+30 seconds</strong>:</p>
+<ul>
+<li>Query for rescue partners within 1 km of last known package location</li>
+<li>Rescue partners are specially flagged riders who:
+<ul>
+<li>Get 1.5x pay for rescue missions</li>
+<li>Have 95%+ acceptance rate</li>
+<li>Are pre-positioned in high-incident areas</li>
+</ul>
+</li>
+</ul>
+<p><strong>T+60 seconds</strong>:</p>
+<ul>
+<li>If no rescue partner, expand to 2 km radius</li>
+<li>Parallel: Customer gets callback from support with personal update</li>
+</ul>
+<p><strong>T+2 minutes</strong>:</p>
+<ul>
+<li>If still unassigned, escalate to 'Critical' queue</li>
+<li>Operations team manually calls nearby partners</li>
+</ul>
+<p><strong>Package Handoff Scenarios</strong>:</p>
+<p><strong>Scenario A: Package still with original partner (most common - 70% of cases)</strong></p>
+<ul>
+<li>Original partner is contacted and asked to wait at current location</li>
+<li>Rescue partner navigates to meet original partner</li>
+<li>Handoff verified via OTP exchange</li>
+<li>Original partner gets partial payment (for work completed) minus penalty</li>
+</ul>
+<p><strong>Scenario B: Original partner unreachable (25% of cases)</strong></p>
+<ul>
+<li>Track last known location from GPS history</li>
+<li>Rescue partner goes to that location</li>
+<li>If package not found, escalate to 'Lost Package' protocol</li>
+</ul>
+<p><strong>Scenario C: High-value or sensitive package (5% of cases)</strong></p>
+<ul>
+<li>Medicines, legal documents, electronics &gt; Rs 5000</li>
+<li>Operations manager personally calls original partner</li>
+<li>If unrecoverable within 10 minutes, initiate refund + replacement order</li>
+<li>Insurance claim process begins</li>
+</ul>
+<p><strong>Real Example</strong>:<br />
+Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
+<ul>
+<li>6:42 PM: Partner picks up cake from bakery</li>
+<li>6:51 PM: Partner's phone dies (common in summer heat)</li>
+<li>6:54 PM: GPS lost alert triggers</li>
+<li>6:55 PM: System detects partner was heading correct direction, likely phone issue not abandonment</li>
+<li>6:56 PM: Rescue partner Priya assigned, estimated at last location in 8 minutes</li>
+<li>6:58 PM: Customer called proactively, told 7:15 PM new ETA</li>
+<li>7:02 PM: Original partner's phone comes back online (was charging at a tea stall)</li>
+<li>7:03 PM: System detects original partner moving again, cancels rescue assignment</li>
+<li>7:11 PM: Original partner delivers cake, only 11 minutes late</li>
+<li>7:12 PM: Customer gets Rs 50 credit for inconvenience</li>
+</ul>
+<p><strong>Post-Incident Analysis</strong>:</p>
+<ul>
+<li>Every mid-delivery cancellation is reviewed</li>
+<li>Partner gets 'incident' flag on profile (3 incidents = suspension)</li>
+<li>If cancellation was due to accident/emergency, partner is not penalized and gets wellness check</li>
+</ul>
+<p><strong>Metrics We Track</strong>:</p>
+<ul>
+<li>Average reassignment time: 4.2 minutes</li>
+<li>Successful rescue rate: 94%</li>
+<li>Customer churn after mid-delivery incident: 12% (vs 3% baseline)</li>
+<li>NPS for rescued orders: 42 (vs 67 normal) - so we proactively offer credits&quot;</li>
+</ul>
+</blockquote>
+<p><strong>When Simpler Works</strong>:</p>
+<blockquote>
+<p>&quot;For valuable items (jewelry, electronics, documents), some services just have the partner return to the pickup point and restart fresh. For food delivery specifically, cancellation usually means refund + reorder rather than complex mid-route reassignment - by the time you rescue the food, it's cold anyway. Sometimes simpler is better for customer experience.&quot;</p>
+</blockquote>
+</div>
+<hr />
+<h2 id="why-this-technology-why-this-technology">Why This Technology? {#why-this-technology}</h2>
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px">
+<h3 id="technology-decision-matrix-tech-decision-matrix">Technology Decision Matrix {#tech-decision-matrix}</h3>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Options Considered</th>
+<th>Chosen</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Partner Location Store</strong></td>
+<td>PostgreSQL, Redis, MongoDB</td>
+<td>Redis GEOADD</td>
+<td>O(log N) radius queries, TTL for stale detection, 10K writes/sec</td>
+</tr>
+<tr>
+<td><strong>Order Queue</strong></td>
+<td>RabbitMQ, SQS, Kafka</td>
+<td>Kafka</td>
+<td>Order matters for batching, replay for debugging, city-partitioned topics</td>
+</tr>
+<tr>
+<td><strong>Route Optimization</strong></td>
+<td>Google OR-Tools, OSRM, Custom</td>
+<td>OSRM + OR-Tools</td>
+<td>OSRM for road network, OR-Tools for TSP solving - best of both</td>
+</tr>
+<tr>
+<td><strong>ETA Prediction</strong></td>
+<td>Rule-based, ML, Hybrid</td>
+<td>Hybrid</td>
+<td>ML for accuracy, rules as fallback, A/B tested improvements</td>
+</tr>
+<tr>
+<td><strong>Assignment Algorithm</strong></td>
+<td>FIFO, Nearest, Scored</td>
+<td>Scored</td>
+<td>Balances partner experience, customer wait time, operational efficiency</td>
+</tr>
+<tr>
+<td><strong>Real-time Updates</strong></td>
+<td>Polling, WebSocket, SSE</td>
+<td>WebSocket</td>
+<td>Bi-directional needed for partner app, SSE for customer tracking</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-upgrade-technology-when-to-upgrade">When to Upgrade Technology {#when-to-upgrade}</h3>
+<div class="flow-diagram" style="padding: 0; gap: 12px">
+<div class="data-card data-card-accent info" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">PostgreSQL Location Queries -> Redis GEO</span>
+</div>
+<div class="data-card-description">
+<strong>Trigger:</strong> > 100 location queries/second<br/>
+<strong>Sign:</strong> Database CPU > 70% during peak
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">Simple Distance Matching -> ML-based Scoring</span>
+</div>
+<div class="data-card-description">
+<strong>Trigger:</strong> > 500 partners in single city<br/>
+<strong>Sign:</strong> Partner utilization variance > 40%
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">Google Maps API -> Self-hosted OSRM</span>
+</div>
+<div class="data-card-description">
+<strong>Trigger:</strong> > $5000/month in Maps API costs<br/>
+<strong>Sign:</strong> Route API calls > 500K/month
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent purple" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-header">
+<span class="data-card-title">Monolithic Dispatch -> City-sharded Services</span>
+</div>
+<div class="data-card-description">
+<strong>Trigger:</strong> > 3 cities with different peak patterns<br/>
+<strong>Sign:</strong> One city's surge affecting another's performance
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="when-simpler-solutions-work-simpler-solutions">When Simpler Solutions Work {#simpler-solutions}</h2>
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
+<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<h3 id="reality-check-you-probably-dont-need-this-complexity-reality-check">Reality Check: You Probably Don't Need This Complexity {#reality-check}</h3>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0">
+<p><strong>For &lt; 50 orders/hour</strong>: Manual assignment by dispatcher works fine</p>
+<ul>
+<li>WhatsApp group with available riders</li>
+<li>Dispatcher calls/texts assignment</li>
+<li>Simple spreadsheet for tracking</li>
+</ul>
+<p><strong>For &lt; 200 orders/day</strong>: FIFO assignment is enough</p>
+<ul>
+<li>First available partner gets next order</li>
+<li>No scoring, no ML, no optimization</li>
+<li>Basic distance filter (&lt; 5km from pickup)</li>
+</ul>
+<p><strong>For single city, &lt; 1000 orders/day</strong>: Monolith is fine</p>
+<ul>
+<li>No microservices needed</li>
+<li>Single PostgreSQL database</li>
+<li>Basic caching with Redis</li>
+</ul>
+</div>
+<h3 id="when-you-dont-need-ml-route-optimization-no-ml-needed">When You DON'T Need ML Route Optimization {#no-ml-needed}</h3>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Simple Alternative</th>
+<th>Why It Works</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single pickup, single drop</td>
+<td>Google Maps directions</td>
+<td>No optimization needed</td>
+</tr>
+<tr>
+<td>&lt; 3 stops per route</td>
+<td>Fixed order (P1-&gt;D1-&gt;P2-&gt;D2)</td>
+<td>Marginal improvement not worth compute</td>
+</tr>
+<tr>
+<td>Predictable routes</td>
+<td>Pre-computed route templates</td>
+<td>Same store -&gt; same areas daily</td>
+</tr>
+<tr>
+<td>Low-density areas</td>
+<td>Nearest neighbor heuristic</td>
+<td>Optimal isn't much better</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-300month-delivery-platform-stack-budget-stack">The &quot;$300/Month Delivery Platform&quot; Stack {#budget-stack}</h3>
+<div class="diagram-container">
+<div style="width: 100%">
+<h4 style="text-align: center; color: #64748b; margin-bottom: 16px">STARTUP STACK (Works up to 500 orders/day)</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frontend: React/Flutter app</td>
+<td>$0</td>
+</tr>
+<tr>
+<td>Backend: Single Node.js/Django server</td>
+<td>$50/mo</td>
+</tr>
+<tr>
+<td>Database: Managed PostgreSQL (basic)</td>
+<td>$50/mo</td>
+</tr>
+<tr>
+<td>Maps: Google Maps API (free tier + basic)</td>
+<td>$100/mo</td>
+</tr>
+<tr>
+<td>SMS/Notifications: Twilio</td>
+<td>$50/mo</td>
+</tr>
+<tr>
+<td>Hosting: Single VPS or basic cloud</td>
+<td>$50/mo</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>~$300/month</strong></td>
+</tr>
+</tbody>
+</table>
+<div style="margin-top: 16px; color: #64748b; font-size: 14px">
+<strong>Assignment:</strong> Manual or simple FIFO queue<br/>
+<strong>Routing:</strong> Google Maps Directions API<br/>
+<strong>Tracking:</strong> Store lat/lng in PostgreSQL, poll every 30s<br/>
+<strong>Batching:</strong> Manual by dispatcher
+</div>
+</div>
+</div>
+<h3 id="real-world-examples-of-simpler-approaches-simpler-examples">Real-World Examples of Simpler Approaches {#simpler-examples}</h3>
+<p><strong>DoorDash (early days)</strong>:</p>
+<ul>
+<li>Simple zone-based assignment for most markets</li>
+<li>Driver claims orders from a list rather than push assignment</li>
+<li>No ML routing until 2018</li>
+</ul>
+<p><strong>Postmates (pre-Uber acquisition)</strong>:</p>
+<ul>
+<li>Manual dispatch in new cities for first 6 months</li>
+<li>Simple radius-based matching</li>
+<li>Drivers used personal Google Maps</li>
+</ul>
+<p><strong>Local Courier Services</strong>:</p>
+<ul>
+<li>Fixed pricing regardless of distance</li>
+<li>Daily route planning by human dispatcher</li>
+<li>Phone calls for status updates</li>
+</ul>
+<h3 id="questions-to-ask-before-building-complexity-complexity-questions">Questions to Ask Before Building Complexity {#complexity-questions}</h3>
+<div class="flow-row" style="gap: 12px">
+<div class="data-card data-card-accent purple" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Before building ML-based dispatch:</div>
+<div class="data-card-description">
+- Do we have > 500 concurrent active partners?<br/>
+- Is partner utilization variance > 30%?<br/>
+- Do we have 3+ months of historical data?
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent info" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Before building real-time route optimization:</div>
+<div class="data-card-description">
+- Do partners regularly have 3+ stops?<br/>
+- Are we losing > 5% revenue to inefficient routing?<br/>
+- Do we have traffic data integration?
+</div>
+</div>
+</div>
+</div>
+<div class="flow-row" style="gap: 12px; margin-top: 12px">
+<div class="data-card data-card-accent success" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Before sharding by city:</div>
+<div class="data-card-description">
+- Do we have > 3 cities?<br/>
+- Are cities in different timezones with different peaks?<br/>
+- Is single database CPU > 60% at peak?
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="flex: 1">
+<div class="data-card-content">
+<div class="data-card-title">Before building custom routing engine:</div>
+<div class="data-card-description">
+- Are Maps API costs > $5000/month?<br/>
+- Do we need vehicle-specific routing (bikes vs cars)?<br/>
+- Is Google's routing inadequate for our geography?
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="trade-off-analysis--mitigation-trade-off-analysis">Trade-off Analysis &amp; Mitigation {#trade-off-analysis}</h2>
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px">
+<h3 id="critical-trade-offs-in-logistics-platform-design-critical-tradeoffs">Critical Trade-offs in Logistics Platform Design {#critical-tradeoffs}</h3>
+<table>
+<thead>
+<tr>
+<th>Trade-off</th>
+<th>Option A</th>
+<th>Option B</th>
+<th>Our Choice</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Partner Experience vs Customer Wait</strong></td>
+<td>Prioritize partner convenience (accept/reject freely)</td>
+<td>Force-assign orders</td>
+<td>Soft assignment with incentives</td>
+<td>Bonus for quick acceptance, penalty-free rejection limit</td>
+</tr>
+<tr>
+<td><strong>ETA Accuracy vs Commitment</strong></td>
+<td>Optimistic ETA (better conversion)</td>
+<td>Padded ETA (always on time)</td>
+<td>Adaptive padding based on confidence</td>
+<td>Under-promise, over-deliver with live updates</td>
+</tr>
+<tr>
+<td><strong>Batching Efficiency vs Freshness</strong></td>
+<td>Wait longer for better batches</td>
+<td>Dispatch immediately</td>
+<td>Time-boxed batching (5 min max)</td>
+<td>Priority override for perishables, customer choice</td>
+</tr>
+<tr>
+<td><strong>Cost vs Coverage</strong></td>
+<td>Minimize partner payments</td>
+<td>Guarantee earnings</td>
+<td>Zone-based guarantees</td>
+<td>Higher guarantees in underserved areas only</td>
+</tr>
+<tr>
+<td><strong>Consistency vs Availability</strong></td>
+<td>Strong consistency for assignment</td>
+<td>Accept some double-assignment</td>
+<td>Optimistic locking with reconciliation</td>
+<td>Automated conflict resolution, customer notification</td>
+</tr>
+</tbody>
+</table>
+<h3 id="failure-mode-analysis-failure-mode-analysis">Failure Mode Analysis {#failure-mode-analysis}</h3>
+<div class="flow-diagram" style="padding: 0; gap: 12px">
+<div class="data-card data-card-accent error" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Redis location cache goes down</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Can't find nearby partners<br/>
+<strong>Mitigation:</strong> Fallback to PostgreSQL with last known locations<br/>
+<strong>RTO:</strong> 30 seconds with automatic failover
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Partner app loses connectivity</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Stale location, missed assignments<br/>
+<strong>Mitigation:</strong> Offline queue, SMS fallback for critical orders<br/>
+<strong>RTO:</strong> Partner reconnects or manual reassignment
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent orange" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Kafka consumer lag</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Delayed order processing<br/>
+<strong>Mitigation:</strong> Auto-scaling consumers, priority queue bypass<br/>
+<strong>RTO:</strong> < 2 minutes with lag alerting at 1000 messages
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent purple" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: ML ETA model returns outliers</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Unrealistic customer expectations<br/>
+<strong>Mitigation:</strong> Rule-based bounds checking, fallback to historical avg<br/>
+<strong>RTO:</strong> Immediate with outlier detection
+</div>
+</div>
+</div>
+<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">FAILURE: Payment gateway timeout</div>
+<div class="data-card-description">
+<strong>Impact:</strong> Order stuck in pending<br/>
+<strong>Mitigation:</strong> Async payment, proceed with delivery on credit<br/>
+<strong>RTO:</strong> Retry queue with 3x attempts over 5 minutes
+</div>
+</div>
+</div>
+</div>
+<h3 id="scaling-bottlenecks-and-solutions-scaling-bottlenecks">Scaling Bottlenecks and Solutions {#scaling-bottlenecks}</h3>
+<table>
+<thead>
+<tr>
+<th>Bottleneck</th>
+<th>Symptom</th>
+<th>Threshold</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Location writes</td>
+<td>Redis latency &gt; 10ms</td>
+<td>10K writes/sec</td>
+<td>Redis cluster, batch writes</td>
+</tr>
+<tr>
+<td>Assignment queries</td>
+<td>Partner search &gt; 500ms</td>
+<td>1K queries/sec</td>
+<td>Pre-indexed zones, caching</td>
+</tr>
+<tr>
+<td>Route calculation</td>
+<td>OSRM timeout</td>
+<td>100 routes/sec</td>
+<td>OSRM cluster, pre-computation</td>
+</tr>
+<tr>
+<td>Order database</td>
+<td>Transaction conflicts</td>
+<td>5K orders/min</td>
+<td>Sharding by city, read replicas</td>
+</tr>
+<tr>
+<td>WebSocket connections</td>
+<td>Memory exhaustion</td>
+<td>50K connections</td>
+<td>Sticky sessions, connection pooling</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr />
+<h2 id="interview-tips-interview-tips">Interview Tips {#interview-tips}</h2>
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h3 id="key-discussion-points-key-discussion-points">Key Discussion Points {#key-discussion-points}</h3>
+<ol>
+<li><strong>Dispatch algorithm</strong>: Matching partners to orders with scoring</li>
+<li><strong>Route optimization</strong>: Multi-stop TSP with precedence constraints</li>
+<li><strong>ETA accuracy</strong>: ML-based predictions with confidence intervals</li>
+<li><strong>Order batching</strong>: Combining nearby orders within time windows</li>
+<li><strong>Partner incentives</strong>: Earnings, bonuses, gamification</li>
+<li><strong>Failure handling</strong>: Mid-delivery cancellations, reassignment</li>
+<li><strong>City-based scaling</strong>: When and how to shard by geography</li>
+</ol>
+<h3 id="common-follow-ups-common-followups">Common Follow-ups {#common-followups}</h3>
+<ul>
+<li>How do you handle partner unavailability mid-delivery?</li>
+<li>How do you implement cash-on-delivery reconciliation?</li>
+<li>How do you handle multi-vendor orders (multiple pickups)?</li>
+<li>What's your approach to demand prediction for partner positioning?</li>
+<li>How do you prevent fraud (fake deliveries, GPS spoofing)?</li>
+</ul>
+</div>
+<hr />
+<h2 id="red-flags-vs-impressive-statements-red-flags-impressive">Red Flags vs Impressive Statements {#red-flags-impressive}</h2>
+<div class="diagram-container">
+<div style="width: 100%; max-width: 800px">
+<h3 id="red-flags-what-not-to-say-red-flags">Red Flags (What NOT to Say) {#red-flags}</h3>
+<div class="data-card data-card-accent error" style="margin-bottom: 24px">
+<div class="data-card-content">
+<table>
+<thead>
+<tr>
+<th>Statement</th>
+<th>Why It's a Red Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;We'll use ML for everything from day one&quot;</td>
+<td>Over-engineering; no data to train on initially</td>
+</tr>
+<tr>
+<td>&quot;Microservices from the start&quot;</td>
+<td>Premature optimization for a delivery startup</td>
+</tr>
+<tr>
+<td>&quot;Real-time tracking updates every second&quot;</td>
+<td>Unnecessary battery drain and server load</td>
+</tr>
+<tr>
+<td>&quot;We'll build our own maps/routing engine&quot;</td>
+<td>Reinventing the wheel without clear justification</td>
+</tr>
+<tr>
+<td>&quot;Strong consistency for all operations&quot;</td>
+<td>Doesn't understand availability requirements</td>
+</tr>
+<tr>
+<td>&quot;Partners will always accept assignments&quot;</td>
+<td>Ignores real-world gig economy dynamics</td>
+</tr>
+<tr>
+<td>&quot;We'll just use Google Maps for routing&quot;</td>
+<td>Doesn't understand cost implications at scale</td>
+</tr>
+<tr>
+<td>&quot;The algorithm finds the optimal route&quot;</td>
+<td>TSP is NP-hard; we use heuristics</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h3 id="impressive-statements-what-shows-depth-impressive-statements">Impressive Statements (What Shows Depth) {#impressive-statements}</h3>
+<div class="data-card data-card-accent success" style="margin-bottom: 24px">
+<div class="data-card-content">
+<table>
+<thead>
+<tr>
+<th>Statement</th>
+<th>Why It Impresses</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;For &lt; 50 orders/hour, manual dispatch with WhatsApp works fine&quot;</td>
+<td>Shows pragmatic scaling understanding</td>
+</tr>
+<tr>
+<td>&quot;We use OSRM for routing to avoid $20K/month Google Maps bills&quot;</td>
+<td>Cost-aware architecture</td>
+</tr>
+<tr>
+<td>&quot;DoorDash uses simple zone-based assignment for most markets&quot;</td>
+<td>Industry research and realistic benchmarking</td>
+</tr>
+<tr>
+<td>&quot;The scoring function weights: distance 40%, rating 20%, acceptance 25%, load 15%&quot;</td>
+<td>Specific, thoughtful design</td>
+</tr>
+<tr>
+<td>&quot;We switch from 'best match' to 'good enough' during surge&quot;</td>
+<td>Understands graceful degradation</td>
+</tr>
+<tr>
+<td>&quot;Partners optimize for earnings-per-hour, not per-delivery&quot;</td>
+<td>Human factors consideration</td>
+</tr>
+<tr>
+<td>&quot;Redis GEO with 60s TTL - partner is offline if no update&quot;</td>
+<td>Precise technical reasoning</td>
+</tr>
+<tr>
+<td>&quot;Route optimization is precedence-constrained TSP - we use 2-opt heuristics&quot;</td>
+<td>Correct problem classification</td>
+</tr>
+<tr>
+<td>&quot;We batch location writes to PostgreSQL every minute, serve real-time from Redis only&quot;</td>
+<td>Understands CQRS patterns</td>
+</tr>
+<tr>
+<td>&quot;At 100K orders/day, Google Maps routing costs $15-30K/month&quot;</td>
+<td>Quantified decision making</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<h3 id="the-10x-engineer-answer-pattern-answer-pattern">The &quot;10x Engineer&quot; Answer Pattern {#answer-pattern}</h3>
+<div class="flow-diagram" style="padding: 0; gap: 12px">
+<div class="data-card data-card-accent info" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">1. ACKNOWLEDGE COMPLEXITY</div>
+<div class="data-card-description">"This is essentially a real-time matching marketplace with geographical constraints..."</div>
+</div>
+</div>
+<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">2. START SIMPLE</div>
+<div class="data-card-description">"For MVP, FIFO assignment with basic distance filtering handles 80% of cases..."</div>
+</div>
+</div>
+<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">3. IDENTIFY TRIGGERS</div>
+<div class="data-card-description">"When we hit 500+ concurrent partners, simple matching creates utilization variance..."</div>
+</div>
+</div>
+<div class="data-card data-card-accent purple" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">4. PROPOSE EVOLUTION</div>
+<div class="data-card-description">"Then we introduce scored matching, but keep FIFO as fallback during system stress..."</div>
+</div>
+</div>
+<div class="data-card data-card-accent orange" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">5. QUANTIFY TRADE-OFFS</div>
+<div class="data-card-description">"ML routing saves ~15% distance but adds 200ms latency and requires 3 months of training data..."</div>
+</div>
+</div>
+<div class="data-card data-card-accent pink" style="width: 100%">
+<div class="data-card-content">
+<div class="data-card-title">6. SHOW INDUSTRY AWARENESS</div>
+<div class="data-card-description">"This is similar to how Uber evolved from simple dispatch to their Marketplace team's algorithms..."</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="quick-reference-card-quick-reference">Quick Reference Card {#quick-reference}</h2>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h3 id="numbers-to-remember-numbers-to-remember">Numbers to Remember {#numbers-to-remember}</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Threshold</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orders/hour</td>
+<td>&lt; 50</td>
+<td>Manual dispatch is fine</td>
+</tr>
+<tr>
+<td>Orders/day</td>
+<td>&lt; 200</td>
+<td>FIFO assignment works</td>
+</tr>
+<tr>
+<td>Partners/city</td>
+<td>&lt; 500</td>
+<td>No ML matching needed</td>
+</tr>
+<tr>
+<td>Stops/route</td>
+<td>&lt; 3</td>
+<td>No route optimization needed</td>
+</tr>
+<tr>
+<td>Cities</td>
+<td>&lt; 3</td>
+<td>Single deployment works</td>
+</tr>
+<tr>
+<td>Maps API cost</td>
+<td>&lt; $5K/mo</td>
+<td>Keep using Google</td>
+</tr>
+<tr>
+<td>Location updates</td>
+<td>5-10 seconds</td>
+<td>Standard for active partners</td>
+</tr>
+<tr>
+<td>Assignment timeout</td>
+<td>30 seconds</td>
+<td>Partner must respond</td>
+</tr>
+<tr>
+<td>Batch window</td>
+<td>5 minutes max</td>
+<td>Customer patience limit</td>
+</tr>
+<tr>
+<td>Redis GEO TTL</td>
+<td>60 seconds</td>
+<td>Mark partner offline</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tech-stack-quick-reference-tech-stack-reference">Tech Stack Quick Reference {#tech-stack-reference}</h3>
+<table>
+<thead>
+<tr>
+<th>Scale</th>
+<th>Database</th>
+<th>Cache</th>
+<th>Queue</th>
+<th>Routing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Startup</td>
+<td>PostgreSQL</td>
+<td>None</td>
+<td>None</td>
+<td>Google Maps</td>
+</tr>
+<tr>
+<td>Growth</td>
+<td>PostgreSQL + Read Replicas</td>
+<td>Redis</td>
+<td>SQS/RabbitMQ</td>
+<td>Google Maps + OSRM</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>Sharded PostgreSQL</td>
+<td>Redis Cluster</td>
+<td>Kafka</td>
+<td>OSRM + OR-Tools</td>
+</tr>
+</tbody>
+</table>
+</div>

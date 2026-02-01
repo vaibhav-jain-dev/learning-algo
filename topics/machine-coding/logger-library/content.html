@@ -1,0 +1,3160 @@
+<h1 id="logger-library-design">Logger Library Design</h1>
+<h2 id="problem-statement">Problem Statement</h2>
+<p>Design a production-grade logging library that supports multiple log levels, asynchronous logging, structured logging, log rotation, and pluggable output sinks. The system should handle high-throughput scenarios, provide thread-safe operations, and maintain minimal performance overhead when logging is disabled.</p>
+<p>This problem tests your understanding of concurrency patterns, I/O optimization, the Strategy pattern, and designing extensible APIs. It is commonly asked at companies building distributed systems, observability platforms, and infrastructure tooling.</p>
+<hr />
+<h2 id="core-concepts-deep-dive">Core Concepts Deep Dive</h2>
+<h3 id="1-log-levels-severity-classification-system">1. Log Levels: Severity Classification System</h3>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Log Level Hierarchy</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<p>Log levels form a <strong>severity hierarchy</strong> where each level implies all levels above it. This design enables <strong>level-based filtering</strong> at multiple points in the logging pipeline: at the logger, at individual handlers, and through filter chains.</p>
+</div>
+</div>
+<h4 id="internal-mechanism">Internal Mechanism</h4>
+<p>Log levels are implemented as <strong>integer values</strong> with intentional gaps between them (10, 20, 30, 40, 50). This spacing allows users to define custom intermediate levels without modifying the core enum:</p>
+<pre><code class="language-python">class LogLevel(IntEnum):
+    TRACE = 5       # Custom: More verbose than DEBUG
+    DEBUG = 10      # Development diagnostics
+    INFO = 20       # Operational messages
+    NOTICE = 25     # Custom: Significant but normal
+    WARNING = 30    # Potential issues
+    ERROR = 40      # Errors that don't halt execution
+    CRITICAL = 50   # System failures requiring intervention
+    SILENT = 100    # Suppress all logging
+</code></pre>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Design Decision: Integer Gaps</div>
+<div style="color: #78350f; font-size: 14px">
+The 10-unit gaps between standard levels allow frameworks to inject domain-specific levels (e.g., SECURITY = 35 between WARNING and ERROR) without breaking existing level comparisons. This is why Python's logging uses 10, 20, 30... rather than 1, 2, 3.
+</div>
+</div>
+<h4 id="level-checking-optimization">Level Checking Optimization</h4>
+<p>A critical performance optimization is <strong>early level checking</strong>. The logger checks if the message will be processed before performing any expensive operations:</p>
+<pre><code class="language-python">def info(self, message: str, *args, **kwargs) -&gt; None:
+    # FAST PATH: Skip everything if level too low
+    if self.level &gt; LogLevel.INFO:
+        return  # No string formatting, no record creation
+
+    # SLOW PATH: Only executed when message will be logged
+    self._log(LogLevel.INFO, message, *args, **kwargs)
+</code></pre>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Assumption: Level Stability</div>
+<div style="color: #14532d; font-size: 14px">
+We assume log levels are set once at startup and rarely modified at runtime. This allows caching the effective level rather than recomputing it through the logger hierarchy on every log call. If dynamic level changes are frequent, consider using atomic integers and invalidation callbacks.
+</div>
+</div>
+<h4 id="effective-level-resolution">Effective Level Resolution</h4>
+<p>In hierarchical logger systems, a logger's <strong>effective level</strong> is determined by walking up the parent chain:</p>
+<pre><code class="language-python">def get_effective_level(self) -&gt; LogLevel:
+    &quot;&quot;&quot;Traverse hierarchy to find first explicitly set level.&quot;&quot;&quot;
+    logger = self
+    while logger is not None:
+        if logger._level_explicitly_set:
+            return logger.level
+        logger = logger.parent
+    return LogLevel.WARNING  # Root default
+</code></pre>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Log Level Flow</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #dbeafe; padding: 14px 20px; border-radius: 10px">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px">logger.info()</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #fef3c7; padding: 14px 20px; border-radius: 10px">
+<div style="color: #92400e; font-weight: bold; font-size: 12px">Level Check</div>
+<div style="color: #a16207; font-size: 10px">INFO >= effective_level?</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #dcfce7; padding: 14px 20px; border-radius: 10px">
+<div style="color: #166534; font-weight: bold; font-size: 12px">Pass</div>
+<div style="color: #15803d; font-size: 10px">Continue processing</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-left: 40px">
+<div style="background: #fee2e2; padding: 14px 20px; border-radius: 10px">
+<div style="color: #991b1b; font-weight: bold; font-size: 12px">Fail</div>
+<div style="color: #b91c1c; font-size: 10px">Return immediately</div>
+</div>
+<div style="color: #64748b; font-size: 14px; margin-left: 8px">No allocation, no formatting</div>
+</div>
+</div>
+</div>
+<h4 id="interview-questions-log-levels-3-levels-deep">Interview Questions: Log Levels (3 Levels Deep)</h4>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1: Why use integers for log levels instead of an enum with sequential values?</strong></p>
+<p>Integer gaps (10, 20, 30...) allow insertion of custom levels without modifying the core library. A user can define <code>SECURITY = 35</code> without breaking existing code that compares <code>level &gt;= WARNING</code>. Sequential enums would require library modifications for custom levels.</p>
+<p><strong>Q2: Where should level filtering occur - at the logger or handler level?</strong></p>
+<p>Both. Logger-level filtering provides <strong>early termination</strong> (avoiding record creation entirely), while handler-level filtering enables <strong>routing</strong> (e.g., only ERROR+ to PagerDuty, all levels to file). The two-tier approach optimizes both performance and flexibility.</p>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1: How does Python's logging module handle the effective level calculation, and what's the performance implication?</strong></p>
+<p>Python caches the effective level but must invalidate it when any ancestor's level changes. The module uses a <code>manager.loggerDict</code> that maintains weak references to loggers. When a level is set, <code>Logger.setLevel()</code> iterates through all loggers to clear cached effective levels. This O(n) invalidation is acceptable because level changes are rare. In high-performance systems, consider thread-local caching with version numbers.</p>
+<p><strong>Q2.2: How would you implement log level inheritance in a concurrent system where levels can change at runtime?</strong></p>
+<p>Use atomic compare-and-swap for level updates with a generation counter. Each logger caches its effective level plus the generation number. On log calls, compare local generation with global; if mismatched, recompute effective level. This bounds the cost of level changes to the first log call per thread post-change rather than eagerly invalidating all caches.</p>
+</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1.1: In a microservices architecture, how would you implement dynamic log level changes across services without restarts?</strong></p>
+<p>Implement a <strong>control plane</strong> for log levels using a configuration service (e.g., etcd, Consul) with watches. Each service subscribes to its log level configuration. On change notification: (1) validate the new level, (2) atomically update the level with a memory barrier, (3) optionally confirm the change back to the control plane. Include rate limiting on level changes to prevent oscillation attacks. Consider implementing &quot;temporary level escalation&quot; that auto-reverts after a TTL for debugging production issues.</p>
+<p><strong>Q2.2.1: What happens if a log level comparison races with a level update? Is this a data race, and does it matter?</strong></p>
+<p>On most architectures, integer reads/writes are atomic at the word level, making this a <strong>benign race</strong> rather than undefined behavior. The worst case is logging one extra message or missing one - both acceptable. However, if level is stored in a non-word-aligned field or the check involves multiple fields, use atomic operations. The key insight is that log level filtering is <strong>best-effort</strong> - occasional inconsistency is acceptable, while locking on every log call is not.</p>
+<p><strong>Q2.2.2: How would you implement sampling-based log level escalation (e.g., &quot;log 1% of DEBUG messages in production&quot;)?</strong></p>
+<pre><code class="language-python">class SampledLevel:
+    def __init__(self, base_level: LogLevel, sample_rates: dict):
+        self.base = base_level
+        self.rates = sample_rates  # {DEBUG: 0.01, INFO: 0.1}
+
+    def should_log(self, level: LogLevel) -&gt; bool:
+        if level &gt;= self.base:
+            return True
+        rate = self.rates.get(level, 0)
+        return random.random() &lt; rate  # Thread-local RNG
+</code></pre>
+<p>Include the sampling decision in the log record so downstream systems know a message was sampled. This enables proper extrapolation when aggregating metrics from logs.</p>
+</div>
+</div>
+<hr />
+<h3 id="2-asynchronous-logging-decoupling-production-from-io">2. Asynchronous Logging: Decoupling Production from I/O</h3>
+<div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Why Async Logging Matters</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<p>Synchronous logging blocks the calling thread during I/O operations. A single slow network write to a log aggregator can cascade into request latency spikes. Async logging <strong>decouples</strong> log production (application threads) from log consumption (I/O threads), converting variable I/O latency into bounded queue insertion time.</p>
+</div>
+</div>
+<h4 id="architecture-the-producer-consumer-model">Architecture: The Producer-Consumer Model</h4>
+<pre><code class="language-python">import threading
+import queue
+from typing import Optional
+
+class AsyncHandler(Handler):
+    &quot;&quot;&quot;
+    Non-blocking handler using a bounded queue and background thread.
+
+    Trade-offs:
+    - Pro: Calling thread never blocks on I/O
+    - Pro: Batching opportunities reduce syscall overhead
+    - Con: Logs may be lost on crash (configurable durability)
+    - Con: Memory pressure under burst logging
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 delegate: Handler,
+                 queue_size: int = 10000,
+                 overflow_policy: str = &quot;drop_oldest&quot;):
+        super().__init__()
+        self.delegate = delegate
+        self.queue: queue.Queue = queue.Queue(maxsize=queue_size)
+        self.overflow_policy = overflow_policy
+        self._shutdown = threading.Event()
+        self._worker = threading.Thread(target=self._process_loop, daemon=True)
+        self._worker.start()
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;Non-blocking enqueue - never blocks the caller.&quot;&quot;&quot;
+        try:
+            self.queue.put_nowait((formatted, record))
+        except queue.Full:
+            self._handle_overflow(formatted, record)
+
+    def _handle_overflow(self, formatted: str, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;Policy-based overflow handling.&quot;&quot;&quot;
+        if self.overflow_policy == &quot;drop_oldest&quot;:
+            try:
+                self.queue.get_nowait()  # Discard oldest
+                self.queue.put_nowait((formatted, record))
+            except queue.Empty:
+                pass
+        elif self.overflow_policy == &quot;drop_newest&quot;:
+            pass  # Simply don't enqueue
+        elif self.overflow_policy == &quot;block&quot;:
+            self.queue.put((formatted, record))  # Blocking put
+
+    def _process_loop(self) -&gt; None:
+        &quot;&quot;&quot;Background thread consuming from queue.&quot;&quot;&quot;
+        batch = []
+        while not self._shutdown.is_set():
+            try:
+                # Drain with timeout for graceful shutdown
+                item = self.queue.get(timeout=0.1)
+                batch.append(item)
+
+                # Opportunistic batching
+                while len(batch) &lt; 100:
+                    try:
+                        batch.append(self.queue.get_nowait())
+                    except queue.Empty:
+                        break
+
+                # Batch write
+                for formatted, record in batch:
+                    self.delegate.emit(formatted, record)
+                batch.clear()
+
+            except queue.Empty:
+                continue
+
+    def close(self) -&gt; None:
+        &quot;&quot;&quot;Graceful shutdown with queue drain.&quot;&quot;&quot;
+        self._shutdown.set()
+        self._worker.join(timeout=5.0)
+
+        # Drain remaining messages
+        while not self.queue.empty():
+            try:
+                formatted, record = self.queue.get_nowait()
+                self.delegate.emit(formatted, record)
+            except queue.Empty:
+                break
+
+        self.delegate.close()
+</code></pre>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Trade-off: Queue Sizing</div>
+<div style="color: #78350f; font-size: 14px">
+A 10,000-entry queue with 1KB average log records consumes ~10MB memory. Too small and you drop logs under burst; too large and you risk OOM under sustained overload. Consider adaptive sizing: start small, grow under pressure, shrink during idle periods. Monitor queue depth as a metric.
+</div>
+</div>
+<h4 id="shutdown-semantics-the-durability-spectrum">Shutdown Semantics: The Durability Spectrum</h4>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Durability vs. Latency Trade-offs</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: stretch; gap: 16px; flex-wrap: wrap">
+<div style="flex: 1; min-width: 200px; background: #dcfce7; padding: 16px; border-radius: 10px">
+<div style="color: #166534; font-weight: bold; font-size: 13px; margin-bottom: 8px">Fire-and-Forget</div>
+<div style="color: #15803d; font-size: 11px; line-height: 1.6">
+Daemon thread, no shutdown drain. Fastest, loses all queued logs on crash. Use for DEBUG in production.
+</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #fef3c7; padding: 16px; border-radius: 10px">
+<div style="color: #92400e; font-weight: bold; font-size: 13px; margin-bottom: 8px">Best-Effort Drain</div>
+<div style="color: #a16207; font-size: 11px; line-height: 1.6">
+Timeout-bounded shutdown drain. Balances latency and durability. Standard for most apps.
+</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #fee2e2; padding: 16px; border-radius: 10px">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px; margin-bottom: 8px">Full Durability</div>
+<div style="color: #b91c1c; font-size: 11px; line-height: 1.6">
+Block shutdown until queue empty + fsync. Slowest, guarantees no log loss. Use for audit logs.
+</div>
+</div>
+</div>
+</div>
+</div>
+<h4 id="lock-free-alternatives">Lock-Free Alternatives</h4>
+<p>For extreme throughput (millions of logs/second), consider lock-free ring buffers:</p>
+<pre><code class="language-python">class LockFreeAsyncHandler:
+    &quot;&quot;&quot;
+    MPSC (Multi-Producer Single-Consumer) ring buffer.
+
+    Uses atomic operations instead of locks. Suitable for
+    latency-sensitive applications where queue contention
+    would cause jitter.
+    &quot;&quot;&quot;
+
+    def __init__(self, capacity: int = 65536):
+        # Power of 2 for fast modulo via bitwise AND
+        self.capacity = capacity
+        self.mask = capacity - 1
+        self.buffer = [None] * capacity
+        self.head = AtomicInt(0)  # Write position
+        self.tail = AtomicInt(0)  # Read position
+
+    def try_publish(self, record: LogRecord) -&gt; bool:
+        &quot;&quot;&quot;
+        Lock-free publish using CAS loop.
+        Returns False if buffer full.
+        &quot;&quot;&quot;
+        while True:
+            head = self.head.get()
+            next_head = (head + 1) &amp; self.mask
+
+            if next_head == self.tail.get():
+                return False  # Full
+
+            if self.head.compare_and_swap(head, next_head):
+                self.buffer[head] = record
+                return True
+</code></pre>
+<p>See <a href="/topics/concurrency/lock-free">[lock-free-data-structures]</a> for implementation details.</p>
+<h4 id="interview-questions-async-logging-3-levels-deep">Interview Questions: Async Logging (3 Levels Deep)</h4>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1: What's the primary benefit of async logging over sync logging?</strong></p>
+<p>Async logging transforms variable I/O latency into bounded enqueue latency. A 50ms network hiccup that would block the calling thread in sync mode becomes a ~100ns queue insertion in async mode. This prevents logging-induced latency spikes from affecting request processing.</p>
+<p><strong>Q2: What happens to logs in the queue when the application crashes?</strong></p>
+<p>They are lost. The queue exists only in process memory. For critical logs (audit, financial), consider: (1) synchronous flushing for high-severity levels, (2) memory-mapped queues that survive crashes, or (3) write-ahead logging to disk before enqueuing.</p>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1: How do you handle queue overflow in async logging? What are the trade-offs of different policies?</strong></p>
+<p>Three common policies:</p>
+<ul>
+<li><strong>Drop oldest</strong>: Preserves recent context, loses historical causation. Good for debugging.</li>
+<li><strong>Drop newest</strong>: Preserves the beginning of an incident. Good for root cause analysis.</li>
+<li><strong>Block</strong>: Converts async to sync under pressure. Prevents log loss but defeats the purpose.</li>
+</ul>
+<p>The best approach is often <strong>drop + count</strong>: drop with a counter, then log &quot;X messages dropped&quot; when space becomes available. This preserves the most important logs while signaling data loss.</p>
+<p><strong>Q2.2: How would you implement backpressure from a slow downstream sink without blocking producers?</strong></p>
+<p>Use a <strong>circuit breaker</strong> pattern: when the queue exceeds 80% capacity, start sampling (log 1 in N messages). At 95%, switch to ERROR-only mode. At 100%, drop with counting. The circuit breaker state itself becomes a log event. This degrades gracefully while preserving signal for high-severity issues.</p>
+</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1.1: How do LMAX Disruptor-style ring buffers improve on traditional blocking queues for logging?</strong></p>
+<p>LMAX Disruptor uses a pre-allocated ring buffer with sequence numbers instead of object allocation. Key optimizations:</p>
+<ol>
+<li><strong>Cache-line padding</strong>: Prevents false sharing between producer/consumer pointers</li>
+<li><strong>Batched publication</strong>: Multiple messages published with single memory barrier</li>
+<li><strong>Wait strategies</strong>: Busy-spin for lowest latency, blocking for CPU efficiency</li>
+</ol>
+<p>For logging, the Disruptor pattern eliminates GC pressure from queue node allocation and reduces cache coherency traffic through mechanical sympathy with CPU architecture.</p>
+<p><strong>Q2.2.1: In a Kubernetes environment with multiple pods logging to a shared sink, how do you prevent one pod's log burst from affecting others?</strong></p>
+<p>Implement <strong>per-pod rate limiting</strong> at the sink level using token buckets. Each pod gets a burst allowance (e.g., 1000 logs) and a sustained rate (e.g., 100 logs/sec). When exhausted, the sink returns backpressure signals that trigger the pod's local circuit breaker. Additionally, use separate queues per severity level to ensure ERROR logs are never blocked by DEBUG floods from other pods. Consider a <strong>priority queue</strong> where high-severity messages can preempt lower-severity ones.</p>
+<p><strong>Q2.2.2: How would you implement exactly-once log delivery in a distributed async logging system?</strong></p>
+<p>True exactly-once is impossible due to the Two Generals Problem. Instead, implement <strong>effectively-once</strong> through:</p>
+<ol>
+<li>Assign monotonic sequence numbers at the source</li>
+<li>Store the last-seen sequence per source at the sink</li>
+<li>On duplicate detection, deduplicate silently</li>
+<li>On gap detection, request retransmission from a persistent local buffer</li>
+</ol>
+<p>The local buffer must be persistent (memory-mapped or WAL) to survive crashes. This converts the at-most-once async system to effectively-once at the cost of local I/O. See <a href="/topics/distributed-systems/exactly-once">[exactly-once-semantics]</a> for more.</p>
+</div>
+</div>
+<hr />
+<h3 id="3-structured-logging-from-text-to-data">3. Structured Logging: From Text to Data</h3>
+<div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Evolution from Printf to Structured Data</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<p>Traditional logging treats messages as opaque strings. Structured logging treats them as <strong>queryable data</strong>. The difference is transformative: instead of regex-parsing &quot;User alice logged in from 192.168.1.1&quot;, you query <code>{&quot;user&quot;: &quot;alice&quot;, &quot;ip&quot;: &quot;192.168.1.1&quot;, &quot;event&quot;: &quot;login&quot;}</code>. This enables log aggregation, metric extraction, and anomaly detection at scale.</p>
+</div>
+</div>
+<h4 id="the-logrecord-as-a-first-class-data-structure">The LogRecord as a First-Class Data Structure</h4>
+<pre><code class="language-python">@dataclass
+class StructuredLogRecord:
+    &quot;&quot;&quot;
+    Immutable log record designed for machine processing.
+
+    Key design choices:
+    - Timestamp as epoch nanos (not string) for sorting/arithmetic
+    - Separate 'message' (human) and 'data' (machine) fields
+    - Explicit schema version for evolution
+    &quot;&quot;&quot;
+
+    schema_version: int = 1
+    timestamp_nanos: int = field(default_factory=lambda: time.time_ns())
+    level: LogLevel = LogLevel.INFO
+    logger_name: str = &quot;&quot;
+    message: str = &quot;&quot;
+    data: Dict[str, Any] = field(default_factory=dict)
+
+    # Contextual fields (typically set once per request)
+    trace_id: Optional[str] = None
+    span_id: Optional[str] = None
+    service_name: Optional[str] = None
+    host: Optional[str] = None
+
+    # Error handling
+    exception_type: Optional[str] = None
+    exception_message: Optional[str] = None
+    stack_trace: Optional[str] = None
+
+    def to_json(self) -&gt; str:
+        &quot;&quot;&quot;Serialize to JSON with consistent field ordering.&quot;&quot;&quot;
+        return json.dumps(self._to_dict(), sort_keys=True, default=str)
+
+    def _to_dict(self) -&gt; dict:
+        result = {
+            &quot;@version&quot;: self.schema_version,
+            &quot;@timestamp&quot;: datetime.fromtimestamp(
+                self.timestamp_nanos / 1e9
+            ).isoformat() + &quot;Z&quot;,
+            &quot;level&quot;: self.level.name,
+            &quot;logger&quot;: self.logger_name,
+            &quot;message&quot;: self.message,
+            **self.data
+        }
+
+        # Only include optional fields if set
+        for field_name in [&quot;trace_id&quot;, &quot;span_id&quot;, &quot;service_name&quot;, &quot;host&quot;]:
+            value = getattr(self, field_name)
+            if value is not None:
+                result[field_name] = value
+
+        if self.exception_type:
+            result[&quot;error&quot;] = {
+                &quot;type&quot;: self.exception_type,
+                &quot;message&quot;: self.exception_message,
+                &quot;stack_trace&quot;: self.stack_trace
+            }
+
+        return result
+</code></pre>
+<h4 id="context-propagation-the-thread-local-pattern">Context Propagation: The Thread-Local Pattern</h4>
+<p>Structured logging shines when combined with <strong>automatic context injection</strong>. Request-scoped data (trace IDs, user IDs) should flow through without explicit passing:</p>
+<pre><code class="language-python">import contextvars
+
+# Context variables for automatic propagation
+_trace_context: contextvars.ContextVar[dict] = contextvars.ContextVar(
+    'trace_context',
+    default={}
+)
+
+class ContextualLogger:
+    &quot;&quot;&quot;
+    Logger that automatically enriches records with context.
+
+    Uses contextvars for async-safe context propagation in
+    Python 3.7+. Falls back to threading.local for sync code.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str, base_logger: Logger):
+        self.name = name
+        self.base = base_logger
+
+    @staticmethod
+    @contextmanager
+    def context(**kwargs):
+        &quot;&quot;&quot;Add fields to context for duration of block.&quot;&quot;&quot;
+        current = _trace_context.get().copy()
+        current.update(kwargs)
+        token = _trace_context.set(current)
+        try:
+            yield
+        finally:
+            _trace_context.reset(token)
+
+    def info(self, message: str, **data):
+        &quot;&quot;&quot;Log with automatic context injection.&quot;&quot;&quot;
+        enriched_data = {
+            **_trace_context.get(),  # Automatic context
+            **data                    # Explicit data
+        }
+        self.base.info(message, extra=enriched_data)
+
+
+# Usage
+async def handle_request(request):
+    with ContextualLogger.context(
+        trace_id=request.trace_id,
+        user_id=request.user_id,
+        request_path=request.path
+    ):
+        logger.info(&quot;Request started&quot;)  # Automatically includes context
+        result = await process(request)
+        logger.info(&quot;Request completed&quot;, duration_ms=result.duration)
+</code></pre>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Assumption: Context Immutability</div>
+<div style="color: #14532d; font-size: 14px">
+We assume context data is immutable once set. Mutating context mid-request would create inconsistent logs. The `context()` context manager creates a new dict rather than modifying in place, ensuring child spans see the parent's context at the time of their creation.
+</div>
+</div>
+<h4 id="json-formatting-edge-cases">JSON Formatting Edge Cases</h4>
+<pre><code class="language-python">class RobustJsonFormatter(Formatter):
+    &quot;&quot;&quot;
+    Production-grade JSON formatter handling edge cases.
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 max_field_size: int = 10000,
+                 max_depth: int = 10,
+                 redact_patterns: List[str] = None):
+        self.max_field_size = max_field_size
+        self.max_depth = max_depth
+        self.redact_patterns = [
+            re.compile(p) for p in (redact_patterns or [
+                r'password', r'secret', r'token', r'api_key', r'auth'
+            ])
+        ]
+
+    def format(self, record: LogRecord) -&gt; str:
+        data = self._sanitize(record.to_dict(), depth=0)
+
+        try:
+            return json.dumps(data, default=self._serialize_unknown)
+        except (ValueError, TypeError) as e:
+            # Fallback for truly unserializable data
+            return json.dumps({
+                &quot;level&quot;: record.level.name,
+                &quot;message&quot;: record.message,
+                &quot;_serialization_error&quot;: str(e)
+            })
+
+    def _sanitize(self, obj: Any, depth: int) -&gt; Any:
+        &quot;&quot;&quot;Recursively sanitize object for JSON serialization.&quot;&quot;&quot;
+        if depth &gt; self.max_depth:
+            return &quot;[MAX_DEPTH_EXCEEDED]&quot;
+
+        if isinstance(obj, dict):
+            return {
+                self._redact_key(k): self._sanitize(v, depth + 1)
+                for k, v in obj.items()
+            }
+        elif isinstance(obj, (list, tuple)):
+            return [self._sanitize(item, depth + 1) for item in obj]
+        elif isinstance(obj, str):
+            if len(obj) &gt; self.max_field_size:
+                return obj[:self.max_field_size] + f&quot;[TRUNCATED:{len(obj)}]&quot;
+            return obj
+        elif isinstance(obj, bytes):
+            return f&quot;[BYTES:{len(obj)}]&quot;
+        else:
+            return obj
+
+    def _redact_key(self, key: str) -&gt; str:
+        &quot;&quot;&quot;Redact sensitive field values.&quot;&quot;&quot;
+        for pattern in self.redact_patterns:
+            if pattern.search(key.lower()):
+                return key  # Keep key, value will be redacted
+        return key
+
+    def _serialize_unknown(self, obj: Any) -&gt; str:
+        &quot;&quot;&quot;Handle non-serializable types.&quot;&quot;&quot;
+        if hasattr(obj, '__dict__'):
+            return f&quot;[{type(obj).__name__}]&quot;
+        return str(obj)
+</code></pre>
+<h4 id="interview-questions-structured-logging-3-levels-deep">Interview Questions: Structured Logging (3 Levels Deep)</h4>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1: What's the difference between structured and unstructured logging?</strong></p>
+<p>Unstructured: <code>&quot;User alice logged in from 192.168.1.1 at 2024-01-15 10:30:00&quot;</code><br />
+Structured: <code>{&quot;event&quot;: &quot;login&quot;, &quot;user&quot;: &quot;alice&quot;, &quot;ip&quot;: &quot;192.168.1.1&quot;, &quot;ts&quot;: 1705315800}</code></p>
+<p>Structured logs are machine-parseable without regex, enabling queries like &quot;all logins from this IP range in the last hour.&quot; The key insight is separating the <strong>message template</strong> from the <strong>data</strong>.</p>
+<p><strong>Q2: How does structured logging improve observability?</strong></p>
+<ol>
+<li><strong>Searchability</strong>: Query by any field without regex</li>
+<li><strong>Aggregation</strong>: Count events by field values (error rates by endpoint)</li>
+<li><strong>Correlation</strong>: Join logs by trace_id across services</li>
+<li><strong>Alerting</strong>: Threshold on numeric fields (latency &gt; 500ms)</li>
+<li><strong>Dashboards</strong>: Real-time metrics derived from log data</li>
+</ol>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1: How do you handle sensitive data in structured logs?</strong></p>
+<p>Implement <strong>defense in depth</strong>:</p>
+<ol>
+<li><strong>Field-level redaction</strong>: Pattern-match on field names (password, token, ssn)</li>
+<li><strong>Value-level masking</strong>: Detect patterns in values (credit card regex)</li>
+<li><strong>Type-based handling</strong>: Special serialization for known sensitive types</li>
+<li><strong>Schema enforcement</strong>: Allowlist of loggable fields per context</li>
+</ol>
+<p>The redaction should happen <strong>at serialization time</strong>, not at ingestion, to prevent sensitive data from ever leaving the process in plaintext.</p>
+<p><strong>Q2.2: How do you handle schema evolution in structured logs?</strong></p>
+<p>Include a schema version field (<code>@version</code>). Consumers check this version and apply appropriate parsing logic. For breaking changes:</p>
+<ol>
+<li>Increment major version</li>
+<li>Run old and new versions in parallel during migration</li>
+<li>Use schema registry (like Kafka Schema Registry) for formal contracts</li>
+<li>Prefer additive changes (new fields) over modifications or deletions</li>
+</ol>
+</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1.1: How would you implement PII detection in structured logs at scale without impacting logging latency?</strong></p>
+<p>Two-phase approach:</p>
+<ol>
+<li><strong>Inline fast-path</strong>: Bloom filter of known sensitive field names. O(1) check, minimal latency impact. Fields matching bloom filter get masked immediately.</li>
+<li><strong>Async deep scan</strong>: Queue logs for background ML-based PII detection. If PII found post-hoc, generate alert, update bloom filter, and optionally trigger deletion in log storage.</li>
+</ol>
+<p>The bloom filter should be trained on historical data and updated periodically. False positives (masking non-PII) are acceptable; false negatives (missing PII) are not.</p>
+<p><strong>Q2.2.1: How do you handle high-cardinality fields that could explode your log aggregation costs?</strong></p>
+<p>High-cardinality fields (user IDs, request IDs) can cause <strong>cardinality explosion</strong> in log indexing systems. Strategies:</p>
+<ol>
+<li><strong>Separate storage tiers</strong>: Index low-cardinality fields, store high-cardinality as unindexed payload</li>
+<li><strong>Sampling with sticky sessions</strong>: Sample 1% of users but include all logs for sampled users</li>
+<li><strong>Hash bucketing</strong>: Hash high-cardinality values into buckets for coarse-grained queries</li>
+<li><strong>Dedicated trace storage</strong>: Route trace_id-heavy logs to tracing backends (Jaeger) rather than log backends (Elasticsearch)</li>
+</ol>
+<p>See <a href="/topics/observability/log-aggregation">[log-aggregation-architecture]</a> for system design patterns.</p>
+<p><strong>Q2.2.2: Design a system for correlating logs across microservices with different structured logging schemas.</strong></p>
+<p>Implement a <strong>correlation envelope</strong> that wraps service-specific payloads:</p>
+<pre><code class="language-json">{
+  &quot;correlation&quot;: {
+    &quot;trace_id&quot;: &quot;abc123&quot;,
+    &quot;span_id&quot;: &quot;def456&quot;,
+    &quot;parent_span_id&quot;: &quot;ghi789&quot;,
+    &quot;timestamp&quot;: 1705315800000000000,
+    &quot;service&quot;: &quot;order-service&quot;,
+    &quot;version&quot;: &quot;1.2.3&quot;
+  },
+  &quot;payload&quot;: {
+    // Service-specific structured log
+  }
+}
+</code></pre>
+<p>The correlation envelope follows a strict schema; payloads are schema-free. Query correlation fields across services, drill down into payload per service. Use <a href="/topics/observability/distributed-tracing">[distributed-tracing]</a> context propagation (W3C Trace Context) for trace_id/span_id.</p>
+</div>
+</div>
+<hr />
+<h3 id="4-log-rotation-managing-unbounded-growth">4. Log Rotation: Managing Unbounded Growth</h3>
+<div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Disk Space Paradox</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<p>Logs grow without bound. A high-traffic service can generate gigabytes per hour. Without rotation, logs will eventually fill the disk, causing the application (and often the entire system) to fail. Log rotation transforms an unbounded resource consumption problem into a bounded one.</p>
+</div>
+</div>
+<h4 id="rotation-strategies">Rotation Strategies</h4>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Rotation Trigger Comparison</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 16px; flex-wrap: wrap">
+<div style="flex: 1; min-width: 250px; background: #dbeafe; padding: 20px; border-radius: 12px">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px">Size-Based</div>
+<div style="color: #1e3a8a; font-size: 12px; line-height: 1.6">
+<strong>Trigger:</strong> File exceeds max_bytes<br/>
+<strong>Pros:</strong> Predictable disk usage<br/>
+<strong>Cons:</strong> Unpredictable file counts<br/>
+<strong>Use when:</strong> Disk space is primary constraint
+</div>
+</div>
+<div style="flex: 1; min-width: 250px; background: #dcfce7; padding: 20px; border-radius: 12px">
+<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px">Time-Based</div>
+<div style="color: #14532d; font-size: 12px; line-height: 1.6">
+<strong>Trigger:</strong> Midnight, hourly, etc.<br/>
+<strong>Pros:</strong> Aligned with human time, easy shipping<br/>
+<strong>Cons:</strong> Variable file sizes<br/>
+<strong>Use when:</strong> Log shipping/archival matters
+</div>
+</div>
+<div style="flex: 1; min-width: 250px; background: #fef3c7; padding: 20px; border-radius: 12px">
+<div style="color: #92400e; font-weight: bold; font-size: 14px; margin-bottom: 12px">Hybrid</div>
+<div style="color: #78350f; font-size: 12px; line-height: 1.6">
+<strong>Trigger:</strong> Size OR time, whichever first<br/>
+<strong>Pros:</strong> Best of both worlds<br/>
+<strong>Cons:</strong> More complex implementation<br/>
+<strong>Use when:</strong> Both constraints matter
+</div>
+</div>
+</div>
+</div>
+</div>
+<h4 id="implementation-robust-rotating-file-handler">Implementation: Robust Rotating File Handler</h4>
+<pre><code class="language-python">import os
+import gzip
+import shutil
+from datetime import datetime, timedelta
+
+class RotatingFileHandler(Handler):
+    &quot;&quot;&quot;
+    Production-grade rotating file handler.
+
+    Features:
+    - Size and time-based rotation
+    - Optional compression of rotated files
+    - Atomic rotation (no log loss during rotation)
+    - Automatic cleanup of old files
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 filename: str,
+                 max_bytes: int = 100 * 1024 * 1024,  # 100MB
+                 backup_count: int = 10,
+                 rotate_at_midnight: bool = False,
+                 compress: bool = True,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.base_filename = filename
+        self.max_bytes = max_bytes
+        self.backup_count = backup_count
+        self.rotate_at_midnight = rotate_at_midnight
+        self.compress = compress
+
+        self._current_file: Optional[IO] = None
+        self._current_size: int = 0
+        self._rotation_time: Optional[datetime] = None
+        self._open_file()
+
+    def _open_file(self) -&gt; None:
+        &quot;&quot;&quot;Open the current log file, creating directories as needed.&quot;&quot;&quot;
+        os.makedirs(os.path.dirname(self.base_filename) or &quot;.&quot;, exist_ok=True)
+
+        # Get current file size if exists
+        if os.path.exists(self.base_filename):
+            self._current_size = os.path.getsize(self.base_filename)
+        else:
+            self._current_size = 0
+
+        self._current_file = open(self.base_filename, &quot;a&quot;, encoding=&quot;utf-8&quot;)
+
+        if self.rotate_at_midnight:
+            self._rotation_time = self._next_midnight()
+
+    def _next_midnight(self) -&gt; datetime:
+        &quot;&quot;&quot;Calculate next midnight for time-based rotation.&quot;&quot;&quot;
+        now = datetime.now()
+        return (now + timedelta(days=1)).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+
+    def _should_rotate(self) -&gt; bool:
+        &quot;&quot;&quot;Check if rotation is needed.&quot;&quot;&quot;
+        if self._current_size &gt;= self.max_bytes:
+            return True
+        if self.rotate_at_midnight and datetime.now() &gt;= self._rotation_time:
+            return True
+        return False
+
+    def _rotate(self) -&gt; None:
+        &quot;&quot;&quot;
+        Perform atomic rotation.
+
+        The rotation is atomic from the perspective of log writers:
+        we close, rename, and reopen in a single locked operation.
+        &quot;&quot;&quot;
+        if self._current_file:
+            self._current_file.close()
+
+        # Shift existing backups: .9 -&gt; .10, .8 -&gt; .9, ...
+        for i in range(self.backup_count - 1, 0, -1):
+            src = self._get_backup_name(i)
+            dst = self._get_backup_name(i + 1)
+            if os.path.exists(src):
+                shutil.move(src, dst)
+
+        # Move current to .1
+        if os.path.exists(self.base_filename):
+            backup_name = self._get_backup_name(1)
+            shutil.move(self.base_filename, backup_name)
+
+            # Async compression of rotated file
+            if self.compress:
+                self._compress_async(backup_name)
+
+        # Delete oldest if exceeds backup_count
+        self._cleanup_old_backups()
+
+        # Reopen fresh file
+        self._open_file()
+
+    def _get_backup_name(self, index: int) -&gt; str:
+        &quot;&quot;&quot;Generate backup filename with index.&quot;&quot;&quot;
+        suffix = &quot;.gz&quot; if self.compress and index &gt; 1 else &quot;&quot;
+        return f&quot;{self.base_filename}.{index}{suffix}&quot;
+
+    def _compress_async(self, filename: str) -&gt; None:
+        &quot;&quot;&quot;Compress rotated file in background thread.&quot;&quot;&quot;
+        def do_compress():
+            gz_name = filename + &quot;.gz&quot;
+            with open(filename, 'rb') as f_in:
+                with gzip.open(gz_name, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            os.remove(filename)
+
+        threading.Thread(target=do_compress, daemon=True).start()
+
+    def _cleanup_old_backups(self) -&gt; None:
+        &quot;&quot;&quot;Remove backups exceeding backup_count.&quot;&quot;&quot;
+        for i in range(self.backup_count + 1, self.backup_count + 100):
+            for suffix in [&quot;&quot;, &quot;.gz&quot;]:
+                path = f&quot;{self.base_filename}.{i}{suffix}&quot;
+                if os.path.exists(path):
+                    os.remove(path)
+                else:
+                    break
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;Write log and check rotation.&quot;&quot;&quot;
+        if self._current_file:
+            line = formatted + &quot;\n&quot;
+            self._current_file.write(line)
+            self._current_file.flush()
+            self._current_size += len(line.encode(&quot;utf-8&quot;))
+
+            if self._should_rotate():
+                self._rotate()
+
+    def close(self) -&gt; None:
+        &quot;&quot;&quot;Clean shutdown.&quot;&quot;&quot;
+        if self._current_file:
+            self._current_file.flush()
+            os.fsync(self._current_file.fileno())
+            self._current_file.close()
+            self._current_file = None
+</code></pre>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Trade-off: In-Process vs. External Rotation</div>
+<div style="color: #78350f; font-size: 14px">
+In-process rotation (shown above) is simple but couples the application to rotation logic. External rotation (logrotate) is more flexible but requires coordination: the app must respond to SIGHUP to reopen files, and there's a race window during rotation. Docker/Kubernetes environments often prefer external log drivers that handle rotation transparently.
+</div>
+</div>
+<h4 id="the-rename-and-reopen-problem">The Rename-and-Reopen Problem</h4>
+<pre><code class="language-python">class SignalAwareFileHandler(FileHandler):
+    &quot;&quot;&quot;
+    File handler that responds to external log rotation.
+
+    When logrotate renames the current file, we need to:
+    1. Detect the rename (inode changed)
+    2. Close the old file descriptor
+    3. Open a new file at the same path
+
+    This is triggered either by SIGHUP or by inode monitoring.
+    &quot;&quot;&quot;
+
+    def __init__(self, filename: str, **kwargs):
+        super().__init__(filename, **kwargs)
+        self._original_inode = self._get_inode()
+        signal.signal(signal.SIGHUP, self._handle_sighup)
+
+    def _get_inode(self) -&gt; int:
+        &quot;&quot;&quot;Get current file's inode number.&quot;&quot;&quot;
+        try:
+            return os.stat(self.base_filename).st_ino
+        except FileNotFoundError:
+            return -1
+
+    def _handle_sighup(self, signum, frame):
+        &quot;&quot;&quot;Reopen file on SIGHUP signal.&quot;&quot;&quot;
+        with self.lock:
+            self._reopen()
+
+    def _reopen(self) -&gt; None:
+        &quot;&quot;&quot;Close and reopen the log file.&quot;&quot;&quot;
+        if self._current_file:
+            self._current_file.close()
+        self._open_file()
+        self._original_inode = self._get_inode()
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;Check for rotation before each write.&quot;&quot;&quot;
+        # Detect external rotation by inode change
+        current_inode = self._get_inode()
+        if current_inode != self._original_inode:
+            self._reopen()
+
+        super().emit(formatted, record)
+</code></pre>
+<h4 id="interview-questions-log-rotation-3-levels-deep">Interview Questions: Log Rotation (3 Levels Deep)</h4>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1: Why is log rotation necessary?</strong></p>
+<p>Without rotation, log files grow indefinitely until disk is full. A full disk causes: (1) application crashes when writes fail, (2) system instability when /var fills up, (3) inability to log the actual failure. Rotation bounds disk usage to a predictable maximum: <code>max_size * backup_count</code>.</p>
+<p><strong>Q2: What's the difference between size-based and time-based rotation?</strong></p>
+<p>Size-based rotates when file exceeds a threshold (e.g., 100MB). Time-based rotates at fixed intervals (e.g., midnight). Size-based provides predictable disk usage but variable file counts. Time-based provides predictable file counts aligned with human time but variable sizes. Production systems often use both: &quot;rotate at 100MB OR midnight, whichever comes first.&quot;</p>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1: How do you handle the race condition when rotating while the application is writing?</strong></p>
+<p>Two approaches:</p>
+<ol>
+<li><strong>Lock during rotation</strong>: Hold a mutex during the close-rename-open sequence. Writers block briefly but no logs are lost.</li>
+<li><strong>Copy-truncate</strong>: Copy current file to backup, then truncate original. No rename means no writer disruption, but brief window of duplicate logs.</li>
+</ol>
+<p>The lock approach is preferred when log latency spikes are acceptable. Copy-truncate is preferred when writer blocking is unacceptable (real-time systems).</p>
+<p><strong>Q2.2: How does logrotate work with long-running applications?</strong></p>
+<p>Logrotate uses the <strong>copytruncate</strong> or <strong>create</strong> directive:</p>
+<ul>
+<li><code>copytruncate</code>: Copy file, then truncate original. Application continues writing to same fd.</li>
+<li><code>create</code>: Rename file, create new empty file. Application must reopen on SIGHUP.</li>
+</ul>
+<p>The SIGHUP approach is more reliable (no duplicate logs) but requires application cooperation. <code>copytruncate</code> is transparent but can lose logs written between copy and truncate.</p>
+</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1.1: How do you implement zero-loss log rotation under high write rates?</strong></p>
+<p>Implement a <strong>double-buffer strategy</strong>:</p>
+<ol>
+<li>Maintain two file handles: <code>current</code> and <code>standby</code></li>
+<li>Before rotation, open <code>standby</code> pointing to new file</li>
+<li>Atomically swap <code>current</code> and <code>standby</code> references</li>
+<li>Close old file in background</li>
+</ol>
+<p>Writers always have a valid file handle. The swap is a single pointer update (atomic on most architectures). This eliminates the close-reopen window entirely.</p>
+<pre><code class="language-python">def atomic_rotate(self):
+    standby = open(self._new_filename(), &quot;a&quot;)
+    # Atomic swap
+    old, self._current = self._current, standby
+    # Background close
+    threading.Thread(target=old.close).start()
+</code></pre>
+<p><strong>Q2.2.1: In a containerized environment, how do you handle log rotation when the container's filesystem is ephemeral?</strong></p>
+<p>Container logs should never rely on in-container rotation:</p>
+<ol>
+<li><strong>Log to stdout</strong>: Let Docker/Kubernetes handle rotation via <code>json-file</code> or <code>local</code> drivers</li>
+<li><strong>Configure container runtime</strong>: <code>--log-opt max-size=100m --log-opt max-file=5</code></li>
+<li><strong>Use sidecar pattern</strong>: Fluent Bit sidecar tails logs and ships to external storage</li>
+<li><strong>Leverage CSI volumes</strong>: Persistent volume with rotation handled by storage layer</li>
+</ol>
+<p>The key insight is separating log <strong>production</strong> (container) from log <strong>management</strong> (orchestrator). See <a href="/topics/devops/container-logging">[container-logging-patterns]</a>.</p>
+<p><strong>Q2.2.2: How would you implement log rotation in a distributed application where multiple instances write to network storage?</strong></p>
+<p>Distributed rotation requires coordination:</p>
+<ol>
+<li><strong>Leader election</strong>: One instance owns rotation responsibility (via <a href="/topics/system-design/distributed-locking">[distributed-locking]</a>)</li>
+<li><strong>Instance-prefixed files</strong>: Each instance writes to <code>app.{instance_id}.log</code>, no coordination needed</li>
+<li><strong>Time-partitioned directories</strong>: All instances write to <code>/logs/2024/01/15/12/</code> (hourly dirs), old dirs are archived</li>
+</ol>
+<p>Option 2 is simplest but creates many files. Option 3 is cleanest for log aggregation but requires clock synchronization. Option 1 is complex and introduces a SPOF. Most systems choose instance-prefixed files with external aggregation.</p>
+</div>
+</div>
+<hr />
+<h3 id="5-sink-abstraction-the-handler-pattern">5. Sink Abstraction: The Handler Pattern</h3>
+<div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #334155; font-weight: bold; font-size: 18px; margin-bottom: 16px">Decoupling Log Production from Log Destination</div>
+<div style="color: #475569; font-size: 14px; line-height: 1.8">
+<p>A <strong>sink</strong> (or handler) is an abstraction over log destinations. By defining a common interface, the logging library can output to console, files, network, databases, or any custom destination without the logger knowing the details. This is the <a href="/topics/design-patterns/strategy">[Strategy Pattern]</a> applied to log output.</p>
+</div>
+</div>
+<h4 id="the-handler-interface">The Handler Interface</h4>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+
+class Handler(ABC):
+    &quot;&quot;&quot;
+    Abstract base class for log output handlers.
+
+    The Handler interface provides:
+    - Level filtering (skip records below threshold)
+    - Formatting (convert LogRecord to string)
+    - Thread-safe emission (lock around I/O)
+    - Resource management (close/flush)
+
+    Subclasses implement emit() for destination-specific I/O.
+    &quot;&quot;&quot;
+
+    def __init__(self, level: LogLevel = LogLevel.DEBUG):
+        self.level = level
+        self.formatter: Formatter = TextFormatter()
+        self.filters: List[Filter] = []
+        self._lock = threading.RLock()  # Reentrant for nested logging
+
+    def set_level(self, level: LogLevel) -&gt; 'Handler':
+        &quot;&quot;&quot;Set minimum level for this handler.&quot;&quot;&quot;
+        self.level = level
+        return self
+
+    def set_formatter(self, formatter: Formatter) -&gt; 'Handler':
+        &quot;&quot;&quot;Set the formatter for this handler.&quot;&quot;&quot;
+        self.formatter = formatter
+        return self
+
+    def add_filter(self, filter_obj: Filter) -&gt; 'Handler':
+        &quot;&quot;&quot;Add a filter to this handler.&quot;&quot;&quot;
+        self.filters.append(filter_obj)
+        return self
+
+    def should_handle(self, record: LogRecord) -&gt; bool:
+        &quot;&quot;&quot;Check if this handler should process the record.&quot;&quot;&quot;
+        if record.level &lt; self.level:
+            return False
+        return all(f.filter(record) for f in self.filters)
+
+    def handle(self, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;
+        Process a log record.
+
+        Template method pattern: common logic here,
+        destination-specific logic in emit().
+        &quot;&quot;&quot;
+        if not self.should_handle(record):
+            return
+
+        try:
+            formatted = self.formatter.format(record)
+            with self._lock:
+                self.emit(formatted, record)
+        except Exception as e:
+            self.handle_error(record, e)
+
+    @abstractmethod
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;
+        Output the formatted log message.
+
+        Subclasses must implement this for destination-specific I/O.
+        This method is called with the handler's lock held.
+        &quot;&quot;&quot;
+        pass
+
+    def handle_error(self, record: LogRecord, exception: Exception) -&gt; None:
+        &quot;&quot;&quot;Handle errors during emission (prevent logging loops).&quot;&quot;&quot;
+        # Write to stderr to avoid recursive logging
+        sys.stderr.write(f&quot;Logging error: {exception}\n&quot;)
+
+    def flush(self) -&gt; None:
+        &quot;&quot;&quot;Flush any buffered output.&quot;&quot;&quot;
+        pass
+
+    def close(self) -&gt; None:
+        &quot;&quot;&quot;Release resources held by this handler.&quot;&quot;&quot;
+        pass
+</code></pre>
+<h4 id="handler-implementations">Handler Implementations</h4>
+<pre><code class="language-python">class ConsoleHandler(Handler):
+    &quot;&quot;&quot;
+    Output logs to stdout/stderr.
+
+    Design choice: ERROR and above go to stderr by default,
+    matching Unix convention for error output.
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 stream: Optional[IO] = None,
+                 error_stream: Optional[IO] = None,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.stream = stream or sys.stdout
+        self.error_stream = error_stream or sys.stderr
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        stream = self.error_stream if record.level &gt;= LogLevel.ERROR else self.stream
+        stream.write(formatted + &quot;\n&quot;)
+        stream.flush()
+
+
+class HttpHandler(Handler):
+    &quot;&quot;&quot;
+    Send logs to HTTP endpoint (log aggregator, webhook, etc.).
+
+    Features:
+    - Batching to reduce HTTP overhead
+    - Retry with exponential backoff
+    - Circuit breaker to prevent cascade failures
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 url: str,
+                 batch_size: int = 100,
+                 flush_interval: float = 5.0,
+                 timeout: float = 10.0,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.url = url
+        self.batch_size = batch_size
+        self.flush_interval = flush_interval
+        self.timeout = timeout
+
+        self._batch: List[str] = []
+        self._last_flush = time.time()
+        self._circuit_open = False
+        self._failure_count = 0
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        self._batch.append(formatted)
+
+        should_flush = (
+            len(self._batch) &gt;= self.batch_size or
+            time.time() - self._last_flush &gt;= self.flush_interval
+        )
+
+        if should_flush:
+            self._flush_batch()
+
+    def _flush_batch(self) -&gt; None:
+        if not self._batch or self._circuit_open:
+            return
+
+        batch, self._batch = self._batch, []
+        self._last_flush = time.time()
+
+        try:
+            response = requests.post(
+                self.url,
+                json={&quot;logs&quot;: batch},
+                timeout=self.timeout
+            )
+            response.raise_for_status()
+            self._failure_count = 0
+        except Exception as e:
+            self._failure_count += 1
+            if self._failure_count &gt;= 5:
+                self._open_circuit()
+            # Re-queue failed batch (with limit to prevent memory growth)
+            self._batch = batch[:1000] + self._batch
+
+    def _open_circuit(self) -&gt; None:
+        &quot;&quot;&quot;Open circuit breaker - stop sending for a while.&quot;&quot;&quot;
+        self._circuit_open = True
+        # Schedule circuit close
+        threading.Timer(60.0, self._close_circuit).start()
+
+    def _close_circuit(self) -&gt; None:
+        &quot;&quot;&quot;Close circuit breaker - resume sending.&quot;&quot;&quot;
+        self._circuit_open = False
+        self._failure_count = 0
+
+    def flush(self) -&gt; None:
+        self._flush_batch()
+
+    def close(self) -&gt; None:
+        self.flush()
+
+
+class MemoryHandler(Handler):
+    &quot;&quot;&quot;
+    Buffer logs in memory, flush to delegate on trigger.
+
+    Use cases:
+    - Capture logs during test execution
+    - Buffer debug logs, flush only on error
+    - Rate-limit downstream handler
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 capacity: int = 1000,
+                 delegate: Optional[Handler] = None,
+                 flush_level: LogLevel = LogLevel.ERROR,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.capacity = capacity
+        self.delegate = delegate
+        self.flush_level = flush_level
+        self._buffer: List[Tuple[str, LogRecord]] = []
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        self._buffer.append((formatted, record))
+
+        # Trim oldest if over capacity
+        if len(self._buffer) &gt; self.capacity:
+            self._buffer = self._buffer[-self.capacity:]
+
+        # Flush on high-severity record
+        if record.level &gt;= self.flush_level:
+            self.flush()
+
+    def flush(self) -&gt; None:
+        if self.delegate and self._buffer:
+            for formatted, record in self._buffer:
+                self.delegate.emit(formatted, record)
+            self._buffer.clear()
+            self.delegate.flush()
+
+    def get_buffer(self) -&gt; List[Tuple[str, LogRecord]]:
+        &quot;&quot;&quot;Retrieve buffered logs (for testing).&quot;&quot;&quot;
+        return list(self._buffer)
+</code></pre>
+<h4 id="fan-out-handler-multiple-destinations">Fan-Out Handler: Multiple Destinations</h4>
+<pre><code class="language-python">class FanOutHandler(Handler):
+    &quot;&quot;&quot;
+    Dispatch logs to multiple handlers.
+
+    This enables scenarios like:
+    - Console + File simultaneously
+    - Debug to file, Error+ to PagerDuty
+    - All logs to aggregator, sampled to metrics
+    &quot;&quot;&quot;
+
+    def __init__(self, handlers: List[Handler], level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.handlers = handlers
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        # Note: Each handler may re-format, so pass record
+        # and let each handler format according to its own formatter
+        pass
+
+    def handle(self, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;Override to dispatch to all handlers.&quot;&quot;&quot;
+        if not self.should_handle(record):
+            return
+
+        for handler in self.handlers:
+            try:
+                handler.handle(record)
+            except Exception as e:
+                self.handle_error(record, e)
+
+    def flush(self) -&gt; None:
+        for handler in self.handlers:
+            handler.flush()
+
+    def close(self) -&gt; None:
+        for handler in self.handlers:
+            handler.close()
+</code></pre>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Handler Architecture</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dbeafe; padding: 16px 24px; border-radius: 12px">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px">Logger</div>
+<div style="color: #3b82f6; font-size: 11px">log.info(...)</div>
+</div>
+<div style="color: #64748b; font-size: 24px">&#8594;</div>
+<div style="background: #f3e8ff; padding: 16px 24px; border-radius: 12px">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px">FanOut</div>
+<div style="color: #a855f7; font-size: 11px">dispatch</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 20px">&#8595;</div>
+<div style="background: #dcfce7; padding: 14px 20px; border-radius: 10px">
+<div style="color: #166534; font-weight: bold; font-size: 12px">Console</div>
+<div style="color: #22c55e; font-size: 10px">ColorFormatter</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 20px">&#8595;</div>
+<div style="background: #fef3c7; padding: 14px 20px; border-radius: 10px">
+<div style="color: #92400e; font-weight: bold; font-size: 12px">Rotating File</div>
+<div style="color: #f59e0b; font-size: 10px">JsonFormatter</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 20px">&#8595;</div>
+<div style="background: #fee2e2; padding: 14px 20px; border-radius: 10px">
+<div style="color: #991b1b; font-weight: bold; font-size: 12px">HTTP (Datadog)</div>
+<div style="color: #ef4444; font-size: 10px">BatchFormatter</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 20px">&#8595;</div>
+<div style="background: #dbeafe; padding: 14px 20px; border-radius: 10px">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px">Memory</div>
+<div style="color: #3b82f6; font-size: 10px">Test capture</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h4 id="interview-questions-sink-abstraction-3-levels-deep">Interview Questions: Sink Abstraction (3 Levels Deep)</h4>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1: What is the purpose of the Handler abstraction?</strong></p>
+<p>Handlers decouple <strong>what</strong> is logged from <strong>where</strong> it goes. The Logger focuses on record creation and level filtering; Handlers focus on destination-specific I/O. This separation enables: (1) multiple simultaneous outputs, (2) per-destination formatting, (3) destination changes without logger code changes.</p>
+<p><strong>Q2: Why does each handler have its own level and formatter?</strong></p>
+<p>Handler-level settings enable <strong>output routing</strong>: ERROR+ to PagerDuty, DEBUG+ to file, INFO+ to console. Handler-level formatters enable <strong>format specialization</strong>: colored text for console, JSON for aggregators, compact for metrics. Without per-handler settings, you'd need separate logger instances.</p>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1: How do you handle failures in a handler without affecting other handlers or the application?</strong></p>
+<p>Wrap each handler's emit in try/except. On failure: (1) log to stderr (not through the logging system - avoid loops), (2) track failure count, (3) implement circuit breaker for repeated failures. Never let handler failures propagate to the application - logging is best-effort, not critical path.</p>
+<p><strong>Q2.2: How would you implement a handler that buffers logs and only flushes them if an error occurs?</strong></p>
+<p>The MemoryHandler pattern: buffer all logs in a ring buffer, flush to delegate only when a record exceeds <code>flush_level</code>. This provides context for errors (preceding debug logs) without the overhead of always writing debug logs. Set capacity to limit memory usage; oldest logs are dropped when buffer is full.</p>
+</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1.1: How do you design a handler that needs to maintain exactly-once delivery semantics to an external system?</strong></p>
+<p>Exactly-once requires:</p>
+<ol>
+<li><strong>Idempotency keys</strong>: Assign unique ID to each log record at creation</li>
+<li><strong>Persistent send buffer</strong>: Write-ahead log before attempting send</li>
+<li><strong>Acknowledgment tracking</strong>: Mark records complete only after sink confirms</li>
+<li><strong>Deduplication at sink</strong>: Sink must reject duplicate IDs</li>
+</ol>
+<p>This is expensive - typically reserved for audit logs. Regular logs use at-most-once (fire-and-forget) or at-least-once (retry on failure, sink deduplicates).</p>
+<p><strong>Q2.2.1: Design a handler architecture for a system that needs to route logs to different sinks based on content (e.g., security events to SIEM, errors to PagerDuty, all to archive).</strong></p>
+<p>Implement a <strong>routing handler</strong>:</p>
+<pre><code class="language-python">class RoutingHandler(Handler):
+    def __init__(self, routes: List[Tuple[Callable[[LogRecord], bool], Handler]]):
+        self.routes = routes
+        self.default_handler = None
+
+    def handle(self, record):
+        matched = False
+        for predicate, handler in self.routes:
+            if predicate(record):
+                handler.handle(record)
+                matched = True
+        if not matched and self.default_handler:
+            self.default_handler.handle(record)
+</code></pre>
+<p>Routes are evaluated in order; multiple routes can match (fan-out). Predicates can check level, logger name, extra fields, or message content. This pattern enables content-based routing without modifying logging call sites.</p>
+<p><strong>Q2.2.2: How would you implement handler hot-reloading without restarting the application?</strong></p>
+<ol>
+<li><strong>Handler registry</strong>: Store handlers in a dict, reference by name</li>
+<li><strong>Configuration watcher</strong>: Monitor config file for changes (inotify, polling)</li>
+<li><strong>Atomic swap</strong>: Build new handler set, then atomically swap into registry</li>
+<li><strong>Graceful shutdown</strong>: Close old handlers after pending logs drain</li>
+</ol>
+<pre><code class="language-python">def reload_handlers(self, new_config):
+    new_handlers = self._build_handlers(new_config)
+    old_handlers, self._handlers = self._handlers, new_handlers
+    # Drain and close old handlers in background
+    threading.Thread(
+        target=lambda: [h.close() for h in old_handlers]
+    ).start()
+</code></pre>
+<p>Include configuration versioning to handle rapid config changes. See <a href="/topics/system-design/configuration">[configuration-management]</a> for patterns.</p>
+</div>
+</div>
+<hr />
+<h2 id="complete-implementation">Complete Implementation</h2>
+<pre><code class="language-python">&quot;&quot;&quot;
+Production-grade Logger Library Implementation.
+
+Features:
+- Hierarchical loggers with name-based inheritance
+- Multiple handlers with per-handler levels and formatters
+- Async logging with bounded queue and backpressure
+- Structured logging with context propagation
+- Size and time-based log rotation
+- Thread-safe operations throughout
+
+Usage:
+    logger = LogManager.get_logger(&quot;myapp.module&quot;)
+    logger.info(&quot;User logged in&quot;, user_id=&quot;alice&quot;, ip=&quot;192.168.1.1&quot;)
+&quot;&quot;&quot;
+
+import sys
+import os
+import json
+import gzip
+import shutil
+import time
+import queue
+import signal
+import threading
+import contextvars
+from abc import ABC, abstractmethod
+from datetime import datetime, timedelta
+from enum import IntEnum
+from typing import Optional, Dict, Any, List, Callable, IO, Tuple
+from dataclasses import dataclass, field
+from contextlib import contextmanager
+
+
+# ==================== Log Levels ====================
+
+class LogLevel(IntEnum):
+    &quot;&quot;&quot;
+    Log severity levels with gaps for custom levels.
+
+    The 10-unit gaps allow inserting custom levels:
+    TRACE = 5, NOTICE = 25, SECURITY = 35, etc.
+    &quot;&quot;&quot;
+    DEBUG = 10
+    INFO = 20
+    WARNING = 30
+    ERROR = 40
+    CRITICAL = 50
+
+    @classmethod
+    def from_string(cls, name: str) -&gt; 'LogLevel':
+        &quot;&quot;&quot;Parse level from string, case-insensitive.&quot;&quot;&quot;
+        return cls[name.upper()]
+
+
+# ==================== Log Record ====================
+
+@dataclass
+class LogRecord:
+    &quot;&quot;&quot;
+    Immutable record representing a single log event.
+
+    Design choices:
+    - Timestamp as float (epoch seconds) for arithmetic
+    - Separate message (human) and extra (machine) fields
+    - Optional exception info captured at creation time
+    &quot;&quot;&quot;
+    level: LogLevel
+    message: str
+    logger_name: str
+    timestamp: float = field(default_factory=time.time)
+    extra: Dict[str, Any] = field(default_factory=dict)
+    exc_info: Optional[Tuple] = None
+
+    def to_dict(self) -&gt; Dict[str, Any]:
+        &quot;&quot;&quot;Convert to dictionary for JSON serialization.&quot;&quot;&quot;
+        result = {
+            &quot;level&quot;: self.level.name,
+            &quot;message&quot;: self.message,
+            &quot;logger&quot;: self.logger_name,
+            &quot;timestamp&quot;: datetime.fromtimestamp(self.timestamp).isoformat() + &quot;Z&quot;,
+            **self.extra
+        }
+        if self.exc_info:
+            import traceback
+            result[&quot;exception&quot;] = {
+                &quot;type&quot;: self.exc_info[0].__name__ if self.exc_info[0] else None,
+                &quot;message&quot;: str(self.exc_info[1]) if self.exc_info[1] else None,
+                &quot;traceback&quot;: ''.join(traceback.format_exception(*self.exc_info))
+            }
+        return result
+
+
+# ==================== Context Propagation ====================
+
+_log_context: contextvars.ContextVar[Dict[str, Any]] = contextvars.ContextVar(
+    'log_context',
+    default={}
+)
+
+
+@contextmanager
+def logging_context(**kwargs):
+    &quot;&quot;&quot;
+    Add fields to logging context for the duration of the block.
+
+    Usage:
+        with logging_context(request_id=&quot;abc123&quot;, user_id=&quot;alice&quot;):
+            logger.info(&quot;Processing request&quot;)  # Includes request_id and user_id
+    &quot;&quot;&quot;
+    current = _log_context.get().copy()
+    current.update(kwargs)
+    token = _log_context.set(current)
+    try:
+        yield
+    finally:
+        _log_context.reset(token)
+
+
+def get_logging_context() -&gt; Dict[str, Any]:
+    &quot;&quot;&quot;Get current logging context.&quot;&quot;&quot;
+    return _log_context.get().copy()
+
+
+# ==================== Filters ====================
+
+class Filter(ABC):
+    &quot;&quot;&quot;Base class for log filters.&quot;&quot;&quot;
+
+    @abstractmethod
+    def filter(self, record: LogRecord) -&gt; bool:
+        &quot;&quot;&quot;Return True if record should be logged.&quot;&quot;&quot;
+        pass
+
+
+class LevelFilter(Filter):
+    &quot;&quot;&quot;Filter by minimum log level.&quot;&quot;&quot;
+
+    def __init__(self, min_level: LogLevel):
+        self.min_level = min_level
+
+    def filter(self, record: LogRecord) -&gt; bool:
+        return record.level &gt;= self.min_level
+
+
+class NameFilter(Filter):
+    &quot;&quot;&quot;Filter by logger name prefix.&quot;&quot;&quot;
+
+    def __init__(self, name_prefix: str):
+        self.prefix = name_prefix
+
+    def filter(self, record: LogRecord) -&gt; bool:
+        return record.logger_name.startswith(self.prefix)
+
+
+class CallableFilter(Filter):
+    &quot;&quot;&quot;Filter using a custom predicate function.&quot;&quot;&quot;
+
+    def __init__(self, predicate: Callable[[LogRecord], bool]):
+        self.predicate = predicate
+
+    def filter(self, record: LogRecord) -&gt; bool:
+        return self.predicate(record)
+
+
+class SamplingFilter(Filter):
+    &quot;&quot;&quot;Sample logs at a configurable rate per level.&quot;&quot;&quot;
+
+    def __init__(self, rates: Dict[LogLevel, float] = None):
+        import random
+        self.rates = rates or {}
+        self.rng = random.Random()
+
+    def filter(self, record: LogRecord) -&gt; bool:
+        rate = self.rates.get(record.level, 1.0)
+        return self.rng.random() &lt; rate
+
+
+# ==================== Formatters ====================
+
+class Formatter(ABC):
+    &quot;&quot;&quot;Base class for log formatters.&quot;&quot;&quot;
+
+    @abstractmethod
+    def format(self, record: LogRecord) -&gt; str:
+        &quot;&quot;&quot;Convert LogRecord to string representation.&quot;&quot;&quot;
+        pass
+
+
+class TextFormatter(Formatter):
+    &quot;&quot;&quot;Plain text formatter with customizable template.&quot;&quot;&quot;
+
+    DEFAULT_FORMAT = &quot;[{timestamp}] {level:8} {logger} - {message}&quot;
+
+    def __init__(self, fmt: str = None, datefmt: str = &quot;%Y-%m-%d %H:%M:%S&quot;):
+        self.fmt = fmt or self.DEFAULT_FORMAT
+        self.datefmt = datefmt
+
+    def format(self, record: LogRecord) -&gt; str:
+        timestamp = datetime.fromtimestamp(record.timestamp).strftime(self.datefmt)
+        result = self.fmt.format(
+            timestamp=timestamp,
+            level=record.level.name,
+            logger=record.logger_name,
+            message=record.message,
+            **record.extra
+        )
+        if record.exc_info and record.exc_info[0]:
+            import traceback
+            result += &quot;\n&quot; + ''.join(traceback.format_exception(*record.exc_info))
+        return result
+
+
+class JsonFormatter(Formatter):
+    &quot;&quot;&quot;
+    JSON formatter for structured logging.
+
+    Features:
+    - Configurable field redaction
+    - Maximum field size limits
+    - Safe serialization of unknown types
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 indent: int = None,
+                 max_field_size: int = 10000,
+                 redact_fields: List[str] = None):
+        self.indent = indent
+        self.max_field_size = max_field_size
+        self.redact_patterns = [
+            f.lower() for f in (redact_fields or ['password', 'secret', 'token', 'key'])
+        ]
+
+    def format(self, record: LogRecord) -&gt; str:
+        data = self._sanitize(record.to_dict())
+        try:
+            return json.dumps(data, indent=self.indent, default=str)
+        except (ValueError, TypeError) as e:
+            return json.dumps({
+                &quot;level&quot;: record.level.name,
+                &quot;message&quot;: record.message,
+                &quot;_error&quot;: f&quot;Serialization failed: {e}&quot;
+            })
+
+    def _sanitize(self, obj: Any, depth: int = 0) -&gt; Any:
+        &quot;&quot;&quot;Recursively sanitize for JSON serialization.&quot;&quot;&quot;
+        if depth &gt; 10:
+            return &quot;[MAX_DEPTH]&quot;
+
+        if isinstance(obj, dict):
+            return {
+                k: self._redact(k, self._sanitize(v, depth + 1))
+                for k, v in obj.items()
+            }
+        elif isinstance(obj, (list, tuple)):
+            return [self._sanitize(item, depth + 1) for item in obj]
+        elif isinstance(obj, str) and len(obj) &gt; self.max_field_size:
+            return obj[:self.max_field_size] + f&quot;[TRUNCATED:{len(obj)}]&quot;
+        elif isinstance(obj, bytes):
+            return f&quot;[BYTES:{len(obj)}]&quot;
+        return obj
+
+    def _redact(self, key: str, value: Any) -&gt; Any:
+        &quot;&quot;&quot;Redact sensitive field values.&quot;&quot;&quot;
+        if any(pattern in key.lower() for pattern in self.redact_patterns):
+            return &quot;[REDACTED]&quot;
+        return value
+
+
+class ColoredFormatter(Formatter):
+    &quot;&quot;&quot;ANSI-colored console formatter.&quot;&quot;&quot;
+
+    COLORS = {
+        LogLevel.DEBUG: &quot;\033[36m&quot;,     # Cyan
+        LogLevel.INFO: &quot;\033[32m&quot;,      # Green
+        LogLevel.WARNING: &quot;\033[33m&quot;,   # Yellow
+        LogLevel.ERROR: &quot;\033[31m&quot;,     # Red
+        LogLevel.CRITICAL: &quot;\033[35;1m&quot;,# Bold Magenta
+    }
+    RESET = &quot;\033[0m&quot;
+
+    def __init__(self, base_formatter: Formatter = None):
+        self.base = base_formatter or TextFormatter()
+
+    def format(self, record: LogRecord) -&gt; str:
+        color = self.COLORS.get(record.level, &quot;&quot;)
+        text = self.base.format(record)
+        return f&quot;{color}{text}{self.RESET}&quot;
+
+
+# ==================== Handlers ====================
+
+class Handler(ABC):
+    &quot;&quot;&quot;
+    Abstract base class for log output handlers.
+
+    Provides:
+    - Level filtering
+    - Formatter application
+    - Thread-safe emission
+    - Error handling
+    &quot;&quot;&quot;
+
+    def __init__(self, level: LogLevel = LogLevel.DEBUG):
+        self.level = level
+        self.formatter: Formatter = TextFormatter()
+        self.filters: List[Filter] = []
+        self._lock = threading.RLock()
+
+    def set_level(self, level: LogLevel) -&gt; 'Handler':
+        self.level = level
+        return self
+
+    def set_formatter(self, formatter: Formatter) -&gt; 'Handler':
+        self.formatter = formatter
+        return self
+
+    def add_filter(self, filter_obj: Filter) -&gt; 'Handler':
+        self.filters.append(filter_obj)
+        return self
+
+    def should_handle(self, record: LogRecord) -&gt; bool:
+        if record.level &lt; self.level:
+            return False
+        return all(f.filter(record) for f in self.filters)
+
+    def handle(self, record: LogRecord) -&gt; None:
+        if not self.should_handle(record):
+            return
+        try:
+            formatted = self.formatter.format(record)
+            with self._lock:
+                self.emit(formatted, record)
+        except Exception as e:
+            self._handle_error(record, e)
+
+    def _handle_error(self, record: LogRecord, error: Exception) -&gt; None:
+        &quot;&quot;&quot;Handle emission errors without causing loops.&quot;&quot;&quot;
+        sys.stderr.write(f&quot;Logging error in {type(self).__name__}: {error}\n&quot;)
+
+    @abstractmethod
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        &quot;&quot;&quot;Output the formatted log message.&quot;&quot;&quot;
+        pass
+
+    def flush(self) -&gt; None:
+        &quot;&quot;&quot;Flush buffered output.&quot;&quot;&quot;
+        pass
+
+    def close(self) -&gt; None:
+        &quot;&quot;&quot;Release handler resources.&quot;&quot;&quot;
+        pass
+
+
+class ConsoleHandler(Handler):
+    &quot;&quot;&quot;Output logs to stdout/stderr.&quot;&quot;&quot;
+
+    def __init__(self,
+                 stream: IO = None,
+                 error_stream: IO = None,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.stream = stream or sys.stdout
+        self.error_stream = error_stream or sys.stderr
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        stream = self.error_stream if record.level &gt;= LogLevel.ERROR else self.stream
+        stream.write(formatted + &quot;\n&quot;)
+        stream.flush()
+
+
+class FileHandler(Handler):
+    &quot;&quot;&quot;Output logs to a file.&quot;&quot;&quot;
+
+    def __init__(self,
+                 filename: str,
+                 mode: str = &quot;a&quot;,
+                 encoding: str = &quot;utf-8&quot;,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.filename = filename
+        self.mode = mode
+        self.encoding = encoding
+        self._file: Optional[IO] = None
+        self._open()
+
+    def _open(self) -&gt; None:
+        os.makedirs(os.path.dirname(self.filename) or &quot;.&quot;, exist_ok=True)
+        self._file = open(self.filename, self.mode, encoding=self.encoding)
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        if self._file:
+            self._file.write(formatted + &quot;\n&quot;)
+            self._file.flush()
+
+    def flush(self) -&gt; None:
+        if self._file:
+            self._file.flush()
+
+    def close(self) -&gt; None:
+        if self._file:
+            self._file.close()
+            self._file = None
+
+
+class RotatingFileHandler(Handler):
+    &quot;&quot;&quot;
+    File handler with size and time-based rotation.
+
+    Features:
+    - Rotate on size threshold or at midnight
+    - Configurable backup count
+    - Optional compression of rotated files
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 filename: str,
+                 max_bytes: int = 100 * 1024 * 1024,
+                 backup_count: int = 10,
+                 rotate_at_midnight: bool = False,
+                 compress: bool = True,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.filename = filename
+        self.max_bytes = max_bytes
+        self.backup_count = backup_count
+        self.rotate_at_midnight = rotate_at_midnight
+        self.compress = compress
+
+        self._file: Optional[IO] = None
+        self._current_size: int = 0
+        self._rotation_time: Optional[datetime] = None
+        self._open()
+
+    def _open(self) -&gt; None:
+        os.makedirs(os.path.dirname(self.filename) or &quot;.&quot;, exist_ok=True)
+        self._current_size = os.path.getsize(self.filename) if os.path.exists(self.filename) else 0
+        self._file = open(self.filename, &quot;a&quot;, encoding=&quot;utf-8&quot;)
+        if self.rotate_at_midnight:
+            self._rotation_time = self._next_midnight()
+
+    def _next_midnight(self) -&gt; datetime:
+        now = datetime.now()
+        return (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+
+    def _should_rotate(self) -&gt; bool:
+        if self._current_size &gt;= self.max_bytes:
+            return True
+        if self.rotate_at_midnight and datetime.now() &gt;= self._rotation_time:
+            return True
+        return False
+
+    def _rotate(self) -&gt; None:
+        if self._file:
+            self._file.close()
+
+        # Shift backups
+        for i in range(self.backup_count - 1, 0, -1):
+            src = self._backup_name(i)
+            dst = self._backup_name(i + 1)
+            if os.path.exists(src):
+                shutil.move(src, dst)
+
+        # Rename current
+        if os.path.exists(self.filename):
+            shutil.move(self.filename, self._backup_name(1))
+            if self.compress:
+                self._compress_async(self._backup_name(1))
+
+        self._cleanup_old()
+        self._open()
+
+    def _backup_name(self, index: int) -&gt; str:
+        suffix = &quot;.gz&quot; if self.compress and index &gt; 1 else &quot;&quot;
+        return f&quot;{self.filename}.{index}{suffix}&quot;
+
+    def _compress_async(self, filename: str) -&gt; None:
+        def compress():
+            gz_name = filename + &quot;.gz&quot;
+            with open(filename, 'rb') as f_in:
+                with gzip.open(gz_name, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            os.remove(filename)
+        threading.Thread(target=compress, daemon=True).start()
+
+    def _cleanup_old(self) -&gt; None:
+        for i in range(self.backup_count + 1, self.backup_count + 100):
+            for suffix in [&quot;&quot;, &quot;.gz&quot;]:
+                path = f&quot;{self.filename}.{i}{suffix}&quot;
+                if os.path.exists(path):
+                    os.remove(path)
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        if self._file:
+            line = formatted + &quot;\n&quot;
+            self._file.write(line)
+            self._file.flush()
+            self._current_size += len(line.encode(&quot;utf-8&quot;))
+            if self._should_rotate():
+                self._rotate()
+
+    def close(self) -&gt; None:
+        if self._file:
+            self._file.close()
+            self._file = None
+
+
+class AsyncHandler(Handler):
+    &quot;&quot;&quot;
+    Non-blocking handler using bounded queue and background thread.
+
+    Trade-offs:
+    - Pro: Never blocks calling thread
+    - Con: Logs may be lost on crash
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 delegate: Handler,
+                 queue_size: int = 10000,
+                 overflow_policy: str = &quot;drop_oldest&quot;,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.delegate = delegate
+        self.overflow_policy = overflow_policy
+        self._queue: queue.Queue = queue.Queue(maxsize=queue_size)
+        self._shutdown = threading.Event()
+        self._worker = threading.Thread(target=self._process_loop, daemon=True)
+        self._worker.start()
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        try:
+            self._queue.put_nowait((formatted, record))
+        except queue.Full:
+            self._handle_overflow(formatted, record)
+
+    def _handle_overflow(self, formatted: str, record: LogRecord) -&gt; None:
+        if self.overflow_policy == &quot;drop_oldest&quot;:
+            try:
+                self._queue.get_nowait()
+                self._queue.put_nowait((formatted, record))
+            except queue.Empty:
+                pass
+        elif self.overflow_policy == &quot;block&quot;:
+            self._queue.put((formatted, record))
+        # drop_newest: do nothing
+
+    def _process_loop(self) -&gt; None:
+        while not self._shutdown.is_set():
+            try:
+                formatted, record = self._queue.get(timeout=0.1)
+                self.delegate.emit(formatted, record)
+            except queue.Empty:
+                continue
+            except Exception as e:
+                sys.stderr.write(f&quot;Async handler error: {e}\n&quot;)
+
+    def flush(self) -&gt; None:
+        while not self._queue.empty():
+            try:
+                formatted, record = self._queue.get_nowait()
+                self.delegate.emit(formatted, record)
+            except queue.Empty:
+                break
+        self.delegate.flush()
+
+    def close(self) -&gt; None:
+        self._shutdown.set()
+        self._worker.join(timeout=5.0)
+        self.flush()
+        self.delegate.close()
+
+
+class MemoryHandler(Handler):
+    &quot;&quot;&quot;
+    Buffer logs in memory, flush to delegate on trigger.
+
+    Use case: Buffer debug logs, flush only on error.
+    &quot;&quot;&quot;
+
+    def __init__(self,
+                 capacity: int = 1000,
+                 delegate: Handler = None,
+                 flush_level: LogLevel = LogLevel.ERROR,
+                 level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.capacity = capacity
+        self.delegate = delegate
+        self.flush_level = flush_level
+        self._buffer: List[Tuple[str, LogRecord]] = []
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        self._buffer.append((formatted, record))
+        if len(self._buffer) &gt; self.capacity:
+            self._buffer = self._buffer[-self.capacity:]
+        if record.level &gt;= self.flush_level:
+            self.flush()
+
+    def flush(self) -&gt; None:
+        if self.delegate and self._buffer:
+            for formatted, record in self._buffer:
+                self.delegate.emit(formatted, record)
+            self._buffer.clear()
+            self.delegate.flush()
+
+    def get_buffer(self) -&gt; List[Tuple[str, LogRecord]]:
+        return list(self._buffer)
+
+
+# ==================== Logger ====================
+
+class Logger:
+    &quot;&quot;&quot;
+    Main logger class supporting hierarchical names and multiple handlers.
+
+    Logger names use dot-separated hierarchies (e.g., &quot;app.db.queries&quot;).
+    Child loggers inherit parent configuration unless overridden.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str, level: LogLevel = None):
+        self.name = name
+        self._level = level
+        self._level_set = level is not None
+        self.handlers: List[Handler] = []
+        self.filters: List[Filter] = []
+        self.parent: Optional['Logger'] = None
+        self.propagate = True
+
+    @property
+    def level(self) -&gt; LogLevel:
+        &quot;&quot;&quot;Get effective level (inherit from parent if not set).&quot;&quot;&quot;
+        if self._level_set:
+            return self._level
+        if self.parent:
+            return self.parent.level
+        return LogLevel.WARNING
+
+    def set_level(self, level: LogLevel) -&gt; 'Logger':
+        self._level = level
+        self._level_set = True
+        return self
+
+    def add_handler(self, handler: Handler) -&gt; 'Logger':
+        self.handlers.append(handler)
+        return self
+
+    def add_filter(self, filter_obj: Filter) -&gt; 'Logger':
+        self.filters.append(filter_obj)
+        return self
+
+    def _should_log(self, level: LogLevel) -&gt; bool:
+        return level &gt;= self.level
+
+    def _log(self, level: LogLevel, message: str, *args,
+             exc_info: bool = False, **kwargs) -&gt; None:
+        if not self._should_log(level):
+            return
+
+        # Format message
+        if args:
+            message = message % args
+
+        # Merge context and explicit kwargs
+        extra = {**get_logging_context(), **kwargs}
+
+        # Capture exception if requested
+        exc = sys.exc_info() if exc_info else None
+
+        record = LogRecord(
+            level=level,
+            message=message,
+            logger_name=self.name,
+            extra=extra,
+            exc_info=exc
+        )
+
+        # Apply filters
+        if not all(f.filter(record) for f in self.filters):
+            return
+
+        # Dispatch to handlers
+        for handler in self.handlers:
+            handler.handle(record)
+
+        # Propagate to parent
+        if self.propagate and self.parent:
+            for handler in self.parent.handlers:
+                handler.handle(record)
+
+    def debug(self, message: str, *args, **kwargs) -&gt; None:
+        self._log(LogLevel.DEBUG, message, *args, **kwargs)
+
+    def info(self, message: str, *args, **kwargs) -&gt; None:
+        self._log(LogLevel.INFO, message, *args, **kwargs)
+
+    def warning(self, message: str, *args, **kwargs) -&gt; None:
+        self._log(LogLevel.WARNING, message, *args, **kwargs)
+
+    def error(self, message: str, *args, **kwargs) -&gt; None:
+        self._log(LogLevel.ERROR, message, *args, **kwargs)
+
+    def critical(self, message: str, *args, **kwargs) -&gt; None:
+        self._log(LogLevel.CRITICAL, message, *args, **kwargs)
+
+    def exception(self, message: str, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Log ERROR with exception info.&quot;&quot;&quot;
+        self._log(LogLevel.ERROR, message, *args, exc_info=True, **kwargs)
+
+
+# ==================== LogManager ====================
+
+class LogManager:
+    &quot;&quot;&quot;
+    Global logger registry and factory.
+
+    Thread-safe singleton that manages logger hierarchy.
+    &quot;&quot;&quot;
+
+    _loggers: Dict[str, Logger] = {}
+    _lock = threading.Lock()
+    _root: Optional[Logger] = None
+
+    @classmethod
+    def get_logger(cls, name: str = &quot;root&quot;) -&gt; Logger:
+        &quot;&quot;&quot;Get or create a logger by name.&quot;&quot;&quot;
+        with cls._lock:
+            if name in cls._loggers:
+                return cls._loggers[name]
+
+            logger = Logger(name)
+
+            # Set up hierarchy
+            if name != &quot;root&quot;:
+                if &quot;.&quot; in name:
+                    parent_name = name.rsplit(&quot;.&quot;, 1)[0]
+                else:
+                    parent_name = &quot;root&quot;
+                logger.parent = cls.get_logger(parent_name)
+
+            cls._loggers[name] = logger
+            return logger
+
+    @classmethod
+    def get_root(cls) -&gt; Logger:
+        &quot;&quot;&quot;Get the root logger.&quot;&quot;&quot;
+        return cls.get_logger(&quot;root&quot;)
+
+    @classmethod
+    def shutdown(cls) -&gt; None:
+        &quot;&quot;&quot;Close all handlers and clean up.&quot;&quot;&quot;
+        with cls._lock:
+            for logger in cls._loggers.values():
+                for handler in logger.handlers:
+                    handler.close()
+            cls._loggers.clear()
+
+
+# ==================== Convenience Functions ====================
+
+def get_logger(name: str = &quot;root&quot;) -&gt; Logger:
+    &quot;&quot;&quot;Convenience function to get a logger.&quot;&quot;&quot;
+    return LogManager.get_logger(name)
+
+
+def basic_config(level: LogLevel = LogLevel.INFO,
+                 format: str = None,
+                 filename: str = None,
+                 handlers: List[Handler] = None) -&gt; None:
+    &quot;&quot;&quot;
+    Simple configuration for common use cases.
+
+    Usage:
+        basic_config(level=LogLevel.DEBUG)
+        basic_config(filename=&quot;app.log&quot;, level=LogLevel.INFO)
+    &quot;&quot;&quot;
+    root = LogManager.get_root()
+    root.set_level(level)
+
+    if handlers:
+        for h in handlers:
+            root.add_handler(h)
+    elif filename:
+        h = RotatingFileHandler(filename)
+        if format:
+            h.set_formatter(TextFormatter(format))
+        root.add_handler(h)
+    else:
+        h = ConsoleHandler()
+        if format:
+            h.set_formatter(TextFormatter(format))
+        else:
+            h.set_formatter(ColoredFormatter())
+        root.add_handler(h)
+</code></pre>
+<hr />
+<h2 id="6-distributed-tracing-integration">6. Distributed Tracing Integration</h2>
+<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Connecting Logs Across Service Boundaries</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<p><span style="color: #90EE90; font-weight: bold">Distributed tracing</span> correlates logs, metrics, and traces across microservices by propagating context identifiers through the entire request lifecycle. When a user action triggers calls across 10+ services, tracing lets you reconstruct the full story from a single trace ID.</p>
+</div>
+</div>
+<h3 id="the-three-pillars-integration-model">The Three Pillars Integration Model</h3>
+<p>Logs, metrics, and traces form the <span style="color: #22c55e; font-weight: bold">three pillars of observability</span>. While each serves a different purpose, their power multiplies when unified:</p>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Observability Pillars Unified by Trace Context</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #dbeafe; padding: 20px 28px; border-radius: 12px;text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px">Logs</div>
+<div style="color: #3b82f6; font-size: 11px; margin-top: 4px">What happened</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 2px">Detail & Context</div>
+</div>
+<div style="background: #dcfce7; padding: 20px 28px; border-radius: 12px;text-align: center">
+<div style="color: #166534; font-weight: bold; font-size: 14px">Metrics</div>
+<div style="color: #22c55e; font-size: 11px; margin-top: 4px">How much/often</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 2px">Aggregates & Trends</div>
+</div>
+<div style="background: #fef3c7; padding: 20px 28px; border-radius: 12px;text-align: center">
+<div style="color: #92400e; font-weight: bold; font-size: 14px">Traces</div>
+<div style="color: #f59e0b; font-size: 11px; margin-top: 4px">Where it flowed</div>
+<div style="color: #64748b; font-size: 10px; margin-top: 2px">Causality & Latency</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center">
+<div style="background: #f3e8ff; padding: 16px 32px; border-radius: 12px">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px; text-align: center">Unified by Trace Context</div>
+<div style="color: #a855f7; font-size: 11px; text-align: center; margin-top: 4px">trace_id + span_id + baggage</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="w3c-trace-context-implementation">W3C Trace Context Implementation</h3>
+<p>The <span style="color: #22c55e; font-weight: bold">W3C Trace Context</span> standard defines how to propagate tracing information across service boundaries. Our logger integrates with this standard:</p>
+<pre><code class="language-python">import uuid
+from typing import Optional, Dict
+from dataclasses import dataclass
+
+@dataclass
+class TraceContext:
+    &quot;&quot;&quot;
+    W3C Trace Context compatible context holder.
+
+    The trace context travels with every request, enabling
+    correlation of logs across all services involved in
+    processing that request.
+    &quot;&quot;&quot;
+    trace_id: str          # 32 hex chars - unique per trace
+    span_id: str           # 16 hex chars - unique per span
+    parent_span_id: Optional[str] = None
+    trace_flags: int = 1   # 1 = sampled
+    trace_state: str = &quot;&quot;  # Vendor-specific state
+
+    @classmethod
+    def generate(cls) -&gt; 'TraceContext':
+        &quot;&quot;&quot;Generate new trace context for root span.&quot;&quot;&quot;
+        return cls(
+            trace_id=uuid.uuid4().hex,
+            span_id=uuid.uuid4().hex[:16]
+        )
+
+    @classmethod
+    def from_headers(cls, headers: Dict[str, str]) -&gt; Optional['TraceContext']:
+        &quot;&quot;&quot;
+        Parse W3C traceparent header.
+
+        Format: {version}-{trace_id}-{parent_id}-{flags}
+        Example: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+        &quot;&quot;&quot;
+        traceparent = headers.get('traceparent', '')
+        if not traceparent:
+            return None
+
+        try:
+            parts = traceparent.split('-')
+            if len(parts) != 4 or parts[0] != '00':
+                return None
+            return cls(
+                trace_id=parts[1],
+                parent_span_id=parts[2],
+                span_id=uuid.uuid4().hex[:16],  # New span
+                trace_flags=int(parts[3], 16)
+            )
+        except (ValueError, IndexError):
+            return None
+
+    def to_headers(self) -&gt; Dict[str, str]:
+        &quot;&quot;&quot;Generate headers for outgoing requests.&quot;&quot;&quot;
+        return {
+            'traceparent': f&quot;00-{self.trace_id}-{self.span_id}-{self.trace_flags:02x}&quot;,
+            'tracestate': self.trace_state
+        }
+
+    def child_span(self) -&gt; 'TraceContext':
+        &quot;&quot;&quot;Create child span context.&quot;&quot;&quot;
+        return TraceContext(
+            trace_id=self.trace_id,
+            span_id=uuid.uuid4().hex[:16],
+            parent_span_id=self.span_id,
+            trace_flags=self.trace_flags,
+            trace_state=self.trace_state
+        )
+
+
+# Context variable for async-safe trace propagation
+_trace_context: contextvars.ContextVar[Optional[TraceContext]] = \
+    contextvars.ContextVar('trace_context', default=None)
+
+
+class TracingLogger:
+    &quot;&quot;&quot;
+    Logger with automatic trace context injection.
+
+    Every log message automatically includes trace_id and span_id
+    from the current context, enabling cross-service correlation.
+    &quot;&quot;&quot;
+
+    def __init__(self, base_logger: Logger):
+        self.base = base_logger
+
+    @staticmethod
+    @contextmanager
+    def span(name: str, **attributes):
+        &quot;&quot;&quot;
+        Create a new span context.
+
+        Usage:
+            with TracingLogger.span(&quot;db_query&quot;, table=&quot;users&quot;):
+                logger.info(&quot;Executing query&quot;)
+                result = db.query(...)
+        &quot;&quot;&quot;
+        parent = _trace_context.get()
+
+        if parent:
+            ctx = parent.child_span()
+        else:
+            ctx = TraceContext.generate()
+
+        # Record span start
+        start_time = time.time_ns()
+        token = _trace_context.set(ctx)
+
+        try:
+            yield ctx
+        finally:
+            # Record span end (could emit to tracing backend)
+            duration_ns = time.time_ns() - start_time
+            _trace_context.reset(token)
+
+    def _enrich_with_trace(self, kwargs: dict) -&gt; dict:
+        &quot;&quot;&quot;Add trace context to log extra fields.&quot;&quot;&quot;
+        ctx = _trace_context.get()
+        if ctx:
+            kwargs = {
+                'trace_id': ctx.trace_id,
+                'span_id': ctx.span_id,
+                'parent_span_id': ctx.parent_span_id,
+                **kwargs
+            }
+        return kwargs
+
+    def info(self, message: str, **kwargs):
+        self.base.info(message, **self._enrich_with_trace(kwargs))
+
+    def error(self, message: str, **kwargs):
+        self.base.error(message, **self._enrich_with_trace(kwargs))
+
+    # ... other level methods
+</code></pre>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Key Insight: Automatic vs. Manual Injection</div>
+<div style="color: #14532d; font-size: 14px">
+The <span style="color: #22c55e; font-weight: bold">TracingLogger</span> automatically injects trace context into every log. This eliminates the bug-prone pattern of manually passing trace IDs through every function call. When debugging, simply query logs by trace_id to see the complete request journey.
+</div>
+</div>
+<h3 id="opentelemetry-integration">OpenTelemetry Integration</h3>
+<p>For production systems, integrate with <span style="color: #22c55e; font-weight: bold">OpenTelemetry</span> rather than building custom tracing. See <a href="/topics/observability/distributed-tracing">[distributed-tracing]</a> for full integration patterns.</p>
+<pre><code class="language-python">from opentelemetry import trace
+from opentelemetry.trace import Span, StatusCode
+
+class OTelAwareHandler(Handler):
+    &quot;&quot;&quot;
+    Handler that links logs to active OpenTelemetry spans.
+
+    This enables clicking from a log line directly to
+    the associated trace in your tracing UI (Jaeger, Zipkin, etc.)
+    &quot;&quot;&quot;
+
+    def __init__(self, delegate: Handler, level: LogLevel = LogLevel.DEBUG):
+        super().__init__(level)
+        self.delegate = delegate
+        self.tracer = trace.get_tracer(__name__)
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        # Get current span from OpenTelemetry context
+        current_span = trace.get_current_span()
+
+        if current_span and current_span.is_recording():
+            span_context = current_span.get_span_context()
+
+            # Enrich log record with span info
+            record.extra['trace_id'] = format(span_context.trace_id, '032x')
+            record.extra['span_id'] = format(span_context.span_id, '016x')
+
+            # Add log as span event (appears in trace UI)
+            current_span.add_event(
+                record.message,
+                attributes={
+                    'log.level': record.level.name,
+                    'log.logger': record.logger_name,
+                    **{k: str(v) for k, v in record.extra.items()}
+                }
+            )
+
+            # Mark span as error if logging error
+            if record.level &gt;= LogLevel.ERROR:
+                current_span.set_status(StatusCode.ERROR, record.message)
+
+        # Delegate actual output
+        self.delegate.emit(formatted, record)
+</code></pre>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Request Flow with Trace Context</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #dbeafe; padding: 14px 20px; border-radius: 10px">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px">Client Request</div>
+<div style="color: #3b82f6; font-size: 10px">No trace context</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #dcfce7; padding: 14px 20px; border-radius: 10px">
+<div style="color: #166534; font-weight: bold; font-size: 12px">API Gateway</div>
+<div style="color: #15803d; font-size: 10px">Generate trace_id: abc123</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-left: 40px">
+<div style="color: #64748b; font-size: 20px">&#8595;</div>
+<div style="color: #64748b; font-size: 11px">traceparent: 00-abc123-span1-01</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #fef3c7; padding: 14px 20px; border-radius: 10px">
+<div style="color: #92400e; font-weight: bold; font-size: 12px">Order Service</div>
+<div style="color: #a16207; font-size: 10px">span_id: span2, parent: span1</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #fee2e2; padding: 14px 20px; border-radius: 10px">
+<div style="color: #991b1b; font-weight: bold; font-size: 12px">Payment Service</div>
+<div style="color: #b91c1c; font-size: 10px">span_id: span3, parent: span2</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #f3e8ff; padding: 14px 20px; border-radius: 10px">
+<div style="color: #7c3aed; font-weight: bold; font-size: 12px">Notification Service</div>
+<div style="color: #a855f7; font-size: 10px">span_id: span4, parent: span2</div>
+</div>
+</div>
+<div style="background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-top: 8px">
+<div style="color: #475569; font-size: 11px">
+All services log with trace_id=abc123 &#8594; Query <code>trace_id:abc123</code> shows complete request journey
+</div>
+</div>
+</div>
+</div>
+<h3 id="baggage-request-scoped-metadata">Baggage: Request-Scoped Metadata</h3>
+<p><span style="color: #22c55e; font-weight: bold">Baggage</span> carries application-specific metadata (user ID, tenant ID, feature flags) across service boundaries alongside trace context:</p>
+<pre><code class="language-python">@dataclass
+class Baggage:
+    &quot;&quot;&quot;
+    Request-scoped key-value pairs propagated across services.
+
+    Unlike trace context (for correlation), baggage carries
+    business data needed for request processing or logging.
+    &quot;&quot;&quot;
+    items: Dict[str, str] = field(default_factory=dict)
+
+    def set(self, key: str, value: str) -&gt; 'Baggage':
+        &quot;&quot;&quot;Immutable set - returns new baggage.&quot;&quot;&quot;
+        new_items = self.items.copy()
+        new_items[key] = value
+        return Baggage(new_items)
+
+    def get(self, key: str, default: str = None) -&gt; Optional[str]:
+        return self.items.get(key, default)
+
+    def to_header(self) -&gt; str:
+        &quot;&quot;&quot;Encode as W3C baggage header.&quot;&quot;&quot;
+        # Format: key1=value1,key2=value2
+        return ','.join(f&quot;{k}={v}&quot; for k, v in self.items.items())
+
+    @classmethod
+    def from_header(cls, header: str) -&gt; 'Baggage':
+        &quot;&quot;&quot;Parse W3C baggage header.&quot;&quot;&quot;
+        items = {}
+        if header:
+            for pair in header.split(','):
+                if '=' in pair:
+                    k, v = pair.split('=', 1)
+                    items[k.strip()] = v.strip()
+        return cls(items)
+
+
+# Usage in middleware
+async def tracing_middleware(request, call_next):
+    # Extract trace context and baggage from incoming request
+    trace_ctx = TraceContext.from_headers(request.headers) or TraceContext.generate()
+    baggage = Baggage.from_header(request.headers.get('baggage', ''))
+
+    # Add request-specific baggage
+    baggage = baggage.set('user_id', request.user_id)
+    baggage = baggage.set('tenant_id', request.tenant_id)
+
+    # Set context for this request
+    with TracingLogger.span(&quot;http_request&quot;, path=request.path):
+        with logging_context(
+            trace_id=trace_ctx.trace_id,
+            user_id=baggage.get('user_id'),
+            tenant_id=baggage.get('tenant_id')
+        ):
+            response = await call_next(request)
+
+    # Propagate to outgoing requests
+    # (HTTP client interceptor adds trace_ctx.to_headers() + baggage.to_header())
+    return response
+</code></pre>
+<h3 id="interview-questions-distributed-tracing-3-levels-deep">Interview Questions: Distributed Tracing (3 Levels Deep)</h3>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1: What is the relationship between logging and distributed tracing?</strong></p>
+<p>Logging captures <span style="color: #22c55e; font-weight: bold">what happened</span> in detail at each service. Tracing captures <span style="color: #22c55e; font-weight: bold">where requests flowed</span> and how long each step took. When unified by trace_id, you can click from a slow span in your trace to see the detailed logs from that exact operation. Without trace context, logs from different services are disconnected - you cannot reconstruct the full request journey.</p>
+<p><strong>Q2: What is the W3C Trace Context standard and why does it matter?</strong></p>
+<p>W3C Trace Context standardizes how tracing information propagates via HTTP headers (<code>traceparent</code>, <code>tracestate</code>). Before standardization, each vendor (Zipkin, Jaeger, AWS X-Ray) used incompatible formats. The standard enables interoperability: a request starting in a service using Jaeger can flow through services using different tracing backends while maintaining correlation. The <code>traceparent</code> format is: <code>{version}-{trace_id}-{parent_id}-{flags}</code>.</p>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1: How do you implement trace context propagation in an async Python application where requests may jump between threads/coroutines?</strong></p>
+<p>Use <span style="color: #22c55e; font-weight: bold">contextvars</span> (Python 3.7+), which are async-safe and automatically propagate across await boundaries. Unlike <code>threading.local</code>, contextvars correctly handle the case where a single request spawns multiple concurrent database queries - each coroutine sees the same trace context. For thread pool executors, explicitly copy context: <code>asyncio.get_event_loop().run_in_executor(None, contextvars.copy_context().run, func)</code>.</p>
+<p><strong>Q2.2: What happens to trace context when a service uses message queues (Kafka, RabbitMQ) instead of synchronous HTTP?</strong></p>
+<p>Trace context must be explicitly serialized into message headers. The consumer extracts and restores the context, creating a <span style="color: #22c55e; font-weight: bold">link</span> (not parent-child) relationship since the consumer span starts after the producer span ends. Key considerations:</p>
+<ol>
+<li>Message may be processed hours after production - timestamps matter</li>
+<li>One message may fan out to multiple consumers - trace branches</li>
+<li>Batch consumers should create one span per message, not per batch</li>
+</ol>
+<p>See <a href="/topics/microservices/event-strategies">[event-driven-architecture]</a> for patterns.</p>
+</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1.1: How do you implement trace context propagation across language boundaries (e.g., Python service calling a Go service calling a Rust service)?</strong></p>
+<p>This is exactly why W3C Trace Context exists. Each language's tracing library (OpenTelemetry SDK) speaks the same wire protocol:</p>
+<ol>
+<li>Python service adds <code>traceparent</code> header to outgoing HTTP request</li>
+<li>Go service extracts header, creates child span, logs with same trace_id</li>
+<li>Rust service does the same</li>
+</ol>
+<p>The key is <span style="color: #22c55e; font-weight: bold">standard header names and formats</span>. If using gRPC, trace context propagates via gRPC metadata. For custom protocols, explicitly define where trace context lives in the message format.</p>
+<p><strong>Q2.2.1: Design a system that maintains trace context through a complex workflow involving: HTTP API -&gt; Kafka -&gt; Worker -&gt; Redis Cache -&gt; External API -&gt; Webhook callback.</strong></p>
+<pre><code>1. HTTP API receives request
+   - Generate trace_id if not present
+   - Create span: &quot;api.receive_order&quot;
+
+2. Publish to Kafka
+   - Serialize trace context to message headers
+   - Record span event: &quot;kafka.publish&quot;
+
+3. Worker consumes message
+   - Extract trace context from headers
+   - Create linked span: &quot;worker.process_order&quot;
+
+4. Redis cache check
+   - Create child span: &quot;redis.get&quot;
+   - Include trace_id in Redis key for debugging
+
+5. External API call
+   - Propagate trace context in outgoing headers
+   - Create child span: &quot;external.payment_api&quot;
+
+6. External API calls webhook
+   - Include trace_id in webhook payload
+   - Webhook handler extracts and continues trace
+</code></pre>
+<p><span style="color: #22c55e; font-weight: bold">Critical insight</span>: The webhook is the hardest part. External APIs don't propagate your trace context automatically. Include trace_id in the payload you send them, and configure them to echo it back in the webhook. This creates a &quot;logical&quot; continuation even if the wire format doesn't support tracing.</p>
+<p><strong>Q2.2.2: How do you handle trace context in a system with both synchronous request-response and fire-and-forget patterns?</strong></p>
+<p>Distinguish between:</p>
+<ol>
+<li><strong>Synchronous spans</strong>: Parent-child relationship, child span ends before parent</li>
+<li><strong>Async fire-and-forget spans</strong>: Link relationship, independent lifecycle</li>
+</ol>
+<p>For fire-and-forget (e.g., sending an email after order completion):</p>
+<ul>
+<li>Create a new root span with a <span style="color: #22c55e; font-weight: bold">link</span> to the original trace</li>
+<li>The link says &quot;this work was triggered by trace X&quot; without implying timing</li>
+<li>Log correlation still works - query by either trace_id</li>
+</ul>
+<pre><code class="language-python">def send_async_email(order_id: str, original_trace_id: str):
+    # New trace for async work, linked to original
+    with tracer.start_as_current_span(
+        &quot;send_email&quot;,
+        links=[Link(SpanContext(trace_id=original_trace_id, span_id=&quot;...&quot;))]
+    ):
+        # Logs here have new trace_id but link preserves causality
+        logger.info(&quot;Sending order confirmation&quot;,
+                   order_id=order_id,
+                   triggered_by_trace=original_trace_id)
+</code></pre>
+<p>See <a href="/topics/distributed-systems/saga-pattern">[saga-pattern]</a> for complex workflow correlation.</p>
+</div>
+</div>
+<hr />
+<h2 id="7-performance-optimization-deep-dive">7. Performance Optimization Deep Dive</h2>
+<div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Zero-Cost Abstraction Goals</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<p>Production logging must be <span style="color: #90EE90; font-weight: bold">effectively free</span> when disabled. A log call at DEBUG level in production (where INFO is the minimum) should cost nanoseconds, not microseconds. This section covers techniques to achieve near-zero overhead.</p>
+</div>
+</div>
+<h3 id="the-cost-hierarchy-of-logging-operations">The Cost Hierarchy of Logging Operations</h3>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Operation Costs (Approximate)</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; min-width: 160px">
+<div style="color: #166534; font-weight: bold; font-size: 12px">Level Check</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1">~1-5 ns</div>
+<div style="color: #22c55e; font-size: 11px">Integer comparison</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; min-width: 160px">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px">String Formatting</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1">~100-500 ns</div>
+<div style="color: #3b82f6; font-size: 11px">f-strings, % formatting</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; min-width: 160px">
+<div style="color: #92400e; font-weight: bold; font-size: 12px">LogRecord Creation</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1">~200-1000 ns</div>
+<div style="color: #f59e0b; font-size: 11px">Object allocation + timestamp</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #fee2e2; padding: 12px 16px; border-radius: 8px; min-width: 160px">
+<div style="color: #991b1b; font-weight: bold; font-size: 12px">File Write + Flush</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1">~1-10 μs</div>
+<div style="color: #ef4444; font-size: 11px">Syscall overhead</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #f3e8ff; padding: 12px 16px; border-radius: 8px; min-width: 160px">
+<div style="color: #7c3aed; font-weight: bold; font-size: 12px">Network Write</div>
+</div>
+<div style="color: #64748b; font-size: 12px; flex: 1">~50 μs - 50 ms</div>
+<div style="color: #a855f7; font-size: 11px">Variable, can spike</div>
+</div>
+</div>
+</div>
+<h3 id="lazy-evaluation-pattern">Lazy Evaluation Pattern</h3>
+<p>The key insight: <span style="color: #22c55e; font-weight: bold">never format a message that won't be logged</span>.</p>
+<pre><code class="language-python">class LazyLogger:
+    &quot;&quot;&quot;
+    Logger that defers expensive operations until necessary.
+    &quot;&quot;&quot;
+
+    def debug(self, message: str, *args, **kwargs):
+        # FAST PATH: Check level before ANY work
+        if self.level &gt; LogLevel.DEBUG:
+            return  # Cost: ~5ns
+
+        # SLOW PATH: Only reached if message will be logged
+        if args:
+            message = message % args  # Deferred formatting
+        self._emit(LogLevel.DEBUG, message, kwargs)
+
+    def debug_lazy(self, message_func: Callable[[], str], **kwargs):
+        &quot;&quot;&quot;
+        For expensive message construction.
+
+        Usage:
+            logger.debug_lazy(lambda: f&quot;Query result: {expensive_serialize(result)}&quot;)
+        &quot;&quot;&quot;
+        if self.level &gt; LogLevel.DEBUG:
+            return  # Lambda never called
+        self._emit(LogLevel.DEBUG, message_func(), kwargs)
+</code></pre>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Python Gotcha: f-string Evaluation</div>
+<div style="color: #14532d; font-size: 14px">
+<pre><code class="language-python"># BAD: f-string evaluates BEFORE is_enabled check
+logger.debug(f&quot;Result: {expensive_operation()}&quot;)  # Always runs!
+
+# GOOD: % formatting defers until needed
+logger.debug(&quot;Result: %s&quot;, expensive_operation())  # Deferred if DEBUG disabled
+
+# GOOD: Explicit lazy
+logger.debug_lazy(lambda: f&quot;Result: {expensive_operation()}&quot;)
+</code></pre>
+<p>See <a href="/topics/languages/python-performance">[python-performance]</a> for more optimization patterns.</p>
+</div>
+</div>
+<h3 id="lock-free-hot-path">Lock-Free Hot Path</h3>
+<p>For extreme throughput, eliminate locks from the critical path using <span style="color: #22c55e; font-weight: bold">lock-free data structures</span>:</p>
+<pre><code class="language-python">import ctypes
+from typing import Optional
+
+class AtomicCounter:
+    &quot;&quot;&quot;Lock-free counter using atomic operations.&quot;&quot;&quot;
+
+    def __init__(self, initial: int = 0):
+        self._value = ctypes.c_long(initial)
+
+    def increment(self) -&gt; int:
+        &quot;&quot;&quot;Atomic increment, returns new value.&quot;&quot;&quot;
+        # On x86, LOCK XADD is atomic
+        # Python's ctypes doesn't expose this directly,
+        # so production code should use atomics library
+        # This is illustrative
+        pass
+
+
+class LockFreeLogBuffer:
+    &quot;&quot;&quot;
+    MPSC (Multi-Producer Single-Consumer) ring buffer.
+
+    Multiple threads can log without contention.
+    Single consumer thread drains to handlers.
+    &quot;&quot;&quot;
+
+    def __init__(self, capacity: int = 65536):
+        # Power of 2 for fast modulo
+        assert capacity &amp; (capacity - 1) == 0
+        self.capacity = capacity
+        self.mask = capacity - 1
+
+        # Pre-allocated slots avoid GC pressure
+        self.buffer = [None] * capacity
+
+        # Atomic positions
+        self.write_pos = AtomicCounter(0)
+        self.read_pos = AtomicCounter(0)
+
+    def try_write(self, record: LogRecord) -&gt; bool:
+        &quot;&quot;&quot;
+        Non-blocking write attempt.
+        Returns False if buffer full.
+        &quot;&quot;&quot;
+        while True:
+            current_write = self.write_pos.get()
+            next_write = (current_write + 1) &amp; self.mask
+
+            # Check if full
+            if next_write == self.read_pos.get():
+                return False
+
+            # CAS to claim slot
+            if self.write_pos.compare_and_swap(current_write, next_write):
+                self.buffer[current_write] = record
+                return True
+
+    def try_read(self) -&gt; Optional[LogRecord]:
+        &quot;&quot;&quot;
+        Non-blocking read attempt.
+        Returns None if empty.
+        &quot;&quot;&quot;
+        current_read = self.read_pos.get()
+
+        if current_read == self.write_pos.get():
+            return None  # Empty
+
+        record = self.buffer[current_read]
+        self.buffer[current_read] = None  # Help GC
+        self.read_pos.increment()
+        return record
+</code></pre>
+<p>See <a href="/topics/concurrency/lock-free">[lock-free-data-structures]</a> and <a href="/topics/concurrency/disruptor">[disruptor-pattern]</a> for production implementations.</p>
+<h3 id="interview-questions-performance-3-levels-deep">Interview Questions: Performance (3 Levels Deep)</h3>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<p><strong>Q1: Why is early level checking critical for logging performance?</strong></p>
+<p>Level checking is a <span style="color: #22c55e; font-weight: bold">~5ns integer comparison</span>. String formatting is ~100-500ns. Record creation is ~200-1000ns. File I/O is ~1-10μs. By checking level first, we skip ALL subsequent work for disabled log calls. In a tight loop logging at DEBUG with INFO threshold, this is the difference between ~5ns/call and ~1μs/call - a 200x improvement.</p>
+<p><strong>Q2: What is the performance impact of logging in a hot loop?</strong></p>
+<p>Even with async logging and early level checks, logging in a hot loop can devastate performance:</p>
+<ul>
+<li>Each call still has function call overhead (~20ns)</li>
+<li>String literals still need construction (~10ns)</li>
+<li>If enabled, queue insertion adds contention</li>
+</ul>
+<p>Solutions: (1) Sample logs in loops (<code>if i % 1000 == 0: log...</code>), (2) Aggregate metrics instead of individual logs, (3) Use conditional compilation/feature flags to eliminate logging code entirely in release builds.</p>
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
+<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1: How does Python's logging module implement lazy message formatting, and what's the catch?</strong></p>
+<p>Python's logging uses <code>%</code> style formatting: <code>logger.info(&quot;User %s logged in&quot;, username)</code>. The <code>username</code> argument is only substituted if the message will be logged. However, <span style="color: #22c55e; font-weight: bold">the arguments are still evaluated</span> before being passed to the function. So <code>logger.debug(&quot;Data: %s&quot;, expensive_serialize(data))</code> ALWAYS calls <code>expensive_serialize</code>. Use lambdas or the <code>isEnabledFor()</code> check for truly lazy evaluation.</p>
+<p><strong>Q2.2: How do you minimize GC pressure in a high-throughput logging system?</strong></p>
+<p>Three strategies:</p>
+<ol>
+<li><strong>Object pooling</strong>: Pre-allocate LogRecord objects, reset and reuse them</li>
+<li><strong>Ring buffer</strong>: Fixed-size buffer avoids node allocation/deallocation</li>
+<li><strong>Structural sharing</strong>: Use immutable context dicts that share underlying data</li>
+</ol>
+<p>The LMAX Disruptor pattern combines all three: pre-allocated ring buffer with object reuse. In Python, you can achieve similar effects with <code>__slots__</code> on LogRecord to reduce per-instance memory.</p>
+</div>
+</div>
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p><strong>Q2.1.1: Design a logging system that can handle 10 million logs/second with &lt;1μs p99 latency impact on the application.</strong></p>
+<p>Architecture for extreme throughput:</p>
+<ol>
+<li>
+<p><strong>Thread-local pre-serialization</strong>: Each thread has a pre-allocated buffer. Log records are serialized into this buffer without locks.</p>
+</li>
+<li>
+<p><strong>Lock-free handoff</strong>: When buffer is full, atomically swap with empty buffer from pool. Consumer takes filled buffer.</p>
+</li>
+<li>
+<p><strong>Batch I/O</strong>: Consumer aggregates buffers, writes in large batches to minimize syscalls.</p>
+</li>
+<li>
+<p><strong>Memory-mapped output</strong>: Write to mmap'd file for zero-copy I/O.</p>
+</li>
+</ol>
+<pre><code class="language-python">class UltraFastLogger:
+    _thread_buffer = threading.local()
+
+    def info(self, msg):
+        if self.level &gt; INFO:
+            return
+        buf = self._get_buffer()
+        buf.write_record(msg)  # No locks, no allocation
+        if buf.full():
+            self._swap_buffer(buf)
+</code></pre>
+<p>The key insight: <span style="color: #22c55e; font-weight: bold">separate the fast path (buffering) from the slow path (I/O)</span> with zero contention between them.</p>
+<p><strong>Q2.2.1: How do you benchmark logging performance accurately without the benchmark itself affecting results?</strong></p>
+<p>Logging benchmarks are notoriously misleading:</p>
+<ol>
+<li>
+<p><strong>Warm-up</strong>: Run thousands of iterations before measuring to trigger JIT (if applicable) and warm caches</p>
+</li>
+<li>
+<p><strong>Isolate I/O</strong>: For measuring log overhead, use a null handler that discards output</p>
+</li>
+<li>
+<p><strong>Prevent optimization</strong>: Ensure the compiler can't elide log calls - use volatile or blackhole</p>
+</li>
+<li>
+<p><strong>Measure tail latency</strong>: Average is misleading; measure p99, p999. Async logging often has good average but terrible tail due to queue draining.</p>
+</li>
+<li>
+<p><strong>Test contention</strong>: Single-threaded benchmarks miss lock contention. Test with realistic concurrent load.</p>
+</li>
+</ol>
+<p>See <a href="/topics/performance/microbenchmarking">[microbenchmarking]</a> for rigorous methodology.</p>
+</div>
+</div>
+<hr />
+<h2 id="8-testing-logging-systems">8. Testing Logging Systems</h2>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Verifying Invisible Infrastructure</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<p>Logging is <span style="color: #90EE90; font-weight: bold">invisible infrastructure</span> - it doesn't affect business logic but is critical for operations. Testing logging ensures that when you need logs most (during incidents), they're actually there and useful.</p>
+</div>
+</div>
+<h3 id="capturing-logs-in-tests">Capturing Logs in Tests</h3>
+<pre><code class="language-python">import pytest
+from typing import List
+
+class LogCapture(Handler):
+    &quot;&quot;&quot;
+    Test handler that captures logs for assertions.
+
+    Usage in pytest:
+        def test_login_logging(log_capture):
+            service.login(&quot;alice&quot;, &quot;password&quot;)
+            assert log_capture.contains(level=INFO, message_contains=&quot;login&quot;)
+            assert log_capture.contains(user_id=&quot;alice&quot;)
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        super().__init__(level=LogLevel.DEBUG)
+        self.records: List[LogRecord] = []
+
+    def emit(self, formatted: str, record: LogRecord) -&gt; None:
+        self.records.append(record)
+
+    def clear(self) -&gt; None:
+        self.records.clear()
+
+    def contains(self,
+                 level: LogLevel = None,
+                 message_contains: str = None,
+                 message_regex: str = None,
+                 **extra_fields) -&gt; bool:
+        &quot;&quot;&quot;Check if any captured record matches criteria.&quot;&quot;&quot;
+        import re
+
+        for record in self.records:
+            if level and record.level != level:
+                continue
+            if message_contains and message_contains not in record.message:
+                continue
+            if message_regex and not re.search(message_regex, record.message):
+                continue
+
+            # Check extra fields
+            match = True
+            for key, expected in extra_fields.items():
+                actual = record.extra.get(key)
+                if actual != expected:
+                    match = False
+                    break
+
+            if match:
+                return True
+        return False
+
+    def assert_logged(self, **kwargs):
+        &quot;&quot;&quot;Assert that a matching log exists.&quot;&quot;&quot;
+        assert self.contains(**kwargs), \
+            f&quot;Expected log not found. Criteria: {kwargs}\nCaptured: {self.records}&quot;
+
+
+@pytest.fixture
+def log_capture():
+    &quot;&quot;&quot;Pytest fixture for capturing logs.&quot;&quot;&quot;
+    capture = LogCapture()
+    root = LogManager.get_root()
+    root.add_handler(capture)
+    yield capture
+    root.handlers.remove(capture)
+
+
+# Test examples
+class TestOrderService:
+    def test_order_creation_logs_with_trace_context(self, log_capture):
+        with logging_context(trace_id=&quot;test-trace-123&quot;):
+            order_service.create_order(user_id=&quot;alice&quot;, items=[&quot;book&quot;])
+
+        log_capture.assert_logged(
+            level=LogLevel.INFO,
+            message_contains=&quot;Order created&quot;,
+            trace_id=&quot;test-trace-123&quot;,
+            user_id=&quot;alice&quot;
+        )
+
+    def test_payment_failure_logs_error_with_details(self, log_capture):
+        with pytest.raises(PaymentError):
+            order_service.process_payment(order_id=&quot;123&quot;, amount=100)
+
+        log_capture.assert_logged(
+            level=LogLevel.ERROR,
+            message_contains=&quot;Payment failed&quot;,
+            order_id=&quot;123&quot;
+        )
+</code></pre>
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Testing Philosophy: What to Assert</div>
+<div style="color: #14532d; font-size: 14px">
+<p>Test <span style="color: #22c55e; font-weight: bold">semantic content</span>, not exact format:</p>
+<ul>
+<li>Good: <code>assert_logged(message_contains=&quot;Order created&quot;, order_id=&quot;123&quot;)</code></li>
+<li>Bad: <code>assert logs[0] == &quot;[2024-01-15 10:30:00] INFO order.service - Order created...&quot;</code></li>
+</ul>
+<p>The first survives format changes; the second breaks constantly.</p>
+</div>
+</div>
+<h3 id="testing-async-and-rotation">Testing Async and Rotation</h3>
+<pre><code class="language-python">class TestAsyncHandler:
+    def test_logs_are_eventually_written(self):
+        &quot;&quot;&quot;Async handler should flush on close.&quot;&quot;&quot;
+        capture = LogCapture()
+        async_handler = AsyncHandler(capture, queue_size=100)
+        logger = Logger(&quot;test&quot;).add_handler(async_handler)
+
+        for i in range(50):
+            logger.info(f&quot;Message {i}&quot;)
+
+        # Logs may not be written yet
+        assert len(capture.records) &lt; 50
+
+        # Close triggers flush
+        async_handler.close()
+        assert len(capture.records) == 50
+
+    def test_overflow_policy_drop_oldest(self):
+        &quot;&quot;&quot;Queue overflow should drop oldest messages.&quot;&quot;&quot;
+        capture = LogCapture()
+        async_handler = AsyncHandler(
+            capture,
+            queue_size=10,
+            overflow_policy=&quot;drop_oldest&quot;
+        )
+        logger = Logger(&quot;test&quot;).add_handler(async_handler)
+
+        # Fill queue beyond capacity
+        for i in range(20):
+            logger.info(f&quot;Message {i}&quot;)
+
+        async_handler.close()
+
+        # Should have recent messages, not oldest
+        messages = [r.message for r in capture.records]
+        assert &quot;Message 0&quot; not in messages  # Oldest dropped
+        assert &quot;Message 19&quot; in messages     # Newest kept
+
+
+class TestRotatingFileHandler:
+    def test_rotates_at_size_limit(self, tmp_path):
+        &quot;&quot;&quot;File should rotate when size exceeded.&quot;&quot;&quot;
+        log_file = tmp_path / &quot;test.log&quot;
+        handler = RotatingFileHandler(
+            str(log_file),
+            max_bytes=1000,
+            backup_count=3,
+            compress=False
+        )
+        logger = Logger(&quot;test&quot;).add_handler(handler)
+
+        # Write until rotation
+        for i in range(100):
+            logger.info(&quot;X&quot; * 50)  # ~60 bytes per line
+
+        handler.close()
+
+        # Check rotation occurred
+        assert log_file.exists()
+        assert (tmp_path / &quot;test.log.1&quot;).exists()
+</code></pre>
+<hr />
+<h2 id="9-common-pitfalls--interview-gotchas">9. Common Pitfalls &amp; Interview Gotchas</h2>
+<div style="background: #fee2e2; border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #991b1b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Production Pitfalls to Discuss in Interviews</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<p>These are the &quot;war stories&quot; that demonstrate real-world experience. Interviewers love hearing about these because they show you've operated logging systems at scale.</p>
+</div>
+</div>
+<h3 id="pitfall-1-logging-sensitive-data">Pitfall 1: Logging Sensitive Data</h3>
+<pre><code class="language-python"># DANGEROUS: Logging request bodies may include passwords
+logger.info(f&quot;Received request: {request.body}&quot;)
+
+# DANGEROUS: Exception messages may contain sensitive data
+try:
+    authenticate(username, password)
+except AuthError as e:
+    logger.error(f&quot;Auth failed: {e}&quot;)  # May log password!
+
+# SAFE: Explicit field extraction
+logger.info(&quot;Received request&quot;,
+           path=request.path,
+           method=request.method,
+           content_length=len(request.body))
+</code></pre>
+<h3 id="pitfall-2-logging-loop-amplification">Pitfall 2: Logging Loop Amplification</h3>
+<pre><code class="language-python"># DANGEROUS: Logs inside retry loops
+for attempt in range(100):
+    try:
+        result = flaky_operation()
+        break
+    except FlakyError:
+        logger.warning(f&quot;Attempt {attempt} failed&quot;)  # 100 logs!
+
+# SAFE: Log summary
+for attempt in range(100):
+    try:
+        result = flaky_operation()
+        break
+    except FlakyError:
+        last_error = e
+        continue
+else:
+    logger.error(f&quot;All {attempt} attempts failed&quot;, last_error=str(last_error))
+</code></pre>
+<h3 id="pitfall-3-log-and-throw-anti-pattern">Pitfall 3: Log-and-Throw Anti-Pattern</h3>
+<pre><code class="language-python"># ANTI-PATTERN: Logs error twice (here and at catch site)
+def process_order(order_id):
+    try:
+        validate(order_id)
+    except ValidationError as e:
+        logger.error(f&quot;Validation failed: {e}&quot;)  # Logged here...
+        raise  # ...and logged again when caught upstream
+
+# BETTER: Let the catcher log
+def process_order(order_id):
+    validate(order_id)  # Let exception propagate
+
+# Or log only at the top-level handler
+@app.exception_handler(ValidationError)
+def handle_validation_error(e):
+    logger.error(&quot;Request validation failed&quot;, error=str(e))
+    return {&quot;error&quot;: &quot;Invalid request&quot;}
+</code></pre>
+<h3 id="pitfall-4-timestamp-synchronization">Pitfall 4: Timestamp Synchronization</h3>
+<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Clock Skew Causes Correlation Failures</div>
+<div style="color: #78350f; font-size: 14px">
+When Service A's clock is 5 seconds ahead of Service B, logs appear out of order even with correct trace_id correlation. Solutions:
+1. Use NTP with monitoring for clock drift
+2. Include <span style="color: #22c55e; font-weight: bold">logical timestamps</span> (lamport clocks) alongside wall-clock time
+3. In log analysis, sort by trace_id + span_id hierarchy, not timestamp
+<p>See <a href="/topics/distributed-systems/time-synchronization">[distributed-time]</a> for clock synchronization patterns.</p>
+</div>
+</div>
+<h3 id="interview-quick-fire-questions">Interview Quick-Fire Questions</h3>
+<div style="background: #f3e8ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 12px">Rapid-Fire Interview Questions</div>
+<div style="color: #581c87; font-size: 14px; line-height: 2.0">
+<p><strong>Q: Why use DEBUG, INFO, WARN, ERROR instead of just &quot;log&quot;?</strong><br />
+A: <span style="color: #22c55e; font-weight: bold">Filtering</span>. Production runs at INFO, debugging at DEBUG. Different severity enables routing (ERROR to PagerDuty).</p>
+<p><strong>Q: Sync vs async logging trade-off in one sentence?</strong><br />
+A: Sync guarantees durability but blocks; async provides throughput but may lose logs on crash.</p>
+<p><strong>Q: Why is <code>logger.debug(f&quot;Data: {expensive()}&quot;)</code> bad?</strong><br />
+A: f-string evaluates before the level check - <code>expensive()</code> runs even if DEBUG is disabled.</p>
+<p><strong>Q: What's wrong with <code>catch (e) { log(e); throw e; }</code>?</strong><br />
+A: Error logged twice - once here, once at final handler. Creates duplicate alerts.</p>
+<p><strong>Q: How do you correlate logs across microservices?</strong><br />
+A: <span style="color: #22c55e; font-weight: bold">Trace context propagation</span> - inject trace_id into every log, propagate via W3C headers.</p>
+<p><strong>Q: What happens to async logs if the app crashes?</strong><br />
+A: Lost. Queued logs exist only in memory. Critical logs need sync handlers or persistent queues.</p>
+<p><strong>Q: Why compress rotated logs?</strong><br />
+A: Logs are highly compressible (5-10x). Compression reduces storage cost and speeds up shipping.</p>
+<p><strong>Q: How do you prevent log injection attacks?</strong><br />
+A: Structured logging (JSON) instead of string templates. Never interpolate user input into log format strings.</p>
+</div>
+</div>
+<hr />
+<h2 id="10-real-world-architecture-patterns">10. Real-World Architecture Patterns</h2>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Production Logging Architecture (ELK Stack)</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dbeafe; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px">App Pods</div>
+<div style="color: #3b82f6; font-size: 10px; margin-top: 4px">stdout/stderr</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #dcfce7; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
+<div style="color: #166534; font-weight: bold; font-size: 13px">Fluent Bit</div>
+<div style="color: #22c55e; font-size: 10px; margin-top: 4px">DaemonSet</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #fef3c7; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
+<div style="color: #92400e; font-weight: bold; font-size: 13px">Kafka</div>
+<div style="color: #f59e0b; font-size: 10px; margin-top: 4px">Buffer</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #fee2e2; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px">Logstash</div>
+<div style="color: #ef4444; font-size: 10px; margin-top: 4px">Transform</div>
+</div>
+<div style="color: #64748b; font-size: 20px">&#8594;</div>
+<div style="background: #f3e8ff; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px">Elasticsearch</div>
+<div style="color: #a855f7; font-size: 10px; margin-top: 4px">Index & Search</div>
+</div>
+</div>
+<div style="display: flex; justify-content: flex-end">
+<div style="background: #e0f2fe; padding: 14px 20px; border-radius: 10px">
+<div style="color: #0369a1; font-weight: bold; font-size: 12px">Kibana / Grafana</div>
+<div style="color: #0ea5e9; font-size: 10px">Visualization & Alerting</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="pattern-log-levels-by-environment">Pattern: Log Levels by Environment</h3>
+<pre><code class="language-python"># Configuration per environment
+LOGGING_CONFIG = {
+    &quot;development&quot;: {
+        &quot;root_level&quot;: LogLevel.DEBUG,
+        &quot;handlers&quot;: [
+            {&quot;type&quot;: &quot;console&quot;, &quot;formatter&quot;: &quot;colored&quot;},
+        ],
+        &quot;async&quot;: False,  # Easier debugging
+    },
+    &quot;staging&quot;: {
+        &quot;root_level&quot;: LogLevel.DEBUG,
+        &quot;handlers&quot;: [
+            {&quot;type&quot;: &quot;console&quot;, &quot;formatter&quot;: &quot;json&quot;},
+            {&quot;type&quot;: &quot;file&quot;, &quot;path&quot;: &quot;/var/log/app.log&quot;},
+        ],
+        &quot;async&quot;: True,
+    },
+    &quot;production&quot;: {
+        &quot;root_level&quot;: LogLevel.INFO,  # No DEBUG in prod
+        &quot;handlers&quot;: [
+            {&quot;type&quot;: &quot;console&quot;, &quot;formatter&quot;: &quot;json&quot;},  # For K8s log collection
+        ],
+        &quot;sampling&quot;: {
+            LogLevel.DEBUG: 0.01,  # 1% sampling if enabled
+        },
+        &quot;async&quot;: True,
+    },
+}
+</code></pre>
+<h3 id="pattern-correlation-id-middleware">Pattern: Correlation ID Middleware</h3>
+<pre><code class="language-python"># FastAPI middleware example
+from fastapi import FastAPI, Request
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class CorrelationMiddleware(BaseHTTPMiddleware):
+    &quot;&quot;&quot;
+    Middleware that ensures every request has correlation context.
+
+    - Extracts trace_id from incoming headers (or generates new)
+    - Sets context for all logs within request
+    - Propagates to outgoing requests
+    &quot;&quot;&quot;
+
+    async def dispatch(self, request: Request, call_next):
+        # Extract or generate trace context
+        trace_ctx = TraceContext.from_headers(dict(request.headers))
+        if not trace_ctx:
+            trace_ctx = TraceContext.generate()
+
+        # Set context for this request
+        with logging_context(
+            trace_id=trace_ctx.trace_id,
+            span_id=trace_ctx.span_id,
+            request_path=request.url.path,
+            request_method=request.method,
+            client_ip=request.client.host
+        ):
+            logger.info(&quot;Request started&quot;)
+
+            try:
+                response = await call_next(request)
+                logger.info(&quot;Request completed&quot;,
+                           status_code=response.status_code)
+                return response
+            except Exception as e:
+                logger.exception(&quot;Request failed&quot;)
+                raise
+
+
+app = FastAPI()
+app.add_middleware(CorrelationMiddleware)
+</code></pre>
+<p>See <a href="/topics/system-design/api-gateway">[api-gateway]</a> for centralized correlation management and <a href="/topics/observability/patterns">[observability-patterns]</a> for comprehensive monitoring strategies.</p>
+<hr />
+<h2 id="summary-key-interview-takeaways">Summary: Key Interview Takeaways</h2>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">What Interviewers Look For</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<ol>
+<li><span style="color: #90EE90; font-weight: bold">Performance awareness</span>: Early level checking, lazy evaluation, async I/O</li>
+<li><span style="color: #90EE90; font-weight: bold">Reliability trade-offs</span>: Durability vs. latency, queue overflow policies</li>
+<li><span style="color: #90EE90; font-weight: bold">Observability integration</span>: Trace context propagation, structured data</li>
+<li><span style="color: #90EE90; font-weight: bold">Production readiness</span>: Rotation, sensitive data handling, error isolation</li>
+<li><span style="color: #90EE90; font-weight: bold">Design patterns</span>: Strategy (handlers), Template Method (Handler.handle), Chain of Responsibility (filters)</li>
+</ol>
+</div>
+</div>

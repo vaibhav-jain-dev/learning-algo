@@ -296,18 +296,23 @@ func (h *Handlers) TopicDetail(c *fiber.Ctx) error {
 	title := formatName(topic)
 	categoryTitle := formatName(category)
 
-	// Try to load content from content.md file
-	contentPath := filepath.Join(topicsDir, category, topic, "content.md")
 	var contentHTML string
 	var hasContent bool
 
-	mdContent, err := os.ReadFile(contentPath)
-	if err == nil && len(mdContent) > 0 {
-		var buf bytes.Buffer
-		if err := h.md.Convert(mdContent, &buf); err == nil {
-			// Strip inline border styles from HTML to allow CSS to control borders
-			contentHTML = stripBorderStyles(buf.String())
-			hasContent = true
+	// Try HTML first (fastest - no conversion needed)
+	htmlPath := filepath.Join(topicsDir, category, topic, "content.html")
+	if htmlContent, err := os.ReadFile(htmlPath); err == nil && len(htmlContent) > 0 {
+		contentHTML = string(htmlContent)
+		hasContent = true
+	} else {
+		// Fallback to markdown conversion
+		mdPath := filepath.Join(topicsDir, category, topic, "content.md")
+		if mdContent, err := os.ReadFile(mdPath); err == nil && len(mdContent) > 0 {
+			var buf bytes.Buffer
+			if err := h.md.Convert(mdContent, &buf); err == nil {
+				contentHTML = stripBorderStyles(buf.String())
+				hasContent = true
+			}
 		}
 	}
 

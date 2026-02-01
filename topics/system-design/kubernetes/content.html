@@ -1,0 +1,695 @@
+<h1 id="kubernetes-k8s">Kubernetes (K8s)</h1>
+<h2 id="overview">Overview</h2>
+<p>Kubernetes is an open-source container orchestration platform that automates deployment, scaling, and management of containerized applications. <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">Understanding K8s is essential for modern system design interviews as it's the de-facto standard for container orchestration</span>.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Kubernetes Architecture</h4>
+<div style="display: flex; gap: 24px; flex-wrap: wrap">
+<div style="flex: 1; min-width: 280px">
+<div style="background: #3b82f6; color: white; padding: 12px 16px; border-radius: 8px 8px 0 0; font-weight: 600">Control Plane</div>
+<div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px; font-size: 14px">
+<div style="padding: 6px 0"><strong>API Server:</strong> Frontend for K8s control plane</div>
+<div style="padding: 6px 0"><strong>etcd:</strong> Distributed key-value store for cluster state</div>
+<div style="padding: 6px 0"><strong>Scheduler:</strong> Assigns pods to nodes</div>
+<div style="padding: 6px 0"><strong>Controller Manager:</strong> Runs controller processes</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px">
+<div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px 8px 0 0; font-weight: 600">Worker Nodes</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 0 0 8px 8px; font-size: 14px">
+<div style="padding: 6px 0"><strong>kubelet:</strong> Agent ensuring containers run in pods</div>
+<div style="padding: 6px 0"><strong>kube-proxy:</strong> Network proxy for service networking</div>
+<div style="padding: 6px 0"><strong>Container Runtime:</strong> Docker, containerd, CRI-O</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="core-concepts">Core Concepts</h2>
+<h3 id="pods">Pods</h3>
+<p><span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">A Pod is the smallest deployable unit in Kubernetes - one or more containers that share storage and network</span>.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Pod Structure</h4>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="background: white;border-radius: 8px; padding: 16px">
+<div style="color: #3b82f6; font-weight: 600; margin-bottom: 12px">Pod</div>
+<div style="display: flex; gap: 12px">
+<div style="background: #eff6ff;border-radius: 4px; padding: 8px 12px; font-size: 13px">Container 1</div>
+<div style="background: #eff6ff;border-radius: 4px; padding: 8px 12px; font-size: 13px">Container 2 (sidecar)</div>
+</div>
+<div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap">
+<div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px">Shared Network (localhost)</div>
+<div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px">Shared Volumes</div>
+<div style="background: #fef3c7; border-radius: 4px; padding: 4px 8px; font-size: 12px">Same IP Address</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="deployments">Deployments</h3>
+<p>Deployments manage ReplicaSets and provide declarative updates for Pods.</p>
+<h3 id="services">Services</h3>
+<p>Services expose pods to network traffic - ClusterIP, NodePort, LoadBalancer, ExternalName.</p>
+<h3 id="configmaps--secrets">ConfigMaps &amp; Secrets</h3>
+<p>Store configuration data and sensitive information separately from container images.</p>
+<hr />
+<h2 id="essential-kubectl-commands">Essential kubectl Commands</h2>
+<h3 id="cluster-information">Cluster Information</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Cluster Commands</h4>
+<pre><code class="language-bash"># View cluster info
+kubectl cluster-info
+
+# View all nodes in cluster
+kubectl get nodes
+kubectl get nodes -o wide    # More details (IP, OS, etc.)
+
+# View node details
+kubectl describe node &lt;node-name&gt;
+
+  # Check kubectl config/context
+  kubectl config view
+  kubectl config current-context
+  kubectl config get-contexts
+
+  # Switch context (different clusters)
+  kubectl config use-context &lt;context-name&gt;
+
+    # View API resources available
+    kubectl api-resources
+    kubectl api-versions
+    ```
+&lt;/div&gt;
+
+### Working with Pods
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Pod Commands&lt;/h4&gt;
+
+    ```bash
+    # List pods
+    kubectl get pods                         # Current namespace
+    kubectl get pods -A                      # All namespaces
+    kubectl get pods -n &lt;namespace&gt;          # Specific namespace
+      kubectl get pods -o wide                 # More details
+      kubectl get pods --show-labels           # Show labels
+      kubectl get pods -l app=nginx            # Filter by label
+      kubectl get pods -w                      # Watch for changes
+
+      # Pod details
+      kubectl describe pod &lt;pod-name&gt;
+        kubectl describe pod &lt;pod-name&gt; -n &lt;namespace&gt;
+
+            # Create pod from YAML
+            kubectl apply -f pod.yaml
+            kubectl create -f pod.yaml
+
+            # Delete pod
+            kubectl delete pod &lt;pod-name&gt;
+              kubectl delete pod &lt;pod-name&gt; --grace-period=0 --force  # Force delete
+                kubectl delete pods --all                # Delete all pods in namespace
+
+                # Run pod directly (for testing)
+                kubectl run nginx --image=nginx
+                kubectl run nginx --image=nginx --dry-run=client -o yaml  # Generate YAML
+
+                # Execute command in pod
+                kubectl exec -it &lt;pod-name&gt; -- /bin/bash
+                  kubectl exec -it &lt;pod-name&gt; -c &lt;container-name&gt; -- /bin/sh  # Specific container
+                      kubectl exec &lt;pod-name&gt; -- ls /app       # Non-interactive command
+
+                        # Copy files to/from pod
+                        kubectl cp &lt;pod-name&gt;:/path/to/file ./local-file
+                          kubectl cp ./local-file &lt;pod-name&gt;:/path/to/file
+                            ```
+&lt;/div&gt;
+
+### Pod Logs
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Log Commands&lt;/h4&gt;
+
+                            ```bash
+                            # View logs
+                            kubectl logs &lt;pod-name&gt;
+                              kubectl logs &lt;pod-name&gt; -c &lt;container-name&gt;    # Specific container
+                                  kubectl logs &lt;pod-name&gt; --all-containers=true  # All containers
+                                    kubectl logs -f &lt;pod-name&gt;                     # Follow/stream logs
+                                      kubectl logs &lt;pod-name&gt; --tail=100             # Last 100 lines
+                                        kubectl logs &lt;pod-name&gt; --since=1h             # Logs from last hour
+                                          kubectl logs &lt;pod-name&gt; --previous             # Previous container instance
+                                            kubectl logs -l app=nginx                      # Logs by label selector
+
+                                            # Logs from all pods in deployment
+                                            kubectl logs deployment/&lt;deployment-name&gt;
+                                              kubectl logs -f deployment/&lt;deployment-name&gt; --all-containers=true
+                                                ```
+&lt;/div&gt;
+
+### Working with Deployments
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Deployment Commands&lt;/h4&gt;
+
+                                                ```bash
+                                                # List deployments
+                                                kubectl get deployments
+                                                kubectl get deploy                       # Short form
+                                                kubectl get deploy -o wide
+
+                                                # Create deployment
+                                                kubectl create deployment nginx --image=nginx
+                                                kubectl create deployment nginx --image=nginx --replicas=3
+                                                kubectl apply -f deployment.yaml
+
+                                                # Deployment details
+                                                kubectl describe deployment &lt;name&gt;
+
+                                                  # Scale deployment
+                                                  kubectl scale deployment &lt;name&gt; --replicas=5
+
+                                                    # Update deployment image
+                                                    kubectl set image deployment/&lt;name&gt; &lt;container&gt;=&lt;image&gt;:&lt;tag&gt;
+                                                            kubectl set image deployment/nginx nginx=nginx:1.21
+
+                                                            # Rollout management
+                                                            kubectl rollout status deployment/&lt;name&gt;      # Watch rollout progress
+                                                              kubectl rollout history deployment/&lt;name&gt;     # View rollout history
+                                                                kubectl rollout undo deployment/&lt;name&gt;        # Rollback to previous
+                                                                  kubectl rollout undo deployment/&lt;name&gt; --to-revision=2  # Specific revision
+                                                                    kubectl rollout restart deployment/&lt;name&gt;     # Restart all pods
+                                                                      kubectl rollout pause deployment/&lt;name&gt;       # Pause rollout
+                                                                        kubectl rollout resume deployment/&lt;name&gt;      # Resume rollout
+
+                                                                          # Delete deployment
+                                                                          kubectl delete deployment &lt;name&gt;
+                                                                            ```
+&lt;/div&gt;
+
+### Working with Services
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Service Commands&lt;/h4&gt;
+
+                                                                            ```bash
+                                                                            # List services
+                                                                            kubectl get services
+                                                                            kubectl get svc                          # Short form
+                                                                            kubectl get svc -o wide
+
+                                                                            # Create service
+                                                                            kubectl expose deployment &lt;name&gt; --port=80 --target-port=8080
+                                                                              kubectl expose deployment &lt;name&gt; --type=LoadBalancer --port=80
+                                                                                kubectl expose deployment &lt;name&gt; --type=NodePort --port=80
+
+                                                                                  # Service types
+                                                                                  # ClusterIP   - Internal only (default)
+                                                                                  # NodePort    - Expose on each node's IP at static port
+                                                                                  # LoadBalancer - Provision external load balancer
+                                                                                  # ExternalName - Map to external DNS name
+
+                                                                                  # Service details
+                                                                                  kubectl describe service &lt;name&gt;
+
+                                                                                    # Delete service
+                                                                                    kubectl delete service &lt;name&gt;
+                                                                                      ```
+&lt;/div&gt;
+
+### Working with ConfigMaps &amp; Secrets
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;ConfigMap &amp; Secret Commands&lt;/h4&gt;
+
+                                                                                      ```bash
+                                                                                      # ConfigMaps
+                                                                                      kubectl get configmaps
+                                                                                      kubectl get cm                           # Short form
+
+                                                                                      kubectl create configmap &lt;name&gt; --from-literal=key=value
+                                                                                        kubectl create configmap &lt;name&gt; --from-file=config.properties
+                                                                                          kubectl create configmap &lt;name&gt; --from-env-file=.env
+
+                                                                                            kubectl describe configmap &lt;name&gt;
+                                                                                              kubectl get configmap &lt;name&gt; -o yaml     # View contents
+
+                                                                                                # Secrets
+                                                                                                kubectl get secrets
+                                                                                                kubectl create secret generic &lt;name&gt; --from-literal=password=secret123
+                                                                                                  kubectl create secret generic &lt;name&gt; --from-file=ssh-key=~/.ssh/id_rsa
+                                                                                                    kubectl create secret docker-registry regcred \
+                                                                                                    --docker-server=&lt;server&gt; \
+                                                                                                      --docker-username=&lt;user&gt; \
+                                                                                                        --docker-password=&lt;pass&gt;
+
+                                                                                                          kubectl describe secret &lt;name&gt;
+                                                                                                            kubectl get secret &lt;name&gt; -o yaml
+                                                                                                              kubectl get secret &lt;name&gt; -o jsonpath='{.data.password}' | base64 -d  # Decode
+                                                                                                                ```
+&lt;/div&gt;
+
+### Namespaces
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Namespace Commands&lt;/h4&gt;
+
+                                                                                                                ```bash
+                                                                                                                # List namespaces
+                                                                                                                kubectl get namespaces
+                                                                                                                kubectl get ns                           # Short form
+
+                                                                                                                # Create namespace
+                                                                                                                kubectl create namespace &lt;name&gt;
+                                                                                                                  kubectl create ns &lt;name&gt;
+
+                                                                                                                    # Set default namespace for context
+                                                                                                                    kubectl config set-context --current --namespace=&lt;name&gt;
+
+                                                                                                                      # Delete namespace (deletes all resources in it!)
+                                                                                                                      kubectl delete namespace &lt;name&gt;
+
+                                                                                                                        # View resources in all namespaces
+                                                                                                                        kubectl get all -A
+                                                                                                                        kubectl get pods,svc,deploy -A
+                                                                                                                        ```
+&lt;/div&gt;
+
+### Resource Management
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Resource Commands&lt;/h4&gt;
+
+                                                                                                                        ```bash
+                                                                                                                        # View resource usage (requires metrics-server)
+                                                                                                                        kubectl top nodes
+                                                                                                                        kubectl top pods
+                                                                                                                        kubectl top pods --containers=true
+
+                                                                                                                        # Resource quotas
+                                                                                                                        kubectl get resourcequotas
+                                                                                                                        kubectl describe resourcequota &lt;name&gt;
+
+                                                                                                                          # Limit ranges
+                                                                                                                          kubectl get limitranges
+                                                                                                                          kubectl describe limitrange &lt;name&gt;
+
+                                                                                                                            # Horizontal Pod Autoscaler
+                                                                                                                            kubectl get hpa
+                                                                                                                            kubectl autoscale deployment &lt;name&gt; --min=2 --max=10 --cpu-percent=80
+                                                                                                                              kubectl describe hpa &lt;name&gt;
+                                                                                                                                kubectl delete hpa &lt;name&gt;
+                                                                                                                                  ```
+&lt;/div&gt;
+
+### Debugging &amp; Troubleshooting
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Debug Commands&lt;/h4&gt;
+
+                                                                                                                                  ```bash
+                                                                                                                                  # Debug pod issues
+                                                                                                                                  kubectl describe pod &lt;name&gt;              # Check Events section
+                                                                                                                                    kubectl logs &lt;name&gt; --previous           # Previous container logs
+                                                                                                                                      kubectl get events --sort-by=.metadata.creationTimestamp
+
+                                                                                                                                      # Get pod status reasons
+                                                                                                                                      kubectl get pods -o custom-columns=NAME:.metadata.name,STATUS:.status.phase,REASON:.status.reason
+
+                                                                                                                                      # Debug networking
+                                                                                                                                      kubectl run debug --image=busybox -it --rm -- /bin/sh
+                                                                                                                                      # Inside: nslookup &lt;service-name&gt;, wget -qO- &lt;service&gt;:port
+
+                                                                                                                                          # Port forwarding (local debugging)
+                                                                                                                                          kubectl port-forward pod/&lt;name&gt; 8080:80
+                                                                                                                                            kubectl port-forward svc/&lt;name&gt; 8080:80
+                                                                                                                                              kubectl port-forward deployment/&lt;name&gt; 8080:80
+
+                                                                                                                                                # Proxy to API server
+                                                                                                                                                kubectl proxy --port=8001
+                                                                                                                                                # Then: curl http://localhost:8001/api/v1/namespaces/default/pods
+
+                                                                                                                                                # Debug with ephemeral container (K8s 1.23+)
+                                                                                                                                                kubectl debug &lt;pod-name&gt; -it --image=busybox
+
+                                                                                                                                                  # Check pod resources
+                                                                                                                                                  kubectl get pod &lt;name&gt; -o jsonpath='{.spec.containers[*].resources}'
+                                                                                                                                                    ```
+&lt;/div&gt;
+
+### YAML Output &amp; Editing
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;YAML Commands&lt;/h4&gt;
+
+                                                                                                                                                    ```bash
+                                                                                                                                                    # Output as YAML
+                                                                                                                                                    kubectl get pod &lt;name&gt; -o yaml
+                                                                                                                                                      kubectl get deployment &lt;name&gt; -o yaml &gt; deployment.yaml
+
+                                                                                                                                                        # Generate YAML without creating resource
+                                                                                                                                                        kubectl create deployment nginx --image=nginx --dry-run=client -o yaml
+                                                                                                                                                        kubectl run nginx --image=nginx --dry-run=client -o yaml &gt; pod.yaml
+
+                                                                                                                                                        # Edit resource directly
+                                                                                                                                                        kubectl edit deployment &lt;name&gt;
+                                                                                                                                                          kubectl edit pod &lt;name&gt;
+
+                                                                                                                                                            # Apply changes from file
+                                                                                                                                                            kubectl apply -f deployment.yaml
+                                                                                                                                                            kubectl apply -f ./manifests/            # Apply all in directory
+                                                                                                                                                            kubectl apply -f https://raw.githubusercontent.com/.../deployment.yaml
+
+                                                                                                                                                            # Replace resource
+                                                                                                                                                            kubectl replace -f deployment.yaml
+                                                                                                                                                            kubectl replace --force -f pod.yaml      # Force replace (delete + create)
+
+                                                                                                                                                            # Diff before applying
+                                                                                                                                                            kubectl diff -f deployment.yaml
+                                                                                                                                                            ```
+&lt;/div&gt;
+
+### Labels &amp; Selectors
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;Label Commands&lt;/h4&gt;
+
+                                                                                                                                                            ```bash
+                                                                                                                                                            # Add/update labels
+                                                                                                                                                            kubectl label pods &lt;name&gt; env=prod
+                                                                                                                                                              kubectl label pods &lt;name&gt; env=prod --overwrite
+                                                                                                                                                                kubectl label nodes &lt;name&gt; disktype=ssd
+
+                                                                                                                                                                  # Remove label
+                                                                                                                                                                  kubectl label pods &lt;name&gt; env-
+
+                                                                                                                                                                    # Select by label
+                                                                                                                                                                    kubectl get pods -l env=prod
+                                                                                                                                                                    kubectl get pods -l 'env in (prod, staging)'
+                                                                                                                                                                    kubectl get pods -l env=prod,tier=frontend
+                                                                                                                                                                    kubectl get pods -l 'env!=test'
+
+                                                                                                                                                                    # Annotate resources
+                                                                                                                                                                    kubectl annotate pod &lt;name&gt; description=&quot;My app&quot;
+                                                                                                                                                                      kubectl annotate pod &lt;name&gt; description-          # Remove annotation
+                                                                                                                                                                        ```
+&lt;/div&gt;
+
+---
+
+## Common YAML Manifests
+
+### Deployment Example
+
+                                                                                                                                                                      ```yaml
+                                                                                                                                                                      apiVersion: apps/v1
+                                                                                                                                                                      kind: Deployment
+                                                                                                                                                                      metadata:
+                                                                                                                                                                      name: my-app
+                                                                                                                                                                      labels:
+                                                                                                                                                                      app: my-app
+                                                                                                                                                                      spec:
+                                                                                                                                                                      replicas: 3
+                                                                                                                                                                      selector:
+                                                                                                                                                                      matchLabels:
+                                                                                                                                                                      app: my-app
+                                                                                                                                                                      template:
+                                                                                                                                                                      metadata:
+                                                                                                                                                                      labels:
+                                                                                                                                                                      app: my-app
+                                                                                                                                                                      spec:
+                                                                                                                                                                      containers:
+                                                                                                                                                                      - name: my-app
+                                                                                                                                                                      image: my-app:1.0.0
+                                                                                                                                                                      ports:
+                                                                                                                                                                      - containerPort: 8080
+                                                                                                                                                                      resources:
+                                                                                                                                                                      requests:
+                                                                                                                                                                      memory: &quot;128Mi&quot;
+                                                                                                                                                                      cpu: &quot;100m&quot;
+                                                                                                                                                                      limits:
+                                                                                                                                                                      memory: &quot;256Mi&quot;
+                                                                                                                                                                      cpu: &quot;500m&quot;
+                                                                                                                                                                      env:
+                                                                                                                                                                      - name: DATABASE_URL
+                                                                                                                                                                      valueFrom:
+                                                                                                                                                                      secretKeyRef:
+                                                                                                                                                                      name: db-secret
+                                                                                                                                                                      key: url
+                                                                                                                                                                      livenessProbe:
+                                                                                                                                                                      httpGet:
+                                                                                                                                                                      path: /health
+                                                                                                                                                                      port: 8080
+                                                                                                                                                                      initialDelaySeconds: 30
+                                                                                                                                                                      periodSeconds: 10
+                                                                                                                                                                      readinessProbe:
+                                                                                                                                                                      httpGet:
+                                                                                                                                                                      path: /ready
+                                                                                                                                                                      port: 8080
+                                                                                                                                                                      initialDelaySeconds: 5
+                                                                                                                                                                      periodSeconds: 5
+                                                                                                                                                                      ```
+
+### Service Example
+
+                                                                                                                                                                      ```yaml
+                                                                                                                                                                      apiVersion: v1
+                                                                                                                                                                      kind: Service
+                                                                                                                                                                      metadata:
+                                                                                                                                                                      name: my-app-service
+                                                                                                                                                                      spec:
+                                                                                                                                                                      selector:
+                                                                                                                                                                      app: my-app
+                                                                                                                                                                      ports:
+                                                                                                                                                                      - protocol: TCP
+                                                                                                                                                                      port: 80
+                                                                                                                                                                      targetPort: 8080
+                                                                                                                                                                      type: ClusterIP
+                                                                                                                                                                      ---
+                                                                                                                                                                      # LoadBalancer for external access
+                                                                                                                                                                      apiVersion: v1
+                                                                                                                                                                      kind: Service
+                                                                                                                                                                      metadata:
+                                                                                                                                                                      name: my-app-lb
+                                                                                                                                                                      spec:
+                                                                                                                                                                      selector:
+                                                                                                                                                                      app: my-app
+                                                                                                                                                                      ports:
+                                                                                                                                                                      - port: 80
+                                                                                                                                                                      targetPort: 8080
+                                                                                                                                                                      type: LoadBalancer
+                                                                                                                                                                      ```
+
+### Ingress Example
+
+                                                                                                                                                                      ```yaml
+                                                                                                                                                                      apiVersion: networking.k8s.io/v1
+                                                                                                                                                                      kind: Ingress
+                                                                                                                                                                      metadata:
+                                                                                                                                                                      name: my-app-ingress
+                                                                                                                                                                      annotations:
+                                                                                                                                                                      nginx.ingress.kubernetes.io/rewrite-target: /
+                                                                                                                                                                      spec:
+                                                                                                                                                                      ingressClassName: nginx
+                                                                                                                                                                      rules:
+                                                                                                                                                                      - host: myapp.example.com
+                                                                                                                                                                      http:
+                                                                                                                                                                      paths:
+                                                                                                                                                                      - path: /
+                                                                                                                                                                      pathType: Prefix
+                                                                                                                                                                      backend:
+                                                                                                                                                                      service:
+                                                                                                                                                                      name: my-app-service
+                                                                                                                                                                      port:
+                                                                                                                                                                      number: 80
+                                                                                                                                                                      tls:
+                                                                                                                                                                      - hosts:
+                                                                                                                                                                      - myapp.example.com
+                                                                                                                                                                      secretName: myapp-tls
+                                                                                                                                                                      ```
+
+---
+
+## Interview Deep Dive
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+
+### Q1: How does Kubernetes handle pod scheduling?
+
+**Answer:**
+
+The kube-scheduler watches for newly created Pods with no assigned node and selects a node for them to run on through:
+
+1. **Filtering**: Eliminate nodes that don't meet requirements (resources, taints, affinity)
+2. **Scoring**: Rank remaining nodes by factors (resource balance, locality, etc.)
+3. **Binding**: Assign Pod to highest-scored node
+
+&lt;span style=&quot;background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;&quot;&gt;Key insight: Scheduler decisions are point-in-time; resource availability may change&lt;/span&gt;.
+
+#### Level 2 Follow-ups:
+
+**Q1.1: How do you ensure pods land on specific nodes?**
+
+Use nodeSelector, node affinity, or taints/tolerations:
+
+                                                                                                                                                                        ```yaml
+                                                                                                                                                                        # nodeSelector - simple key-value matching
+                                                                                                                                                                        spec:
+                                                                                                                                                                        nodeSelector:
+                                                                                                                                                                        disktype: ssd
+
+                                                                                                                                                                        # nodeAffinity - more expressive
+                                                                                                                                                                        spec:
+                                                                                                                                                                        affinity:
+                                                                                                                                                                        nodeAffinity:
+                                                                                                                                                                        requiredDuringSchedulingIgnoredDuringExecution:
+                                                                                                                                                                        nodeSelectorTerms:
+                                                                                                                                                                        - matchExpressions:
+                                                                                                                                                                        - key: gpu
+                                                                                                                                                                        operator: In
+                                                                                                                                                                        values:
+                                                                                                                                                                        - nvidia-a100
+                                                                                                                                                                        ```
+
+##### Level 3 Follow-ups:
+
+**Q1.1.1: What's the difference between required and preferred affinity?**
+
+                                                                                                                                                                        - **Required**: Pod won't schedule if no matching node exists (hard constraint)
+                                                                                                                                                                        - **Preferred**: Scheduler tries but will place elsewhere if needed (soft constraint)
+
+**Q1.1.2: How do taints and tolerations work?**
+
+Taints on nodes repel pods; tolerations on pods allow scheduling on tainted nodes:
+
+                                                                                                                                                                        ```bash
+                                                                                                                                                                        # Taint a node
+                                                                                                                                                                        kubectl taint nodes node1 gpu=true:NoSchedule
+
+                                                                                                                                                                        # Pod must have toleration:
+                                                                                                                                                                        tolerations:
+                                                                                                                                                                        - key: &quot;gpu&quot;
+                                                                                                                                                                        operator: &quot;Equal&quot;
+                                                                                                                                                                        value: &quot;true&quot;
+                                                                                                                                                                        effect: &quot;NoSchedule&quot;
+                                                                                                                                                                        ```
+
+---
+
+**Q1.2: What happens when a node fails?**
+
+1. Node controller marks node as NotReady after --node-monitor-grace-period (40s default)
+2. After --pod-eviction-timeout (5min default), pods are evicted
+3. Deployment controller creates replacement pods on healthy nodes
+4. StatefulSet pods wait longer due to persistent storage considerations
+
+&lt;/div&gt;
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+
+### Q2: How do you handle zero-downtime deployments in Kubernetes?
+
+**Answer:**
+
+1. **Rolling Update Strategy** (default):
+                                                                                                                                                                        ```yaml
+                                                                                                                                                                        spec:
+                                                                                                                                                                        strategy:
+                                                                                                                                                                        type: RollingUpdate
+                                                                                                                                                                        rollingUpdate:
+                                                                                                                                                                        maxUnavailable: 25%  # Max pods that can be unavailable
+                                                                                                                                                                        maxSurge: 25%        # Max pods over desired count
+                                                                                                                                                                        ```
+
+2. **Readiness Probes**: Ensure traffic only goes to ready pods
+3. **PodDisruptionBudget**: Prevent too many pods going down simultaneously
+4. **PreStop Hooks**: Graceful shutdown handling
+
+&lt;span style=&quot;background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px;&quot;&gt;Trade-off: Faster rollouts risk stability; slower rollouts mean longer deployment times&lt;/span&gt;.
+
+#### Level 2 Follow-ups:
+
+**Q2.1: How do readiness and liveness probes differ?**
+
+| Probe | Purpose | Failure Action |
+|-------|---------|----------------|
+| Liveness | Is container healthy? | Restart container |
+| Readiness | Can container serve traffic? | Remove from service endpoints |
+| Startup | Has container started? | Block other probes |
+
+**Q2.2: What's a PodDisruptionBudget?**
+
+Limits voluntary disruptions (drains, upgrades):
+
+                                                                                                                                                                        ```yaml
+                                                                                                                                                                        apiVersion: policy/v1
+                                                                                                                                                                        kind: PodDisruptionBudget
+                                                                                                                                                                        metadata:
+                                                                                                                                                                        name: my-app-pdb
+                                                                                                                                                                        spec:
+                                                                                                                                                                        minAvailable: 2      # Or maxUnavailable: 1
+                                                                                                                                                                        selector:
+                                                                                                                                                                        matchLabels:
+                                                                                                                                                                        app: my-app
+                                                                                                                                                                        ```
+
+&lt;/div&gt;
+
+---
+
+## Quick Reference Card
+
+&lt;div style=&quot;background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; margin: 20px 0;&quot;&gt;
+&lt;h4 style=&quot;color: #1e293b; margin-top: 0;&quot;&gt;kubectl Cheat Sheet&lt;/h4&gt;
+&lt;div style=&quot;display: grid; grid-template-columns: 1fr 1fr; gap: 24px;&quot;&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Most Used Commands&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569; font-family: monospace;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;kubectl get pods -A&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;kubectl describe pod &amp;lt;name&amp;gt;&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;kubectl logs -f &amp;lt;pod&amp;gt;&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;kubectl exec -it &amp;lt;pod&amp;gt; -- /bin/sh&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;kubectl apply -f &amp;lt;file&amp;gt;&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;kubectl delete &amp;lt;resource&amp;gt; &amp;lt;name&amp;gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Resource Shortcuts&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;po&lt;/strong&gt; = pods&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;deploy&lt;/strong&gt; = deployments&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;svc&lt;/strong&gt; = services&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;ns&lt;/strong&gt; = namespaces&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;cm&lt;/strong&gt; = configmaps&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;&lt;strong&gt;pv/pvc&lt;/strong&gt; = persistentvolumes/claims&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Output Formats&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569; font-family: monospace;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-o wide (more columns)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-o yaml (YAML output)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-o json (JSON output)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-o name (resource names only)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-o jsonpath='{...}'&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;div style=&quot;color: #1e293b; font-weight: 600; margin-bottom: 8px;&quot;&gt;Common Flags&lt;/div&gt;
+&lt;div style=&quot;font-size: 13px; color: #475569; font-family: monospace;&quot;&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-n &amp;lt;namespace&amp;gt;&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-A (all namespaces)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-l &amp;lt;label&amp;gt; (label selector)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;-w (watch)&lt;/div&gt;
+&lt;div style=&quot;padding: 4px 0;&quot;&gt;--dry-run=client -o yaml&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+---
+
+## Related Topics
+
+                                                                                                                                                                      - [[Docker]](/topic/system-design/docker) - Container fundamentals
+                                                                                                                                                                      - [[Microservices]](/topic/system-design/microservices) - Service architecture
+                                                                                                                                                                      - [[Load Balancing]](/topic/system-design/load-balancing) - Traffic distribution
+                                                                                                                                                                      - [[Availability]](/topic/system-design/availability) - High availability patterns
+</code></pre>

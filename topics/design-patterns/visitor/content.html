@@ -1,0 +1,1564 @@
+<h1 id="visitor-pattern">Visitor Pattern</h1>
+<h2 id="overview">Overview</h2>
+<p>The Visitor pattern separates algorithms from the object structures they operate on, enabling new operations to be added without modifying element classes. It achieves <strong>double dispatch</strong> in single-dispatch languages by combining dynamic binding on both the element type and visitor type through a clever two-step invocation protocol.</p>
+<p><strong>Difficulty:</strong> Advanced<br />
+<strong>Category:</strong> Behavioral Pattern<br />
+<strong>Also Known As:</strong> Double Dispatch, External Polymorphism</p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;padding-bottom: 0.75rem; color: #1e293b">Core Insight</div>
+<div style="line-height: 1.7; color: #475569">
+    The Visitor pattern inverts the traditional OOP approach. Instead of placing behavior inside objects, it extracts behavior into external visitor objects. This trades the Open-Closed Principle in one dimension (easy to add operations) for violating it in another (hard to add element types).
+</div>
+</div>
+<hr />
+<h2 id="the-double-dispatch-mechanism">The Double Dispatch Mechanism</h2>
+<h3 id="why-single-dispatch-falls-short">Why Single Dispatch Falls Short</h3>
+<p>Most object-oriented languages use <strong>single dispatch</strong>: the method called depends only on the runtime type of the receiver object, not on the runtime types of arguments.</p>
+<div style="background: #fef3c7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem">The Dispatch Problem</div>
+<div style="color: #78350f; line-height: 1.7">
+When you call <code>process(element)</code>, the method selected depends on the static (compile-time) type of <code>element</code>, not its actual runtime type. Method overloading is resolved at compile time, not runtime. This means you cannot simply overload methods and expect runtime type-based dispatch.
+</div>
+</div>
+<pre><code class="language-python"># This DOES NOT work as expected in Python/Java/C++
+class Processor:
+    def process(self, element: Circle):
+        print(&quot;Processing circle&quot;)
+
+    def process(self, element: Square):
+        print(&quot;Processing square&quot;)
+
+# At runtime, Python sees only the last definition
+# Java/C++ resolve based on DECLARED type, not runtime type
+processor = Processor()
+shape: Shape = Circle()  # Declared as Shape, actually Circle
+processor.process(shape)  # Calls Shape overload, not Circle!
+</code></pre>
+<h3 id="the-double-dispatch-solution">The Double Dispatch Solution</h3>
+<p>The Visitor pattern achieves runtime dispatch on both types through a <strong>two-step protocol</strong>:</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0">
+<div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center">Double Dispatch Execution Flow</div>
+<div style="display: flex; flex-direction: column; gap: 1rem">
+<div style="display: flex; align-items: center; gap: 1rem">
+<div style="background: #3b82f6; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">1</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; flex: 1">
+<div style="font-weight: 600; color: #1e40af">Client calls element.accept(visitor)</div>
+<div style="color: #1e40af; font-size: 0.9rem; margin-top: 0.25rem">First dispatch: selects accept() based on element's runtime type</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem">
+<div style="background: #22c55e; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">2</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 1rem; flex: 1">
+<div style="font-weight: 600; color: #166534">Element calls visitor.visitX(this)</div>
+<div style="color: #166534; font-size: 0.9rem; margin-top: 0.25rem">Second dispatch: selects visitX() based on visitor's runtime type</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 1rem">
+<div style="background: #a855f7; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">3</div>
+<div style="background: #f3e8ff; border-radius: 8px; padding: 1rem; flex: 1">
+<div style="font-weight: 600; color: #7c3aed">Correct method executes for both types</div>
+<div style="color: #7c3aed; font-size: 0.9rem; margin-top: 0.25rem">The "this" reference carries the concrete element type statically</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="the-critical-role-of-this">The Critical Role of &quot;this&quot;</h3>
+<p>The key insight is that inside a method, <code>this</code> (or <code>self</code>) has a <strong>static type</strong> equal to the class where the method is defined. When <code>CircleElement.accept()</code> calls <code>visitor.visitCircle(this)</code>, the compiler knows <code>this</code> is exactly a <code>CircleElement</code>, not just some <code>Element</code>.</p>
+<pre><code class="language-python">class CircleElement(Element):
+    def accept(self, visitor: ShapeVisitor) -&gt; Any:
+        # Here, 'self' is statically typed as CircleElement
+        # The compiler/interpreter knows to call visitCircle, not visitElement
+        return visitor.visit_circle(self)  # self is CircleElement, not Element
+</code></pre>
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem">Critical Assumption</div>
+<div style="color: #7f1d1d; line-height: 1.7">
+Double dispatch assumes <strong>static overload resolution</strong>. In languages with full multiple dispatch (like Julia or Common Lisp CLOS), the Visitor pattern is unnecessary because the language natively dispatches on all argument types at runtime.
+</div>
+</div>
+<h3 id="interview-deep-dive-double-dispatch">Interview Deep Dive: Double Dispatch</h3>
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: What is double dispatch and why do we need it?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+    Double dispatch selects a method based on the runtime types of two objects: the receiver and one argument. Most OO languages only dispatch on the receiver type (single dispatch). We need it when behavior depends on combinations of types, such as collision detection between different shape pairs or applying different operations to different element types.
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 2: How does the Visitor pattern simulate true multiple dispatch?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+It chains two single-dispatch calls. The first call <code>element.accept(visitor)</code> dispatches on the element's runtime type. Inside <code>accept()</code>, the call to <code>visitor.visitX(this)</code> dispatches on the visitor's runtime type. The trick is that <code>this</code> has a known static type inside each concrete element class, so the correct <code>visitX</code> overload is selected at compile time. This simulates runtime dispatch on both types.
+</div>
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 3: What are the limitations of simulated double dispatch vs. true multiple dispatch?</div>
+<div style="color: #1e3a8a; line-height: 1.7">
+<strong>Combinatorial explosion:</strong> True multiple dispatch can handle n types with n methods; simulated double dispatch requires n*m methods for n element types and m visitors. <strong>Asymmetric extension:</strong> Adding visitors is easy, but adding elements requires modifying all visitors. <strong>No dynamic discovery:</strong> Unlike true multiple dispatch which uses runtime type lookup, Visitor bakes the dispatch table into the class hierarchy at compile time. <strong>Two-hop overhead:</strong> Two virtual calls instead of one direct dispatch lookup.
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="element-hierarchy-traversal">Element Hierarchy Traversal</h2>
+<h3 id="traversal-responsibility">Traversal Responsibility</h3>
+<p>A critical design decision is <strong>who controls traversal</strong>: the visitor, the elements, or an external iterator? Each approach has distinct implications.</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem">Traversal Strategies Comparison</div>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem">
+<tr style="background: #e2e8f0">
+<th style="padding: 0.75rem; text-align: left">Strategy</th>
+<th style="padding: 0.75rem; text-align: left">Description</th>
+<th style="padding: 0.75rem; text-align: left">Trade-offs</th>
+</tr>
+<tr>
+<td style="padding: 0.75rem;font-weight: 600">Visitor-controlled</td>
+<td style="padding: 0.75rem">Visitor explicitly calls accept on children</td>
+<td style="padding: 0.75rem">Maximum flexibility, but visitors must know structure</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 0.75rem;font-weight: 600">Element-controlled</td>
+<td style="padding: 0.75rem">Element's accept() visits its children</td>
+<td style="padding: 0.75rem">Encapsulates structure, but less control over order</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem;font-weight: 600">External iterator</td>
+<td style="padding: 0.75rem">Separate iterator drives traversal</td>
+<td style="padding: 0.75rem">Clean separation, but adds complexity</td>
+</tr>
+</table>
+</div>
+<h3 id="visitor-controlled-traversal">Visitor-Controlled Traversal</h3>
+<p>The visitor explicitly navigates the structure, calling <code>accept()</code> on children as needed:</p>
+<pre><code class="language-python">class TreeVisitor(ABC):
+    @abstractmethod
+    def visit_leaf(self, leaf: 'Leaf') -&gt; Any:
+        pass
+
+    @abstractmethod
+    def visit_composite(self, composite: 'Composite') -&gt; Any:
+        pass
+
+class DepthFirstPrinter(TreeVisitor):
+    def __init__(self):
+        self.depth = 0
+
+    def visit_leaf(self, leaf: Leaf) -&gt; None:
+        print(&quot;  &quot; * self.depth + f&quot;Leaf: {leaf.value}&quot;)
+
+    def visit_composite(self, composite: Composite) -&gt; None:
+        print(&quot;  &quot; * self.depth + f&quot;Composite: {composite.name}&quot;)
+        self.depth += 1
+        # Visitor controls traversal order
+        for child in composite.children:
+            child.accept(self)
+        self.depth -= 1
+</code></pre>
+<div style="background: #dcfce7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem">Advantage: Traversal Flexibility</div>
+<div style="color: #14532d; line-height: 1.7">
+    Visitor-controlled traversal allows different visitors to traverse differently: pre-order, post-order, selective visiting, early termination, or even visiting the same node multiple times.
+</div>
+</div>
+<h3 id="element-controlled-traversal">Element-Controlled Traversal</h3>
+<p>Elements handle their own child traversal, simplifying visitor implementation:</p>
+<pre><code class="language-python">class Composite(Element):
+    def __init__(self, name: str):
+        self.name = name
+        self.children: List[Element] = []
+
+    def accept(self, visitor: TreeVisitor) -&gt; Any:
+        # Element controls traversal
+        for child in self.children:
+            child.accept(visitor)
+        # Visit self after children (post-order)
+        return visitor.visit_composite(self)
+</code></pre>
+<div style="background: #fef3c7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem">Trade-off: Fixed Traversal Order</div>
+<div style="color: #78350f; line-height: 1.7">
+    When elements control traversal, all visitors use the same order. This reduces flexibility but ensures consistency and prevents visitors from needing to understand the element structure.
+</div>
+</div>
+<h3 id="handling-cycles-and-graph-structures">Handling Cycles and Graph Structures</h3>
+<p>Tree structures are straightforward, but graphs with cycles require cycle detection:</p>
+<pre><code class="language-python">class GraphVisitor(ABC):
+    def __init__(self):
+        self.visited: Set[int] = set()  # Track by object id
+
+    def visit(self, node: 'GraphNode') -&gt; Any:
+        node_id = id(node)
+        if node_id in self.visited:
+            return self.handle_cycle(node)
+
+        self.visited.add(node_id)
+        return node.accept(self)
+
+    def handle_cycle(self, node: 'GraphNode') -&gt; Any:
+        &quot;&quot;&quot;Override to customize cycle handling.&quot;&quot;&quot;
+        return None  # Skip already-visited nodes by default
+</code></pre>
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 0.75rem">Edge Case: Shared Nodes</div>
+<div style="color: #7f1d1d; line-height: 1.7">
+    In DAGs (directed acyclic graphs), nodes may be reachable via multiple paths without cycles. Decide whether shared nodes should be visited once or multiple times based on your use case. Size calculation should visit once; path enumeration should visit multiple times.
+</div>
+</div>
+<h3 id="interview-deep-dive-traversal">Interview Deep Dive: Traversal</h3>
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: Who should control traversal in the Visitor pattern?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+    Either the visitor or the elements can control traversal. Visitor-controlled traversal offers more flexibility (different orders, early termination). Element-controlled traversal encapsulates structure and ensures consistent behavior across visitors.
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 2: How do you handle visiting a graph with cycles?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+Track visited nodes using a set of object identities (or unique IDs). Before visiting a node, check if it has already been visited. For cycles, you can skip the node, return a cached result, or call a special <code>handleCycle()</code> method. The visited set can be stored in the visitor or passed as a parameter.
+</div>
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 3: How would you implement a visitor that needs both pre-order and post-order callbacks?</div>
+<div style="color: #1e3a8a; line-height: 1.7">
+<strong>Option 1:</strong> Add both <code>visitXEnter()</code> and <code>visitXExit()</code> methods to the visitor interface. Elements call enter before visiting children and exit after. <strong>Option 2:</strong> Have visit methods return a "continuation" that the traversal calls after children. <strong>Option 3:</strong> Use a hierarchical visitor pattern where <code>visitCompositeStart()</code> returns a boolean indicating whether to traverse children, and <code>visitCompositeEnd()</code> is called after. This is common in compiler AST visitors.
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="adding-operations-without-modifying-classes">Adding Operations Without Modifying Classes</h2>
+<h3 id="the-open-closed-trade-off">The Open-Closed Trade-off</h3>
+<p>The Visitor pattern embodies a <strong>dimensional trade-off</strong> in the Open-Closed Principle:</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0">
+<div style="font-weight: 700; font-size: 1.1rem; color: #1e293b; margin-bottom: 1.5rem; text-align: center">Extension Trade-off Matrix</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem">
+<div style="background: #dcfce7; border-radius: 10px; padding: 1.25rem">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem">With Visitor Pattern</div>
+<div style="color: #14532d; font-size: 0.9rem; line-height: 1.6">
+<div style="margin-bottom: 0.5rem"><strong>Adding operations:</strong> Open (just add new visitor)</div>
+<div><strong>Adding element types:</strong> Closed (must modify all visitors)</div>
+</div>
+</div>
+<div style="background: #dbeafe; border-radius: 10px; padding: 1.25rem">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem">Without Visitor Pattern</div>
+<div style="color: #1e3a8a; font-size: 0.9rem; line-height: 1.6">
+<div style="margin-bottom: 0.5rem"><strong>Adding element types:</strong> Open (just add new class)</div>
+<div><strong>Adding operations:</strong> Closed (must modify all elements)</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="when-visitor-wins">When Visitor Wins</h3>
+<p>Use Visitor when your <strong>element hierarchy is stable</strong> but <strong>operations change frequently</strong>:</p>
+<pre><code class="language-python"># AST for a simple expression language - these rarely change
+class Expression(ABC): pass
+class NumberLiteral(Expression): pass
+class BinaryOperation(Expression): pass
+class VariableReference(Expression): pass
+class FunctionCall(Expression): pass
+
+# But operations on the AST grow continuously:
+class TypeChecker(ExpressionVisitor): pass      # Week 1
+class Interpreter(ExpressionVisitor): pass       # Week 2
+class Optimizer(ExpressionVisitor): pass         # Week 3
+class CodeGenerator(ExpressionVisitor): pass     # Week 4
+class PrettyPrinter(ExpressionVisitor): pass     # Week 5
+class SymbolResolver(ExpressionVisitor): pass    # Week 6
+class DeadCodeAnalyzer(ExpressionVisitor): pass  # Week 7
+# ... and so on
+</code></pre>
+<h3 id="the-acyclic-visitor-pattern">The Acyclic Visitor Pattern</h3>
+<p>When you need to add both element types and operations more freely, consider the <strong>Acyclic Visitor</strong> pattern, which breaks the cyclic dependency:</p>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from typing import TypeVar, Generic
+
+# Marker interface - no methods
+class Visitor(ABC):
+    pass
+
+# Each element type has its own visitor interface
+class CircleVisitor(ABC):
+    @abstractmethod
+    def visit_circle(self, circle: 'Circle') -&gt; None:
+        pass
+
+class SquareVisitor(ABC):
+    @abstractmethod
+    def visit_square(self, square: 'Square') -&gt; None:
+        pass
+
+# Elements check if visitor supports them
+class Circle(Shape):
+    def accept(self, visitor: Visitor) -&gt; None:
+        if isinstance(visitor, CircleVisitor):
+            visitor.visit_circle(self)
+        # Gracefully ignore if visitor doesn't support Circle
+
+class Square(Shape):
+    def accept(self, visitor: Visitor) -&gt; None:
+        if isinstance(visitor, SquareVisitor):
+            visitor.visit_square(self)
+
+# Visitors implement only the interfaces they need
+class AreaCalculator(Visitor, CircleVisitor, SquareVisitor):
+    def visit_circle(self, circle: Circle) -&gt; None:
+        print(f&quot;Circle area: {3.14159 * circle.radius ** 2}&quot;)
+
+    def visit_square(self, square: Square) -&gt; None:
+        print(f&quot;Square area: {square.side ** 2}&quot;)
+
+# A visitor that only cares about circles
+class CircleCounter(Visitor, CircleVisitor):
+    def __init__(self):
+        self.count = 0
+
+    def visit_circle(self, circle: Circle) -&gt; None:
+        self.count += 1
+</code></pre>
+<div style="background: #fef3c7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 0.75rem">Trade-off: Runtime Type Checking</div>
+<div style="color: #78350f; line-height: 1.7">
+Acyclic Visitor trades compile-time safety for flexibility. The <code>isinstance()</code> check happens at runtime, meaning you lose static guarantees that all element types are handled. This is acceptable when visitors legitimately need to ignore certain element types.
+</div>
+</div>
+<h3 id="default-visitor-implementation">Default Visitor Implementation</h3>
+<p>Provide a base visitor with default (often no-op) implementations to reduce boilerplate:</p>
+<pre><code class="language-python">class DefaultExpressionVisitor(ExpressionVisitor):
+    &quot;&quot;&quot;Base visitor with default implementations.&quot;&quot;&quot;
+
+    def visit_number(self, expr: NumberLiteral) -&gt; Any:
+        return None  # Default: do nothing
+
+    def visit_binary_op(self, expr: BinaryOperation) -&gt; Any:
+        # Default: visit children but return nothing
+        expr.left.accept(self)
+        expr.right.accept(self)
+        return None
+
+    def visit_variable(self, expr: VariableReference) -&gt; Any:
+        return None
+
+    def visit_function_call(self, expr: FunctionCall) -&gt; Any:
+        for arg in expr.arguments:
+            arg.accept(self)
+        return None
+
+# Now visitors can override only what they need
+class VariableFinder(DefaultExpressionVisitor):
+    def __init__(self):
+        self.variables: Set[str] = set()
+
+    def visit_variable(self, expr: VariableReference) -&gt; None:
+        self.variables.add(expr.name)
+    # All other visit methods inherited - they traverse but do nothing
+</code></pre>
+<h3 id="interview-deep-dive-extensibility">Interview Deep Dive: Extensibility</h3>
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: How does Visitor enable adding operations without modifying element classes?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+Elements only need an <code>accept(visitor)</code> method that calls back to the visitor. New operations are added by creating new visitor classes that implement the visitor interface. The element classes never change when new operations are added.
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 2: What happens when you need to add a new element type to a Visitor-based system?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+Every existing visitor must be modified to add a <code>visitNewElement()</code> method. This is the primary drawback of the Visitor pattern. In a large system with many visitors, adding an element type becomes expensive. Mitigations include: default visitor base classes, the Acyclic Visitor pattern, or generating visitor code from element definitions.
+</div>
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 3: Compare the Expression Problem in functional vs. OO paradigms. How does Visitor fit in?</div>
+<div style="color: #1e3a8a; line-height: 1.7">
+The <strong>Expression Problem</strong> asks: how do you add both new data variants AND new operations without recompiling existing code? <strong>OO approach:</strong> Easy to add types (new subclasses), hard to add operations (modify all classes). <strong>FP approach:</strong> Easy to add operations (new functions with pattern matching), hard to add types (modify all functions). <strong>Visitor flips OO</strong> to behave like FP: easy to add operations, hard to add types. Solutions like type classes, object algebras, or tagless final attempt to solve both dimensions simultaneously.
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="complete-implementation-compiler-ast-visitor">Complete Implementation: Compiler AST Visitor</h2>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Set, Optional, Union
+from enum import Enum, auto
+
+
+# ==================== TYPE SYSTEM ====================
+
+class Type(ABC):
+    &quot;&quot;&quot;Base class for types in our language.&quot;&quot;&quot;
+    @abstractmethod
+    def __eq__(self, other: object) -&gt; bool:
+        pass
+
+@dataclass(frozen=True)
+class PrimitiveType(Type):
+    name: str
+
+    def __eq__(self, other: object) -&gt; bool:
+        return isinstance(other, PrimitiveType) and self.name == other.name
+
+    def __repr__(self) -&gt; str:
+        return self.name
+
+@dataclass(frozen=True)
+class FunctionType(Type):
+    param_types: tuple
+    return_type: Type
+
+    def __eq__(self, other: object) -&gt; bool:
+        return (isinstance(other, FunctionType) and
+                self.param_types == other.param_types and
+                self.return_type == other.return_type)
+
+    def __repr__(self) -&gt; str:
+        params = &quot;, &quot;.join(str(p) for p in self.param_types)
+        return f&quot;({params}) -&gt; {self.return_type}&quot;
+
+# Built-in types
+INT = PrimitiveType(&quot;int&quot;)
+FLOAT = PrimitiveType(&quot;float&quot;)
+BOOL = PrimitiveType(&quot;bool&quot;)
+STRING = PrimitiveType(&quot;string&quot;)
+VOID = PrimitiveType(&quot;void&quot;)
+ERROR = PrimitiveType(&quot;&lt;error&gt;&quot;)
+
+
+# ==================== AST NODES (ELEMENTS) ====================
+
+class ASTNode(ABC):
+    &quot;&quot;&quot;Base class for all AST nodes.&quot;&quot;&quot;
+
+    @abstractmethod
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        &quot;&quot;&quot;Accept a visitor for double dispatch.&quot;&quot;&quot;
+        pass
+
+# ----- Expression Nodes -----
+
+class Expression(ASTNode):
+    &quot;&quot;&quot;Base class for expression nodes.&quot;&quot;&quot;
+    pass
+
+@dataclass
+class IntLiteral(Expression):
+    value: int
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_int_literal(self)
+
+@dataclass
+class FloatLiteral(Expression):
+    value: float
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_float_literal(self)
+
+@dataclass
+class StringLiteral(Expression):
+    value: str
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_string_literal(self)
+
+@dataclass
+class BoolLiteral(Expression):
+    value: bool
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_bool_literal(self)
+
+@dataclass
+class Identifier(Expression):
+    name: str
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_identifier(self)
+
+class BinaryOperator(Enum):
+    ADD = auto()
+    SUB = auto()
+    MUL = auto()
+    DIV = auto()
+    MOD = auto()
+    EQ = auto()
+    NE = auto()
+    LT = auto()
+    LE = auto()
+    GT = auto()
+    GE = auto()
+    AND = auto()
+    OR = auto()
+
+@dataclass
+class BinaryExpr(Expression):
+    operator: BinaryOperator
+    left: Expression
+    right: Expression
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_binary_expr(self)
+
+class UnaryOperator(Enum):
+    NEG = auto()
+    NOT = auto()
+
+@dataclass
+class UnaryExpr(Expression):
+    operator: UnaryOperator
+    operand: Expression
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_unary_expr(self)
+
+@dataclass
+class CallExpr(Expression):
+    callee: Expression
+    arguments: List[Expression]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_call_expr(self)
+
+@dataclass
+class AssignExpr(Expression):
+    target: str
+    value: Expression
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_assign_expr(self)
+
+# ----- Statement Nodes -----
+
+class Statement(ASTNode):
+    &quot;&quot;&quot;Base class for statement nodes.&quot;&quot;&quot;
+    pass
+
+@dataclass
+class ExpressionStmt(Statement):
+    expression: Expression
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_expression_stmt(self)
+
+@dataclass
+class VarDecl(Statement):
+    name: str
+    type_annotation: Optional[str]
+    initializer: Optional[Expression]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_var_decl(self)
+
+@dataclass
+class FunctionDecl(Statement):
+    name: str
+    parameters: List[tuple]  # List of (name, type) tuples
+    return_type: str
+    body: List[Statement]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_function_decl(self)
+
+@dataclass
+class ReturnStmt(Statement):
+    value: Optional[Expression]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_return_stmt(self)
+
+@dataclass
+class IfStmt(Statement):
+    condition: Expression
+    then_branch: List[Statement]
+    else_branch: Optional[List[Statement]]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_if_stmt(self)
+
+@dataclass
+class WhileStmt(Statement):
+    condition: Expression
+    body: List[Statement]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_while_stmt(self)
+
+@dataclass
+class BlockStmt(Statement):
+    statements: List[Statement]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_block_stmt(self)
+
+@dataclass
+class Program(ASTNode):
+    statements: List[Statement]
+
+    def accept(self, visitor: 'ASTVisitor') -&gt; Any:
+        return visitor.visit_program(self)
+
+
+# ==================== VISITOR INTERFACE ====================
+
+class ASTVisitor(ABC):
+    &quot;&quot;&quot;Abstract visitor interface for AST traversal.&quot;&quot;&quot;
+
+    # Expression visitors
+    @abstractmethod
+    def visit_int_literal(self, node: IntLiteral) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_float_literal(self, node: FloatLiteral) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_string_literal(self, node: StringLiteral) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_bool_literal(self, node: BoolLiteral) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_identifier(self, node: Identifier) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_binary_expr(self, node: BinaryExpr) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_unary_expr(self, node: UnaryExpr) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_call_expr(self, node: CallExpr) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_assign_expr(self, node: AssignExpr) -&gt; Any: pass
+
+    # Statement visitors
+    @abstractmethod
+    def visit_expression_stmt(self, node: ExpressionStmt) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_var_decl(self, node: VarDecl) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_function_decl(self, node: FunctionDecl) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_return_stmt(self, node: ReturnStmt) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_if_stmt(self, node: IfStmt) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_while_stmt(self, node: WhileStmt) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_block_stmt(self, node: BlockStmt) -&gt; Any: pass
+
+    @abstractmethod
+    def visit_program(self, node: Program) -&gt; Any: pass
+
+
+# ==================== DEFAULT VISITOR ====================
+
+class DefaultASTVisitor(ASTVisitor):
+    &quot;&quot;&quot;Default visitor that traverses all nodes but does nothing.&quot;&quot;&quot;
+
+    def visit_int_literal(self, node: IntLiteral) -&gt; None:
+        pass
+
+    def visit_float_literal(self, node: FloatLiteral) -&gt; None:
+        pass
+
+    def visit_string_literal(self, node: StringLiteral) -&gt; None:
+        pass
+
+    def visit_bool_literal(self, node: BoolLiteral) -&gt; None:
+        pass
+
+    def visit_identifier(self, node: Identifier) -&gt; None:
+        pass
+
+    def visit_binary_expr(self, node: BinaryExpr) -&gt; None:
+        node.left.accept(self)
+        node.right.accept(self)
+
+    def visit_unary_expr(self, node: UnaryExpr) -&gt; None:
+        node.operand.accept(self)
+
+    def visit_call_expr(self, node: CallExpr) -&gt; None:
+        node.callee.accept(self)
+        for arg in node.arguments:
+            arg.accept(self)
+
+    def visit_assign_expr(self, node: AssignExpr) -&gt; None:
+        node.value.accept(self)
+
+    def visit_expression_stmt(self, node: ExpressionStmt) -&gt; None:
+        node.expression.accept(self)
+
+    def visit_var_decl(self, node: VarDecl) -&gt; None:
+        if node.initializer:
+            node.initializer.accept(self)
+
+    def visit_function_decl(self, node: FunctionDecl) -&gt; None:
+        for stmt in node.body:
+            stmt.accept(self)
+
+    def visit_return_stmt(self, node: ReturnStmt) -&gt; None:
+        if node.value:
+            node.value.accept(self)
+
+    def visit_if_stmt(self, node: IfStmt) -&gt; None:
+        node.condition.accept(self)
+        for stmt in node.then_branch:
+            stmt.accept(self)
+        if node.else_branch:
+            for stmt in node.else_branch:
+                stmt.accept(self)
+
+    def visit_while_stmt(self, node: WhileStmt) -&gt; None:
+        node.condition.accept(self)
+        for stmt in node.body:
+            stmt.accept(self)
+
+    def visit_block_stmt(self, node: BlockStmt) -&gt; None:
+        for stmt in node.statements:
+            stmt.accept(self)
+
+    def visit_program(self, node: Program) -&gt; None:
+        for stmt in node.statements:
+            stmt.accept(self)
+
+
+# ==================== CONCRETE VISITORS ====================
+
+class TypeChecker(ASTVisitor):
+    &quot;&quot;&quot;
+    Type checking visitor that validates types and infers types
+    for expressions throughout the AST.
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.errors: List[str] = []
+        self.symbol_table: Dict[str, Type] = {}
+        self.function_table: Dict[str, FunctionType] = {}
+        self.current_function_return_type: Optional[Type] = None
+        self._type_map = {
+            &quot;int&quot;: INT,
+            &quot;float&quot;: FLOAT,
+            &quot;bool&quot;: BOOL,
+            &quot;string&quot;: STRING,
+            &quot;void&quot;: VOID,
+        }
+
+    def _resolve_type(self, type_name: str) -&gt; Type:
+        &quot;&quot;&quot;Convert type name string to Type object.&quot;&quot;&quot;
+        return self._type_map.get(type_name, ERROR)
+
+    def _error(self, message: str) -&gt; None:
+        &quot;&quot;&quot;Record a type error.&quot;&quot;&quot;
+        self.errors.append(message)
+
+    def visit_int_literal(self, node: IntLiteral) -&gt; Type:
+        return INT
+
+    def visit_float_literal(self, node: FloatLiteral) -&gt; Type:
+        return FLOAT
+
+    def visit_string_literal(self, node: StringLiteral) -&gt; Type:
+        return STRING
+
+    def visit_bool_literal(self, node: BoolLiteral) -&gt; Type:
+        return BOOL
+
+    def visit_identifier(self, node: Identifier) -&gt; Type:
+        if node.name not in self.symbol_table:
+            self._error(f&quot;Undefined variable: '{node.name}'&quot;)
+            return ERROR
+        return self.symbol_table[node.name]
+
+    def visit_binary_expr(self, node: BinaryExpr) -&gt; Type:
+        left_type = node.left.accept(self)
+        right_type = node.right.accept(self)
+
+        # Arithmetic operators
+        arithmetic_ops = {
+            BinaryOperator.ADD, BinaryOperator.SUB,
+            BinaryOperator.MUL, BinaryOperator.DIV, BinaryOperator.MOD
+        }
+
+        if node.operator in arithmetic_ops:
+            if left_type == FLOAT or right_type == FLOAT:
+                if left_type in (INT, FLOAT) and right_type in (INT, FLOAT):
+                    return FLOAT
+            if left_type == INT and right_type == INT:
+                return INT
+            self._error(f&quot;Cannot apply {node.operator} to {left_type} and {right_type}&quot;)
+            return ERROR
+
+        # Comparison operators
+        comparison_ops = {
+            BinaryOperator.EQ, BinaryOperator.NE,
+            BinaryOperator.LT, BinaryOperator.LE,
+            BinaryOperator.GT, BinaryOperator.GE
+        }
+
+        if node.operator in comparison_ops:
+            if left_type == right_type or (
+                left_type in (INT, FLOAT) and right_type in (INT, FLOAT)
+            ):
+                return BOOL
+            self._error(f&quot;Cannot compare {left_type} with {right_type}&quot;)
+            return ERROR
+
+        # Logical operators
+        if node.operator in (BinaryOperator.AND, BinaryOperator.OR):
+            if left_type == BOOL and right_type == BOOL:
+                return BOOL
+            self._error(f&quot;Logical operators require bool operands&quot;)
+            return ERROR
+
+        return ERROR
+
+    def visit_unary_expr(self, node: UnaryExpr) -&gt; Type:
+        operand_type = node.operand.accept(self)
+
+        if node.operator == UnaryOperator.NEG:
+            if operand_type in (INT, FLOAT):
+                return operand_type
+            self._error(f&quot;Cannot negate {operand_type}&quot;)
+            return ERROR
+
+        if node.operator == UnaryOperator.NOT:
+            if operand_type == BOOL:
+                return BOOL
+            self._error(f&quot;Cannot apply 'not' to {operand_type}&quot;)
+            return ERROR
+
+        return ERROR
+
+    def visit_call_expr(self, node: CallExpr) -&gt; Type:
+        # For simplicity, assume callee is always an identifier
+        if not isinstance(node.callee, Identifier):
+            self._error(&quot;Callee must be an identifier&quot;)
+            return ERROR
+
+        func_name = node.callee.name
+        if func_name not in self.function_table:
+            self._error(f&quot;Undefined function: '{func_name}'&quot;)
+            return ERROR
+
+        func_type = self.function_table[func_name]
+
+        if len(node.arguments) != len(func_type.param_types):
+            self._error(
+                f&quot;Function '{func_name}' expects {len(func_type.param_types)} &quot;
+                f&quot;arguments, got {len(node.arguments)}&quot;
+            )
+            return ERROR
+
+        for i, (arg, expected_type) in enumerate(
+            zip(node.arguments, func_type.param_types)
+        ):
+            arg_type = arg.accept(self)
+            if arg_type != expected_type:
+                self._error(
+                    f&quot;Argument {i+1} of '{func_name}' expects {expected_type}, &quot;
+                    f&quot;got {arg_type}&quot;
+                )
+
+        return func_type.return_type
+
+    def visit_assign_expr(self, node: AssignExpr) -&gt; Type:
+        if node.target not in self.symbol_table:
+            self._error(f&quot;Undefined variable: '{node.target}'&quot;)
+            return ERROR
+
+        target_type = self.symbol_table[node.target]
+        value_type = node.value.accept(self)
+
+        if target_type != value_type:
+            # Allow int -&gt; float promotion
+            if not (target_type == FLOAT and value_type == INT):
+                self._error(
+                    f&quot;Cannot assign {value_type} to variable of type {target_type}&quot;
+                )
+
+        return target_type
+
+    def visit_expression_stmt(self, node: ExpressionStmt) -&gt; None:
+        node.expression.accept(self)
+
+    def visit_var_decl(self, node: VarDecl) -&gt; None:
+        if node.type_annotation:
+            var_type = self._resolve_type(node.type_annotation)
+        elif node.initializer:
+            var_type = node.initializer.accept(self)
+        else:
+            self._error(f&quot;Variable '{node.name}' needs type annotation or initializer&quot;)
+            var_type = ERROR
+
+        if node.initializer and node.type_annotation:
+            init_type = node.initializer.accept(self)
+            if init_type != var_type:
+                if not (var_type == FLOAT and init_type == INT):
+                    self._error(
+                        f&quot;Cannot initialize {var_type} with {init_type}&quot;
+                    )
+
+        self.symbol_table[node.name] = var_type
+
+    def visit_function_decl(self, node: FunctionDecl) -&gt; None:
+        param_types = tuple(self._resolve_type(t) for _, t in node.parameters)
+        return_type = self._resolve_type(node.return_type)
+        func_type = FunctionType(param_types, return_type)
+
+        self.function_table[node.name] = func_type
+
+        # Save outer scope and create function scope
+        outer_symbols = self.symbol_table.copy()
+        outer_return_type = self.current_function_return_type
+
+        self.current_function_return_type = return_type
+
+        # Add parameters to scope
+        for param_name, param_type_str in node.parameters:
+            self.symbol_table[param_name] = self._resolve_type(param_type_str)
+
+        # Type check body
+        for stmt in node.body:
+            stmt.accept(self)
+
+        # Restore outer scope
+        self.symbol_table = outer_symbols
+        self.current_function_return_type = outer_return_type
+
+    def visit_return_stmt(self, node: ReturnStmt) -&gt; None:
+        if self.current_function_return_type is None:
+            self._error(&quot;Return statement outside of function&quot;)
+            return
+
+        if node.value is None:
+            if self.current_function_return_type != VOID:
+                self._error(
+                    f&quot;Function must return {self.current_function_return_type}&quot;
+                )
+        else:
+            return_type = node.value.accept(self)
+            if return_type != self.current_function_return_type:
+                if not (self.current_function_return_type == FLOAT and
+                        return_type == INT):
+                    self._error(
+                        f&quot;Expected return type {self.current_function_return_type}, &quot;
+                        f&quot;got {return_type}&quot;
+                    )
+
+    def visit_if_stmt(self, node: IfStmt) -&gt; None:
+        cond_type = node.condition.accept(self)
+        if cond_type != BOOL:
+            self._error(f&quot;If condition must be bool, got {cond_type}&quot;)
+
+        for stmt in node.then_branch:
+            stmt.accept(self)
+
+        if node.else_branch:
+            for stmt in node.else_branch:
+                stmt.accept(self)
+
+    def visit_while_stmt(self, node: WhileStmt) -&gt; None:
+        cond_type = node.condition.accept(self)
+        if cond_type != BOOL:
+            self._error(f&quot;While condition must be bool, got {cond_type}&quot;)
+
+        for stmt in node.body:
+            stmt.accept(self)
+
+    def visit_block_stmt(self, node: BlockStmt) -&gt; None:
+        for stmt in node.statements:
+            stmt.accept(self)
+
+    def visit_program(self, node: Program) -&gt; None:
+        for stmt in node.statements:
+            stmt.accept(self)
+
+
+class PrettyPrinter(ASTVisitor):
+    &quot;&quot;&quot;
+    Visitor that converts AST back to source code with proper formatting.
+    Demonstrates accumulating string output during traversal.
+    &quot;&quot;&quot;
+
+    def __init__(self, indent_size: int = 4):
+        self.indent_size = indent_size
+        self.current_indent = 0
+
+    def _indent(self) -&gt; str:
+        return &quot; &quot; * (self.current_indent * self.indent_size)
+
+    def _op_to_str(self, op: Union[BinaryOperator, UnaryOperator]) -&gt; str:
+        op_map = {
+            BinaryOperator.ADD: &quot;+&quot;, BinaryOperator.SUB: &quot;-&quot;,
+            BinaryOperator.MUL: &quot;*&quot;, BinaryOperator.DIV: &quot;/&quot;,
+            BinaryOperator.MOD: &quot;%&quot;, BinaryOperator.EQ: &quot;==&quot;,
+            BinaryOperator.NE: &quot;!=&quot;, BinaryOperator.LT: &quot;&lt;&quot;,
+            BinaryOperator.LE: &quot;&lt;=&quot;, BinaryOperator.GT: &quot;&gt;&quot;,
+            BinaryOperator.GE: &quot;&gt;=&quot;, BinaryOperator.AND: &quot;and&quot;,
+            BinaryOperator.OR: &quot;or&quot;, UnaryOperator.NEG: &quot;-&quot;,
+            UnaryOperator.NOT: &quot;not &quot;,
+        }
+        return op_map.get(op, &quot;?&quot;)
+
+    def visit_int_literal(self, node: IntLiteral) -&gt; str:
+        return str(node.value)
+
+    def visit_float_literal(self, node: FloatLiteral) -&gt; str:
+        return str(node.value)
+
+    def visit_string_literal(self, node: StringLiteral) -&gt; str:
+        return f'&quot;{node.value}&quot;'
+
+    def visit_bool_literal(self, node: BoolLiteral) -&gt; str:
+        return &quot;true&quot; if node.value else &quot;false&quot;
+
+    def visit_identifier(self, node: Identifier) -&gt; str:
+        return node.name
+
+    def visit_binary_expr(self, node: BinaryExpr) -&gt; str:
+        left = node.left.accept(self)
+        right = node.right.accept(self)
+        op = self._op_to_str(node.operator)
+        return f&quot;({left} {op} {right})&quot;
+
+    def visit_unary_expr(self, node: UnaryExpr) -&gt; str:
+        operand = node.operand.accept(self)
+        op = self._op_to_str(node.operator)
+        return f&quot;({op}{operand})&quot;
+
+    def visit_call_expr(self, node: CallExpr) -&gt; str:
+        callee = node.callee.accept(self)
+        args = &quot;, &quot;.join(arg.accept(self) for arg in node.arguments)
+        return f&quot;{callee}({args})&quot;
+
+    def visit_assign_expr(self, node: AssignExpr) -&gt; str:
+        value = node.value.accept(self)
+        return f&quot;{node.target} = {value}&quot;
+
+    def visit_expression_stmt(self, node: ExpressionStmt) -&gt; str:
+        return self._indent() + node.expression.accept(self) + &quot;;&quot;
+
+    def visit_var_decl(self, node: VarDecl) -&gt; str:
+        result = self._indent() + f&quot;var {node.name}&quot;
+        if node.type_annotation:
+            result += f&quot;: {node.type_annotation}&quot;
+        if node.initializer:
+            result += f&quot; = {node.initializer.accept(self)}&quot;
+        return result + &quot;;&quot;
+
+    def visit_function_decl(self, node: FunctionDecl) -&gt; str:
+        params = &quot;, &quot;.join(f&quot;{name}: {type_}&quot; for name, type_ in node.parameters)
+        lines = [f&quot;{self._indent()}fn {node.name}({params}) -&gt; {node.return_type} {{&quot;]
+
+        self.current_indent += 1
+        for stmt in node.body:
+            lines.append(stmt.accept(self))
+        self.current_indent -= 1
+
+        lines.append(self._indent() + &quot;}&quot;)
+        return &quot;\n&quot;.join(lines)
+
+    def visit_return_stmt(self, node: ReturnStmt) -&gt; str:
+        if node.value:
+            return self._indent() + f&quot;return {node.value.accept(self)};&quot;
+        return self._indent() + &quot;return;&quot;
+
+    def visit_if_stmt(self, node: IfStmt) -&gt; str:
+        lines = [f&quot;{self._indent()}if ({node.condition.accept(self)}) {{&quot;]
+
+        self.current_indent += 1
+        for stmt in node.then_branch:
+            lines.append(stmt.accept(self))
+        self.current_indent -= 1
+
+        if node.else_branch:
+            lines.append(self._indent() + &quot;} else {&quot;)
+            self.current_indent += 1
+            for stmt in node.else_branch:
+                lines.append(stmt.accept(self))
+            self.current_indent -= 1
+
+        lines.append(self._indent() + &quot;}&quot;)
+        return &quot;\n&quot;.join(lines)
+
+    def visit_while_stmt(self, node: WhileStmt) -&gt; str:
+        lines = [f&quot;{self._indent()}while ({node.condition.accept(self)}) {{&quot;]
+
+        self.current_indent += 1
+        for stmt in node.body:
+            lines.append(stmt.accept(self))
+        self.current_indent -= 1
+
+        lines.append(self._indent() + &quot;}&quot;)
+        return &quot;\n&quot;.join(lines)
+
+    def visit_block_stmt(self, node: BlockStmt) -&gt; str:
+        lines = [self._indent() + &quot;{&quot;]
+        self.current_indent += 1
+        for stmt in node.statements:
+            lines.append(stmt.accept(self))
+        self.current_indent -= 1
+        lines.append(self._indent() + &quot;}&quot;)
+        return &quot;\n&quot;.join(lines)
+
+    def visit_program(self, node: Program) -&gt; str:
+        return &quot;\n\n&quot;.join(stmt.accept(self) for stmt in node.statements)
+
+
+class ConstantFolder(ASTVisitor):
+    &quot;&quot;&quot;
+    Optimization visitor that folds constant expressions at compile time.
+    Returns optimized AST nodes or the original if no optimization possible.
+    &quot;&quot;&quot;
+
+    def visit_int_literal(self, node: IntLiteral) -&gt; IntLiteral:
+        return node
+
+    def visit_float_literal(self, node: FloatLiteral) -&gt; FloatLiteral:
+        return node
+
+    def visit_string_literal(self, node: StringLiteral) -&gt; StringLiteral:
+        return node
+
+    def visit_bool_literal(self, node: BoolLiteral) -&gt; BoolLiteral:
+        return node
+
+    def visit_identifier(self, node: Identifier) -&gt; Identifier:
+        return node
+
+    def visit_binary_expr(self, node: BinaryExpr) -&gt; Expression:
+        left = node.left.accept(self)
+        right = node.right.accept(self)
+
+        # Check if both operands are now literals
+        if isinstance(left, (IntLiteral, FloatLiteral)) and \
+           isinstance(right, (IntLiteral, FloatLiteral)):
+            left_val = left.value
+            right_val = right.value
+
+            try:
+                result = self._evaluate_binary(node.operator, left_val, right_val)
+
+                # Return appropriate literal type
+                if isinstance(result, bool):
+                    return BoolLiteral(result)
+                elif isinstance(result, float):
+                    return FloatLiteral(result)
+                else:
+                    return IntLiteral(int(result))
+            except (ZeroDivisionError, ArithmeticError):
+                pass  # Can't fold, return modified node
+
+        # Return potentially partially-folded node
+        return BinaryExpr(node.operator, left, right)
+
+    def _evaluate_binary(
+        self, op: BinaryOperator, left: float, right: float
+    ) -&gt; Union[float, bool]:
+        ops = {
+            BinaryOperator.ADD: lambda a, b: a + b,
+            BinaryOperator.SUB: lambda a, b: a - b,
+            BinaryOperator.MUL: lambda a, b: a * b,
+            BinaryOperator.DIV: lambda a, b: a / b,
+            BinaryOperator.MOD: lambda a, b: a % b,
+            BinaryOperator.EQ: lambda a, b: a == b,
+            BinaryOperator.NE: lambda a, b: a != b,
+            BinaryOperator.LT: lambda a, b: a &lt; b,
+            BinaryOperator.LE: lambda a, b: a &lt;= b,
+            BinaryOperator.GT: lambda a, b: a &gt; b,
+            BinaryOperator.GE: lambda a, b: a &gt;= b,
+        }
+        return ops[op](left, right)
+
+    def visit_unary_expr(self, node: UnaryExpr) -&gt; Expression:
+        operand = node.operand.accept(self)
+
+        if isinstance(operand, (IntLiteral, FloatLiteral)):
+            if node.operator == UnaryOperator.NEG:
+                if isinstance(operand, IntLiteral):
+                    return IntLiteral(-operand.value)
+                return FloatLiteral(-operand.value)
+
+        if isinstance(operand, BoolLiteral):
+            if node.operator == UnaryOperator.NOT:
+                return BoolLiteral(not operand.value)
+
+        return UnaryExpr(node.operator, operand)
+
+    def visit_call_expr(self, node: CallExpr) -&gt; CallExpr:
+        optimized_args = [arg.accept(self) for arg in node.arguments]
+        return CallExpr(node.callee, optimized_args)
+
+    def visit_assign_expr(self, node: AssignExpr) -&gt; AssignExpr:
+        optimized_value = node.value.accept(self)
+        return AssignExpr(node.target, optimized_value)
+
+    def visit_expression_stmt(self, node: ExpressionStmt) -&gt; ExpressionStmt:
+        return ExpressionStmt(node.expression.accept(self))
+
+    def visit_var_decl(self, node: VarDecl) -&gt; VarDecl:
+        optimized_init = None
+        if node.initializer:
+            optimized_init = node.initializer.accept(self)
+        return VarDecl(node.name, node.type_annotation, optimized_init)
+
+    def visit_function_decl(self, node: FunctionDecl) -&gt; FunctionDecl:
+        optimized_body = [stmt.accept(self) for stmt in node.body]
+        return FunctionDecl(
+            node.name, node.parameters, node.return_type, optimized_body
+        )
+
+    def visit_return_stmt(self, node: ReturnStmt) -&gt; ReturnStmt:
+        if node.value:
+            return ReturnStmt(node.value.accept(self))
+        return node
+
+    def visit_if_stmt(self, node: IfStmt) -&gt; Statement:
+        optimized_cond = node.condition.accept(self)
+
+        # If condition is constant, eliminate dead branch
+        if isinstance(optimized_cond, BoolLiteral):
+            if optimized_cond.value:
+                # Condition always true, return then branch
+                optimized_then = [s.accept(self) for s in node.then_branch]
+                return BlockStmt(optimized_then)
+            else:
+                # Condition always false, return else branch or empty
+                if node.else_branch:
+                    optimized_else = [s.accept(self) for s in node.else_branch]
+                    return BlockStmt(optimized_else)
+                return BlockStmt([])
+
+        optimized_then = [s.accept(self) for s in node.then_branch]
+        optimized_else = None
+        if node.else_branch:
+            optimized_else = [s.accept(self) for s in node.else_branch]
+
+        return IfStmt(optimized_cond, optimized_then, optimized_else)
+
+    def visit_while_stmt(self, node: WhileStmt) -&gt; Statement:
+        optimized_cond = node.condition.accept(self)
+
+        # If condition is constant false, eliminate loop
+        if isinstance(optimized_cond, BoolLiteral) and not optimized_cond.value:
+            return BlockStmt([])
+
+        optimized_body = [s.accept(self) for s in node.body]
+        return WhileStmt(optimized_cond, optimized_body)
+
+    def visit_block_stmt(self, node: BlockStmt) -&gt; BlockStmt:
+        optimized = [s.accept(self) for s in node.statements]
+        return BlockStmt(optimized)
+
+    def visit_program(self, node: Program) -&gt; Program:
+        optimized = [s.accept(self) for s in node.statements]
+        return Program(optimized)
+
+
+class SymbolCollector(DefaultASTVisitor):
+    &quot;&quot;&quot;
+    Visitor that collects all defined and referenced symbols.
+    Useful for dependency analysis and dead code detection.
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self.defined_variables: Set[str] = set()
+        self.referenced_variables: Set[str] = set()
+        self.defined_functions: Set[str] = set()
+        self.called_functions: Set[str] = set()
+
+    def visit_identifier(self, node: Identifier) -&gt; None:
+        self.referenced_variables.add(node.name)
+
+    def visit_var_decl(self, node: VarDecl) -&gt; None:
+        self.defined_variables.add(node.name)
+        super().visit_var_decl(node)
+
+    def visit_function_decl(self, node: FunctionDecl) -&gt; None:
+        self.defined_functions.add(node.name)
+        # Add parameters as defined variables within the function
+        for param_name, _ in node.parameters:
+            self.defined_variables.add(param_name)
+        super().visit_function_decl(node)
+
+    def visit_call_expr(self, node: CallExpr) -&gt; None:
+        if isinstance(node.callee, Identifier):
+            self.called_functions.add(node.callee.name)
+        super().visit_call_expr(node)
+
+    def get_unused_variables(self) -&gt; Set[str]:
+        return self.defined_variables - self.referenced_variables
+
+    def get_undefined_variables(self) -&gt; Set[str]:
+        return self.referenced_variables - self.defined_variables
+
+    def get_uncalled_functions(self) -&gt; Set[str]:
+        return self.defined_functions - self.called_functions
+
+
+# ==================== USAGE EXAMPLE ====================
+
+def demo():
+    &quot;&quot;&quot;Demonstrate the visitor pattern with a sample program.&quot;&quot;&quot;
+
+    # Build AST for:
+    # fn add(a: int, b: int) -&gt; int {
+    #     return a + b;
+    # }
+    # var x: int = 3 + 4 * 2;
+    # var y: int = add(x, 10);
+
+    program = Program([
+        FunctionDecl(
+            name=&quot;add&quot;,
+            parameters=[(&quot;a&quot;, &quot;int&quot;), (&quot;b&quot;, &quot;int&quot;)],
+            return_type=&quot;int&quot;,
+            body=[
+                ReturnStmt(
+                    BinaryExpr(
+                        BinaryOperator.ADD,
+                        Identifier(&quot;a&quot;),
+                        Identifier(&quot;b&quot;)
+                    )
+                )
+            ]
+        ),
+        VarDecl(
+            name=&quot;x&quot;,
+            type_annotation=&quot;int&quot;,
+            initializer=BinaryExpr(
+                BinaryOperator.ADD,
+                IntLiteral(3),
+                BinaryExpr(BinaryOperator.MUL, IntLiteral(4), IntLiteral(2))
+            )
+        ),
+        VarDecl(
+            name=&quot;y&quot;,
+            type_annotation=&quot;int&quot;,
+            initializer=CallExpr(
+                Identifier(&quot;add&quot;),
+                [Identifier(&quot;x&quot;), IntLiteral(10)]
+            )
+        )
+    ])
+
+    print(&quot;=&quot; * 60)
+    print(&quot;VISITOR PATTERN - COMPILER AST DEMO&quot;)
+    print(&quot;=&quot; * 60)
+
+    # Pretty print the original AST
+    print(&quot;\n--- Original Source ---&quot;)
+    printer = PrettyPrinter()
+    print(program.accept(printer))
+
+    # Type check
+    print(&quot;\n--- Type Checking ---&quot;)
+    checker = TypeChecker()
+    program.accept(checker)
+    if checker.errors:
+        print(&quot;Type errors found:&quot;)
+        for error in checker.errors:
+            print(f&quot;  - {error}&quot;)
+    else:
+        print(&quot;No type errors found!&quot;)
+
+    # Constant folding optimization
+    print(&quot;\n--- After Constant Folding ---&quot;)
+    folder = ConstantFolder()
+    optimized = program.accept(folder)
+    print(optimized.accept(printer))
+
+    # Symbol collection
+    print(&quot;\n--- Symbol Analysis ---&quot;)
+    collector = SymbolCollector()
+    program.accept(collector)
+    print(f&quot;Defined functions: {collector.defined_functions}&quot;)
+    print(f&quot;Called functions: {collector.called_functions}&quot;)
+    print(f&quot;Defined variables: {collector.defined_variables}&quot;)
+    print(f&quot;Referenced variables: {collector.referenced_variables}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    demo()
+</code></pre>
+<hr />
+<h2 id="interview-deep-dive-implementation-details">Interview Deep Dive: Implementation Details</h2>
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: What should a visitor's visit method return?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+It depends on the operation. Type checkers return types, evaluators return values, code generators return strings or IR nodes, collectors return nothing (mutate internal state). The return type should match the operation's purpose. Using generics (e.g., <code>Visitor&lt;T&gt;</code>) allows type-safe return values.
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 2: How do you handle state in visitors that need context from parent nodes?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+<strong>Option 1:</strong> Store state in visitor instance variables (e.g., <code>current_function_return_type</code> in type checker). Save/restore when entering/exiting scopes. <strong>Option 2:</strong> Pass context as additional parameters using a context object pattern. <strong>Option 3:</strong> Maintain an explicit stack of contexts. <strong>Trade-off:</strong> Instance state is simpler but not thread-safe; parameter passing is pure but verbose.
+</div>
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 3: How would you design a visitor that can be interrupted mid-traversal and resumed later?</div>
+<div style="color: #1e3a8a; line-height: 1.7">
+Convert to <strong>continuation-passing style</strong> or use an <strong>explicit work stack</strong>. Instead of recursive calls, push pending work onto a stack. Process one item at a time and yield control. The visitor becomes an iterator: <code>while visitor.has_next(): visitor.step()</code>. This enables progress reporting, cancellation, and parallelization. Languages with generators/coroutines can <code>yield</code> from visit methods. This pattern is used in incremental parsers and background code analysis.
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="visitor-pattern-vs-alternatives">Visitor Pattern vs. Alternatives</h2>
+<div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem">Pattern Comparison</div>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem">
+<tr style="background: #e2e8f0">
+<th style="padding: 0.75rem; text-align: left">Approach</th>
+<th style="padding: 0.75rem; text-align: left">Add Types</th>
+<th style="padding: 0.75rem; text-align: left">Add Operations</th>
+<th style="padding: 0.75rem; text-align: left">Best For</th>
+</tr>
+<tr>
+<td style="padding: 0.75rem;font-weight: 600">Traditional OOP</td>
+<td style="padding: 0.75rem;color: #166534">Easy</td>
+<td style="padding: 0.75rem;color: #991b1b">Hard</td>
+<td style="padding: 0.75rem">Evolving type hierarchies</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 0.75rem;font-weight: 600">Visitor Pattern</td>
+<td style="padding: 0.75rem;color: #991b1b">Hard</td>
+<td style="padding: 0.75rem;color: #166534">Easy</td>
+<td style="padding: 0.75rem">Stable types, many operations</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem;font-weight: 600">Pattern Matching</td>
+<td style="padding: 0.75rem;color: #991b1b">Hard</td>
+<td style="padding: 0.75rem;color: #166534">Easy</td>
+<td style="padding: 0.75rem">FP languages, sealed types</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 0.75rem;font-weight: 600">Type Classes</td>
+<td style="padding: 0.75rem;color: #166534">Easy</td>
+<td style="padding: 0.75rem;color: #166534">Easy</td>
+<td style="padding: 0.75rem">Haskell, Rust traits</td>
+</tr>
+</table>
+</div>
+<h3 id="when-to-use-alternatives">When to Use Alternatives</h3>
+<div style="background: #dcfce7; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem">Use Pattern Matching Instead When:</div>
+<div style="color: #14532d; line-height: 1.7">
+<ul style="margin: 0; padding-left: 1.25rem">
+<li>Your language has exhaustive pattern matching (Scala, Rust, Kotlin)</li>
+<li>Types are sealed/final and won't be extended</li>
+<li>Operations are simple enough to fit in a match expression</li>
+<li>You want compile-time exhaustiveness checking</li>
+</ul>
+</div>
+</div>
+<div style="background: #dbeafe; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 0.75rem">Use isinstance/type Dispatch Instead When:</div>
+<div style="color: #1e3a8a; line-height: 1.7">
+<ul style="margin: 0; padding-left: 1.25rem">
+<li>You have very few types (2-3)</li>
+<li>You only need one or two operations</li>
+<li>The overhead of the full Visitor infrastructure is not justified</li>
+<li>You're prototyping and need quick iteration</li>
+</ul>
+</div>
+</div>
+<hr />
+<h2 id="common-pitfalls-and-edge-cases">Common Pitfalls and Edge Cases</h2>
+<div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 1rem">Critical Pitfalls</div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem">1. Forgetting to Visit Children</div>
+<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6">
+When traversal is visitor-controlled, forgetting to call <code>accept()</code> on children silently skips subtrees. Use a <code>DefaultVisitor</code> base class that handles traversal, so derived visitors only override behavior.
+</div>
+</div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem">2. Breaking Encapsulation Excessively</div>
+<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6">
+  Visitors need access to element data, but exposing too many internals couples visitors tightly to element implementation. Provide focused accessor methods rather than exposing all fields.
+</div>
+</div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem">3. Accumulating Stale State</div>
+<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6">
+Visitor instances that accumulate state (counters, collections) may retain state across multiple traversals. Either create new visitor instances for each traversal or provide explicit <code>reset()</code> methods.
+</div>
+</div>
+<div style="margin-bottom: 1.25rem; padding-bottom: 1rem">
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem">4. Infinite Loops in Cyclic Structures</div>
+<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6">
+  Visiting graphs without cycle detection causes stack overflow or infinite loops. Always track visited nodes when the structure might contain cycles.
+</div>
+</div>
+<div>
+<div style="font-weight: 600; color: #991b1b; margin-bottom: 0.5rem">5. Thread Safety Issues</div>
+<div style="color: #7f1d1d; font-size: 0.95rem; line-height: 1.6">
+  Visitors with mutable state are not thread-safe. For parallel traversal, either use thread-local visitors, immutable visitors that return new state, or synchronize access to shared state.
+</div>
+</div>
+</div>
+<hr />
+<h2 id="interview-deep-dive-design-decisions">Interview Deep Dive: Design Decisions</h2>
+<div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: How does Visitor relate to the Composite pattern?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+    [[Composite]](/topic/design-patterns/composite) creates tree structures of objects. Visitor operates on those structures by traversing them and applying operations. Composite defines the structure; Visitor defines operations on that structure. They are highly complementary patterns.
+</div>
+<div style="background: #dbeafe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 2: How would you unit test visitors?</div>
+<div style="color: #1e3a8a; line-height: 1.7; margin-bottom: 1rem">
+<strong>Test visit methods individually:</strong> Create each element type and verify the visitor produces correct output. <strong>Test traversal:</strong> Create composite structures and verify all nodes are visited in correct order. <strong>Test state accumulation:</strong> Traverse multiple elements and verify aggregated state. <strong>Use mock visitors:</strong> Test that elements call the correct visit method. <strong>Edge cases:</strong> Empty structures, single elements, deep nesting, cycles.
+</div>
+<div style="background: #bfdbfe; border-radius: 8px; padding: 1rem; margin-top: 1rem">
+<div style="font-weight: 600; color: #1e40af; margin-bottom: 0.75rem">Level 3: How would you evolve a Visitor-based system when you need to add both new elements and new operations frequently?</div>
+<div style="color: #1e3a8a; line-height: 1.7">
+The Visitor pattern has a fundamental tension here. Strategies: <strong>1) Acyclic Visitor:</strong> Visitors implement only interfaces for types they care about. <strong>2) Reflective Visitor:</strong> Use reflection to dynamically dispatch, losing static safety but gaining flexibility. <strong>3) External Dispatch Table:</strong> Map (element type, operation type) pairs to handlers at runtime. <strong>4) Code Generation:</strong> Generate visitor infrastructure from element definitions. <strong>5) Reconsider the design:</strong> Perhaps the domain doesn't fit Visitor; consider [[Strategy]](/topic/design-patterns/strategy) or [[Command]](/topic/design-patterns/command) patterns instead.
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="real-world-applications">Real-World Applications</h2>
+<h3 id="compilers-and-static-analysis">Compilers and Static Analysis</h3>
+<div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem">Industry Usage</div>
+<div style="margin-bottom: 1rem; padding-left: 1rem">
+<div style="font-weight: 600; color: #1e40af">LLVM/Clang</div>
+<div style="color: #475569; font-size: 0.9rem">Uses visitors for AST traversal, type checking, code generation, and optimization passes. Each compiler phase is a separate visitor.</div>
+</div>
+<div style="margin-bottom: 1rem; padding-left: 1rem">
+<div style="font-weight: 600; color: #166534">ESLint / Pylint / SonarQube</div>
+<div style="color: #475569; font-size: 0.9rem">Each linting rule is a visitor that traverses AST nodes looking for patterns. Adding rules doesn't modify the parser or AST classes.</div>
+</div>
+<div style="margin-bottom: 1rem; padding-left: 1rem">
+<div style="font-weight: 600; color: #7c3aed">TypeScript Compiler</div>
+<div style="color: #475569; font-size: 0.9rem">Type checker, transformer pipeline, and emit stages all use visitor patterns over the TypeScript AST.</div>
+</div>
+<div style="padding-left: 1rem">
+<div style="font-weight: 600; color: #92400e">Babel</div>
+<div style="color: #475569; font-size: 0.9rem">Plugins are visitors that transform JavaScript AST. The plugin API is essentially a visitor registration system.</div>
+</div>
+</div>
+<h3 id="database-query-processing">Database Query Processing</h3>
+<p>ORMs like SQLAlchemy, Django ORM, and Hibernate use visitors to traverse expression trees and generate SQL for different database backends (PostgreSQL, MySQL, SQLite each have different SQL dialects).</p>
+<h3 id="document-processing">Document Processing</h3>
+<p>PDF libraries traverse document structure with visitors for rendering, text extraction, and accessibility analysis. XML/HTML parsers expose SAX-like visitor interfaces for efficient streaming processing.</p>
+<hr />
+<h2 id="summary-key-interview-points">Summary: Key Interview Points</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
+<div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;padding-bottom: 0.75rem; color: #1e293b">Memorize These</div>
+<ul style="margin: 0; padding-left: 1.25rem; line-height: 2; color: #475569">
+<li><strong>Core mechanism:</strong> Double dispatch via accept/visit two-step protocol</li>
+<li><strong>Key trade-off:</strong> Easy to add operations, hard to add element types</li>
+<li><strong>When to use:</strong> Stable element hierarchy, frequently changing operations</li>
+<li><strong>Traversal:</strong> Either visitor or elements control it, be consistent</li>
+<li><strong>Cyclic structures:</strong> Track visited nodes to prevent infinite loops</li>
+<li><strong>Alternatives:</strong> Pattern matching, type dispatch, acyclic visitor</li>
+<li><strong>Related patterns:</strong> [[Composite]](/topic/design-patterns/composite), [[Iterator]](/topic/design-patterns/iterator), [[Strategy]](/topic/design-patterns/strategy)</li>
+</ul>
+</div>
+<hr />
+<h2 id="related-patterns">Related Patterns</h2>
+<ul>
+<li><strong><a href="/topic/design-patterns/composite">[Composite]</a></strong> - Provides the tree structure that visitors typically traverse</li>
+<li><strong><a href="/topic/design-patterns/iterator">[Iterator]</a></strong> - Alternative for simple linear traversal without type-specific behavior</li>
+<li><strong><a href="/topic/design-patterns/strategy">[Strategy]</a></strong> - Alternative when only one operation varies, not multiple</li>
+<li><strong><a href="/topic/design-patterns/interpreter">[Interpreter]</a></strong> - Often uses Visitor for AST operations</li>
+<li><strong><a href="/topic/design-patterns/command">[Command]</a></strong> - Can encapsulate visitor operations for undo/redo</li>
+</ul>

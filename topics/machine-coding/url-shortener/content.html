@@ -1,0 +1,3077 @@
+<h1 id="url-shortener-deep-dive-for-system-design-interviews">URL Shortener: Deep Dive for System Design Interviews</h1>
+<h2 id="problem-statement">Problem Statement</h2>
+<p>Design a <span style="color:#22c55e;font-weight:bold">URL shortening service</span> (like bit.ly or TinyURL) that converts long URLs into compact, shareable codes while enabling redirection, <span style="color:#22c55e;font-weight:bold">analytics tracking</span>, and <span style="color:#22c55e;font-weight:bold">high availability</span> at scale.</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Core Challenge</strong>: This seemingly simple problem masks profound distributed systems challenges - deterministic ID generation without coordination, collision-free encoding at scale, cache coherence across geographies, and real-time analytics without sacrificing redirect latency.</p>
+</div>
+<hr />
+<h2 id="section-1-base62-encoding-deep-dive">Section 1: Base62 Encoding Deep Dive</h2>
+<h3 id="the-mathematics-behind-short-codes">The Mathematics Behind Short Codes</h3>
+<p><span style="color:#22c55e;font-weight:bold">Base62 encoding</span> transforms numeric identifiers into alphanumeric strings using a 62-character alphabet: <code>a-z</code>, <code>A-Z</code>, <code>0-9</code>. This choice is deliberate and reveals important trade-offs in <a href="/topics/system-design/data-encoding">[information density]</a> versus URL compatibility.</p>
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Why Base62 Specifically?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Base</th>
+<th>Characters</th>
+<th>URL-Safe?</th>
+<th>7-char Capacity</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base16</td>
+<td>0-9, a-f</td>
+<td>Yes</td>
+<td>268M</td>
+<td>Too long for short URLs</td>
+</tr>
+<tr>
+<td>Base36</td>
+<td>0-9, a-z</td>
+<td>Yes</td>
+<td>78B</td>
+<td>Case-insensitive, mobile-friendly</td>
+</tr>
+<tr>
+<td>Base62</td>
+<td>0-9, a-z, A-Z</td>
+<td>Yes</td>
+<td>3.5T</td>
+<td>Optimal density</td>
+</tr>
+<tr>
+<td>Base64</td>
+<td>+62 chars + <code>/</code></td>
+<td>No</td>
+<td>4.4T</td>
+<td>Requires URL encoding</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Insight</strong>: Base62 maximizes information density while remaining URL-safe without encoding. The <code>+</code> and <code>/</code> in Base64 require percent-encoding, making URLs longer and uglier.</p>
+</div>
+<h3 id="internal-mechanism-conversion-algorithm">Internal Mechanism: Conversion Algorithm</h3>
+<pre><code class="language-python">BASE62_ALPHABET = &quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;
+
+def encode_base62(num: int) -&gt; str:
+    &quot;&quot;&quot;
+    Convert integer to base62 string.
+
+    Critical insight: This is essentially converting from base-10 to base-62,
+    identical to how we'd convert decimal to binary, but with 62 symbols.
+
+    Time: O(log_62(n)) - number of digits in base62 representation
+    Space: O(log_62(n)) - for the result string
+    &quot;&quot;&quot;
+    if num == 0:
+        return BASE62_ALPHABET[0]
+
+    result = []
+    while num &gt; 0:
+        remainder = num % 62
+        result.append(BASE62_ALPHABET[remainder])
+        num //= 62
+
+    return ''.join(reversed(result))
+
+def decode_base62(code: str) -&gt; int:
+    &quot;&quot;&quot;
+    Convert base62 string back to integer.
+
+    This is Horner's method for polynomial evaluation:
+    &quot;abc&quot; = a*62^2 + b*62^1 + c*62^0
+    Computed as: ((a * 62) + b) * 62 + c
+    &quot;&quot;&quot;
+    num = 0
+    for char in code:
+        num = num * 62 + BASE62_ALPHABET.index(char)
+    return num
+</code></pre>
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Assumption</strong>: The alphabet ordering affects generated codes. Starting with digits (<code>0-9</code>) means small numbers produce digit-only codes, potentially revealing ID patterns. Some systems shuffle the alphabet for obfuscation.</p>
+<p><strong>Trade-off</strong>: Shuffled alphabets prevent enumeration attacks but complicate debugging and make codes less memorable.</p>
+</div>
+<h3 id="edge-cases-in-base62-encoding">Edge Cases in Base62 Encoding</h3>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Edge Case 1: Leading Zeros</strong></p>
+<ul>
+<li>Number <code>0</code> should encode to <code>&quot;0&quot;</code>, not empty string</li>
+<li>Number <code>62</code> encodes to <code>&quot;10&quot;</code> - the leading <code>1</code> must be preserved</li>
+<li>Decoding <code>&quot;00abc&quot;</code> differs from <code>&quot;abc&quot;</code> (if your system allows leading zeros)</li>
+</ul>
+<p><strong>Edge Case 2: Case Sensitivity</strong></p>
+<ul>
+<li><code>&quot;abc&quot;</code> and <code>&quot;ABC&quot;</code> and <code>&quot;aBc&quot;</code> are three different codes</li>
+<li>Problem: Email clients sometimes lowercase URLs</li>
+<li>Solution: Some services use Base36 (case-insensitive) for robustness</li>
+</ul>
+<p><strong>Edge Case 3: Confusing Characters</strong></p>
+<ul>
+<li><code>0</code> vs <code>O</code> vs <code>o</code> - visually similar</li>
+<li><code>1</code> vs <code>l</code> vs <code>I</code> - commonly confused</li>
+<li>Some services exclude these (Base58 in Bitcoin addresses)</li>
+</ul>
+</div>
+<h3 id="code-length-capacity-planning">Code Length Capacity Planning</h3>
+<pre><code>Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
+-------|-------------------|--------------------------|--------------------
+   6   | 62^6 = 56.8B      | 180 writes/sec           | 28.4 TB
+   7   | 62^7 = 3.52T      | 11,177 writes/sec        | 1.76 PB
+   8   | 62^8 = 218T       | 693,000 writes/sec       | 109 PB
+</code></pre>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Design Choice</strong>: 7 characters provides the sweet spot - short enough to be memorable, large enough keyspace to avoid collisions for decades at massive scale.</p>
+<p><strong>Real-world validation</strong>: bit.ly uses 7 characters, TinyURL uses 7-8, Twitter's t.co uses 10 (includes error detection).</p>
+</div>
+<h3 id="interview-questions-base62-encoding-3-levels-deep">Interview Questions: Base62 Encoding (3 Levels Deep)</h3>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Why use Base62 instead of Base64 for URL shortening?</p>
+<p><strong>Level 2</strong>: If we use Base62, how would you handle the &quot;confusing characters&quot; problem (0/O, 1/l/I) while maintaining maximum keyspace efficiency? What's the mathematical trade-off?</p>
+<p><strong>Level 3</strong>: You've implemented Base58 (excluding confusing characters). Now your analytics team reports that 0.1% of URLs are being typed incorrectly. How would you design an error-correction scheme that detects and potentially corrects single-character errors without significantly increasing code length? Consider the trade-off between code length, error detection capability, and computational overhead.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Explain the time complexity of base62 encoding/decoding.</p>
+<p><strong>Level 2</strong>: The <code>index()</code> operation in decoding is O(62) per character. How would you optimize this for high-throughput systems processing millions of redirects per second?</p>
+<p><strong>Level 3</strong>: You've created a lookup table for O(1) character-to-index mapping. Now imagine you need to support multiple encoding schemes (Base62, Base58, custom alphabets per customer) with minimal memory overhead across 1000 servers. Design a solution that balances memory efficiency, cache locality, and configuration flexibility.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: What happens if someone guesses short codes sequentially?</p>
+<p><strong>Level 2</strong>: How would you make codes non-sequential while still using an auto-incrementing counter? What are the security vs. performance trade-offs?</p>
+<p><strong>Level 3</strong>: You've implemented alphabet shuffling with a secret seed. An attacker has collected 10,000 sequential short codes created over time. Can they reverse-engineer your alphabet order? Design a scheme that prevents this attack while maintaining O(1) encoding and supporting counter-based generation.</p>
+</div>
+<hr />
+<h2 id="section-2-collision-handling-strategies">Section 2: Collision Handling Strategies</h2>
+<h3 id="understanding-collision-probability">Understanding Collision Probability</h3>
+<p><span style="color:#22c55e;font-weight:bold">Hash collisions</span> occur when two different inputs produce the same short code. The probability follows the <a href="/topics/probability/birthday-paradox">[birthday paradox]</a> mathematics, a fundamental concept in <a href="/topics/security/cryptographic-foundations">[cryptography]</a> and <a href="/topics/system-design/distributed-systems-fundamentals">[distributed systems]</a>.</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Birthday Paradox Applied to URL Shortening</strong></p>
+<p>For a hash space of size N and k insertions, collision probability approximates:</p>
+<pre><code>P(collision) ≈ 1 - e^(-k²/2N)
+</code></pre>
+<p>For 7-character Base62 (N = 3.5 trillion):</p>
+<ul>
+<li>At 1 million URLs: P ≈ 0.00014% (negligible)</li>
+<li>At 100 million URLs: P ≈ 1.4% (concerning)</li>
+<li>At 1 billion URLs: P ≈ 14% (critical)</li>
+<li>At 10 billion URLs: P ≈ 76% (guaranteed issues)</li>
+</ul>
+<p><strong>Key Insight</strong>: You'll hit collisions far sooner than exhausting the keyspace.</p>
+</div>
+<h3 id="strategy-1-counter-based-collision-free-by-design">Strategy 1: Counter-Based (Collision-Free by Design)</h3>
+<pre><code class="language-python">class CounterBasedShortener:
+    &quot;&quot;&quot;
+    Uses auto-incrementing counter - guarantees uniqueness.
+
+    Assumption: Single point of ID generation OR coordinated distributed counters.
+    &quot;&quot;&quot;
+    def __init__(self):
+        self.counter = 100000000  # Start at 100M for consistent 6-char codes
+        self._lock = threading.Lock()
+
+    def generate_code(self, url: str) -&gt; str:
+        with self._lock:
+            code = encode_base62(self.counter)
+            self.counter += 1
+            return code
+</code></pre>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Trade-off Analysis</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Counter-Based</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uniqueness</td>
+<td>Guaranteed</td>
+<td>No collision handling needed</td>
+</tr>
+<tr>
+<td>Predictability</td>
+<td>Sequential codes</td>
+<td>Security concern - enumeration attacks</td>
+</tr>
+<tr>
+<td>Distribution</td>
+<td>Requires coordination</td>
+<td>Bottleneck at scale</td>
+</tr>
+<tr>
+<td>Code appearance</td>
+<td>Incremental</td>
+<td>Reveals creation order</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="strategy-2-hash-based-with-collision-resolution">Strategy 2: Hash-Based with Collision Resolution</h3>
+<pre><code class="language-python">import hashlib
+from typing import Optional
+
+class HashBasedShortener:
+    &quot;&quot;&quot;
+    Uses cryptographic hash truncation with collision resolution.
+
+    Design choice: MD5 is fast but cryptographically broken.
+    For URL shortening, cryptographic strength is irrelevant -
+    we only need uniform distribution.
+    &quot;&quot;&quot;
+
+    def __init__(self, storage: KeyValueStore):
+        self.storage = storage
+        self.max_retries = 10
+
+    def generate_code(self, url: str) -&gt; str:
+        # Primary attempt: hash the URL directly
+        base_hash = hashlib.md5(url.encode()).hexdigest()
+        code = self._hash_to_base62(base_hash)[:7]
+
+        if not self.storage.exists(code):
+            return code
+
+        # Collision resolution: append counter and rehash
+        for attempt in range(1, self.max_retries + 1):
+            salted_input = f&quot;{url}:{attempt}&quot;
+            new_hash = hashlib.md5(salted_input.encode()).hexdigest()
+            code = self._hash_to_base62(new_hash)[:7]
+
+            if not self.storage.exists(code):
+                return code
+
+        # Fallback: use random generation
+        return self._generate_random_code()
+
+    def _hash_to_base62(self, hex_hash: str) -&gt; str:
+        &quot;&quot;&quot;Convert hex hash to base62.&quot;&quot;&quot;
+        num = int(hex_hash[:15], 16)  # Use 60 bits
+        return encode_base62(num)
+
+    def _generate_random_code(self) -&gt; str:
+        &quot;&quot;&quot;Last resort: cryptographically random code.&quot;&quot;&quot;
+        import secrets
+        while True:
+            code = ''.join(secrets.choice(BASE62_ALPHABET) for _ in range(7))
+            if not self.storage.exists(code):
+                return code
+</code></pre>
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Assumption</strong>: Hash-based approach assumes same URL should map to same short code (idempotency). This is a business decision - some services intentionally create different codes for the same URL to track different campaigns.</p>
+<p><strong>Real-world implication</strong>: If you hash <code>url + user_id</code>, different users sharing the same long URL get different short codes, enabling per-user analytics.</p>
+</div>
+<h3 id="strategy-3-bloom-filter-pre-check">Strategy 3: Bloom Filter Pre-Check</h3>
+<pre><code class="language-python">from pybloom_live import ScalableBloomFilter
+
+class BloomOptimizedShortener:
+    &quot;&quot;&quot;
+    Uses Bloom filter to reduce database lookups for collision checking.
+
+    Trade-off: Bloom filters have false positives (saying code exists when it doesn't)
+    but never false negatives. This means we might regenerate unnecessarily,
+    but we'll never overwrite existing URLs.
+    &quot;&quot;&quot;
+
+    def __init__(self, storage: KeyValueStore):
+        self.storage = storage
+        # Initial capacity 10M, error rate 0.1%
+        self.bloom = ScalableBloomFilter(
+            initial_capacity=10_000_000,
+            error_rate=0.001,
+            mode=ScalableBloomFilter.LARGE_SET_GROWTH
+        )
+        self._warm_bloom_filter()
+
+    def _warm_bloom_filter(self):
+        &quot;&quot;&quot;Load existing codes into Bloom filter on startup.&quot;&quot;&quot;
+        for code in self.storage.scan_all_codes():
+            self.bloom.add(code)
+
+    def generate_code(self, url: str) -&gt; str:
+        code = self._compute_code(url)
+
+        # Fast path: Bloom filter says definitely not exists
+        if code not in self.bloom:
+            self.bloom.add(code)
+            return code
+
+        # Slow path: Bloom filter says maybe exists, verify with DB
+        if not self.storage.exists(code):
+            # False positive from Bloom filter
+            self.bloom.add(code)
+            return code
+
+        # True collision: resolve
+        return self._resolve_collision(url)
+</code></pre>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Performance Impact</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Without Bloom</th>
+<th>With Bloom (0.1% FP)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New code (99% case)</td>
+<td>1 DB read</td>
+<td>0 DB reads (99.9%)</td>
+</tr>
+<tr>
+<td>Collision (1% case)</td>
+<td>1+ DB reads</td>
+<td>1+ DB reads</td>
+</tr>
+<tr>
+<td>Memory overhead</td>
+<td>0</td>
+<td>~1.2 bytes per code</td>
+</tr>
+</tbody>
+</table>
+<p>At 1 billion codes: Bloom filter uses ~1.2GB RAM, saves billions of DB lookups.</p>
+</div>
+<h3 id="collision-resolution-linear-probing-vs-chaining">Collision Resolution: Linear Probing vs. Chaining</h3>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Collision Resolution Strategies</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Linear Probing (Rehash)</div>
+<div style="color: #d1f5d3; font-size: 13px; line-height: 1.6">
+<div>hash(url) -> collision</div>
+<div>hash(url + "1") -> collision</div>
+<div>hash(url + "2") -> success</div>
+</div>
+<div style="color: #fff; font-size: 12px; margin-top: 12px">
+  Pros: Simple, deterministic<br/>
+  Cons: Clustering, predictable
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Random Probing</div>
+<div style="color: #dbeafe; font-size: 13px; line-height: 1.6">
+<div>hash(url) -> collision</div>
+<div>random_code() -> collision</div>
+<div>random_code() -> success</div>
+</div>
+<div style="color: #fff; font-size: 12px; margin-top: 12px">
+  Pros: No clustering, unpredictable<br/>
+  Cons: Non-deterministic, can't dedupe
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 280px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Hierarchical Fallback</div>
+<div style="color: #e9d5ff; font-size: 13px; line-height: 1.6">
+<div>7-char hash -> collision</div>
+<div>8-char hash -> success</div>
+<div>(increases code length)</div>
+</div>
+<div style="color: #fff; font-size: 12px; margin-top: 12px">
+  Pros: Eventually succeeds<br/>
+  Cons: Inconsistent code lengths
+</div>
+</div>
+</div>
+</div>
+<h3 id="interview-questions-collision-handling-3-levels-deep">Interview Questions: Collision Handling (3 Levels Deep)</h3>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: How would you handle hash collisions in a URL shortener?</p>
+<p><strong>Level 2</strong>: Your collision resolution uses linear probing (appending &quot;1&quot;, &quot;2&quot;, etc.). An attacker discovers this and pre-registers <code>hash(victim_url + &quot;1&quot;)</code> through <code>hash(victim_url + &quot;100&quot;)</code>. How does this attack work, and how would you defend against it?</p>
+<p><strong>Level 3</strong>: Design a collision resolution system that is (a) deterministic for the same input, (b) resistant to pre-registration attacks, (c) doesn't leak information about existing codes, and (d) maintains O(1) average-case performance. Prove that your solution meets all requirements.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: What's the probability of collision at 100 million URLs with 7-character codes?</p>
+<p><strong>Level 2</strong>: You need 99.99% confidence that no collisions occur for the first 1 billion URLs. What minimum code length is required? Show your mathematical derivation.</p>
+<p><strong>Level 3</strong>: Your system must handle 1 billion URLs with code length 6 (only 56B keyspace). Design a hybrid encoding scheme that maintains 6-character codes for most URLs while gracefully handling the mathematical certainty of collisions. Consider the user experience, backwards compatibility, and operational complexity.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: How does a Bloom filter help with collision checking?</p>
+<p><strong>Level 2</strong>: Your Bloom filter has a 0.1% false positive rate. As you scale to 10 billion URLs, the false positive rate degrades. How would you handle Bloom filter maintenance in a distributed system with 100 write servers?</p>
+<p><strong>Level 3</strong>: Design a distributed Bloom filter architecture that (a) provides consistent false positive rates as data grows, (b) handles server failures without losing accuracy, (c) supports efficient rebuilding, and (d) minimizes network overhead for cross-server coordination. Analyze the CAP theorem implications of your design.</p>
+</div>
+<hr />
+<h2 id="section-3-distributed-id-generation">Section 3: Distributed ID Generation</h2>
+<h3 id="the-coordination-problem">The Coordination Problem</h3>
+<p>In a <span style="color:#22c55e;font-weight:bold">distributed system</span>, generating unique IDs without coordination is one of the hardest problems. Each approach trades off between <span style="color:#22c55e;font-weight:bold">uniqueness guarantees</span>, <span style="color:#22c55e;font-weight:bold">latency</span>, and operational complexity. This relates closely to <a href="/topics/system-design/consensus-algorithms">[consensus protocols]</a> and <a href="/topics/system-design/distributed-locking">[distributed coordination]</a>.</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>The Fundamental Trade-off</strong>:</p>
+<p>Without coordination: Risk duplicate IDs (correctness issue)<br />
+With coordination: Add latency and single point of failure (availability issue)</p>
+<p>This is a manifestation of the <a href="/topics/system-design/cap-theorem">[CAP theorem]</a> - you cannot have both strong consistency (unique IDs) and high availability (no coordination) under network partitions.</p>
+</div>
+<h3 id="strategy-1-twitter-snowflake-ids">Strategy 1: Twitter Snowflake IDs</h3>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Snowflake ID Structure (64 bits)</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-bottom: 20px">
+<div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto">
+<div style="color: #fff; font-weight: bold; font-size: 11px">Sign</div>
+<div style="color: #e0e7ff; font-size: 10px">1 bit</div>
+<div style="color: #c7d2fe; font-size: 9px; margin-top: 4px">Always 0</div>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 1 1 200px">
+<div style="color: #fff; font-weight: bold; font-size: 11px">Timestamp</div>
+<div style="color: #fef3c7; font-size: 10px">41 bits</div>
+<div style="color: #fde68a; font-size: 9px; margin-top: 4px">~69 years from epoch</div>
+</div>
+<div style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto">
+<div style="color: #fff; font-weight: bold; font-size: 11px">Datacenter</div>
+<div style="color: #d1fae5; font-size: 10px">5 bits</div>
+<div style="color: #a7f3d0; font-size: 9px; margin-top: 4px">32 DCs</div>
+</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto">
+<div style="color: #fff; font-weight: bold; font-size: 11px">Worker</div>
+<div style="color: #dbeafe; font-size: 10px">5 bits</div>
+<div style="color: #bfdbfe; font-size: 9px; margin-top: 4px">32/DC</div>
+</div>
+<div style="background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); padding: 16px 12px; border-radius: 8px; text-align: center; flex: 0 0 auto">
+<div style="color: #fff; font-weight: bold; font-size: 11px">Sequence</div>
+<div style="color: #fce7f3; font-size: 10px">12 bits</div>
+<div style="color: #fbcfe8; font-size: 9px; margin-top: 4px">4096/ms</div>
+</div>
+</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
+<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px">Capacity Analysis:</div>
+<div style="color: #c9d1d9; font-size: 12px">
+<div>32 datacenters x 32 workers = 1,024 total ID generators</div>
+<div>4,096 IDs per millisecond per worker = 4.1M IDs/sec per worker</div>
+<div>Total system capacity: 4.2 billion IDs per second</div>
+</div>
+</div>
+</div>
+<pre><code class="language-python">import time
+import threading
+
+class SnowflakeGenerator:
+    &quot;&quot;&quot;
+    Distributed unique ID generator inspired by Twitter Snowflake.
+
+    Critical assumption: System clocks across machines are synchronized
+    within a reasonable bound (typically using NTP).
+
+    Clock skew handling is the most challenging aspect.
+    &quot;&quot;&quot;
+
+    # Bit allocation
+    TIMESTAMP_BITS = 41
+    DATACENTER_BITS = 5
+    WORKER_BITS = 5
+    SEQUENCE_BITS = 12
+
+    # Maximum values
+    MAX_DATACENTER_ID = (1 &lt;&lt; DATACENTER_BITS) - 1  # 31
+    MAX_WORKER_ID = (1 &lt;&lt; WORKER_BITS) - 1          # 31
+    MAX_SEQUENCE = (1 &lt;&lt; SEQUENCE_BITS) - 1         # 4095
+
+    # Bit shifts
+    TIMESTAMP_SHIFT = DATACENTER_BITS + WORKER_BITS + SEQUENCE_BITS  # 22
+    DATACENTER_SHIFT = WORKER_BITS + SEQUENCE_BITS                    # 17
+    WORKER_SHIFT = SEQUENCE_BITS                                       # 12
+
+    # Custom epoch (2020-01-01 00:00:00 UTC)
+    EPOCH = 1577836800000
+
+    def __init__(self, datacenter_id: int, worker_id: int):
+        if not (0 &lt;= datacenter_id &lt;= self.MAX_DATACENTER_ID):
+            raise ValueError(f&quot;Datacenter ID must be 0-{self.MAX_DATACENTER_ID}&quot;)
+        if not (0 &lt;= worker_id &lt;= self.MAX_WORKER_ID):
+            raise ValueError(f&quot;Worker ID must be 0-{self.MAX_WORKER_ID}&quot;)
+
+        self.datacenter_id = datacenter_id
+        self.worker_id = worker_id
+        self.sequence = 0
+        self.last_timestamp = -1
+        self._lock = threading.Lock()
+
+    def _current_millis(self) -&gt; int:
+        return int(time.time() * 1000)
+
+    def _wait_for_next_millis(self, last_timestamp: int) -&gt; int:
+        &quot;&quot;&quot;Block until clock advances. Handles same-millisecond exhaustion.&quot;&quot;&quot;
+        timestamp = self._current_millis()
+        while timestamp &lt;= last_timestamp:
+            timestamp = self._current_millis()
+        return timestamp
+
+    def next_id(self) -&gt; int:
+        with self._lock:
+            timestamp = self._current_millis()
+
+            # Clock moved backwards - critical error!
+            if timestamp &lt; self.last_timestamp:
+                # Option 1: Raise exception (fail-fast)
+                # Option 2: Wait for clock to catch up
+                # Option 3: Use last_timestamp + 1 (dangerous)
+                raise RuntimeError(
+                    f&quot;Clock moved backwards by {self.last_timestamp - timestamp}ms. &quot;
+                    &quot;Refusing to generate ID to prevent duplicates.&quot;
+                )
+
+            if timestamp == self.last_timestamp:
+                # Same millisecond: increment sequence
+                self.sequence = (self.sequence + 1) &amp; self.MAX_SEQUENCE
+
+                if self.sequence == 0:
+                    # Sequence exhausted (4096 IDs this millisecond)
+                    timestamp = self._wait_for_next_millis(self.last_timestamp)
+            else:
+                # New millisecond: reset sequence
+                self.sequence = 0
+
+            self.last_timestamp = timestamp
+
+            # Compose the ID
+            id = ((timestamp - self.EPOCH) &lt;&lt; self.TIMESTAMP_SHIFT) | \
+                 (self.datacenter_id &lt;&lt; self.DATACENTER_SHIFT) | \
+                 (self.worker_id &lt;&lt; self.WORKER_SHIFT) | \
+                 self.sequence
+
+            return id
+
+    def parse_id(self, snowflake_id: int) -&gt; dict:
+        &quot;&quot;&quot;Decompose ID back into components - useful for debugging.&quot;&quot;&quot;
+        timestamp = (snowflake_id &gt;&gt; self.TIMESTAMP_SHIFT) + self.EPOCH
+        datacenter = (snowflake_id &gt;&gt; self.DATACENTER_SHIFT) &amp; self.MAX_DATACENTER_ID
+        worker = (snowflake_id &gt;&gt; self.WORKER_SHIFT) &amp; self.MAX_WORKER_ID
+        sequence = snowflake_id &amp; self.MAX_SEQUENCE
+
+        return {
+            'timestamp': timestamp,
+            'datetime': time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(timestamp/1000)),
+            'datacenter_id': datacenter,
+            'worker_id': worker,
+            'sequence': sequence
+        }
+</code></pre>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Clock Skew Problem</strong>:</p>
+<p>If Server A's clock is 5ms behind Server B, and both generate IDs for different requests:</p>
+<ul>
+<li>Server A (actual time T): generates ID with timestamp T-5</li>
+<li>Server B (actual time T): generates ID with timestamp T</li>
+</ul>
+<p>If A's clock later jumps forward (NTP correction), it might generate duplicate timestamps with previously used sequences.</p>
+<p><strong>Real-world solutions</strong>:</p>
+<ol>
+<li><strong>Detect and halt</strong>: Refuse to generate IDs if clock goes backward</li>
+<li><strong>Wait</strong>: Block until clock catches up (adds latency)</li>
+<li><strong>Use logical clocks</strong>: Hybrid Logical Clocks (HLC) combine physical and logical time</li>
+</ol>
+</div>
+<h3 id="strategy-2-range-based-allocation-with-zookeeper">Strategy 2: Range-Based Allocation with Zookeeper</h3>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #7ee787; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Range Allocation Architecture</div>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center">
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px 40px; border-radius: 12px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 14px">Zookeeper Cluster</div>
+<div style="color: #e9d5ff; font-size: 11px; margin-top: 8px">Maintains: next_range_start = 5,000,000</div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center">
+<div style="color: #7ee787; font-size: 24px">|</div>
+</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 24px; border-radius: 10px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 12px">Server A</div>
+<div style="color: #d1f5d3; font-size: 10px; margin-top: 8px">Range: 1M - 2M</div>
+<div style="color: #a7f3d0; font-size: 9px">Current: 1,847,293</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 16px 24px; border-radius: 10px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 12px">Server B</div>
+<div style="color: #dbeafe; font-size: 10px; margin-top: 8px">Range: 2M - 3M</div>
+<div style="color: #bfdbfe; font-size: 9px">Current: 2,124,891</div>
+</div>
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 16px 24px; border-radius: 10px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 12px">Server C</div>
+<div style="color: #fed7aa; font-size: 10px; margin-top: 8px">Range: 3M - 4M</div>
+<div style="color: #fdba74; font-size: 9px">Current: 3,999,102</div>
+</div>
+</div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 8px; margin-top: 12px">
+<div style="color: #ffa657; font-size: 11px">Server C nearly exhausted - requesting new range 5M-6M</div>
+</div>
+</div>
+</div>
+<pre><code class="language-python">from kazoo.client import KazooClient
+from kazoo.recipe.lock import Lock
+import threading
+
+class RangeAllocator:
+    &quot;&quot;&quot;
+    Allocates ID ranges from Zookeeper for local generation.
+
+    Trade-off: Larger ranges = fewer ZK calls but more waste on restart
+    Smaller ranges = more ZK calls but less waste
+    &quot;&quot;&quot;
+
+    def __init__(self, zk_hosts: str, range_size: int = 1_000_000):
+        self.zk = KazooClient(hosts=zk_hosts)
+        self.zk.start()
+
+        self.range_size = range_size
+        self.current_id = 0
+        self.range_end = 0
+        self._lock = threading.Lock()
+
+        # Ensure ZK path exists
+        self.zk.ensure_path(&quot;/url_shortener/counter&quot;)
+
+    def _allocate_range(self) -&gt; tuple:
+        &quot;&quot;&quot;
+        Atomically allocate a new range from Zookeeper.
+
+        Uses ZK's atomic compare-and-set semantics.
+        &quot;&quot;&quot;
+        lock = Lock(self.zk, &quot;/url_shortener/counter_lock&quot;)
+
+        with lock:
+            data, stat = self.zk.get(&quot;/url_shortener/counter&quot;)
+            current_counter = int(data.decode()) if data else 0
+
+            range_start = current_counter
+            range_end = current_counter + self.range_size
+
+            # Atomically update counter
+            self.zk.set(
+                &quot;/url_shortener/counter&quot;,
+                str(range_end).encode(),
+                version=stat.version
+            )
+
+            return range_start, range_end
+
+    def next_id(self) -&gt; int:
+        with self._lock:
+            if self.current_id &gt;= self.range_end:
+                # Range exhausted, allocate new one
+                self.current_id, self.range_end = self._allocate_range()
+
+            id = self.current_id
+            self.current_id += 1
+            return id
+
+    def shutdown(self):
+        &quot;&quot;&quot;
+        Clean shutdown - log wasted IDs for monitoring.
+
+        Real-world consideration: If server crashes, the remaining
+        IDs in its range are &quot;lost&quot; (never used). This is acceptable
+        with a large keyspace.
+        &quot;&quot;&quot;
+        wasted = self.range_end - self.current_id
+        print(f&quot;Shutdown: {wasted} IDs unused in current range&quot;)
+        self.zk.stop()
+</code></pre>
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Design Choice: Range Size</strong></p>
+<table>
+<thead>
+<tr>
+<th>Range Size</th>
+<th>ZK Calls/Day (at 1000 URLs/sec)</th>
+<th>Wasted on Restart</th>
+<th>Recovery Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10,000</td>
+<td>8,640 calls</td>
+<td>~5,000 avg</td>
+<td>Milliseconds</td>
+</tr>
+<tr>
+<td>100,000</td>
+<td>864 calls</td>
+<td>~50,000 avg</td>
+<td>Milliseconds</td>
+</tr>
+<tr>
+<td>1,000,000</td>
+<td>86 calls</td>
+<td>~500,000 avg</td>
+<td>Milliseconds</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Assumption</strong>: Lost IDs are acceptable. With 3.5 trillion possible 7-char codes, losing millions per day is negligible.</p>
+</div>
+<h3 id="strategy-3-ulid-universally-unique-lexicographically-sortable-identifier">Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier)</h3>
+<pre><code class="language-python">import os
+import time
+
+class ULIDGenerator:
+    &quot;&quot;&quot;
+    ULID: 128-bit identifier that is:
+    - Lexicographically sortable (by creation time)
+    - Monotonic within same millisecond
+    - URL-safe (Crockford's Base32)
+
+    Structure: 48-bit timestamp + 80-bit randomness = 26 characters
+
+    For URL shortening, we can truncate to 7-10 characters with some
+    collision risk.
+    &quot;&quot;&quot;
+
+    # Crockford's Base32 (excludes I, L, O, U to avoid confusion)
+    ENCODING = &quot;0123456789ABCDEFGHJKMNPQRSTVWXYZ&quot;
+
+    def __init__(self):
+        self.last_time = 0
+        self.last_random = 0
+
+    def generate(self) -&gt; str:
+        now = int(time.time() * 1000)
+
+        if now == self.last_time:
+            # Same millisecond: increment random portion
+            self.last_random += 1
+            if self.last_random &gt; (1 &lt;&lt; 80) - 1:
+                # Overflow: wait for next millisecond
+                while int(time.time() * 1000) == now:
+                    pass
+                now = int(time.time() * 1000)
+                self.last_random = int.from_bytes(os.urandom(10), 'big')
+        else:
+            # New millisecond: fresh random
+            self.last_random = int.from_bytes(os.urandom(10), 'big')
+
+        self.last_time = now
+
+        # Encode timestamp (10 chars) + random (16 chars) = 26 chars
+        return self._encode_time(now) + self._encode_random(self.last_random)
+
+    def _encode_time(self, timestamp: int) -&gt; str:
+        &quot;&quot;&quot;Encode 48-bit timestamp to 10 characters.&quot;&quot;&quot;
+        result = []
+        for _ in range(10):
+            result.append(self.ENCODING[timestamp &amp; 0x1F])
+            timestamp &gt;&gt;= 5
+        return ''.join(reversed(result))
+
+    def _encode_random(self, random_bits: int) -&gt; str:
+        &quot;&quot;&quot;Encode 80-bit random to 16 characters.&quot;&quot;&quot;
+        result = []
+        for _ in range(16):
+            result.append(self.ENCODING[random_bits &amp; 0x1F])
+            random_bits &gt;&gt;= 5
+        return ''.join(reversed(result))
+
+    def generate_short(self, length: int = 7) -&gt; str:
+        &quot;&quot;&quot;
+        Generate truncated ULID for URL shortening.
+
+        Warning: Truncation significantly increases collision probability.
+        7 chars of Base32 = 32^7 = 34 billion combinations
+        &quot;&quot;&quot;
+        return self.generate()[:length]
+</code></pre>
+<h3 id="comparison-of-distributed-id-strategies">Comparison of Distributed ID Strategies</h3>
+<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Coordination</th>
+<th>Sortable</th>
+<th>Uniqueness</th>
+<th>Complexity</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Snowflake</strong></td>
+<td>Machine ID assignment</td>
+<td>By time</td>
+<td>Guaranteed</td>
+<td>Medium</td>
+<td>Twitter-scale, time-ordered</td>
+</tr>
+<tr>
+<td><strong>Range Alloc</strong></td>
+<td>Per-range (ZK)</td>
+<td>By range</td>
+<td>Guaranteed</td>
+<td>High</td>
+<td>Legacy systems, simple IDs</td>
+</tr>
+<tr>
+<td><strong>ULID</strong></td>
+<td>None</td>
+<td>By time</td>
+<td>Probabilistic</td>
+<td>Low</td>
+<td>Serverless, distributed</td>
+</tr>
+<tr>
+<td><strong>UUID v4</strong></td>
+<td>None</td>
+<td>No</td>
+<td>Probabilistic</td>
+<td>Lowest</td>
+<td>Simple apps, no ordering</td>
+</tr>
+<tr>
+<td><strong>UUID v7</strong></td>
+<td>None</td>
+<td>By time</td>
+<td>Probabilistic</td>
+<td>Low</td>
+<td>Modern apps, time-ordered</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="interview-questions-distributed-id-generation-3-levels-deep">Interview Questions: Distributed ID Generation (3 Levels Deep)</h3>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: How does Snowflake ID ensure uniqueness across distributed servers?</p>
+<p><strong>Level 2</strong>: A Snowflake server experiences a clock jump backward of 100ms due to NTP correction. What happens, and how would you handle it without losing those 100ms of ID generation capacity?</p>
+<p><strong>Level 3</strong>: Design a modified Snowflake that tolerates clock skew up to 500ms while (a) maintaining strict ordering guarantees within a single server, (b) providing probabilistic ordering across servers, (c) never producing duplicate IDs, and (d) not blocking ID generation during clock corrections. Analyze the theoretical maximum skew your system can tolerate.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Explain the trade-off between range size in Zookeeper-based ID allocation.</p>
+<p><strong>Level 2</strong>: Your Zookeeper cluster becomes unavailable for 30 seconds. How would you design the system to continue generating IDs during this outage while preventing duplicates when ZK recovers?</p>
+<p><strong>Level 3</strong>: Design a multi-region ID allocation system where (a) each region has its own ZK cluster, (b) IDs must be globally unique across regions, (c) regions should operate independently during network partitions, and (d) you want to minimize ID &quot;waste&quot; while maximizing availability. How would you handle the scenario where a region is partitioned for a week and then reconnects?</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Why might you choose ULID over UUID for a URL shortener?</p>
+<p><strong>Level 2</strong>: ULID's randomness portion is monotonically incremented within the same millisecond. What happens if you receive 2^80 requests in one millisecond? How would you handle this practically?</p>
+<p><strong>Level 3</strong>: You're building a URL shortener that must work in a serverless environment (AWS Lambda) where (a) instances have no persistent state, (b) multiple instances run concurrently, (c) you cannot use external coordination services, and (d) you need sub-millisecond ID generation latency. Design an ID generation scheme that provides acceptably low collision probability while meeting all constraints. Quantify &quot;acceptably low&quot; for a system expecting 10 billion URLs over 5 years.</p>
+</div>
+<hr />
+<h2 id="section-4-custom-aliases-vanity-urls">Section 4: Custom Aliases (Vanity URLs)</h2>
+<h3 id="the-business-case-for-custom-aliases">The Business Case for Custom Aliases</h3>
+<p><span style="color:#22c55e;font-weight:bold">Custom aliases</span> (also called vanity URLs) allow users to choose memorable, branded short codes instead of auto-generated ones. This feature transforms a utility into a premium product.</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Business Value of Custom Aliases</strong>:</p>
+<ul>
+<li><strong>Brand recognition</strong>: <code>short.url/nike-sale</code> vs <code>short.url/7x9Kp2m</code></li>
+<li><strong>Memorability</strong>: Users can recall and type custom URLs</li>
+<li><strong>Trust signals</strong>: Branded URLs have higher click-through rates</li>
+<li><strong>Premium feature</strong>: Monetization opportunity (paid plans)</li>
+</ul>
+<p><strong>Real-world pricing</strong>: bit.ly charges $35/month for custom back-halves, Rebrandly's business plan at $69/month includes vanity URLs.</p>
+</div>
+<h3 id="design-challenges-for-custom-aliases">Design Challenges for Custom Aliases</h3>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Custom Alias Design Considerations</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center">
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Namespace Collision</div>
+<div style="color: #fee2e2; font-size: 12px; line-height: 1.6">
+<div>Custom codes may conflict with auto-generated codes</div>
+<div>Reserved words (admin, api, help)</div>
+<div>Offensive/inappropriate words</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Squatting Prevention</div>
+<div style="color: #fef3c7; font-size: 12px; line-height: 1.6">
+<div>Users registering valuable names speculatively</div>
+<div>Trademark infringement risks</div>
+<div>Resource exhaustion attacks</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 12px; flex: 1; min-width: 200px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Validation Complexity</div>
+<div style="color: #d1fae5; font-size: 12px; line-height: 1.6">
+<div>Character restrictions (URL-safe only)</div>
+<div>Length limits and minimums</div>
+<div>Case sensitivity decisions</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="implementation-custom-alias-validator">Implementation: Custom Alias Validator</h3>
+<pre><code class="language-python">import re
+from typing import Optional, Tuple
+from dataclasses import dataclass
+from enum import Enum
+
+class AliasValidationError(Enum):
+    TOO_SHORT = &quot;Alias must be at least 4 characters&quot;
+    TOO_LONG = &quot;Alias cannot exceed 50 characters&quot;
+    INVALID_CHARS = &quot;Alias can only contain letters, numbers, hyphens, and underscores&quot;
+    RESERVED_WORD = &quot;This alias is reserved&quot;
+    OFFENSIVE = &quot;This alias contains prohibited content&quot;
+    ALREADY_EXISTS = &quot;This alias is already taken&quot;
+    STARTS_WITH_HYPHEN = &quot;Alias cannot start or end with a hyphen&quot;
+    CONSECUTIVE_HYPHENS = &quot;Alias cannot contain consecutive hyphens&quot;
+
+@dataclass
+class AliasValidationResult:
+    is_valid: bool
+    error: Optional[AliasValidationError] = None
+    normalized_alias: Optional[str] = None
+
+class CustomAliasValidator:
+    &quot;&quot;&quot;
+    Validates and normalizes custom aliases with multiple rule layers.
+
+    Design choices:
+    1. Case-insensitive storage (normalize to lowercase)
+    2. Allow hyphens and underscores for readability
+    3. Minimum 4 chars to prevent exhaustion attacks
+    4. Block offensive content proactively
+    &quot;&quot;&quot;
+
+    # Reserved words that conflict with system routes or are misleading
+    RESERVED_WORDS = frozenset({
+        'admin', 'api', 'www', 'app', 'help', 'support', 'about',
+        'terms', 'privacy', 'login', 'logout', 'signup', 'register',
+        'dashboard', 'settings', 'profile', 'account', 'billing',
+        'status', 'health', 'metrics', 'favicon', 'robots', 'sitemap',
+        'null', 'undefined', 'true', 'false', 'none'
+    })
+
+    # Pattern for valid alias characters
+    VALID_PATTERN = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$')
+    CONSECUTIVE_HYPHENS = re.compile(r'[-_]{2,}')
+
+    def __init__(
+        self,
+        min_length: int = 4,
+        max_length: int = 50,
+        offensive_word_list: Optional[set] = None,
+        storage_checker = None
+    ):
+        self.min_length = min_length
+        self.max_length = max_length
+        self.offensive_words = offensive_word_list or set()
+        self.storage_checker = storage_checker  # Async function to check DB
+
+    async def validate(self, alias: str) -&gt; AliasValidationResult:
+        &quot;&quot;&quot;
+        Validate a custom alias through multiple rule layers.
+
+        Order of checks optimized for fast rejection:
+        1. Length checks (O(1), no external calls)
+        2. Character validation (O(n), regex)
+        3. Reserved word check (O(1), hash lookup)
+        4. Offensive content check (O(k), where k = offensive words)
+        5. Existence check (O(1) amortized, but requires DB/cache call)
+        &quot;&quot;&quot;
+        # Normalize: lowercase, strip whitespace
+        normalized = alias.strip().lower()
+
+        # Length validation
+        if len(normalized) &lt; self.min_length:
+            return AliasValidationResult(False, AliasValidationError.TOO_SHORT)
+
+        if len(normalized) &gt; self.max_length:
+            return AliasValidationResult(False, AliasValidationError.TOO_LONG)
+
+        # Character validation
+        if not self.VALID_PATTERN.match(normalized):
+            if normalized.startswith('-') or normalized.endswith('-'):
+                return AliasValidationResult(False, AliasValidationError.STARTS_WITH_HYPHEN)
+            return AliasValidationResult(False, AliasValidationError.INVALID_CHARS)
+
+        # Consecutive special characters
+        if self.CONSECUTIVE_HYPHENS.search(normalized):
+            return AliasValidationResult(False, AliasValidationError.CONSECUTIVE_HYPHENS)
+
+        # Reserved word check
+        if normalized in self.RESERVED_WORDS:
+            return AliasValidationResult(False, AliasValidationError.RESERVED_WORD)
+
+        # Offensive content check (substring matching)
+        if self._contains_offensive_content(normalized):
+            return AliasValidationResult(False, AliasValidationError.OFFENSIVE)
+
+        # Existence check (most expensive, do last)
+        if self.storage_checker:
+            exists = await self.storage_checker(normalized)
+            if exists:
+                return AliasValidationResult(False, AliasValidationError.ALREADY_EXISTS)
+
+        return AliasValidationResult(True, normalized_alias=normalized)
+
+    def _contains_offensive_content(self, alias: str) -&gt; bool:
+        &quot;&quot;&quot;
+        Check for offensive content using multiple strategies.
+
+        Real-world implementation would use:
+        1. Bloom filter for fast negative check
+        2. ML-based toxicity detection
+        3. Levenshtein distance for obfuscation attempts (l33t speak)
+        &quot;&quot;&quot;
+        # Simple substring check (production: use more sophisticated NLP)
+        for word in self.offensive_words:
+            if word in alias:
+                return True
+        return False
+</code></pre>
+<h3 id="namespace-separation-strategy">Namespace Separation Strategy</h3>
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>The Namespace Problem</strong>:</p>
+<p>If auto-generated codes use Base62 and produce <code>abc123</code>, but a user wants custom alias <code>abc123</code>, you have a collision. Three strategies to resolve this:</p>
+</div>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Namespace Separation Approaches</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 20px; border-radius: 12px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px">Strategy 1: Prefix Differentiation</div>
+<div style="color: #d1f5d3; font-size: 13px; line-height: 1.6">
+<div><code>short.url/~abc123</code> (custom, prefix ~)</div>
+<div><code>short.url/7x9Kp2m</code> (auto-generated, no prefix)</div>
+<div style="margin-top: 8px; font-size: 11px">Pros: Clear separation, simple lookup</div>
+<div style="font-size: 11px">Cons: URLs look different, ~ needs encoding</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); padding: 20px; border-radius: 12px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px">Strategy 2: Length Differentiation</div>
+<div style="color: #dbeafe; font-size: 13px; line-height: 1.6">
+<div><code>short.url/my-custom-alias</code> (custom, 4+ chars with hyphens)</div>
+<div><code>short.url/7x9Kp2</code> (auto-generated, exactly 6 alphanumeric)</div>
+<div style="margin-top: 8px; font-size: 11px">Pros: Natural URLs, implicit separation</div>
+<div style="font-size: 11px">Cons: Limits auto-generated code format</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); padding: 20px; border-radius: 12px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 8px">Strategy 3: Unified Namespace with Blocking</div>
+<div style="color: #e9d5ff; font-size: 13px; line-height: 1.6">
+<div>Block custom aliases that could be auto-generated</div>
+<div>Reserve auto-generated keyspace from custom use</div>
+<div style="margin-top: 8px; font-size: 11px">Pros: Cleanest URLs, single lookup</div>
+<div style="font-size: 11px">Cons: Complex validation, keyspace waste</div>
+</div>
+</div>
+</div>
+</div>
+<pre><code class="language-python">class NamespaceManager:
+    &quot;&quot;&quot;
+    Manages unified namespace with collision prevention.
+
+    Strategy: Auto-generated codes are always 7 alphanumeric chars.
+    Custom aliases must be 4+ chars AND contain at least one
+    hyphen/underscore OR be longer than 7 chars.
+
+    This ensures no overlap between namespaces.
+    &quot;&quot;&quot;
+
+    AUTO_GENERATED_PATTERN = re.compile(r'^[a-zA-Z0-9]{7}$')
+
+    def is_auto_generated_format(self, code: str) -&gt; bool:
+        &quot;&quot;&quot;Check if code matches auto-generated format.&quot;&quot;&quot;
+        return bool(self.AUTO_GENERATED_PATTERN.match(code))
+
+    def validate_custom_alias_namespace(self, alias: str) -&gt; bool:
+        &quot;&quot;&quot;
+        Ensure custom alias doesn't conflict with auto-generated space.
+
+        Rules:
+        - If exactly 7 chars, must contain non-alphanumeric (hyphen/underscore)
+        - If all alphanumeric, must be != 7 chars
+        &quot;&quot;&quot;
+        normalized = alias.lower()
+
+        # If it looks like auto-generated format, reject
+        if self.is_auto_generated_format(normalized):
+            return False
+
+        return True
+
+    async def resolve_code(
+        self,
+        code: str,
+        custom_storage,
+        auto_storage
+    ) -&gt; Optional[str]:
+        &quot;&quot;&quot;
+        Resolve a short code to its original URL.
+
+        Optimization: Check format to determine which storage to query first.
+        &quot;&quot;&quot;
+        if self.is_auto_generated_format(code):
+            # Likely auto-generated, check that storage first
+            result = await auto_storage.get(code)
+            if result:
+                return result
+            # Fallback: maybe it's a custom alias that looks like auto-generated
+            # (from before namespace rules were enforced)
+            return await custom_storage.get(code)
+        else:
+            # Must be custom alias
+            return await custom_storage.get(code)
+</code></pre>
+<h3 id="premium-feature-custom-domain-integration">Premium Feature: Custom Domain Integration</h3>
+<p><span style="color:#22c55e;font-weight:bold">Custom domains</span> take vanity URLs to the next level, allowing enterprises to use their own domains (e.g., <code>go.nike.com/sale</code>) while the URL shortener handles everything.</p>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Custom Domain Architecture</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center">
+<div style="background: #f0fdf4;padding: 16px 20px; border-radius: 10px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 12px">Customer Domain</div>
+<div style="color: #dcfce7; font-size: 10px">go.nike.com</div>
+</div>
+<div style="color: #7ee787; font-size: 20px">-></div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 16px 20px; border-radius: 10px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 12px">DNS CNAME</div>
+<div style="color: #dbeafe; font-size: 10px">custom.shorturl.com</div>
+</div>
+<div style="color: #7ee787; font-size: 20px">-></div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 20px; border-radius: 10px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 12px">Load Balancer</div>
+<div style="color: #fef3c7; font-size: 10px">SNI Routing</div>
+</div>
+<div style="color: #7ee787; font-size: 20px">-></div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 20px; border-radius: 10px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 12px">URL Shortener</div>
+<div style="color: #ede9fe; font-size: 10px">Multi-tenant</div>
+</div>
+</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
+<div style="color: #7ee787; font-weight: bold; font-size: 12px; margin-bottom: 8px">SSL/TLS Considerations:</div>
+<div style="color: #c9d1d9; font-size: 11px; line-height: 1.6">
+<div>1. Customer adds CNAME record pointing to your infrastructure</div>
+<div>2. You provision SSL certificate for their domain (Let's Encrypt / ACM)</div>
+<div>3. Load balancer uses SNI to route to correct certificate</div>
+<div>4. Application identifies tenant by Host header</div>
+</div>
+</div>
+</div>
+</div>
+<pre><code class="language-python">from dataclasses import dataclass
+from typing import Dict, Optional
+import ssl
+
+@dataclass
+class CustomDomain:
+    domain: str
+    organization_id: str
+    ssl_certificate_arn: str
+    verified: bool = False
+    created_at: datetime = None
+
+class CustomDomainManager:
+    &quot;&quot;&quot;
+    Manages custom domain registration and SSL provisioning.
+
+    Real-world considerations:
+    1. DNS verification (TXT record) to prove domain ownership
+    2. Automatic SSL certificate provisioning via ACME/Let's Encrypt
+    3. Certificate renewal automation
+    4. Multi-tenant isolation
+    &quot;&quot;&quot;
+
+    def __init__(self, certificate_manager, dns_verifier):
+        self.cert_manager = certificate_manager
+        self.dns_verifier = dns_verifier
+        self.domains: Dict[str, CustomDomain] = {}
+
+    async def register_domain(
+        self,
+        domain: str,
+        organization_id: str
+    ) -&gt; CustomDomain:
+        &quot;&quot;&quot;
+        Start custom domain registration process.
+
+        Returns domain record with verification instructions.
+        &quot;&quot;&quot;
+        # Generate verification token
+        verification_token = self._generate_verification_token(domain, organization_id)
+
+        custom_domain = CustomDomain(
+            domain=domain,
+            organization_id=organization_id,
+            ssl_certificate_arn=&quot;pending&quot;,
+            verified=False,
+            created_at=datetime.utcnow()
+        )
+
+        self.domains[domain] = custom_domain
+
+        # Return instructions for DNS verification
+        return custom_domain, {
+            'verification_type': 'TXT',
+            'record_name': f'_shorturl-verify.{domain}',
+            'record_value': verification_token
+        }
+
+    async def verify_and_provision(self, domain: str) -&gt; bool:
+        &quot;&quot;&quot;
+        Verify DNS and provision SSL certificate.
+
+        This is typically called via webhook or polling job.
+        &quot;&quot;&quot;
+        custom_domain = self.domains.get(domain)
+        if not custom_domain:
+            return False
+
+        # Verify DNS TXT record
+        if not await self.dns_verifier.verify_txt_record(domain):
+            return False
+
+        # Provision SSL certificate
+        cert_arn = await self.cert_manager.provision_certificate(domain)
+
+        custom_domain.ssl_certificate_arn = cert_arn
+        custom_domain.verified = True
+
+        return True
+
+    def get_organization_for_domain(self, host: str) -&gt; Optional[str]:
+        &quot;&quot;&quot;
+        Resolve Host header to organization.
+
+        Used during request processing to identify tenant.
+        &quot;&quot;&quot;
+        custom_domain = self.domains.get(host)
+        if custom_domain and custom_domain.verified:
+            return custom_domain.organization_id
+        return None
+</code></pre>
+<h3 id="interview-questions-custom-aliases-3-levels-deep">Interview Questions: Custom Aliases (3 Levels Deep)</h3>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: How would you implement custom short code (vanity URL) support?</p>
+<details style="margin-top: 12px">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7">
+<p>Custom aliases require additional validation beyond auto-generated codes:</p>
+<ol>
+<li><strong>Validation layer</strong>: Check length (min 4 chars), allowed characters (alphanumeric, hyphens, underscores), reserved words, offensive content</li>
+<li><strong>Namespace separation</strong>: Ensure custom aliases don't conflict with auto-generated codes (e.g., require hyphens or different lengths)</li>
+<li><strong>Uniqueness check</strong>: Query database before creation, handle race conditions with unique constraints</li>
+<li><strong>Normalization</strong>: Convert to lowercase for case-insensitive matching</li>
+</ol>
+<p>The key trade-off is between <span style="color:#22c55e;font-weight:bold">user flexibility</span> (allowing many formats) and <span style="color:#22c55e;font-weight:bold">system simplicity</span> (predictable URL structure).</p>
+</div>
+</details>
+<p><strong>Level 2</strong>: Your custom alias system allows users to create any alias. An attacker creates aliases like <code>login</code>, <code>admin</code>, <code>api</code> - all linking to phishing sites. How would you prevent this while maintaining a good user experience?</p>
+<details style="margin-top: 12px">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7">
+<p>Multi-layered defense strategy:</p>
+<ol>
+<li>
+<p><strong>Reserved word blocklist</strong>: Maintain a comprehensive list of system routes, common phishing targets (<code>paypal</code>, <code>google</code>, <code>amazon</code>), and technical terms (<code>null</code>, <code>undefined</code>)</p>
+</li>
+<li>
+<p><strong>Trademark protection</strong>:</p>
+<ul>
+<li>Partner with brand protection services</li>
+<li>Require verification for brand names</li>
+<li>Implement <a href="/topics/legal/dmca-compliance">[DMCA takedown process]</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Proactive scanning</strong>:</p>
+<ul>
+<li>Scan destination URLs against <a href="/topics/security/safe-browsing">[Safe Browsing API]</a></li>
+<li>Monitor click patterns for phishing indicators</li>
+<li>Machine learning on URL features</li>
+</ul>
+</li>
+<li>
+<p><strong>Tiered access</strong>:</p>
+<ul>
+<li>Free users: limited to lowercase alphanumeric</li>
+<li>Verified accounts: expanded character set</li>
+<li>Enterprise: brand protection included</li>
+</ul>
+</li>
+<li>
+<p><strong>Reputation system</strong>: New accounts have alias restrictions lifted gradually based on behavior.</p>
+</li>
+</ol>
+<p>The trade-off: Too restrictive blocks legitimate use cases. Consider implementing an appeal process and manual review queue for edge cases.</p>
+</div>
+</details>
+<p><strong>Level 3</strong>: Design a custom alias system that (a) allows millions of users to create aliases concurrently, (b) prevents race conditions where two users try to claim the same alias simultaneously, (c) provides instant feedback on alias availability as users type, and (d) handles the case where a user's session crashes between checking availability and confirming creation. Consider the distributed systems implications across multiple data centers.</p>
+<details style="margin-top: 12px">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7">
+<p><strong>Architecture for concurrent alias creation at scale:</strong></p>
+<ol>
+<li>
+<p><strong>Real-time availability check (debounced, 200ms)</strong>:</p>
+<pre><code>User types -&gt; Debounce -&gt; Check Bloom filter (local)
+-&gt; If &quot;maybe exists&quot;: check Redis (regional)
+-&gt; If still uncertain: check DB (async, show &quot;checking...&quot;)
+</code></pre>
+<ul>
+<li>Bloom filter provides instant negative (&quot;definitely available&quot;)</li>
+<li>Regional Redis cache reduces cross-region latency</li>
+<li>Accept false positives (say unavailable when actually available) over false negatives</li>
+</ul>
+</li>
+<li>
+<p><strong>Reservation system with TTL</strong>:</p>
+<pre><code class="language-python">async def reserve_alias(alias: str, user_id: str) -&gt; bool:
+# Atomic reservation with 5-minute TTL
+reserved = await redis.set(
+f&quot;alias:reservation:{alias}&quot;,
+user_id,
+nx=True,  # Only if not exists
+ex=300    # 5-minute expiry
+)
+return reserved
+</code></pre>
+<ul>
+<li>User gets 5 minutes to complete signup/payment</li>
+<li>Reservation auto-expires if abandoned</li>
+<li>Prevents squatting during checkout flow</li>
+</ul>
+</li>
+<li>
+<p><strong>Distributed race condition handling</strong>:</p>
+<pre><code class="language-python">async def create_alias(alias: str, user_id: str, url: str) -&gt; bool:
+# Check reservation ownership
+reservation = await redis.get(f&quot;alias:reservation:{alias}&quot;)
+if reservation != user_id:
+return False  # Someone else reserved or reservation expired
+
+# Database insert with unique constraint
+try:
+await db.execute(&quot;&quot;&quot;
+INSERT INTO aliases (alias, user_id, url, created_at)
+VALUES ($1, $2, $3, NOW())
+&quot;&quot;&quot;, alias, user_id, url)
+except UniqueViolationError:
+return False  # Lost race to DB write
+
+# Clean up reservation
+await redis.delete(f&quot;alias:reservation:{alias}&quot;)
+
+# Update Bloom filter (async, fire-and-forget)
+asyncio.create_task(bloom_filter.add(alias))
+
+return True
+</code></pre>
+</li>
+<li>
+<p><strong>Multi-region consistency</strong>:</p>
+<ul>
+<li>Use <a href="/topics/system-design/crdts">[CRDTs]</a> for Bloom filter synchronization</li>
+<li>Primary region owns alias creation (consistent hashing by first char)</li>
+<li><a href="/topics/system-design/replication">[Cross-region replication]</a> with conflict resolution (first-write-wins based on vector clock)</li>
+</ul>
+</li>
+<li>
+<p><strong>Session crash recovery</strong>:</p>
+<ul>
+<li>Reservation TTL ensures automatic cleanup</li>
+<li>If user had completed payment but session crashed: reconciliation job checks for &quot;orphaned payments&quot; and completes registration</li>
+<li>Idempotency keys prevent double-creation on retry</li>
+</ul>
+</li>
+</ol>
+<p><strong>Key insight</strong>: The system is eventually consistent for reads (Bloom filter may lag) but strongly consistent for writes (database unique constraint is the source of truth). This matches user expectations: instant feedback is &quot;best effort,&quot; but actual creation is guaranteed unique.</p>
+</div>
+</details>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Should custom aliases be case-sensitive or case-insensitive?</p>
+<details style="margin-top: 12px">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7">
+<p><strong>Case-insensitive is the better choice</strong> for custom aliases:</p>
+<ol>
+<li><strong>User experience</strong>: Users typing from memory often get case wrong</li>
+<li><strong>Verbal sharing</strong>: &quot;go to short dot url slash My-Brand&quot; - ambiguous capitalization</li>
+<li><strong>Email clients</strong>: Some lowercase all URLs</li>
+<li><strong>Consistency</strong>: <code>MyBrand</code>, <code>mybrand</code>, <code>MYBRAND</code> should all work</li>
+</ol>
+<p>Implementation: Normalize to lowercase at creation time, store lowercase, query lowercase.</p>
+<p>Trade-off: Reduces namespace by ~26x (since A-Z collapse to a-z), but for human-readable aliases this is acceptable.</p>
+</div>
+</details>
+<p><strong>Level 2</strong>: Your marketing team wants case-sensitivity preserved for display purposes (showing <code>MyBrand</code> in analytics) while maintaining case-insensitive matching. How would you implement this?</p>
+<details style="margin-top: 12px">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7">
+<p><strong>Dual-storage approach:</strong></p>
+<pre><code>  ```sql
+  CREATE TABLE custom_aliases (
+  normalized_alias VARCHAR(50) PRIMARY KEY,  -- lowercase, for lookups
+  display_alias VARCHAR(50) NOT NULL,        -- original case, for display
+  original_url TEXT NOT NULL,
+  user_id UUID NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_aliases_user ON custom_aliases(user_id);
+  ```
+
+  ```python
+  class CasePreservingAliasStore:
+  async def create(self, alias: str, url: str, user_id: str):
+  normalized = alias.lower()
+  await db.execute(&quot;&quot;&quot;
+  INSERT INTO custom_aliases
+  (normalized_alias, display_alias, original_url, user_id)
+  VALUES ($1, $2, $3, $4)
+  &quot;&quot;&quot;, normalized, alias, url, user_id)
+
+  async def lookup(self, alias: str) -&gt; Optional[dict]:
+  # Always query with normalized form
+  return await db.fetchone(&quot;&quot;&quot;
+  SELECT display_alias, original_url
+  FROM custom_aliases
+  WHERE normalized_alias = $1
+  &quot;&quot;&quot;, alias.lower())
+  ```
+</code></pre>
+<p>Cache key uses normalized form; cache value includes display form for analytics.</p>
+</div>
+</details>
+<p><strong>Level 3</strong>: You've implemented case-insensitive custom aliases. Now a premium customer complains: they created <code>GitHub-Repo</code> but a competitor later created <code>github-repo</code> (normalized to same value) and your system rejected it. The competitor argues they should have access to the lowercase version. Design a policy and technical system that fairly resolves such conflicts, considers trademark implications, and scales to millions of aliases without requiring manual review for every case.</p>
+<details style="margin-top: 12px">
+<summary style="cursor: pointer; color: #60a5fa; font-weight: 500">View Answer</summary>
+<div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7">
+<p><strong>Policy Framework:</strong></p>
+<ol>
+<li>
+<p><strong>First-come-first-served for normalized form</strong>: Whoever creates any case variant first owns the normalized namespace. This is simple, predictable, and legally defensible.</p>
+</li>
+<li>
+<p><strong>Trademark override process</strong>:</p>
+<ul>
+<li>Trademark holder can file claim with documentation</li>
+<li>System flags alias for review</li>
+<li>If legitimate, transfer ownership (with notification to original creator)</li>
+<li>Time limit: claims must be filed within 30 days of creation</li>
+</ul>
+</li>
+<li>
+<p><strong>Preventive measures</strong>:</p>
+<ul>
+<li>Known trademark database check at creation time</li>
+<li>Require verification for exact trademark matches</li>
+<li>Warning message: &quot;This alias may conflict with existing trademarks&quot;</li>
+</ul>
+</li>
+</ol>
+<p><strong>Technical Implementation:</strong></p>
+<pre><code>  ```python
+  @dataclass
+  class AliasOwnership:
+  normalized_alias: str
+  owner_id: str
+  created_at: datetime
+  trademark_protected: bool = False
+  trademark_claim_deadline: datetime = None
+
+  class AliasDisputeSystem:
+  async def file_trademark_claim(
+  self,
+  alias: str,
+  claimant_id: str,
+  trademark_proof: str
+  ) -&gt; str:
+  &quot;&quot;&quot;
+  File a trademark claim for an alias.
+  Returns claim_id for tracking.
+  &quot;&quot;&quot;
+  ownership = await self.get_ownership(alias.lower())
+
+  if not ownership:
+  return &quot;ALIAS_NOT_FOUND&quot;
+
+  if ownership.owner_id == claimant_id:
+  return &quot;ALREADY_OWNER&quot;
+
+  # Check claim deadline
+  if datetime.utcnow() &gt; ownership.trademark_claim_deadline:
+  return &quot;CLAIM_PERIOD_EXPIRED&quot;
+
+  # Create claim record
+  claim = await self.create_claim(
+  alias=alias.lower(),
+  claimant_id=claimant_id,
+  current_owner_id=ownership.owner_id,
+  proof=trademark_proof
+  )
+
+  # Notify current owner
+  await self.notify_owner_of_claim(ownership.owner_id, claim)
+
+  # Queue for review (ML-assisted prioritization)
+  await self.queue_for_review(claim)
+
+  return claim.id
+
+  async def resolve_claim(
+  self,
+  claim_id: str,
+  decision: str,
+  reviewer_id: str
+  ):
+  &quot;&quot;&quot;
+  Resolve a trademark claim.
+  decision: 'TRANSFER' | 'REJECT' | 'COEXIST'
+  &quot;&quot;&quot;
+  claim = await self.get_claim(claim_id)
+
+  if decision == 'TRANSFER':
+  # Transfer ownership
+  await self.transfer_ownership(
+  claim.alias,
+  new_owner=claim.claimant_id
+  )
+  # Mark as trademark protected (prevent future claims)
+  await self.mark_trademark_protected(claim.alias)
+  # Notify parties
+  await self.notify_transfer(claim)
+
+  elif decision == 'REJECT':
+  await self.notify_rejection(claim)
+
+  elif decision == 'COEXIST':
+  # Both parties can use, but neither owns exclusively
+  # Typically used for generic terms
+  await self.mark_generic_term(claim.alias)
+  ```
+</code></pre>
+<p><strong>ML-Assisted Review Queue:</strong><br />
+- Auto-approve: Exact match to registered trademark + claimant is trademark registrant<br />
+- Auto-reject: No trademark registration + alias existed 30+ days<br />
+- Human review: Everything else, prioritized by trademark class and alias popularity</p>
+<p><strong>Scaling considerations:</strong><br />
+- 99% of aliases never disputed (auto-handled by first-come policy)<br />
+- ~0.9% rejected automatically (no trademark registration)<br />
+- ~0.1% require human review (O(thousands/year) at scale, manageable)</p>
+</div>
+</details>
+</div>
+<hr />
+<h2 id="section-5-analytics-tracking-architecture">Section 5: Analytics Tracking Architecture</h2>
+<h3 id="the-301-vs-302-decision">The 301 vs 302 Decision</h3>
+<p>Redirect status codes fundamentally affect your analytics capabilities.</p>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">HTTP Redirect Behavior Comparison</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center">
+<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px">301 Moved Permanently</div>
+<div style="color: #d1f5d3; font-size: 12px; line-height: 1.8">
+<div>Browser caches redirect</div>
+<div>Future requests skip your server</div>
+<div>SEO: Link juice transfers</div>
+<div>Lower server load</div>
+<div>Analytics: First click only</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #f78166 0%, #ffa657 100%); padding: 24px; border-radius: 12px; flex: 1; min-width: 280px">
+<div style="color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 12px">302 Found (Temporary)</div>
+<div style="color: #fed7aa; font-size: 12px; line-height: 1.8">
+<div>Browser doesn't cache</div>
+<div>Every request hits your server</div>
+<div>SEO: Original URL retains value</div>
+<div>Higher server load</div>
+<div>Analytics: Every click tracked</div>
+</div>
+</div>
+</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 20px">
+<div style="color: #ffa657; font-weight: bold; font-size: 12px; margin-bottom: 8px">Real-World Choices:</div>
+<div style="color: #c9d1d9; font-size: 11px">
+<div>bit.ly: 301 + tracking pixel (best of both worlds)</div>
+<div>TinyURL: 301 (prioritizes performance)</div>
+<div>Marketing platforms: 302 (prioritizes analytics)</div>
+</div>
+</div>
+</div>
+<h3 id="multi-dimensional-analytics-data-model">Multi-Dimensional Analytics Data Model</h3>
+<pre><code class="language-python">from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Optional, List, Dict
+from enum import Enum
+
+class DeviceType(Enum):
+    DESKTOP = &quot;desktop&quot;
+    MOBILE = &quot;mobile&quot;
+    TABLET = &quot;tablet&quot;
+    BOT = &quot;bot&quot;
+    UNKNOWN = &quot;unknown&quot;
+
+@dataclass
+class ClickEvent:
+    &quot;&quot;&quot;
+    Individual click event - stored in time-series database.
+
+    Design choice: Store raw events vs. pre-aggregated counters
+    - Raw events: Flexible queries, storage-heavy
+    - Pre-aggregated: Fast reads, loses granularity
+
+    Hybrid approach: Store raw for recent data, aggregate older data.
+    &quot;&quot;&quot;
+    short_code: str
+    timestamp: datetime
+
+    # User identification (privacy-conscious)
+    visitor_id: str  # Hashed IP + User-Agent, not PII
+    session_id: Optional[str] = None
+
+    # Geographic data
+    country: Optional[str] = None
+    region: Optional[str] = None
+    city: Optional[str] = None
+
+    # Technical data
+    ip_address: str = &quot;&quot;  # Consider not storing for GDPR
+    user_agent: str = &quot;&quot;
+    device_type: DeviceType = DeviceType.UNKNOWN
+    browser: Optional[str] = None
+    os: Optional[str] = None
+
+    # Referrer tracking
+    referrer: Optional[str] = None
+    referrer_domain: Optional[str] = None
+    utm_source: Optional[str] = None
+    utm_medium: Optional[str] = None
+    utm_campaign: Optional[str] = None
+
+    # Performance
+    response_time_ms: int = 0
+    cache_hit: bool = False
+
+@dataclass
+class URLAnalytics:
+    &quot;&quot;&quot;
+    Aggregated analytics for a short URL.
+
+    Trade-off: Denormalization for read performance.
+    These counters are updated asynchronously from click events.
+    &quot;&quot;&quot;
+    short_code: str
+    original_url: str
+    created_at: datetime
+
+    # Counters (eventually consistent)
+    total_clicks: int = 0
+    unique_visitors: int = 0  # Based on visitor_id
+
+    # Time-based aggregations
+    clicks_last_24h: int = 0
+    clicks_last_7d: int = 0
+    clicks_last_30d: int = 0
+
+    # Top dimensions (pre-computed, top 10 each)
+    top_countries: Dict[str, int] = field(default_factory=dict)
+    top_referrers: Dict[str, int] = field(default_factory=dict)
+    top_devices: Dict[str, int] = field(default_factory=dict)
+
+    # Time series (hourly buckets for last 30 days)
+    hourly_clicks: List[int] = field(default_factory=list)
+</code></pre>
+<h3 id="real-time-vs-batch-analytics-pipeline">Real-Time vs. Batch Analytics Pipeline</h3>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Lambda Architecture for Analytics</div>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); padding: 20px; border-radius: 12px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Speed Layer (Real-Time)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Click Event</div>
+</div>
+<div style="color: #fff">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Kafka</div>
+</div>
+<div style="color: #fff">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Flink/Spark Streaming</div>
+</div>
+<div style="color: #fff">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Redis Counters</div>
+</div>
+</div>
+<div style="color: #fef3c7; font-size: 11px; margin-top: 12px">Latency: ~seconds | Accuracy: Approximate | Retention: Hours</div>
+</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); padding: 20px; border-radius: 12px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Batch Layer (Historical)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Click Events</div>
+</div>
+<div style="color: #fff">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">S3/HDFS</div>
+</div>
+<div style="color: #fff">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Spark Batch</div>
+</div>
+<div style="color: #fff">-></div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Data Warehouse</div>
+</div>
+</div>
+<div style="color: #dbeafe; font-size: 11px; margin-top: 12px">Latency: ~hours | Accuracy: Exact | Retention: Years</div>
+</div>
+<div style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%); padding: 20px; border-radius: 12px">
+<div style="color: #fff; font-weight: bold; margin-bottom: 12px">Serving Layer (Query)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Real-time (Redis)</div>
+</div>
+<div style="color: #fff">+</div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Historical (Warehouse)</div>
+</div>
+<div style="color: #fff">=</div>
+<div style="background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 8px">
+<div style="color: #fff; font-size: 11px">Unified Dashboard</div>
+</div>
+</div>
+<div style="color: #d1fae5; font-size: 11px; margin-top: 12px">Merges speed + batch for complete, consistent view</div>
+</div>
+</div>
+</div>
+<h3 id="click-event-processing-pipeline">Click Event Processing Pipeline</h3>
+<pre><code class="language-python">import asyncio
+from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
+import json
+from user_agents import parse as parse_user_agent
+import geoip2.database
+
+class ClickProcessor:
+    &quot;&quot;&quot;
+    Processes click events with minimal latency impact on redirects.
+
+    Critical design: Analytics processing MUST NOT block redirects.
+    Pattern: Fire-and-forget to Kafka, process asynchronously.
+    &quot;&quot;&quot;
+
+    def __init__(self, kafka_brokers: str, geoip_db_path: str):
+        self.producer = AIOKafkaProducer(
+            bootstrap_servers=kafka_brokers,
+            value_serializer=lambda v: json.dumps(v).encode()
+        )
+        self.geoip_reader = geoip2.database.Reader(geoip_db_path)
+        self._started = False
+
+    async def start(self):
+        await self.producer.start()
+        self._started = True
+
+    async def record_click(
+        self,
+        short_code: str,
+        ip_address: str,
+        user_agent: str,
+        referrer: str,
+        response_time_ms: int,
+        cache_hit: bool
+    ):
+        &quot;&quot;&quot;
+        Record click event - fire and forget.
+
+        Must complete in &lt; 1ms to not impact redirect latency.
+        All enrichment happens in the consumer.
+        &quot;&quot;&quot;
+        if not self._started:
+            return
+
+        event = {
+            'short_code': short_code,
+            'timestamp': datetime.utcnow().isoformat(),
+            'ip_address': ip_address,
+            'user_agent': user_agent,
+            'referrer': referrer,
+            'response_time_ms': response_time_ms,
+            'cache_hit': cache_hit
+        }
+
+        # Fire and forget - don't await, don't block redirect
+        asyncio.create_task(
+            self.producer.send('click_events', event)
+        )
+
+class ClickEnricher:
+    &quot;&quot;&quot;
+    Consumes raw click events, enriches with geo/device data,
+    updates real-time counters, and forwards to data lake.
+    &quot;&quot;&quot;
+
+    def __init__(
+        self,
+        kafka_brokers: str,
+        geoip_db_path: str,
+        redis_client,
+        s3_client
+    ):
+        self.consumer = AIOKafkaConsumer(
+            'click_events',
+            bootstrap_servers=kafka_brokers,
+            group_id='click_enricher',
+            value_deserializer=lambda v: json.loads(v.decode())
+        )
+        self.geoip = geoip2.database.Reader(geoip_db_path)
+        self.redis = redis_client
+        self.s3 = s3_client
+
+    async def process(self):
+        await self.consumer.start()
+
+        async for message in self.consumer:
+            event = message.value
+
+            # Enrich with geo data
+            try:
+                geo = self.geoip.city(event['ip_address'])
+                event['country'] = geo.country.iso_code
+                event['region'] = geo.subdivisions.most_specific.name
+                event['city'] = geo.city.name
+            except:
+                pass
+
+            # Enrich with device data
+            ua = parse_user_agent(event['user_agent'])
+            event['device_type'] = self._classify_device(ua)
+            event['browser'] = ua.browser.family
+            event['os'] = ua.os.family
+
+            # Hash IP for privacy (don't store raw)
+            event['visitor_id'] = self._hash_visitor(
+                event['ip_address'],
+                event['user_agent']
+            )
+            del event['ip_address']  # GDPR compliance
+
+            # Update real-time counters
+            await self._update_counters(event)
+
+            # Forward to data lake
+            await self._write_to_s3(event)
+
+    async def _update_counters(self, event: dict):
+        &quot;&quot;&quot;
+        Update Redis counters for real-time dashboard.
+
+        Uses Redis MULTI for atomic counter updates.
+        HyperLogLog for unique visitor counting.
+        &quot;&quot;&quot;
+        code = event['short_code']
+        pipe = self.redis.pipeline()
+
+        # Total clicks (simple counter)
+        pipe.incr(f&quot;clicks:{code}:total&quot;)
+
+        # Unique visitors (HyperLogLog - probabilistic, memory efficient)
+        pipe.pfadd(f&quot;clicks:{code}:visitors&quot;, event['visitor_id'])
+
+        # Time-windowed counters (expire automatically)
+        hour_key = datetime.utcnow().strftime(&quot;%Y%m%d%H&quot;)
+        pipe.incr(f&quot;clicks:{code}:hourly:{hour_key}&quot;)
+        pipe.expire(f&quot;clicks:{code}:hourly:{hour_key}&quot;, 86400 * 30)  # 30 days
+
+        # Country breakdown
+        if event.get('country'):
+            pipe.zincrby(f&quot;clicks:{code}:countries&quot;, 1, event['country'])
+
+        await pipe.execute()
+</code></pre>
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Trade-off: Accuracy vs. Memory</strong></p>
+<table>
+<thead>
+<tr>
+<th>Counter Type</th>
+<th>Memory</th>
+<th>Accuracy</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact counter</td>
+<td>O(1)</td>
+<td>100%</td>
+<td>Total clicks</td>
+</tr>
+<tr>
+<td><a href="/topics/algorithms/hyperloglog">[HyperLogLog]</a></td>
+<td>12KB fixed</td>
+<td>~0.81% error</td>
+<td>Unique visitors</td>
+</tr>
+<tr>
+<td>Count-Min Sketch</td>
+<td>Configurable</td>
+<td>Configurable</td>
+<td>Heavy hitters</td>
+</tr>
+<tr>
+<td>Sorted Set</td>
+<td>O(n)</td>
+<td>100%</td>
+<td>Top-N rankings</td>
+</tr>
+</tbody>
+</table>
+<p>bit.ly processes 10 billion+ clicks/month. Exact counting at this scale requires careful data structure choices.</p>
+</div>
+<h3 id="interview-questions-analytics-tracking-3-levels-deep">Interview Questions: Analytics Tracking (3 Levels Deep)</h3>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Why might you choose 302 redirects over 301 for a URL shortener with analytics?</p>
+<p><strong>Level 2</strong>: You want both fast redirects (301 cached) AND complete analytics. How would you design a system that achieves both? What are the privacy implications?</p>
+<p><strong>Level 3</strong>: Your tracking pixel approach works, but ad blockers are blocking it for 30% of users. Design a privacy-respecting analytics system that (a) works despite ad blockers, (b) complies with GDPR/CCPA, (c) still provides useful aggregate analytics, and (d) doesn't significantly impact page load time. Consider the ethical implications of circumventing user preferences.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: How would you count unique visitors to a short URL?</p>
+<p><strong>Level 2</strong>: At 1 billion clicks/day, storing visitor IDs for exact unique counting is infeasible. How does HyperLogLog solve this, and what's the trade-off?</p>
+<p><strong>Level 3</strong>: You need to compute unique visitors across arbitrary time ranges (e.g., &quot;unique visitors between March 15-22&quot;). HyperLogLog supports union but not difference. Design a system that supports arbitrary time range queries with configurable accuracy-memory trade-offs. Consider the case where a user asks for uniqueness across a 2-year period.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Why use Kafka for click event processing instead of direct database writes?</p>
+<p><strong>Level 2</strong>: Your Kafka consumer falls behind, creating a growing backlog. How would you handle this without losing data or impacting real-time counters?</p>
+<p><strong>Level 3</strong>: Design a click processing pipeline that (a) guarantees exactly-once processing semantics, (b) handles out-of-order events (mobile clicks arriving late), (c) supports reprocessing historical data when you fix bugs, and (d) provides real-time counters with &lt; 5 second lag. Address the tension between exactly-once semantics and real-time requirements.</p>
+</div>
+<hr />
+<h2 id="section-5-caching-strategy">Section 5: Caching Strategy</h2>
+<h3 id="cache-hierarchy-design">Cache Hierarchy Design</h3>
+<p>URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), making caching critical for performance and cost.</p>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Multi-Layer Cache Architecture</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap">
+<div style="background: #f0fdf4;padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 13px">Browser</div>
+<div style="color: #dcfce7; font-size: 10px; margin-top: 4px">301 Cache</div>
+</div>
+<div style="color: #6b7280">-></div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 13px">CDN Edge</div>
+<div style="color: #dbeafe; font-size: 10px; margin-top: 4px">Global PoPs</div>
+</div>
+<div style="color: #6b7280">-></div>
+<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 13px">App Server</div>
+<div style="color: #fef3c7; font-size: 10px; margin-top: 4px">Local LRU</div>
+</div>
+<div style="color: #6b7280">-></div>
+<div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 13px">Redis</div>
+<div style="color: #fee2e2; font-size: 10px; margin-top: 4px">Distributed</div>
+</div>
+<div style="color: #6b7280">-></div>
+<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 16px 24px; border-radius: 10px; min-width: 140px; text-align: center">
+<div style="color: #fff; font-weight: bold; font-size: 13px">Database</div>
+<div style="color: #ede9fe; font-size: 10px; margin-top: 4px">Source of Truth</div>
+</div>
+</div>
+<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-top: 8px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+<div>
+<div style="color: #22c55e; font-weight: bold; font-size: 11px">Browser Cache</div>
+<div style="color: #9ca3af; font-size: 10px">0ms latency</div>
+<div style="color: #9ca3af; font-size: 10px">No server cost</div>
+</div>
+<div>
+<div style="color: #3b82f6; font-weight: bold; font-size: 11px">CDN Edge</div>
+<div style="color: #9ca3af; font-size: 10px">5-20ms latency</div>
+<div style="color: #9ca3af; font-size: 10px">~80% hit rate</div>
+</div>
+<div>
+<div style="color: #f59e0b; font-weight: bold; font-size: 11px">Local LRU</div>
+<div style="color: #9ca3af; font-size: 10px">0.1ms latency</div>
+<div style="color: #9ca3af; font-size: 10px">~50% hit rate</div>
+</div>
+<div>
+<div style="color: #ef4444; font-weight: bold; font-size: 11px">Redis</div>
+<div style="color: #9ca3af; font-size: 10px">1-5ms latency</div>
+<div style="color: #9ca3af; font-size: 10px">~95% hit rate</div>
+</div>
+<div>
+<div style="color: #8b5cf6; font-weight: bold; font-size: 11px">Database</div>
+<div style="color: #9ca3af; font-size: 10px">10-50ms latency</div>
+<div style="color: #9ca3af; font-size: 10px">Always available</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="cache-implementation-with-write-through-pattern">Cache Implementation with Write-Through Pattern</h3>
+<pre><code class="language-python">import asyncio
+from typing import Optional, Dict
+from collections import OrderedDict
+import redis.asyncio as redis
+import time
+
+class URLCache:
+    &quot;&quot;&quot;
+    Multi-layer caching for URL lookups.
+
+    Design choices:
+    1. Write-through: Update cache on write (consistency)
+    2. Read-through: Populate cache on miss (freshness)
+    3. TTL-based expiration: Prevent stale data
+
+    Trade-off: Write-through adds latency to writes but
+    ensures cache consistency. For read-heavy workloads,
+    this is acceptable.
+    &quot;&quot;&quot;
+
+    def __init__(
+        self,
+        redis_client: redis.Redis,
+        local_cache_size: int = 10000,
+        redis_ttl: int = 3600,
+        local_ttl: int = 300
+    ):
+        self.redis = redis_client
+        self.redis_ttl = redis_ttl
+        self.local_ttl = local_ttl
+
+        # Local LRU cache for hot URLs
+        self.local_cache: OrderedDict[str, tuple] = OrderedDict()
+        self.local_cache_size = local_cache_size
+
+        # Metrics
+        self.metrics = {
+            'local_hits': 0,
+            'redis_hits': 0,
+            'db_hits': 0,
+            'total_lookups': 0
+        }
+
+    async def get(self, short_code: str) -&gt; Optional[str]:
+        &quot;&quot;&quot;
+        Look up URL with cascading cache checks.
+
+        Returns original URL or None if not found.
+        &quot;&quot;&quot;
+        self.metrics['total_lookups'] += 1
+
+        # Layer 1: Local LRU cache
+        cached = self._get_local(short_code)
+        if cached is not None:
+            self.metrics['local_hits'] += 1
+            return cached
+
+        # Layer 2: Redis distributed cache
+        cached = await self._get_redis(short_code)
+        if cached is not None:
+            self.metrics['redis_hits'] += 1
+            self._set_local(short_code, cached)
+            return cached
+
+        # Layer 3: Database (handled by caller)
+        self.metrics['db_hits'] += 1
+        return None
+
+    def _get_local(self, short_code: str) -&gt; Optional[str]:
+        &quot;&quot;&quot;Check local LRU cache with TTL validation.&quot;&quot;&quot;
+        if short_code not in self.local_cache:
+            return None
+
+        url, timestamp = self.local_cache[short_code]
+
+        # Check TTL
+        if time.time() - timestamp &gt; self.local_ttl:
+            del self.local_cache[short_code]
+            return None
+
+        # Move to end (LRU update)
+        self.local_cache.move_to_end(short_code)
+        return url
+
+    def _set_local(self, short_code: str, url: str):
+        &quot;&quot;&quot;Add to local cache with LRU eviction.&quot;&quot;&quot;
+        # Evict oldest if at capacity
+        while len(self.local_cache) &gt;= self.local_cache_size:
+            self.local_cache.popitem(last=False)
+
+        self.local_cache[short_code] = (url, time.time())
+
+    async def _get_redis(self, short_code: str) -&gt; Optional[str]:
+        &quot;&quot;&quot;Check Redis distributed cache.&quot;&quot;&quot;
+        return await self.redis.get(f&quot;url:{short_code}&quot;)
+
+    async def set(self, short_code: str, url: str):
+        &quot;&quot;&quot;
+        Write-through: Update both caches on write.
+
+        Order matters: Update Redis first (distributed),
+        then local (single server). On failure, at least
+        Redis has the data.
+        &quot;&quot;&quot;
+        # Update Redis
+        await self.redis.setex(
+            f&quot;url:{short_code}&quot;,
+            self.redis_ttl,
+            url
+        )
+
+        # Update local
+        self._set_local(short_code, url)
+
+    async def invalidate(self, short_code: str):
+        &quot;&quot;&quot;
+        Invalidate on URL deletion or expiration.
+
+        Important: Must invalidate ALL layers to prevent
+        serving stale data.
+        &quot;&quot;&quot;
+        # Remove from Redis
+        await self.redis.delete(f&quot;url:{short_code}&quot;)
+
+        # Remove from local
+        self.local_cache.pop(short_code, None)
+
+        # Note: Browser/CDN caches cannot be invalidated directly.
+        # This is why we use TTLs and consider 301 vs 302 carefully.
+
+    def get_hit_rates(self) -&gt; Dict[str, float]:
+        &quot;&quot;&quot;Calculate cache hit rates for monitoring.&quot;&quot;&quot;
+        total = self.metrics['total_lookups'] or 1
+        return {
+            'local_hit_rate': self.metrics['local_hits'] / total,
+            'redis_hit_rate': self.metrics['redis_hits'] / total,
+            'db_hit_rate': self.metrics['db_hits'] / total,
+            'overall_cache_hit_rate': (
+                self.metrics['local_hits'] + self.metrics['redis_hits']
+            ) / total
+        }
+</code></pre>
+<h3 id="handling-cache-stampede">Handling Cache Stampede</h3>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Cache Stampede Problem</strong>:</p>
+<p>When a popular URL's cache expires, thousands of concurrent requests all miss the cache simultaneously and hit the database, potentially causing an outage.</p>
+<p><strong>Scenario</strong>: A viral short URL gets 10,000 requests/second. Cache TTL expires. All 10,000 requests simultaneously query the database.</p>
+</div>
+<pre><code class="language-python">import asyncio
+from typing import Optional, Dict
+import redis.asyncio as redis
+import time
+
+class StampedeProtectedCache:
+    &quot;&quot;&quot;
+    Cache with stampede protection using multiple strategies.
+    &quot;&quot;&quot;
+
+    def __init__(self, redis_client: redis.Redis):
+        self.redis = redis_client
+        self._locks: Dict[str, asyncio.Lock] = {}
+
+    async def get_with_single_flight(
+        self,
+        short_code: str,
+        db_fetch_func
+    ) -&gt; Optional[str]:
+        &quot;&quot;&quot;
+        Single-flight pattern: Only one request fetches from DB,
+        others wait for the result.
+
+        Trade-off: Adds latency for waiting requests but protects DB.
+        &quot;&quot;&quot;
+        # Try cache first
+        cached = await self.redis.get(f&quot;url:{short_code}&quot;)
+        if cached:
+            return cached
+
+        # Get or create lock for this key
+        if short_code not in self._locks:
+            self._locks[short_code] = asyncio.Lock()
+
+        lock = self._locks[short_code]
+
+        async with lock:
+            # Double-check: another request might have populated cache
+            cached = await self.redis.get(f&quot;url:{short_code}&quot;)
+            if cached:
+                return cached
+
+            # Fetch from database
+            url = await db_fetch_func(short_code)
+
+            if url:
+                await self.redis.setex(f&quot;url:{short_code}&quot;, 3600, url)
+
+            return url
+
+    async def get_with_probabilistic_refresh(
+        self,
+        short_code: str,
+        db_fetch_func,
+        ttl: int = 3600,
+        beta: float = 1.0
+    ) -&gt; Optional[str]:
+        &quot;&quot;&quot;
+        Probabilistic early expiration: Refresh cache before TTL
+        to prevent stampede.
+
+        Based on paper: &quot;Optimal Probabilistic Cache Stampede Prevention&quot;
+
+        Formula: refresh if random() &lt; beta * log(time_to_compute) * (1/remaining_ttl)
+
+        As TTL approaches expiration, probability of refresh increases.
+        &quot;&quot;&quot;
+        import random
+        import math
+
+        # Get value and TTL together
+        pipe = self.redis.pipeline()
+        pipe.get(f&quot;url:{short_code}&quot;)
+        pipe.ttl(f&quot;url:{short_code}&quot;)
+        cached, remaining_ttl = await pipe.execute()
+
+        if cached and remaining_ttl &gt; 0:
+            # Probabilistic check for early refresh
+            delta = 1.0  # Estimated fetch time in seconds
+
+            if remaining_ttl &gt; 0:
+                # Probability increases as TTL decreases
+                probability = beta * delta * math.log(random.random()) * -1
+
+                if probability &gt; remaining_ttl:
+                    # Trigger early refresh (non-blocking)
+                    asyncio.create_task(self._refresh(short_code, db_fetch_func, ttl))
+
+            return cached
+
+        # Cache miss: fetch from DB
+        return await self._fetch_and_cache(short_code, db_fetch_func, ttl)
+
+    async def get_with_stale_while_revalidate(
+        self,
+        short_code: str,
+        db_fetch_func,
+        fresh_ttl: int = 3600,
+        stale_ttl: int = 86400
+    ) -&gt; Optional[str]:
+        &quot;&quot;&quot;
+        Serve stale data while refreshing in background.
+
+        Stores two TTLs:
+        - Fresh TTL: Data is fresh, serve directly
+        - Stale TTL: Data is stale but usable, serve while refreshing
+
+        This is similar to HTTP's stale-while-revalidate directive.
+        &quot;&quot;&quot;
+        # Check fresh cache
+        cached = await self.redis.get(f&quot;url:{short_code}:fresh&quot;)
+        if cached:
+            return cached
+
+        # Check stale cache
+        stale = await self.redis.get(f&quot;url:{short_code}:stale&quot;)
+        if stale:
+            # Serve stale, refresh in background
+            asyncio.create_task(
+                self._refresh_both(short_code, db_fetch_func, fresh_ttl, stale_ttl)
+            )
+            return stale
+
+        # Complete cache miss
+        url = await db_fetch_func(short_code)
+        if url:
+            await self._set_both(short_code, url, fresh_ttl, stale_ttl)
+        return url
+
+    async def _refresh(self, short_code: str, db_fetch_func, ttl: int):
+        url = await db_fetch_func(short_code)
+        if url:
+            await self.redis.setex(f&quot;url:{short_code}&quot;, ttl, url)
+
+    async def _fetch_and_cache(self, short_code: str, db_fetch_func, ttl: int):
+        url = await db_fetch_func(short_code)
+        if url:
+            await self.redis.setex(f&quot;url:{short_code}&quot;, ttl, url)
+        return url
+
+    async def _set_both(self, short_code: str, url: str, fresh_ttl: int, stale_ttl: int):
+        pipe = self.redis.pipeline()
+        pipe.setex(f&quot;url:{short_code}:fresh&quot;, fresh_ttl, url)
+        pipe.setex(f&quot;url:{short_code}:stale&quot;, stale_ttl, url)
+        await pipe.execute()
+
+    async def _refresh_both(
+        self,
+        short_code: str,
+        db_fetch_func,
+        fresh_ttl: int,
+        stale_ttl: int
+    ):
+        url = await db_fetch_func(short_code)
+        if url:
+            await self._set_both(short_code, url, fresh_ttl, stale_ttl)
+</code></pre>
+<h3 id="cache-consistency-in-distributed-systems">Cache Consistency in Distributed Systems</h3>
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>The Consistency Challenge</strong>:</p>
+<p>With multiple app servers each having local caches, plus a shared Redis layer:</p>
+<ol>
+<li>Server A creates short URL, updates its local cache and Redis</li>
+<li>Server B receives delete request, removes from Redis</li>
+<li>Server A still has the URL in local cache and serves it</li>
+</ol>
+<p><strong>Solutions</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Consistency</th>
+<th>Latency</th>
+<th>Complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Short local TTL</td>
+<td>Eventual (seconds)</td>
+<td>Best</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Pub/Sub invalidation</td>
+<td>Strong</td>
+<td>Good</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>No local cache</td>
+<td>Strong</td>
+<td>Worst</td>
+<td>Lowest</td>
+</tr>
+<tr>
+<td>Versioned cache</td>
+<td>Strong</td>
+<td>Good</td>
+<td>High</td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-python">import asyncio
+import redis.asyncio as redis
+
+class ConsistentCache:
+    &quot;&quot;&quot;
+    Cache with pub/sub invalidation for strong consistency.
+
+    When any server invalidates a key, all servers are notified
+    to invalidate their local caches.
+    &quot;&quot;&quot;
+
+    def __init__(self, redis_client: redis.Redis, server_id: str):
+        self.redis = redis_client
+        self.server_id = server_id
+        self.local_cache: Dict[str, str] = {}
+        self.pubsub = None
+
+    async def start(self):
+        &quot;&quot;&quot;Start listening for invalidation messages.&quot;&quot;&quot;
+        self.pubsub = self.redis.pubsub()
+        await self.pubsub.subscribe('cache_invalidate')
+
+        # Background task to process invalidation messages
+        asyncio.create_task(self._process_invalidations())
+
+    async def _process_invalidations(self):
+        &quot;&quot;&quot;Process cache invalidation messages from other servers.&quot;&quot;&quot;
+        async for message in self.pubsub.listen():
+            if message['type'] == 'message':
+                data = json.loads(message['data'])
+
+                # Ignore messages from self
+                if data['server_id'] == self.server_id:
+                    continue
+
+                # Invalidate local cache
+                short_code = data['short_code']
+                self.local_cache.pop(short_code, None)
+
+    async def invalidate(self, short_code: str):
+        &quot;&quot;&quot;
+        Invalidate key across all servers.
+
+        Order of operations:
+        1. Invalidate local cache
+        2. Invalidate Redis
+        3. Publish invalidation message
+
+        Other servers will receive the message and invalidate
+        their local caches.
+        &quot;&quot;&quot;
+        # Local
+        self.local_cache.pop(short_code, None)
+
+        # Redis
+        await self.redis.delete(f&quot;url:{short_code}&quot;)
+
+        # Broadcast to other servers
+        await self.redis.publish(
+            'cache_invalidate',
+            json.dumps({
+                'server_id': self.server_id,
+                'short_code': short_code,
+                'timestamp': time.time()
+            })
+        )
+</code></pre>
+<h3 id="interview-questions-caching-strategy-3-levels-deep">Interview Questions: Caching Strategy (3 Levels Deep)</h3>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: Why use multiple cache layers (local + Redis) instead of just Redis?</p>
+<p><strong>Level 2</strong>: With local caches on 100 app servers, how would you ensure cache consistency when a URL is deleted? What's the latency vs. consistency trade-off?</p>
+<p><strong>Level 3</strong>: Design a caching system where (a) delete operations are immediately consistent across all servers, (b) reads are as fast as local cache hits, (c) the system degrades gracefully if Redis pub/sub fails, and (d) you can verify consistency for debugging. Consider what happens during network partitions between app servers and Redis.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: What is cache stampede and how would you prevent it?</p>
+<p><strong>Level 2</strong>: Your single-flight implementation uses in-memory locks. What happens when the server crashes while holding the lock? How would you make this distributed?</p>
+<p><strong>Level 3</strong>: Design a distributed single-flight implementation that (a) survives server crashes, (b) doesn't hold locks indefinitely, (c) handles the case where the flight leader dies mid-fetch, and (d) provides fair ordering when multiple requests are waiting. Analyze the failure modes and recovery mechanisms.</p>
+</div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Level 1</strong>: How would you determine the optimal cache TTL for a URL shortener?</p>
+<p><strong>Level 2</strong>: Different URLs have different access patterns - some are viral (millions of accesses over 24 hours), some are steady (100/day for years), some are one-time (accessed once then never). How would you optimize caching for each pattern?</p>
+<p><strong>Level 3</strong>: Design an adaptive caching system that (a) automatically learns access patterns per URL, (b) adjusts TTLs dynamically to optimize hit rate vs. memory, (c) pre-warms cache for predictably viral URLs (e.g., shared by influencers), and (d) handles flash crowds without manual intervention. Quantify the memory-performance trade-offs in your design.</p>
+</div>
+<hr />
+<h2 id="system-architecture-overview">System Architecture Overview</h2>
+<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
+<div style="color: #58a6ff; font-weight: bold; font-size: 18px; margin-bottom: 24px; text-align: center">Complete URL Shortener Architecture</div>
+<div style="display: flex; flex-direction: column; gap: 24px">
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); padding: 20px; border-radius: 12px">
+<div style="color: #7ee787; font-weight: bold; margin-bottom: 16px">Write Path (URL Creation)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Client</div>
+</div>
+<div style="color: #7ee787">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">API Gateway</div>
+<div style="color: #9ca3af; font-size: 10px">Rate Limit</div>
+</div>
+<div style="color: #7ee787">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">App Server</div>
+<div style="color: #9ca3af; font-size: 10px">Validate + Generate</div>
+</div>
+<div style="color: #7ee787">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">ID Service</div>
+<div style="color: #9ca3af; font-size: 10px">Snowflake/ZK</div>
+</div>
+<div style="color: #7ee787">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Database</div>
+<div style="color: #9ca3af; font-size: 10px">Cassandra</div>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #3b1f5f 0%, #5a2d7b 100%); padding: 20px; border-radius: 12px">
+<div style="color: #a78bfa; font-weight: bold; margin-bottom: 16px">Read Path (URL Redirect)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Client</div>
+</div>
+<div style="color: #a78bfa">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">CDN Edge</div>
+<div style="color: #9ca3af; font-size: 10px">Global PoPs</div>
+</div>
+<div style="color: #a78bfa">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Load Balancer</div>
+<div style="color: #9ca3af; font-size: 10px">Geo-routing</div>
+</div>
+<div style="color: #a78bfa">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">App Server</div>
+<div style="color: #9ca3af; font-size: 10px">Local LRU</div>
+</div>
+<div style="color: #a78bfa">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Redis Cluster</div>
+<div style="color: #9ca3af; font-size: 10px">Distributed</div>
+</div>
+<div style="color: #a78bfa">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Database</div>
+<div style="color: #9ca3af; font-size: 10px">Replica</div>
+</div>
+</div>
+</div>
+<div style="background: linear-gradient(135deg, #5f3b1f 0%, #7b5a2d 100%); padding: 20px; border-radius: 12px">
+<div style="color: #fbbf24; font-weight: bold; margin-bottom: 16px">Analytics Path (Async)</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Click Event</div>
+</div>
+<div style="color: #fbbf24">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Kafka</div>
+<div style="color: #9ca3af; font-size: 10px">Buffer</div>
+</div>
+<div style="color: #fbbf24">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Flink</div>
+<div style="color: #9ca3af; font-size: 10px">Enrich + Aggregate</div>
+</div>
+<div style="color: #fbbf24">-></div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Redis</div>
+<div style="color: #9ca3af; font-size: 10px">Real-time</div>
+</div>
+<div style="color: #fbbf24">+</div>
+<div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #fff; font-size: 12px">Data Lake</div>
+<div style="color: #9ca3af; font-size: 10px">Historical</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="implementation-reference">Implementation Reference</h2>
+<h3 id="complete-url-shortener-service">Complete URL Shortener Service</h3>
+<pre><code class="language-python">&quot;&quot;&quot;
+Production-grade URL Shortener Service
+
+This implementation demonstrates key concepts:
+1. Multiple ID generation strategies
+2. Multi-layer caching with consistency
+3. Async analytics tracking
+4. Proper error handling and observability
+&quot;&quot;&quot;
+
+import asyncio
+import hashlib
+import time
+import json
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import Optional, Dict, List
+from enum import Enum
+import string
+import threading
+from abc import ABC, abstractmethod
+
+# ============= Configuration =============
+
+@dataclass
+class Config:
+    domain: str = &quot;short.url&quot;
+    code_length: int = 7
+    default_ttl_days: int = 365
+    cache_ttl_seconds: int = 3600
+    local_cache_size: int = 10000
+    rate_limit_per_minute: int = 100
+
+# ============= Base62 Encoding =============
+
+BASE62_ALPHABET = string.digits + string.ascii_uppercase + string.ascii_lowercase
+
+def encode_base62(num: int) -&gt; str:
+    &quot;&quot;&quot;Encode integer to base62 string.&quot;&quot;&quot;
+    if num == 0:
+        return BASE62_ALPHABET[0]
+
+    result = []
+    while num &gt; 0:
+        result.append(BASE62_ALPHABET[num % 62])
+        num //= 62
+    return ''.join(reversed(result))
+
+def decode_base62(code: str) -&gt; int:
+    &quot;&quot;&quot;Decode base62 string to integer.&quot;&quot;&quot;
+    num = 0
+    for char in code:
+        num = num * 62 + BASE62_ALPHABET.index(char)
+    return num
+
+# ============= ID Generation Strategies =============
+
+class IDGenerator(ABC):
+    @abstractmethod
+    def generate(self) -&gt; int:
+        pass
+
+class SnowflakeIDGenerator(IDGenerator):
+    &quot;&quot;&quot;Twitter Snowflake-inspired ID generator.&quot;&quot;&quot;
+
+    EPOCH = 1577836800000  # 2020-01-01
+    TIMESTAMP_BITS = 41
+    DATACENTER_BITS = 5
+    WORKER_BITS = 5
+    SEQUENCE_BITS = 12
+
+    def __init__(self, datacenter_id: int, worker_id: int):
+        self.datacenter_id = datacenter_id &amp; ((1 &lt;&lt; self.DATACENTER_BITS) - 1)
+        self.worker_id = worker_id &amp; ((1 &lt;&lt; self.WORKER_BITS) - 1)
+        self.sequence = 0
+        self.last_timestamp = -1
+        self._lock = threading.Lock()
+
+    def generate(self) -&gt; int:
+        with self._lock:
+            timestamp = int(time.time() * 1000)
+
+            if timestamp &lt; self.last_timestamp:
+                raise RuntimeError(&quot;Clock moved backwards&quot;)
+
+            if timestamp == self.last_timestamp:
+                self.sequence = (self.sequence + 1) &amp; ((1 &lt;&lt; self.SEQUENCE_BITS) - 1)
+                if self.sequence == 0:
+                    while timestamp &lt;= self.last_timestamp:
+                        timestamp = int(time.time() * 1000)
+            else:
+                self.sequence = 0
+
+            self.last_timestamp = timestamp
+
+            return (
+                ((timestamp - self.EPOCH) &lt;&lt; (self.DATACENTER_BITS + self.WORKER_BITS + self.SEQUENCE_BITS)) |
+                (self.datacenter_id &lt;&lt; (self.WORKER_BITS + self.SEQUENCE_BITS)) |
+                (self.worker_id &lt;&lt; self.SEQUENCE_BITS) |
+                self.sequence
+            )
+
+class CounterIDGenerator(IDGenerator):
+    &quot;&quot;&quot;Simple counter-based ID generator for single-server setups.&quot;&quot;&quot;
+
+    def __init__(self, start: int = 100000000):
+        self.counter = start
+        self._lock = threading.Lock()
+
+    def generate(self) -&gt; int:
+        with self._lock:
+            self.counter += 1
+            return self.counter
+
+# ============= Data Models =============
+
+@dataclass
+class URLEntry:
+    short_code: str
+    original_url: str
+    created_at: datetime = field(default_factory=datetime.utcnow)
+    expires_at: Optional[datetime] = None
+    user_id: Optional[str] = None
+    custom_code: bool = False
+
+    def is_expired(self) -&gt; bool:
+        if self.expires_at is None:
+            return False
+        return datetime.utcnow() &gt; self.expires_at
+
+    def to_dict(self) -&gt; dict:
+        return {
+            'short_code': self.short_code,
+            'original_url': self.original_url,
+            'created_at': self.created_at.isoformat(),
+            'expires_at': self.expires_at.isoformat() if self.expires_at else None,
+            'is_expired': self.is_expired()
+        }
+
+@dataclass
+class ClickEvent:
+    short_code: str
+    timestamp: datetime
+    ip_address: str
+    user_agent: str
+    referrer: Optional[str] = None
+
+# ============= Storage Interface =============
+
+class URLStorage(ABC):
+    @abstractmethod
+    async def save(self, entry: URLEntry) -&gt; bool:
+        pass
+
+    @abstractmethod
+    async def get(self, short_code: str) -&gt; Optional[URLEntry]:
+        pass
+
+    @abstractmethod
+    async def delete(self, short_code: str) -&gt; bool:
+        pass
+
+    @abstractmethod
+    async def exists(self, short_code: str) -&gt; bool:
+        pass
+
+class InMemoryStorage(URLStorage):
+    &quot;&quot;&quot;In-memory storage for development/testing.&quot;&quot;&quot;
+
+    def __init__(self):
+        self._store: Dict[str, URLEntry] = {}
+        self._url_index: Dict[str, str] = {}  # original_url -&gt; short_code
+
+    async def save(self, entry: URLEntry) -&gt; bool:
+        self._store[entry.short_code] = entry
+        self._url_index[entry.original_url] = entry.short_code
+        return True
+
+    async def get(self, short_code: str) -&gt; Optional[URLEntry]:
+        return self._store.get(short_code)
+
+    async def delete(self, short_code: str) -&gt; bool:
+        entry = self._store.pop(short_code, None)
+        if entry:
+            self._url_index.pop(entry.original_url, None)
+            return True
+        return False
+
+    async def exists(self, short_code: str) -&gt; bool:
+        return short_code in self._store
+
+    async def get_by_url(self, original_url: str) -&gt; Optional[str]:
+        return self._url_index.get(original_url)
+
+# ============= Cache Layer =============
+
+class CacheLayer:
+    &quot;&quot;&quot;Multi-layer cache with LRU local cache.&quot;&quot;&quot;
+
+    def __init__(self, max_size: int = 10000, ttl_seconds: int = 3600):
+        self._cache: Dict[str, tuple] = {}
+        self._max_size = max_size
+        self._ttl = ttl_seconds
+        self._access_order: List[str] = []
+        self._lock = threading.Lock()
+
+    def get(self, key: str) -&gt; Optional[str]:
+        with self._lock:
+            if key not in self._cache:
+                return None
+
+            value, timestamp = self._cache[key]
+
+            if time.time() - timestamp &gt; self._ttl:
+                self._evict(key)
+                return None
+
+            # Update access order for LRU
+            if key in self._access_order:
+                self._access_order.remove(key)
+            self._access_order.append(key)
+
+            return value
+
+    def set(self, key: str, value: str):
+        with self._lock:
+            # Evict if at capacity
+            while len(self._cache) &gt;= self._max_size:
+                if self._access_order:
+                    oldest = self._access_order.pop(0)
+                    self._cache.pop(oldest, None)
+
+            self._cache[key] = (value, time.time())
+            self._access_order.append(key)
+
+    def invalidate(self, key: str):
+        with self._lock:
+            self._evict(key)
+
+    def _evict(self, key: str):
+        self._cache.pop(key, None)
+        if key in self._access_order:
+            self._access_order.remove(key)
+
+# ============= Analytics Collector =============
+
+class AnalyticsCollector:
+    &quot;&quot;&quot;Async analytics collection with batching.&quot;&quot;&quot;
+
+    def __init__(self, batch_size: int = 100, flush_interval: float = 1.0):
+        self._buffer: List[ClickEvent] = []
+        self._batch_size = batch_size
+        self._flush_interval = flush_interval
+        self._lock = threading.Lock()
+        self._counters: Dict[str, int] = {}
+
+    def record_click(self, event: ClickEvent):
+        &quot;&quot;&quot;Record click event - non-blocking.&quot;&quot;&quot;
+        with self._lock:
+            self._buffer.append(event)
+
+            # Update real-time counter
+            self._counters[event.short_code] = \
+                self._counters.get(event.short_code, 0) + 1
+
+            if len(self._buffer) &gt;= self._batch_size:
+                self._flush()
+
+    def get_click_count(self, short_code: str) -&gt; int:
+        return self._counters.get(short_code, 0)
+
+    def _flush(self):
+        &quot;&quot;&quot;Flush buffer to persistent storage.&quot;&quot;&quot;
+        events = self._buffer[:]
+        self._buffer = []
+        # In production: send to Kafka/data pipeline
+        # For now, just log count
+        pass
+
+# ============= Main Service =============
+
+class URLShortenerService:
+    &quot;&quot;&quot;
+    Complete URL shortening service with all features.
+    &quot;&quot;&quot;
+
+    def __init__(
+        self,
+        config: Config,
+        id_generator: IDGenerator,
+        storage: URLStorage,
+        cache: CacheLayer,
+        analytics: AnalyticsCollector
+    ):
+        self.config = config
+        self.id_generator = id_generator
+        self.storage = storage
+        self.cache = cache
+        self.analytics = analytics
+
+    async def shorten(
+        self,
+        original_url: str,
+        custom_code: Optional[str] = None,
+        ttl_days: Optional[int] = None,
+        user_id: Optional[str] = None
+    ) -&gt; str:
+        &quot;&quot;&quot;
+        Create a short URL.
+
+        Returns the full short URL (e.g., https://short.url/abc123)
+
+        Raises ValueError if custom_code is taken.
+        &quot;&quot;&quot;
+        # Validate URL
+        if not self._is_valid_url(original_url):
+            raise ValueError(&quot;Invalid URL format&quot;)
+
+        # Check for existing mapping (optional deduplication)
+        if isinstance(self.storage, InMemoryStorage):
+            existing = await self.storage.get_by_url(original_url)
+            if existing:
+                return f&quot;https://{self.config.domain}/{existing}&quot;
+
+        # Generate or validate code
+        if custom_code:
+            if await self.storage.exists(custom_code):
+                raise ValueError(f&quot;Code '{custom_code}' already exists&quot;)
+            code = custom_code
+        else:
+            code = self._generate_code()
+            # Handle collision (unlikely but possible)
+            attempts = 0
+            while await self.storage.exists(code) and attempts &lt; 10:
+                code = self._generate_code()
+                attempts += 1
+
+        # Calculate expiration
+        expires_at = None
+        if ttl_days:
+            expires_at = datetime.utcnow() + timedelta(days=ttl_days)
+        elif self.config.default_ttl_days:
+            expires_at = datetime.utcnow() + timedelta(days=self.config.default_ttl_days)
+
+        # Create entry
+        entry = URLEntry(
+            short_code=code,
+            original_url=original_url,
+            expires_at=expires_at,
+            user_id=user_id,
+            custom_code=custom_code is not None
+        )
+
+        # Store
+        await self.storage.save(entry)
+
+        # Update cache
+        self.cache.set(code, original_url)
+
+        return f&quot;https://{self.config.domain}/{code}&quot;
+
+    async def expand(
+        self,
+        short_code: str,
+        record_analytics: bool = True,
+        client_ip: str = &quot;&quot;,
+        user_agent: str = &quot;&quot;,
+        referrer: str = &quot;&quot;
+    ) -&gt; Optional[str]:
+        &quot;&quot;&quot;
+        Expand a short code to original URL.
+
+        Returns None if code doesn't exist or is expired.
+        &quot;&quot;&quot;
+        # Check cache first
+        cached = self.cache.get(short_code)
+        if cached:
+            if record_analytics:
+                self._record_click(short_code, client_ip, user_agent, referrer)
+            return cached
+
+        # Check storage
+        entry = await self.storage.get(short_code)
+        if not entry:
+            return None
+
+        # Check expiration
+        if entry.is_expired():
+            await self.storage.delete(short_code)
+            self.cache.invalidate(short_code)
+            return None
+
+        # Update cache
+        self.cache.set(short_code, entry.original_url)
+
+        # Record analytics
+        if record_analytics:
+            self._record_click(short_code, client_ip, user_agent, referrer)
+
+        return entry.original_url
+
+    async def delete(self, short_code: str, user_id: Optional[str] = None) -&gt; bool:
+        &quot;&quot;&quot;
+        Delete a short URL.
+
+        Returns True if deleted, False if not found.
+        &quot;&quot;&quot;
+        entry = await self.storage.get(short_code)
+        if not entry:
+            return False
+
+        # Authorization check (if user_id provided)
+        if user_id and entry.user_id and entry.user_id != user_id:
+            raise PermissionError(&quot;Not authorized to delete this URL&quot;)
+
+        # Delete from storage
+        await self.storage.delete(short_code)
+
+        # Invalidate cache
+        self.cache.invalidate(short_code)
+
+        return True
+
+    async def get_stats(self, short_code: str) -&gt; Optional[dict]:
+        &quot;&quot;&quot;Get analytics for a short URL.&quot;&quot;&quot;
+        entry = await self.storage.get(short_code)
+        if not entry:
+            return None
+
+        stats = entry.to_dict()
+        stats['total_clicks'] = self.analytics.get_click_count(short_code)
+
+        return stats
+
+    def _generate_code(self) -&gt; str:
+        &quot;&quot;&quot;Generate a new short code.&quot;&quot;&quot;
+        id = self.id_generator.generate()
+        code = encode_base62(id)
+
+        # Ensure minimum length
+        while len(code) &lt; self.config.code_length:
+            code = BASE62_ALPHABET[0] + code
+
+        # Truncate if too long
+        return code[:self.config.code_length]
+
+    def _is_valid_url(self, url: str) -&gt; bool:
+        &quot;&quot;&quot;Basic URL validation.&quot;&quot;&quot;
+        return url.startswith(('http://', 'https://'))
+
+    def _record_click(
+        self,
+        short_code: str,
+        ip: str,
+        user_agent: str,
+        referrer: str
+    ):
+        &quot;&quot;&quot;Record click event asynchronously.&quot;&quot;&quot;
+        event = ClickEvent(
+            short_code=short_code,
+            timestamp=datetime.utcnow(),
+            ip_address=ip,
+            user_agent=user_agent,
+            referrer=referrer
+        )
+        self.analytics.record_click(event)
+
+# ============= Factory Function =============
+
+def create_url_shortener(
+    domain: str = &quot;short.url&quot;,
+    datacenter_id: int = 0,
+    worker_id: int = 0
+) -&gt; URLShortenerService:
+    &quot;&quot;&quot;
+    Factory function to create a configured URL shortener.
+    &quot;&quot;&quot;
+    config = Config(domain=domain)
+
+    return URLShortenerService(
+        config=config,
+        id_generator=SnowflakeIDGenerator(datacenter_id, worker_id),
+        storage=InMemoryStorage(),
+        cache=CacheLayer(
+            max_size=config.local_cache_size,
+            ttl_seconds=config.cache_ttl_seconds
+        ),
+        analytics=AnalyticsCollector()
+    )
+
+# ============= Usage Example =============
+
+async def main():
+    # Create service
+    service = create_url_shortener(&quot;tiny.url&quot;)
+
+    # Shorten URLs
+    url1 = await service.shorten(&quot;https://example.com/very/long/path/to/resource&quot;)
+    url2 = await service.shorten(&quot;https://another.com/page&quot;, custom_code=&quot;mylink&quot;)
+    url3 = await service.shorten(&quot;https://temp.com/promo&quot;, ttl_days=7)
+
+    print(f&quot;Short URL 1: {url1}&quot;)
+    print(f&quot;Short URL 2: {url2}&quot;)
+    print(f&quot;Short URL 3 (expires in 7 days): {url3}&quot;)
+
+    # Expand URLs
+    original = await service.expand(&quot;mylink&quot;)
+    print(f&quot;Original URL: {original}&quot;)
+
+    # Get stats
+    stats = await service.get_stats(&quot;mylink&quot;)
+    print(f&quot;Stats: {json.dumps(stats, indent=2)}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<hr />
+<h2 id="key-interview-takeaways">Key Interview Takeaways</h2>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>What Interviewers Look For</strong>:</p>
+<ol>
+<li><strong>Scale estimation</strong>: Start with numbers - 100M URLs, 100:1 read:write ratio, 7-character codes</li>
+<li><strong>Trade-off articulation</strong>: Every design choice has consequences - explain them</li>
+<li><strong>Distributed systems awareness</strong>: ID generation, cache consistency, analytics pipelines</li>
+<li><strong>Edge case handling</strong>: Collisions, clock skew, cache stampede, expiration</li>
+<li><strong>Depth on demand</strong>: Be ready to go 3 levels deep on any topic</li>
+</ol>
+</div>
+<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Common Follow-up Questions</strong>:</p>
+<ul>
+<li>How would you prevent malicious URLs? (URL scanning, <a href="/topics/security/reputation-systems">[reputation systems]</a>)</li>
+<li>How to implement <a href="/topics/system-design/rate-limiting">[rate limiting]</a>? (Token bucket, sliding window)</li>
+<li>How to ensure high availability? (<a href="/topics/system-design/replication">[replication]</a>, <a href="/topics/system-design/failover">[failover]</a>)</li>
+<li>How would you handle a viral link? (Pre-warming, adaptive caching)</li>
+<li>GDPR compliance for analytics? (Anonymization, consent, right to deletion)</li>
+</ul>
+</div>
+<hr />
+<h2 id="related-topics">Related Topics</h2>
+<ul>
+<li><a href="/topics/system-design/distributed-id">[Distributed ID Generation]</a> - Snowflake, ULID, UUID comparison</li>
+<li><a href="/topics/system-design/caching">[Caching Strategies]</a> - Write-through, write-behind, cache-aside</li>
+<li><a href="/topics/algorithms/consistent-hashing">[Consistent Hashing]</a> - For distributed cache sharding</li>
+<li><a href="/topics/algorithms/hyperloglog">[HyperLogLog]</a> - Probabilistic counting for analytics</li>
+<li><a href="/topics/system-design/rate-limiting">[Rate Limiting]</a> - Protecting against abuse</li>
+<li><a href="/topics/system-design/cap-theorem">[CAP Theorem]</a> - Understanding consistency trade-offs</li>
+</ul>

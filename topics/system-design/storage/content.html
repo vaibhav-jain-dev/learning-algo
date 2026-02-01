@@ -1,0 +1,882 @@
+<h1 id="storage">Storage</h1>
+<h2 id="overview">Overview</h2>
+<p>Storage is the foundation of every software system - it determines how your data is organized, accessed, and protected. The choice of storage technology affects your system's performance, scalability, cost, and reliability. Understanding storage options is essential for making informed architectural decisions.</p>
+<p>Think of storage like different types of containers for your belongings: a filing cabinet (relational database), a warehouse with labeled bins (key-value store), or a library with books organized by subject (document store). Each serves different purposes and access patterns.</p>
+<hr />
+<h2 id="why-this-matters">Why This Matters</h2>
+<h3 id="real-company-examples">Real Company Examples</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Companies and Their Storage Choices</h4>
+<div style="display: grid; gap: 16px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Netflix - Cassandra for Viewing History</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Netflix uses Cassandra to store billions of viewing records. The wide-column store handles their write-heavy workload (every play, pause, seek) while providing fast reads for "Continue Watching" across 230+ million subscribers.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Uber - PostgreSQL + Redis Hybrid</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Uber uses PostgreSQL for transactional data (rides, payments) requiring ACID compliance, and Redis for real-time driver location caching. The hybrid approach balances consistency needs with low-latency requirements.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Airbnb - S3 for Images + Elasticsearch for Search</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Airbnb stores millions of property images in S3 (object storage) for cost and scalability, while using Elasticsearch for fast full-text search across listings with complex filters and geo-queries.</div>
+</div>
+</div>
+</div>
+<p><strong>Key Storage Decisions:</strong></p>
+<ul>
+<li><strong>Performance vs Cost</strong>: SSDs are faster but costlier than HDDs</li>
+<li><strong>Consistency vs Availability</strong>: CAP theorem trade-offs</li>
+<li><strong>Scalability</strong>: Vertical (bigger machine) vs horizontal (more machines)</li>
+<li><strong>Query patterns</strong>: Read-heavy vs write-heavy workloads</li>
+<li><strong>Data structure</strong>: Structured (SQL) vs semi-structured (JSON) vs unstructured (files)</li>
+</ul>
+<hr />
+<h2 id="how-it-works">How It Works</h2>
+<h3 id="storage-hierarchy">Storage Hierarchy</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Memory and Storage Pyramid</h4>
+<div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+<div style="background: #ef4444; color: white; padding: 12px 24px; border-radius: 8px; width: 150px; text-align: center">
+<div style="font-weight: 600">CPU Cache</div>
+<div style="font-size: 12px">~1ns | KB | $$$$</div>
+</div>
+<div style="background: #f59e0b; color: white; padding: 12px 24px; border-radius: 8px; width: 200px; text-align: center">
+<div style="font-weight: 600">RAM</div>
+<div style="font-size: 12px">~100ns | GB | $$$</div>
+</div>
+<div style="background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; width: 250px; text-align: center">
+<div style="font-weight: 600">SSD</div>
+<div style="font-size: 12px">~100us | TB | $$</div>
+</div>
+<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; width: 300px; text-align: center">
+<div style="font-weight: 600">HDD</div>
+<div style="font-size: 12px">~10ms | TB | $</div>
+</div>
+<div style="background: #6366f1; color: white; padding: 12px 24px; border-radius: 8px; width: 350px; text-align: center">
+<div style="font-weight: 600">Network/Cloud Storage</div>
+<div style="font-size: 12px">10-100ms | PB | Variable</div>
+</div>
+</div>
+<div style="text-align: center; margin-top: 16px; color: #64748b; font-size: 13px">
+    Faster and smaller at top, slower and larger at bottom
+</div>
+</div>
+<h3 id="latency-numbers-every-developer-should-know">Latency Numbers Every Developer Should Know</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Storage Latency Reference</h4>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<tr style="background: #f1f5f9">
+<th style="padding: 12px; text-align: left; color: #1e293b">Operation</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Latency</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Notes</th>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b">L1 cache reference</td>
+<td style="padding: 12px; color: #10b981; font-weight: 600">0.5 ns</td>
+<td style="padding: 12px; color: #64748b">Fastest possible</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b">L2 cache reference</td>
+<td style="padding: 12px; color: #10b981; font-weight: 600">7 ns</td>
+<td style="padding: 12px; color: #64748b">14x L1</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b">RAM access</td>
+<td style="padding: 12px; color: #f59e0b; font-weight: 600">100 ns</td>
+<td style="padding: 12px; color: #64748b">In-memory databases</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b">SSD random read</td>
+<td style="padding: 12px; color: #f59e0b; font-weight: 600">150 us</td>
+<td style="padding: 12px; color: #64748b">1500x RAM</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b">HDD seek</td>
+<td style="padding: 12px; color: #ef4444; font-weight: 600">10 ms</td>
+<td style="padding: 12px; color: #64748b">Physical movement</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b">Network same DC</td>
+<td style="padding: 12px; color: #ef4444; font-weight: 600">0.5 ms</td>
+<td style="padding: 12px; color: #64748b">Redis, databases</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b">Network cross-continent</td>
+<td style="padding: 12px; color: #ef4444; font-weight: 600">150 ms</td>
+<td style="padding: 12px; color: #64748b">Speed of light limit</td>
+</tr>
+</table>
+</div>
+</div>
+<h3 id="storage-types">Storage Types</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Block vs File vs Object Storage</h4>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px">
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px">Block Storage</div>
+<div style="color: #1e3a8a; font-size: 13px">
+<div style="margin-bottom: 8px">Fixed-size blocks with IDs</div>
+<div style="font-weight: 600">Best for:</div>
+<div>- Databases</div>
+<div>- Virtual machines</div>
+<div>- High IOPS workloads</div>
+<div style="margin-top: 8px; font-size: 12px; color: #3b82f6">AWS EBS, Azure Disk</div>
+</div>
+</div>
+<div style="background: #ecfdf5;border-radius: 8px; padding: 16px">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 8px">File Storage</div>
+<div style="color: #047857; font-size: 13px">
+<div style="margin-bottom: 8px">Hierarchical directory structure</div>
+<div style="font-weight: 600">Best for:</div>
+<div>- Shared file access</div>
+<div>- Content management</div>
+<div>- Home directories</div>
+<div style="margin-top: 8px; font-size: 12px; color: #10b981">AWS EFS, NFS, SMB</div>
+</div>
+</div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 16px">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 8px">Object Storage</div>
+<div style="color: #78350f; font-size: 13px">
+<div style="margin-bottom: 8px">Objects with metadata and keys</div>
+<div style="font-weight: 600">Best for:</div>
+<div>- Static assets (images)</div>
+<div>- Backups, archives</div>
+<div>- Data lakes</div>
+<div style="margin-top: 8px; font-size: 12px; color: #f59e0b">AWS S3, Azure Blob, GCS</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="database-types">Database Types</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">When to Use Which Database</h4>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<tr style="background: #f1f5f9">
+<th style="padding: 12px; text-align: left; color: #1e293b">Type</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Examples</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Best For</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Trade-offs</th>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Relational (SQL)</td>
+<td style="padding: 12px; color: #475569">PostgreSQL, MySQL</td>
+<td style="padding: 12px; color: #475569">Transactions, complex queries, joins</td>
+<td style="padding: 12px; color: #475569">Harder to scale horizontally</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Document</td>
+<td style="padding: 12px; color: #475569">MongoDB, CouchDB</td>
+<td style="padding: 12px; color: #475569">Flexible schemas, nested data</td>
+<td style="padding: 12px; color: #475569">Weaker transactions</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Key-Value</td>
+<td style="padding: 12px; color: #475569">Redis, DynamoDB</td>
+<td style="padding: 12px; color: #475569">Caching, sessions, simple lookups</td>
+<td style="padding: 12px; color: #475569">No complex queries</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Wide-Column</td>
+<td style="padding: 12px; color: #475569">Cassandra, HBase</td>
+<td style="padding: 12px; color: #475569">Time-series, write-heavy workloads</td>
+<td style="padding: 12px; color: #475569">Limited query flexibility</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Graph</td>
+<td style="padding: 12px; color: #475569">Neo4j, Neptune</td>
+<td style="padding: 12px; color: #475569">Social networks, recommendations</td>
+<td style="padding: 12px; color: #475569">Specialized use cases</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Search</td>
+<td style="padding: 12px; color: #475569">Elasticsearch, Solr</td>
+<td style="padding: 12px; color: #475569">Full-text search, analytics</td>
+<td style="padding: 12px; color: #475569">Not a primary data store</td>
+</tr>
+</table>
+</div>
+</div>
+<hr />
+<h2 id="real-life-failure-story">Real-Life Failure Story</h2>
+<h3 id="the-instagram-migration-2012">The Instagram Migration (2012)</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">How Instagram Scaled Their Storage</h4>
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+<div style="color: #991b1b; font-weight: 600">The Challenge</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px">
+  Instagram grew from 0 to 14 million users in one year with just 3 engineers. Their initial PostgreSQL setup couldn't handle the write load from millions of photo uploads and likes. Database replication lag grew to minutes, and users saw inconsistent data.
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 600">Original Architecture Problems</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">
+<div style="padding: 4px 0">Single PostgreSQL master for all writes</div>
+<div style="padding: 4px 0">Photos stored in filesystem, metadata in DB</div>
+<div style="padding: 4px 0">No caching layer - every read hit the database</div>
+<div style="padding: 4px 0">Vertical scaling limits reached</div>
+</div>
+</div>
+<div style="background: #ecfdf5; border-radius: 8px; padding: 16px">
+<div style="color: #065f46; font-weight: 600">Solution: Multi-Layer Storage Architecture</div>
+<div style="color: #047857; font-size: 14px; margin-top: 8px">
+<div>1. <strong>Photos:</strong> Moved to S3 with CDN (CloudFront)</div>
+<div>2. <strong>Caching:</strong> Added Redis for sessions and frequently accessed data</div>
+<div>3. <strong>Database:</strong> Sharded PostgreSQL by user ID</div>
+<div>4. <strong>Feed:</strong> Precomputed and cached in Redis</div>
+<div style="margin-top: 8px; font-weight: 600">Result: Handled 300M+ users with same small team</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="implementation">Implementation</h2>
+<h3 id="choosing-the-right-storage">Choosing the Right Storage</h3>
+<pre><code class="language-python">from dataclasses import dataclass
+from enum import Enum
+from typing import List, Optional
+
+
+class DataCharacteristic(Enum):
+    &quot;&quot;&quot;Characteristics that influence storage choice.&quot;&quot;&quot;
+    STRUCTURED = &quot;structured&quot;           # Fixed schema
+    SEMI_STRUCTURED = &quot;semi_structured&quot; # JSON, XML
+    UNSTRUCTURED = &quot;unstructured&quot;       # Files, images
+
+    READ_HEAVY = &quot;read_heavy&quot;
+    WRITE_HEAVY = &quot;write_heavy&quot;
+    BALANCED = &quot;balanced&quot;
+
+    TRANSACTIONAL = &quot;transactional&quot;     # ACID required
+    EVENTUAL_OK = &quot;eventual_ok&quot;         # Eventual consistency acceptable
+
+    RELATIONAL = &quot;relational&quot;           # Need JOINs
+    HIERARCHICAL = &quot;hierarchical&quot;       # Nested data
+    GRAPH = &quot;graph&quot;                     # Relationships are key
+
+
+@dataclass
+class StorageRequirements:
+    &quot;&quot;&quot;Capture requirements to recommend storage.&quot;&quot;&quot;
+    data_type: DataCharacteristic
+    access_pattern: DataCharacteristic
+    consistency: DataCharacteristic
+    structure: DataCharacteristic
+    estimated_size_gb: float
+    queries_per_second: int
+    latency_requirement_ms: float
+
+
+def recommend_storage(requirements: StorageRequirements) -&gt; List[str]:
+    &quot;&quot;&quot;
+    Recommend storage solutions based on requirements.
+
+    Returns list of recommended technologies with reasoning.
+    &quot;&quot;&quot;
+    recommendations = []
+
+    # Check for transactional requirements
+    if requirements.consistency == DataCharacteristic.TRANSACTIONAL:
+        if requirements.structure == DataCharacteristic.RELATIONAL:
+            recommendations.append(
+                &quot;PostgreSQL - ACID compliance with complex queries&quot;
+            )
+        else:
+            recommendations.append(
+                &quot;PostgreSQL with JSONB - Transactions + flexible schema&quot;
+            )
+
+    # High write throughput needs
+    if requirements.access_pattern == DataCharacteristic.WRITE_HEAVY:
+        if requirements.estimated_size_gb &gt; 1000:
+            recommendations.append(
+                &quot;Cassandra - Distributed write-optimized storage&quot;
+            )
+        else:
+            recommendations.append(
+                &quot;TimescaleDB - Time-series optimized PostgreSQL&quot;
+            )
+
+    # Low latency requirements
+    if requirements.latency_requirement_ms &lt; 10:
+        recommendations.append(
+            &quot;Redis - In-memory caching layer&quot;
+        )
+
+    # Large unstructured data
+    if requirements.data_type == DataCharacteristic.UNSTRUCTURED:
+        recommendations.append(
+            &quot;S3/Object Storage - Scalable blob storage&quot;
+        )
+
+    # Graph relationships
+    if requirements.structure == DataCharacteristic.GRAPH:
+        recommendations.append(
+            &quot;Neo4j - Native graph database&quot;
+        )
+
+    # Semi-structured with flexible queries
+    if requirements.data_type == DataCharacteristic.SEMI_STRUCTURED:
+        if requirements.consistency == DataCharacteristic.EVENTUAL_OK:
+            recommendations.append(
+                &quot;MongoDB - Flexible document storage&quot;
+            )
+
+    # Default recommendation
+    if not recommendations:
+        recommendations.append(
+            &quot;PostgreSQL - Versatile, well-supported default choice&quot;
+        )
+
+    return recommendations
+
+
+# Usage Example
+requirements = StorageRequirements(
+    data_type=DataCharacteristic.STRUCTURED,
+    access_pattern=DataCharacteristic.READ_HEAVY,
+    consistency=DataCharacteristic.TRANSACTIONAL,
+    structure=DataCharacteristic.RELATIONAL,
+    estimated_size_gb=100,
+    queries_per_second=1000,
+    latency_requirement_ms=50
+)
+
+recommendations = recommend_storage(requirements)
+for rec in recommendations:
+    print(f&quot;- {rec}&quot;)
+</code></pre>
+<h3 id="database-connection-pooling">Database Connection Pooling</h3>
+<pre><code class="language-python">import contextlib
+from typing import Optional
+import psycopg2
+from psycopg2 import pool
+import redis
+from dataclasses import dataclass
+
+
+@dataclass
+class PoolConfig:
+    &quot;&quot;&quot;Connection pool configuration.&quot;&quot;&quot;
+    min_connections: int = 5
+    max_connections: int = 20
+    connection_timeout: float = 30.0
+
+
+class DatabasePool:
+    &quot;&quot;&quot;
+    PostgreSQL connection pool manager.
+
+    Connection pooling is critical for performance:
+    - Creating connections is expensive (~10-100ms)
+    - Connections consume server memory
+    - Too many connections overwhelm the database
+    &quot;&quot;&quot;
+
+    def __init__(self, dsn: str, config: PoolConfig = None):
+        self.config = config or PoolConfig()
+        self.pool = pool.ThreadedConnectionPool(
+            minconn=self.config.min_connections,
+            maxconn=self.config.max_connections,
+            dsn=dsn
+        )
+
+    @contextlib.contextmanager
+    def get_connection(self):
+        &quot;&quot;&quot;
+        Get a connection from the pool.
+
+        Use as context manager to ensure connection is returned.
+        &quot;&quot;&quot;
+        conn = None
+        try:
+            conn = self.pool.getconn()
+            yield conn
+            conn.commit()
+        except Exception:
+            if conn:
+                conn.rollback()
+            raise
+        finally:
+            if conn:
+                self.pool.putconn(conn)
+
+    def execute(self, query: str, params: tuple = None):
+        &quot;&quot;&quot;Execute a query and return results.&quot;&quot;&quot;
+        with self.get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(query, params)
+                if cursor.description:
+                    return cursor.fetchall()
+                return None
+
+    def close(self):
+        &quot;&quot;&quot;Close all connections in the pool.&quot;&quot;&quot;
+        self.pool.closeall()
+
+
+class CacheLayer:
+    &quot;&quot;&quot;
+    Redis caching layer for frequently accessed data.
+
+    Caching reduces database load and improves latency:
+    - Redis: ~0.1ms latency
+    - PostgreSQL: ~1-10ms latency
+    &quot;&quot;&quot;
+
+    def __init__(self, host: str = 'localhost', port: int = 6379):
+        self.redis = redis.Redis(
+            host=host,
+            port=port,
+            decode_responses=True
+        )
+
+    def get(self, key: str) -&gt; Optional[str]:
+        &quot;&quot;&quot;Get value from cache.&quot;&quot;&quot;
+        return self.redis.get(key)
+
+    def set(self, key: str, value: str, ttl_seconds: int = 3600):
+        &quot;&quot;&quot;Set value in cache with TTL.&quot;&quot;&quot;
+        self.redis.setex(key, ttl_seconds, value)
+
+    def delete(self, key: str):
+        &quot;&quot;&quot;Delete key from cache.&quot;&quot;&quot;
+        self.redis.delete(key)
+
+    def get_or_compute(self, key: str, compute_fn, ttl_seconds: int = 3600):
+        &quot;&quot;&quot;
+        Cache-aside pattern: get from cache or compute and cache.
+        &quot;&quot;&quot;
+        value = self.get(key)
+        if value is not None:
+            return value
+
+        value = compute_fn()
+        self.set(key, value, ttl_seconds)
+        return value
+
+
+class DataAccessLayer:
+    &quot;&quot;&quot;
+    Combined data access with caching.
+
+    Implements common patterns:
+    - Cache-aside for reads
+    - Write-through for writes
+    &quot;&quot;&quot;
+
+    def __init__(self, db: DatabasePool, cache: CacheLayer):
+        self.db = db
+        self.cache = cache
+
+    def get_user(self, user_id: int) -&gt; Optional[dict]:
+        &quot;&quot;&quot;Get user with caching.&quot;&quot;&quot;
+        cache_key = f&quot;user:{user_id}&quot;
+
+        # Try cache first
+        cached = self.cache.get(cache_key)
+        if cached:
+            import json
+            return json.loads(cached)
+
+        # Cache miss - query database
+        result = self.db.execute(
+            &quot;SELECT id, name, email FROM users WHERE id = %s&quot;,
+            (user_id,)
+        )
+
+        if not result:
+            return None
+
+        user = {
+            'id': result[0][0],
+            'name': result[0][1],
+            'email': result[0][2]
+        }
+
+        # Cache for future requests
+        import json
+        self.cache.set(cache_key, json.dumps(user), ttl_seconds=300)
+
+        return user
+
+    def update_user(self, user_id: int, name: str, email: str):
+        &quot;&quot;&quot;Update user with cache invalidation.&quot;&quot;&quot;
+        # Update database
+        self.db.execute(
+            &quot;UPDATE users SET name = %s, email = %s WHERE id = %s&quot;,
+            (name, email, user_id)
+        )
+
+        # Invalidate cache
+        cache_key = f&quot;user:{user_id}&quot;
+        self.cache.delete(cache_key)
+</code></pre>
+<h3 id="data-sharding-strategy">Data Sharding Strategy</h3>
+<pre><code class="language-python">import hashlib
+from typing import List, Any
+from abc import ABC, abstractmethod
+
+
+class ShardingStrategy(ABC):
+    &quot;&quot;&quot;Base class for sharding strategies.&quot;&quot;&quot;
+
+    @abstractmethod
+    def get_shard(self, key: Any) -&gt; int:
+        &quot;&quot;&quot;Determine which shard contains the key.&quot;&quot;&quot;
+        pass
+
+
+class HashSharding(ShardingStrategy):
+    &quot;&quot;&quot;
+    Hash-based sharding for even distribution.
+
+    Pros: Even distribution, simple
+    Cons: Resharding is expensive
+    &quot;&quot;&quot;
+
+    def __init__(self, num_shards: int):
+        self.num_shards = num_shards
+
+    def get_shard(self, key: Any) -&gt; int:
+        key_bytes = str(key).encode()
+        hash_value = int(hashlib.md5(key_bytes).hexdigest(), 16)
+        return hash_value % self.num_shards
+
+
+class RangeSharding(ShardingStrategy):
+    &quot;&quot;&quot;
+    Range-based sharding for ordered access.
+
+    Pros: Range queries stay on single shard
+    Cons: Potential hotspots
+    &quot;&quot;&quot;
+
+    def __init__(self, ranges: List[tuple]):
+        # ranges: [(0, 'shard0'), (1000, 'shard1'), (2000, 'shard2')]
+        self.ranges = sorted(ranges, key=lambda x: x[0])
+
+    def get_shard(self, key: int) -&gt; int:
+        for i, (boundary, _) in enumerate(self.ranges):
+            if key &lt; boundary:
+                return max(0, i - 1)
+        return len(self.ranges) - 1
+
+
+class ConsistentHashing(ShardingStrategy):
+    &quot;&quot;&quot;
+    Consistent hashing for minimal reshuffling.
+
+    When adding/removing nodes, only K/n keys need to move
+    (K = total keys, n = number of nodes).
+    &quot;&quot;&quot;
+
+    def __init__(self, nodes: List[str], virtual_nodes: int = 150):
+        self.ring = {}
+        self.sorted_keys = []
+        self.virtual_nodes = virtual_nodes
+
+        for node in nodes:
+            self.add_node(node)
+
+    def _hash(self, key: str) -&gt; int:
+        return int(hashlib.md5(key.encode()).hexdigest(), 16)
+
+    def add_node(self, node: str):
+        &quot;&quot;&quot;Add a node with virtual nodes for better distribution.&quot;&quot;&quot;
+        for i in range(self.virtual_nodes):
+            virtual_key = f&quot;{node}:{i}&quot;
+            hash_value = self._hash(virtual_key)
+            self.ring[hash_value] = node
+            self.sorted_keys.append(hash_value)
+
+        self.sorted_keys.sort()
+
+    def remove_node(self, node: str):
+        &quot;&quot;&quot;Remove a node and its virtual nodes.&quot;&quot;&quot;
+        for i in range(self.virtual_nodes):
+            virtual_key = f&quot;{node}:{i}&quot;
+            hash_value = self._hash(virtual_key)
+            del self.ring[hash_value]
+            self.sorted_keys.remove(hash_value)
+
+    def get_shard(self, key: Any) -&gt; str:
+        &quot;&quot;&quot;Find the node responsible for this key.&quot;&quot;&quot;
+        if not self.ring:
+            return None
+
+        hash_value = self._hash(str(key))
+
+        # Find first node with hash &gt;= key hash
+        for node_hash in self.sorted_keys:
+            if node_hash &gt;= hash_value:
+                return self.ring[node_hash]
+
+        # Wrap around to first node
+        return self.ring[self.sorted_keys[0]]
+
+
+class ShardedDatabase:
+    &quot;&quot;&quot;
+    Database client with sharding support.
+    &quot;&quot;&quot;
+
+    def __init__(self, shard_connections: dict, strategy: ShardingStrategy):
+        self.shards = shard_connections
+        self.strategy = strategy
+
+    def get(self, key: Any):
+        &quot;&quot;&quot;Get value from appropriate shard.&quot;&quot;&quot;
+        shard = self.strategy.get_shard(key)
+        return self.shards[shard].get(key)
+
+    def set(self, key: Any, value: Any):
+        &quot;&quot;&quot;Set value in appropriate shard.&quot;&quot;&quot;
+        shard = self.strategy.get_shard(key)
+        return self.shards[shard].set(key, value)
+
+    def scatter_gather(self, query_fn):
+        &quot;&quot;&quot;
+        Execute query on all shards and combine results.
+
+        Use for queries that can't be routed to single shard.
+        &quot;&quot;&quot;
+        results = []
+        for shard in self.shards.values():
+            results.extend(query_fn(shard))
+        return results
+</code></pre>
+<hr />
+<h2 id="interview-questions">Interview Questions</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h3 id="q1-how-would-you-design-storage-for-a-social-media-feed">Q1: How would you design storage for a social media feed?</h3>
+<p><strong>Answer:</strong></p>
+<p>Use a <strong>hybrid approach</strong>:</p>
+<ol>
+<li><strong>User profiles</strong>: PostgreSQL (ACID for account data)</li>
+<li><strong>Posts content</strong>: PostgreSQL or MongoDB</li>
+<li><strong>Feed</strong>: Precomputed in Redis (fan-out on write)</li>
+<li><strong>Images/Videos</strong>: S3 with CDN</li>
+<li><strong>Search</strong>: Elasticsearch</li>
+</ol>
+<p>Feed generation strategies:</p>
+<ul>
+<li><strong>Fan-out on write</strong>: Push to followers' feeds when posting (good for users with few followers)</li>
+<li><strong>Fan-out on read</strong>: Compute feed on request (good for celebrity accounts)</li>
+<li><strong>Hybrid</strong>: Push for regular users, pull for celebrities</li>
+</ul>
+<h3 id="q2-sql-vs-nosql---how-do-you-decide">Q2: SQL vs NoSQL - how do you decide?</h3>
+<p><strong>Answer:</strong></p>
+<p><strong>Choose SQL when:</strong></p>
+<ul>
+<li>Need ACID transactions (financial systems)</li>
+<li>Complex queries with JOINs</li>
+<li>Data has clear relationships</li>
+<li>Schema is well-defined and stable</li>
+</ul>
+<p><strong>Choose NoSQL when:</strong></p>
+<ul>
+<li>Flexible/evolving schema needed</li>
+<li>Horizontal scaling is priority</li>
+<li>Simple access patterns (key-value, document)</li>
+<li>Eventual consistency is acceptable</li>
+</ul>
+<p><strong>Common pattern:</strong> Start with PostgreSQL, add specialized stores as needed:</p>
+<ul>
+<li>Redis for caching</li>
+<li>Elasticsearch for search</li>
+<li>S3 for files</li>
+</ul>
+<h3 id="q3-how-do-you-handle-database-scaling">Q3: How do you handle database scaling?</h3>
+<p><strong>Answer:</strong></p>
+<p><strong>Vertical scaling (scale up):</strong></p>
+<ul>
+<li>More CPU, RAM, faster SSDs</li>
+<li>Simple but has limits</li>
+<li>Good for: Small to medium workloads</li>
+</ul>
+<p><strong>Horizontal scaling (scale out):</strong></p>
+<ol>
+<li><strong>Read replicas</strong>: Route reads to replicas, writes to primary</li>
+<li><strong>Sharding</strong>: Partition data across multiple databases</li>
+<li><strong>Caching</strong>: Reduce database load with Redis/Memcached</li>
+</ol>
+<p><strong>Sharding strategies:</strong></p>
+<ul>
+<li><strong>Hash-based</strong>: Even distribution, hard to range query</li>
+<li><strong>Range-based</strong>: Good for time-series, potential hotspots</li>
+<li><strong>Directory-based</strong>: Flexible but adds lookup latency</li>
+</ul>
+<h3 id="q4-what-is-the-cap-theorem-and-how-does-it-affect-storage-choices">Q4: What is the CAP theorem and how does it affect storage choices?</h3>
+<p><strong>Answer:</strong></p>
+<p>CAP theorem states you can only have 2 of 3:</p>
+<ul>
+<li><strong>Consistency</strong>: All nodes see same data</li>
+<li><strong>Availability</strong>: Every request gets a response</li>
+<li><strong>Partition tolerance</strong>: System works despite network failures</li>
+</ul>
+<p><strong>In practice (CP vs AP):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Database</th>
+<th>Type</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL</td>
+<td>CP</td>
+<td>Consistency over availability</td>
+</tr>
+<tr>
+<td>MongoDB</td>
+<td>CP (default)</td>
+<td>Consistency, configurable</td>
+</tr>
+<tr>
+<td>Cassandra</td>
+<td>AP</td>
+<td>Availability, eventual consistency</td>
+</tr>
+<tr>
+<td>DynamoDB</td>
+<td>Configurable</td>
+<td>Choose per operation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Real-world:</strong> Most systems need partition tolerance, so the choice is really between consistency and availability.</p>
+<h3 id="q5-how-do-you-design-for-disaster-recovery">Q5: How do you design for disaster recovery?</h3>
+<p><strong>Answer:</strong></p>
+<p><strong>RPO (Recovery Point Objective)</strong>: How much data can you lose?<br />
+<strong>RTO (Recovery Time Objective)</strong>: How fast must you recover?</p>
+<p><strong>Strategies by RPO/RTO:</strong></p>
+<table>
+<thead>
+<tr>
+<th>RPO</th>
+<th>RTO</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Days</td>
+<td>Hours</td>
+<td>Daily backups to S3</td>
+</tr>
+<tr>
+<td>Hours</td>
+<td>Minutes</td>
+<td>Streaming replication</td>
+</tr>
+<tr>
+<td>Minutes</td>
+<td>Seconds</td>
+<td>Synchronous replication</td>
+</tr>
+<tr>
+<td>Zero</td>
+<td>Zero</td>
+<td>Multi-region active-active</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Implementation:</strong></p>
+<ol>
+<li>Regular automated backups</li>
+<li>Cross-region replication</li>
+<li>Periodic recovery testing</li>
+<li>Runbook documentation</li>
+</ol>
+</div>
+<hr />
+<h2 id="common-mistakes">Common Mistakes</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Storage Anti-Patterns</h4>
+<div style="display: grid; gap: 12px">
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Storing blobs in the database</div>
+<div style="color: #7f1d1d; font-size: 14px">Large files (images, videos) should go in object storage (S3), not in PostgreSQL. Database storage is expensive and slows down queries.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Premature sharding</div>
+<div style="color: #7f1d1d; font-size: 14px">Sharding adds complexity (cross-shard queries, distributed transactions). Exhaust vertical scaling and read replicas first. Most apps never need sharding.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">No connection pooling</div>
+<div style="color: #7f1d1d; font-size: 14px">Creating new database connections is expensive (10-100ms). Use connection pools (PgBouncer, HikariCP) to reuse connections.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Missing indexes on query columns</div>
+<div style="color: #7f1d1d; font-size: 14px">Queries without indexes cause full table scans. Add indexes on columns used in WHERE, JOIN, and ORDER BY clauses.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">No backup testing</div>
+<div style="color: #7f1d1d; font-size: 14px">Backups that haven't been tested might not work when needed. Regularly restore backups to verify they're valid and practice recovery procedures.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Using database as a queue</div>
+<div style="color: #7f1d1d; font-size: 14px">Polling tables for jobs is inefficient. Use purpose-built queues (Redis, RabbitMQ, SQS) for job processing.</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="quick-reference-card">Quick Reference Card</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Storage Selection Cheat Sheet</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">By Use Case</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>Transactions:</strong> PostgreSQL</div>
+<div style="padding: 4px 0"><strong>Caching:</strong> Redis</div>
+<div style="padding: 4px 0"><strong>Search:</strong> Elasticsearch</div>
+<div style="padding: 4px 0"><strong>Time-series:</strong> TimescaleDB, InfluxDB</div>
+<div style="padding: 4px 0"><strong>Files:</strong> S3, GCS</div>
+<div style="padding: 4px 0"><strong>Graph:</strong> Neo4j</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Scaling Strategies</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">1. Add caching layer (Redis)</div>
+<div style="padding: 4px 0">2. Add read replicas</div>
+<div style="padding: 4px 0">3. Vertical scaling (bigger machine)</div>
+<div style="padding: 4px 0">4. Shard by tenant/user ID</div>
+<div style="padding: 4px 0">5. Move to distributed DB</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Performance Checklist</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">[ ] Connection pooling enabled</div>
+<div style="padding: 4px 0">[ ] Indexes on query columns</div>
+<div style="padding: 4px 0">[ ] Caching for hot data</div>
+<div style="padding: 4px 0">[ ] Query plans analyzed</div>
+<div style="padding: 4px 0">[ ] Monitoring in place</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Reliability Checklist</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">[ ] Automated backups</div>
+<div style="padding: 4px 0">[ ] Backup restoration tested</div>
+<div style="padding: 4px 0">[ ] Replication configured</div>
+<div style="padding: 4px 0">[ ] Failover tested</div>
+<div style="padding: 4px 0">[ ] Monitoring alerts set</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="related-topics">Related Topics</h2>
+<ul>
+<li><a href="/topic/system-design/database-sharding">Database Sharding</a> - Horizontal partitioning</li>
+<li><a href="/topic/system-design/caching">Caching</a> - Reducing database load</li>
+<li><a href="/topic/system-design/cap-theorem">CAP Theorem</a> - Consistency trade-offs</li>
+<li><a href="/topic/system-design/replication">Replication</a> - Data durability</li>
+</ul>

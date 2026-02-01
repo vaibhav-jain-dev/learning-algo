@@ -1,0 +1,2532 @@
+<h1 id="api-design">API Design</h1>
+<h2 id="overview">Overview</h2>
+<p>API Design is the discipline of creating programmatic interfaces that enable software systems to communicate reliably, evolve gracefully, and scale predictably. A well-designed API is not merely a technical specification but a contract that shapes developer experience, system architecture, and business outcomes for years. The decisions made during API design ripple through every layer of integration, from mobile clients handling intermittent connectivity to distributed microservices processing millions of requests per second.</p>
+<p>This guide provides interview-depth coverage of the critical dimensions of API design: architectural paradigms (REST vs GraphQL), data retrieval patterns (pagination), evolution strategies (versioning), reliability guarantees (idempotency), failure communication (error handling), and long-term sustainability (backward compatibility).</p>
+<h2 id="rest-vs-graphql">REST vs GraphQL</h2>
+<h3 id="foundational-architecture">Foundational Architecture</h3>
+<p><strong>REST (Representational State Transfer)</strong> models APIs around resources with standardized HTTP semantics. Each resource has a canonical URL, and operations map to HTTP methods. The server dictates response structure.</p>
+<p><strong>GraphQL</strong> models APIs around a typed schema with a single endpoint. Clients specify exactly what data they need through queries. The client dictates response structure.</p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">REST vs GraphQL: Request Flow Comparison</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 24px">
+<div style="flex: 1; min-width: 300px">
+<div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600">REST: Multiple Round Trips</div>
+<div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px">
+<strong>Request 1:</strong> GET /users/123
+</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px">
+  Response: {id, name, email}
+</div>
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px">
+<strong>Request 2:</strong> GET /users/123/orders
+</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px">
+  Response: [{orderId, total, items}...]
+</div>
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px">
+<strong>Request 3:</strong> GET /products/456
+</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px">
+  Response: {productId, name, price}
+</div>
+</div>
+<div style="color: #f97316; font-size: 12px; margin-top: 12px; text-align: center">3 round trips, potential over-fetching</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 300px">
+<div style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600">GraphQL: Single Request</div>
+<div style="background: #fff1f2; padding: 16px; border-radius: 0 0 8px 8px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #fce7f3; color: #9d174d; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre">query {
+  user(id: "123") {
+  name
+  orders(first: 5) {
+  total
+  items { productName }
+  }
+  }
+}</div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre">{
+  "user": {
+  "name": "Alice",
+  "orders": [...]
+  }
+}</div>
+</div>
+<div style="color: #4ade80; font-size: 12px; margin-top: 12px; text-align: center">1 round trip, exact data requested</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="internal-mechanisms">Internal Mechanisms</h3>
+<h4 id="rest-caching-architecture">REST Caching Architecture</h4>
+<p>REST leverages HTTP's native caching infrastructure through a layered system:</p>
+<ol>
+<li><strong>Browser Cache</strong>: <code>Cache-Control: max-age=3600</code> allows clients to skip requests entirely</li>
+<li><strong>CDN Cache</strong>: Reverse proxies like Cloudflare cache responses at edge locations</li>
+<li><strong>Surrogate Keys</strong>: <code>Surrogate-Key: user-123</code> enables targeted cache invalidation</li>
+<li><strong>ETags</strong>: Content-based hashes enable conditional requests with <code>If-None-Match</code></li>
+</ol>
+<pre><code>Client -&gt; CDN (HIT) -&gt; Response (no origin contact)
+Client -&gt; CDN (MISS) -&gt; Origin -&gt; Response -&gt; CDN stores -&gt; Client
+Client -&gt; CDN (STALE) -&gt; Origin (If-None-Match) -&gt; 304 Not Modified
+</code></pre>
+<p><strong>Critical Assumption</strong>: REST caching assumes resources are independently cacheable. When user data depends on authentication state, naive caching leaks data between users.</p>
+<h4 id="graphql-execution-engine">GraphQL Execution Engine</h4>
+<p>GraphQL processes queries through a multi-phase pipeline:</p>
+<ol>
+<li><strong>Parsing</strong>: Query string to AST (Abstract Syntax Tree)</li>
+<li><strong>Validation</strong>: AST checked against schema for type correctness</li>
+<li><strong>Execution</strong>: Resolvers invoked depth-first, field-by-field</li>
+<li><strong>Serialization</strong>: Results assembled into JSON response</li>
+</ol>
+<p>The <strong>DataLoader pattern</strong> batches resolver calls to prevent N+1 queries:</p>
+<pre><code class="language-javascript">// Without DataLoader: N+1 queries
+// Query for 10 users triggers 10 separate DB calls for orders
+
+// With DataLoader: Batched
+// Query for 10 users triggers 1 batched call: SELECT * FROM orders WHERE user_id IN (1,2,3...)
+const orderLoader = new DataLoader(async (userIds) =&gt; {
+  const orders = await db.query('SELECT * FROM orders WHERE user_id = ANY($1)', [userIds]);
+  return userIds.map(id =&gt; orders.filter(o =&gt; o.userId === id));
+});
+</code></pre>
+<h3 id="trade-offs-deep-dive">Trade-offs Deep Dive</h3>
+<div style="background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #92400e; margin: 0 0 16px 0">Critical Trade-off: Query Complexity Control</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.6">
+<p><strong>The Problem:</strong> GraphQL allows arbitrarily deep queries. A malicious or naive client can request:</p>
+<pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto">query Evil {
+  user(id: "1") {
+  friends { friends { friends { friends { friends {
+  posts { comments { author { posts { comments { ... } } } } }
+  } } } } }
+  }
+}</pre>
+<p style="margin-top: 12px"><strong>Mitigation Strategies:</strong></p>
+<ul style="margin: 8px 0; padding-left: 20px">
+<li><strong>Query Depth Limiting:</strong> Reject queries exceeding N levels (typically 7-10)</li>
+<li><strong>Query Cost Analysis:</strong> Assign weights to fields, reject queries exceeding budget</li>
+<li><strong>Persistent Queries:</strong> Only allow pre-registered query hashes in production</li>
+<li><strong>Timeout Enforcement:</strong> Kill long-running resolvers</li>
+</ul>
+</div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>REST</th>
+<th>GraphQL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Caching</strong></td>
+<td>Native HTTP caching, CDN-friendly</td>
+<td>Requires application-level caching (Apollo Cache, Relay Store)</td>
+</tr>
+<tr>
+<td><strong>Versioning</strong></td>
+<td>URL-based (/v1/, /v2/) straightforward</td>
+<td>Schema evolution through deprecation, no explicit versions</td>
+</tr>
+<tr>
+<td><strong>Tooling</strong></td>
+<td>Mature ecosystem, OpenAPI/Swagger</td>
+<td>Introspection-powered tools, GraphiQL, type generation</td>
+</tr>
+<tr>
+<td><strong>Error Handling</strong></td>
+<td>HTTP status codes semantic</td>
+<td>Always 200, errors in response body</td>
+</tr>
+<tr>
+<td><strong>File Upload</strong></td>
+<td>Native multipart/form-data</td>
+<td>Requires spec extensions (graphql-upload)</td>
+</tr>
+<tr>
+<td><strong>Real-time</strong></td>
+<td>Requires separate WebSocket setup</td>
+<td>Subscriptions built into spec</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-choose-each">When to Choose Each</h3>
+<p><strong>Choose REST when:</strong></p>
+<ul>
+<li>Public API with diverse, unknown clients</li>
+<li>Heavy reliance on HTTP caching (CDNs, browser cache)</li>
+<li>Simple CRUD operations with predictable access patterns</li>
+<li>Team has limited GraphQL experience</li>
+<li>Regulatory requirements mandate audit trails per endpoint</li>
+</ul>
+<p><strong>Choose GraphQL when:</strong></p>
+<ul>
+<li>Mobile apps with varied data needs and bandwidth constraints</li>
+<li>Rapid frontend iteration requiring backend flexibility</li>
+<li>Complex, interconnected data models</li>
+<li>Multiple client platforms with different data requirements</li>
+<li>Internal APIs with trusted consumers</li>
+</ul>
+<h3 id="interview-questions-rest-vs-graphql">Interview Questions: REST vs GraphQL</h3>
+<h4 id="level-1-conceptual-understanding">Level 1: Conceptual Understanding</h4>
+<p><strong>Q: What are the fundamental differences between REST and GraphQL?</strong></p>
+<p>REST models APIs around resources with multiple endpoints using HTTP verbs for semantics. The server determines response structure. GraphQL exposes a single endpoint with a typed schema where clients specify exact data needs through queries. REST leverages HTTP caching natively; GraphQL requires application-level caching. REST uses HTTP status codes for errors; GraphQL returns 200 with errors in the response body.</p>
+<h4 id="level-2-implementation-depth">Level 2: Implementation Depth</h4>
+<p><strong>Q: How would you implement efficient data fetching in GraphQL to prevent N+1 queries?</strong></p>
+<p>The N+1 problem occurs when fetching a list of N items triggers N additional queries for related data. In GraphQL, this happens because resolvers execute independently.</p>
+<p><strong>Solution: DataLoader Pattern</strong></p>
+<p>DataLoader collects all keys requested during a single tick of the event loop, then executes a single batched query:</p>
+<pre><code class="language-javascript">// 1. Create loader with batch function
+const userLoader = new DataLoader(async (ids) =&gt; {
+  const users = await db.query('SELECT * FROM users WHERE id = ANY($1)', [ids]);
+  // CRITICAL: Return in same order as input ids
+  const userMap = new Map(users.map(u =&gt; [u.id, u]));
+  return ids.map(id =&gt; userMap.get(id) || null);
+});
+
+// 2. Use in resolver
+const resolvers = {
+  Post: {
+    author: (post, args, context) =&gt; context.loaders.user.load(post.authorId)
+  }
+};
+
+// 3. Create fresh loader per request (loaders cache within request)
+app.use((req, res, next) =&gt; {
+  req.loaders = { user: new DataLoader(batchUsers) };
+  next();
+});
+</code></pre>
+<p><strong>Critical Implementation Details:</strong></p>
+<ul>
+<li>Loaders must be request-scoped to prevent cross-request data leakage</li>
+<li>Batch function must return results in same order as input keys</li>
+<li>Consider <code>maxBatchSize</code> to prevent oversized IN clauses</li>
+<li>Use <code>.prime()</code> to pre-populate cache from mutations</li>
+</ul>
+<h4 id="level-3-architecture-and-edge-cases">Level 3: Architecture and Edge Cases</h4>
+<p><strong>Q: How would you design a hybrid REST/GraphQL architecture for a system transitioning from REST to GraphQL while maintaining backward compatibility?</strong></p>
+<p><strong>Architecture Approach:</strong></p>
+<ol>
+<li><strong>Gateway Layer</strong>: Deploy GraphQL as a facade over existing REST services</li>
+</ol>
+<pre><code>Client -&gt; GraphQL Gateway -&gt; REST Services -&gt; Database
+</code></pre>
+<ol start="2">
+<li><strong>Resolver Implementation</strong>: GraphQL resolvers call REST endpoints internally</li>
+</ol>
+<pre><code class="language-javascript">const resolvers = {
+  Query: {
+    user: async (_, { id }, { restClient }) =&gt; {
+      // GraphQL delegates to existing REST endpoint
+      const response = await restClient.get(`/v1/users/${id}`);
+      return transformToGraphQLShape(response.data);
+    }
+  }
+};
+</code></pre>
+<ol start="3">
+<li>
+<p><strong>Incremental Migration Path:</strong></p>
+<ul>
+<li>Phase 1: GraphQL wraps 100% REST (no new functionality)</li>
+<li>Phase 2: New features built GraphQL-native with direct DB access</li>
+<li>Phase 3: High-traffic resolvers migrated from REST-delegation to direct DB</li>
+<li>Phase 4: Deprecate REST endpoints with sunset headers</li>
+</ul>
+</li>
+<li>
+<p><strong>Maintaining Backward Compatibility:</strong></p>
+<ul>
+<li>Keep REST endpoints operational with <code>Sunset</code> and <code>Deprecation</code> headers</li>
+<li>GraphQL schema uses <code>@deprecated</code> directive for transitioning fields</li>
+<li>Both APIs share authentication/authorization middleware</li>
+<li>Shared rate limiting pool prevents gaming the system</li>
+</ul>
+</li>
+<li>
+<p><strong>Edge Cases to Handle:</strong></p>
+<ul>
+<li><strong>Caching Divergence</strong>: REST responses cached at CDN; GraphQL needs Apollo Cache or persisted queries</li>
+<li><strong>Error Translation</strong>: Map REST 4xx/5xx to GraphQL error extensions</li>
+<li><strong>Partial Failures</strong>: GraphQL can return partial data with errors; REST typically fails atomically</li>
+<li><strong>Monitoring Parity</strong>: Ensure GraphQL field-level metrics match REST endpoint metrics</li>
+</ul>
+</li>
+</ol>
+<p><strong>Trade-off</strong>: This approach adds latency (extra hop) but enables gradual migration without breaking existing integrations.</p>
+<hr />
+<h2 id="pagination-strategies">Pagination Strategies</h2>
+<h3 id="the-fundamental-problem">The Fundamental Problem</h3>
+<p>Pagination solves the challenge of efficiently retrieving large datasets in manageable chunks. The naive approach of &quot;give me everything&quot; fails at scale due to:</p>
+<ul>
+<li><strong>Memory exhaustion</strong>: Loading 10M rows into memory crashes servers</li>
+<li><strong>Network saturation</strong>: Transferring gigabytes over mobile connections</li>
+<li><strong>Timeout failures</strong>: Queries exceeding connection timeouts</li>
+<li><strong>Poor UX</strong>: Users waiting minutes for data loads</li>
+</ul>
+<h3 id="pagination-approaches">Pagination Approaches</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center">Pagination Strategy Comparison</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #fee2e2;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px">
+<div>
+<div style="color: #b91c1c; font-weight: 600; font-size: 16px">Offset Pagination</div>
+<code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px">SELECT * FROM items LIMIT 20 OFFSET 1000</code>
+</div>
+<div style="text-align: right">
+<div style="color: #b91c1c; font-weight: 600">O(offset + limit)</div>
+<div style="color: #64748b; font-size: 12px">Performance degrades with offset</div>
+</div>
+</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px">Database must scan and discard offset rows. At offset 1M, DB reads 1M rows to return 20.</div>
+</div>
+<div style="background: #dcfce7;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px">
+<div>
+<div style="color: #15803d; font-weight: 600; font-size: 16px">Cursor/Keyset Pagination</div>
+<code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px">SELECT * FROM items WHERE id > 1000 LIMIT 20</code>
+</div>
+<div style="text-align: right">
+<div style="color: #15803d; font-weight: 600">O(limit)</div>
+<div style="color: #64748b; font-size: 12px">Constant time regardless of position</div>
+</div>
+</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px">Uses indexed column for positioning. Index seek directly to starting row. Consistent performance.</div>
+</div>
+<div style="background: #dbeafe;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px">
+<div>
+<div style="color: #1e40af; font-weight: 600; font-size: 16px">Seek Pagination (Composite Keys)</div>
+<code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px">WHERE (date, id) > ('2024-01-15', 500) LIMIT 20</code>
+</div>
+<div style="text-align: right">
+<div style="color: #1e40af; font-weight: 600">O(limit)</div>
+<div style="color: #64748b; font-size: 12px">Supports complex sort orders</div>
+</div>
+</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px">Row value comparison on composite index. Enables pagination on non-unique columns with tiebreaker.</div>
+</div>
+</div>
+</div>
+<h3 id="internal-mechanisms-cursor-implementation">Internal Mechanisms: Cursor Implementation</h3>
+<p>A robust cursor encodes the position state needed to resume pagination:</p>
+<pre><code class="language-javascript">// Cursor structure for multi-column sort
+const cursorData = {
+  // Values of the sort columns for the last item
+  sortValues: {
+    createdAt: '2024-01-15T10:30:00Z',
+    id: 'item_abc123'  // Tiebreaker for stable sort
+  },
+  // Direction: 'next' or 'prev' for bidirectional pagination
+  direction: 'next',
+  // Version for cursor format evolution
+  v: 2
+};
+
+// Encode: Make URL-safe and tamper-evident
+function encodeCursor(data) {
+  const json = JSON.stringify(data);
+  const signature = crypto.createHmac('sha256', SECRET).update(json).digest('hex').slice(0, 8);
+  return Buffer.from(`${json}|${signature}`).toString('base64url');
+}
+
+// Decode: Validate signature before use
+function decodeCursor(cursor) {
+  const decoded = Buffer.from(cursor, 'base64url').toString();
+  const [json, signature] = decoded.split('|');
+  const expected = crypto.createHmac('sha256', SECRET).update(json).digest('hex').slice(0, 8);
+  if (signature !== expected) throw new Error('Invalid cursor');
+  return JSON.parse(json);
+}
+</code></pre>
+<p><strong>Critical Assumption</strong>: Cursor pagination assumes stable sort order. If <code>created_at</code> has duplicates, results become unpredictable without a tiebreaker (typically the unique <code>id</code>).</p>
+<h3 id="edge-cases-and-failure-modes">Edge Cases and Failure Modes</h3>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #b91c1c; margin: 0 0 16px 0">Pagination Pitfalls</h4>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Page Drift (Offset Pagination)</div>
+<div style="color: #1e293b; font-size: 13px">User on page 5. New item inserted. Page 6 request shows item already seen on page 5 (duplicate) while another item is skipped entirely.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Cursor Invalidation</div>
+<div style="color: #1e293b; font-size: 13px">Cursor references item_123. Item deleted. Next page query fails or returns unexpected results. Must handle gracefully with "cursor expired" error.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Non-Unique Sort Column</div>
+<div style="color: #1e293b; font-size: 13px">Sorting by created_at where 1000 items share same timestamp. Keyset pagination with WHERE created_at > X either skips items or returns duplicates.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Backward Pagination Complexity</div>
+<div style="color: #1e293b; font-size: 13px">Moving backward requires reversing sort order, then reversing results. Edge: first page has no "previous" cursor; must handle client-side.</div>
+</div>
+</div>
+</div>
+<h3 id="real-world-implementation-pattern">Real-World Implementation Pattern</h3>
+<pre><code class="language-sql">-- Keyset pagination with composite key for stable ordering
+-- Supports: created_at DESC, id DESC (newest first with tiebreaker)
+
+SELECT id, title, created_at
+FROM posts
+WHERE user_id = $1
+  AND (created_at, id) &lt; ($2, $3)  -- Cursor position
+ORDER BY created_at DESC, id DESC
+LIMIT $4 + 1;  -- Fetch one extra to detect has_more
+
+-- Required index for performance:
+CREATE INDEX idx_posts_user_timeline
+ON posts (user_id, created_at DESC, id DESC);
+</code></pre>
+<h3 id="interview-questions-pagination">Interview Questions: Pagination</h3>
+<h4 id="level-1-conceptual-understanding-1">Level 1: Conceptual Understanding</h4>
+<p><strong>Q: Why is offset pagination problematic for large datasets?</strong></p>
+<p>Offset pagination requires the database to scan and discard <code>offset</code> rows before returning <code>limit</code> rows. At <code>OFFSET 1000000</code>, the database reads 1,000,020 rows to return 20. This causes:</p>
+<ol>
+<li><strong>Linear time degradation</strong>: O(offset + limit) per query</li>
+<li><strong>Wasted I/O</strong>: Reading data only to discard it</li>
+<li><strong>Lock contention</strong>: Large scans hold locks longer</li>
+<li><strong>Memory pressure</strong>: Intermediate results consume buffer pool</li>
+</ol>
+<p>Additionally, offset pagination suffers from &quot;page drift&quot; - when data changes between page fetches, items can be duplicated or skipped. This is particularly problematic for real-time feeds.</p>
+<h4 id="level-2-implementation-depth-1">Level 2: Implementation Depth</h4>
+<p><strong>Q: How would you implement bidirectional cursor pagination that supports both forward and backward navigation?</strong></p>
+<p>Bidirectional pagination requires encoding direction in the cursor and adjusting query logic:</p>
+<pre><code class="language-javascript">async function paginate({ cursor, limit = 20, direction = 'forward' }) {
+  let query = db('posts').where('user_id', userId);
+  let decoded = cursor ? decodeCursor(cursor) : null;
+
+  if (decoded) {
+    const { created_at, id } = decoded.position;
+    if (direction === 'forward') {
+      // Forward: get items AFTER cursor position
+      query = query.where(function() {
+        this.where('created_at', '&lt;', created_at)
+            .orWhere(function() {
+              this.where('created_at', '=', created_at)
+                  .where('id', '&lt;', id);
+            });
+      });
+      query = query.orderBy('created_at', 'desc').orderBy('id', 'desc');
+    } else {
+      // Backward: get items BEFORE cursor position (reverse everything)
+      query = query.where(function() {
+        this.where('created_at', '&gt;', created_at)
+            .orWhere(function() {
+              this.where('created_at', '=', created_at)
+                  .where('id', '&gt;', id);
+            });
+      });
+      query = query.orderBy('created_at', 'asc').orderBy('id', 'asc');
+    }
+  } else {
+    query = query.orderBy('created_at', 'desc').orderBy('id', 'desc');
+  }
+
+  const items = await query.limit(limit + 1);
+  const hasMore = items.length &gt; limit;
+  const results = items.slice(0, limit);
+
+  // Reverse results if we queried backward
+  if (direction === 'backward') results.reverse();
+
+  // Build cursors
+  const firstItem = results[0];
+  const lastItem = results[results.length - 1];
+
+  return {
+    data: results,
+    pageInfo: {
+      hasNextPage: direction === 'forward' ? hasMore : cursor !== null,
+      hasPreviousPage: direction === 'forward' ? cursor !== null : hasMore,
+      startCursor: firstItem ? encodeCursor({ position: pick(firstItem, ['created_at', 'id']) }) : null,
+      endCursor: lastItem ? encodeCursor({ position: pick(lastItem, ['created_at', 'id']) }) : null
+    }
+  };
+}
+</code></pre>
+<p><strong>Edge Cases Handled:</strong></p>
+<ul>
+<li>First page has no previous cursor</li>
+<li>Empty results return null cursors</li>
+<li>Backward navigation reverses query AND results</li>
+<li>Row value comparison handles timestamp collisions</li>
+</ul>
+<h4 id="level-3-architecture-and-edge-cases-1">Level 3: Architecture and Edge Cases</h4>
+<p><strong>Q: Design a pagination system for a distributed database where data is sharded across multiple nodes and sort columns may have clock skew.</strong></p>
+<p><strong>Challenge Analysis:</strong></p>
+<ul>
+<li>Data distributed across N shards</li>
+<li>Each shard has independent clock (potential skew)</li>
+<li>Sort by <code>created_at</code> means items with &quot;same&quot; timestamp may have different values across shards</li>
+<li>Must return globally consistent page</li>
+</ul>
+<p><strong>Solution Architecture:</strong></p>
+<ol>
+<li><strong>Hybrid ID with Logical Clock:</strong></li>
+</ol>
+<pre><code class="language-javascript">// Use a hybrid logical clock (HLC) for ordering
+// Format: physical_timestamp + logical_counter + node_id
+const hlcId = `${Date.now()}-${logicalCounter.increment()}-${nodeId}`;
+// Example: 1705320000000-00042-shard3
+// Totally ordered even with clock skew
+</code></pre>
+<ol start="2">
+<li><strong>Scatter-Gather with Merge:</strong></li>
+</ol>
+<pre><code class="language-javascript">async function paginateDistributed(cursor, limit) {
+  // 1. Parse cursor to get per-shard positions
+  const shardCursors = cursor ? decodeDistributedCursor(cursor) : {};
+
+  // 2. Query all shards in parallel, fetch limit+1 from each
+  const shardResults = await Promise.all(
+    shards.map(shard =&gt;
+      shard.query({
+        after: shardCursors[shard.id],
+        limit: limit + 1,
+        orderBy: 'hlc_id'
+      })
+    )
+  );
+
+  // 3. Merge-sort across shards using heap
+  const heap = new MinHeap((a, b) =&gt; compareHLC(a.hlc_id, b.hlc_id));
+  const shardIterators = shardResults.map((results, idx) =&gt; ({
+    shardId: shards[idx].id,
+    items: results,
+    index: 0
+  }));
+
+  // Initialize heap with first item from each shard
+  for (const iter of shardIterators) {
+    if (iter.items.length &gt; 0) {
+      heap.push({ ...iter.items[0], _shardId: iter.shardId, _iter: iter });
+    }
+  }
+
+  // 4. Extract limit items globally sorted
+  const results = [];
+  const lastPositions = {};
+
+  while (results.length &lt; limit &amp;&amp; heap.size() &gt; 0) {
+    const item = heap.pop();
+    results.push(item);
+    lastPositions[item._shardId] = item.hlc_id;
+
+    // Advance that shard's iterator
+    const iter = item._iter;
+    iter.index++;
+    if (iter.index &lt; iter.items.length) {
+      const next = iter.items[iter.index];
+      heap.push({ ...next, _shardId: iter.shardId, _iter: iter });
+    }
+  }
+
+  // 5. Build distributed cursor with per-shard positions
+  return {
+    data: results,
+    cursor: encodeDistributedCursor(lastPositions),
+    hasMore: heap.size() &gt; 0 || shardResults.some(r =&gt; r.length &gt; limit)
+  };
+}
+</code></pre>
+<ol start="3">
+<li><strong>Handling Clock Skew:</strong></li>
+</ol>
+<ul>
+<li>HLC ensures items from same node are ordered by wall clock</li>
+<li>Items across nodes ordered by HLC which bounds skew</li>
+<li>If wall clock skew exceeds threshold, HLC logical counter ensures unique ordering</li>
+<li>Worst case: items ordered by node_id when timestamps equal</li>
+</ul>
+<ol start="4">
+<li><strong>Optimization - Shard Elimination:</strong></li>
+</ol>
+<pre><code class="language-javascript">// If cursor indicates shard3 is exhausted, skip querying it
+const activeShards = shards.filter(s =&gt;
+  !shardCursors[s.id]?.exhausted
+);
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<ul>
+<li>Latency: P99 dominated by slowest shard</li>
+<li>Complexity: Cursor encodes N shard positions</li>
+<li>Consistency: May miss items if shard unavailable during query</li>
+</ul>
+<p>See also: <a href="/topics/system-design/distributed-systems">[distributed-systems]</a>, <a href="/topics/system-design/consistency">[consistency-models]</a></p>
+<hr />
+<h2 id="api-versioning">API Versioning</h2>
+<h3 id="why-versioning-matters">Why Versioning Matters</h3>
+<p>APIs are contracts. Once clients integrate, any breaking change causes production failures. Versioning provides escape hatches for evolution while maintaining backward compatibility.</p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center">Versioning Strategy Comparison</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1; min-width: 220px; background: #dcfce7; padding: 16px; border-radius: 8px">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px">URL Path Versioning</div>
+<code style="background: #166534; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">/v1/users/123</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
+<strong>Pros:</strong> Explicit, cacheable, easy routing<br>
+<strong>Cons:</strong> URL pollution, version lock-in<br>
+<strong>Used by:</strong> Stripe, GitHub, Twitter
+</div>
+</div>
+<div style="flex: 1; min-width: 220px; background: #dbeafe; padding: 16px; border-radius: 8px">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px">Header Versioning</div>
+<code style="background: #1e40af; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">Accept: application/vnd.api.v2+json</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
+<strong>Pros:</strong> Clean URLs, content negotiation<br>
+<strong>Cons:</strong> Hidden, harder to test<br>
+<strong>Used by:</strong> GitHub (also), Azure
+</div>
+</div>
+<div style="flex: 1; min-width: 220px; background: #fef3c7; padding: 16px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 8px">Query Parameter</div>
+<code style="background: #92400e; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">/users/123?api-version=2024-01</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
+<strong>Pros:</strong> Optional, gradual adoption<br>
+<strong>Cons:</strong> Easy to forget, cache key issues<br>
+<strong>Used by:</strong> AWS, Google Cloud
+</div>
+</div>
+<div style="flex: 1; min-width: 220px; background: #f3e8ff; padding: 16px; border-radius: 8px">
+<div style="color: #7c3aed; font-weight: 600; margin-bottom: 8px">Date-Based Versioning</div>
+<code style="background: #7c3aed; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">Stripe-Version: 2024-01-15</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
+<strong>Pros:</strong> Fine-grained, self-documenting<br>
+<strong>Cons:</strong> Complex support matrix<br>
+<strong>Used by:</strong> Stripe
+</div>
+</div>
+</div>
+</div>
+<h3 id="internal-implementation-version-resolution">Internal Implementation: Version Resolution</h3>
+<p>A production versioning system requires sophisticated routing:</p>
+<pre><code>            ```javascript
+            // Version resolution middleware
+            function resolveVersion(req, res, next) {
+            // Priority: Header &gt; Query &gt; URL Path &gt; Default
+            let version = req.headers['api-version']
+            || req.query['api-version']
+            || extractPathVersion(req.path)
+            || config.defaultVersion;
+
+            // Validate version format and support status
+            const versionInfo = supportedVersions.get(version);
+            if (!versionInfo) {
+            return res.status(400).json({
+            error: 'UNSUPPORTED_VERSION',
+            message: `Version ${version} is not supported`,
+            supported: Array.from(supportedVersions.keys())
+            });
+            }
+
+            // Warn if version is deprecated
+            if (versionInfo.status === 'deprecated') {
+            res.set('Deprecation', versionInfo.deprecationDate);
+            res.set('Sunset', versionInfo.sunsetDate);
+            res.set('Link', `&lt;${versionInfo.migrationGuide}&gt;; rel=&quot;deprecation&quot;`);
+            }
+
+            req.apiVersion = version;
+            req.versionConfig = versionInfo;
+            next();
+            }
+
+            // Version-aware response transformation
+            function transformResponse(data, version) {
+            // Apply transformations for older versions
+            let result = { ...data };
+
+            for (const [v, transform] of versionTransforms) {
+            if (semver.lt(version, v)) {
+            result = transform(result);
+            }
+            }
+
+            return result;
+            }
+
+            // Example: Field renamed in v2
+            versionTransforms.set('2.0.0', (data) =&gt; ({
+            ...data,
+            // v1 clients expect 'userName', v2+ use 'username'
+            userName: data.username,
+            }));
+            ```
+</code></pre>
+<h3 id="breaking-vs-non-breaking-changes">Breaking vs Non-Breaking Changes</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Change Classification</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1; min-width: 280px">
+<div style="background: #dcfce7; padding: 12px; border-radius: 8px 8px 0 0; color: #15803d; font-weight: 600">Non-Breaking (Safe)</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
+<li>Adding new optional fields to responses</li>
+<li>Adding new optional request parameters</li>
+<li>Adding new endpoints</li>
+<li>Adding new enum values (if client ignores unknown)</li>
+<li>Relaxing validation (accepting more input)</li>
+<li>Adding new HTTP methods to existing resources</li>
+</ul>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600">Breaking (Requires New Version)</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
+<li>Removing or renaming fields</li>
+<li>Changing field types (int to string)</li>
+<li>Changing response structure</li>
+<li>Adding required request parameters</li>
+<li>Removing endpoints</li>
+<li>Tightening validation</li>
+<li>Changing error codes/formats</li>
+<li>Changing authentication requirements</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<h3 id="deprecation-lifecycle">Deprecation Lifecycle</h3>
+<pre><code>            ```
+            Active -&gt; Deprecated -&gt; Sunset -&gt; Removed
+            |          |           |         |
+            |     +Warnings    +Errors   Complete
+            |     +Sunset      +Grace     removal
+            |     headers      period     from code
+            |          |           |
+            v          v           v
+            6+ months   3+ months   1+ month
+            notice      notice     (optional)
+            ```
+</code></pre>
+<p><strong>Deprecation Response Headers:</strong><br />
+<code>http HTTP/1.1 200 OK Deprecation: Sun, 01 Jan 2025 00:00:00 GMT Sunset: Mon, 01 Jul 2025 00:00:00 GMT Link: &lt;/docs/migration/v1-to-v2&gt;; rel=&quot;deprecation&quot; X-API-Warn: &quot;This endpoint is deprecated. Migrate to /v2/users&quot; </code></p>
+<h3 id="interview-questions-versioning">Interview Questions: Versioning</h3>
+<h4 id="level-1-conceptual-understanding-2">Level 1: Conceptual Understanding</h4>
+<p><strong>Q: What is the difference between URL path versioning and header versioning, and when would you choose each?</strong></p>
+<p><strong>URL path versioning</strong> (<code>/v1/users</code>) embeds the version in the URL. It's explicit, visible in logs and documentation, easily cacheable by CDNs, and simple to route at load balancers. However, it creates URL proliferation and makes version changes feel like endpoint changes.</p>
+<p><strong>Header versioning</strong> (<code>Accept: application/vnd.api.v2+json</code>) keeps URLs clean and follows content negotiation principles. It's less visible, harder to test in browsers, and requires infrastructure awareness of headers for routing.</p>
+<p><strong>Choose URL path when:</strong><br />
+- Building public APIs with diverse clients<br />
+- CDN caching is critical<br />
+- Operations team routes at load balancer level<br />
+- API consumers have varying technical sophistication</p>
+<p><strong>Choose header versioning when:</strong><br />
+- URLs represent true resource identity (HATEOAS)<br />
+- Clients are sophisticated (SDKs, internal services)<br />
+- Gradual version rollout is needed per-client<br />
+- Multiple representations of same version (JSON, XML)</p>
+<h4 id="level-2-implementation-depth-2">Level 2: Implementation Depth</h4>
+<p><strong>Q: How would you implement Stripe-style date-based API versioning that allows hundreds of version points?</strong></p>
+<p>Stripe's versioning uses dates (<code>2024-01-15</code>) as version identifiers, with each date representing a consistent API snapshot. Changes are captured as discrete transformations applied in sequence.</p>
+<p><strong>Implementation Approach:</strong></p>
+<pre><code>            ```javascript
+            // 1. Define changes as dated, reversible transformations
+            const apiChanges = [
+            {
+            date: '2024-01-15',
+            description: 'Renamed user.userName to user.username',
+            forward: (data) =&gt; {
+            if (data.userName) {
+            data.username = data.userName;
+            delete data.userName;
+            }
+            return data;
+            },
+            backward: (data) =&gt; {
+            if (data.username) {
+            data.userName = data.username;
+            delete data.username;
+            }
+            return data;
+            }
+            },
+            {
+            date: '2024-02-01',
+            description: 'Changed amount from cents (int) to dollars (string)',
+            forward: (data) =&gt; {
+            if (typeof data.amount === 'number') {
+            data.amount = (data.amount / 100).toFixed(2);
+            }
+            return data;
+            },
+            backward: (data) =&gt; {
+            if (typeof data.amount === 'string') {
+            data.amount = Math.round(parseFloat(data.amount) * 100);
+            }
+            return data;
+            }
+            }
+            ];
+
+            // 2. Transform response based on client version
+            function transformForVersion(data, clientVersion, currentVersion) {
+            let result = structuredClone(data);
+
+            // Find changes between client version and current
+            const applicableChanges = apiChanges
+            .filter(c =&gt; c.date &gt; clientVersion &amp;&amp; c.date &lt;= currentVersion)
+            .sort((a, b) =&gt; b.date.localeCompare(a.date)); // Newest first
+
+            // Apply backward transforms to make data compatible with older version
+            for (const change of applicableChanges) {
+            result = change.backward(result);
+            }
+
+            return result;
+            }
+
+            // 3. Middleware integration
+            function versionMiddleware(req, res, next) {
+            const clientVersion = req.headers['stripe-version'] || defaultVersion;
+            const originalJson = res.json.bind(res);
+
+            res.json = (data) =&gt; {
+            const transformed = transformForVersion(data, clientVersion, currentVersion);
+            originalJson(transformed);
+            };
+
+            next();
+            }
+            ```
+</code></pre>
+<p><strong>Key Implementation Details:</strong><br />
+- Changes are bidirectional (forward for migration, backward for compatibility)<br />
+- Transformations are composable and ordered by date<br />
+- New code runs on latest version; transformations applied at response time<br />
+- Each change is independently testable</p>
+<h4 id="level-3-architecture-and-edge-cases-2">Level 3: Architecture and Edge Cases</h4>
+<p><strong>Q: Design a version management system for a microservices architecture where services evolve independently but expose a unified API.</strong></p>
+<p><strong>Challenge Analysis:</strong><br />
+- N microservices, each with independent release cycles<br />
+- Gateway exposes unified API version (e.g., v2)<br />
+- Service A might be on internal v3, Service B on internal v5<br />
+- Client specifies gateway version; gateway must translate to each service's version</p>
+<p><strong>Solution Architecture:</strong></p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Version Translation Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: center">
+<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">Client Request</div>
+<div style="font-size: 12px; opacity: 0.9">API-Version: 2024-01</div>
+</div>
+<div style="color: #94a3b8">|</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; width: 80%; max-width: 400px">
+<div style="font-weight: 600">API Gateway</div>
+<div style="font-size: 12px; opacity: 0.9; margin-top: 4px">Version Registry + Transform Engine</div>
+</div>
+<div style="display: flex; gap: 24px; color: #94a3b8">
+<span>|</span>
+<span>|</span>
+<span>|</span>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
+<div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600; font-size: 14px">User Service</div>
+<div style="font-size: 11px; opacity: 0.9">Internal v3.2</div>
+</div>
+<div style="background: #f59e0b; color: white; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600; font-size: 14px">Order Service</div>
+<div style="font-size: 11px; opacity: 0.9">Internal v2.1</div>
+</div>
+<div style="background: #ef4444; color: white; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600; font-size: 14px">Payment Service</div>
+<div style="font-size: 11px; opacity: 0.9">Internal v4.0</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Implementation Components:</strong></p>
+<ol>
+<li>
+<p><strong>Version Registry:</strong><br />
+<code>javascript const versionRegistry = { // Public API version -&gt; internal service versions '2024-01': { userService: { version: '3.0', transforms: ['v3_user_compat'] }, orderService: { version: '2.0', transforms: [] }, paymentService: { version: '3.5', transforms: ['v3.5_payment_compat'] } }, '2024-06': { userService: { version: '3.2', transforms: [] }, orderService: { version: '2.1', transforms: [] }, paymentService: { version: '4.0', transforms: [] } } }; </code></p>
+</li>
+<li>
+<p><strong>Gateway Transform Layer:</strong><br />
+```javascript<br />
+async function handleRequest(req) {<br />
+const publicVersion = req.headers['api-version'] || '2024-06';<br />
+const serviceMapping = versionRegistry[publicVersion];</p>
+<pre><code>       // Route to appropriate service with version header
+       const serviceConfig = serviceMapping[targetService];
+       const response = await callService(targetService, {
+       ...req,
+       headers: {
+       ...req.headers,
+       'X-Internal-Version': serviceConfig.version
+       }
+       });
+
+       // Apply backward-compatibility transforms
+       let transformed = response.data;
+       for (const transformName of serviceConfig.transforms) {
+       transformed = transforms[transformName](transformed);
+       }
+
+       return transformed;
+       }
+       ```
+</code></pre>
+</li>
+<li>
+<p><strong>Service Contract Testing:</strong><br />
+```javascript<br />
+// Each service maintains contract tests for supported versions<br />
+describe('User Service v3.0 Contract', () =&gt; {<br />
+it('returns user in v3.0 format', async () =&gt; {<br />
+const response = await request(app)<br />
+.get('/internal/users/123')<br />
+.set('X-Internal-Version', '3.0');</p>
+<pre><code>       expect(response.body).toMatchSchema(userSchemaV3);
+       });
+       });
+       ```
+</code></pre>
+</li>
+<li>
+<p><strong>Version Compatibility Matrix:</strong><br />
+- Automated tests verify gateway + all service version combinations<br />
+- CI blocks deployments that break compatibility<br />
+- Dashboard shows which public versions depend on which service versions</p>
+</li>
+</ol>
+<p><strong>Edge Cases:</strong><br />
+- <strong>Service Rollback</strong>: If Order Service rolls back v2.1 -&gt; v2.0, gateway must detect and route 2024-06 clients to error or fallback<br />
+- <strong>Partial Availability</strong>: If Payment Service v4.0 is down, can gateway serve 2024-06 requests using v3.5 + transforms?<br />
+- <strong>Transform Chains</strong>: Some transforms depend on others; must validate DAG has no cycles</p>
+<p>See also: <a href="/topics/system-design/api-gateway">[api-gateway]</a>, <a href="/topics/system-design/microservices">[microservices]</a></p>
+<hr />
+<h2 id="idempotency">Idempotency</h2>
+<h3 id="the-problem-idempotency-solves">The Problem Idempotency Solves</h3>
+<p>In distributed systems, requests can fail at any point:</p>
+<pre><code>            ```
+            Client -&gt; Server: POST /payments (create $100 charge)
+            Server: Processes charge successfully
+            Server -&gt; Client: 200 OK [NETWORK FAILURE - response lost]
+            Client: Timeout! Did payment go through?
+            Client -&gt; Server: POST /payments (retry)
+            Server: Processes charge again
+            Result: Customer charged $200 instead of $100
+            ```
+</code></pre>
+<p><strong>Idempotency</strong> ensures that performing the same operation multiple times produces the same result as performing it once.</p>
+<h3 id="mathematical-definition">Mathematical Definition</h3>
+<p>An operation <code>f</code> is idempotent if: <code>f(f(x)) = f(x)</code></p>
+<p>For APIs: Replaying a request with the same idempotency key returns the same response without re-executing side effects.</p>
+<h3 id="implementation-architecture">Implementation Architecture</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Idempotency Request Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px; min-width: 120px; text-align: center">Request + Key</div>
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
+<strong>1. Check Store</strong>: Key exists?
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
+<strong>YES</strong>: Return cached response (no side effects)
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
+<strong>NO</strong>: Acquire lock, process request
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
+<strong>2. Execute</strong>: Run business logic
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
+<strong>3. Store</strong>: Save response with key (TTL: 24h)
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
+<strong>4. Release</strong>: Unlock, return response
+</div>
+</div>
+</div>
+</div>
+<h3 id="production-implementation">Production Implementation</h3>
+<pre><code>            ```python
+            import hashlib
+            import json
+            from functools import wraps
+            from redis import Redis
+            from contextlib import contextmanager
+
+            class IdempotencyService:
+            &quot;&quot;&quot;
+            Production-grade idempotency implementation.
+
+            Key Design Decisions:
+            - Redis for distributed lock + storage (single source of truth)
+            - Request fingerprint validation prevents key reuse with different payloads
+            - Locking prevents concurrent duplicate processing
+            - TTL ensures eventual cleanup (24h default)
+            &quot;&quot;&quot;
+
+            def __init__(self, redis: Redis, ttl: int = 86400):
+            self.redis = redis
+            self.ttl = ttl
+
+            def _fingerprint(self, request_body: dict) -&gt; str:
+            &quot;&quot;&quot;
+            Generate deterministic hash of request body.
+            Critical: Prevents reusing idempotency key with different payload.
+            &quot;&quot;&quot;
+            canonical = json.dumps(request_body, sort_keys=True, separators=(',', ':'))
+            return hashlib.sha256(canonical.encode()).hexdigest()[:16]
+
+            @contextmanager
+            def acquire_lock(self, key: str, timeout: int = 30):
+            &quot;&quot;&quot;
+            Distributed lock to prevent concurrent processing of same key.
+
+            Trade-off: Lock timeout must balance between:
+            - Too short: Long requests release lock prematurely
+            - Too long: Crashed processes hold lock, blocking retries
+            &quot;&quot;&quot;
+            lock_key = f&quot;idempotency:lock:{key}&quot;
+            lock_acquired = self.redis.set(lock_key, &quot;1&quot;, nx=True, ex=timeout)
+
+            if not lock_acquired:
+            raise ConcurrentRequestError(f&quot;Request with key {key} is already processing&quot;)
+
+            try:
+            yield
+            finally:
+            self.redis.delete(lock_key)
+
+            def get_cached_response(self, key: str, fingerprint: str):
+            &quot;&quot;&quot;
+            Retrieve cached response, validating fingerprint matches.
+            &quot;&quot;&quot;
+            data = self.redis.hgetall(f&quot;idempotency:response:{key}&quot;)
+            if not data:
+            return None
+
+            stored_fingerprint = data.get(b'fingerprint', b'').decode()
+            if stored_fingerprint != fingerprint:
+            raise FingerprintMismatchError(
+            f&quot;Idempotency key {key} was used with a different request body&quot;
+            )
+
+            return {
+            'status_code': int(data[b'status_code']),
+            'body': json.loads(data[b'body']),
+            'replayed': True
+            }
+
+            def cache_response(self, key: str, fingerprint: str, status_code: int, body: dict):
+            &quot;&quot;&quot;
+            Store response with fingerprint for future replay.
+
+            Note: We store even error responses. If the first attempt returned 400,
+            retries should also get 400 (idempotent behavior).
+            &quot;&quot;&quot;
+            cache_key = f&quot;idempotency:response:{key}&quot;
+            self.redis.hset(cache_key, mapping={
+            'fingerprint': fingerprint,
+            'status_code': status_code,
+            'body': json.dumps(body),
+            'created_at': datetime.utcnow().isoformat()
+            })
+            self.redis.expire(cache_key, self.ttl)
+
+
+            def idempotent(service: IdempotencyService):
+            &quot;&quot;&quot;Decorator for idempotent endpoints.&quot;&quot;&quot;
+            def decorator(f):
+            @wraps(f)
+            def wrapper(*args, **kwargs):
+            request = get_current_request()
+            key = request.headers.get('Idempotency-Key')
+
+            if not key:
+            return error_response(400, 'IDEMPOTENCY_KEY_REQUIRED',
+            'Idempotency-Key header is required for this endpoint')
+
+            fingerprint = service._fingerprint(request.json or {})
+
+            # Check for cached response
+            cached = service.get_cached_response(key, fingerprint)
+            if cached:
+            response = jsonify(cached['body'])
+            response.status_code = cached['status_code']
+            response.headers['Idempotent-Replayed'] = 'true'
+            return response
+
+            # Process with lock
+            with service.acquire_lock(key):
+            # Double-check after acquiring lock (another request may have completed)
+            cached = service.get_cached_response(key, fingerprint)
+            if cached:
+            response = jsonify(cached['body'])
+            response.status_code = cached['status_code']
+            response.headers['Idempotent-Replayed'] = 'true'
+            return response
+
+            # Execute the actual handler
+            result, status_code = f(*args, **kwargs)
+
+            # Cache the response
+            service.cache_response(key, fingerprint, status_code, result)
+
+            return jsonify(result), status_code
+
+            return wrapper
+            return decorator
+            ```
+</code></pre>
+<h3 id="edge-cases-and-failure-modes-1">Edge Cases and Failure Modes</h3>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #b91c1c; margin: 0 0 16px 0">Idempotency Edge Cases</h4>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Key Reuse with Different Payload</div>
+<div style="color: #1e293b; font-size: 13px">Client uses same key for different requests. Without fingerprint validation, second request returns first response (wrong data). <strong>Solution:</strong> Store and validate request hash.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Partial Execution Failure</div>
+<div style="color: #1e293b; font-size: 13px">Request processed payment but crashed before caching response. Retry will charge again. <strong>Solution:</strong> Use database transactions that include idempotency record.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Redis Failure During Lock</div>
+<div style="color: #1e293b; font-size: 13px">Lock acquired, Redis fails, lock never released. Retries blocked. <strong>Solution:</strong> Use lock TTL, implement circuit breaker.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Non-Deterministic Operations</div>
+<div style="color: #1e293b; font-size: 13px">Endpoint uses current timestamp or random values. Replayed response has stale data. <strong>Solution:</strong> Accept these values as input, not server-generated.</div>
+</div>
+</div>
+</div>
+<h3 id="interview-questions-idempotency">Interview Questions: Idempotency</h3>
+<h4 id="level-1-conceptual-understanding-3">Level 1: Conceptual Understanding</h4>
+<p><strong>Q: Why is idempotency important for payment APIs?</strong></p>
+<p>Payment APIs involve irreversible financial operations. Network failures are common - the client might not receive the response even when the server processed successfully. Without idempotency:</p>
+<ol>
+<li><strong>Double charges</strong>: Client retries, payment processes twice</li>
+<li><strong>Lost refunds</strong>: Refund request lost, customer never credited</li>
+<li><strong>Inventory oversell</strong>: Order placed twice, stock goes negative</li>
+</ol>
+<p>Idempotency ensures that retrying a failed (or timed-out) request is safe. The first request is processed; subsequent requests with the same idempotency key return the cached result without re-executing the payment.</p>
+<p><strong>Key insight</strong>: Idempotency shifts the burden from &quot;prevent retries&quot; (impossible) to &quot;make retries safe&quot; (achievable).</p>
+<h4 id="level-2-implementation-depth-3">Level 2: Implementation Depth</h4>
+<p><strong>Q: How would you implement idempotency that survives both application and database crashes?</strong></p>
+<p>The core challenge is atomicity: the business logic and idempotency record must be committed together.</p>
+<p><strong>Solution: Database Transaction with Idempotency Record</strong></p>
+<pre><code>            ```python
+            from contextlib import contextmanager
+
+            @contextmanager
+            def idempotent_transaction(db, idempotency_key: str, request_hash: str):
+            &quot;&quot;&quot;
+            Atomic idempotency using database transactions.
+
+            The idempotency record lives in the SAME database as business data,
+            committed in the SAME transaction. This ensures:
+            - If business logic commits, idempotency record exists
+            - If crash before commit, both are rolled back
+            &quot;&quot;&quot;
+            with db.transaction() as tx:
+            # Check for existing idempotency record
+            existing = tx.query(&quot;&quot;&quot;
+            SELECT response_body, status_code
+            FROM idempotency_keys
+            WHERE key = %s FOR UPDATE
+            &quot;&quot;&quot;, [idempotency_key])
+
+            if existing:
+            # Validate request hash matches
+            if existing.request_hash != request_hash:
+            raise ValueError(&quot;Idempotency key used with different request&quot;)
+
+            yield {'cached': True, 'response': existing.response_body}
+            return
+
+            # Insert pending record (prevents concurrent processing)
+            tx.execute(&quot;&quot;&quot;
+            INSERT INTO idempotency_keys (key, request_hash, status)
+            VALUES (%s, %s, 'processing')
+            &quot;&quot;&quot;, [idempotency_key, request_hash])
+
+            # Yield control to business logic
+            result = {'cached': False, 'response': None}
+            yield result
+
+            # Update with response (same transaction as business logic)
+            tx.execute(&quot;&quot;&quot;
+            UPDATE idempotency_keys
+            SET status = 'completed',
+            response_body = %s,
+            status_code = %s,
+            completed_at = NOW()
+            WHERE key = %s
+            &quot;&quot;&quot;, [json.dumps(result['response']), result['status_code'], idempotency_key])
+
+
+            # Usage in handler
+            @app.route('/payments', methods=['POST'])
+            def create_payment():
+            key = request.headers['Idempotency-Key']
+            request_hash = hash_request(request.json)
+
+            with idempotent_transaction(db, key, request_hash) as ctx:
+            if ctx['cached']:
+            return jsonify(ctx['response']), 200
+
+            # Business logic in same transaction
+            payment = Payment(
+            amount=request.json['amount'],
+            customer_id=request.json['customer_id']
+            )
+            db.add(payment)
+
+            # Charge payment processor
+            charge_result = payment_processor.charge(payment)
+
+            ctx['response'] = {'payment_id': payment.id, 'status': 'completed'}
+            ctx['status_code'] = 201
+
+            return jsonify(ctx['response']), 201
+            ```
+</code></pre>
+<p><strong>Critical Implementation Detail</strong>: The idempotency record uses <code>FOR UPDATE</code> to acquire a row-level lock, preventing concurrent requests with the same key.</p>
+<h4 id="level-3-architecture-and-edge-cases-3">Level 3: Architecture and Edge Cases</h4>
+<p><strong>Q: Design an idempotency system for a distributed microservices architecture where a single API call triggers operations across multiple services.</strong></p>
+<p><strong>Challenge Analysis:</strong><br />
+- Single idempotency key covers saga spanning multiple services<br />
+- Each service has independent database<br />
+- Partial failures leave system in inconsistent state<br />
+- Need to ensure entire saga is idempotent, not just individual calls</p>
+<p><strong>Solution: Orchestrated Saga with Per-Step Idempotency</strong></p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Distributed Idempotency Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center">
+<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">API Gateway</div>
+<div style="font-size: 11px">Idempotency-Key: order_abc123</div>
+</div>
+<div style="color: #94a3b8">|</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; width: 80%; max-width: 400px">
+<div style="font-weight: 600; text-align: center">Saga Orchestrator</div>
+<div style="font-size: 12px; margin-top: 8px; text-align: center">Tracks saga state + step completion</div>
+</div>
+<div style="display: flex; gap: 8px; color: #94a3b8">
+<span>|</span>
+<span>|</span>
+<span>|</span>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
+<div style="background: #22c55e; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px">
+<div style="font-weight: 600; font-size: 13px">Step 1</div>
+<div style="font-size: 11px">Reserve Inventory</div>
+<div style="font-size: 10px; opacity: 0.8">key: order_abc123_inv</div>
+</div>
+<div style="background: #f59e0b; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px">
+<div style="font-weight: 600; font-size: 13px">Step 2</div>
+<div style="font-size: 11px">Charge Payment</div>
+<div style="font-size: 10px; opacity: 0.8">key: order_abc123_pay</div>
+</div>
+<div style="background: #ef4444; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px">
+<div style="font-weight: 600; font-size: 13px">Step 3</div>
+<div style="font-size: 11px">Create Shipment</div>
+<div style="font-size: 10px; opacity: 0.8">key: order_abc123_ship</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Implementation:</strong></p>
+<pre><code>            ```python
+            class SagaOrchestrator:
+            &quot;&quot;&quot;
+            Orchestrates multi-service saga with per-step idempotency.
+
+            Design Decisions:
+            - Each step has derived idempotency key (parent_key + step_name)
+            - Saga state persisted for resume-on-crash
+            - Compensating actions for rollback
+            &quot;&quot;&quot;
+
+            def __init__(self, db, services):
+            self.db = db
+            self.services = services
+
+            async def execute_order_saga(self, idempotency_key: str, order_data: dict):
+            # Load or create saga state
+            saga = await self.get_or_create_saga(idempotency_key, order_data)
+
+            if saga.status == 'completed':
+            return saga.result
+
+            if saga.status == 'failed':
+            return saga.error
+
+            steps = [
+            ('reserve_inventory', self.services.inventory.reserve,
+            self.services.inventory.release),  # compensating action
+            ('charge_payment', self.services.payment.charge,
+            self.services.payment.refund),
+            ('create_shipment', self.services.shipping.create,
+            self.services.shipping.cancel),
+            ]
+
+            try:
+            for step_name, execute_fn, compensate_fn in steps:
+            if step_name in saga.completed_steps:
+            continue  # Already done (idempotent resume)
+
+            # Derive step-specific idempotency key
+            step_key = f&quot;{idempotency_key}_{step_name}&quot;
+
+            try:
+            result = await execute_fn(
+            idempotency_key=step_key,
+            data=self._prepare_step_data(step_name, order_data, saga)
+            )
+
+            # Record step completion
+            saga.completed_steps[step_name] = result
+            await self.save_saga(saga)
+
+            except Exception as e:
+            # Step failed - trigger compensation
+            await self._compensate(saga, steps, step_name)
+            saga.status = 'failed'
+            saga.error = str(e)
+            await self.save_saga(saga)
+            raise
+
+            saga.status = 'completed'
+            saga.result = self._build_result(saga)
+            await self.save_saga(saga)
+            return saga.result
+
+            except Exception as e:
+            # Saga failed, compensation handled above
+            raise
+
+            async def _compensate(self, saga, steps, failed_step):
+            &quot;&quot;&quot;
+            Execute compensating actions for completed steps in reverse order.
+
+            Each compensation is also idempotent - safe to retry compensation.
+            &quot;&quot;&quot;
+            completed = list(saga.completed_steps.keys())
+            for step_name, _, compensate_fn in reversed(steps):
+            if step_name in completed:
+            comp_key = f&quot;{saga.idempotency_key}_{step_name}_compensate&quot;
+            try:
+            await compensate_fn(
+            idempotency_key=comp_key,
+            data=saga.completed_steps[step_name]
+            )
+            except Exception as e:
+            # Log but continue - compensations should be retried
+            logger.error(f&quot;Compensation failed: {step_name}&quot;, exc_info=e)
+            ```
+</code></pre>
+<p><strong>Key Design Decisions:</strong></p>
+<ol>
+<li><strong>Derived Keys</strong>: <code>order_abc123_reserve_inventory</code> ensures each step is independently idempotent</li>
+<li><strong>Persistent Saga State</strong>: Crash-safe resume from any point</li>
+<li><strong>Compensating Actions</strong>: Each forward action has a reverse</li>
+<li><strong>Compensation Idempotency</strong>: Compensations also have idempotency keys</li>
+</ol>
+<p><strong>Edge Cases:</strong><br />
+- <strong>Compensation Failure</strong>: Log and queue for retry; alert for manual intervention<br />
+- <strong>Timeout During Step</strong>: Saga remains in <code>processing</code>; next attempt resumes<br />
+- <strong>Service Returns Error</strong>: Different from timeout; may not need compensation if step never executed</p>
+<p>See also: <a href="/topics/system-design/distributed-transactions">[distributed-transactions]</a>, <a href="/topics/system-design/saga-pattern">[saga-pattern]</a></p>
+<hr />
+<h2 id="error-handling">Error Handling</h2>
+<h3 id="error-design-philosophy">Error Design Philosophy</h3>
+<p>API errors serve two audiences with different needs:</p>
+<ol>
+<li><strong>Developers</strong>: Need enough detail to debug integration issues</li>
+<li><strong>End Users</strong>: Need actionable messages without security-sensitive details</li>
+</ol>
+<p>Well-designed errors balance these needs while maintaining consistency across the API.</p>
+<h3 id="error-response-structure">Error Response Structure</h3>
+<pre><code>            ```json
+            {
+            &quot;error&quot;: {
+            &quot;code&quot;: &quot;PAYMENT_DECLINED&quot;,
+            &quot;message&quot;: &quot;The card was declined by the issuing bank&quot;,
+            &quot;type&quot;: &quot;payment_error&quot;,
+            &quot;param&quot;: &quot;card_number&quot;,
+            &quot;details&quot;: {
+            &quot;decline_code&quot;: &quot;insufficient_funds&quot;,
+            &quot;merchant_message&quot;: &quot;The customer's bank declined the transaction&quot;
+            },
+            &quot;request_id&quot;: &quot;req_8xKj2Mn4Pq&quot;,
+            &quot;doc_url&quot;: &quot;https://api.example.com/docs/errors#payment_declined&quot;
+            }
+            }
+            ```
+</code></pre>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Error Field Purposes</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<tr style="background: #e2e8f0">
+<th style="padding: 12px; text-align: left; color: #1e293b">Field</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Purpose</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Example</th>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 12px; color: #1e293b"><code>code</code></td>
+<td style="padding: 12px; color: #1e293b">Machine-readable identifier for programmatic handling</td>
+<td style="padding: 12px; color: #1e293b"><code>PAYMENT_DECLINED</code></td>
+</tr>
+<tr style="background: #ffffff">
+<td style="padding: 12px; color: #1e293b"><code>message</code></td>
+<td style="padding: 12px; color: #1e293b">Human-readable description for developers</td>
+<td style="padding: 12px; color: #1e293b">"The card was declined"</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 12px; color: #1e293b"><code>type</code></td>
+<td style="padding: 12px; color: #1e293b">Error category for broad handling logic</td>
+<td style="padding: 12px; color: #1e293b"><code>validation_error</code>, <code>authentication_error</code></td>
+</tr>
+<tr style="background: #ffffff">
+<td style="padding: 12px; color: #1e293b"><code>param</code></td>
+<td style="padding: 12px; color: #1e293b">Specific field that caused the error</td>
+<td style="padding: 12px; color: #1e293b"><code>email</code>, <code>card_number</code></td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 12px; color: #1e293b"><code>request_id</code></td>
+<td style="padding: 12px; color: #1e293b">Correlation ID for support and debugging</td>
+<td style="padding: 12px; color: #1e293b"><code>req_8xKj2Mn4Pq</code></td>
+</tr>
+<tr style="background: #ffffff">
+<td style="padding: 12px; color: #1e293b"><code>doc_url</code></td>
+<td style="padding: 12px; color: #1e293b">Link to detailed documentation</td>
+<td style="padding: 12px; color: #1e293b"><code>https://docs.api.com/errors#...</code></td>
+</tr>
+</table>
+</div>
+<h3 id="http-status-code-semantics">HTTP Status Code Semantics</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Status Code Decision Tree</h4>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #dcfce7; padding: 12px; border-radius: 8px">
+<strong style="color: #15803d">2xx - Success</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px">
+<code>200</code> GET/PUT/PATCH success | <code>201</code> POST created | <code>204</code> DELETE success (no body)
+</div>
+</div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px">
+<strong style="color: #92400e">4xx - Client Error (Don't Retry)</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px">
+<code>400</code> Malformed request | <code>401</code> Auth missing | <code>403</code> Auth valid, no permission | <code>404</code> Resource not found | <code>409</code> Conflict/duplicate | <code>422</code> Semantic error | <code>429</code> Rate limited (retry with backoff)
+</div>
+</div>
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px">
+<strong style="color: #b91c1c">5xx - Server Error (Safe to Retry)</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px">
+<code>500</code> Internal error | <code>502</code> Bad gateway | <code>503</code> Service unavailable | <code>504</code> Gateway timeout
+</div>
+</div>
+</div>
+</div>
+<h3 id="error-categories-implementation">Error Categories Implementation</h3>
+<pre><code>            ```python
+            from enum import Enum
+            from dataclasses import dataclass
+            from typing import Optional, Dict, Any
+
+            class ErrorType(Enum):
+            VALIDATION_ERROR = &quot;validation_error&quot;
+            AUTHENTICATION_ERROR = &quot;authentication_error&quot;
+            AUTHORIZATION_ERROR = &quot;authorization_error&quot;
+            NOT_FOUND_ERROR = &quot;not_found_error&quot;
+            CONFLICT_ERROR = &quot;conflict_error&quot;
+            RATE_LIMIT_ERROR = &quot;rate_limit_error&quot;
+            PAYMENT_ERROR = &quot;payment_error&quot;
+            INTERNAL_ERROR = &quot;internal_error&quot;
+
+            @dataclass
+            class APIError(Exception):
+            &quot;&quot;&quot;
+            Base API error with structured fields.
+
+            Design Decision: Errors are data, not just exceptions.
+            This allows consistent serialization and handling.
+            &quot;&quot;&quot;
+            code: str
+            message: str
+            error_type: ErrorType
+            status_code: int
+            param: Optional[str] = None
+            details: Optional[Dict[str, Any]] = None
+
+            def to_dict(self, request_id: str) -&gt; dict:
+            &quot;&quot;&quot;Serialize for API response.&quot;&quot;&quot;
+            result = {
+            &quot;error&quot;: {
+            &quot;code&quot;: self.code,
+            &quot;message&quot;: self.message,
+            &quot;type&quot;: self.error_type.value,
+            &quot;request_id&quot;: request_id,
+            }
+            }
+            if self.param:
+            result[&quot;error&quot;][&quot;param&quot;] = self.param
+            if self.details:
+            result[&quot;error&quot;][&quot;details&quot;] = self.details
+            return result
+
+
+            # Specific error classes for type safety
+            class ValidationError(APIError):
+            def __init__(self, message: str, param: str, details: dict = None):
+            super().__init__(
+            code=&quot;VALIDATION_ERROR&quot;,
+            message=message,
+            error_type=ErrorType.VALIDATION_ERROR,
+            status_code=400,
+            param=param,
+            details=details
+            )
+
+            class NotFoundError(APIError):
+            def __init__(self, resource_type: str, resource_id: str):
+            super().__init__(
+            code=f&quot;{resource_type.upper()}_NOT_FOUND&quot;,
+            message=f&quot;{resource_type.title()} with ID {resource_id} not found&quot;,
+            error_type=ErrorType.NOT_FOUND_ERROR,
+            status_code=404
+            )
+
+            class RateLimitError(APIError):
+            def __init__(self, retry_after: int):
+            super().__init__(
+            code=&quot;RATE_LIMIT_EXCEEDED&quot;,
+            message=f&quot;Rate limit exceeded. Retry after {retry_after} seconds&quot;,
+            error_type=ErrorType.RATE_LIMIT_ERROR,
+            status_code=429,
+            details={&quot;retry_after&quot;: retry_after}
+            )
+
+
+            # Global error handler
+            @app.errorhandler(APIError)
+            def handle_api_error(error: APIError):
+            request_id = request.headers.get('X-Request-ID', str(uuid.uuid4()))
+            response = jsonify(error.to_dict(request_id))
+            response.status_code = error.status_code
+
+            # Add retry header for rate limits
+            if isinstance(error, RateLimitError):
+            response.headers['Retry-After'] = str(error.details['retry_after'])
+
+            return response
+
+            # Catch unexpected errors
+            @app.errorhandler(Exception)
+            def handle_unexpected_error(error: Exception):
+            &quot;&quot;&quot;
+            Critical: Never expose internal error details to clients.
+            Log full stack trace, return generic message.
+            &quot;&quot;&quot;
+            request_id = request.headers.get('X-Request-ID', str(uuid.uuid4()))
+
+            # Log full details for debugging
+            logger.exception(f&quot;Unexpected error [request_id={request_id}]&quot;, exc_info=error)
+
+            # Return sanitized response
+            return jsonify({
+            &quot;error&quot;: {
+            &quot;code&quot;: &quot;INTERNAL_ERROR&quot;,
+            &quot;message&quot;: &quot;An unexpected error occurred. Please try again.&quot;,
+            &quot;type&quot;: &quot;internal_error&quot;,
+            &quot;request_id&quot;: request_id
+            }
+            }), 500
+            ```
+</code></pre>
+<h3 id="security-considerations">Security Considerations</h3>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #b91c1c; margin: 0 0 16px 0">Error Information Leakage Risks</h4>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Stack Traces</div>
+<div style="color: #1e293b; font-size: 13px">Revealing framework, library versions, file paths enables targeted attacks.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Log internally, return generic message externally.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">SQL Errors</div>
+<div style="color: #1e293b; font-size: 13px">"Column 'password_hash' not found" reveals schema details.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Catch all DB errors, return "database error" generically.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">User Enumeration</div>
+<div style="color: #1e293b; font-size: 13px">"User not found" vs "Invalid password" reveals which emails exist.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Return "Invalid credentials" for both cases.</div>
+</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Rate Limit Details</div>
+<div style="color: #1e293b; font-size: 13px">"User 123 has 5 requests remaining" confirms user existence.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Generic "rate limited" without user-specific details.</div>
+</div>
+</div>
+</div>
+<h3 id="interview-questions-error-handling">Interview Questions: Error Handling</h3>
+<h4 id="level-1-conceptual-understanding-4">Level 1: Conceptual Understanding</h4>
+<p><strong>Q: What's the difference between HTTP 400, 401, 403, and 404, and when should each be used?</strong></p>
+<pre><code>            - **400 Bad Request**: The request syntax is malformed or contains invalid parameters. The client made an error that must be fixed before retrying. Examples: invalid JSON, missing required field, wrong data type.
+
+            - **401 Unauthorized**: Authentication is missing or invalid. The client hasn't proven their identity. Examples: missing token, expired token, invalid signature. Client should re-authenticate.
+
+            - **403 Forbidden**: Authentication succeeded but the user lacks permission. The client proved who they are, but they can't access this resource. Examples: user trying to access another user's data, free tier accessing premium features.
+
+            - **404 Not Found**: The resource doesn't exist (or the client shouldn't know it exists). Use when: resource genuinely missing, OR user lacks permission and you don't want to reveal existence.
+</code></pre>
+<p><strong>Key insight</strong>: 401 vs 403 is about whether identity is established. 403 vs 404 depends on whether revealing resource existence is a security concern.</p>
+<h4 id="level-2-implementation-depth-4">Level 2: Implementation Depth</h4>
+<p><strong>Q: How would you design a validation error response that handles both single field errors and complex multi-field validation?</strong></p>
+<pre><code>            ```python
+            class ValidationErrorResponse:
+            &quot;&quot;&quot;
+            Validation error structure supporting:
+            - Single field errors: one field failed
+            - Multiple field errors: several fields failed independently
+            - Cross-field errors: combination of fields is invalid
+            - Nested object errors: errors in nested structures
+            &quot;&quot;&quot;
+
+            def __init__(self):
+            self.errors = []
+
+            def add_field_error(self, field: str, code: str, message: str):
+            &quot;&quot;&quot;Single field validation error.&quot;&quot;&quot;
+            self.errors.append({
+            &quot;field&quot;: field,
+            &quot;code&quot;: code,
+            &quot;message&quot;: message
+            })
+
+            def add_nested_error(self, path: str, code: str, message: str):
+            &quot;&quot;&quot;
+            Error in nested object.
+            path uses dot notation: &quot;address.zip_code&quot;
+            &quot;&quot;&quot;
+            self.errors.append({
+            &quot;field&quot;: path,
+            &quot;code&quot;: code,
+            &quot;message&quot;: message
+            })
+
+            def add_cross_field_error(self, fields: list, code: str, message: str):
+            &quot;&quot;&quot;
+            Error involving multiple fields together.
+            Example: start_date must be before end_date
+            &quot;&quot;&quot;
+            self.errors.append({
+            &quot;fields&quot;: fields,
+            &quot;code&quot;: code,
+            &quot;message&quot;: message
+            })
+
+            def to_response(self, request_id: str):
+            return {
+            &quot;error&quot;: {
+            &quot;code&quot;: &quot;VALIDATION_ERROR&quot;,
+            &quot;message&quot;: f&quot;Validation failed with {len(self.errors)} error(s)&quot;,
+            &quot;type&quot;: &quot;validation_error&quot;,
+            &quot;request_id&quot;: request_id,
+            &quot;errors&quot;: self.errors
+            }
+            }, 400
+
+
+            # Example usage
+            def validate_order(data: dict) -&gt; ValidationErrorResponse:
+            errors = ValidationErrorResponse()
+
+            # Single field validation
+            if not data.get('email'):
+            errors.add_field_error('email', 'REQUIRED', 'Email is required')
+            elif not is_valid_email(data['email']):
+            errors.add_field_error('email', 'INVALID_FORMAT',
+            'Email must be a valid email address')
+
+            # Nested object validation
+            address = data.get('shipping_address', {})
+            if address and not address.get('zip_code'):
+            errors.add_nested_error('shipping_address.zip_code', 'REQUIRED',
+            'Zip code is required for shipping address')
+
+            # Cross-field validation
+            if data.get('start_date') and data.get('end_date'):
+            if data['start_date'] &gt; data['end_date']:
+            errors.add_cross_field_error(
+            ['start_date', 'end_date'],
+            'INVALID_DATE_RANGE',
+            'Start date must be before end date'
+            )
+
+            return errors
+
+
+            # Example response
+            {
+            &quot;error&quot;: {
+            &quot;code&quot;: &quot;VALIDATION_ERROR&quot;,
+            &quot;message&quot;: &quot;Validation failed with 3 error(s)&quot;,
+            &quot;type&quot;: &quot;validation_error&quot;,
+            &quot;request_id&quot;: &quot;req_abc123&quot;,
+            &quot;errors&quot;: [
+            {
+            &quot;field&quot;: &quot;email&quot;,
+            &quot;code&quot;: &quot;INVALID_FORMAT&quot;,
+            &quot;message&quot;: &quot;Email must be a valid email address&quot;
+            },
+            {
+            &quot;field&quot;: &quot;shipping_address.zip_code&quot;,
+            &quot;code&quot;: &quot;REQUIRED&quot;,
+            &quot;message&quot;: &quot;Zip code is required for shipping address&quot;
+            },
+            {
+            &quot;fields&quot;: [&quot;start_date&quot;, &quot;end_date&quot;],
+            &quot;code&quot;: &quot;INVALID_DATE_RANGE&quot;,
+            &quot;message&quot;: &quot;Start date must be before end date&quot;
+            }
+            ]
+            }
+            }
+            ```
+</code></pre>
+<h4 id="level-3-architecture-and-edge-cases-4">Level 3: Architecture and Edge Cases</h4>
+<p><strong>Q: Design an error handling system for a public API that needs to support i18n, A/B testing of error messages, and gradual error format migration.</strong></p>
+<p><strong>Requirements Analysis:</strong><br />
+- Multiple languages for error messages<br />
+- Test different message phrasings for conversion impact<br />
+- Migrate from legacy error format without breaking clients</p>
+<p><strong>Solution Architecture:</strong></p>
+<pre><code>            ```python
+            class ErrorMessageRegistry:
+            &quot;&quot;&quot;
+            Centralized error message management supporting:
+            - Internationalization (i18n)
+            - A/B testing of message variants
+            - Format versioning for migration
+            &quot;&quot;&quot;
+
+            def __init__(self, db, cache, ab_test_service):
+            self.db = db
+            self.cache = cache
+            self.ab = ab_test_service
+
+            def get_message(self, code: str, locale: str, user_id: str = None,
+            format_version: str = 'v2') -&gt; dict:
+            &quot;&quot;&quot;
+            Resolve error message considering all factors.
+
+            Priority:
+            1. A/B test variant (if user in experiment)
+            2. Locale-specific message
+            3. Default (en-US) message
+            &quot;&quot;&quot;
+            # Check A/B test enrollment
+            variant = None
+            if user_id:
+            experiment = self.ab.get_experiment(f&quot;error_msg_{code}&quot;)
+            if experiment:
+            variant = self.ab.get_variant(experiment, user_id)
+
+            # Build cache key
+            cache_key = f&quot;error:{code}:{locale}:{variant or 'default'}:{format_version}&quot;
+
+            cached = self.cache.get(cache_key)
+            if cached:
+            return cached
+
+            # Fetch from database
+            message_data = self.db.query(&quot;&quot;&quot;
+            SELECT message, details_template
+            FROM error_messages
+            WHERE code = %s
+            AND locale = %s
+            AND (variant = %s OR variant IS NULL)
+            AND format_version = %s
+            ORDER BY variant DESC NULLS LAST
+            LIMIT 1
+            &quot;&quot;&quot;, [code, locale, variant, format_version])
+
+            if not message_data:
+            # Fallback to default locale
+            message_data = self.db.query(&quot;&quot;&quot;
+            SELECT message, details_template
+            FROM error_messages
+            WHERE code = %s AND locale = 'en-US' AND format_version = %s
+            LIMIT 1
+            &quot;&quot;&quot;, [code, format_version])
+
+            result = {
+            'message': message_data.message,
+            'template': message_data.details_template,
+            'variant': variant
+            }
+
+            self.cache.set(cache_key, result, ttl=3600)
+            return result
+
+
+            class ErrorResponseBuilder:
+            &quot;&quot;&quot;
+            Builds error responses supporting multiple format versions.
+
+            Format v1 (legacy):
+            {&quot;error&quot;: &quot;message&quot;, &quot;code&quot;: 123}
+
+            Format v2 (current):
+            {&quot;error&quot;: {&quot;code&quot;: &quot;...&quot;, &quot;message&quot;: &quot;...&quot;, ...}}
+            &quot;&quot;&quot;
+
+            def __init__(self, registry: ErrorMessageRegistry):
+            self.registry = registry
+
+            def build(self, error: APIError, request) -&gt; dict:
+            # Determine format version from Accept header or client version
+            format_version = self._resolve_format_version(request)
+
+            # Get user context
+            user_id = getattr(request, 'user_id', None)
+            locale = request.headers.get('Accept-Language', 'en-US').split(',')[0]
+
+            # Fetch localized message
+            msg_data = self.registry.get_message(
+            error.code, locale, user_id, format_version
+            )
+
+            # Interpolate template with error details
+            message = msg_data['message']
+            if error.details and msg_data['template']:
+            message = msg_data['template'].format(**error.details)
+
+            # Track A/B test exposure
+            if msg_data['variant']:
+            self.ab.track_exposure(
+            user_id, f&quot;error_msg_{error.code}&quot;, msg_data['variant']
+            )
+
+            # Build response based on format version
+            if format_version == 'v1':
+            return self._build_v1(error, message)
+            else:
+            return self._build_v2(error, message, request)
+
+            def _resolve_format_version(self, request) -&gt; str:
+            &quot;&quot;&quot;
+            Determine format version from request context.
+
+            Sources (priority order):
+            1. Explicit header: X-Error-Format: v2
+            2. Client SDK version header (SDK &lt; 2.0 gets v1)
+            3. Account settings (for gradual migration)
+            4. Default to v2
+            &quot;&quot;&quot;
+            explicit = request.headers.get('X-Error-Format')
+            if explicit in ('v1', 'v2'):
+            return explicit
+
+            sdk_version = request.headers.get('X-SDK-Version')
+            if sdk_version and parse_version(sdk_version) &lt; parse_version('2.0.0'):
+            return 'v1'
+
+            if hasattr(request, 'account'):
+            return request.account.error_format or 'v2'
+
+            return 'v2'
+
+            def _build_v1(self, error: APIError, message: str) -&gt; tuple:
+            &quot;&quot;&quot;Legacy format for backward compatibility.&quot;&quot;&quot;
+            return {
+            &quot;error&quot;: message,
+            &quot;code&quot;: self._legacy_code_mapping.get(error.code, 0)
+            }, error.status_code
+
+            def _build_v2(self, error: APIError, message: str, request) -&gt; tuple:
+            &quot;&quot;&quot;Current format with full details.&quot;&quot;&quot;
+            return {
+            &quot;error&quot;: {
+            &quot;code&quot;: error.code,
+            &quot;message&quot;: message,
+            &quot;type&quot;: error.error_type.value,
+            &quot;param&quot;: error.param,
+            &quot;request_id&quot;: request.request_id,
+            &quot;doc_url&quot;: f&quot;https://api.example.com/docs/errors#{error.code.lower()}&quot;
+            }
+            }, error.status_code
+            ```
+</code></pre>
+<p><strong>Migration Strategy:</strong></p>
+<ol>
+<li>Deploy with both formats supported</li>
+<li>New clients default to v2</li>
+<li>Track v1 usage through metrics</li>
+<li>Notify v1 clients of deprecation timeline</li>
+<li>Eventually sunset v1</li>
+</ol>
+<p>See also: <a href="/topics/system-design/observability">[observability]</a>, <a href="/topics/system-design/rate-limiting">[rate-limiting]</a></p>
+<hr />
+<h2 id="backward-compatibility">Backward Compatibility</h2>
+<h3 id="the-compatibility-contract">The Compatibility Contract</h3>
+<p>Once an API is published, external developers write code that depends on its behavior. Breaking that behavior costs money:</p>
+<pre><code>            - **Integration failures**: Production apps stop working
+            - **Developer time**: Rewriting integrations
+            - **Trust erosion**: Developers hesitate to adopt your API
+            - **Support costs**: Increased tickets during transition
+</code></pre>
+<p><strong>Rule of thumb</strong>: Assume any visible behavior is depended upon by someone.</p>
+<h3 id="types-of-breaking-changes">Types of Breaking Changes</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Breaking Change Categories</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1; min-width: 280px">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600">Syntactic Breaking Changes</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
+<li>Removing endpoints</li>
+<li>Removing or renaming fields</li>
+<li>Changing field types</li>
+<li>Changing URL structure</li>
+<li>Changing HTTP methods</li>
+<li>Adding required parameters</li>
+</ul>
+<div style="margin-top: 8px; padding-top: 8px;color: #b91c1c; font-size: 12px">
+  Detected by schema validation
+</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px">
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px 8px 0 0; color: #92400e; font-weight: 600">Semantic Breaking Changes</div>
+<div style="background: #fffbeb; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
+<li>Changing field meaning/units</li>
+<li>Changing error codes</li>
+<li>Changing rate limits</li>
+<li>Changing authentication</li>
+<li>Changing side effects</li>
+<li>Changing default values</li>
+</ul>
+<div style="margin-top: 8px; padding-top: 8px;color: #92400e; font-size: 12px">
+  Often undetected until production failure
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="compatibility-strategies">Compatibility Strategies</h3>
+<h4 id="1-additive-changes-only">1. Additive Changes Only</h4>
+<pre><code>            ```python
+            # Original response (v1)
+            {
+            &quot;user_id&quot;: 123,
+            &quot;name&quot;: &quot;Alice&quot;
+            }
+
+            # Safe addition (still v1 compatible)
+            {
+            &quot;user_id&quot;: 123,
+            &quot;name&quot;: &quot;Alice&quot;,
+            &quot;email&quot;: &quot;alice@example.com&quot;,  # New optional field
+            &quot;created_at&quot;: &quot;2024-01-15T10:00:00Z&quot;  # New optional field
+            }
+            ```
+</code></pre>
+<p><strong>Assumption</strong>: Clients must ignore unknown fields. Document this expectation.</p>
+<h4 id="2-field-evolution-pattern">2. Field Evolution Pattern</h4>
+<pre><code>            ```python
+            # Need to change user_id from int to string UUID
+
+            # Step 1: Add new field alongside old
+            {
+            &quot;user_id&quot;: 123,           # Deprecated (int)
+            &quot;id&quot;: &quot;usr_abc123&quot;,       # New format (string)
+            &quot;name&quot;: &quot;Alice&quot;
+            }
+
+            # Step 2: Document deprecation, give timeline
+            # Step 3: After sunset period, remove user_id in next major version
+            ```
+</code></pre>
+<h4 id="3-response-envelope-versioning">3. Response Envelope Versioning</h4>
+<pre><code>            ```python
+            # Include version in response for client detection
+            {
+            &quot;_meta&quot;: {
+            &quot;api_version&quot;: &quot;2024-01&quot;,
+            &quot;deprecated_fields&quot;: [&quot;user_id&quot;],
+            &quot;warnings&quot;: [&quot;Field 'user_id' deprecated, use 'id' instead&quot;]
+            },
+            &quot;data&quot;: {
+            &quot;id&quot;: &quot;usr_abc123&quot;,
+            &quot;user_id&quot;: 123,
+            &quot;name&quot;: &quot;Alice&quot;
+            }
+            }
+            ```
+</code></pre>
+<h3 id="contract-testing">Contract Testing</h3>
+<pre><code>            ```python
+            import pytest
+            from pact import Consumer, Provider
+
+            class TestAPIContract:
+            &quot;&quot;&quot;
+            Contract tests ensure backward compatibility.
+            Run against all supported versions before deployment.
+            &quot;&quot;&quot;
+
+            @pytest.fixture
+            def pact(self):
+            return Consumer('WebApp').has_pact_with(
+            Provider('UserAPI'),
+            pact_dir='./pacts'
+            )
+
+            def test_get_user_v1_contract(self, pact):
+            &quot;&quot;&quot;V1 clients expect user_id as integer.&quot;&quot;&quot;
+            expected = {
+            'user_id': 123,
+            'name': 'Alice'
+            }
+
+            pact.given('user 123 exists') \
+            .upon_receiving('a request for user 123 (v1)') \
+            .with_request('GET', '/v1/users/123') \
+            .will_respond_with(200, body=expected)
+
+            with pact:
+            result = api_client_v1.get_user(123)
+            assert result['user_id'] == 123
+
+            def test_get_user_v2_contract(self, pact):
+            &quot;&quot;&quot;V2 clients expect id as string UUID.&quot;&quot;&quot;
+            expected = {
+            'id': 'usr_abc123',
+            'user_id': 123,  # Still present for transition
+            'name': 'Alice'
+            }
+
+            pact.given('user 123 exists') \
+            .upon_receiving('a request for user 123 (v2)') \
+            .with_request('GET', '/v2/users/123') \
+            .will_respond_with(200, body=expected)
+
+            with pact:
+            result = api_client_v2.get_user(123)
+            assert result['id'] == 'usr_abc123'
+            ```
+</code></pre>
+<h3 id="interview-questions-backward-compatibility">Interview Questions: Backward Compatibility</h3>
+<h4 id="level-1-conceptual-understanding-5">Level 1: Conceptual Understanding</h4>
+<p><strong>Q: What makes a change &quot;breaking&quot; and how do you identify breaking changes before deployment?</strong></p>
+<p>A breaking change is any modification that causes correctly-written client code to fail or behave differently. This includes:</p>
+<p><strong>Syntactic breaks</strong> (easily detected):<br />
+- Removing fields, endpoints, or parameters<br />
+- Changing types (int to string)<br />
+- Adding required parameters</p>
+<p><strong>Semantic breaks</strong> (harder to detect):<br />
+- Changing what a field means (amount in cents vs dollars)<br />
+- Changing error responses<br />
+- Changing rate limits or auth requirements</p>
+<p><strong>Detection strategies:</strong></p>
+<ol>
+<li><strong>Schema diff tools</strong>: Compare OpenAPI specs between versions</li>
+<li><strong>Contract tests</strong>: Run consumer contracts against new version</li>
+<li><strong>Shadow traffic</strong>: Replay production requests, compare responses</li>
+<li><strong>Canary deployment</strong>: Release to 1% of traffic, monitor error rates</li>
+<li><strong>Client SDK tests</strong>: Run all SDK version test suites against new API</li>
+</ol>
+<h4 id="level-2-implementation-depth-5">Level 2: Implementation Depth</h4>
+<p><strong>Q: How would you implement a deprecation system that gives clients adequate warning and tracks migration progress?</strong></p>
+<pre><code>            ```python
+            from datetime import datetime, timedelta
+            from dataclasses import dataclass
+            from typing import Optional
+            import logging
+
+            @dataclass
+            class DeprecationPolicy:
+            &quot;&quot;&quot;
+            Deprecation tracking and enforcement.
+
+            Lifecycle:
+            1. Deprecated: Feature still works, warnings added
+            2. Sunset: Feature returns errors for new clients
+            3. Removed: Feature removed from codebase
+            &quot;&quot;&quot;
+            feature_id: str
+            deprecated_date: datetime
+            sunset_date: datetime
+            removal_date: datetime
+            replacement: Optional[str]
+            documentation_url: str
+
+            class DeprecationMiddleware:
+            def __init__(self, policy_store, metrics, notification_service):
+            self.policies = policy_store
+            self.metrics = metrics
+            self.notifications = notification_service
+
+            def process_request(self, request, response):
+            &quot;&quot;&quot;Add deprecation headers and track usage.&quot;&quot;&quot;
+
+            # Check if request uses deprecated features
+            deprecations = self.check_deprecations(request)
+
+            for dep in deprecations:
+            # Add standard deprecation headers
+            response.headers['Deprecation'] = dep.deprecated_date.isoformat()
+            response.headers['Sunset'] = dep.sunset_date.isoformat()
+            response.headers['Link'] = f'&lt;{dep.documentation_url}&gt;; rel=&quot;deprecation&quot;'
+
+            # Add custom warning header
+            response.headers.append('X-API-Warn',
+            f'{dep.feature_id} is deprecated. {dep.replacement or &quot;See docs for migration.&quot;}')
+
+            # Track usage for migration monitoring
+            self.metrics.increment('deprecated_feature_usage', tags={
+            'feature': dep.feature_id,
+            'client_id': request.client_id,
+            'api_version': request.api_version
+            })
+
+            # Proactive notification for heavy users
+            self._maybe_notify_client(request.client_id, dep)
+
+            def check_deprecations(self, request) -&gt; list:
+            &quot;&quot;&quot;Identify deprecated features in request.&quot;&quot;&quot;
+            deprecations = []
+
+            # Check endpoint deprecation
+            endpoint_policy = self.policies.get_endpoint_policy(request.path)
+            if endpoint_policy:
+            deprecations.append(endpoint_policy)
+
+            # Check parameter deprecation
+            for param in request.params:
+            param_policy = self.policies.get_param_policy(request.path, param)
+            if param_policy:
+            deprecations.append(param_policy)
+
+            # Check header deprecation (e.g., old auth scheme)
+            for header in request.headers:
+            header_policy = self.policies.get_header_policy(header)
+            if header_policy:
+            deprecations.append(header_policy)
+
+            return deprecations
+
+            def _maybe_notify_client(self, client_id: str, dep: DeprecationPolicy):
+            &quot;&quot;&quot;
+            Send proactive notification to heavy users of deprecated features.
+
+            Conditions for notification:
+            - Client used feature 100+ times in past week
+            - Haven't been notified in past 30 days
+            - Sunset date is within 60 days
+            &quot;&quot;&quot;
+            usage_count = self.metrics.get_weekly_usage(client_id, dep.feature_id)
+            last_notified = self.notifications.get_last_notification(client_id, dep.feature_id)
+            days_to_sunset = (dep.sunset_date - datetime.utcnow()).days
+
+            if (usage_count &gt;= 100 and
+            days_to_sunset &lt;= 60 and
+            (not last_notified or (datetime.utcnow() - last_notified).days &gt;= 30)):
+
+            self.notifications.send_deprecation_notice(
+            client_id=client_id,
+            feature=dep.feature_id,
+            sunset_date=dep.sunset_date,
+            migration_guide=dep.documentation_url,
+            usage_count=usage_count
+            )
+
+
+            # Dashboard query for migration tracking
+            &quot;&quot;&quot;
+            SELECT
+            feature_id,
+            COUNT(DISTINCT client_id) as active_clients,
+            SUM(request_count) as total_requests,
+            MIN(first_seen) as earliest_usage,
+            MAX(last_seen) as latest_usage,
+            sunset_date,
+            DATEDIFF(sunset_date, NOW()) as days_remaining
+            FROM deprecated_feature_usage
+            JOIN deprecation_policies USING (feature_id)
+            WHERE last_seen &gt; DATE_SUB(NOW(), INTERVAL 7 DAY)
+            GROUP BY feature_id
+            ORDER BY days_remaining ASC;
+            &quot;&quot;&quot;
+            ```
+</code></pre>
+<h4 id="level-3-architecture-and-edge-cases-5">Level 3: Architecture and Edge Cases</h4>
+<p><strong>Q: Design a system for safely rolling out breaking changes to an API used by thousands of external developers, minimizing disruption while ensuring eventual migration.</strong></p>
+<p><strong>Challenge Analysis:</strong><br />
+- Thousands of integrations with varying activity levels<br />
+- Some clients actively maintained, others abandoned<br />
+- Breaking change unavoidable (e.g., security fix, legal requirement)<br />
+- Must balance migration timeline with client disruption</p>
+<p><strong>Solution: Multi-Phase Migration with Escape Hatches</strong></p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Breaking Change Migration Phases</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 16px; flex-wrap: wrap">
+<div style="flex: 1; min-width: 200px; background: #22c55e; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 1: Announcement</div>
+<div style="font-size: 12px; margin-top: 8px">T-180 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Documentation, blog, email to all devs</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #3b82f6; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 2: Soft Warnings</div>
+<div style="font-size: 12px; margin-top: 8px">T-120 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Deprecation headers, dashboard alerts</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #f59e0b; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 3: Hard Warnings</div>
+<div style="font-size: 12px; margin-top: 8px">T-60 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Targeted emails, support outreach</div>
+</div>
+<div style="flex: 1; min-width: 200px; background: #ef4444; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 4: Enforcement</div>
+<div style="font-size: 12px; margin-top: 8px">T-0</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Gradual rollout, extension requests</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Implementation:</strong></p>
+<pre><code>            ```python
+            class BreakingChangeMigration:
+            &quot;&quot;&quot;
+            Orchestrates breaking change rollout with safety mechanisms.
+            &quot;&quot;&quot;
+
+            def __init__(self, config, db, metrics, notification_service):
+            self.config = config
+            self.db = db
+            self.metrics = metrics
+            self.notifications = notification_service
+
+            def get_enforcement_status(self, client_id: str) -&gt; dict:
+            &quot;&quot;&quot;
+            Determine if client should see old or new behavior.
+
+            Factors:
+            - Global rollout percentage
+            - Client tier (enterprise gets more time)
+            - Extension granted
+            - Emergency bypass
+            &quot;&quot;&quot;
+            migration = self.db.get_migration_status(self.config.migration_id, client_id)
+
+            # Check for extension
+            if migration.extension_granted:
+            if datetime.utcnow() &lt; migration.extension_until:
+            return {
+            'enforce': False,
+            'reason': 'extension_active',
+            'expires': migration.extension_until
+            }
+
+            # Check global rollout percentage
+            rollout_pct = self.config.get_rollout_percentage()
+            client_bucket = self._hash_to_bucket(client_id)
+
+            if client_bucket &gt; rollout_pct:
+            return {
+            'enforce': False,
+            'reason': 'gradual_rollout',
+            'rollout_percentage': rollout_pct
+            }
+
+            # Client is in enforcement cohort
+            return {
+            'enforce': True,
+            'reason': 'in_rollout_cohort'
+            }
+
+            def request_extension(self, client_id: str, reason: str) -&gt; dict:
+            &quot;&quot;&quot;
+            Allow clients to request migration extension.
+
+            Policy:
+            - First extension: 30 days, auto-approved
+            - Second extension: 14 days, requires review
+            - Third+: Denied, offer migration support
+            &quot;&quot;&quot;
+            existing = self.db.get_extensions(client_id, self.config.migration_id)
+            extension_count = len(existing)
+
+            if extension_count == 0:
+            # First extension auto-approved
+            extension_until = datetime.utcnow() + timedelta(days=30)
+            self.db.grant_extension(client_id, self.config.migration_id,
+            extension_until, auto_approved=True)
+            return {
+            'granted': True,
+            'until': extension_until,
+            'message': 'First extension granted automatically'
+            }
+
+            elif extension_count == 1:
+            # Second extension requires review
+            self.db.create_extension_request(client_id, self.config.migration_id,
+            reason=reason)
+            self.notifications.alert_support(
+            f&quot;Extension request: {client_id} for {self.config.migration_id}&quot;
+            )
+            return {
+            'granted': False,
+            'pending_review': True,
+            'message': 'Extension request submitted for review'
+            }
+
+            else:
+            # No more extensions
+            return {
+            'granted': False,
+            'message': 'Maximum extensions reached. Contact support for migration assistance.',
+            'support_link': 'https://support.api.com/migration-help'
+            }
+
+            def handle_request(self, request, handler):
+            &quot;&quot;&quot;
+            Middleware to route request based on migration status.
+            &quot;&quot;&quot;
+            status = self.get_enforcement_status(request.client_id)
+
+            if status['enforce']:
+            # New behavior
+            response = handler.new_behavior(request)
+            else:
+            # Old behavior with warnings
+            response = handler.old_behavior(request)
+
+            # Add migration headers
+            response.headers['X-Migration-Status'] = 'pending'
+            response.headers['X-Migration-Deadline'] = self.config.deadline.isoformat()
+            response.headers['X-Migration-Guide'] = self.config.documentation_url
+
+            # Track for dashboard
+            self.metrics.record_migration_request(
+            migration_id=self.config.migration_id,
+            client_id=request.client_id,
+            used_new_behavior=status['enforce']
+            )
+
+            return response
+
+            def rollback_if_needed(self):
+            &quot;&quot;&quot;
+            Automatic rollback if error rates spike during rollout.
+
+            Monitors:
+            - 5xx error rate
+            - Client-reported issues
+            - Support ticket volume
+            &quot;&quot;&quot;
+            current_pct = self.config.get_rollout_percentage()
+            error_rate = self.metrics.get_error_rate_delta(
+            self.config.migration_id,
+            window_minutes=15
+            )
+
+            if error_rate &gt; 0.05:  # &gt;5% increase in errors
+            new_pct = max(0, current_pct - 10)  # Roll back 10%
+            self.config.set_rollout_percentage(new_pct)
+
+            self.notifications.alert_oncall(
+            f&quot;Migration {self.config.migration_id} rolled back &quot;
+            f&quot;from {current_pct}% to {new_pct}% due to error spike&quot;
+            )
+
+            return True
+            return False
+            ```
+</code></pre>
+<p><strong>Edge Cases:</strong></p>
+<ol>
+<li>
+<p><strong>Abandoned Integrations</strong>: Clients that haven't made requests in months suddenly break when they return. Solution: &quot;Resurrection grace period&quot; - if client was inactive during migration period, grant automatic extension on first request.</p>
+</li>
+<li>
+<p><strong>Cascading Failures</strong>: Partner A uses Partner B's integration which uses our API. Partner B migrates, Partner A breaks. Solution: Allow extensions to be requested by downstream dependents.</p>
+</li>
+<li>
+<p><strong>Emergency Bypass</strong>: Critical partner discovers issue day before deadline. Solution: 24/7 on-call can grant emergency extensions with CTO approval.</p>
+</li>
+<li>
+<p><strong>Compliance Requirements</strong>: Some industries require change approval processes that exceed our timeline. Solution: Enterprise tier with custom migration schedules.</p>
+</li>
+</ol>
+<p>See also: <a href="/topics/system-design/feature-flags">[feature-flags]</a>, <a href="/topics/system-design/deployment">[deployment-strategies]</a></p>
+<hr />
+<h2 id="quick-reference">Quick Reference</h2>
+<h3 id="http-methods-and-idempotency">HTTP Methods and Idempotency</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+<th>Idempotent</th>
+<th>Safe</th>
+<th>Cacheable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>Read</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>Headers only</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>Create</td>
+<td>No*</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>Replace</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>Update</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>Remove</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>Capabilities</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>*POST can be made idempotent with idempotency keys</p>
+<h3 id="status-code-quick-reference">Status Code Quick Reference</h3>
+<pre><code>            ```
+            2xx Success
+            200 OK - General success
+            201 Created - POST success
+            204 No Content - DELETE success
+
+            4xx Client Error (don't auto-retry)
+            400 Bad Request - Validation failed
+            401 Unauthorized - Auth required
+            403 Forbidden - Auth OK, no permission
+            404 Not Found - Resource missing
+            409 Conflict - State conflict
+            422 Unprocessable - Semantic error
+            429 Too Many Requests - Rate limited
+
+            5xx Server Error (safe to retry)
+            500 Internal Error - Bug
+            502 Bad Gateway - Upstream failed
+            503 Unavailable - Overloaded
+            504 Timeout - Upstream slow
+            ```
+</code></pre>
+<h3 id="pagination-response-template">Pagination Response Template</h3>
+<pre><code>            ```json
+            {
+            &quot;data&quot;: [...],
+            &quot;pagination&quot;: {
+            &quot;next_cursor&quot;: &quot;eyJpZCI6MTAwfQ==&quot;,
+            &quot;prev_cursor&quot;: &quot;eyJpZCI6ODF9&quot;,
+            &quot;has_next&quot;: true,
+            &quot;has_prev&quot;: true
+            },
+            &quot;meta&quot;: {
+            &quot;total_count&quot;: 1000,
+            &quot;returned_count&quot;: 20
+            }
+            }
+            ```
+</code></pre>
+<h3 id="error-response-template">Error Response Template</h3>
+<pre><code>            ```json
+            {
+            &quot;error&quot;: {
+            &quot;code&quot;: &quot;VALIDATION_ERROR&quot;,
+            &quot;message&quot;: &quot;Email format is invalid&quot;,
+            &quot;type&quot;: &quot;validation_error&quot;,
+            &quot;param&quot;: &quot;email&quot;,
+            &quot;request_id&quot;: &quot;req_8xKj2Mn4Pq&quot;,
+            &quot;doc_url&quot;: &quot;https://api.example.com/docs/errors#validation_error&quot;
+            }
+            }
+            ```
+</code></pre>
+<h3 id="essential-headers">Essential Headers</h3>
+<pre><code>            ```http
+            # Request
+            Authorization: Bearer &lt;token&gt;
+              Content-Type: application/json
+              Idempotency-Key: &lt;client-generated-uuid&gt;
+                X-Request-ID: &lt;client-generated-uuid&gt;
+                  Accept-Language: en-US
+
+                  # Response
+                  Content-Type: application/json
+                  X-Request-ID: &lt;echoed-or-generated&gt;
+                    X-RateLimit-Limit: 1000
+                    X-RateLimit-Remaining: 999
+                    X-RateLimit-Reset: 1640000000
+                    Deprecation: Sun, 01 Jan 2025 00:00:00 GMT
+                    Sunset: Mon, 01 Jul 2025 00:00:00 GMT
+                    ```
+</code></pre>
+<h2 id="cross-references">Cross-References</h2>
+<pre><code>                    - [[api-gateway]](/topics/system-design/api-gateway) - Gateway patterns, routing, aggregation
+                    - [[rate-limiting]](/topics/system-design/rate-limiting) - Token bucket, sliding window algorithms
+                    - [[authentication]](/topics/system-design/authentication) - OAuth, JWT, API keys
+                    - [[distributed-systems]](/topics/system-design/distributed-systems) - CAP theorem, consistency models
+                    - [[caching]](/topics/system-design/caching) - Cache strategies, invalidation patterns
+                    - [[microservices]](/topics/system-design/microservices) - Service communication patterns
+</code></pre>

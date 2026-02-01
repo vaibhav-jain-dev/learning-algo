@@ -1,0 +1,2514 @@
+<h1 id="adapter-pattern">Adapter Pattern</h1>
+<h2 id="overview">Overview</h2>
+<p>The Adapter pattern converts the interface of a class into another interface that clients expect, enabling classes with incompatible interfaces to collaborate. <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px; font-weight: 500">Unlike simple interface wrapping, a true adapter performs semantic translation between fundamentally different interface paradigms while preserving behavioral equivalence.</span></p>
+<p><strong>Difficulty:</strong> Intermediate-Advanced<br />
+<strong>Category:</strong> Structural Pattern<br />
+<strong>First Documented:</strong> GoF (1994)<br />
+<strong>Also Known As:</strong> Wrapper Pattern</p>
+<hr />
+<h2 id="foundational-mental-model">Foundational Mental Model</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem">The Diplomatic Translator Analogy</h3>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7">
+    Consider a diplomatic summit between nations speaking different languages. A translator does more than word-for-word conversion - they understand cultural nuances, idiomatic expressions, and contextual meaning. They ensure the <em>intent</em> is preserved, not just the words.
+</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0">
+<div style="background: #dbeafe; padding: 16px; border-radius: 12px">
+<div style="color: #1e40af; font-weight: 700">Client (Diplomat A)</div>
+<div style="color: #1e3a8a; font-size: 0.9rem">Speaks Language A, expects responses in Language A semantics</div>
+</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 12px">
+<div style="color: #166534; font-weight: 700">Adapter (Translator)</div>
+<div style="color: #14532d; font-size: 0.9rem">Converts not just words but meaning, idioms, and cultural context</div>
+</div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 12px">
+<div style="color: #92400e; font-weight: 700">Adaptee (Diplomat B)</div>
+<div style="color: #78350f; font-size: 0.9rem">Speaks Language B with different conceptual framework</div>
+</div>
+</div>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px">
+<strong style="color: #0f172a">Critical Insight:</strong>
+<span style="color: #334155"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter must understand both interfaces deeply enough to preserve semantic equivalence, not just syntactic compatibility.</span> A charge() call must produce the same business outcome whether routed through Stripe or PayPal, despite their radically different APIs.</span>
+</div>
+</div>
+<hr />
+<h2 id="internal-architecture-how-adapters-actually-work">Internal Architecture: How Adapters Actually Work</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem">Adapter Pattern Internal Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 20px; margin: 24px 0">
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dbeafe;border-radius: 12px; padding: 16px; min-width: 150px; text-align: center">
+<div style="color: #1e40af; font-weight: 700; font-size: 0.9rem">Client Code</div>
+<div style="color: #1e3a8a; font-size: 0.75rem; margin-top: 4px">PaymentService</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem">---(1) charge()---></div>
+<div style="background: #f3e8ff;border-radius: 12px; padding: 16px; min-width: 150px; text-align: center">
+<div style="color: #7c3aed; font-weight: 700; font-size: 0.9rem">Target Interface</div>
+<div style="color: #6b21a8; font-size: 0.75rem; margin-top: 4px">PaymentGateway</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: center">
+<div style="color: #a855f7; font-size: 0.9rem">implements</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dcfce7;border-radius: 12px; padding: 16px; min-width: 200px">
+<div style="color: #166534; font-weight: 700; text-align: center; font-size: 0.9rem">Adapter</div>
+<div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px; margin-top: 8px">
+<strong>(2) Transform Request:</strong><br/>
+          - Convert Decimal to cents<br/>
+          - Map currency codes<br/>
+          - Restructure parameters
+</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem">---(3)---></div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px; min-width: 180px; text-align: center">
+<div style="color: #92400e; font-weight: 700; font-size: 0.9rem">Adaptee</div>
+<div style="color: #78350f; font-size: 0.75rem; margin-top: 4px">StripeClient.create_charge()</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dcfce7;border-radius: 12px; padding: 16px; min-width: 200px">
+<div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px">
+<strong>(5) Transform Response:</strong><br/>
+          - Convert cents to Decimal<br/>
+          - Normalize status codes<br/>
+          - Build PaymentResult
+</div>
+</div>
+<div style="color: #64748b; font-size: 1.2rem"><---(4)---</div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px; min-width: 180px; text-align: center">
+<div style="color: #78350f; font-size: 0.75rem">Raw Stripe Response</div>
+</div>
+</div>
+</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin-top: 16px">
+<strong style="color: #991b1b">Critical Implementation Detail:</strong>
+<span style="color: #7f1d1d"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter must handle bidirectional transformation - both request adaptation (client to adaptee) and response adaptation (adaptee to client).</span> Many implementations focus only on request transformation and break when adaptee responses differ from expected formats.</span>
+</div>
+</div>
+<h3 id="interview-deep-dive-internal-mechanisms">Interview Deep-Dive: Internal Mechanisms</h3>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: What are the core responsibilities of an adapter's transformation layer?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
+<pre><code>The transformation layer handles four critical responsibilities:
+
+**1. Type Conversion**: Converting between incompatible data types
+```python
+# Decimal dollars -&gt; Integer cents
+amount_cents = int(decimal_amount * 100)
+```
+
+**2. Structure Mapping**: Reorganizing data structures
+```python
+# Flat params -&gt; Nested PayPal structure
+purchase_units = [{&quot;amount&quot;: {&quot;value&quot;: str(amount), &quot;currency_code&quot;: currency}}]
+```
+
+**3. Protocol Translation**: Converting between different interaction patterns
+```python
+# Single-call charge -&gt; Two-phase PayPal flow
+order = client.create_order(...)
+capture = client.capture_order(order[&quot;id&quot;])
+```
+
+**4. Error Normalization**: Converting provider-specific errors to unified format
+```python
+# Stripe error -&gt; Unified PaymentError
+if stripe_response.get(&quot;error&quot;):
+raise PaymentError(code=map_error_code(stripe_response[&quot;error&quot;][&quot;code&quot;]))
+```
+</code></pre>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How do you handle lossy transformations where the adaptee has less capability than the target interface promises?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p>This is a critical design challenge. <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Lossy adaptation occurs when the target interface contracts cannot be fully satisfied by the adaptee's capabilities.</span></p>
+<p><strong>Strategy 1: Capability Detection</strong><br />
+```python<br />
+class PaymentAdapter(PaymentGateway):<br />
+def supports_partial_refund(self) -&gt; bool:<br />
+&quot;&quot;&quot;Let clients query capabilities before attempting operations.&quot;&quot;&quot;<br />
+return self._adaptee_supports_partial_refund</p>
+<pre><code>    def refund(self, transaction_id: str, amount: Optional[Decimal] = None):
+    if amount and not self.supports_partial_refund():
+    raise UnsupportedOperationError(&quot;Partial refunds not supported&quot;)
+    # ... proceed with refund
+    ```
+</code></pre>
+<p><strong>Strategy 2: Best-Effort Emulation</strong><br />
+<code>python def get_transaction_history(self, days: int) -&gt; List[Transaction]: &quot;&quot;&quot;Target promises date-range filtering, adaptee only returns last 100.&quot;&quot;&quot; all_txns = self._adaptee.list_transactions(limit=100) cutoff = datetime.now() - timedelta(days=days) return [t for t in all_txns if t.created_at &gt;= cutoff]  # Client-side filter </code></p>
+<p><strong>Strategy 3: Fail-Fast with Clear Errors</strong><br />
+<code>python def capture_authorization(self, auth_id: str): &quot;&quot;&quot;Adaptee doesn't support auth/capture separation.&quot;&quot;&quot; raise AdapterLimitationError( &quot;This payment provider does not support separate authorization and capture. &quot; &quot;Use charge() for immediate payment.&quot; ) </code></p>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: What are the implications for Liskov Substitution Principle when adapters cannot fully implement the target interface?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">This is where adapter pattern can technically violate LSP - if clients cannot substitute adapted implementations without behavioral changes.</span></p>
+<p><strong>The LSP Violation Pattern:</strong><br />
+<code>python # Client code assumes all PaymentGateway implementations support refunds def process_return(gateway: PaymentGateway, txn_id: str): gateway.refund(txn_id)  # Throws UnsupportedOperationError for some adapters! </code></p>
+<p><strong>Architectural Solutions:</strong></p>
+<p><strong>1. Interface Segregation (Preferred)</strong><br />
+```python<br />
+class Chargeable(ABC):<br />
+@abstractmethod<br />
+def charge(self, amount: Decimal) -&gt; PaymentResult: pass</p>
+<pre><code>        class Refundable(ABC):
+        @abstractmethod
+        def refund(self, txn_id: str) -&gt; PaymentResult: pass
+
+        # Adapters implement only interfaces they can fulfill
+        class BitcoinAdapter(Chargeable):  # Not Refundable
+        def charge(self, amount): ...
+        ```
+</code></pre>
+<p><strong>2. Capability Interfaces</strong><br />
+```python<br />
+class PaymentGateway(ABC):<br />
+@abstractmethod<br />
+def get_capabilities(self) -&gt; Set[PaymentCapability]:<br />
+&quot;&quot;&quot;Return set of supported capabilities.&quot;&quot;&quot;<br />
+pass</p>
+<pre><code>        # Client code checks before calling
+        if PaymentCapability.PARTIAL_REFUND in gateway.get_capabilities():
+        gateway.refund(txn_id, partial_amount)
+        ```
+</code></pre>
+<p><strong>3. Null Object for Unsupported Operations</strong><br />
+<code>python def refund(self, txn_id: str) -&gt; PaymentResult: &quot;&quot;&quot;Return a 'no-op' result rather than throwing.&quot;&quot;&quot; return PaymentResult( success=False, error_code=&quot;UNSUPPORTED&quot;, message=&quot;Refunds not supported by this provider&quot; ) </code></p>
+<p>The trade-off: <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Interface segregation provides compile-time safety but fragments the interface hierarchy. Capability checking provides runtime flexibility but shifts error handling to callers.</span></p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</details>
+<hr />
+<h2 id="class-adapter-vs-object-adapter-deep-comparison">Class Adapter vs Object Adapter: Deep Comparison</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px">
+<div style="background: #dbeafe; padding: 24px; border-radius: 12px">
+<h4 style="color: #1e40af; margin-top: 0">Object Adapter (Composition)</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 16px"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter HOLDS a reference to the adaptee and delegates calls to it.</span></p>
+<pre style="background: #eff6ff; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto"><code style="color: #1e3a8a">class StripeAdapter(PaymentGateway):
+  """Object Adapter - uses composition."""
+
+  def __init__(self, stripe_client: StripeClient):
+  self._client = stripe_client  # Holds reference
+
+  def charge(self, amount: Decimal, currency: str,
+  token: str) -> PaymentResult:
+# Delegates to composed object
+  response = self._client.create_charge(
+  amount_cents=int(amount * 100),
+  currency=currency,
+  source=token
+  )
+return self._transform_response(response)</code></pre>
+<div style="margin-top: 16px">
+<div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px"><strong>Advantages:</strong></div>
+<ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px">
+<li>Works with adaptee and ALL its subclasses</li>
+<li>Adaptee can be injected (testability)</li>
+<li>Adapter can wrap multiple adaptees</li>
+<li>Runtime flexibility to swap adaptees</li>
+<li>Works in languages without multiple inheritance</li>
+</ul>
+</div>
+<div style="margin-top: 12px">
+<div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px"><strong>Disadvantages:</strong></div>
+<ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px">
+<li>Extra object allocation and indirection</li>
+<li>Must delegate all adaptee method calls explicitly</li>
+<li>Cannot override adaptee behavior directly</li>
+</ul>
+</div>
+</div>
+<div style="background: #dcfce7; padding: 24px; border-radius: 12px">
+<h4 style="color: #166534; margin-top: 0">Class Adapter (Inheritance)</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 16px"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter INHERITS from both the target interface and the adaptee class.</span></p>
+<pre style="background: #f0fdf4; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto"><code style="color: #166534">class StripeAdapter(PaymentGateway, StripeClient):
+  """Class Adapter - uses multiple inheritance."""
+
+  def __init__(self, api_key: str):
+  StripeClient.__init__(self, api_key)  # IS-A StripeClient
+
+  def charge(self, amount: Decimal, currency: str,
+  token: str) -> PaymentResult:
+# Direct access to inherited methods
+  response = self.create_charge(  # No delegation!
+  amount_cents=int(amount * 100),
+  currency=currency,
+  source=token
+  )
+return self._transform_response(response)</code></pre>
+<div style="margin-top: 16px">
+<div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px"><strong>Advantages:</strong></div>
+<ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px">
+<li>No extra object - direct method access</li>
+<li>Can override adaptee behavior</li>
+<li>Slightly better performance (no delegation)</li>
+<li>Adapter IS-A adaptee (can be used where adaptee expected)</li>
+</ul>
+</div>
+<div style="margin-top: 12px">
+<div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px"><strong>Disadvantages:</strong></div>
+<ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px">
+<li>Requires multiple inheritance (not all languages)</li>
+<li>Tied to ONE specific adaptee class</li>
+<li>Cannot adapt adaptee subclasses</li>
+<li>Diamond problem risks with method resolution</li>
+<li>Tight coupling - harder to test</li>
+</ul>
+</div>
+</div>
+</div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; margin-top: 20px">
+<strong style="color: #92400e">When to Choose Which:</strong>
+<div style="color: #78350f; margin-top: 8px">
+<p><strong>Use Object Adapter (95% of cases) when:</strong></p>
+<ul style="margin: 8px 0; padding-left: 20px">
+<li>You need to adapt multiple related classes (inheritance hierarchies)</li>
+<li>You want dependency injection for testing</li>
+<li>Your language doesn't support multiple inheritance (Java, C#)</li>
+<li>You might need to swap adaptees at runtime</li>
+</ul>
+<p><strong>Use Class Adapter when:</strong></p>
+<ul style="margin: 8px 0; padding-left: 20px">
+<li>You need to override specific adaptee methods</li>
+<li>Performance is critical and delegation overhead matters</li>
+<li>You're in C++ or Python and comfortable with multiple inheritance</li>
+<li>The adaptee is a final/sealed class you need to extend</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="interview-deep-dive-class-vs-object-adapter">Interview Deep-Dive: Class vs Object Adapter</h3>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: Why is object adapter preferred in Java and C# but class adapter is valid in Python and C++?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
+<pre><code>The key difference is **multiple inheritance support**:
+
+**Java/C# Limitation:**
+```java
+// IMPOSSIBLE in Java - classes can only extend ONE class
+class StripeAdapter extends PaymentGateway, StripeClient { } // Compilation error!
+
+// Java workaround: Object adapter with interface
+class StripeAdapter implements PaymentGateway {
+private StripeClient client;  // Composition
+}
+```
+
+**Python/C++ - Multiple Inheritance Works:**
+```python
+# Python supports multiple inheritance
+class StripeAdapter(PaymentGateway, StripeClient):
+def __init__(self, api_key: str):
+StripeClient.__init__(self, api_key)
+
+def charge(self, amount: Decimal, currency: str, token: str):
+return self.create_charge(...)  # Direct access via inheritance
+```
+
+**Python's MRO (Method Resolution Order):**
+```python
+# Python uses C3 linearization to resolve method conflicts
+print(StripeAdapter.__mro__)
+# (&lt;class 'StripeAdapter'&gt;, &lt;class 'PaymentGateway'&gt;, &lt;class 'StripeClient'&gt;, ...)
+      ```
+</code></pre>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How does Python's MRO affect class adapter behavior, especially with diamond inheritance?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Python's C3 linearization creates a deterministic but sometimes surprising method resolution order.</span></p>
+<pre><code>          ```python
+          class Base:
+          def operation(self):
+          return &quot;Base&quot;
+
+          class Target(Base):
+          def operation(self):
+          return &quot;Target&quot;
+
+          class Adaptee(Base):
+          def operation(self):
+          return &quot;Adaptee&quot;
+
+          class Adapter(Target, Adaptee):
+          pass
+
+          adapter = Adapter()
+          print(adapter.operation())  # &quot;Target&quot; - leftmost parent wins
+          print(Adapter.__mro__)
+          # (Adapter, Target, Adaptee, Base, object)
+          ```
+</code></pre>
+<p><strong>The Diamond Problem Manifestation:</strong><br />
+```python<br />
+class PaymentInterface:<br />
+def process(self):<br />
+return &quot;Interface default&quot;</p>
+<pre><code>          class ModernGateway(PaymentInterface):
+          def process(self):
+          return &quot;Modern processing&quot;
+
+          class LegacySystem(PaymentInterface):
+          def process(self):
+          return &quot;Legacy processing&quot;
+
+          class BridgeAdapter(ModernGateway, LegacySystem):
+          &quot;&quot;&quot;Which process() is called?&quot;&quot;&quot;
+          pass
+
+          # MRO: BridgeAdapter -&gt; ModernGateway -&gt; LegacySystem -&gt; PaymentInterface
+          BridgeAdapter().process()  # &quot;Modern processing&quot;
+          ```
+</code></pre>
+<p><strong>Explicit Resolution:</strong><br />
+<code>python class BridgeAdapter(ModernGateway, LegacySystem): def process(self): # Explicitly choose which parent's implementation legacy_result = LegacySystem.process(self) return f&quot;Adapted from: {legacy_result}&quot; </code></p>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: What are the memory and performance implications of class vs object adapter at scale?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><strong>Memory Footprint:</strong></p>
+<pre><code>              ```python
+              import sys
+
+              class Adaptee:
+              def __init__(self):
+              self.data = &quot;adaptee_data&quot;
+
+              class ObjectAdapter:
+              def __init__(self, adaptee):
+              self._adaptee = adaptee  # Reference to separate object
+
+              class ClassAdapter(Adaptee):
+              pass  # Inherits adaptee's attributes directly
+
+              # Memory comparison
+              adaptee = Adaptee()
+              obj_adapter = ObjectAdapter(adaptee)
+              class_adapter = ClassAdapter()
+
+              # Object adapter: Two objects in memory
+              print(sys.getsizeof(adaptee) + sys.getsizeof(obj_adapter))  # ~100 bytes
+
+              # Class adapter: Single object
+              print(sys.getsizeof(class_adapter))  # ~56 bytes
+              ```
+</code></pre>
+<p><strong>Performance Implications:</strong></p>
+<pre><code>              ```python
+              import timeit
+
+              class Adaptee:
+              def heavy_operation(self):
+              return sum(range(1000))
+
+              class ObjectAdapter:
+              def __init__(self, adaptee):
+              self._adaptee = adaptee
+
+              def operation(self):
+              return self._adaptee.heavy_operation()  # Delegation cost
+
+              class ClassAdapter(Adaptee):
+              def operation(self):
+              return self.heavy_operation()  # Direct call
+
+              # Benchmark (10 million calls)
+              obj_adapter = ObjectAdapter(Adaptee())
+              class_adapter = ClassAdapter()
+
+              # Object adapter: ~2.1 seconds (attribute lookup + delegation)
+              # Class adapter: ~1.9 seconds (direct method resolution)
+              # Difference: ~10% overhead from delegation
+              ```
+</code></pre>
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">In practice, this overhead is negligible unless you're in a hot loop with millions of calls per second.</span> The flexibility benefits of object adapter almost always outweigh the minor performance cost.</p>
+<p><strong>Real-World Trade-off Analysis:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>Object Adapter</th>
+<th>Class Adapter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory per instance</td>
+<td>+40-60 bytes</td>
+<td>Baseline</td>
+</tr>
+<tr>
+<td>Method call overhead</td>
+<td>~10% slower</td>
+<td>Baseline</td>
+</tr>
+<tr>
+<td>Testability</td>
+<td>Excellent (DI)</td>
+<td>Poor (tight coupling)</td>
+</tr>
+<tr>
+<td>Flexibility</td>
+<td>High</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Maintainability</td>
+<td>Better</td>
+<td>Worse</td>
+</tr>
+</tbody>
+</table>
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The recommendation: Use object adapter unless profiling proves delegation overhead is a bottleneck in your specific use case.</span></p>
+</div>
+</details>
+</div>
+</details>
+</div>
+</details>
+<hr />
+<h2 id="two-way-adapters-bidirectional-interface-translation">Two-Way Adapters: Bidirectional Interface Translation</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.2rem">Understanding Two-Way Adapters</h3>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7">
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">A two-way adapter implements BOTH interfaces, allowing either system to use the other transparently.</span> This is essential when two systems need mutual interoperability, not just one-way communication.
+</p>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 24px 0">
+<div style="background: #dbeafe;border-radius: 12px; padding: 16px; min-width: 140px; text-align: center">
+<div style="color: #1e40af; font-weight: 700; font-size: 0.9rem">System A</div>
+<div style="color: #1e3a8a; font-size: 0.75rem">Interface A methods</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 0.9rem">---> calls A interface ---></div>
+<div style="color: #64748b; font-size: 0.9rem"><--- calls B interface <---</div>
+</div>
+<div style="background: #dcfce7;border-radius: 12px; padding: 16px; min-width: 180px; text-align: center">
+<div style="color: #166534; font-weight: 700; font-size: 0.9rem">Two-Way Adapter</div>
+<div style="color: #14532d; font-size: 0.75rem">Implements BOTH A and B</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 0.9rem">---> delegates to B ---></div>
+<div style="color: #64748b; font-size: 0.9rem"><--- delegates to A <---</div>
+</div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px; min-width: 140px; text-align: center">
+<div style="color: #92400e; font-weight: 700; font-size: 0.9rem">System B</div>
+<div style="color: #78350f; font-size: 0.75rem">Interface B methods</div>
+</div>
+</div>
+</div>
+<h3 id="two-way-adapter-implementation">Two-Way Adapter Implementation</h3>
+<pre><code>  ```python
+  from abc import ABC, abstractmethod
+  from typing import Dict, Any, Optional
+  from dataclasses import dataclass
+  from enum import Enum
+
+  # =============================================================================
+  # TWO INCOMPATIBLE NOTIFICATION SYSTEMS
+  # =============================================================================
+
+  # System A: Event-based notification system (push model)
+  class EventType(Enum):
+  USER_CREATED = &quot;user_created&quot;
+  ORDER_PLACED = &quot;order_placed&quot;
+  PAYMENT_RECEIVED = &quot;payment_received&quot;
+
+  @dataclass
+  class Event:
+  event_type: EventType
+  payload: Dict[str, Any]
+  timestamp: float
+  source: str
+
+  class EventPublisher(ABC):
+  &quot;&quot;&quot;System A's interface - push-based events.&quot;&quot;&quot;
+
+  @abstractmethod
+  def publish(self, event: Event) -&gt; bool:
+  &quot;&quot;&quot;Publish an event to subscribers.&quot;&quot;&quot;
+  pass
+
+  @abstractmethod
+  def subscribe(self, event_type: EventType, callback) -&gt; str:
+  &quot;&quot;&quot;Subscribe to events of a specific type.&quot;&quot;&quot;
+  pass
+
+  # System B: Message queue system (pull model)
+  @dataclass
+  class Message:
+  topic: str
+  body: str
+  headers: Dict[str, str]
+  message_id: str
+
+  class MessageQueue(ABC):
+  &quot;&quot;&quot;System B's interface - pull-based message queue.&quot;&quot;&quot;
+
+  @abstractmethod
+  def send(self, topic: str, message: Message) -&gt; str:
+  &quot;&quot;&quot;Send message to a topic.&quot;&quot;&quot;
+  pass
+
+  @abstractmethod
+  def receive(self, topic: str, timeout: float = 5.0) -&gt; Optional[Message]:
+  &quot;&quot;&quot;Receive message from a topic (blocking).&quot;&quot;&quot;
+  pass
+
+  @abstractmethod
+  def acknowledge(self, message_id: str) -&gt; bool:
+  &quot;&quot;&quot;Acknowledge message processing.&quot;&quot;&quot;
+  pass
+
+
+  # =============================================================================
+  # TWO-WAY ADAPTER
+  # =============================================================================
+
+  class EventMessageAdapter(EventPublisher, MessageQueue):
+  &quot;&quot;&quot;
+  Two-way adapter that bridges event system and message queue.
+
+  - Systems using EventPublisher can publish events that appear as messages
+  - Systems using MessageQueue can send messages that appear as events
+  &quot;&quot;&quot;
+
+  def __init__(self, event_system: EventPublisher, message_queue: MessageQueue):
+  self._event_system = event_system
+  self._message_queue = message_queue
+  self._subscription_map: Dict[str, EventType] = {}
+  self._pending_messages: Dict[str, Event] = {}
+
+  # =========================================================================
+  # EventPublisher interface -&gt; MessageQueue delegation
+  # =========================================================================
+
+  def publish(self, event: Event) -&gt; bool:
+  &quot;&quot;&quot;
+  Publish an event by converting it to a message and sending to queue.
+
+  Event System clients call this, it goes to Message Queue.
+  &quot;&quot;&quot;
+  # Transform Event -&gt; Message
+  message = Message(
+  topic=self._event_type_to_topic(event.event_type),
+  body=self._serialize_payload(event.payload),
+  headers={
+  &quot;X-Event-Type&quot;: event.event_type.value,
+  &quot;X-Event-Source&quot;: event.source,
+  &quot;X-Event-Timestamp&quot;: str(event.timestamp)
+  },
+  message_id=f&quot;evt_{event.timestamp}_{event.event_type.value}&quot;
+  )
+
+  # Delegate to message queue
+  result = self._message_queue.send(message.topic, message)
+  return result is not None
+
+  def subscribe(self, event_type: EventType, callback) -&gt; str:
+  &quot;&quot;&quot;
+  Subscribe to events by setting up a message consumer.
+
+  This is where two-way gets complex - we need to poll the queue
+  and convert messages back to events for the callback.
+  &quot;&quot;&quot;
+  topic = self._event_type_to_topic(event_type)
+  subscription_id = f&quot;sub_{topic}_{id(callback)}&quot;
+  self._subscription_map[subscription_id] = event_type
+
+  # In a real implementation, this would start a consumer thread
+  # that polls the queue and invokes the callback
+  return subscription_id
+
+  # =========================================================================
+  # MessageQueue interface -&gt; EventPublisher delegation
+  # =========================================================================
+
+  def send(self, topic: str, message: Message) -&gt; str:
+  &quot;&quot;&quot;
+  Send a message by converting it to an event and publishing.
+
+  Message Queue clients call this, it goes to Event System.
+  &quot;&quot;&quot;
+  # Transform Message -&gt; Event
+  event = Event(
+  event_type=self._topic_to_event_type(topic),
+  payload=self._deserialize_body(message.body),
+  timestamp=float(message.headers.get(&quot;X-Event-Timestamp&quot;, &quot;0&quot;)),
+  source=message.headers.get(&quot;X-Event-Source&quot;, &quot;message_queue&quot;)
+  )
+
+  # Store for acknowledgment tracking
+  self._pending_messages[message.message_id] = event
+
+  # Delegate to event system
+  success = self._event_system.publish(event)
+  return message.message_id if success else &quot;&quot;
+
+  def receive(self, topic: str, timeout: float = 5.0) -&gt; Optional[Message]:
+  &quot;&quot;&quot;
+  Receive a message by listening for events and converting.
+
+  This requires the adapter to buffer events as messages.
+  &quot;&quot;&quot;
+  # In production: set up event subscription, buffer incoming events,
+  # convert to messages, return from buffer
+  # Simplified for demonstration
+  pass
+
+  def acknowledge(self, message_id: str) -&gt; bool:
+  &quot;&quot;&quot;Acknowledge message by removing from pending tracking.&quot;&quot;&quot;
+  return self._pending_messages.pop(message_id, None) is not None
+
+  # =========================================================================
+  # Transformation helpers
+  # =========================================================================
+
+  def _event_type_to_topic(self, event_type: EventType) -&gt; str:
+  &quot;&quot;&quot;Convert EventType enum to message queue topic string.&quot;&quot;&quot;
+  return f&quot;events.{event_type.value}&quot;
+
+  def _topic_to_event_type(self, topic: str) -&gt; EventType:
+  &quot;&quot;&quot;Convert message queue topic to EventType enum.&quot;&quot;&quot;
+  event_name = topic.replace(&quot;events.&quot;, &quot;&quot;)
+  return EventType(event_name)
+
+  def _serialize_payload(self, payload: Dict[str, Any]) -&gt; str:
+  &quot;&quot;&quot;Serialize event payload to message body.&quot;&quot;&quot;
+  import json
+  return json.dumps(payload)
+
+  def _deserialize_body(self, body: str) -&gt; Dict[str, Any]:
+  &quot;&quot;&quot;Deserialize message body to event payload.&quot;&quot;&quot;
+  import json
+  return json.loads(body)
+
+
+  # =============================================================================
+  # USAGE: Both systems can use the adapter transparently
+  # =============================================================================
+
+  # Concrete implementations (simplified)
+  class InMemoryEventSystem(EventPublisher):
+  def __init__(self):
+  self._subscribers = {}
+
+  def publish(self, event: Event) -&gt; bool:
+  callbacks = self._subscribers.get(event.event_type, [])
+  for cb in callbacks:
+  cb(event)
+  return True
+
+  def subscribe(self, event_type: EventType, callback) -&gt; str:
+  if event_type not in self._subscribers:
+  self._subscribers[event_type] = []
+  self._subscribers[event_type].append(callback)
+  return f&quot;sub_{event_type.value}&quot;
+
+  class InMemoryMessageQueue(MessageQueue):
+  def __init__(self):
+  self._queues: Dict[str, list] = {}
+
+  def send(self, topic: str, message: Message) -&gt; str:
+  if topic not in self._queues:
+  self._queues[topic] = []
+  self._queues[topic].append(message)
+  return message.message_id
+
+  def receive(self, topic: str, timeout: float = 5.0) -&gt; Optional[Message]:
+  if topic in self._queues and self._queues[topic]:
+  return self._queues[topic].pop(0)
+  return None
+
+  def acknowledge(self, message_id: str) -&gt; bool:
+  return True
+
+
+  # Create the two-way adapter
+  event_system = InMemoryEventSystem()
+  message_queue = InMemoryMessageQueue()
+  adapter = EventMessageAdapter(event_system, message_queue)
+
+  # Event-based client can use adapter as EventPublisher
+  event_client_view: EventPublisher = adapter
+  event_client_view.publish(Event(
+  event_type=EventType.ORDER_PLACED,
+  payload={&quot;order_id&quot;: &quot;12345&quot;, &quot;amount&quot;: 99.99},
+  timestamp=1234567890.0,
+  source=&quot;order_service&quot;
+  ))
+
+  # Message-based client can use adapter as MessageQueue
+  queue_client_view: MessageQueue = adapter
+  queue_client_view.send(&quot;events.payment_received&quot;, Message(
+  topic=&quot;events.payment_received&quot;,
+  body='{&quot;payment_id&quot;: &quot;pay_123&quot;}',
+  headers={&quot;X-Event-Timestamp&quot;: &quot;1234567890.0&quot;},
+  message_id=&quot;msg_001&quot;
+  ))
+  ```
+</code></pre>
+<h3 id="interview-deep-dive-two-way-adapters">Interview Deep-Dive: Two-Way Adapters</h3>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: When would you need a two-way adapter instead of a regular one-way adapter?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
+<p>Two-way adapters are needed when:</p>
+<p><strong>1. Bidirectional Integration:</strong> Both systems need to initiate communication<br />
+<code>python # E-commerce integrating with warehouse # - E-commerce sends orders TO warehouse # - Warehouse sends inventory updates TO e-commerce class EcommerceWarehouseAdapter(EcommerceAPI, WarehouseAPI): pass </code></p>
+<p><strong>2. Protocol Bridging:</strong> Converting between fundamentally different communication models<br />
+<code>python # REST API &lt;-&gt; GraphQL # - REST clients can make requests that become GraphQL queries # - GraphQL subscriptions can be exposed as REST webhooks </code></p>
+<p><strong>3. System Migration:</strong> Gradual transition where both old and new systems must coexist<br />
+<code>python # During migration from Monolith to Microservices # - Monolith calls appear as microservice events # - Microservice events appear as monolith method calls </code></p>
+<p><strong>4. Testing/Mocking:</strong> Creating test doubles that work from both directions<br />
+<code>python # Mock that can be used by either system under test </code></p>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: What are the synchronization challenges in two-way adapters when both systems can initiate state changes?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The core challenge is maintaining consistency when both sides can modify shared state.</span></p>
+<p><strong>Challenge 1: Race Conditions</strong><br />
+```python<br />
+# System A sends: &quot;Update inventory to 100&quot;<br />
+# System B sends: &quot;Update inventory to 50&quot;<br />
+# Which one wins? Last-write-wins can lose data.</p>
+<pre><code>          class TwoWayInventoryAdapter:
+          def __init__(self):
+          self._lock = threading.Lock()
+          self._version = 0
+
+          def update_from_a(self, quantity: int, expected_version: int):
+          with self._lock:
+          if self._version != expected_version:
+          raise ConcurrentModificationError()
+          self._version += 1
+          # Apply update...
+          ```
+</code></pre>
+<p><strong>Challenge 2: Event Loops / Infinite Recursion</strong><br />
+```python<br />
+# System A publishes event<br />
+# Adapter converts to System B message<br />
+# System B's handler publishes response event<br />
+# Adapter converts back to System A event<br />
+# System A's handler publishes another event...<br />
+# INFINITE LOOP!</p>
+<pre><code>          class SafeTwoWayAdapter:
+          def __init__(self):
+          self._processing = threading.local()
+
+          def forward_a_to_b(self, event):
+          if getattr(self._processing, 'active', False):
+          return  # Break the cycle
+
+          self._processing.active = True
+          try:
+          self._system_b.send(self._transform(event))
+          finally:
+          self._processing.active = False
+          ```
+</code></pre>
+<p><strong>Challenge 3: Transactional Consistency</strong><br />
+```python<br />
+# What if System A succeeds but System B fails?<br />
+class TransactionalTwoWayAdapter:<br />
+def bidirectional_operation(self, data):<br />
+# Start both transactions<br />
+a_txn = self._system_a.begin_transaction()<br />
+b_txn = self._system_b.begin_transaction()</p>
+<pre><code>          try:
+          a_result = self._system_a.write(data, a_txn)
+          b_result = self._system_b.write(self._transform(data), b_txn)
+
+          # Two-phase commit
+          self._system_a.prepare(a_txn)
+          self._system_b.prepare(b_txn)
+
+          self._system_a.commit(a_txn)
+          self._system_b.commit(b_txn)
+          except Exception:
+          self._system_a.rollback(a_txn)
+          self._system_b.rollback(b_txn)
+          raise
+          ```
+</code></pre>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: How would you implement idempotency in a two-way adapter to handle duplicate messages from either direction?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Idempotency requires tracking processed messages from BOTH directions and ensuring repeated processing produces the same result.</span></p>
+<pre><code>              ```python
+              from typing import Dict, Set, Optional
+              from dataclasses import dataclass
+              from datetime import datetime, timedelta
+              import hashlib
+
+              @dataclass
+              class IdempotencyRecord:
+              message_hash: str
+              result: Any
+              processed_at: datetime
+              source: str  # 'system_a' or 'system_b'
+
+              class IdempotentTwoWayAdapter(SystemAInterface, SystemBInterface):
+              &quot;&quot;&quot;
+              Two-way adapter with idempotency guarantees.
+              &quot;&quot;&quot;
+
+              def __init__(self, system_a, system_b, ttl_hours: int = 24):
+              self._system_a = system_a
+              self._system_b = system_b
+              self._idempotency_store: Dict[str, IdempotencyRecord] = {}
+              self._ttl = timedelta(hours=ttl_hours)
+
+              def _compute_message_hash(self, message: Any, source: str) -&gt; str:
+              &quot;&quot;&quot;
+              Create unique hash for message deduplication.
+              Include source to allow same content from different origins.
+              &quot;&quot;&quot;
+              content = f&quot;{source}:{self._serialize(message)}&quot;
+              return hashlib.sha256(content.encode()).hexdigest()
+
+              def _check_idempotency(self, message_hash: str) -&gt; Optional[Any]:
+              &quot;&quot;&quot;Return cached result if message was already processed.&quot;&quot;&quot;
+              record = self._idempotency_store.get(message_hash)
+              if record and datetime.now() - record.processed_at &lt; self._ttl:
+              return record.result
+              return None
+
+              def _record_processing(self, message_hash: str, result: Any, source: str):
+              &quot;&quot;&quot;Record that we processed this message.&quot;&quot;&quot;
+              self._idempotency_store[message_hash] = IdempotencyRecord(
+              message_hash=message_hash,
+              result=result,
+              processed_at=datetime.now(),
+              source=source
+              )
+              self._cleanup_expired_records()
+
+              # System A -&gt; System B direction
+              def forward_from_a(self, message_a):
+              msg_hash = self._compute_message_hash(message_a, 'system_a')
+
+              # Check if already processed
+              cached = self._check_idempotency(msg_hash)
+              if cached is not None:
+              return cached  # Return same result as before
+
+              # Process and record
+              message_b = self._transform_a_to_b(message_a)
+              result = self._system_b.receive(message_b)
+
+              self._record_processing(msg_hash, result, 'system_a')
+              return result
+
+              # System B -&gt; System A direction
+              def forward_from_b(self, message_b):
+              msg_hash = self._compute_message_hash(message_b, 'system_b')
+
+              cached = self._check_idempotency(msg_hash)
+              if cached is not None:
+              return cached
+
+              message_a = self._transform_b_to_a(message_b)
+              result = self._system_a.receive(message_a)
+
+              self._record_processing(msg_hash, result, 'system_b')
+              return result
+
+              def _cleanup_expired_records(self):
+              &quot;&quot;&quot;Remove old idempotency records to prevent unbounded growth.&quot;&quot;&quot;
+              now = datetime.now()
+              expired = [
+              k for k, v in self._idempotency_store.items()
+              if now - v.processed_at &gt; self._ttl
+              ]
+              for key in expired:
+              del self._idempotency_store[key]
+              ```
+</code></pre>
+<p><strong>Production Considerations:</strong></p>
+<ol>
+<li>
+<p><strong>Distributed Idempotency Store:</strong> Use Redis or a database instead of in-memory dict for multi-instance deployments</p>
+</li>
+<li>
+<p><strong>Idempotency Key Strategy:</strong><br />
+```python<br />
+# Option 1: Client-provided idempotency key<br />
+def forward_from_a(self, message_a, idempotency_key: str = None):<br />
+key = idempotency_key or self._compute_message_hash(message_a, 'a')</p>
+<pre><code>         # Option 2: Content-based + timestamp window
+         def _compute_message_hash(self, message, source):
+         # Round timestamp to 5-minute window
+         time_bucket = int(message.timestamp / 300) * 300
+         return hash(f&quot;{source}:{message.content}:{time_bucket}&quot;)
+         ```
+</code></pre>
+</li>
+<li>
+<p><strong>Handling Side Effects:</strong><br />
+<code>python # If the forwarded operation has side effects, store them too @dataclass class IdempotencyRecord: result: Any side_effects: List[SideEffect]  # For replay if needed compensation_actions: List[Action]  # For rollback if needed </code></p>
+</li>
+</ol>
+</div>
+</details>
+</div>
+</details>
+</div>
+</details>
+<hr />
+<h2 id="real-world-api-adapter-examples">Real-World API Adapter Examples</h2>
+<h3 id="example-1-multi-cloud-storage-adapter">Example 1: Multi-Cloud Storage Adapter</h3>
+<pre><code>  ```python
+  from abc import ABC, abstractmethod
+  from dataclasses import dataclass
+  from typing import BinaryIO, Optional, Dict, List
+  from datetime import datetime
+  import hashlib
+
+  @dataclass
+  class StorageObject:
+  &quot;&quot;&quot;Unified storage object representation.&quot;&quot;&quot;
+  key: str
+  size: int
+  last_modified: datetime
+  etag: str
+  content_type: str
+  metadata: Dict[str, str]
+
+  @dataclass
+  class UploadResult:
+  &quot;&quot;&quot;Unified upload result.&quot;&quot;&quot;
+  key: str
+  etag: str
+  version_id: Optional[str]
+  provider: str
+
+  class CloudStorageGateway(ABC):
+  &quot;&quot;&quot;
+  Target interface for unified cloud storage operations.
+
+  This abstraction allows application code to work with any cloud provider
+  without modification.
+  &quot;&quot;&quot;
+
+  @abstractmethod
+  def upload(self, key: str, data: BinaryIO,
+  content_type: str = &quot;application/octet-stream&quot;,
+  metadata: Dict[str, str] = None) -&gt; UploadResult:
+  &quot;&quot;&quot;Upload object to storage.&quot;&quot;&quot;
+  pass
+
+  @abstractmethod
+  def download(self, key: str) -&gt; BinaryIO:
+  &quot;&quot;&quot;Download object from storage.&quot;&quot;&quot;
+  pass
+
+  @abstractmethod
+  def delete(self, key: str) -&gt; bool:
+  &quot;&quot;&quot;Delete object from storage.&quot;&quot;&quot;
+  pass
+
+  @abstractmethod
+  def list_objects(self, prefix: str = &quot;&quot;,
+  max_keys: int = 1000) -&gt; List[StorageObject]:
+  &quot;&quot;&quot;List objects with optional prefix filter.&quot;&quot;&quot;
+  pass
+
+  @abstractmethod
+  def get_metadata(self, key: str) -&gt; StorageObject:
+  &quot;&quot;&quot;Get object metadata without downloading content.&quot;&quot;&quot;
+  pass
+
+
+  # =============================================================================
+  # AWS S3 ADAPTER
+  # =============================================================================
+
+  class S3Adapter(CloudStorageGateway):
+  &quot;&quot;&quot;
+  Adapts AWS S3 SDK to CloudStorageGateway interface.
+
+  Key adaptations:
+  - S3 uses 'Bucket' + 'Key', we use just 'key' (bucket configured)
+  - S3 returns boto3 response dicts, we return dataclasses
+  - S3 metadata keys are lowercased, we preserve original case
+  &quot;&quot;&quot;
+
+  def __init__(self, bucket: str, region: str = &quot;us-east-1&quot;):
+  import boto3
+  self._bucket = bucket
+  self._client = boto3.client(&quot;s3&quot;, region_name=region)
+
+  def upload(self, key: str, data: BinaryIO,
+  content_type: str = &quot;application/octet-stream&quot;,
+  metadata: Dict[str, str] = None) -&gt; UploadResult:
+
+  # S3-specific: metadata keys must be strings, values must be strings
+  s3_metadata = {str(k): str(v) for k, v in (metadata or {}).items()}
+
+  response = self._client.put_object(
+  Bucket=self._bucket,
+  Key=key,
+  Body=data,
+  ContentType=content_type,
+  Metadata=s3_metadata
+  )
+
+  return UploadResult(
+  key=key,
+  etag=response[&quot;ETag&quot;].strip('&quot;'),  # S3 includes quotes
+  version_id=response.get(&quot;VersionId&quot;),
+  provider=&quot;aws_s3&quot;
+  )
+
+  def download(self, key: str) -&gt; BinaryIO:
+  response = self._client.get_object(
+  Bucket=self._bucket,
+  Key=key
+  )
+  return response[&quot;Body&quot;]  # StreamingBody acts like BinaryIO
+
+  def delete(self, key: str) -&gt; bool:
+  try:
+  self._client.delete_object(Bucket=self._bucket, Key=key)
+  return True
+  except Exception:
+  return False
+
+  def list_objects(self, prefix: str = &quot;&quot;,
+  max_keys: int = 1000) -&gt; List[StorageObject]:
+  response = self._client.list_objects_v2(
+  Bucket=self._bucket,
+  Prefix=prefix,
+  MaxKeys=max_keys
+  )
+
+  return [
+  StorageObject(
+  key=obj[&quot;Key&quot;],
+  size=obj[&quot;Size&quot;],
+  last_modified=obj[&quot;LastModified&quot;],
+  etag=obj[&quot;ETag&quot;].strip('&quot;'),
+  content_type=&quot;&quot;,  # Not returned by list
+  metadata={}
+  )
+  for obj in response.get(&quot;Contents&quot;, [])
+  ]
+
+  def get_metadata(self, key: str) -&gt; StorageObject:
+  response = self._client.head_object(
+  Bucket=self._bucket,
+  Key=key
+  )
+
+  return StorageObject(
+  key=key,
+  size=response[&quot;ContentLength&quot;],
+  last_modified=response[&quot;LastModified&quot;],
+  etag=response[&quot;ETag&quot;].strip('&quot;'),
+  content_type=response.get(&quot;ContentType&quot;, &quot;&quot;),
+  metadata=response.get(&quot;Metadata&quot;, {})
+  )
+
+
+  # =============================================================================
+  # GOOGLE CLOUD STORAGE ADAPTER
+  # =============================================================================
+
+  class GCSAdapter(CloudStorageGateway):
+  &quot;&quot;&quot;
+  Adapts Google Cloud Storage SDK to CloudStorageGateway interface.
+
+  Key adaptations:
+  - GCS uses 'Blob' objects, we use dataclasses
+  - GCS metadata is case-sensitive, S3 lowercases (we preserve)
+  - GCS uses 'generation' instead of 'version_id'
+  &quot;&quot;&quot;
+
+  def __init__(self, bucket: str, project: str = None):
+  from google.cloud import storage
+  self._client = storage.Client(project=project)
+  self._bucket = self._client.bucket(bucket)
+
+  def upload(self, key: str, data: BinaryIO,
+  content_type: str = &quot;application/octet-stream&quot;,
+  metadata: Dict[str, str] = None) -&gt; UploadResult:
+
+  blob = self._bucket.blob(key)
+  blob.metadata = metadata
+  blob.upload_from_file(data, content_type=content_type)
+
+  return UploadResult(
+  key=key,
+  etag=blob.etag,
+  version_id=str(blob.generation) if blob.generation else None,
+  provider=&quot;google_gcs&quot;
+  )
+
+  def download(self, key: str) -&gt; BinaryIO:
+  from io import BytesIO
+  blob = self._bucket.blob(key)
+  buffer = BytesIO()
+  blob.download_to_file(buffer)
+  buffer.seek(0)
+  return buffer
+
+  def delete(self, key: str) -&gt; bool:
+  try:
+  blob = self._bucket.blob(key)
+  blob.delete()
+  return True
+  except Exception:
+  return False
+
+  def list_objects(self, prefix: str = &quot;&quot;,
+  max_keys: int = 1000) -&gt; List[StorageObject]:
+  blobs = self._bucket.list_blobs(prefix=prefix, max_results=max_keys)
+
+  return [
+  StorageObject(
+  key=blob.name,
+  size=blob.size,
+  last_modified=blob.updated,
+  etag=blob.etag,
+  content_type=blob.content_type or &quot;&quot;,
+  metadata=blob.metadata or {}
+  )
+  for blob in blobs
+  ]
+
+  def get_metadata(self, key: str) -&gt; StorageObject:
+  blob = self._bucket.blob(key)
+  blob.reload()  # Fetch metadata from GCS
+
+  return StorageObject(
+  key=key,
+  size=blob.size,
+  last_modified=blob.updated,
+  etag=blob.etag,
+  content_type=blob.content_type or &quot;&quot;,
+  metadata=blob.metadata or {}
+  )
+
+
+  # =============================================================================
+  # AZURE BLOB STORAGE ADAPTER
+  # =============================================================================
+
+  class AzureBlobAdapter(CloudStorageGateway):
+  &quot;&quot;&quot;
+  Adapts Azure Blob Storage SDK to CloudStorageGateway interface.
+
+  Key adaptations:
+  - Azure uses 'container' + 'blob', we use just 'key'
+  - Azure uses 'BlobProperties' objects with different attribute names
+  - Azure metadata has size limits (8KB total)
+  &quot;&quot;&quot;
+
+  def __init__(self, connection_string: str, container: str):
+  from azure.storage.blob import BlobServiceClient
+  self._service = BlobServiceClient.from_connection_string(connection_string)
+  self._container = self._service.get_container_client(container)
+
+  def upload(self, key: str, data: BinaryIO,
+  content_type: str = &quot;application/octet-stream&quot;,
+  metadata: Dict[str, str] = None) -&gt; UploadResult:
+
+  from azure.storage.blob import ContentSettings
+
+  blob_client = self._container.get_blob_client(key)
+
+  response = blob_client.upload_blob(
+  data,
+  content_settings=ContentSettings(content_type=content_type),
+  metadata=metadata,
+  overwrite=True
+  )
+
+  return UploadResult(
+  key=key,
+  etag=response[&quot;etag&quot;].strip('&quot;'),
+  version_id=response.get(&quot;version_id&quot;),
+  provider=&quot;azure_blob&quot;
+  )
+
+  def download(self, key: str) -&gt; BinaryIO:
+  blob_client = self._container.get_blob_client(key)
+  stream = blob_client.download_blob()
+  return stream  # Acts as BinaryIO
+
+  def delete(self, key: str) -&gt; bool:
+  try:
+  blob_client = self._container.get_blob_client(key)
+  blob_client.delete_blob()
+  return True
+  except Exception:
+  return False
+
+  def list_objects(self, prefix: str = &quot;&quot;,
+  max_keys: int = 1000) -&gt; List[StorageObject]:
+  blobs = self._container.list_blobs(name_starts_with=prefix)
+
+  results = []
+  for i, blob in enumerate(blobs):
+  if i &gt;= max_keys:
+  break
+  results.append(StorageObject(
+  key=blob.name,
+  size=blob.size,
+  last_modified=blob.last_modified,
+  etag=blob.etag.strip('&quot;') if blob.etag else &quot;&quot;,
+  content_type=blob.content_settings.content_type or &quot;&quot;,
+  metadata=blob.metadata or {}
+  ))
+  return results
+
+  def get_metadata(self, key: str) -&gt; StorageObject:
+  blob_client = self._container.get_blob_client(key)
+  props = blob_client.get_blob_properties()
+
+  return StorageObject(
+  key=key,
+  size=props.size,
+  last_modified=props.last_modified,
+  etag=props.etag.strip('&quot;') if props.etag else &quot;&quot;,
+  content_type=props.content_settings.content_type or &quot;&quot;,
+  metadata=props.metadata or {}
+  )
+
+
+  # =============================================================================
+  # STORAGE FACTORY WITH ADAPTER SELECTION
+  # =============================================================================
+
+  class StorageFactory:
+  &quot;&quot;&quot;
+  Factory for creating cloud storage adapters.
+
+  Enables runtime selection of storage provider without changing client code.
+  &quot;&quot;&quot;
+
+  @staticmethod
+  def create(provider: str, **config) -&gt; CloudStorageGateway:
+  adapters = {
+  &quot;s3&quot;: lambda: S3Adapter(
+  bucket=config[&quot;bucket&quot;],
+  region=config.get(&quot;region&quot;, &quot;us-east-1&quot;)
+  ),
+  &quot;gcs&quot;: lambda: GCSAdapter(
+  bucket=config[&quot;bucket&quot;],
+  project=config.get(&quot;project&quot;)
+  ),
+  &quot;azure&quot;: lambda: AzureBlobAdapter(
+  connection_string=config[&quot;connection_string&quot;],
+  container=config[&quot;container&quot;]
+  )
+  }
+
+  factory_fn = adapters.get(provider.lower())
+  if not factory_fn:
+  raise ValueError(f&quot;Unsupported provider: {provider}&quot;)
+
+  return factory_fn()
+
+
+  # =============================================================================
+  # CLIENT CODE - PROVIDER AGNOSTIC
+  # =============================================================================
+
+  class DocumentService:
+  &quot;&quot;&quot;
+  Application service that uses storage - completely provider-agnostic.
+  &quot;&quot;&quot;
+
+  def __init__(self, storage: CloudStorageGateway):
+  self._storage = storage
+
+  def upload_document(self, doc_id: str, content: bytes,
+  doc_type: str) -&gt; UploadResult:
+  from io import BytesIO
+
+  key = f&quot;documents/{doc_type}/{doc_id}&quot;
+  data = BytesIO(content)
+
+  return self._storage.upload(
+  key=key,
+  data=data,
+  content_type=&quot;application/pdf&quot;,
+  metadata={&quot;doc_type&quot;: doc_type, &quot;doc_id&quot;: doc_id}
+  )
+
+  def get_document(self, doc_id: str, doc_type: str) -&gt; bytes:
+  key = f&quot;documents/{doc_type}/{doc_id}&quot;
+  stream = self._storage.download(key)
+  return stream.read()
+
+
+  # Usage - switch providers with single config change
+  storage = StorageFactory.create(&quot;s3&quot;, bucket=&quot;my-documents&quot;, region=&quot;us-west-2&quot;)
+  # storage = StorageFactory.create(&quot;gcs&quot;, bucket=&quot;my-documents&quot;, project=&quot;my-project&quot;)
+  # storage = StorageFactory.create(&quot;azure&quot;, connection_string=&quot;...&quot;, container=&quot;docs&quot;)
+
+  doc_service = DocumentService(storage)
+  result = doc_service.upload_document(&quot;doc123&quot;, b&quot;PDF content...&quot;, &quot;invoices&quot;)
+  print(f&quot;Uploaded to {result.provider}: {result.key}&quot;)
+  ```
+</code></pre>
+<h3 id="example-2-payment-gateway-adapter-with-retry-and-circuit-breaker">Example 2: Payment Gateway Adapter with Retry and Circuit Breaker</h3>
+<pre><code>  ```python
+  from abc import ABC, abstractmethod
+  from dataclasses import dataclass, field
+  from decimal import Decimal
+  from typing import Optional, Dict, Any, Callable
+  from datetime import datetime, timedelta
+  from enum import Enum
+  import time
+  import threading
+
+  class PaymentStatus(Enum):
+  SUCCESS = &quot;success&quot;
+  FAILED = &quot;failed&quot;
+  PENDING = &quot;pending&quot;
+  REQUIRES_ACTION = &quot;requires_action&quot;
+
+  @dataclass
+  class PaymentResult:
+  status: PaymentStatus
+  transaction_id: str
+  amount: Decimal
+  currency: str
+  provider: str
+  error_code: Optional[str] = None
+  error_message: Optional[str] = None
+  requires_redirect: bool = False
+  redirect_url: Optional[str] = None
+  metadata: Dict[str, Any] = field(default_factory=dict)
+
+  class PaymentGateway(ABC):
+  &quot;&quot;&quot;Target interface for payment processing.&quot;&quot;&quot;
+
+  @abstractmethod
+  def charge(self, amount: Decimal, currency: str,
+  payment_method_token: str,
+  idempotency_key: str) -&gt; PaymentResult:
+  pass
+
+  @abstractmethod
+  def refund(self, transaction_id: str,
+  amount: Optional[Decimal] = None) -&gt; PaymentResult:
+  pass
+
+  @abstractmethod
+  def get_transaction(self, transaction_id: str) -&gt; PaymentResult:
+  pass
+
+
+  # =============================================================================
+  # CIRCUIT BREAKER FOR ADAPTER RESILIENCE
+  # =============================================================================
+
+  class CircuitState(Enum):
+  CLOSED = &quot;closed&quot;  # Normal operation
+  OPEN = &quot;open&quot;      # Failing, reject requests
+  HALF_OPEN = &quot;half_open&quot;  # Testing if service recovered
+
+  class CircuitBreaker:
+  &quot;&quot;&quot;
+  Circuit breaker pattern for adapter resilience.
+
+  Prevents cascading failures when an adaptee service is down.
+  &quot;&quot;&quot;
+
+  def __init__(self, failure_threshold: int = 5,
+  recovery_timeout: float = 30.0,
+  half_open_max_calls: int = 3):
+  self._failure_threshold = failure_threshold
+  self._recovery_timeout = recovery_timeout
+  self._half_open_max_calls = half_open_max_calls
+
+  self._state = CircuitState.CLOSED
+  self._failure_count = 0
+  self._last_failure_time: Optional[datetime] = None
+  self._half_open_calls = 0
+  self._lock = threading.Lock()
+
+  def can_execute(self) -&gt; bool:
+  with self._lock:
+  if self._state == CircuitState.CLOSED:
+  return True
+
+  if self._state == CircuitState.OPEN:
+  if self._should_attempt_reset():
+  self._state = CircuitState.HALF_OPEN
+  self._half_open_calls = 0
+  return True
+  return False
+
+  # HALF_OPEN
+  if self._half_open_calls &lt; self._half_open_max_calls:
+  self._half_open_calls += 1
+  return True
+  return False
+
+  def record_success(self):
+  with self._lock:
+  if self._state == CircuitState.HALF_OPEN:
+  self._state = CircuitState.CLOSED
+  self._failure_count = 0
+
+  def record_failure(self):
+  with self._lock:
+  self._failure_count += 1
+  self._last_failure_time = datetime.now()
+
+  if self._state == CircuitState.HALF_OPEN:
+  self._state = CircuitState.OPEN
+  elif self._failure_count &gt;= self._failure_threshold:
+  self._state = CircuitState.OPEN
+
+  def _should_attempt_reset(self) -&gt; bool:
+  if self._last_failure_time is None:
+  return True
+  elapsed = (datetime.now() - self._last_failure_time).total_seconds()
+  return elapsed &gt;= self._recovery_timeout
+
+  @property
+  def state(self) -&gt; CircuitState:
+  return self._state
+
+
+  # =============================================================================
+  # RESILIENT STRIPE ADAPTER
+  # =============================================================================
+
+  class ResilientStripeAdapter(PaymentGateway):
+  &quot;&quot;&quot;
+  Stripe adapter with built-in resilience patterns.
+
+  Features:
+  - Circuit breaker for failure isolation
+  - Automatic retry with exponential backoff
+  - Idempotency key support
+  - Error normalization
+  &quot;&quot;&quot;
+
+  # Stripe error codes that are retryable
+  RETRYABLE_ERRORS = {
+  &quot;rate_limit_error&quot;,
+  &quot;api_connection_error&quot;,
+  &quot;api_error&quot;,  # 500 errors
+  }
+
+  def __init__(self, api_key: str,
+  max_retries: int = 3,
+  circuit_breaker: CircuitBreaker = None):
+  self._api_key = api_key
+  self._max_retries = max_retries
+  self._circuit_breaker = circuit_breaker or CircuitBreaker()
+
+  # In production, use actual Stripe SDK
+  # import stripe
+  # stripe.api_key = api_key
+
+  def charge(self, amount: Decimal, currency: str,
+  payment_method_token: str,
+  idempotency_key: str) -&gt; PaymentResult:
+
+  def _execute():
+  # Simulated Stripe API call
+  return self._stripe_create_charge(
+  amount_cents=int(amount * 100),
+  currency=currency.lower(),
+  source=payment_method_token,
+  idempotency_key=idempotency_key
+  )
+
+  response = self._execute_with_resilience(_execute)
+  return self._transform_charge_response(response, amount, currency)
+
+  def _execute_with_resilience(self, operation: Callable) -&gt; Dict:
+  &quot;&quot;&quot;Execute operation with circuit breaker and retry logic.&quot;&quot;&quot;
+
+  if not self._circuit_breaker.can_execute():
+  raise ServiceUnavailableError(
+  &quot;Payment service temporarily unavailable (circuit open)&quot;
+  )
+
+  last_error = None
+
+  for attempt in range(self._max_retries + 1):
+  try:
+  result = operation()
+  self._circuit_breaker.record_success()
+  return result
+
+  except StripeAPIError as e:
+  last_error = e
+
+  if not self._is_retryable(e):
+  self._circuit_breaker.record_failure()
+  raise
+
+  if attempt &lt; self._max_retries:
+  sleep_time = self._calculate_backoff(attempt)
+  time.sleep(sleep_time)
+  else:
+  self._circuit_breaker.record_failure()
+  raise
+
+  raise last_error
+
+  def _is_retryable(self, error) -&gt; bool:
+  &quot;&quot;&quot;Determine if error warrants retry.&quot;&quot;&quot;
+  return getattr(error, 'code', '') in self.RETRYABLE_ERRORS
+
+  def _calculate_backoff(self, attempt: int) -&gt; float:
+  &quot;&quot;&quot;Exponential backoff with jitter.&quot;&quot;&quot;
+  import random
+  base_delay = 0.5 * (2 ** attempt)
+  jitter = random.uniform(0, 0.5)
+  return min(base_delay + jitter, 30.0)  # Cap at 30 seconds
+
+  def _stripe_create_charge(self, amount_cents: int, currency: str,
+  source: str, idempotency_key: str) -&gt; Dict:
+  &quot;&quot;&quot;Simulated Stripe API call.&quot;&quot;&quot;
+  # In production: stripe.Charge.create(...)
+  return {
+  &quot;id&quot;: f&quot;ch_{datetime.now().timestamp()}&quot;,
+  &quot;amount&quot;: amount_cents,
+  &quot;currency&quot;: currency,
+  &quot;status&quot;: &quot;succeeded&quot;,
+  &quot;source&quot;: {&quot;id&quot;: source},
+  &quot;created&quot;: int(datetime.now().timestamp())
+  }
+
+  def _transform_charge_response(self, response: Dict,
+  original_amount: Decimal,
+  original_currency: str) -&gt; PaymentResult:
+  &quot;&quot;&quot;Transform Stripe response to unified PaymentResult.&quot;&quot;&quot;
+
+  status_map = {
+  &quot;succeeded&quot;: PaymentStatus.SUCCESS,
+  &quot;pending&quot;: PaymentStatus.PENDING,
+  &quot;failed&quot;: PaymentStatus.FAILED,
+  &quot;requires_action&quot;: PaymentStatus.REQUIRES_ACTION,
+  }
+
+  return PaymentResult(
+  status=status_map.get(response[&quot;status&quot;], PaymentStatus.FAILED),
+  transaction_id=response[&quot;id&quot;],
+  amount=Decimal(response[&quot;amount&quot;]) / 100,
+  currency=response[&quot;currency&quot;].upper(),
+  provider=&quot;stripe&quot;,
+  requires_redirect=response.get(&quot;status&quot;) == &quot;requires_action&quot;,
+  redirect_url=response.get(&quot;next_action&quot;, {}).get(&quot;redirect_to_url&quot;, {}).get(&quot;url&quot;),
+  metadata={
+  &quot;stripe_charge_id&quot;: response[&quot;id&quot;],
+  &quot;created_at&quot;: response[&quot;created&quot;]
+  }
+  )
+
+  def refund(self, transaction_id: str,
+  amount: Optional[Decimal] = None) -&gt; PaymentResult:
+
+  def _execute():
+  return self._stripe_create_refund(
+  charge_id=transaction_id,
+  amount_cents=int(amount * 100) if amount else None
+  )
+
+  response = self._execute_with_resilience(_execute)
+  return PaymentResult(
+  status=PaymentStatus.SUCCESS if response[&quot;status&quot;] == &quot;succeeded&quot; else PaymentStatus.FAILED,
+  transaction_id=response[&quot;id&quot;],
+  amount=Decimal(response[&quot;amount&quot;]) / 100,
+  currency=response[&quot;currency&quot;].upper(),
+  provider=&quot;stripe&quot;
+  )
+
+  def _stripe_create_refund(self, charge_id: str,
+  amount_cents: Optional[int]) -&gt; Dict:
+  &quot;&quot;&quot;Simulated Stripe refund API call.&quot;&quot;&quot;
+  return {
+  &quot;id&quot;: f&quot;re_{datetime.now().timestamp()}&quot;,
+  &quot;charge&quot;: charge_id,
+  &quot;amount&quot;: amount_cents or 1000,
+  &quot;currency&quot;: &quot;usd&quot;,
+  &quot;status&quot;: &quot;succeeded&quot;
+  }
+
+  def get_transaction(self, transaction_id: str) -&gt; PaymentResult:
+  def _execute():
+  return self._stripe_retrieve_charge(transaction_id)
+
+  response = self._execute_with_resilience(_execute)
+  return self._transform_charge_response(
+  response,
+  Decimal(response[&quot;amount&quot;]) / 100,
+  response[&quot;currency&quot;]
+  )
+
+  def _stripe_retrieve_charge(self, charge_id: str) -&gt; Dict:
+  &quot;&quot;&quot;Simulated Stripe retrieve API call.&quot;&quot;&quot;
+  return {
+  &quot;id&quot;: charge_id,
+  &quot;amount&quot;: 9999,
+  &quot;currency&quot;: &quot;usd&quot;,
+  &quot;status&quot;: &quot;succeeded&quot;,
+  &quot;created&quot;: int(datetime.now().timestamp())
+  }
+
+
+  # Custom exceptions
+  class StripeAPIError(Exception):
+  def __init__(self, message: str, code: str = &quot;&quot;):
+  super().__init__(message)
+  self.code = code
+
+  class ServiceUnavailableError(Exception):
+  pass
+  ```
+</code></pre>
+<h3 id="interview-deep-dive-real-world-api-adapters">Interview Deep-Dive: Real-World API Adapters</h3>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: How do you handle API versioning when the adaptee releases breaking changes?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">API versioning in adapters requires a strategy that isolates version-specific logic while maintaining a stable interface for clients.</span></p>
+<p><strong>Strategy 1: Version-Specific Adapter Classes</strong><br />
+```python<br />
+class StripeAdapterV1(PaymentGateway):<br />
+&quot;&quot;&quot;Handles Stripe API v2020-08-01.&quot;&quot;&quot;</p>
+<pre><code>      def charge(self, amount, currency, token):
+      # Old API: source parameter
+      return self._client.create_charge(source=token, ...)
+
+      class StripeAdapterV2(PaymentGateway):
+      &quot;&quot;&quot;Handles Stripe API v2023-10-01.&quot;&quot;&quot;
+
+      def charge(self, amount, currency, token):
+      # New API: payment_method parameter, different response structure
+      return self._client.create_payment_intent(payment_method=token, ...)
+
+      # Factory selects based on configuration
+      def get_stripe_adapter(api_version: str) -&gt; PaymentGateway:
+      adapters = {
+      &quot;2020-08-01&quot;: StripeAdapterV1,
+      &quot;2023-10-01&quot;: StripeAdapterV2,
+      }
+      return adapters[api_version](api_key)
+      ```
+</code></pre>
+<p><strong>Strategy 2: Internal Version Handling</strong><br />
+```python<br />
+class StripeAdapter(PaymentGateway):<br />
+def <strong>init</strong>(self, api_key: str, api_version: str = &quot;2023-10-01&quot;):<br />
+self._api_version = api_version<br />
+self._client = stripe.Client(api_key, api_version=api_version)</p>
+<pre><code>      def charge(self, amount, currency, token):
+      if self._is_legacy_version():
+      return self._charge_legacy(amount, currency, token)
+      return self._charge_modern(amount, currency, token)
+
+      def _is_legacy_version(self) -&gt; bool:
+      return self._api_version &lt; &quot;2022-01-01&quot;
+      ```
+</code></pre>
+<p><strong>Strategy 3: Adapter Composition</strong><br />
+```python<br />
+class VersionedStripeAdapter(PaymentGateway):<br />
+&quot;&quot;&quot;Composes version-specific handlers.&quot;&quot;&quot;</p>
+<pre><code>      def __init__(self, api_key: str, api_version: str):
+      self._charge_handler = self._get_charge_handler(api_version)
+      self._refund_handler = self._get_refund_handler(api_version)
+
+      def _get_charge_handler(self, version):
+      handlers = {
+      &quot;v1&quot;: StripeChargeV1Handler,
+      &quot;v2&quot;: StripePaymentIntentHandler,
+      }
+      return handlers[self._version_family(version)]()
+      ```
+</code></pre>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How do you implement graceful degradation when adaptee capabilities are reduced?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Graceful degradation in adapters means providing reduced but functional service when the full capability isn't available.</span></p>
+<pre><code>          ```python
+          class DegradableStorageAdapter(CloudStorageGateway):
+          &quot;&quot;&quot;
+          Storage adapter that degrades gracefully when features unavailable.
+          &quot;&quot;&quot;
+
+          def __init__(self, primary: CloudStorageGateway,
+          fallback: CloudStorageGateway = None,
+          feature_flags: Dict[str, bool] = None):
+          self._primary = primary
+          self._fallback = fallback
+          self._features = feature_flags or {}
+          self._degraded_mode = False
+
+          def upload(self, key: str, data: BinaryIO, **kwargs) -&gt; UploadResult:
+          try:
+          if self._supports_feature(&quot;versioning&quot;):
+          return self._upload_with_versioning(key, data, **kwargs)
+          else:
+          # Degraded: upload without versioning
+          return self._primary.upload(key, data, **kwargs)
+
+          except ServiceDegradedError:
+          self._degraded_mode = True
+          if self._fallback:
+          # Further degradation: use fallback storage
+          return self._fallback.upload(key, data, **kwargs)
+          raise
+
+          def _upload_with_versioning(self, key, data, **kwargs):
+          &quot;&quot;&quot;Full-featured upload with versioning.&quot;&quot;&quot;
+          # Check if previous version exists
+          try:
+          existing = self._primary.get_metadata(key)
+          kwargs[&quot;metadata&quot;] = kwargs.get(&quot;metadata&quot;, {})
+          kwargs[&quot;metadata&quot;][&quot;previous_version&quot;] = existing.etag
+          except NotFoundError:
+          pass
+
+          return self._primary.upload(key, data, **kwargs)
+
+          def get_metadata(self, key: str) -&gt; StorageObject:
+          &quot;&quot;&quot;Degrade from detailed to basic metadata if needed.&quot;&quot;&quot;
+          try:
+          return self._primary.get_metadata(key)
+          except FeatureNotAvailableError:
+          # Degraded: construct from list operation
+          objects = self._primary.list_objects(prefix=key, max_keys=1)
+          if objects and objects[0].key == key:
+          return objects[0]
+          raise NotFoundError(key)
+
+          def _supports_feature(self, feature: str) -&gt; bool:
+          if self._degraded_mode:
+          return False
+          return self._features.get(feature, True)
+
+          @property
+          def service_status(self) -&gt; Dict[str, Any]:
+          &quot;&quot;&quot;Report current service degradation status.&quot;&quot;&quot;
+          return {
+          &quot;degraded&quot;: self._degraded_mode,
+          &quot;using_fallback&quot;: self._degraded_mode and self._fallback is not None,
+          &quot;available_features&quot;: [
+          f for f, enabled in self._features.items() if enabled
+          ]
+          }
+          ```
+</code></pre>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: How would you implement adapter telemetry to monitor adaptation overhead and detect adaptee drift?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Adapter telemetry tracks both the translation overhead and detects when adaptee behavior changes unexpectedly (drift).</span></p>
+<pre><code>              ```python
+              from dataclasses import dataclass, field
+              from typing import Dict, List, Optional, Any
+              from datetime import datetime
+              import time
+              import statistics
+
+              @dataclass
+              class AdaptationMetrics:
+              &quot;&quot;&quot;Metrics for a single adaptation operation.&quot;&quot;&quot;
+              operation: str
+              adaptee_latency_ms: float
+              transformation_latency_ms: float
+              total_latency_ms: float
+              request_size_bytes: int
+              response_size_bytes: int
+              adaptee_response_schema_hash: str
+              success: bool
+              error_type: Optional[str] = None
+              timestamp: datetime = field(default_factory=datetime.now)
+
+              class AdapterTelemetry:
+              &quot;&quot;&quot;
+              Telemetry collector for adapter monitoring.
+
+              Tracks:
+              - Transformation overhead
+              - Adaptee latency trends
+              - Response schema drift detection
+              - Error rate by operation
+              &quot;&quot;&quot;
+
+              def __init__(self, adapter_name: str, window_size: int = 1000):
+              self._adapter_name = adapter_name
+              self._window_size = window_size
+              self._metrics: List[AdaptationMetrics] = []
+              self._schema_baselines: Dict[str, str] = {}
+              self._drift_callbacks: List[callable] = []
+
+              def record(self, metrics: AdaptationMetrics):
+              &quot;&quot;&quot;Record adaptation metrics.&quot;&quot;&quot;
+              self._metrics.append(metrics)
+
+              # Maintain sliding window
+              if len(self._metrics) &gt; self._window_size:
+              self._metrics = self._metrics[-self._window_size:]
+
+              # Check for schema drift
+              self._check_schema_drift(metrics)
+
+              def _check_schema_drift(self, metrics: AdaptationMetrics):
+              &quot;&quot;&quot;Detect if adaptee response schema has changed.&quot;&quot;&quot;
+              key = metrics.operation
+              current_hash = metrics.adaptee_response_schema_hash
+
+              if key not in self._schema_baselines:
+              self._schema_baselines[key] = current_hash
+              return
+
+              if self._schema_baselines[key] != current_hash:
+              # Schema drift detected!
+              self._notify_drift(
+              operation=key,
+              expected_hash=self._schema_baselines[key],
+              actual_hash=current_hash
+              )
+
+              def _notify_drift(self, operation: str, expected_hash: str, actual_hash: str):
+              &quot;&quot;&quot;Alert on schema drift.&quot;&quot;&quot;
+              for callback in self._drift_callbacks:
+              callback({
+              &quot;adapter&quot;: self._adapter_name,
+              &quot;operation&quot;: operation,
+              &quot;expected_schema&quot;: expected_hash,
+              &quot;actual_schema&quot;: actual_hash,
+              &quot;timestamp&quot;: datetime.now().isoformat()
+              })
+
+              def on_drift(self, callback: callable):
+              &quot;&quot;&quot;Register drift notification callback.&quot;&quot;&quot;
+              self._drift_callbacks.append(callback)
+
+              def get_statistics(self) -&gt; Dict[str, Any]:
+              &quot;&quot;&quot;Get aggregated statistics.&quot;&quot;&quot;
+              if not self._metrics:
+              return {}
+
+              successful = [m for m in self._metrics if m.success]
+
+              return {
+              &quot;adapter&quot;: self._adapter_name,
+              &quot;total_operations&quot;: len(self._metrics),
+              &quot;success_rate&quot;: len(successful) / len(self._metrics),
+              &quot;transformation_overhead&quot;: {
+              &quot;mean_ms&quot;: statistics.mean(m.transformation_latency_ms for m in successful),
+              &quot;p50_ms&quot;: statistics.median(m.transformation_latency_ms for m in successful),
+              &quot;p99_ms&quot;: self._percentile([m.transformation_latency_ms for m in successful], 99),
+              },
+              &quot;adaptee_latency&quot;: {
+              &quot;mean_ms&quot;: statistics.mean(m.adaptee_latency_ms for m in successful),
+              &quot;p50_ms&quot;: statistics.median(m.adaptee_latency_ms for m in successful),
+              &quot;p99_ms&quot;: self._percentile([m.adaptee_latency_ms for m in successful], 99),
+              },
+              &quot;overhead_percentage&quot;: self._calculate_overhead_percentage(),
+              &quot;errors_by_type&quot;: self._count_errors_by_type(),
+              }
+
+              def _percentile(self, data: List[float], percentile: int) -&gt; float:
+              sorted_data = sorted(data)
+              index = int(len(sorted_data) * percentile / 100)
+              return sorted_data[min(index, len(sorted_data) - 1)]
+
+              def _calculate_overhead_percentage(self) -&gt; float:
+              &quot;&quot;&quot;Calculate transformation overhead as percentage of total time.&quot;&quot;&quot;
+              successful = [m for m in self._metrics if m.success]
+              if not successful:
+              return 0.0
+
+              total_transform = sum(m.transformation_latency_ms for m in successful)
+              total_time = sum(m.total_latency_ms for m in successful)
+
+              return (total_transform / total_time * 100) if total_time &gt; 0 else 0.0
+
+              def _count_errors_by_type(self) -&gt; Dict[str, int]:
+              from collections import Counter
+              failed = [m for m in self._metrics if not m.success]
+              return dict(Counter(m.error_type for m in failed))
+
+
+              class InstrumentedAdapter(PaymentGateway):
+              &quot;&quot;&quot;
+              Adapter wrapper that adds telemetry to any adapter.
+              &quot;&quot;&quot;
+
+              def __init__(self, adapter: PaymentGateway, telemetry: AdapterTelemetry):
+              self._adapter = adapter
+              self._telemetry = telemetry
+
+              def charge(self, amount: Decimal, currency: str,
+              payment_method_token: str, idempotency_key: str) -&gt; PaymentResult:
+
+              start_time = time.perf_counter()
+
+              # Measure request transformation
+              transform_start = time.perf_counter()
+              # (transformation happens inside adapter)
+              transform_time = 0  # Would measure actual transformation
+
+              try:
+              # Measure adaptee call
+              adaptee_start = time.perf_counter()
+              result = self._adapter.charge(
+              amount, currency, payment_method_token, idempotency_key
+              )
+              adaptee_time = (time.perf_counter() - adaptee_start) * 1000
+
+              # Record metrics
+              self._telemetry.record(AdaptationMetrics(
+              operation=&quot;charge&quot;,
+              adaptee_latency_ms=adaptee_time,
+              transformation_latency_ms=transform_time,
+              total_latency_ms=(time.perf_counter() - start_time) * 1000,
+              request_size_bytes=len(str(amount) + currency + payment_method_token),
+              response_size_bytes=len(str(result)),
+              adaptee_response_schema_hash=self._hash_schema(result),
+              success=result.status == PaymentStatus.SUCCESS
+              ))
+
+              return result
+
+              except Exception as e:
+              self._telemetry.record(AdaptationMetrics(
+              operation=&quot;charge&quot;,
+              adaptee_latency_ms=0,
+              transformation_latency_ms=0,
+              total_latency_ms=(time.perf_counter() - start_time) * 1000,
+              request_size_bytes=0,
+              response_size_bytes=0,
+              adaptee_response_schema_hash=&quot;&quot;,
+              success=False,
+              error_type=type(e).__name__
+              ))
+              raise
+
+              def _hash_schema(self, result: PaymentResult) -&gt; str:
+              &quot;&quot;&quot;Hash the structure of the response for drift detection.&quot;&quot;&quot;
+              import hashlib
+              schema = sorted(result.__dataclass_fields__.keys())
+              return hashlib.md5(str(schema).encode()).hexdigest()[:8]
+
+              # Implement other methods similarly...
+              def refund(self, transaction_id: str, amount: Optional[Decimal] = None):
+              return self._adapter.refund(transaction_id, amount)
+
+              def get_transaction(self, transaction_id: str):
+              return self._adapter.get_transaction(transaction_id)
+
+
+              # Usage
+              telemetry = AdapterTelemetry(&quot;stripe_adapter&quot;)
+              telemetry.on_drift(lambda info: print(f&quot;ALERT: Schema drift detected: {info}&quot;))
+
+              base_adapter = ResilientStripeAdapter(api_key=&quot;sk_test_xxx&quot;)
+              monitored_adapter = InstrumentedAdapter(base_adapter, telemetry)
+
+              # Use monitored adapter in application
+              result = monitored_adapter.charge(Decimal(&quot;99.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;key_123&quot;)
+
+              # Check telemetry
+              stats = telemetry.get_statistics()
+              print(f&quot;Transformation overhead: {stats['overhead_percentage']:.2f}%&quot;)
+              ```
+</code></pre>
+</div>
+</details>
+</div>
+</details>
+</div>
+</details>
+<hr />
+<h2 id="industry-usage-and-production-patterns">Industry Usage and Production Patterns</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
+<table>
+<thead>
+<tr>
+<th>Company/Framework</th>
+<th>Adapter Implementation</th>
+<th>Key Insight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Django ORM</strong></td>
+<td>Database backends (PostgreSQL, MySQL, SQLite) adapt to unified QuerySet interface</td>
+<td><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Adapters handle SQL dialect differences and type conversions</span></td>
+</tr>
+<tr>
+<td><strong>AWS SDK</strong></td>
+<td>Service clients adapt HTTP responses to typed objects</td>
+<td>Response parsing happens in adapter layer with retries</td>
+</tr>
+<tr>
+<td><strong>Stripe</strong></td>
+<td>Webhooks adapt external events to internal domain events</td>
+<td>Signature verification + event normalization in adapter</td>
+</tr>
+<tr>
+<td><strong>Kubernetes</strong></td>
+<td>Container runtimes (Docker, containerd, CRI-O) adapt to CRI interface</td>
+<td>Runtime-specific features gracefully degraded</td>
+</tr>
+<tr>
+<td><strong>React Testing Library</strong></td>
+<td>Adapts browser DOM APIs to testing interface</td>
+<td>Same tests work with different renderers</td>
+</tr>
+<tr>
+<td><strong>Apache Kafka Connect</strong></td>
+<td>Source/Sink connectors adapt external systems to Kafka topics</td>
+<td>Schema registry integration for format translation</td>
+</tr>
+<tr>
+<td><strong>gRPC</strong></td>
+<td>Protocol adapters convert between REST/gRPC/GraphQL</td>
+<td>Transcoding happens at adapter boundary</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+<h2 id="adapter-vs-related-patterns-decision-framework">Adapter vs Related Patterns: Decision Framework</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px">
+<h4 style="color: #1e40af; margin-top: 0">Adapter</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px">Makes existing incompatible interface work with expected interface.</p>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #1e40af">Use when:</strong> <span style="color: #1e3a8a">"I have ClassA but need InterfaceB"</span><br>
+<strong style="color: #1e40af">Changes:</strong> <span style="color: #1e3a8a">Interface signature only</span><br>
+<strong style="color: #1e40af">Relationship:</strong> <span style="color: #1e3a8a">Wraps ONE object</span>
+</div>
+</div>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px">
+<h4 style="color: #166534; margin-top: 0">[[Decorator]](/topic/design-patterns/decorator)</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px">Adds behavior to object without changing its interface.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #166534">Use when:</strong> <span style="color: #14532d">"Add logging to this service"</span><br>
+<strong style="color: #166534">Changes:</strong> <span style="color: #14532d">Behavior, not interface</span><br>
+<strong style="color: #166534">Relationship:</strong> <span style="color: #14532d">Same interface as wrapped</span>
+</div>
+</div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px">
+<h4 style="color: #92400e; margin-top: 0">[[Facade]](/topic/design-patterns/facade)</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px">Simplifies complex subsystem with unified interface.</p>
+<div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #92400e">Use when:</strong> <span style="color: #78350f">"Simplify these 10 services"</span><br>
+<strong style="color: #92400e">Changes:</strong> <span style="color: #78350f">Complexity level</span><br>
+<strong style="color: #92400e">Relationship:</strong> <span style="color: #78350f">Wraps MULTIPLE objects</span>
+</div>
+</div>
+<div style="background: #f3e8ff; padding: 20px; border-radius: 12px">
+<h4 style="color: #7c3aed; margin-top: 0">[[Bridge]](/topic/design-patterns/bridge)</h4>
+<p style="color: #6b21a8; font-size: 0.9rem; margin-bottom: 12px">Separates abstraction from implementation for independent variation.</p>
+<div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #7c3aed">Use when:</strong> <span style="color: #6b21a8">"Both sides need to vary"</span><br>
+<strong style="color: #7c3aed">Changes:</strong> <span style="color: #6b21a8">Decouples hierarchies</span><br>
+<strong style="color: #7c3aed">Relationship:</strong> <span style="color: #6b21a8">Designed upfront</span>
+</div>
+</div>
+<div style="background: #fce7f3; padding: 20px; border-radius: 12px">
+<h4 style="color: #be185d; margin-top: 0">[[Proxy]](/topic/design-patterns/proxy)</h4>
+<p style="color: #9d174d; font-size: 0.9rem; margin-bottom: 12px">Controls access to object with same interface.</p>
+<div style="background: #fdf2f8; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #be185d">Use when:</strong> <span style="color: #9d174d">"Control access to this object"</span><br>
+<strong style="color: #be185d">Changes:</strong> <span style="color: #9d174d">Access policy, not interface</span><br>
+<strong style="color: #be185d">Relationship:</strong> <span style="color: #9d174d">Identical interface to subject</span>
+</div>
+</div>
+</div>
+<div style="background: #f1f5f9; padding: 20px; border-radius: 12px; margin-top: 24px">
+<h4 style="color: #0f172a; margin-top: 0">Decision Tree</h4>
+<div style="color: #334155; font-size: 0.95rem">
+<pre><code>                            ```
+                            Do you have an existing class with wrong interface?
+                            ├─ YES → Do you need to change the interface signature?
+                            │        ├─ YES → ADAPTER (convert interface A to interface B)
+                            │        └─ NO → Do you need to add behavior?
+                            │                ├─ YES → DECORATOR (add logging, caching, etc.)
+                            │                └─ NO → PROXY (add access control, lazy loading)
+                            └─ NO → Are you simplifying a complex subsystem?
+                            ├─ YES → FACADE (unified simple interface over complexity)
+                            └─ NO → Do you need abstraction and implementation to vary independently?
+                            ├─ YES → BRIDGE (design for future flexibility)
+                            └─ NO → Consider if you need a pattern at all
+                            ```
+</code></pre>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="common-anti-patterns-and-pitfalls">Common Anti-Patterns and Pitfalls</h2>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
+<h3 id="anti-pattern-1-business-logic-in-adapter">Anti-Pattern 1: Business Logic in Adapter</h3>
+<pre><code>                        ```python
+                        # BAD: Adapter contains business rules
+                        class PaymentAdapter(PaymentGateway):
+                        def charge(self, amount: Decimal, currency: str, token: str):
+                        # WRONG: Discount logic doesn't belong in adapter
+                        if self._is_premium_customer():
+                        amount = amount * Decimal(&quot;0.9&quot;)
+
+                        # WRONG: Fraud detection doesn't belong in adapter
+                        if self._fraud_score(token) &gt; 0.8:
+                        raise FraudDetectedError()
+
+                        return self._adaptee.create_charge(int(amount * 100), currency, token)
+
+                        # GOOD: Adapter only translates
+                        class PaymentAdapter(PaymentGateway):
+                        def charge(self, amount: Decimal, currency: str, token: str):
+                        # Pure translation - no business logic
+                        response = self._adaptee.create_charge(
+                        amount_cents=int(amount * 100),
+                        currency=currency.lower(),
+                        source=token
+                        )
+                        return self._transform_response(response)
+
+                        # Business logic belongs in service layer
+                        class PaymentService:
+                        def __init__(self, gateway: PaymentGateway, fraud_detector: FraudDetector):
+                        self._gateway = gateway
+                        self._fraud_detector = fraud_detector
+
+                        def process_payment(self, amount: Decimal, currency: str,
+                        token: str, customer: Customer):
+                        # Business logic HERE
+                        if customer.is_premium:
+                        amount = amount * Decimal(&quot;0.9&quot;)
+
+                        if self._fraud_detector.score(token) &gt; 0.8:
+                        raise FraudDetectedError()
+
+                        return self._gateway.charge(amount, currency, token)
+                        ```
+</code></pre>
+<h3 id="anti-pattern-2-adapter-chains-adapting-adapters">Anti-Pattern 2: Adapter Chains (Adapting Adapters)</h3>
+<pre><code>                        ```python
+                        # BAD: Stacked adapters create complexity and performance issues
+                        class XMLParser:
+                        def parse(self, xml: str) -&gt; XMLElement: ...
+
+                        class XMLToJSONAdapter:
+                        def __init__(self, parser: XMLParser):
+                        self._parser = parser
+
+                        def to_json(self, xml: str) -&gt; str:
+                        element = self._parser.parse(xml)
+                        return json.dumps(self._element_to_dict(element))
+
+                        class JSONToDataFrameAdapter:
+                        def __init__(self, json_adapter: XMLToJSONAdapter):  # Wrapping adapter!
+                        self._json_adapter = json_adapter
+
+                        def to_dataframe(self, xml: str):
+                        json_str = self._json_adapter.to_json(xml)  # Double conversion!
+                        return pd.DataFrame(json.loads(json_str))
+
+                        # GOOD: Direct adaptation
+                        class XMLToDataFrameAdapter:
+                        def __init__(self, parser: XMLParser):
+                        self._parser = parser
+
+                        def to_dataframe(self, xml: str):
+                        element = self._parser.parse(xml)
+                        return self._element_to_dataframe(element)  # Direct conversion
+                        ```
+</code></pre>
+<h3 id="anti-pattern-3-leaky-abstraction">Anti-Pattern 3: Leaky Abstraction</h3>
+<pre><code>                        ```python
+                        # BAD: Adapter exposes adaptee-specific details
+                        class StripeAdapter(PaymentGateway):
+                        def charge(self, amount: Decimal, currency: str, token: str):
+                        try:
+                        return self._client.create_charge(...)
+                        except stripe.error.CardError as e:
+                        # LEAKY: Exposing Stripe-specific exception
+                        raise e  # Clients now depend on Stripe!
+
+                        # GOOD: Normalize errors to domain exceptions
+                        class StripeAdapter(PaymentGateway):
+                        def charge(self, amount: Decimal, currency: str, token: str):
+                        try:
+                        response = self._client.create_charge(...)
+                        return self._transform_response(response)
+                        except stripe.error.CardError as e:
+                        # Translate to domain exception
+                        raise PaymentDeclinedError(
+                        code=self._map_error_code(e.code),
+                        message=e.user_message,
+                        provider=&quot;stripe&quot;
+                        )
+                        except stripe.error.RateLimitError:
+                        raise ServiceThrottledError(provider=&quot;stripe&quot;, retry_after=60)
+                        ```
+</code></pre>
+<h3 id="anti-pattern-4-incomplete-interface-implementation">Anti-Pattern 4: Incomplete Interface Implementation</h3>
+<pre><code>                        ```python
+                        # BAD: Partial implementation surprises callers
+                        class MinimalPaymentAdapter(PaymentGateway):
+                        def charge(self, amount, currency, token):
+                        return self._adaptee.pay(amount)
+
+                        def refund(self, transaction_id, amount=None):
+                        raise NotImplementedError(&quot;This provider doesn't support refunds&quot;)
+
+                        def get_transaction(self, transaction_id):
+                        raise NotImplementedError(&quot;Transaction lookup not available&quot;)
+
+                        # GOOD: Use interface segregation or explicit capability checking
+                        class ChargeOnlyGateway(ABC):
+                        &quot;&quot;&quot;Interface for providers that only support charging.&quot;&quot;&quot;
+                        @abstractmethod
+                        def charge(self, amount, currency, token): pass
+
+                        class FullGateway(ChargeOnlyGateway):
+                        &quot;&quot;&quot;Interface for providers with full feature set.&quot;&quot;&quot;
+                        @abstractmethod
+                        def refund(self, transaction_id, amount=None): pass
+
+                        @abstractmethod
+                        def get_transaction(self, transaction_id): pass
+
+                        # Or use capability checking
+                        class CapabilityAwareAdapter(PaymentGateway):
+                        @property
+                        def capabilities(self) -&gt; Set[str]:
+                        return {&quot;charge&quot;}  # Explicitly declare what's supported
+
+                        def refund(self, transaction_id, amount=None):
+                        if &quot;refund&quot; not in self.capabilities:
+                        raise CapabilityNotSupportedError(&quot;refund&quot;, self.provider_name)
+                        ```
+</code></pre>
+</div>
+<hr />
+<h2 id="testing-adapters">Testing Adapters</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
+<h3 id="testing-strategy">Testing Strategy</h3>
+<pre><code>                        ```python
+                        import pytest
+                        from unittest.mock import Mock, patch
+                        from decimal import Decimal
+
+                        class TestStripeAdapter:
+                        &quot;&quot;&quot;
+                        Adapter tests should verify:
+                        1. Correct transformation of inputs (request adaptation)
+                        2. Correct transformation of outputs (response adaptation)
+                        3. Error handling and normalization
+                        4. Edge cases in data conversion
+                        &quot;&quot;&quot;
+
+                        @pytest.fixture
+                        def mock_stripe_client(self):
+                        &quot;&quot;&quot;Create mock Stripe client.&quot;&quot;&quot;
+                        client = Mock()
+                        client.create_charge.return_value = {
+                        &quot;id&quot;: &quot;ch_test123&quot;,
+                        &quot;amount&quot;: 9999,
+                        &quot;currency&quot;: &quot;usd&quot;,
+                        &quot;status&quot;: &quot;succeeded&quot;,
+                        &quot;created&quot;: 1234567890
+                        }
+                        return client
+
+                        @pytest.fixture
+                        def adapter(self, mock_stripe_client):
+                        &quot;&quot;&quot;Create adapter with mocked client.&quot;&quot;&quot;
+                        adapter = StripeAdapter.__new__(StripeAdapter)
+                        adapter._client = mock_stripe_client
+                        return adapter
+
+                        # =========================================================================
+                        # INPUT TRANSFORMATION TESTS
+                        # =========================================================================
+
+                        def test_converts_decimal_dollars_to_integer_cents(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify $99.99 becomes 9999 cents.&quot;&quot;&quot;
+                        adapter.charge(Decimal(&quot;99.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        mock_stripe_client.create_charge.assert_called_once()
+                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
+                        assert call_kwargs[&quot;amount_cents&quot;] == 9999
+
+                        def test_handles_currency_case_normalization(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify currency codes are normalized.&quot;&quot;&quot;
+                        adapter.charge(Decimal(&quot;10.00&quot;), &quot;usd&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
+                        # Stripe expects lowercase
+                        assert call_kwargs[&quot;currency&quot;] == &quot;usd&quot;
+
+                        def test_handles_fractional_cent_rounding(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify amounts that don't convert cleanly to cents.&quot;&quot;&quot;
+                        # $10.999 should become 1100 cents (banker's rounding)
+                        adapter.charge(Decimal(&quot;10.999&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
+                        assert call_kwargs[&quot;amount_cents&quot;] == 1100  # Rounded
+
+                        # =========================================================================
+                        # OUTPUT TRANSFORMATION TESTS
+                        # =========================================================================
+
+                        def test_transforms_successful_response(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify response transformation preserves data correctly.&quot;&quot;&quot;
+                        result = adapter.charge(Decimal(&quot;99.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        assert result.status == PaymentStatus.SUCCESS
+                        assert result.transaction_id == &quot;ch_test123&quot;
+                        assert result.amount == Decimal(&quot;99.99&quot;)  # Converted back from cents
+                        assert result.currency == &quot;USD&quot;  # Uppercase for our system
+                        assert result.provider == &quot;stripe&quot;
+
+                        def test_transforms_failed_response(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify failed responses are correctly identified.&quot;&quot;&quot;
+                        mock_stripe_client.create_charge.return_value[&quot;status&quot;] = &quot;failed&quot;
+
+                        result = adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        assert result.status == PaymentStatus.FAILED
+
+                        # =========================================================================
+                        # ERROR HANDLING TESTS
+                        # =========================================================================
+
+                        def test_normalizes_stripe_card_error(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify Stripe-specific errors become domain errors.&quot;&quot;&quot;
+                        mock_stripe_client.create_charge.side_effect = StripeAPIError(
+                        &quot;Card declined&quot;, code=&quot;card_declined&quot;
+                        )
+
+                        with pytest.raises(PaymentDeclinedError) as exc_info:
+                        adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        assert exc_info.value.provider == &quot;stripe&quot;
+                        assert &quot;declined&quot; in str(exc_info.value).lower()
+
+                        def test_normalizes_stripe_rate_limit_error(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify rate limit errors become retryable errors.&quot;&quot;&quot;
+                        mock_stripe_client.create_charge.side_effect = StripeAPIError(
+                        &quot;Rate limited&quot;, code=&quot;rate_limit_error&quot;
+                        )
+
+                        with pytest.raises(ServiceThrottledError):
+                        adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        # =========================================================================
+                        # EDGE CASE TESTS
+                        # =========================================================================
+
+                        def test_handles_zero_amount(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify $0.00 charges are handled (e.g., for card verification).&quot;&quot;&quot;
+                        adapter.charge(Decimal(&quot;0.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
+                        assert call_kwargs[&quot;amount_cents&quot;] == 0
+
+                        def test_handles_very_large_amount(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify large amounts don't overflow.&quot;&quot;&quot;
+                        # $999,999.99
+                        adapter.charge(Decimal(&quot;999999.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+
+                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
+                        assert call_kwargs[&quot;amount_cents&quot;] == 99999999
+
+                        def test_handles_three_decimal_currencies(self, adapter, mock_stripe_client):
+                        &quot;&quot;&quot;Verify currencies with 3 decimal places (e.g., KWD).&quot;&quot;&quot;
+                        # Kuwaiti Dinar has 3 decimal places
+                        # This is an edge case most adapters get wrong
+                        mock_stripe_client.create_charge.return_value[&quot;currency&quot;] = &quot;kwd&quot;
+                        mock_stripe_client.create_charge.return_value[&quot;amount&quot;] = 1000  # 1.000 KWD
+
+                        result = adapter.charge(Decimal(&quot;1.000&quot;), &quot;KWD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+                        # Adapter should know KWD uses fils (1/1000) not cents (1/100)
+                        # This test documents whether the adapter handles this correctly
+
+
+                        # Integration test with real (sandbox) API
+                        class TestStripeAdapterIntegration:
+                        &quot;&quot;&quot;
+                        Integration tests using Stripe test mode.
+                        Run with: pytest -m integration
+                        &quot;&quot;&quot;
+
+                        @pytest.mark.integration
+                        def test_real_charge_flow(self):
+                        &quot;&quot;&quot;Test against actual Stripe test API.&quot;&quot;&quot;
+                        adapter = StripeAdapter(api_key=&quot;sk_test_xxx&quot;)
+
+                        result = adapter.charge(
+                        amount=Decimal(&quot;10.00&quot;),
+                        currency=&quot;USD&quot;,
+                        payment_method_token=&quot;tok_visa&quot;,  # Stripe test token
+                        idempotency_key=f&quot;test_{time.time()}&quot;
+                        )
+
+                        assert result.status == PaymentStatus.SUCCESS
+                        assert result.transaction_id.startswith(&quot;ch_&quot;)
+                        ```
+</code></pre>
+</div>
+<hr />
+<h2 id="key-takeaways">Key Takeaways</h2>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px">
+<div>
+<h4 style="color: #1e40af; margin-top: 0">Core Principles</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
+<li><strong>Single Responsibility:</strong> Adapters ONLY translate interfaces</li>
+<li><strong>Bidirectional Translation:</strong> Transform both requests AND responses</li>
+<li><strong>Error Normalization:</strong> Convert provider errors to domain errors</li>
+<li><strong>Semantic Preservation:</strong> Maintain business meaning across interfaces</li>
+</ul>
+</div>
+<div>
+<h4 style="color: #1e40af; margin-top: 0">Design Decisions</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
+<li><strong>Object over Class:</strong> Prefer composition for flexibility</li>
+<li><strong>Interface Segregation:</strong> Don't implement what you can't support</li>
+<li><strong>Capability Discovery:</strong> Let clients query supported features</li>
+<li><strong>Telemetry Built-in:</strong> Monitor adaptation overhead and drift</li>
+</ul>
+</div>
+<div>
+<h4 style="color: #1e40af; margin-top: 0">Production Concerns</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
+<li><strong>Resilience:</strong> Circuit breakers and retry logic at adapter boundary</li>
+<li><strong>Idempotency:</strong> Handle duplicate requests from either side</li>
+<li><strong>Version Management:</strong> Strategy for adaptee API changes</li>
+<li><strong>Testing:</strong> Test transformations, errors, and edge cases separately</li>
+</ul>
+</div>
+<div>
+<h4 style="color: #1e40af; margin-top: 0">Common Pitfalls</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
+<li><strong>Business Logic Creep:</strong> Keep adapters pure translators</li>
+<li><strong>Leaky Abstractions:</strong> Don't expose adaptee-specific types</li>
+<li><strong>Adapter Chains:</strong> Avoid adapting adapters</li>
+<li><strong>Incomplete Implementation:</strong> Better to refuse than half-implement</li>
+</ul>
+</div>
+</div>
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px; margin-top: 20px">
+<strong style="color: #1e40af">Interview Insight:</strong>
+<span style="color: #1e3a8a"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter pattern is deceptively simple in concept but complex in production implementation.</span> Interviewers often probe for understanding of edge cases (lossy adaptation, error handling), production concerns (resilience, monitoring), and design trade-offs (class vs object adapter, interface segregation). Demonstrating awareness of two-way adapters and real API integration challenges shows senior-level thinking.</span>
+</div>
+</div>
+<hr />
+<h2 id="related-patterns">Related Patterns</h2>
+<pre><code>                      - [[Facade]](/topic/design-patterns/facade) - Simplifies complex subsystems; adapter makes incompatible interfaces work together
+                      - [[Decorator]](/topic/design-patterns/decorator) - Adds behavior without changing interface; adapter changes interface
+                      - [[Bridge]](/topic/design-patterns/bridge) - Designed upfront for abstraction/implementation separation; adapter retrofits compatibility
+                      - [[Proxy]](/topic/design-patterns/proxy) - Same interface with controlled access; adapter changes interface
+                      - [[Strategy]](/topic/design-patterns/strategy) - Interchangeable algorithms; often combined with adapter for algorithm selection
+</code></pre>

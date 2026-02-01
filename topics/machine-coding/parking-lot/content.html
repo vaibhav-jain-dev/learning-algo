@@ -1,0 +1,2499 @@
+<h1 id="parking-lot-system">Parking Lot System</h1>
+<h2 id="overview">Overview</h2>
+<p>The Parking Lot problem is a classic machine coding interview question that tests your ability to model real-world entities with proper object-oriented design. It evaluates understanding of encapsulation, inheritance, composition, design patterns, and concurrent state management. Unlike algorithmic problems, success here depends on <strong>design clarity</strong>, <strong>extensibility</strong>, and <strong>handling edge cases</strong> gracefully.</p>
+<p>A parking lot system manages the lifecycle of vehicles entering, parking, and exiting a facility. It must handle multiple vehicle types, different spot sizes, dynamic pricing, concurrent access from multiple entry/exit points, and maintain accurate availability information in real-time.</p>
+<hr />
+<h2 id="why-this-problem-matters">Why This Problem Matters</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Real-World Parking Systems</h4>
+<div style="display: grid; gap: 16px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Airport Parking (LAX, Heathrow)</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Handles 30,000+ vehicles daily across multiple terminals, long-term/short-term lots, valet services, and EV charging stations. Must integrate with flight data for pricing and availability predictions.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Shopping Mall Parking (Westfield, Simon Properties)</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Dynamic pricing based on store validation, reserved spots for premium customers, integration with loyalty programs. Peak handling during holidays requires sophisticated load balancing.</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Smart City Parking (SF Park, Barcelona)</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Real-time sensor data from thousands of spots, mobile app integration, surge pricing during events, and integration with traffic management systems.</div>
+</div>
+</div>
+</div>
+<p><strong>What Interviewers Evaluate:</strong></p>
+<ul>
+<li><strong>OOP Fundamentals</strong>: Proper abstraction, encapsulation, inheritance vs composition decisions</li>
+<li><strong>Design Pattern Application</strong>: Factory, Strategy, Observer patterns in context</li>
+<li><strong>Concurrency Awareness</strong>: Race conditions, atomic operations, deadlock prevention</li>
+<li><strong>Extensibility</strong>: How easily can new vehicle types, pricing models, or features be added?</li>
+<li><strong>Edge Case Handling</strong>: Full lots, invalid tickets, power failures, time zone changes</li>
+</ul>
+<hr />
+<h2 id="core-requirements-analysis">Core Requirements Analysis</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Requirement Breakdown</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #ecfdf5;border-radius: 8px; padding: 16px">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 8px">Functional Requirements</div>
+<div style="color: #047857; font-size: 14px">
+<div style="padding: 4px 0">1. Park vehicles of different types (motorcycle, car, truck, bus)</div>
+<div style="padding: 4px 0">2. Assign appropriate spots based on vehicle size</div>
+<div style="padding: 4px 0">3. Generate tickets on entry with timestamp</div>
+<div style="padding: 4px 0">4. Calculate fees based on duration and vehicle type</div>
+<div style="padding: 4px 0">5. Track real-time availability per floor/spot type</div>
+<div style="padding: 4px 0">6. Support multiple entry/exit points</div>
+</div>
+</div>
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px">Non-Functional Requirements</div>
+<div style="color: #3730a3; font-size: 14px">
+<div style="padding: 4px 0">1. Handle concurrent entry/exit at peak times</div>
+<div style="padding: 4px 0">2. Sub-second spot allocation latency</div>
+<div style="padding: 4px 0">3. Accurate billing even during system failures</div>
+<div style="padding: 4px 0">4. Extensible to new vehicle types without code changes</div>
+<div style="padding: 4px 0">5. Audit trail for all transactions</div>
+</div>
+</div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 16px">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 8px">Key Assumptions to Clarify</div>
+<div style="color: #78350f; font-size: 14px">
+<div style="padding: 4px 0">- Can a motorcycle use a car spot if no small spots available?</div>
+<div style="padding: 4px 0">- Is pricing per hour, per minute, or tiered?</div>
+<div style="padding: 4px 0">- Do trucks span multiple spots?</div>
+<div style="padding: 4px 0">- Are reservations supported?</div>
+<div style="padding: 4px 0">- What happens on payment failure at exit?</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="object-oriented-design">Object-Oriented Design</h2>
+<h3 id="class-hierarchy-and-relationships">Class Hierarchy and Relationships</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">System Architecture</h4>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px">
+<div style="background: #dbeafe; border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: #1e40af; font-weight: 700; font-size: 16px">Core Entities</div>
+<div style="color: #3730a3; font-size: 13px; margin-top: 8px">
+  ParkingLot<br/>
+  ParkingFloor<br/>
+  ParkingSpot<br/>
+  Vehicle (abstract)<br/>
+  Ticket
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: #166534; font-weight: 700; font-size: 16px">Strategies</div>
+<div style="color: #15803d; font-size: 13px; margin-top: 8px">
+  SpotAllocationStrategy<br/>
+  PricingStrategy<br/>
+  PaymentProcessor<br/>
+  NotificationService
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: #92400e; font-weight: 700; font-size: 16px">Entry Points</div>
+<div style="color: #b45309; font-size: 13px; margin-top: 8px">
+  EntryGate<br/>
+  ExitGate<br/>
+  DisplayBoard<br/>
+  AdminPanel
+</div>
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 12px">Relationship Types</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px">
+<div style="color: #475569">
+<strong>Composition:</strong> ParkingLot owns Floors (floors don't exist independently)
+</div>
+<div style="color: #475569">
+<strong>Aggregation:</strong> Floor has Spots (spots could theoretically exist alone)
+</div>
+<div style="color: #475569">
+<strong>Association:</strong> Ticket references Vehicle and Spot
+</div>
+<div style="color: #475569">
+<strong>Inheritance:</strong> Car, Motorcycle, Truck extend Vehicle
+</div>
+</div>
+</div>
+</div>
+<h3 id="design-decisions-and-trade-offs">Design Decisions and Trade-offs</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Critical Design Choices</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Decision 1: Vehicle as Abstract Class vs Interface</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px">
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px">
+<div style="color: #166534; font-weight: 600; font-size: 13px">Abstract Class (Chosen)</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">
+            - Shared state (license plate, entry time)<br/>
+            - Common behavior implementations<br/>
+            - Single inheritance sufficient here
+</div>
+</div>
+<div style="background: #fee2e2; padding: 12px; border-radius: 6px">
+<div style="color: #991b1b; font-weight: 600; font-size: 13px">Interface</div>
+<div style="color: #7f1d1d; font-size: 12px; margin-top: 4px">
+            - More flexible for hybrid vehicles<br/>
+            - No shared state management<br/>
+            - Better for multiple inheritance needs
+</div>
+</div>
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Decision 2: Spot Tracks Vehicle vs Vehicle Tracks Spot</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px">
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px">
+<div style="color: #166534; font-weight: 600; font-size: 13px">Spot has Vehicle reference (Chosen)</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">
+            - Natural: "spot is occupied by vehicle"<br/>
+            - Easy availability queries<br/>
+            - Clear ownership semantics
+</div>
+</div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 6px">
+<div style="color: #92400e; font-weight: 600; font-size: 13px">Both directions (Alternative)</div>
+<div style="color: #b45309; font-size: 12px; margin-top: 4px">
+            - Bidirectional navigation<br/>
+            - Risk of inconsistent state<br/>
+            - Use Ticket as single source of truth
+</div>
+</div>
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Decision 3: Singleton ParkingLot vs Dependency Injection</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px">
+<div style="background: #fee2e2; padding: 12px; border-radius: 6px">
+<div style="color: #991b1b; font-weight: 600; font-size: 13px">Singleton</div>
+<div style="color: #7f1d1d; font-size: 12px; margin-top: 4px">
+            - Global access point<br/>
+            - Hard to test and mock<br/>
+            - Tight coupling
+</div>
+</div>
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px">
+<div style="color: #166534; font-weight: 600; font-size: 13px">Dependency Injection (Chosen)</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">
+            - Testable with mock lots<br/>
+            - Multiple lot support<br/>
+            - Loose coupling
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="interview-questions-oop-design-3-level-deep">Interview Questions: OOP Design (3-Level Deep)</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>L1: Why use inheritance for Vehicle types instead of a single class with a type field?</strong></p>
+<p><strong>Answer:</strong> Inheritance enables:</p>
+<ul>
+<li><strong>Type-specific behavior</strong>: Electric vehicles need charging status, motorcycles may have helmet storage</li>
+<li><strong>Compile-time type safety</strong>: Can't accidentally pass a Car to motorcycle-only methods</li>
+<li><strong>Open/Closed Principle</strong>: Add new vehicle types without modifying existing code</li>
+<li><strong>Polymorphism</strong>: Uniform <code>getRequiredSpotSize()</code> interface with type-specific implementations</li>
+</ul>
+<p><strong>L2: Follow-up: When would you choose composition over inheritance for vehicles?</strong></p>
+<p><strong>Answer:</strong> Use composition when:</p>
+<ul>
+<li><strong>Vehicle capabilities vary independently</strong>: A car can be electric OR gasoline, compact OR SUV (multiple orthogonal dimensions)</li>
+<li><strong>Runtime flexibility needed</strong>: Vehicle upgrades trailer attachment mid-parking</li>
+<li><strong>Avoiding diamond problem</strong>: Electric SUV inherits from both ElectricVehicle and SUV</li>
+</ul>
+<pre><code class="language-python"># Composition approach
+class Vehicle:
+def __init__(self, engine: Engine, size: SizeCategory, features: List[Feature]):
+self.engine = engine  # Gasoline, Electric, Hybrid
+self.size = size      # Compact, Standard, Large
+self.features = features  # [Trailer, RoofRack, ...]
+</code></pre>
+<p><strong>L3: Follow-up: How would you handle a vehicle that requires multiple spots (bus spanning 5 spots)?</strong></p>
+<p><strong>Answer:</strong> Two approaches:</p>
+<ol>
+<li><strong>Composite Spot Pattern</strong>: Create a <code>MultiSpot</code> that groups adjacent spots</li>
+</ol>
+<pre><code class="language-python">class MultiSpot(ParkingSpot):
+def __init__(self, spots: List[ParkingSpot]):
+self.constituent_spots = spots
+
+def reserve(self):
+# Atomically reserve all spots or none
+with transaction:
+for spot in self.constituent_spots:
+if not spot.is_available():
+raise SpotUnavailableError()
+for spot in self.constituent_spots:
+spot.mark_reserved()
+</code></pre>
+<ol start="2">
+<li><strong>Spot Allocation Strategy</strong>: Bus allocation strategy finds N contiguous spots</li>
+</ol>
+<pre><code class="language-python">class BusAllocationStrategy(SpotAllocationStrategy):
+def allocate(self, vehicle: Bus, floor: Floor) -&gt; List[ParkingSpot]:
+required = vehicle.spots_needed  # e.g., 5
+contiguous = self.find_contiguous_large_spots(floor, required)
+return contiguous if len(contiguous) == required else None
+</code></pre>
+<p><strong>Trade-off</strong>: Composite is cleaner OOP but requires adjacent spot management. Strategy is more flexible but spreads bus logic across classes.</p>
+</div>
+<hr />
+<h2 id="vehicle-types-and-spot-mapping">Vehicle Types and Spot Mapping</h2>
+<h3 id="type-hierarchy">Type Hierarchy</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Vehicle Type System</h4>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px">
+<div style="background: #dbeafe; border-radius: 8px; padding: 12px; text-align: center">
+<div style="color: #1e40af; font-weight: 700">Motorcycle</div>
+<div style="color: #3730a3; font-size: 12px; margin-top: 4px">
+  Size: Small<br/>
+  Can use: S, M, L spots<br/>
+  Rate: $1/hr
+</div>
+</div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 12px; text-align: center">
+<div style="color: #166534; font-weight: 700">Car</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">
+  Size: Medium<br/>
+  Can use: M, L spots<br/>
+  Rate: $2/hr
+</div>
+</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 12px; text-align: center">
+<div style="color: #92400e; font-weight: 700">Truck</div>
+<div style="color: #b45309; font-size: 12px; margin-top: 4px">
+  Size: Large<br/>
+  Can use: L spots only<br/>
+  Rate: $4/hr
+</div>
+</div>
+<div style="background: #fce7f3; border-radius: 8px; padding: 12px; text-align: center">
+<div style="color: #9d174d; font-weight: 700">Bus</div>
+<div style="color: #be185d; font-size: 12px; margin-top: 4px">
+  Size: X-Large (5 spots)<br/>
+  Can use: 5 contiguous L<br/>
+  Rate: $15/hr
+</div>
+</div>
+</div>
+<div style="background: #fef2f2;border-radius: 8px; padding: 16px">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px">Edge Case: Flexible Spot Assignment</div>
+<div style="color: #7f1d1d; font-size: 14px">
+<strong>Question:</strong> Should a motorcycle be allowed to take a car spot if all motorcycle spots are full?<br/><br/>
+<strong>Trade-off:</strong>
+<ul style="margin: 8px 0">
+<li><strong>Allow (Revenue-optimized):</strong> Maximize lot utilization, never turn away customers</li>
+<li><strong>Disallow (Efficiency-optimized):</strong> Reserve larger spots for larger vehicles that need them</li>
+<li><strong>Configurable:</strong> Allow during off-peak, restrict during peak hours</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="interview-questions-vehicle-types-3-level-deep">Interview Questions: Vehicle Types (3-Level Deep)</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>L1: How do you determine which spot sizes a vehicle can use?</strong></p>
+<p><strong>Answer:</strong> Use the <a href="/topic/design-patterns/strategy">[Strategy Pattern]</a> with a compatibility matrix:</p>
+<pre><code class="language-python">class SpotCompatibility:
+# Vehicle type -&gt; list of compatible spot sizes (in preference order)
+COMPATIBILITY = {
+VehicleType.MOTORCYCLE: [SpotSize.SMALL, SpotSize.MEDIUM, SpotSize.LARGE],
+VehicleType.CAR: [SpotSize.MEDIUM, SpotSize.LARGE],
+VehicleType.TRUCK: [SpotSize.LARGE],
+VehicleType.BUS: [SpotSize.XLARGE],  # Virtual size for multi-spot
+}
+
+@classmethod
+def can_fit(cls, vehicle_type: VehicleType, spot_size: SpotSize) -&gt; bool:
+return spot_size in cls.COMPATIBILITY.get(vehicle_type, [])
+
+@classmethod
+def preferred_size(cls, vehicle_type: VehicleType) -&gt; SpotSize:
+return cls.COMPATIBILITY[vehicle_type][0]
+</code></pre>
+<p><strong>L2: Follow-up: How would you add electric vehicle support with charging spots?</strong></p>
+<p><strong>Answer:</strong> Electric vehicles introduce a new dimension orthogonal to size:</p>
+<pre><code class="language-python">class VehicleCapability(Enum):
+STANDARD = &quot;standard&quot;
+ELECTRIC = &quot;electric&quot;
+HANDICAP = &quot;handicap&quot;
+
+class ParkingSpot:
+def __init__(self, size: SpotSize, capabilities: Set[VehicleCapability]):
+self.size = size
+self.capabilities = capabilities  # {ELECTRIC} for charging spots
+
+def can_accommodate(self, vehicle: Vehicle) -&gt; bool:
+# Size must fit AND capabilities must match
+size_ok = SpotCompatibility.can_fit(vehicle.type, self.size)
+
+# Electric vehicles REQUIRE charging spots (or regular if configured)
+if vehicle.needs_charging:
+return size_ok and VehicleCapability.ELECTRIC in self.capabilities
+
+# Non-electric vehicles can use any spot (don't waste charging spots)
+return size_ok
+</code></pre>
+<p><strong>Design Decision:</strong> Should non-electric vehicles use charging spots?</p>
+<ul>
+<li><strong>Never:</strong> Preserves charging spots for EVs (risk: wasted capacity)</li>
+<li><strong>Only when lot &gt; 80% full:</strong> Balance utilization and EV accommodation</li>
+<li><strong>With higher rate:</strong> Economic incentive to leave charging spots</li>
+</ul>
+<p><strong>L3: Follow-up: How do you handle a vehicle that arrives as &quot;standard&quot; but the owner later requests charging?</strong></p>
+<p><strong>Answer:</strong> This requires spot migration during an active parking session:</p>
+<pre><code class="language-python">class ParkingLot:
+def request_charging(self, ticket_id: str) -&gt; MigrationResult:
+ticket = self.active_tickets[ticket_id]
+current_spot = ticket.spot
+
+if VehicleCapability.ELECTRIC in current_spot.capabilities:
+return MigrationResult.ALREADY_CHARGING
+
+# Find available charging spot of same or larger size
+new_spot = self.find_charging_spot(ticket.vehicle)
+
+if not new_spot:
+# Add to charging waitlist
+self.charging_waitlist.add(ticket_id, priority=ticket.entry_time)
+return MigrationResult.WAITLISTED
+
+# Atomic migration
+with self.lock:
+current_spot.release()
+new_spot.occupy(ticket.vehicle)
+ticket.spot = new_spot
+ticket.add_event(TicketEvent.SPOT_MIGRATION, new_spot.id)
+
+return MigrationResult.SUCCESS
+</code></pre>
+<p><strong>Challenges:</strong></p>
+<ul>
+<li>Concurrent migration requests</li>
+<li>Preserving billing continuity (pro-rate charging from migration time)</li>
+<li>Notifying customer of new spot location</li>
+<li>Handling migration failures gracefully</li>
+</ul>
+</div>
+<hr />
+<h2 id="spot-allocation-strategies">Spot Allocation Strategies</h2>
+<h3 id="strategy-pattern-implementation">Strategy Pattern Implementation</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Allocation Algorithms Comparison</h4>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<tr style="background: #f1f5f9">
+<th style="padding: 12px; text-align: left; color: #1e293b">Strategy</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Time Complexity</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Pros</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Cons</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Best For</th>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">First Available</td>
+<td style="padding: 12px; color: #475569">O(n)</td>
+<td style="padding: 12px; color: #10b981">Simple, fast</td>
+<td style="padding: 12px; color: #ef4444">Poor distribution</td>
+<td style="padding: 12px; color: #475569">Small lots</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Nearest to Entrance</td>
+<td style="padding: 12px; color: #475569">O(n log n)</td>
+<td style="padding: 12px; color: #10b981">Customer satisfaction</td>
+<td style="padding: 12px; color: #ef4444">Uneven wear</td>
+<td style="padding: 12px; color: #475569">Shopping malls</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Nearest to Exit</td>
+<td style="padding: 12px; color: #475569">O(n log n)</td>
+<td style="padding: 12px; color: #10b981">Faster egress</td>
+<td style="padding: 12px; color: #ef4444">Longer walk in</td>
+<td style="padding: 12px; color: #475569">Event venues</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Load Balanced (Round Robin)</td>
+<td style="padding: 12px; color: #475569">O(floors)</td>
+<td style="padding: 12px; color: #10b981">Even distribution</td>
+<td style="padding: 12px; color: #ef4444">Not optimal for customer</td>
+<td style="padding: 12px; color: #475569">Multi-floor garages</td>
+</tr>
+<tr>
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Priority Queue (Heap)</td>
+<td style="padding: 12px; color: #475569">O(log n)</td>
+<td style="padding: 12px; color: #10b981">Fast, customizable</td>
+<td style="padding: 12px; color: #ef4444">Memory overhead</td>
+<td style="padding: 12px; color: #475569">High-traffic lots</td>
+</tr>
+</table>
+</div>
+</div>
+<h3 id="implementation-with-strategy-pattern">Implementation with Strategy Pattern</h3>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from typing import Optional, List
+from dataclasses import dataclass
+import heapq
+
+@dataclass
+class SpotDistance:
+    spot: 'ParkingSpot'
+    distance: float
+
+    def __lt__(self, other):
+        return self.distance &lt; other.distance
+
+
+class SpotAllocationStrategy(ABC):
+    &quot;&quot;&quot;
+    Abstract strategy for spot allocation.
+
+    Implementations determine how spots are selected based on
+    different optimization criteria.
+    &quot;&quot;&quot;
+
+    @abstractmethod
+    def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -&gt; Optional['ParkingSpot']:
+        &quot;&quot;&quot;Find and return an available spot for the vehicle, or None if full.&quot;&quot;&quot;
+        pass
+
+    def get_compatible_spots(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -&gt; List['ParkingSpot']:
+        &quot;&quot;&quot;Get all spots that could accommodate this vehicle.&quot;&quot;&quot;
+        compatible = []
+        for floor in floors:
+            for spot in floor.spots:
+                if spot.is_available() and spot.can_fit(vehicle):
+                    compatible.append(spot)
+        return compatible
+
+
+class FirstAvailableStrategy(SpotAllocationStrategy):
+    &quot;&quot;&quot;
+    Assigns the first available compatible spot found.
+
+    Time: O(n) where n = total spots
+    Space: O(1)
+
+    Best for: Simple implementations, small lots
+    &quot;&quot;&quot;
+
+    def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -&gt; Optional['ParkingSpot']:
+        for floor in floors:
+            for spot in floor.spots:
+                if spot.is_available() and spot.can_fit(vehicle):
+                    return spot
+        return None
+
+
+class NearestToEntranceStrategy(SpotAllocationStrategy):
+    &quot;&quot;&quot;
+    Assigns the closest spot to the entry point.
+
+    Requires spots to have distance-from-entrance metadata.
+    Uses min-heap for efficient minimum finding.
+
+    Time: O(n log n) for initial heap, O(log n) for subsequent allocations
+    Space: O(n) for heap
+
+    Best for: Customer-focused lots (malls, hospitals)
+    &quot;&quot;&quot;
+
+    def __init__(self, entrance_location: tuple):
+        self.entrance = entrance_location
+        self._available_heap: List[SpotDistance] = []
+        self._heap_initialized = False
+
+    def _calculate_distance(self, spot: 'ParkingSpot') -&gt; float:
+        # Manhattan distance for simplicity; Euclidean for accuracy
+        return abs(spot.location[0] - self.entrance[0]) + \
+               abs(spot.location[1] - self.entrance[1])
+
+    def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -&gt; Optional['ParkingSpot']:
+        compatible = self.get_compatible_spots(vehicle, floors)
+
+        if not compatible:
+            return None
+
+        # Find spot with minimum distance
+        return min(compatible, key=self._calculate_distance)
+
+
+class OptimalFitStrategy(SpotAllocationStrategy):
+    &quot;&quot;&quot;
+    Assigns the smallest compatible spot to maximize capacity utilization.
+
+    Prevents motorcycles from taking truck spots when motorcycle spots exist.
+
+    Time: O(n) single pass with size tracking
+    Space: O(1)
+
+    Best for: High-utilization scenarios
+    &quot;&quot;&quot;
+
+    def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -&gt; Optional['ParkingSpot']:
+        best_spot = None
+        best_size_value = float('inf')
+
+        preferred_size = vehicle.get_required_spot_size()
+
+        for floor in floors:
+            for spot in floor.spots:
+                if not spot.is_available() or not spot.can_fit(vehicle):
+                    continue
+
+                # Prefer exact size match, then smallest larger size
+                if spot.size == preferred_size:
+                    return spot  # Perfect match, return immediately
+
+                if spot.size.value &lt; best_size_value:
+                    best_size_value = spot.size.value
+                    best_spot = spot
+
+        return best_spot
+
+
+class LoadBalancedStrategy(SpotAllocationStrategy):
+    &quot;&quot;&quot;
+    Distributes vehicles evenly across floors.
+
+    Tracks occupancy per floor and assigns to least occupied.
+    Uses round-robin among equally occupied floors.
+
+    Time: O(floors + spots_per_floor)
+    Space: O(floors) for occupancy tracking
+
+    Best for: Even wear distribution, multi-floor garages
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self._floor_index = 0  # For round-robin tiebreaking
+
+    def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -&gt; Optional['ParkingSpot']:
+        # Calculate occupancy rates
+        floor_occupancy = []
+        for i, floor in enumerate(floors):
+            available = [s for s in floor.spots if s.is_available() and s.can_fit(vehicle)]
+            if available:
+                rate = floor.get_occupancy_rate()
+                floor_occupancy.append((rate, i, available))
+
+        if not floor_occupancy:
+            return None
+
+        # Sort by occupancy (lowest first), then by index for round-robin
+        floor_occupancy.sort(key=lambda x: (x[0], (x[1] - self._floor_index) % len(floors)))
+
+        # Get spot from least occupied floor
+        _, floor_idx, available_spots = floor_occupancy[0]
+        self._floor_index = (floor_idx + 1) % len(floors)
+
+        return available_spots[0]
+</code></pre>
+<h3 id="interview-questions-spot-allocation-3-level-deep">Interview Questions: Spot Allocation (3-Level Deep)</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>L1: Why use the Strategy pattern for spot allocation instead of a simple switch statement?</strong></p>
+<p><strong>Answer:</strong> Strategy pattern provides:</p>
+<ol>
+<li><strong>Open/Closed Principle</strong>: Add new strategies without modifying existing code</li>
+<li><strong>Runtime flexibility</strong>: Change allocation strategy based on time of day, occupancy level</li>
+<li><strong>Testing</strong>: Each strategy can be unit tested independently</li>
+<li><strong>Single Responsibility</strong>: Allocation logic separated from ParkingLot class</li>
+</ol>
+<pre><code class="language-python"># Without Strategy (problematic)
+class ParkingLot:
+def find_spot(self, vehicle, strategy_type):
+if strategy_type == &quot;first&quot;:
+# 20 lines of first-available logic
+elif strategy_type == &quot;nearest&quot;:
+# 30 lines of nearest logic
+elif strategy_type == &quot;balanced&quot;:
+# 25 lines of balancing logic
+# Every new strategy requires modifying this class
+
+# With Strategy (preferred)
+class ParkingLot:
+def __init__(self, allocation_strategy: SpotAllocationStrategy):
+self.strategy = allocation_strategy
+
+def find_spot(self, vehicle):
+return self.strategy.find_spot(vehicle, self.floors)
+</code></pre>
+<p><strong>L2: Follow-up: How would you implement dynamic strategy switching based on lot occupancy?</strong></p>
+<p><strong>Answer:</strong> Use a <a href="/topic/design-patterns/decorator">[Decorator]</a> or <a href="/topic/design-patterns/chain-of-responsibility">[Chain of Responsibility]</a>:</p>
+<pre><code class="language-python">class AdaptiveAllocationStrategy(SpotAllocationStrategy):
+&quot;&quot;&quot;
+Switches strategy based on current lot conditions.
+
+- Low occupancy (&lt;50%): Nearest to entrance (customer convenience)
+- Medium occupancy (50-85%): Optimal fit (maximize capacity)
+- High occupancy (&gt;85%): Any available (speed over optimization)
+&quot;&quot;&quot;
+
+def __init__(self, parking_lot: 'ParkingLot'):
+self.lot = parking_lot
+self.strategies = {
+'low': NearestToEntranceStrategy(parking_lot.main_entrance),
+'medium': OptimalFitStrategy(),
+'high': FirstAvailableStrategy()
+}
+
+def find_spot(self, vehicle: 'Vehicle', floors: List['ParkingFloor']) -&gt; Optional['ParkingSpot']:
+occupancy = self.lot.get_occupancy_rate()
+
+if occupancy &lt; 0.5:
+strategy = self.strategies['low']
+elif occupancy &lt; 0.85:
+strategy = self.strategies['medium']
+else:
+strategy = self.strategies['high']
+
+return strategy.find_spot(vehicle, floors)
+</code></pre>
+<p><strong>L3: Follow-up: Two vehicles arrive simultaneously for the last spot. How do you prevent race conditions?</strong></p>
+<p><strong>Answer:</strong> This is a classic <a href="/topic/system-design/concurrency-patterns">[Concurrency]</a> problem. Solutions:</p>
+<p><strong>Option 1: Optimistic Locking with Atomic Compare-And-Swap</strong></p>
+<pre><code class="language-python">class ParkingSpot:
+def __init__(self):
+self._vehicle = None
+self._version = 0
+
+def try_park(self, vehicle: Vehicle, expected_version: int) -&gt; bool:
+&quot;&quot;&quot;
+Atomically park if spot is still in expected state.
+Returns False if spot changed since we checked availability.
+&quot;&quot;&quot;
+with self._lock:
+if self._version != expected_version or self._vehicle is not None:
+return False
+self._vehicle = vehicle
+self._version += 1
+return True
+
+class ParkingLot:
+def park_vehicle(self, vehicle: Vehicle) -&gt; Optional[Ticket]:
+max_retries = 3
+for attempt in range(max_retries):
+spot, version = self.strategy.find_spot_with_version(vehicle, self.floors)
+if spot is None:
+return None  # No spots available
+
+if spot.try_park(vehicle, version):
+return self._create_ticket(vehicle, spot)
+
+# Spot was taken, retry with fresh search
+continue
+
+return None  # Failed after retries
+</code></pre>
+<p><strong>Option 2: Pessimistic Locking with Reservation</strong></p>
+<pre><code class="language-python">class ParkingSpot:
+def __init__(self):
+self._vehicle = None
+self._reserved_until = None
+self._lock = threading.Lock()
+
+def reserve(self, duration_seconds: float = 30) -&gt; bool:
+&quot;&quot;&quot;Reserve spot temporarily while processing entry.&quot;&quot;&quot;
+with self._lock:
+now = time.time()
+if self._vehicle is not None:
+return False
+if self._reserved_until and self._reserved_until &gt; now:
+return False
+self._reserved_until = now + duration_seconds
+return True
+
+def confirm_reservation(self, vehicle: Vehicle) -&gt; bool:
+&quot;&quot;&quot;Convert reservation to actual parking.&quot;&quot;&quot;
+with self._lock:
+if self._reserved_until is None:
+return False
+self._vehicle = vehicle
+self._reserved_until = None
+return True
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<ul>
+<li>Optimistic: Better throughput when contention is low, retries under high contention</li>
+<li>Pessimistic: Guaranteed spot after reservation, but holds resources during payment processing</li>
+</ul>
+</div>
+<hr />
+<h2 id="payment-system-design">Payment System Design</h2>
+<h3 id="pricing-models">Pricing Models</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Common Pricing Strategies</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Flat Hourly Rate</div>
+<div style="color: #475569; font-size: 14px">
+  Simple: $2/hour for cars<br/>
+  Pros: Easy to understand<br/>
+  Cons: No incentive for short stays
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Tiered Pricing</div>
+<div style="color: #475569; font-size: 14px">
+  First hour: $5, additional: $2/hr<br/>
+  Pros: Revenue from short stays<br/>
+  Cons: Complex calculation
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Daily Maximum</div>
+<div style="color: #475569; font-size: 14px">
+  $2/hr, max $20/day<br/>
+  Pros: Predictable for all-day parkers<br/>
+  Cons: Revenue cap
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Dynamic/Surge Pricing</div>
+<div style="color: #475569; font-size: 14px">
+  Price varies with occupancy<br/>
+  Pros: Maximizes revenue<br/>
+  Cons: Customer frustration
+</div>
+</div>
+</div>
+</div>
+<h3 id="payment-processor-implementation">Payment Processor Implementation</h3>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from decimal import Decimal, ROUND_HALF_UP
+from enum import Enum
+from typing import Optional, List
+import math
+
+
+class PricingStrategy(ABC):
+    &quot;&quot;&quot;
+    Abstract pricing strategy.
+
+    Implementations calculate fees based on different business models.
+    Uses Decimal for financial precision.
+    &quot;&quot;&quot;
+
+    @abstractmethod
+    def calculate_fee(self, ticket: 'Ticket') -&gt; Decimal:
+        &quot;&quot;&quot;Calculate the total fee for a parking session.&quot;&quot;&quot;
+        pass
+
+    def _get_duration_hours(self, ticket: 'Ticket') -&gt; Decimal:
+        &quot;&quot;&quot;Get parking duration in hours, rounded up to billing increment.&quot;&quot;&quot;
+        exit_time = ticket.exit_time or datetime.now()
+        duration = exit_time - ticket.entry_time
+        hours = Decimal(str(duration.total_seconds())) / Decimal('3600')
+        return hours
+
+
+class FlatHourlyPricing(PricingStrategy):
+    &quot;&quot;&quot;
+    Simple per-hour pricing with vehicle-type rates.
+
+    Rounds up to the nearest hour (minimum 1 hour).
+    &quot;&quot;&quot;
+
+    RATES = {
+        VehicleType.MOTORCYCLE: Decimal('1.00'),
+        VehicleType.CAR: Decimal('2.00'),
+        VehicleType.TRUCK: Decimal('4.00'),
+        VehicleType.BUS: Decimal('15.00'),
+    }
+
+    def calculate_fee(self, ticket: 'Ticket') -&gt; Decimal:
+        hours = self._get_duration_hours(ticket)
+        billable_hours = max(Decimal('1'), hours.to_integral_value(rounding=ROUND_HALF_UP))
+
+        rate = self.RATES.get(ticket.vehicle.vehicle_type, Decimal('2.00'))
+        return (billable_hours * rate).quantize(Decimal('0.01'))
+
+
+class TieredPricing(PricingStrategy):
+    &quot;&quot;&quot;
+    Different rates for different time brackets.
+
+    Example: First hour $5, hours 2-4 at $3, hours 5+ at $2
+    &quot;&quot;&quot;
+
+    def __init__(self, tiers: List[tuple]):
+        &quot;&quot;&quot;
+        Args:
+            tiers: List of (hours_up_to, rate_per_hour) tuples
+                   Example: [(1, 5.00), (4, 3.00), (float('inf'), 2.00)]
+        &quot;&quot;&quot;
+        self.tiers = [(Decimal(str(h)), Decimal(str(r))) for h, r in tiers]
+
+    def calculate_fee(self, ticket: 'Ticket') -&gt; Decimal:
+        hours = self._get_duration_hours(ticket)
+        hours = max(Decimal('1'), math.ceil(hours))
+
+        total_fee = Decimal('0.00')
+        hours_billed = Decimal('0')
+
+        for tier_hours, rate in self.tiers:
+            if hours_billed &gt;= hours:
+                break
+
+            hours_in_tier = min(hours - hours_billed, tier_hours - hours_billed)
+            if hours_in_tier &gt; 0:
+                total_fee += hours_in_tier * rate
+                hours_billed += hours_in_tier
+
+        # Apply vehicle type multiplier
+        multiplier = self._get_vehicle_multiplier(ticket.vehicle.vehicle_type)
+        return (total_fee * multiplier).quantize(Decimal('0.01'))
+
+    def _get_vehicle_multiplier(self, vehicle_type: VehicleType) -&gt; Decimal:
+        multipliers = {
+            VehicleType.MOTORCYCLE: Decimal('0.5'),
+            VehicleType.CAR: Decimal('1.0'),
+            VehicleType.TRUCK: Decimal('2.0'),
+            VehicleType.BUS: Decimal('3.0'),
+        }
+        return multipliers.get(vehicle_type, Decimal('1.0'))
+
+
+class DailyMaxPricing(PricingStrategy):
+    &quot;&quot;&quot;
+    Hourly rate with a daily cap.
+
+    Useful for airport long-term parking.
+    &quot;&quot;&quot;
+
+    def __init__(self, hourly_rate: Decimal, daily_max: Decimal):
+        self.hourly_rate = hourly_rate
+        self.daily_max = daily_max
+
+    def calculate_fee(self, ticket: 'Ticket') -&gt; Decimal:
+        hours = self._get_duration_hours(ticket)
+        hours = max(Decimal('1'), hours.to_integral_value(rounding=ROUND_HALF_UP))
+
+        # Calculate full days and remaining hours
+        days = hours // Decimal('24')
+        remaining_hours = hours % Decimal('24')
+
+        daily_charge = days * self.daily_max
+        hourly_charge = min(remaining_hours * self.hourly_rate, self.daily_max)
+
+        return (daily_charge + hourly_charge).quantize(Decimal('0.01'))
+
+
+class DynamicPricing(PricingStrategy):
+    &quot;&quot;&quot;
+    Surge pricing based on lot occupancy.
+
+    Higher prices when lot is nearly full to incentivize turnover.
+    &quot;&quot;&quot;
+
+    def __init__(self, base_rate: Decimal, parking_lot: 'ParkingLot'):
+        self.base_rate = base_rate
+        self.parking_lot = parking_lot
+
+        # Multipliers for different occupancy levels
+        self.surge_tiers = [
+            (0.5, Decimal('0.8')),   # &lt;50%: 20% discount
+            (0.75, Decimal('1.0')),  # 50-75%: base rate
+            (0.9, Decimal('1.5')),   # 75-90%: 50% surge
+            (1.0, Decimal('2.0')),   # &gt;90%: 100% surge
+        ]
+
+    def calculate_fee(self, ticket: 'Ticket') -&gt; Decimal:
+        hours = self._get_duration_hours(ticket)
+        hours = max(Decimal('1'), hours.to_integral_value(rounding=ROUND_HALF_UP))
+
+        # Get occupancy at entry and exit, average them
+        # In practice, you'd track occupancy over time
+        avg_multiplier = self._get_surge_multiplier(ticket.avg_occupancy_during_stay)
+
+        return (hours * self.base_rate * avg_multiplier).quantize(Decimal('0.01'))
+
+    def _get_surge_multiplier(self, occupancy: float) -&gt; Decimal:
+        for threshold, multiplier in self.surge_tiers:
+            if occupancy &lt;= threshold:
+                return multiplier
+        return Decimal('2.0')
+
+
+@dataclass
+class PaymentResult:
+    success: bool
+    transaction_id: Optional[str]
+    amount: Decimal
+    error_message: Optional[str] = None
+
+
+class PaymentProcessor:
+    &quot;&quot;&quot;
+    Handles payment processing with multiple payment methods.
+
+    Integrates with pricing strategy and external payment gateways.
+    &quot;&quot;&quot;
+
+    def __init__(self, pricing_strategy: PricingStrategy):
+        self.pricing_strategy = pricing_strategy
+        self.payment_gateways = {}
+
+    def register_gateway(self, name: str, gateway: 'PaymentGateway'):
+        self.payment_gateways[name] = gateway
+
+    def calculate_fee(self, ticket: 'Ticket') -&gt; Decimal:
+        &quot;&quot;&quot;Calculate fee without processing payment.&quot;&quot;&quot;
+        return self.pricing_strategy.calculate_fee(ticket)
+
+    def process_payment(self, ticket: 'Ticket', payment_method: str,
+                       payment_details: dict) -&gt; PaymentResult:
+        &quot;&quot;&quot;
+        Process payment for a parking ticket.
+
+        Args:
+            ticket: The parking ticket
+            payment_method: 'credit_card', 'cash', 'mobile'
+            payment_details: Method-specific details (card number, etc.)
+
+        Returns:
+            PaymentResult with success status and transaction ID
+        &quot;&quot;&quot;
+        amount = self.calculate_fee(ticket)
+
+        if payment_method == 'cash':
+            return self._process_cash(amount, payment_details)
+
+        gateway = self.payment_gateways.get(payment_method)
+        if not gateway:
+            return PaymentResult(
+                success=False,
+                transaction_id=None,
+                amount=amount,
+                error_message=f&quot;Unknown payment method: {payment_method}&quot;
+            )
+
+        try:
+            transaction_id = gateway.charge(amount, payment_details)
+            return PaymentResult(
+                success=True,
+                transaction_id=transaction_id,
+                amount=amount
+            )
+        except PaymentError as e:
+            return PaymentResult(
+                success=False,
+                transaction_id=None,
+                amount=amount,
+                error_message=str(e)
+            )
+
+    def _process_cash(self, amount: Decimal, details: dict) -&gt; PaymentResult:
+        &quot;&quot;&quot;Handle cash payment with change calculation.&quot;&quot;&quot;
+        cash_received = Decimal(str(details.get('cash_received', 0)))
+
+        if cash_received &lt; amount:
+            return PaymentResult(
+                success=False,
+                transaction_id=None,
+                amount=amount,
+                error_message=f&quot;Insufficient cash. Required: ${amount}, Received: ${cash_received}&quot;
+            )
+
+        change = cash_received - amount
+        return PaymentResult(
+            success=True,
+            transaction_id=f&quot;CASH-{datetime.now().timestamp()}&quot;,
+            amount=amount
+        )
+</code></pre>
+<h3 id="interview-questions-payment-system-3-level-deep">Interview Questions: Payment System (3-Level Deep)</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>L1: Why use Decimal instead of float for monetary calculations?</strong></p>
+<p><strong>Answer:</strong> Floating-point arithmetic introduces precision errors that compound over time:</p>
+<pre><code class="language-python"># Float problem
+&gt;&gt;&gt; 0.1 + 0.2
+0.30000000000000004
+
+&gt;&gt;&gt; 0.1 + 0.1 + 0.1 - 0.3
+5.551115123125783e-17  # Should be 0!
+
+# In a parking lot context:
+&gt;&gt;&gt; hourly_rate = 2.50
+&gt;&gt;&gt; hours = 2.4
+&gt;&gt;&gt; hourly_rate * hours
+5.999999999999999  # Customer charged $5.99 instead of $6.00
+
+# Decimal solution
+&gt;&gt;&gt; from decimal import Decimal
+&gt;&gt;&gt; Decimal('2.50') * Decimal('2.4')
+Decimal('6.000')
+</code></pre>
+<p>Financial systems <strong>must</strong> use fixed-point arithmetic (Decimal in Python, BigDecimal in Java) to ensure:</p>
+<ul>
+<li>Exact representation of currency values</li>
+<li>Predictable rounding behavior</li>
+<li>Audit compliance</li>
+</ul>
+<p><strong>L2: Follow-up: Payment fails at the exit gate. How do you handle this without blocking the exit?</strong></p>
+<p><strong>Answer:</strong> Implement a <strong>deferred payment</strong> system:</p>
+<pre><code class="language-python">class ExitGate:
+def process_exit(self, ticket: Ticket, payment_method: str,
+payment_details: dict) -&gt; ExitResult:
+fee = self.payment_processor.calculate_fee(ticket)
+
+# Attempt payment with timeout
+try:
+result = self.payment_processor.process_payment(
+ticket, payment_method, payment_details
+)
+except TimeoutError:
+result = PaymentResult(success=False, amount=fee,
+error_message=&quot;Payment timeout&quot;)
+
+if result.success:
+self._release_barrier()
+return ExitResult.SUCCESS
+
+# Payment failed - options:
+
+# Option 1: Deferred billing (for registered users)
+if ticket.vehicle.owner and ticket.vehicle.owner.has_payment_on_file:
+self._create_deferred_charge(ticket, fee)
+self._release_barrier()
+return ExitResult.DEFERRED
+
+# Option 2: Issue IOU ticket
+iou = self._create_iou_ticket(ticket, fee)
+self._send_to_attendant(iou)
+self._release_barrier()  # Don't trap customer
+return ExitResult.IOU_ISSUED
+
+# Option 3: Require attendant intervention
+# self._alert_attendant(ticket)
+# return ExitResult.ATTENDANT_REQUIRED
+
+
+class DeferredPaymentService:
+&quot;&quot;&quot;Handles payments that couldn't be processed at exit.&quot;&quot;&quot;
+
+def __init__(self, max_retry_days: int = 7):
+self.max_retry_days = max_retry_days
+
+def process_deferred_charges(self):
+&quot;&quot;&quot;Batch process deferred charges (run daily).&quot;&quot;&quot;
+pending = self.get_pending_charges()
+
+for charge in pending:
+if charge.age_days &gt; self.max_retry_days:
+self._send_to_collections(charge)
+continue
+
+result = self._attempt_charge(charge)
+if result.success:
+self._mark_paid(charge)
+else:
+self._increment_retry_count(charge)
+</code></pre>
+<p><strong>L3: Follow-up: How do you handle refunds when the pricing strategy changes mid-session?</strong></p>
+<p><strong>Answer:</strong> This requires <strong>price locking</strong> and <strong>audit trail</strong>:</p>
+<pre><code class="language-python">class Ticket:
+def __init__(self, vehicle: Vehicle, spot: ParkingSpot,
+pricing_snapshot: PricingSnapshot):
+self.ticket_id = str(uuid.uuid4())
+self.vehicle = vehicle
+self.spot = spot
+self.entry_time = datetime.now()
+
+# Lock in pricing at entry time
+self.pricing_snapshot = pricing_snapshot
+
+# Audit trail for any modifications
+self.events: List[TicketEvent] = []
+self.refunds: List[Refund] = []
+
+def get_fee_at_time(self, timestamp: datetime) -&gt; Decimal:
+&quot;&quot;&quot;Calculate what the fee would be at a specific exit time.&quot;&quot;&quot;
+return self.pricing_snapshot.calculate_fee(self, exit_time=timestamp)
+
+
+class PricingSnapshot:
+&quot;&quot;&quot;
+Immutable capture of pricing rules at a point in time.
+
+Ensures customers are charged based on rates when they entered,
+not when they exit (or allows explicit policy choice).
+&quot;&quot;&quot;
+
+def __init__(self, strategy: PricingStrategy, timestamp: datetime):
+self.strategy = strategy
+self.captured_at = timestamp
+self.rates = self._capture_rates(strategy)
+
+def _capture_rates(self, strategy: PricingStrategy) -&gt; dict:
+# Deep copy all rate information
+return {
+'base_rates': copy.deepcopy(strategy.RATES) if hasattr(strategy, 'RATES') else {},
+'tiers': copy.deepcopy(strategy.tiers) if hasattr(strategy, 'tiers') else [],
+'multipliers': copy.deepcopy(strategy._get_vehicle_multiplier.__self__.__dict__)
+if hasattr(strategy, '_get_vehicle_multiplier') else {}
+}
+
+
+class RefundProcessor:
+&quot;&quot;&quot;Handle refunds with audit trail.&quot;&quot;&quot;
+
+def process_refund(self, ticket: Ticket, reason: RefundReason,
+amount: Optional[Decimal] = None) -&gt; RefundResult:
+original_fee = ticket.paid_amount
+
+if amount is None:
+# Full refund
+refund_amount = original_fee
+else:
+# Partial refund (e.g., overcharge correction)
+refund_amount = min(amount, original_fee)
+
+# Create refund record
+refund = Refund(
+ticket_id=ticket.ticket_id,
+original_amount=original_fee,
+refund_amount=refund_amount,
+reason=reason,
+timestamp=datetime.now(),
+authorized_by=self.current_user
+)
+
+# Process via original payment method
+result = self.payment_gateway.refund(
+ticket.transaction_id,
+refund_amount
+)
+
+if result.success:
+ticket.refunds.append(refund)
+ticket.events.append(TicketEvent(
+type=EventType.REFUND,
+amount=refund_amount,
+reason=reason
+))
+
+return result
+</code></pre>
+<p><strong>Key considerations:</strong></p>
+<ul>
+<li><strong>Price at entry vs exit</strong>: Policy decision - most lots honor entry-time pricing</li>
+<li><strong>Audit requirements</strong>: All price modifications need full audit trail</li>
+<li><strong>Refund authorization</strong>: May require manager approval above threshold</li>
+<li><strong>Partial refunds</strong>: For pricing errors, don't refund entire amount</li>
+</ul>
+</div>
+<hr />
+<h2 id="concurrency-handling">Concurrency Handling</h2>
+<h3 id="race-conditions-and-solutions">Race Conditions and Solutions</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Concurrency Challenges in Parking Systems</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #fef2f2;border-radius: 8px; padding: 16px">
+<div style="color: #991b1b; font-weight: 600">Race Condition: Double Booking</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px">
+  Two vehicles check same spot availability simultaneously, both see "available", both attempt to park.
+<div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px">
+  Thread A: check spot #42 -> available<br/>
+  Thread B: check spot #42 -> available<br/>
+  Thread A: park in spot #42 -> success<br/>
+  Thread B: park in spot #42 -> overwrites A!
+</div>
+</div>
+</div>
+<div style="background: #fef2f2;border-radius: 8px; padding: 16px">
+<div style="color: #991b1b; font-weight: 600">Race Condition: Counter Inconsistency</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px">
+  Availability counter shows 5 spots, but 6 vehicles enter before counter updates.
+<div style="margin-top: 8px; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 8px; border-radius: 4px">
+  Counter: 5 available<br/>
+  Thread A: reads 5, decrements to 4<br/>
+  Thread B: reads 5 (stale!), decrements to 4<br/>
+  Actual: 2 vehicles parked, counter shows 4
+</div>
+</div>
+</div>
+<div style="background: #fef2f2;border-radius: 8px; padding: 16px">
+<div style="color: #991b1b; font-weight: 600">Deadlock: Multi-Spot Allocation</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px">
+  Bus needs spots 1-5, truck needs spots 5-6. Bus locks 1-4, truck locks 6. Both wait for spot 5.
+</div>
+</div>
+</div>
+</div>
+<h3 id="thread-safe-implementation">Thread-Safe Implementation</h3>
+<pre><code class="language-python">import threading
+from typing import Optional, Dict, Set
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+from collections import defaultdict
+import time
+
+
+class ThreadSafeParkingSpot:
+    &quot;&quot;&quot;
+    Thread-safe parking spot with optimistic locking.
+
+    Uses version numbers to detect concurrent modifications.
+    &quot;&quot;&quot;
+
+    def __init__(self, spot_id: str, size: SpotSize):
+        self.spot_id = spot_id
+        self.size = size
+        self._vehicle: Optional[Vehicle] = None
+        self._version: int = 0
+        self._lock = threading.Lock()
+
+    @property
+    def is_available(self) -&gt; bool:
+        return self._vehicle is None
+
+    def get_state(self) -&gt; tuple:
+        &quot;&quot;&quot;Get current state for optimistic locking.&quot;&quot;&quot;
+        with self._lock:
+            return (self.is_available, self._version)
+
+    def try_park(self, vehicle: Vehicle, expected_version: int) -&gt; bool:
+        &quot;&quot;&quot;
+        Atomically park vehicle if spot is in expected state.
+
+        Returns True on success, False if state changed.
+        &quot;&quot;&quot;
+        with self._lock:
+            if self._version != expected_version:
+                return False  # State changed, retry
+            if self._vehicle is not None:
+                return False  # Already occupied
+
+            self._vehicle = vehicle
+            self._version += 1
+            return True
+
+    def try_unpark(self, expected_vehicle: Vehicle) -&gt; bool:
+        &quot;&quot;&quot;Atomically remove vehicle, verifying it's the expected one.&quot;&quot;&quot;
+        with self._lock:
+            if self._vehicle != expected_vehicle:
+                return False
+
+            self._vehicle = None
+            self._version += 1
+            return True
+
+
+class LockManager:
+    &quot;&quot;&quot;
+    Manages distributed locks for multi-spot operations.
+
+    Implements deadlock prevention through lock ordering.
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self._locks: Dict[str, threading.Lock] = defaultdict(threading.Lock)
+        self._lock_order: Dict[str, int] = {}
+        self._order_counter = 0
+        self._meta_lock = threading.Lock()
+
+    def _get_lock_order(self, spot_id: str) -&gt; int:
+        &quot;&quot;&quot;Get or assign ordering number for deadlock prevention.&quot;&quot;&quot;
+        with self._meta_lock:
+            if spot_id not in self._lock_order:
+                self._lock_order[spot_id] = self._order_counter
+                self._order_counter += 1
+            return self._lock_order[spot_id]
+
+    @contextmanager
+    def acquire_multiple(self, spot_ids: Set[str], timeout: float = 5.0):
+        &quot;&quot;&quot;
+        Acquire locks on multiple spots in consistent order.
+
+        Prevents deadlocks by always acquiring in ascending order.
+        &quot;&quot;&quot;
+        # Sort by lock order to prevent deadlock
+        ordered_ids = sorted(spot_ids, key=self._get_lock_order)
+        acquired = []
+
+        try:
+            for spot_id in ordered_ids:
+                lock = self._locks[spot_id]
+                if not lock.acquire(timeout=timeout):
+                    raise TimeoutError(f&quot;Failed to acquire lock on {spot_id}&quot;)
+                acquired.append(spot_id)
+
+            yield
+
+        finally:
+            # Release in reverse order
+            for spot_id in reversed(acquired):
+                self._locks[spot_id].release()
+
+
+class ThreadSafeParkingLot:
+    &quot;&quot;&quot;
+    Thread-safe parking lot with concurrent entry/exit handling.
+
+    Supports multiple entry gates operating simultaneously.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str, allocation_strategy: SpotAllocationStrategy):
+        self.name = name
+        self.strategy = allocation_strategy
+        self.floors: List[ParkingFloor] = []
+
+        self._active_tickets: Dict[str, Ticket] = {}
+        self._tickets_lock = threading.RLock()  # Reentrant for nested calls
+
+        self._availability_cache = AvailabilityCache()
+        self._lock_manager = LockManager()
+
+    def park_vehicle(self, vehicle: Vehicle, entry_gate_id: str) -&gt; Optional[Ticket]:
+        &quot;&quot;&quot;
+        Thread-safe vehicle parking with retry logic.
+
+        Uses optimistic locking - may retry if spot is taken.
+        &quot;&quot;&quot;
+        max_retries = 3
+
+        for attempt in range(max_retries):
+            # Find a candidate spot
+            spot, version = self._find_available_spot(vehicle)
+
+            if spot is None:
+                return None  # Lot is full
+
+            # Attempt to claim the spot
+            if spot.try_park(vehicle, version):
+                # Success - create ticket
+                with self._tickets_lock:
+                    if vehicle.license_plate in self._active_tickets:
+                        # Vehicle already parked (race condition)
+                        spot.try_unpark(vehicle)
+                        return self._active_tickets[vehicle.license_plate]
+
+                    ticket = Ticket(vehicle, spot)
+                    ticket.entry_gate = entry_gate_id
+                    self._active_tickets[vehicle.license_plate] = ticket
+
+                    # Update availability cache
+                    self._availability_cache.decrement(spot.size, spot.floor_number)
+
+                    return ticket
+
+            # Spot was taken by another thread, retry
+            time.sleep(0.01 * (attempt + 1))  # Exponential backoff
+
+        return None  # Failed after retries
+
+    def _find_available_spot(self, vehicle: Vehicle) -&gt; tuple:
+        &quot;&quot;&quot;Find spot with its version for optimistic locking.&quot;&quot;&quot;
+        spot = self.strategy.find_spot(vehicle, self.floors)
+        if spot is None:
+            return None, None
+
+        _, version = spot.get_state()
+        return spot, version
+
+    def unpark_vehicle(self, license_plate: str, exit_gate_id: str) -&gt; Optional[Ticket]:
+        &quot;&quot;&quot;Thread-safe vehicle exit.&quot;&quot;&quot;
+        with self._tickets_lock:
+            ticket = self._active_tickets.get(license_plate)
+            if not ticket:
+                return None
+
+            # Remove from active tickets first
+            del self._active_tickets[license_plate]
+
+        # Release the spot
+        spot = ticket.spot
+        if spot.try_unpark(ticket.vehicle):
+            ticket.exit_time = datetime.now()
+            ticket.exit_gate = exit_gate_id
+
+            # Update availability cache
+            self._availability_cache.increment(spot.size, spot.floor_number)
+
+            return ticket
+
+        # Unexpected: spot doesn't have our vehicle
+        # This shouldn't happen with proper locking
+        raise InconsistentStateError(
+            f&quot;Spot {spot.spot_id} doesn't contain expected vehicle&quot;
+        )
+
+    def park_multi_spot_vehicle(self, vehicle: 'Bus', entry_gate_id: str) -&gt; Optional[Ticket]:
+        &quot;&quot;&quot;
+        Park a vehicle requiring multiple contiguous spots.
+
+        Uses pessimistic locking to prevent partial allocations.
+        &quot;&quot;&quot;
+        required_spots = vehicle.required_spot_count
+
+        # Find contiguous available spots
+        candidate_spots = self._find_contiguous_spots(vehicle, required_spots)
+
+        if not candidate_spots or len(candidate_spots) &lt; required_spots:
+            return None
+
+        spot_ids = {s.spot_id for s in candidate_spots}
+
+        try:
+            with self._lock_manager.acquire_multiple(spot_ids, timeout=5.0):
+                # Verify all spots still available
+                for spot in candidate_spots:
+                    if not spot.is_available:
+                        return None  # One spot was taken
+
+                # All spots available, claim them
+                for spot in candidate_spots:
+                    spot._vehicle = vehicle
+                    spot._version += 1
+
+                # Create ticket with multiple spots
+                with self._tickets_lock:
+                    ticket = MultiSpotTicket(vehicle, candidate_spots)
+                    ticket.entry_gate = entry_gate_id
+                    self._active_tickets[vehicle.license_plate] = ticket
+
+                    return ticket
+
+        except TimeoutError:
+            # Could not acquire all locks
+            return None
+
+
+class AvailabilityCache:
+    &quot;&quot;&quot;
+    Thread-safe cache for quick availability queries.
+
+    Updated incrementally on park/unpark instead of
+    scanning all spots.
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self._counts: Dict[tuple, int] = defaultdict(int)
+        self._lock = threading.Lock()
+
+    def initialize(self, floors: List['ParkingFloor']):
+        &quot;&quot;&quot;Initialize cache from current spot state.&quot;&quot;&quot;
+        with self._lock:
+            self._counts.clear()
+            for floor in floors:
+                for spot in floor.spots:
+                    if spot.is_available:
+                        self._counts[(spot.size, floor.floor_number)] += 1
+
+    def decrement(self, size: SpotSize, floor: int):
+        &quot;&quot;&quot;Decrement available count when spot is taken.&quot;&quot;&quot;
+        with self._lock:
+            self._counts[(size, floor)] = max(0, self._counts[(size, floor)] - 1)
+
+    def increment(self, size: SpotSize, floor: int):
+        &quot;&quot;&quot;Increment available count when spot is freed.&quot;&quot;&quot;
+        with self._lock:
+            self._counts[(size, floor)] += 1
+
+    def get_availability(self) -&gt; Dict[SpotSize, int]:
+        &quot;&quot;&quot;Get total availability by size.&quot;&quot;&quot;
+        with self._lock:
+            totals = defaultdict(int)
+            for (size, _), count in self._counts.items():
+                totals[size] += count
+            return dict(totals)
+
+    def get_floor_availability(self, floor: int) -&gt; Dict[SpotSize, int]:
+        &quot;&quot;&quot;Get availability for specific floor.&quot;&quot;&quot;
+        with self._lock:
+            return {
+                size: self._counts.get((size, floor), 0)
+                for size in SpotSize
+            }
+</code></pre>
+<h3 id="interview-questions-concurrency-3-level-deep">Interview Questions: Concurrency (3-Level Deep)</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>L1: What concurrency issues can occur in a parking lot system?</strong></p>
+<p><strong>Answer:</strong> Three main categories:</p>
+<ol>
+<li><strong>Race Conditions</strong>:</li>
+</ol>
+<ul>
+<li>Two vehicles assigned same spot (check-then-act not atomic)</li>
+<li>Display shows available spots while they're being filled</li>
+<li>Payment processed twice for same ticket</li>
+</ul>
+<ol start="2">
+<li><strong>Deadlocks</strong>:</li>
+</ol>
+<ul>
+<li>Bus needs spots 1-5, truck needs spots 5-6</li>
+<li>Gate A locks vehicle entry, Gate B locks payment, each waits for other</li>
+</ul>
+<ol start="3">
+<li><strong>Starvation</strong>:</li>
+</ol>
+<ul>
+<li>Large vehicles never get spots because small vehicles always grab first</li>
+<li>One entry gate monopolizes spot allocation</li>
+</ul>
+<p><strong>L2: Follow-up: How does optimistic locking work, and when would you prefer pessimistic locking?</strong></p>
+<p><strong>Answer:</strong></p>
+<p><strong>Optimistic Locking</strong> (check-then-act with versioning):</p>
+<pre><code class="language-python"># Read state with version
+spot, version = get_spot_state(spot_id)  # version = 5
+
+# Do work assuming no one else modifies
+# ...
+
+# Attempt to commit, specifying expected version
+success = try_park(spot_id, vehicle, expected_version=5)
+# Fails if version changed (someone else modified)
+</code></pre>
+<p><strong>Pessimistic Locking</strong> (lock-then-act):</p>
+<pre><code class="language-python"># Acquire exclusive lock first
+with lock(spot_id):
+# No one else can modify while we hold lock
+if spot.is_available():
+spot.park(vehicle)
+</code></pre>
+<p><strong>When to use each:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Optimistic</th>
+<th>Pessimistic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Low contention</td>
+<td>High contention</td>
+</tr>
+<tr>
+<td>Short hold times</td>
+<td>Long operations</td>
+</tr>
+<tr>
+<td>Read-heavy workloads</td>
+<td>Write-heavy workloads</td>
+</tr>
+<tr>
+<td>Single resource</td>
+<td>Multiple related resources</td>
+</tr>
+<tr>
+<td>Retry is cheap</td>
+<td>Retry is expensive</td>
+</tr>
+</tbody>
+</table>
+<p>For parking lots:</p>
+<ul>
+<li><strong>Single spot</strong>: Optimistic (low contention, fast retry)</li>
+<li><strong>Multi-spot (bus)</strong>: Pessimistic (must atomically reserve all spots)</li>
+</ul>
+<p><strong>L3: Follow-up: Design a distributed parking lot system where spots are managed by different servers. How do you maintain consistency?</strong></p>
+<p><strong>Answer:</strong> This becomes a <a href="/topic/system-design/consensus-algorithms">[Distributed Systems]</a> problem. Options:</p>
+<p><strong>Option 1: Centralized Lock Service (Redis/Zookeeper)</strong></p>
+<pre><code class="language-python">class DistributedParkingLot:
+def __init__(self, redis_client):
+self.redis = redis_client
+
+def park_vehicle(self, vehicle: Vehicle) -&gt; Optional[Ticket]:
+# Find candidate spot from any server
+spot_id = self.find_available_spot(vehicle)
+
+# Acquire distributed lock
+lock_key = f&quot;spot_lock:{spot_id}&quot;
+lock_acquired = self.redis.set(
+lock_key,
+&quot;locked&quot;,
+nx=True,  # Only if not exists
+ex=30     # 30 second expiry (lease)
+)
+
+if not lock_acquired:
+return None  # Spot being claimed by another server
+
+try:
+# Verify and claim spot
+spot_data = self.redis.hgetall(f&quot;spot:{spot_id}&quot;)
+if spot_data.get('vehicle'):
+return None  # Already occupied
+
+# Atomic update
+self.redis.hset(f&quot;spot:{spot_id}&quot;, mapping={
+'vehicle': vehicle.license_plate,
+'entry_time': datetime.now().isoformat()
+})
+
+return self.create_ticket(vehicle, spot_id)
+finally:
+self.redis.delete(lock_key)
+</code></pre>
+<p><strong>Option 2: Partitioned Ownership</strong></p>
+<pre><code class="language-python"># Each server owns a floor/section
+# Cross-section operations use 2-phase commit
+
+class PartitionedParkingLot:
+def __init__(self, partition_id: str, coordinator: 'CoordinatorService'):
+self.partition_id = partition_id
+self.coordinator = coordinator
+self.local_spots = {}  # Spots this server owns
+
+def park_vehicle(self, vehicle: Vehicle) -&gt; Optional[Ticket]:
+# Try local spots first (fast path)
+local_spot = self.find_local_spot(vehicle)
+if local_spot:
+return self.park_local(vehicle, local_spot)
+
+# No local spots, ask coordinator for cross-partition allocation
+return self.coordinator.allocate_cross_partition(
+vehicle,
+exclude_partition=self.partition_id
+)
+</code></pre>
+<p><strong>Option 3: Eventual Consistency with Conflict Resolution</strong></p>
+<pre><code class="language-python"># Accept potential double-booking, resolve at exit
+# Good for very high throughput, lower consistency needs
+
+class EventuallyConsistentParkingLot:
+def park_vehicle(self, vehicle: Vehicle) -&gt; Ticket:
+spot = self.find_available_spot(vehicle)
+
+# Optimistic allocation - no distributed lock
+ticket = Ticket(vehicle, spot)
+
+# Publish event for eventual consistency
+self.event_bus.publish(ParkingEvent(
+type='VEHICLE_PARKED',
+spot_id=spot.spot_id,
+vehicle=vehicle.license_plate,
+timestamp=datetime.now(),
+server_id=self.server_id
+))
+
+return ticket
+
+def handle_conflict(self, spot_id: str, events: List[ParkingEvent]):
+&quot;&quot;&quot;Called when two servers parked in same spot.&quot;&quot;&quot;
+# Resolution: first timestamp wins
+events.sort(key=lambda e: e.timestamp)
+winner = events[0]
+loser = events[1]
+
+# Loser's ticket is invalidated, vehicle reassigned
+self.reassign_vehicle(loser.vehicle, loser.ticket_id)
+self.notify_customer(loser, &quot;Your spot was reassigned&quot;)
+</code></pre>
+<p><strong>Trade-offs:</strong></p>
+<ul>
+<li>Centralized lock: Strong consistency, single point of failure</li>
+<li>Partitioned: Good balance, complex cross-partition ops</li>
+<li>Eventual: High throughput, requires conflict resolution</li>
+</ul>
+</div>
+<hr />
+<h2 id="complete-implementation">Complete Implementation</h2>
+<pre><code class="language-python">&quot;&quot;&quot;
+Production-ready Parking Lot System
+
+Features:
+- Thread-safe operations with optimistic locking
+- Multiple vehicle types with flexible spot compatibility
+- Configurable pricing strategies
+- Event-driven architecture for extensibility
+- Comprehensive audit trail
+&quot;&quot;&quot;
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
+from enum import Enum, auto
+from typing import Optional, List, Dict, Set, Callable
+from contextlib import contextmanager
+import threading
+import uuid
+import time
+import copy
+
+
+# ============== Enums ==============
+
+class VehicleType(Enum):
+    MOTORCYCLE = auto()
+    CAR = auto()
+    TRUCK = auto()
+    BUS = auto()
+    ELECTRIC_CAR = auto()
+
+
+class SpotSize(Enum):
+    SMALL = 1       # Motorcycles
+    MEDIUM = 2      # Cars
+    LARGE = 3       # Trucks
+    XLARGE = 4      # Buses (virtual, spans multiple LARGE)
+
+
+class SpotCapability(Enum):
+    STANDARD = auto()
+    ELECTRIC_CHARGING = auto()
+    HANDICAP = auto()
+    RESERVED = auto()
+
+
+class TicketStatus(Enum):
+    ACTIVE = auto()
+    PAYMENT_PENDING = auto()
+    PAID = auto()
+    EXITED = auto()
+    CANCELLED = auto()
+
+
+class EventType(Enum):
+    VEHICLE_ENTERED = auto()
+    VEHICLE_EXITED = auto()
+    PAYMENT_PROCESSED = auto()
+    PAYMENT_FAILED = auto()
+    SPOT_CHANGED = auto()
+    TICKET_CANCELLED = auto()
+
+
+# ============== Core Entities ==============
+
+@dataclass
+class TicketEvent:
+    &quot;&quot;&quot;Immutable event for audit trail.&quot;&quot;&quot;
+    event_type: EventType
+    timestamp: datetime
+    details: Dict = field(default_factory=dict)
+
+
+class Vehicle:
+    &quot;&quot;&quot;Base vehicle class with common properties.&quot;&quot;&quot;
+
+    # Class-level compatibility matrix
+    SPOT_COMPATIBILITY = {
+        VehicleType.MOTORCYCLE: [SpotSize.SMALL, SpotSize.MEDIUM, SpotSize.LARGE],
+        VehicleType.CAR: [SpotSize.MEDIUM, SpotSize.LARGE],
+        VehicleType.ELECTRIC_CAR: [SpotSize.MEDIUM, SpotSize.LARGE],
+        VehicleType.TRUCK: [SpotSize.LARGE],
+        VehicleType.BUS: [SpotSize.XLARGE],
+    }
+
+    def __init__(self, license_plate: str, vehicle_type: VehicleType):
+        self.license_plate = license_plate
+        self.vehicle_type = vehicle_type
+        self.owner: Optional['Customer'] = None
+
+    def get_required_spot_size(self) -&gt; SpotSize:
+        &quot;&quot;&quot;Get the minimum required spot size.&quot;&quot;&quot;
+        return self.SPOT_COMPATIBILITY[self.vehicle_type][0]
+
+    def can_fit_in(self, spot_size: SpotSize) -&gt; bool:
+        &quot;&quot;&quot;Check if vehicle can fit in given spot size.&quot;&quot;&quot;
+        return spot_size in self.SPOT_COMPATIBILITY[self.vehicle_type]
+
+    @property
+    def requires_charging(self) -&gt; bool:
+        return self.vehicle_type == VehicleType.ELECTRIC_CAR
+
+    @property
+    def spots_needed(self) -&gt; int:
+        &quot;&quot;&quot;Number of spots needed (&gt; 1 for buses).&quot;&quot;&quot;
+        return 5 if self.vehicle_type == VehicleType.BUS else 1
+
+
+class ParkingSpot:
+    &quot;&quot;&quot;
+    Thread-safe parking spot with optimistic locking.
+    &quot;&quot;&quot;
+
+    def __init__(self, spot_id: str, floor_number: int, size: SpotSize,
+                 capabilities: Set[SpotCapability] = None,
+                 location: tuple = (0, 0)):
+        self.spot_id = spot_id
+        self.floor_number = floor_number
+        self.size = size
+        self.capabilities = capabilities or {SpotCapability.STANDARD}
+        self.location = location  # (x, y) for distance calculations
+
+        # Thread-safe state
+        self._vehicle: Optional[Vehicle] = None
+        self._version: int = 0
+        self._lock = threading.Lock()
+
+    @property
+    def is_available(self) -&gt; bool:
+        return self._vehicle is None
+
+    @property
+    def vehicle(self) -&gt; Optional[Vehicle]:
+        return self._vehicle
+
+    def can_fit(self, vehicle: Vehicle) -&gt; bool:
+        &quot;&quot;&quot;Check if spot can accommodate vehicle.&quot;&quot;&quot;
+        if not self.is_available:
+            return False
+
+        if not vehicle.can_fit_in(self.size):
+            return False
+
+        # Check capability requirements
+        if vehicle.requires_charging:
+            if SpotCapability.ELECTRIC_CHARGING not in self.capabilities:
+                return False
+
+        return True
+
+    def get_state(self) -&gt; tuple:
+        &quot;&quot;&quot;Get state snapshot for optimistic locking.&quot;&quot;&quot;
+        with self._lock:
+            return (self.is_available, self._version)
+
+    def try_park(self, vehicle: Vehicle, expected_version: int) -&gt; bool:
+        &quot;&quot;&quot;Atomically park if state matches expected version.&quot;&quot;&quot;
+        with self._lock:
+            if self._version != expected_version:
+                return False
+            if self._vehicle is not None:
+                return False
+
+            self._vehicle = vehicle
+            self._version += 1
+            return True
+
+    def try_unpark(self, expected_vehicle: Vehicle) -&gt; bool:
+        &quot;&quot;&quot;Atomically unpark if vehicle matches.&quot;&quot;&quot;
+        with self._lock:
+            if self._vehicle != expected_vehicle:
+                return False
+
+            self._vehicle = None
+            self._version += 1
+            return True
+
+    def __repr__(self):
+        status = &quot;OCCUPIED&quot; if self._vehicle else &quot;AVAILABLE&quot;
+        return f&quot;ParkingSpot({self.spot_id}, {self.size.name}, {status})&quot;
+
+
+class Ticket:
+    &quot;&quot;&quot;
+    Parking ticket with full lifecycle tracking.
+    &quot;&quot;&quot;
+
+    def __init__(self, vehicle: Vehicle, spot: ParkingSpot,
+                 pricing_snapshot: 'PricingSnapshot' = None):
+        self.ticket_id = str(uuid.uuid4())[:12].upper()
+        self.vehicle = vehicle
+        self.spot = spot
+        self.status = TicketStatus.ACTIVE
+
+        self.entry_time = datetime.now()
+        self.exit_time: Optional[datetime] = None
+        self.entry_gate: Optional[str] = None
+        self.exit_gate: Optional[str] = None
+
+        # Pricing locked at entry
+        self.pricing_snapshot = pricing_snapshot
+
+        # Payment tracking
+        self.calculated_fee: Optional[Decimal] = None
+        self.paid_amount: Optional[Decimal] = None
+        self.transaction_id: Optional[str] = None
+
+        # Audit trail
+        self.events: List[TicketEvent] = []
+        self._add_event(EventType.VEHICLE_ENTERED, {
+            'spot_id': spot.spot_id,
+            'vehicle': vehicle.license_plate
+        })
+
+    def _add_event(self, event_type: EventType, details: Dict = None):
+        self.events.append(TicketEvent(
+            event_type=event_type,
+            timestamp=datetime.now(),
+            details=details or {}
+        ))
+
+    def get_duration_hours(self) -&gt; Decimal:
+        &quot;&quot;&quot;Get parking duration in hours.&quot;&quot;&quot;
+        end = self.exit_time or datetime.now()
+        duration = end - self.entry_time
+        return Decimal(str(duration.total_seconds())) / Decimal('3600')
+
+    def mark_exited(self, exit_gate: str):
+        &quot;&quot;&quot;Mark ticket as exited.&quot;&quot;&quot;
+        self.exit_time = datetime.now()
+        self.exit_gate = exit_gate
+        self.status = TicketStatus.EXITED
+        self._add_event(EventType.VEHICLE_EXITED, {
+            'exit_gate': exit_gate,
+            'duration_hours': str(self.get_duration_hours())
+        })
+
+    def mark_paid(self, amount: Decimal, transaction_id: str):
+        &quot;&quot;&quot;Mark ticket as paid.&quot;&quot;&quot;
+        self.paid_amount = amount
+        self.transaction_id = transaction_id
+        self.status = TicketStatus.PAID
+        self._add_event(EventType.PAYMENT_PROCESSED, {
+            'amount': str(amount),
+            'transaction_id': transaction_id
+        })
+
+
+class ParkingFloor:
+    &quot;&quot;&quot;
+    Floor containing multiple parking spots.
+    &quot;&quot;&quot;
+
+    def __init__(self, floor_number: int):
+        self.floor_number = floor_number
+        self.spots: List[ParkingSpot] = []
+        self._lock = threading.Lock()
+
+    def add_spots(self, spots_config: Dict[SpotSize, int],
+                  capabilities: Set[SpotCapability] = None):
+        &quot;&quot;&quot;Add spots based on configuration.&quot;&quot;&quot;
+        spot_num = len(self.spots) + 1
+
+        for size, count in spots_config.items():
+            for i in range(count):
+                spot_id = f&quot;F{self.floor_number}-{size.name[0]}{spot_num}&quot;
+                spot = ParkingSpot(
+                    spot_id=spot_id,
+                    floor_number=self.floor_number,
+                    size=size,
+                    capabilities=capabilities or {SpotCapability.STANDARD},
+                    location=(self.floor_number, spot_num)
+                )
+                self.spots.append(spot)
+                spot_num += 1
+
+    def get_available_spots(self, vehicle: Vehicle = None) -&gt; List[ParkingSpot]:
+        &quot;&quot;&quot;Get all available spots, optionally filtered for a vehicle.&quot;&quot;&quot;
+        available = []
+        for spot in self.spots:
+            if vehicle:
+                if spot.can_fit(vehicle):
+                    available.append(spot)
+            elif spot.is_available:
+                available.append(spot)
+        return available
+
+    def get_occupancy_rate(self) -&gt; float:
+        &quot;&quot;&quot;Get current occupancy as a ratio.&quot;&quot;&quot;
+        if not self.spots:
+            return 0.0
+        occupied = sum(1 for s in self.spots if not s.is_available)
+        return occupied / len(self.spots)
+
+    def get_availability_summary(self) -&gt; Dict[SpotSize, int]:
+        &quot;&quot;&quot;Get count of available spots by size.&quot;&quot;&quot;
+        summary = {size: 0 for size in SpotSize}
+        for spot in self.spots:
+            if spot.is_available:
+                summary[spot.size] += 1
+        return summary
+
+
+# ============== Allocation Strategies ==============
+
+class SpotAllocationStrategy(ABC):
+    &quot;&quot;&quot;Abstract base for spot allocation algorithms.&quot;&quot;&quot;
+
+    @abstractmethod
+    def find_spot(self, vehicle: Vehicle,
+                  floors: List[ParkingFloor]) -&gt; Optional[ParkingSpot]:
+        pass
+
+
+class NearestAvailableStrategy(SpotAllocationStrategy):
+    &quot;&quot;&quot;Allocate nearest spot to entrance.&quot;&quot;&quot;
+
+    def __init__(self, entrance_location: tuple = (0, 0)):
+        self.entrance = entrance_location
+
+    def find_spot(self, vehicle: Vehicle,
+                  floors: List[ParkingFloor]) -&gt; Optional[ParkingSpot]:
+        candidates = []
+
+        for floor in floors:
+            for spot in floor.spots:
+                if spot.can_fit(vehicle):
+                    distance = self._calculate_distance(spot)
+                    candidates.append((distance, spot))
+
+        if not candidates:
+            return None
+
+        candidates.sort(key=lambda x: x[0])
+        return candidates[0][1]
+
+    def _calculate_distance(self, spot: ParkingSpot) -&gt; float:
+        return abs(spot.location[0] - self.entrance[0]) + \
+               abs(spot.location[1] - self.entrance[1])
+
+
+class OptimalFitStrategy(SpotAllocationStrategy):
+    &quot;&quot;&quot;Allocate smallest fitting spot to maximize capacity.&quot;&quot;&quot;
+
+    def find_spot(self, vehicle: Vehicle,
+                  floors: List[ParkingFloor]) -&gt; Optional[ParkingSpot]:
+        preferred_size = vehicle.get_required_spot_size()
+
+        # First pass: exact size match
+        for floor in floors:
+            for spot in floor.spots:
+                if spot.can_fit(vehicle) and spot.size == preferred_size:
+                    return spot
+
+        # Second pass: smallest larger size
+        for floor in floors:
+            for spot in floor.spots:
+                if spot.can_fit(vehicle):
+                    return spot
+
+        return None
+
+
+# ============== Pricing Strategies ==============
+
+class PricingStrategy(ABC):
+    &quot;&quot;&quot;Abstract base for pricing calculations.&quot;&quot;&quot;
+
+    @abstractmethod
+    def calculate_fee(self, ticket: Ticket) -&gt; Decimal:
+        pass
+
+
+class PricingSnapshot:
+    &quot;&quot;&quot;Immutable pricing state captured at ticket creation.&quot;&quot;&quot;
+
+    def __init__(self, strategy: PricingStrategy):
+        self.strategy = strategy
+        self.captured_at = datetime.now()
+
+    def calculate_fee(self, ticket: Ticket) -&gt; Decimal:
+        return self.strategy.calculate_fee(ticket)
+
+
+class HourlyPricing(PricingStrategy):
+    &quot;&quot;&quot;Simple hourly pricing with vehicle-type rates.&quot;&quot;&quot;
+
+    RATES = {
+        VehicleType.MOTORCYCLE: Decimal('1.00'),
+        VehicleType.CAR: Decimal('2.00'),
+        VehicleType.ELECTRIC_CAR: Decimal('2.50'),
+        VehicleType.TRUCK: Decimal('4.00'),
+        VehicleType.BUS: Decimal('15.00'),
+    }
+
+    def __init__(self, minimum_hours: int = 1):
+        self.minimum_hours = Decimal(str(minimum_hours))
+
+    def calculate_fee(self, ticket: Ticket) -&gt; Decimal:
+        hours = ticket.get_duration_hours()
+        billable = max(self.minimum_hours,
+                      hours.to_integral_value(rounding=ROUND_HALF_UP))
+
+        rate = self.RATES.get(ticket.vehicle.vehicle_type, Decimal('2.00'))
+        return (billable * rate).quantize(Decimal('0.01'))
+
+
+class TieredPricing(PricingStrategy):
+    &quot;&quot;&quot;Different rates for different time brackets.&quot;&quot;&quot;
+
+    def __init__(self, tiers: List[tuple]):
+        # [(hours, rate), ...] e.g., [(1, 5), (4, 3), (inf, 2)]
+        self.tiers = [(Decimal(str(h)), Decimal(str(r))) for h, r in tiers]
+
+    def calculate_fee(self, ticket: Ticket) -&gt; Decimal:
+        hours = max(Decimal('1'),
+                   ticket.get_duration_hours().to_integral_value(rounding=ROUND_HALF_UP))
+
+        total = Decimal('0')
+        billed = Decimal('0')
+        prev_tier = Decimal('0')
+
+        for tier_hours, rate in self.tiers:
+            if billed &gt;= hours:
+                break
+
+            hours_in_tier = min(hours - billed, tier_hours - prev_tier)
+            if hours_in_tier &gt; 0:
+                total += hours_in_tier * rate
+                billed += hours_in_tier
+
+            prev_tier = tier_hours
+
+        return total.quantize(Decimal('0.01'))
+
+
+# ============== Main System ==============
+
+class ParkingLot:
+    &quot;&quot;&quot;
+    Main parking lot system with thread-safe operations.
+    &quot;&quot;&quot;
+
+    def __init__(self, name: str,
+                 allocation_strategy: SpotAllocationStrategy = None,
+                 pricing_strategy: PricingStrategy = None):
+        self.name = name
+        self.floors: List[ParkingFloor] = []
+
+        self.allocation_strategy = allocation_strategy or OptimalFitStrategy()
+        self.pricing_strategy = pricing_strategy or HourlyPricing()
+
+        # Thread-safe ticket management
+        self._active_tickets: Dict[str, Ticket] = {}
+        self._completed_tickets: List[Ticket] = []
+        self._tickets_lock = threading.RLock()
+
+        # Event observers
+        self._observers: List[Callable[[TicketEvent], None]] = []
+
+    def add_floor(self, spots_config: Dict[SpotSize, int],
+                  capabilities: Set[SpotCapability] = None) -&gt; ParkingFloor:
+        &quot;&quot;&quot;Add a new floor with specified spot configuration.&quot;&quot;&quot;
+        floor = ParkingFloor(len(self.floors) + 1)
+        floor.add_spots(spots_config, capabilities)
+        self.floors.append(floor)
+        return floor
+
+    def park_vehicle(self, vehicle: Vehicle,
+                     entry_gate: str = &quot;MAIN&quot;) -&gt; Optional[Ticket]:
+        &quot;&quot;&quot;
+        Park a vehicle and return ticket.
+
+        Thread-safe with optimistic locking and retry.
+        &quot;&quot;&quot;
+        max_retries = 3
+
+        for attempt in range(max_retries):
+            # Check if already parked
+            with self._tickets_lock:
+                if vehicle.license_plate in self._active_tickets:
+                    return self._active_tickets[vehicle.license_plate]
+
+            # Find available spot
+            spot = self.allocation_strategy.find_spot(vehicle, self.floors)
+            if spot is None:
+                return None  # Lot full
+
+            # Get current state for optimistic lock
+            _, version = spot.get_state()
+
+            # Attempt to claim spot
+            if spot.try_park(vehicle, version):
+                # Success - create ticket
+                with self._tickets_lock:
+                    # Double-check vehicle not parked (race condition)
+                    if vehicle.license_plate in self._active_tickets:
+                        spot.try_unpark(vehicle)
+                        return self._active_tickets[vehicle.license_plate]
+
+                    ticket = Ticket(
+                        vehicle=vehicle,
+                        spot=spot,
+                        pricing_snapshot=PricingSnapshot(self.pricing_strategy)
+                    )
+                    ticket.entry_gate = entry_gate
+                    self._active_tickets[vehicle.license_plate] = ticket
+
+                    self._notify_observers(ticket.events[-1])
+                    return ticket
+
+            # Spot was taken, retry
+            time.sleep(0.01 * (attempt + 1))
+
+        return None  # Failed after retries
+
+    def unpark_vehicle(self, license_plate: str,
+                       exit_gate: str = &quot;MAIN&quot;) -&gt; Optional[Ticket]:
+        &quot;&quot;&quot;
+        Process vehicle exit and return completed ticket.
+        &quot;&quot;&quot;
+        with self._tickets_lock:
+            ticket = self._active_tickets.get(license_plate)
+            if not ticket:
+                return None
+
+            # Calculate fee before releasing spot
+            ticket.calculated_fee = ticket.pricing_snapshot.calculate_fee(ticket)
+
+            # Remove from active
+            del self._active_tickets[license_plate]
+
+        # Release spot
+        spot = ticket.spot
+        if not spot.try_unpark(ticket.vehicle):
+            raise RuntimeError(f&quot;Inconsistent state: spot {spot.spot_id}&quot;)
+
+        ticket.mark_exited(exit_gate)
+
+        with self._tickets_lock:
+            self._completed_tickets.append(ticket)
+
+        self._notify_observers(ticket.events[-1])
+        return ticket
+
+    def process_payment(self, ticket: Ticket,
+                        payment_method: str = &quot;CASH&quot;) -&gt; bool:
+        &quot;&quot;&quot;Process payment for a ticket.&quot;&quot;&quot;
+        if ticket.calculated_fee is None:
+            ticket.calculated_fee = ticket.pricing_snapshot.calculate_fee(ticket)
+
+        # In production, integrate with payment gateway
+        transaction_id = f&quot;TXN-{uuid.uuid4().hex[:8].upper()}&quot;
+        ticket.mark_paid(ticket.calculated_fee, transaction_id)
+
+        return True
+
+    def get_ticket(self, license_plate: str) -&gt; Optional[Ticket]:
+        &quot;&quot;&quot;Get active ticket for a vehicle.&quot;&quot;&quot;
+        with self._tickets_lock:
+            return self._active_tickets.get(license_plate)
+
+    def get_availability(self) -&gt; Dict[SpotSize, int]:
+        &quot;&quot;&quot;Get total availability by spot size.&quot;&quot;&quot;
+        summary = {size: 0 for size in SpotSize}
+        for floor in self.floors:
+            floor_summary = floor.get_availability_summary()
+            for size, count in floor_summary.items():
+                summary[size] += count
+        return summary
+
+    def get_occupancy_rate(self) -&gt; float:
+        &quot;&quot;&quot;Get overall lot occupancy.&quot;&quot;&quot;
+        total_spots = sum(len(f.spots) for f in self.floors)
+        if total_spots == 0:
+            return 0.0
+
+        occupied = sum(
+            1 for f in self.floors
+            for s in f.spots
+            if not s.is_available
+        )
+        return occupied / total_spots
+
+    def add_observer(self, callback: Callable[[TicketEvent], None]):
+        &quot;&quot;&quot;Register event observer.&quot;&quot;&quot;
+        self._observers.append(callback)
+
+    def _notify_observers(self, event: TicketEvent):
+        &quot;&quot;&quot;Notify all observers of an event.&quot;&quot;&quot;
+        for observer in self._observers:
+            try:
+                observer(event)
+            except Exception:
+                pass  # Don't let observer errors break main flow
+
+    def display_status(self):
+        &quot;&quot;&quot;Print current lot status.&quot;&quot;&quot;
+        print(f&quot;\n{'='*50}&quot;)
+        print(f&quot;  {self.name}&quot;)
+        print(f&quot;{'='*50}&quot;)
+        print(f&quot;  Occupancy: {self.get_occupancy_rate()*100:.1f}%&quot;)
+        print(f&quot;  Active Vehicles: {len(self._active_tickets)}&quot;)
+        print()
+
+        availability = self.get_availability()
+        print(&quot;  Available Spots:&quot;)
+        for size, count in availability.items():
+            if size != SpotSize.XLARGE:
+                print(f&quot;    {size.name}: {count}&quot;)
+
+        print()
+        for floor in self.floors:
+            rate = floor.get_occupancy_rate()
+            print(f&quot;  Floor {floor.floor_number}: {rate*100:.0f}% occupied&quot;)
+
+        print(f&quot;{'='*50}\n&quot;)
+
+
+# ============== Usage Example ==============
+
+def main():
+    # Create parking lot with strategies
+    lot = ParkingLot(
+        name=&quot;Downtown Parking Garage&quot;,
+        allocation_strategy=NearestAvailableStrategy(entrance_location=(0, 0)),
+        pricing_strategy=TieredPricing([
+            (1, 5.00),      # First hour: $5
+            (4, 3.00),      # Hours 2-4: $3/hr
+            (float('inf'), 2.00)  # After 4 hours: $2/hr
+        ])
+    )
+
+    # Add observer for logging
+    def log_event(event: TicketEvent):
+        print(f&quot;[{event.timestamp.strftime('%H:%M:%S')}] &quot;
+              f&quot;{event.event_type.name}: {event.details}&quot;)
+
+    lot.add_observer(log_event)
+
+    # Add floors
+    lot.add_floor({
+        SpotSize.SMALL: 20,
+        SpotSize.MEDIUM: 50,
+        SpotSize.LARGE: 10
+    })
+
+    lot.add_floor({
+        SpotSize.MEDIUM: 40,
+        SpotSize.LARGE: 20
+    }, capabilities={SpotCapability.STANDARD, SpotCapability.ELECTRIC_CHARGING})
+
+    lot.display_status()
+
+    # Park vehicles
+    car1 = Vehicle(&quot;ABC-123&quot;, VehicleType.CAR)
+    bike1 = Vehicle(&quot;BIKE-001&quot;, VehicleType.MOTORCYCLE)
+    truck1 = Vehicle(&quot;TRUCK-99&quot;, VehicleType.TRUCK)
+
+    ticket1 = lot.park_vehicle(car1, &quot;GATE-A&quot;)
+    ticket2 = lot.park_vehicle(bike1, &quot;GATE-B&quot;)
+    ticket3 = lot.park_vehicle(truck1, &quot;GATE-A&quot;)
+
+    lot.display_status()
+
+    # Simulate time passing
+    import time
+    time.sleep(1)
+
+    # Process exit
+    if ticket1:
+        exit_ticket = lot.unpark_vehicle(&quot;ABC-123&quot;, &quot;EXIT-1&quot;)
+        if exit_ticket:
+            lot.process_payment(exit_ticket)
+            print(f&quot;Fee for {exit_ticket.vehicle.license_plate}: &quot;
+                  f&quot;${exit_ticket.paid_amount}&quot;)
+
+    lot.display_status()
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<hr />
+<h2 id="edge-cases-and-error-handling">Edge Cases and Error Handling</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Critical Edge Cases to Handle</h4>
+<div style="display: grid; gap: 12px">
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Lost Ticket</div>
+<div style="color: #7f1d1d; font-size: 14px">Customer can't find ticket at exit. Solution: Search by license plate, charge from earliest unresolved entry, require ID verification.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">System Crash Mid-Transaction</div>
+<div style="color: #7f1d1d; font-size: 14px">Payment processed but barrier didn't open. Solution: Idempotent operations, transaction logging, barrier override capability.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Overstay (Multi-Day Parking)</div>
+<div style="color: #7f1d1d; font-size: 14px">Vehicle parked for weeks. Solution: Daily maximum caps, abandoned vehicle detection, admin override for fee adjustment.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Clock Skew</div>
+<div style="color: #7f1d1d; font-size: 14px">Entry and exit gates have unsynchronized clocks. Solution: Use centralized time service, include clock drift tolerance in billing.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Vehicle Size Mismatch</div>
+<div style="color: #7f1d1d; font-size: 14px">Car entered but truck exits (trailer attached). Solution: Exit sensor verification, manual override, charge difference.</div>
+</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Concurrent Exit with Same Ticket</div>
+<div style="color: #7f1d1d; font-size: 14px">Copied ticket used at multiple exits. Solution: Invalidate ticket atomically on first use, physical ticket capture.</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="extensions-and-follow-ups">Extensions and Follow-ups</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Common Interview Extensions</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">1. Reservation System</div>
+<div style="color: #475569; font-size: 14px">
+  Pre-book spots for specific time windows. Requires temporal availability tracking, no-show penalties, and overbooking strategies.
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">2. Valet Parking</div>
+<div style="color: #475569; font-size: 14px">
+  Staff parks vehicles. Requires key management, damage tracking, priority retrieval queues.
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">3. Monthly Subscriptions</div>
+<div style="color: #475569; font-size: 14px">
+  Recurring payments with guaranteed spots. Requires capacity planning, grace periods, subscription tiers.
+</div>
+</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">4. Multi-Lot Federation</div>
+<div style="color: #475569; font-size: 14px">
+  Chain of parking lots with unified ticketing. Requires central coordination, inter-lot transfers, distributed availability.
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="quick-reference">Quick Reference</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Interview Cheat Sheet</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Design Patterns Used</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>Strategy:</strong> Spot allocation, Pricing</div>
+<div style="padding: 4px 0"><strong>Factory:</strong> Ticket creation</div>
+<div style="padding: 4px 0"><strong>Observer:</strong> Event notifications</div>
+<div style="padding: 4px 0"><strong>Singleton:</strong> Avoid for testability</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Key Classes</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>ParkingLot:</strong> Main facade</div>
+<div style="padding: 4px 0"><strong>ParkingSpot:</strong> Thread-safe spot</div>
+<div style="padding: 4px 0"><strong>Ticket:</strong> Parking session</div>
+<div style="padding: 4px 0"><strong>Vehicle:</strong> Abstract base</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Concurrency Approach</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">Single spot: Optimistic locking</div>
+<div style="padding: 4px 0">Multi-spot: Pessimistic with ordering</div>
+<div style="padding: 4px 0">Counters: Atomic increments</div>
+<div style="padding: 4px 0">Tickets: RLock for nested access</div>
+</div>
+</div>
+<div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Time Complexity</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">Park (first avail): O(spots)</div>
+<div style="padding: 4px 0">Park (heap-based): O(log spots)</div>
+<div style="padding: 4px 0">Unpark: O(1) with ticket</div>
+<div style="padding: 4px 0">Availability: O(1) with cache</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="related-topics">Related Topics</h2>
+<ul>
+<li><a href="/topic/design-patterns/strategy">[Strategy Pattern]</a> - Allocation and pricing strategies</li>
+<li><a href="/topic/design-patterns/factory-method">[Factory Pattern]</a> - Vehicle and ticket creation</li>
+<li><a href="/topic/design-patterns/observer">[Observer Pattern]</a> - Event notifications</li>
+<li><a href="/topic/system-design/concurrency-patterns">[Concurrency Patterns]</a> - Thread-safe operations</li>
+<li><a href="/topic/system-design/rate-limiting">[Rate Limiting]</a> - Entry gate throttling</li>
+<li><a href="/topic/system-design/distributed-locking">[Distributed Locking]</a> - Multi-server scenarios</li>
+<li><a href="/topic/machine-coding/elevator-system">[Elevator System]</a> - Similar OOP design problem</li>
+</ul>

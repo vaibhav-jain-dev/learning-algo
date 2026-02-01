@@ -1,0 +1,822 @@
+<h1 id="code-deployment-systems">Code Deployment Systems</h1>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<p><strong>Code deployment</strong> is the process of releasing software changes from development to production environments. Modern deployment systems must balance speed (deploying frequently) with safety (avoiding outages), while providing mechanisms for rapid recovery when failures occur.</p>
+<p>This document covers the internal mechanisms, design trade-offs, and real-world implications of deployment strategies that are critical for system design interviews.</p>
+</div>
+<hr />
+<h2 id="section-1-cicd-pipelines">Section 1: CI/CD Pipelines</h2>
+<h3 id="core-mechanism">Core Mechanism</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<p><strong>Continuous Integration (CI)</strong> automates the building, testing, and validation of code changes. <strong>Continuous Deployment (CD)</strong> extends this to automatically deploy validated changes to production environments.</p>
+<div style="background: rgba(88, 166, 255, 0.1);border-radius: 12px; padding: 20px; margin: 16px 0">
+<p><strong>Internal Architecture of a CI/CD Pipeline</strong></p>
+<div style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="background: #238636; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center">Source Trigger</div>
+<div style="color: #475569; font-size: 13px">Git webhook fires on push/merge. Controller validates signature, extracts commit SHA, branch, and author metadata.</div>
+</div>
+<div style="display: flex; justify-content: center"><div style="width: 2px; height: 20px; background: #e2e8f0"></div></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="background: #1f6feb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center">Pipeline Parser</div>
+<div style="color: #475569; font-size: 13px">Reads pipeline definition (YAML/JSON), builds Directed Acyclic Graph (DAG) of stages, resolves variable interpolation.</div>
+</div>
+<div style="display: flex; justify-content: center"><div style="width: 2px; height: 20px; background: #e2e8f0"></div></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="background: #8957e5; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center">Job Scheduler</div>
+<div style="color: #475569; font-size: 13px">Topologically sorts DAG, queues ready jobs. Handles parallelism constraints, resource requests, and agent affinity rules.</div>
+</div>
+<div style="display: flex; justify-content: center"><div style="width: 2px; height: 20px; background: #e2e8f0"></div></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="background: #f0883e; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center">Build Agent</div>
+<div style="color: #475569; font-size: 13px">Ephemeral container/VM claims job from queue. Clones repo, restores cache, executes steps, streams logs, uploads artifacts.</div>
+</div>
+<div style="display: flex; justify-content: center"><div style="width: 2px; height: 20px; background: #e2e8f0"></div></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="background: #da3633; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; min-width: 140px; text-align: center">Result Handler</div>
+<div style="color: #475569; font-size: 13px">Updates pipeline state, triggers downstream jobs or deployment. Posts status to SCM, sends notifications.</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="key-design-decisions">Key Design Decisions</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0">
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #58a6ff; margin: 0 0 12px 0">Pipeline as Code vs. UI Configuration</h4>
+<p><strong>Assumption</strong>: Developers prefer version-controlled, reviewable configuration over GUI-based setup.</p>
+<p><strong>Trade-off</strong>: Pipeline-as-code provides auditability and reproducibility but has a steeper learning curve. UI configuration is faster for simple cases but creates &quot;snowflake&quot; pipelines that are hard to replicate.</p>
+<p><strong>Design Choice</strong>: Most modern systems use YAML/JSON files in the repository root, enabling pipeline changes to go through the same review process as code changes.</p>
+</div>
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #a371f7; margin: 0 0 12px 0">Ephemeral vs. Persistent Build Agents</h4>
+<p><strong>Assumption</strong>: Build isolation is more important than startup time for most workloads.</p>
+<p><strong>Trade-off</strong>: Ephemeral agents guarantee clean environments but incur startup overhead (10-60 seconds). Persistent agents are faster but risk cross-build contamination and state drift.</p>
+<p><strong>Design Choice</strong>: Production systems typically use ephemeral containers with aggressive caching layers to minimize cold-start penalty while maintaining isolation.</p>
+</div>
+<div style="background: linear-gradient(135deg, #3d2e1f 0%, #5d4a3a 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #f0883e; margin: 0 0 12px 0">Push vs. Pull Execution Model</h4>
+<p><strong>Assumption</strong>: Build agents may be behind firewalls or in private networks.</p>
+<p><strong>Trade-off</strong>: Push model (controller sends jobs) requires network access to agents. Pull model (agents poll for work) allows agents in isolated networks but adds latency.</p>
+<p><strong>Design Choice</strong>: Most enterprise systems use pull-based models where agents long-poll a central queue, enabling hybrid cloud/on-premise agent pools.</p>
+</div>
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5d4a 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #7ee787; margin: 0 0 12px 0">Monolithic vs. Stage-based Caching</h4>
+<p><strong>Assumption</strong>: Dependency installation is the dominant time cost in most builds.</p>
+<p><strong>Trade-off</strong>: Monolithic cache (one big tarball) is simpler but invalidates entirely on any change. Layer-based caching (like Docker) enables fine-grained reuse but adds complexity.</p>
+<p><strong>Design Choice</strong>: Modern CI systems use content-addressable caching keyed on lockfile hashes, providing deterministic cache hits while avoiding stale dependencies.</p>
+</div>
+</div>
+<h3 id="edge-cases-and-failure-modes">Edge Cases and Failure Modes</h3>
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<p><strong>Webhook Replay Attacks</strong>: Malicious actors can capture and replay webhook payloads. Mitigation: Validate webhook signatures using HMAC-SHA256, include timestamp in signature, reject payloads older than 5 minutes.</p>
+<p><strong>Cache Poisoning</strong>: A compromised build could inject malicious artifacts into shared cache. Mitigation: Content-addressable storage (cache key includes hash of contents), separate cache namespaces per branch.</p>
+<p><strong>Secret Exfiltration</strong>: Build scripts could attempt to exfiltrate secrets. Mitigation: Mask secrets in logs, use short-lived credentials, restrict secret access to specific pipeline stages.</p>
+<p><strong>DAG Cycles</strong>: Circular dependencies in pipeline definition cause infinite scheduling loops. Mitigation: Validate DAG structure at parse time using Kahn's algorithm, reject cycles with clear error messages.</p>
+<p><strong>Zombie Jobs</strong>: Agent crashes mid-execution, leaving job in &quot;running&quot; state forever. Mitigation: Heartbeat mechanism with timeout, automatic job requeue after configurable TTL.</p>
+</div>
+<h3 id="3-level-interview-questions-cicd-pipelines">3-Level Interview Questions: CI/CD Pipelines</h3>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h4 id="level-1-explain-how-a-cicd-pipeline-works-internally">Level 1: &quot;Explain how a CI/CD pipeline works internally.&quot;</h4>
+<p><strong>What they're probing</strong>: Basic understanding of build automation concepts.</p>
+<p><strong>Strong Answer</strong>: &quot;When code is pushed to a repository, a webhook notifies the CI server with the commit details. The server parses the pipeline configuration file to build a DAG of stages and jobs. A scheduler assigns jobs to available build agents based on resource requirements and dependencies. Each agent executes in an isolated environment, running the defined steps, streaming logs back to the server, and uploading artifacts on completion. The pipeline controller tracks state transitions and triggers downstream jobs when dependencies complete successfully.&quot;</p>
+<hr />
+<h4 id="level-2-how-would-you-handle-a-scenario-where-pipeline-execution-order-matters-but-you-want-maximum-parallelism">Level 2: &quot;How would you handle a scenario where pipeline execution order matters but you want maximum parallelism?&quot;</h4>
+<p><strong>What they're probing</strong>: Understanding of DAG scheduling and dependency management.</p>
+<p><strong>Strong Answer</strong>: &quot;This is fundamentally a topological sort problem with parallelism optimization. I'd model the pipeline as a DAG where edges represent dependencies. At any point, all jobs with satisfied dependencies (no incoming edges from incomplete jobs) can run in parallel. The key insight is distinguishing between hard dependencies (job B needs artifact from job A) versus soft dependencies (job B should run after job A for resource reasons). For hard dependencies, the scheduler tracks artifact availability. For soft dependencies, I'd use priority queues with weights based on critical path analysis - prioritizing jobs that unblock the most downstream work.&quot;</p>
+<p><strong>Follow-up considerations</strong>:</p>
+<ul>
+<li>How do you handle diamond dependencies (A-&gt;B, A-&gt;C, B-&gt;D, C-&gt;D)?</li>
+<li>What happens if a parallelizable job fails - do you cancel siblings or let them complete?</li>
+</ul>
+<hr />
+<h4 id="level-3-your-ci-system-processes-100000-buildsday-across-500-repositories-some-pipelines-take-2-hours-design-the-job-scheduling-system-to-minimize-queue-wait-time-while-ensuring-fairness">Level 3: &quot;Your CI system processes 100,000 builds/day across 500 repositories. Some pipelines take 2 hours. Design the job scheduling system to minimize queue wait time while ensuring fairness.&quot;</h4>
+<p><strong>What they're probing</strong>: Distributed systems thinking, fairness algorithms, resource management at scale.</p>
+<p><strong>Strong Answer</strong>: &quot;This requires a multi-level scheduling approach. First, I'd implement fair-share scheduling at the repository level using a weighted fair queue - each repo gets a quota proportional to its historical usage, preventing one team from monopolizing agents. Within each repo's allocation, jobs are prioritized by: (1) main branch builds over feature branches, (2) smaller estimated duration (using historical p50 as predictor), (3) queue arrival time as tiebreaker.</p>
+<p>For long-running builds, I'd implement preemption with checkpointing - a 2-hour build blocking an agent can be suspended (state serialized to S3) when higher-priority work arrives. The key metric is weighted response time: sum of (wait_time + execution_time) weighted by job priority.</p>
+<p>I'd also implement agent affinity with cache warming - builds from the same repo prefer agents that recently built that repo (hot cache). But affinity is soft - we'd rather run on a cold agent than wait more than 2 minutes for the preferred one.</p>
+<p>Finally, autoscaling: monitor queue depth and wait times, scale agents up when average wait exceeds SLA (say, 30 seconds for high-priority, 5 minutes for low), scale down when agents are idle for more than cost threshold (typically 10-15 minutes for spot instances).&quot;</p>
+<p><strong>Critical edge cases to mention</strong>:</p>
+<ul>
+<li>Starvation prevention: even low-priority jobs must eventually run (aging mechanism)</li>
+<li>Head-of-line blocking: one slow repo shouldn't block the shared queue</li>
+<li>Resource heterogeneity: some jobs need GPUs, some need ARM architecture</li>
+</ul>
+</div>
+<hr />
+<h2 id="section-2-blue-green-deployments">Section 2: Blue-Green Deployments</h2>
+<h3 id="core-mechanism-1">Core Mechanism</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<p><strong>Blue-green deployment</strong> maintains two identical production environments. At any time, one (e.g., &quot;blue&quot;) serves live traffic while the other (&quot;green&quot;) is idle or receiving new deployments. Releases happen by deploying to the idle environment and then switching traffic atomically.</p>
+<div style="background: rgba(31, 111, 235, 0.1);border-radius: 12px; padding: 20px; margin: 16px 0">
+<p><strong>Blue-Green Traffic Switching Mechanism</strong></p>
+<div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; margin: 16px 0; align-items: center">
+<div style="background: #1f6feb; border-radius: 12px; padding: 20px; text-align: center">
+<div style="color: white; font-weight: bold; font-size: 18px; margin-bottom: 8px">BLUE Environment</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 13px">Version 1.4.2</div>
+<div style="background: #238636; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; margin-top: 8px; font-size: 12px">LIVE TRAFFIC</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="background: #e2e8f0; color: #475569; padding: 12px; border-radius: 8px; text-align: center; font-size: 12px">
+<div style="font-weight: bold; margin-bottom: 4px">Load Balancer</div>
+<div>DNS / L7 Proxy</div>
+</div>
+<div style="color: #f0883e; font-size: 24px">&#8644;</div>
+<div style="color: #475569; font-size: 11px; text-align: center">Atomic switch<br/>via config update</div>
+</div>
+<div style="background: #238636; border-radius: 12px; padding: 20px; text-align: center">
+<div style="color: white; font-weight: bold; font-size: 18px; margin-bottom: 8px">GREEN Environment</div>
+<div style="color: rgba(255,255,255,0.8); font-size: 13px">Version 1.5.0</div>
+<div style="background: #f0883e; color: white; padding: 4px 12px; border-radius: 4px; display: inline-block; margin-top: 8px; font-size: 12px">STAGED (IDLE)</div>
+</div>
+</div>
+<p><strong>Switching Mechanisms</strong> (in order of switch speed):</p>
+<ol>
+<li><strong>DNS-based</strong>: Update DNS record to point to green's IP. Slow (TTL propagation: seconds to hours). Risk: some clients cache aggressively.</li>
+<li><strong>Load balancer config</strong>: Update LB backend pool. Fast (sub-second). Requires LB API or config reload.</li>
+<li><strong>Service mesh routing</strong>: Update virtual service weights. Instant. Requires Istio/Linkerd/similar.</li>
+<li><strong>Kubernetes Service selector</strong>: Change label selector to match green pods. Instant within cluster.</li>
+</ol>
+</div>
+</div>
+<h3 id="key-design-decisions-1">Key Design Decisions</h3>
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<h4 style="color: #58a6ff; margin: 0 0 16px 0">The Database Problem in Blue-Green</h4>
+<p><strong>The fundamental challenge</strong>: Both blue and green environments typically share a database. If green's code requires schema changes, blue (running old code) may break when the schema changes, and rolling back becomes impossible.</p>
+<p><strong>Solutions with trade-offs</strong>:</p>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px 0">
+<div style="background: rgba(126, 231, 135, 0.1);border-radius: 8px; padding: 16px">
+<h5 style="color: #7ee787; margin: 0 0 8px 0">Expand-Contract Migrations</h5>
+<div style="color: #c9d1d9; font-size: 13px">
+Phase 1: Add new column (nullable), deploy code that writes to both.
+Phase 2: Backfill old data to new column.
+Phase 3: Deploy code reading from new column.
+Phase 4: Drop old column.
+<p><strong>Trade-off</strong>: Safe but slow - requires 4 deployments for one schema change.</p>
+</div>
+</div>
+<div style="background: rgba(240, 136, 62, 0.1);border-radius: 8px; padding: 16px">
+<h5 style="color: #f0883e; margin: 0 0 8px 0">Separate Databases</h5>
+<div style="color: #c9d1d9; font-size: 13px">
+Blue and green each have their own database. Data sync via CDC (Change Data Capture) or event sourcing.
+<p><strong>Trade-off</strong>: True isolation but introduces replication lag and consistency challenges. Works well for eventually consistent systems, poorly for strong consistency needs.</p>
+</div>
+</div>
+</div>
+<p><strong>Design Choice</strong>: Most teams use expand-contract for relational databases and accept the deployment overhead. For new systems, <a href="/topics/system-architectures/event-sourcing">[event-sourcing]</a> patterns avoid this problem entirely by separating command and query models.</p>
+</div>
+<h3 id="edge-cases-and-failure-modes-1">Edge Cases and Failure Modes</h3>
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<p><strong>Session Affinity Breaking</strong>: Users with sticky sessions to blue suddenly get routed to green mid-session. Mitigation: Externalize session state to <a href="/topics/system-architectures/caching">[distributed-cache]</a> (Redis), or implement graceful session migration.</p>
+<p><strong>In-Flight Request Failure</strong>: Requests initiated before switch may complete after switch, hitting wrong environment. Mitigation: Connection draining - blue continues serving existing connections for grace period while green handles new connections.</p>
+<p><strong>Green Environment Drift</strong>: Idle green environment has stale container images, expired certificates, or failed health checks. Mitigation: Continuous health checks on idle environment, periodic synthetic traffic, automated certificate renewal.</p>
+<p><strong>Rollback After Data Migration</strong>: Green writes data in new format, rollback to blue can't read it. Mitigation: All schema changes must be backward-compatible for at least one release cycle.</p>
+<p><strong>Cost Explosion</strong>: Maintaining 2x infrastructure permanently doubles compute costs. Mitigation: Use for stateless web tier only, consider canary for non-critical services, scale down idle environment to minimum replicas.</p>
+</div>
+<h3 id="3-level-interview-questions-blue-green-deployments">3-Level Interview Questions: Blue-Green Deployments</h3>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h4 id="level-1-what-is-blue-green-deployment-and-when-would-you-use-it">Level 1: &quot;What is blue-green deployment and when would you use it?&quot;</h4>
+<p><strong>What they're probing</strong>: Basic understanding of deployment strategies.</p>
+<p><strong>Strong Answer</strong>: &quot;Blue-green deployment maintains two identical production environments. You deploy new code to the idle environment, verify it works, then switch all traffic atomically. The key benefit is instant rollback - if problems emerge, you switch back in seconds rather than waiting for a new deployment. I'd use it when: rollback speed is critical (payment systems, authentication), you need to test the exact production configuration before going live, or your application doesn't handle rolling deployments well (stateful services, long-lived connections). I wouldn't use it when infrastructure costs are constrained or when the complexity of maintaining two environments outweighs the rollback speed benefit.&quot;</p>
+<hr />
+<h4 id="level-2-how-would-you-handle-database-schema-changes-in-a-blue-green-deployment">Level 2: &quot;How would you handle database schema changes in a blue-green deployment?&quot;</h4>
+<p><strong>What they're probing</strong>: Understanding of the fundamental complexity in blue-green patterns.</p>
+<p><strong>Strong Answer</strong>: &quot;This is the hardest part of blue-green. Since both environments share a database, schema changes can break the inactive environment, making rollback impossible. I'd use expand-contract migrations: first deploy code that's compatible with both old and new schemas, then migrate the schema, then deploy code that uses only the new schema, finally clean up old columns. For example, renaming a column: (1) add new column, (2) deploy code writing to both, (3) backfill data, (4) deploy code reading from new, (5) drop old column. This requires more deployments but ensures either environment can run at any time. For teams doing this frequently, I'd consider separating databases with CDC replication, accepting eventual consistency, or moving toward event sourcing where schema changes don't affect read models directly.&quot;</p>
+<p><strong>Key insight to mention</strong>: &quot;The principle is that database changes should be backward-compatible for at least N-1 code versions.&quot;</p>
+<hr />
+<h4 id="level-3-design-a-blue-green-deployment-system-for-a-globally-distributed-application-serving-100m-requestsday-with-strict-consistency-requirements-traffic-switching-must-complete-worldwide-within-30-seconds">Level 3: &quot;Design a blue-green deployment system for a globally distributed application serving 100M requests/day with strict consistency requirements. Traffic switching must complete worldwide within 30 seconds.&quot;</h4>
+<p><strong>What they're probing</strong>: Distributed systems complexity, global traffic management, consistency under partition.</p>
+<p><strong>Strong Answer</strong>: &quot;This is challenging because global DNS propagation takes minutes, not seconds, and different regions have different propagation characteristics.</p>
+<p><strong>Architecture approach</strong>: I'd use a two-tier routing system. The outer tier is anycast DNS pointing to regional edge nodes (Cloudflare/Fastly style) - this DNS never changes during deployments. The inner tier is L7 routing at each edge node, which reads routing configuration from a globally replicated datastore.</p>
+<p><strong>Traffic switching mechanism</strong>: When switching, I'd update routing config in a strongly consistent store (like Spanner or CockroachDB with global replication). Each edge node watches this config with a short polling interval (1s) or uses a push notification system. The edge node atomically switches its local routing table when it receives the update.</p>
+<p><strong>30-second SLA</strong>: To guarantee 30-second global propagation, I'd implement a two-phase commit style protocol. Phase 1: Push config to all regions, each region ACKs when ready to switch. Phase 2: Coordinator sends 'commit' signal, all regions switch simultaneously. If any region doesn't ACK within timeout, abort the deployment.</p>
+<p><strong>Consistency under partition</strong>: If a region is partitioned during switch, it should fail-safe to the last known good state (blue). When partition heals, it catches up to current config. This means during partition, one region might serve old version - acceptable given CAP constraints.</p>
+<p><strong>Strict consistency caveat</strong>: If the application requires strict consistency (not just the routing), we need to consider in-flight transactions. I'd implement request draining: stop sending new requests to blue (but let existing complete), wait for configurable drain period, then mark blue as inactive. This adds latency to the switch but ensures no request spans the transition.&quot;</p>
+<p><strong>Critical points to address</strong>:</p>
+<ul>
+<li>BGP/anycast propagation delays for true global DNS</li>
+<li>Clock skew between regions affecting coordinated switch</li>
+<li>Monitoring to verify all regions switched successfully</li>
+</ul>
+</div>
+<hr />
+<h2 id="section-3-canary-releases">Section 3: Canary Releases</h2>
+<h3 id="core-mechanism-2">Core Mechanism</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<p><strong>Canary releases</strong> gradually shift traffic from the current version to the new version while monitoring for degradation. Unlike blue-green (instant full switch), canary allows validating new code with real production traffic at controlled risk levels.</p>
+<div style="background: rgba(163, 113, 247, 0.1);border-radius: 12px; padding: 20px; margin: 16px 0">
+<p><strong>Canary Release Progression</strong></p>
+<div style="display: flex; flex-direction: column; gap: 16px; margin: 16px 0">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold">Stage 0</div>
+<div style="flex: 1; display: flex; gap: 4px">
+<div style="background: #1f6feb; flex: 100; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.4 (100%)</div>
+</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px">Initial state</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold">Stage 1</div>
+<div style="flex: 1; display: flex; gap: 4px">
+<div style="background: #1f6feb; flex: 95; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.4 (95%)</div>
+<div style="background: #238636; flex: 5; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.5</div>
+</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px">5% canary, 10 min</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold">Stage 2</div>
+<div style="flex: 1; display: flex; gap: 4px">
+<div style="background: #1f6feb; flex: 75; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.4 (75%)</div>
+<div style="background: #238636; flex: 25; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.5 (25%)</div>
+</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px">25% canary, 20 min</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #e2e8f0; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: #475569; font-weight: bold">Stage 3</div>
+<div style="flex: 1; display: flex; gap: 4px">
+<div style="background: #1f6feb; flex: 50; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.4 (50%)</div>
+<div style="background: #238636; flex: 50; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.5 (50%)</div>
+</div>
+<div style="color: #475569; font-size: 12px; min-width: 120px">50% canary, 30 min</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #238636; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center; color: white; font-weight: bold">Complete</div>
+<div style="flex: 1; display: flex; gap: 4px">
+<div style="background: #238636; flex: 100; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px">v1.5 (100%)</div>
+</div>
+<div style="color: #7ee787; font-size: 12px; min-width: 120px">Full rollout</div>
+</div>
+</div>
+</div>
+<p><strong>Traffic Splitting Implementations</strong>:</p>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0">
+<div style="background: rgba(88, 166, 255, 0.1);border-radius: 8px; padding: 12px">
+<h5 style="color: #58a6ff; margin: 0 0 8px 0; font-size: 13px">Replica-based</h5>
+<div style="color: #475569; font-size: 12px">Run 19 v1.4 pods, 1 v1.5 pod behind same service. ~5% traffic to canary. Coarse-grained control.</div>
+</div>
+<div style="background: rgba(126, 231, 135, 0.1);border-radius: 8px; padding: 12px">
+<h5 style="color: #7ee787; margin: 0 0 8px 0; font-size: 13px">Service Mesh</h5>
+<div style="color: #475569; font-size: 12px">Istio/Linkerd VirtualService with weight-based routing. Fine-grained percentages, header-based routing.</div>
+</div>
+<div style="background: rgba(163, 113, 247, 0.1);border-radius: 8px; padding: 12px">
+<h5 style="color: #a371f7; margin: 0 0 8px 0; font-size: 13px">Load Balancer</h5>
+<div style="color: #475569; font-size: 12px">ALB/Nginx weighted target groups. Infrastructure-level control, no app changes required.</div>
+</div>
+</div>
+</div>
+<h3 id="automated-canary-analysis">Automated Canary Analysis</h3>
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<h4 style="color: #58a6ff; margin: 0 0 16px 0">The Canary Analysis Problem</h4>
+<p><strong>Core challenge</strong>: How do you automatically determine if the canary is &quot;healthy enough&quot; to proceed?</p>
+<p><strong>Metrics to compare</strong> (canary vs. baseline):</p>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px 0">
+<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px">
+<h5 style="color: #7ee787; margin: 0 0 8px 0">Golden Signals</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px">
+<li><strong>Latency</strong>: p50, p90, p99 request duration</li>
+<li><strong>Error rate</strong>: 5xx responses / total responses</li>
+<li><strong>Throughput</strong>: Requests per second</li>
+<li><strong>Saturation</strong>: CPU, memory, connection pool utilization</li>
+</ul>
+</div>
+<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px">
+<h5 style="color: #f0883e; margin: 0 0 8px 0">Business Metrics</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px">
+<li><strong>Conversion rate</strong>: Checkout completions / cart views</li>
+<li><strong>Engagement</strong>: Clicks, time on page, scroll depth</li>
+<li><strong>Revenue</strong>: Orders, average order value</li>
+<li><strong>User errors</strong>: Form validation failures, 4xx rates</li>
+</ul>
+</div>
+</div>
+<p><strong>Statistical Analysis Methods</strong>:</p>
+<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 16px; margin: 16px 0">
+<p><strong>Mann-Whitney U Test</strong>: Non-parametric test comparing two distributions. Null hypothesis: canary and baseline metrics come from same distribution. If p-value &lt; threshold (0.05), distributions differ significantly.</p>
+<p><strong>Problem</strong>: A/A tests (baseline vs. baseline) should pass 95% of the time, but real systems often show higher false-positive rates due to temporal variation.</p>
+<p><strong>Mitigation</strong>: Run simultaneous baseline comparison (deploy identical code as &quot;baseline canary&quot;), compare canary vs. this baseline rather than historical data. If canary is significantly worse than contemporary baseline, fail.</p>
+</div>
+<p><strong>Automated Rollback Criteria</strong>:</p>
+<pre><code>IF error_rate_canary &gt; error_rate_baseline * 1.5 THEN rollback
+IF p99_latency_canary &gt; p99_latency_baseline * 1.3 THEN rollback
+IF cpu_saturation_canary &gt; 0.8 THEN rollback
+IF (conversion_rate_baseline - conversion_rate_canary) / conversion_rate_baseline &gt; 0.05 THEN rollback
+</code></pre>
+</div>
+<h3 id="edge-cases-and-failure-modes-2">Edge Cases and Failure Modes</h3>
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<p><strong>Traffic Volume Insufficiency</strong>: At 1% canary traffic, low-volume services might see only 10 requests in the analysis window - not enough for statistical significance. Mitigation: Define minimum sample size, extend analysis window for low-traffic services, or skip canary for &lt;100 req/min services.</p>
+<p><strong>Sticky Session Contamination</strong>: User gets canary on first request, then baseline on subsequent requests, corrupting both metrics and user experience. Mitigation: Cookie-based or user-ID-based routing ensures same user always hits same version.</p>
+<p><strong>Cascading Failure Masking</strong>: Canary has a bug that causes failures in downstream service, but downstream service's errors are attributed to its own canary (also in progress). Mitigation: Coordinate canary deployments across dependency chain, or use distributed tracing to attribute errors to root cause version.</p>
+<p><strong>Metric Lag</strong>: Business metrics (conversion, revenue) take hours to materialize. Canary has already rolled out fully before you detect the problem. Mitigation: Use leading indicators (add-to-cart, checkout-initiated) that correlate with lagging metrics but are available immediately.</p>
+<p><strong>Cold Start Penalty</strong>: New canary pods have cold caches, JIT not warmed up. Initial metrics look terrible, triggering false rollback. Mitigation: Exclude first N minutes from analysis, or pre-warm canary instances before routing traffic.</p>
+</div>
+<h3 id="3-level-interview-questions-canary-releases">3-Level Interview Questions: Canary Releases</h3>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h4 id="level-1-how-does-canary-deployment-differ-from-blue-green">Level 1: &quot;How does canary deployment differ from blue-green?&quot;</h4>
+<p><strong>What they're probing</strong>: Understanding of gradual vs. atomic deployment strategies.</p>
+<p><strong>Strong Answer</strong>: &quot;Blue-green switches 100% of traffic atomically between two complete environments. Canary gradually shifts traffic while monitoring for problems. The key trade-off: blue-green gives instant rollback but exposes all users to potential issues simultaneously. Canary limits blast radius (only 5% of users see a bad deploy) but rollback means waiting for traffic to drain. I'd choose blue-green when rollback speed is paramount and the cost of 2x infrastructure is acceptable. I'd choose canary when I want real traffic validation before full commitment, can tolerate slightly slower rollback, or when maintaining two complete environments is cost-prohibitive.&quot;</p>
+<hr />
+<h4 id="level-2-how-would-you-implement-automated-canary-analysis-that-decides-whether-to-proceed-or-rollback">Level 2: &quot;How would you implement automated canary analysis that decides whether to proceed or rollback?&quot;</h4>
+<p><strong>What they're probing</strong>: Understanding of statistical analysis in production systems.</p>
+<p><strong>Strong Answer</strong>: &quot;The core problem is comparing canary metrics to baseline metrics and deciding if the difference is significant and negative. I'd implement it in three parts:</p>
+<p><strong>Metric collection</strong>: Instrument both canary and baseline with identical metrics - error rates, latency percentiles, saturation. Use labels/tags to distinguish versions in the <a href="/topics/system-architectures/monitoring">[monitoring]</a> system.</p>
+<p><strong>Statistical comparison</strong>: For each metric, run a statistical test comparing distributions. Mann-Whitney U works well because it doesn't assume normal distribution. But there's a subtlety: comparing to historical baseline is noisy due to temporal variation (traffic patterns differ by hour). Better to run a 'baseline canary' - deploy the current version alongside the new version, compare new canary to contemporary baseline.</p>
+<p><strong>Decision logic</strong>: Define thresholds for each metric type. Error rate must be within 10% of baseline. P99 latency within 20%. If any metric fails threshold for more than 2 consecutive analysis windows (to filter transient spikes), trigger automatic rollback. If all metrics pass for the configured analysis period, promote to next canary stage.&quot;</p>
+<p><strong>Key insight</strong>: &quot;The hardest part is determining appropriate thresholds. Too tight and you get false rollbacks from normal variance. Too loose and bad deploys slip through. I'd start with conservative thresholds and tune based on observing A/A test failure rates.&quot;</p>
+<hr />
+<h4 id="level-3-design-a-canary-system-for-a-microservices-architecture-where-service-a-calls-service-b-both-are-deploying-canaries-simultaneously-how-do-you-correctly-attribute-degradation-and-ensure-the-right-service-rolls-back">Level 3: &quot;Design a canary system for a microservices architecture where service A calls service B. Both are deploying canaries simultaneously. How do you correctly attribute degradation and ensure the right service rolls back?&quot;</h4>
+<p><strong>What they're probing</strong>: Distributed systems causality, cross-service observability.</p>
+<p><strong>Strong Answer</strong>: &quot;This is the distributed canary attribution problem. If A-canary calls B-canary and requests fail, which canary is at fault?</p>
+<p><strong>Propagate version context</strong>: Every request carries version headers through the call chain. When A-canary calls B, the request includes <code>X-Canary-Version: A=1.5,B=1.4</code>. When B-canary handles a request, it adds itself: <code>A=1.5,B=2.0</code>. This creates a version fingerprint for each request path.</p>
+<p><strong>Metrics by version combination</strong>: Record metrics not just by 'my version' but by 'upstream version combination'. B's metrics are bucketed by: (A-stable, B-stable), (A-stable, B-canary), (A-canary, B-stable), (A-canary, B-canary).</p>
+<p><strong>Attribution analysis</strong>: If only (A-canary, B-canary) shows degradation, could be either. If (A-canary, B-stable) also shows degradation, it's likely A. If (A-stable, B-canary) shows degradation, it's likely B. If only the combination fails, it's an interaction bug - need to investigate both.</p>
+<p><strong>Coordination policy</strong>: Ideally, avoid simultaneous canaries in tightly-coupled services. Implement a 'canary lock' - while A is canarying, B's deploys queue. If that's too slow, accept the attribution complexity and require manual investigation for ambiguous cases.</p>
+<p><strong>Blast radius isolation</strong>: Use <a href="/topics/system-architectures/service-mesh">[service-mesh]</a> traffic policies to route A-canary traffic preferentially to B-stable, limiting the interaction combinations. Only after A-canary completes successfully, allow B-canary to receive A traffic.&quot;</p>
+<p><strong>Implementation detail</strong>: &quot;In practice, I'd integrate this with distributed tracing. Jaeger/Zipkin traces already carry version info - extend the canary analyzer to query traces, not just aggregate metrics, for root cause analysis.&quot;</p>
+</div>
+<hr />
+<h2 id="section-4-rollback-strategies">Section 4: Rollback Strategies</h2>
+<h3 id="core-mechanism-3">Core Mechanism</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<p><strong>Rollback</strong> is the process of reverting a deployment when problems are detected. The complexity of rollback is inversely proportional to how well you designed your deployment for reversibility.</p>
+<div style="background: rgba(248, 81, 73, 0.1);border-radius: 12px; padding: 20px; margin: 16px 0">
+<p><strong>Rollback Decision Tree</strong></p>
+<div style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: white; font-weight: bold">Problem Detected in Production</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 40px">
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="width: 2px; height: 20px; background: #238636"></div>
+<div style="background: #238636; color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px">Can fix forward quickly?</div>
+<div style="display: flex; gap: 20px; margin-top: 12px">
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="color: #7ee787; font-size: 12px; margin-bottom: 4px">YES</div>
+<div style="background: rgba(126, 231, 135, 0.2);padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #7ee787">Hot-fix + redeploy</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="color: #f85149; font-size: 12px; margin-bottom: 4px">NO</div>
+<div style="width: 2px; height: 20px; background: #f85149"></div>
+</div>
+</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center">
+<div style="background: #f0883e; color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px">Data mutations involved?</div>
+</div>
+<div style="display: flex; justify-content: center; gap: 40px">
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="color: #7ee787; font-size: 12px; margin-bottom: 4px">NO - Stateless</div>
+<div style="background: rgba(126, 231, 135, 0.2);padding: 12px 16px; border-radius: 6px; font-size: 12px; color: #7ee787; text-align: center">
+<strong>Simple rollback</strong><br/>
+kubectl rollout undo<br/>
+Switch LB target
+</div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="color: #f0883e; font-size: 12px; margin-bottom: 4px">YES - Stateful</div>
+<div style="background: rgba(240, 136, 62, 0.2);padding: 12px 16px; border-radius: 6px; font-size: 12px; color: #f0883e; text-align: center">
+<strong>Complex rollback</strong><br/>
+Code rollback +<br/>
+Data migration rollback
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="rollback-mechanisms-by-layer">Rollback Mechanisms by Layer</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0">
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #58a6ff; margin: 0 0 12px 0">Application Layer Rollback</h4>
+<p><strong>Mechanism</strong>: Revert to previous container image/artifact version.</p>
+<p><strong>Kubernetes</strong>: <code>kubectl rollout undo deployment/myapp</code> - reverts to previous ReplicaSet.</p>
+<p><strong>ECS</strong>: Update task definition to previous revision, force new deployment.</p>
+<p><strong>Serverless</strong>: Point alias to previous function version.</p>
+<p><strong>Time to rollback</strong>: 30 seconds to 5 minutes (depending on startup time, health check intervals).</p>
+<p><strong>Limitation</strong>: Does not undo database changes, cache state, or external system integrations.</p>
+</div>
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #a371f7; margin: 0 0 12px 0">Database Layer Rollback</h4>
+<p><strong>Challenge</strong>: Schema changes and data migrations are often irreversible.</p>
+<p><strong>Flyway/Liquibase</strong>: Support down migrations but these must be manually written and tested.</p>
+<p><strong>Point-in-time recovery</strong>: Restore database to state before deployment. Data loss for all writes since deploy.</p>
+<p><strong>Dual-write rollback</strong>: If using expand-contract, old columns still have data. Rollback is just deploying old code.</p>
+<p><strong>Time to rollback</strong>: Minutes (dual-write) to hours (PITR restore).</p>
+<p><strong>Limitation</strong>: PITR loses all data since deployment; dual-write requires careful planning.</p>
+</div>
+<div style="background: linear-gradient(135deg, #3d2e1f 0%, #5d4a3a 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #f0883e; margin: 0 0 12px 0">Infrastructure Layer Rollback</h4>
+<p><strong>Mechanism</strong>: Revert Terraform/Pulumi state to previous version.</p>
+<p><strong>Challenge</strong>: Some infrastructure changes are destructive (deleted resources can't be undeleted).</p>
+<p><strong>Mitigation</strong>: Use <code>prevent_destroy</code> lifecycle rules, implement soft-delete patterns.</p>
+<p><strong>GitOps approach</strong>: Revert git commit, let ArgoCD/Flux sync to previous state.</p>
+<p><strong>Time to rollback</strong>: Minutes for compute, potentially hours for databases (if snapshots needed).</p>
+<p><strong>Limitation</strong>: External integrations (DNS, certificates) may have propagation delays.</p>
+</div>
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5d4a 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #7ee787; margin: 0 0 12px 0">Feature Layer Rollback</h4>
+<p><strong>Mechanism</strong>: <a href="#section-5-feature-flags">[Feature flags]</a> to disable problematic code paths without deployment.</p>
+<p><strong>Advantage</strong>: Instant (milliseconds), no deployment required, granular control.</p>
+<p><strong>Implementation</strong>: Toggle flag in feature flag service, all instances pick up change within TTL.</p>
+<p><strong>Limitation</strong>: Only works if the problematic code is behind a flag. Doesn't help with schema changes or fundamental bugs.</p>
+<p><strong>Time to rollback</strong>: Milliseconds to seconds.</p>
+</div>
+</div>
+<h3 id="key-design-decisions-2">Key Design Decisions</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<h4 style="color: #58a6ff; margin: 0 0 16px 0">Rollback Velocity vs. Complexity Trade-off</h4>
+<div style="overflow-x: auto; margin: 16px 0">
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Rollback Time</th>
+<th>Complexity</th>
+<th>Data Safety</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Feature flags</td>
+<td>Milliseconds</td>
+<td>Low (if planned)</td>
+<td>Full</td>
+<td>Flag service cost</td>
+</tr>
+<tr>
+<td>Blue-green switch</td>
+<td>Seconds</td>
+<td>Medium</td>
+<td>Full (stateless)</td>
+<td>2x infrastructure</td>
+</tr>
+<tr>
+<td>K8s rollout undo</td>
+<td>30s-5min</td>
+<td>Low</td>
+<td>Full (stateless)</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Canary abort</td>
+<td>1-5min</td>
+<td>Medium</td>
+<td>Partial (some users affected)</td>
+<td>None</td>
+</tr>
+<tr>
+<td>DB point-in-time</td>
+<td>15min-hours</td>
+<td>High</td>
+<td>Data loss since deploy</td>
+<td>Storage costs</td>
+</tr>
+<tr>
+<td>Full environment restore</td>
+<td>Hours</td>
+<td>Very high</td>
+<td>Depends on backup frequency</td>
+<td>Backup storage</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Design Principle</strong>: Invest in fast rollback mechanisms proportional to change risk. High-risk changes (schema migrations, security changes) need multiple rollback paths tested before deployment.</p>
+</div>
+<h3 id="3-level-interview-questions-rollback-strategies">3-Level Interview Questions: Rollback Strategies</h3>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h4 id="level-1-how-quickly-should-a-production-rollback-take-and-what-factors-affect-this">Level 1: &quot;How quickly should a production rollback take, and what factors affect this?&quot;</h4>
+<p><strong>What they're probing</strong>: Understanding of rollback as a critical operational capability.</p>
+<p><strong>Strong Answer</strong>: &quot;A stateless application rollback should complete in under 60 seconds - this is the gold standard. The factors that affect this are: container image pull time (solved by keeping previous version cached), health check intervals (pods need to pass readiness before receiving traffic), connection draining (graceful termination of in-flight requests), and number of replicas (more replicas = more time for rolling restart). For stateful rollbacks involving databases, the time depends on whether you designed for it - expand-contract migrations enable instant code rollback, but traditional migrations might require hours of data restoration. The key principle is: design for rollback before you deploy, not during an incident.&quot;</p>
+<hr />
+<h4 id="level-2-a-deployment-introduces-a-bug-that-corrupts-data-for-2-of-user-requests-over-30-minutes-before-detection-how-do-you-approach-this-rollback">Level 2: &quot;A deployment introduces a bug that corrupts data for 2% of user requests over 30 minutes before detection. How do you approach this rollback?&quot;</h4>
+<p><strong>What they're probing</strong>: Understanding of the data dimension of rollbacks.</p>
+<p><strong>Strong Answer</strong>: &quot;This is the hardest type of rollback because we're past the point where simply reverting code helps - data is already corrupted.</p>
+<p><strong>Immediate actions</strong>: (1) Roll back the code to stop ongoing corruption. (2) Identify affected users/records using logs and the 30-minute window. (3) Assess corruption scope - is it reversible, or is data permanently lost?</p>
+<p><strong>Data remediation options</strong>: If we have audit logs or <a href="/topics/system-architectures/event-sourcing">[event-sourcing]</a>, replay events to reconstruct correct state. If we have point-in-time recovery, selectively restore affected records from pre-deployment backup. If we have application-level backups (soft delete, version history), restore from those.</p>
+<p><strong>The uncomfortable truth</strong>: Some data corruption is unrecoverable. In that case, communicate with affected users, provide compensation if applicable, and document the incident.</p>
+<p><strong>Prevention for next time</strong>: Implement write-ahead logging for critical operations, use feature flags to test risky code paths with synthetic users first, add data validation that catches corruption patterns (anomaly detection on write patterns), and consider dual-write during risky migrations where writes go to both old and new schemas.&quot;</p>
+<hr />
+<h4 id="level-3-design-a-rollback-system-that-can-handle-partial-failures-across-a-microservices-deployment-where-services-a-b-and-c-were-deployed-together-but-only-bs-deployment-caused-issues-a-and-c-are-fine-but-have-dependencies-on-b">Level 3: &quot;Design a rollback system that can handle partial failures across a microservices deployment where services A, B, and C were deployed together, but only B's deployment caused issues. A and C are fine but have dependencies on B.&quot;</h4>
+<p><strong>What they're probing</strong>: Distributed systems rollback coordination, dependency management.</p>
+<p><strong>Strong Answer</strong>: &quot;This is the distributed rollback coordination problem. The naive solution - roll back all three - is wasteful and potentially disruptive if A and C introduced valuable features.</p>
+<p><strong>Dependency analysis first</strong>: Map the service dependencies. If B is downstream of A and C (they call B), rolling back B alone might work if B's API is backward-compatible. If A or C depend on B's new features (added API endpoint, changed response format), rolling back B breaks them.</p>
+<p><strong>Version compatibility matrix</strong>: Maintain a matrix of which service versions are compatible. Before any deployment, run integration tests with the specific version combination. This matrix tells us: can A-new + C-new + B-old function correctly?</p>
+<p><strong>Selective rollback implementation</strong>:</p>
+<p>If compatible: Roll back B only. Use <a href="/topics/system-architectures/distributed-locking">[distributed-locking]</a> to prevent concurrent deploys during rollback. Update service registry/mesh to route traffic to B-old. Verify inter-service health checks pass.</p>
+<p>If incompatible: We have a choice - roll back all to known-good state, or roll forward B to a fixed version. I'd prefer rolling forward if B's fix is straightforward because it preserves A and C's changes. But if B's issue is complex, roll back all three to last known-good checkpoint.</p>
+<p><strong>Deployment atomicity pattern</strong>: For tightly-coupled services, consider deploying them as a unit. Version them together (monorepo or coordinated release). This simplifies rollback - all or nothing - at the cost of deployment flexibility.</p>
+<p><strong>Long-term solution</strong>: Reduce inter-service coupling. Use API versioning so B-old can coexist with B-new. Implement <a href="/topics/testing/contract-testing">[contract-testing]</a> to catch compatibility breaks before deployment. Design services to be backward-compatible for at least N-1 versions.&quot;</p>
+</div>
+<hr />
+<h2 id="section-5-feature-flags">Section 5: Feature Flags</h2>
+<h3 id="core-mechanism-4">Core Mechanism</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<p><strong>Feature flags</strong> (also called feature toggles) are conditional statements in code that enable or disable functionality at runtime without deployment. They decouple deployment (shipping code) from release (enabling features for users).</p>
+<div style="background: rgba(126, 231, 135, 0.1);border-radius: 12px; padding: 20px; margin: 16px 0">
+<p><strong>Feature Flag Evaluation Flow</strong></p>
+<div style="display: flex; flex-direction: column; gap: 16px; margin: 16px 0">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #1f6feb; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold">Application Code</div>
+<div style="color: #475569; font-size: 13px; flex: 1">
+`if (featureFlags.isEnabled("new-checkout", user)) { showNewCheckout(); }`
+</div>
+</div>
+<div style="display: flex; justify-content: center"><div style="width: 2px; height: 20px; background: #e2e8f0"></div></div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #238636; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold">Local SDK Cache</div>
+<div style="color: #475569; font-size: 13px; flex: 1">
+SDK caches flag rules locally. Cache TTL typically 30s-5min. Evaluation happens in-process, no network call per check.
+</div>
+</div>
+<div style="display: flex; justify-content: center"><div style="width: 2px; height: 20px; background: #e2e8f0"></div></div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #8957e5; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold">Flag Service</div>
+<div style="color: #475569; font-size: 13px; flex: 1">
+Central service stores flag configuration. SDK polls or receives push updates. Provides UI for flag management.
+</div>
+</div>
+<div style="display: flex; justify-content: center"><div style="width: 2px; height: 20px; background: #e2e8f0"></div></div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #f0883e; color: white; padding: 12px 20px; border-radius: 8px; min-width: 150px; text-align: center; font-weight: bold">Targeting Rules</div>
+<div style="color: #475569; font-size: 13px; flex: 1">
+Rules evaluated in order: user ID match, segment membership, percentage rollout, default value.
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="types-of-feature-flags">Types of Feature Flags</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0">
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a7b 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #58a6ff; margin: 0 0 12px 0">Release Flags</h4>
+<p><strong>Purpose</strong>: Hide incomplete features until ready for release.</p>
+<p><strong>Lifespan</strong>: Days to weeks. Remove after feature is fully launched.</p>
+<p><strong>Example</strong>: <code>new-payment-flow</code> - Ship incrementally, enable when complete.</p>
+<p><strong>Risk</strong>: Long-lived release flags become tech debt. Enforce removal SLAs.</p>
+<p><strong>Targeting</strong>: Usually all-or-nothing, or internal users only during development.</p>
+</div>
+<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #a371f7; margin: 0 0 12px 0">Experiment Flags</h4>
+<p><strong>Purpose</strong>: A/B testing to measure impact of changes.</p>
+<p><strong>Lifespan</strong>: Weeks to months (until statistical significance reached).</p>
+<p><strong>Example</strong>: <code>checkout-button-color</code> - 50% see green, 50% see blue.</p>
+<p><strong>Integration</strong>: Must integrate with <a href="/topics/system-architectures/analytics">[analytics]</a> to track conversion by variant.</p>
+<p><strong>Targeting</strong>: Percentage-based, user-bucketed (same user always sees same variant).</p>
+</div>
+<div style="background: linear-gradient(135deg, #3d2e1f 0%, #5d4a3a 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #f0883e; margin: 0 0 12px 0">Ops Flags (Kill Switches)</h4>
+<p><strong>Purpose</strong>: Disable functionality during incidents without deployment.</p>
+<p><strong>Lifespan</strong>: Permanent (always present, usually enabled).</p>
+<p><strong>Example</strong>: <code>enable-recommendations</code> - Disable when recommendations service is overloaded.</p>
+<p><strong>Design</strong>: Default to degraded-but-functional behavior when disabled.</p>
+<p><strong>Targeting</strong>: Global toggle, possibly per-region for isolation.</p>
+</div>
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5d4a 100%); border-radius: 12px; padding: 20px">
+<h4 style="color: #7ee787; margin: 0 0 12px 0">Permission Flags</h4>
+<p><strong>Purpose</strong>: Enable features for specific user segments (beta users, paying customers).</p>
+<p><strong>Lifespan</strong>: Permanent or until feature becomes generally available.</p>
+<p><strong>Example</strong>: <code>premium-analytics</code> - Only enabled for enterprise tier.</p>
+<p><strong>Relationship</strong>: Often overlaps with <a href="/topics/security/authorization">[authorization]</a> system.</p>
+<p><strong>Targeting</strong>: Segment-based (user attributes, subscription tier, organization).</p>
+</div>
+</div>
+<h3 id="key-design-decisions-3">Key Design Decisions</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<h4 style="color: #58a6ff; margin: 0 0 16px 0">Server-side vs. Client-side Evaluation</h4>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px 0">
+<div style="background: rgba(88, 166, 255, 0.1);border-radius: 8px; padding: 16px">
+<h5 style="color: #58a6ff; margin: 0 0 8px 0">Server-side Evaluation</h5>
+<p><strong>How it works</strong>: SDK fetches flag rules from service, evaluates locally on server. Only flag results (not rules) sent to client.</p>
+<p><strong>Advantages</strong>: Rules stay private (competitors can't see targeting logic). Lower latency (evaluation is local). Works for backend services.</p>
+<p><strong>Disadvantages</strong>: Can't react to client-only context (device type, browser) without server round-trip.</p>
+<p><strong>Use for</strong>: Backend services, sensitive targeting rules, performance-critical paths.</p>
+</div>
+<div style="background: rgba(163, 113, 247, 0.1);border-radius: 8px; padding: 16px">
+<h5 style="color: #a371f7; margin: 0 0 8px 0">Client-side Evaluation</h5>
+<p><strong>How it works</strong>: Client SDK fetches rules for specific user, evaluates in browser/app. Rules filtered to what client needs.</p>
+<p><strong>Advantages</strong>: Can use client context (viewport, device). No server round-trip for flag checks.</p>
+<p><strong>Disadvantages</strong>: Rules potentially visible to users (even if filtered). Larger payload to transfer rules.</p>
+<p><strong>Use for</strong>: Frontend feature toggles, A/B tests needing client context, mobile apps.</p>
+</div>
+</div>
+<p><strong>Hybrid approach</strong>: Server evaluates sensitive flags, passes results to client as bootstrap data. Client SDK handles UI-specific flags locally.</p>
+</div>
+<h3 id="edge-cases-and-failure-modes-3">Edge Cases and Failure Modes</h3>
+<div style="background: linear-gradient(135deg, #3d1f1f 0%, #5d3a3a 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<p><strong>Flag Service Unavailability</strong>: If the flag service is down, what happens?</p>
+<p><strong>Design choice</strong>: SDK must have sensible defaults. Options: (1) Fail closed - treat all flags as disabled, safest but feature degradation. (2) Fail open - treat all flags as enabled, risky for release flags. (3) Use cached values - best of both worlds but cache can be stale.</p>
+<p><strong>Recommendation</strong>: Cache with TTL, fail to cached values, alert on staleness.</p>
+<p><strong>Inconsistent Evaluation Across Instances</strong>: Different app instances have different cache states, causing flickering user experience.</p>
+<p><strong>Mitigation</strong>: Use consistent hashing on user ID for percentage rollouts. Same user always evaluates to same bucket regardless of which server handles request.</p>
+<p><strong>Flag Explosion / Tech Debt</strong>: Hundreds of flags accumulate, many stale, increasing code complexity.</p>
+<p><strong>Mitigation</strong>: Automated flag lifecycle management. Flags have expiration dates. Alerts when flags aren't used for N days. Automated PRs to remove dead flags.</p>
+<p><strong>Flag Interdependencies</strong>: Flag A depends on flag B. If B is disabled, A's behavior is undefined.</p>
+<p><strong>Mitigation</strong>: Model dependencies explicitly. Flag service validates that enabling A requires B. Or: avoid dependencies through code design - each flag should be independent.</p>
+<p><strong>Evaluation Performance</strong>: Checking 50 flags per request adds latency.</p>
+<p><strong>Mitigation</strong>: Batch evaluation at request start, store in request context. Optimize rule evaluation (pre-compile rules, index by user attributes).</p>
+</div>
+<h3 id="3-level-interview-questions-feature-flags">3-Level Interview Questions: Feature Flags</h3>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h4 id="level-1-what-are-feature-flags-and-why-would-you-use-them-instead-of-just-deploying-code">Level 1: &quot;What are feature flags and why would you use them instead of just deploying code?&quot;</h4>
+<p><strong>What they're probing</strong>: Basic understanding of deployment vs. release separation.</p>
+<p><strong>Strong Answer</strong>: &quot;Feature flags let you deploy code to production but control whether users actually experience it. This separation provides three key benefits: First, safer deployments - you can ship code that's disabled by default, verify it's not causing errors, then gradually enable it. Second, instant rollback - if a feature causes problems, you toggle the flag off in seconds instead of waiting for a deployment. Third, controlled rollout - you can enable features for specific users (beta testers), percentages (canary), or segments (enterprise customers) without multiple codepaths in deployment config. The trade-off is code complexity - you have conditional branches that need to be maintained and eventually removed when the feature is fully launched.&quot;</p>
+<hr />
+<h4 id="level-2-how-would-you-implement-a-feature-flag-system-that-needs-to-handle-100000-evaluations-per-second-with-consistent-bucketing-for-ab-tests">Level 2: &quot;How would you implement a feature flag system that needs to handle 100,000 evaluations per second with consistent bucketing for A/B tests?&quot;</h4>
+<p><strong>What they're probing</strong>: Understanding of performance and consistency requirements in flag systems.</p>
+<p><strong>Strong Answer</strong>: &quot;At 100K evals/second, we can't make a network call per evaluation - that's the first constraint. So the architecture is: SDK caches flag rules locally, evaluations happen in-process.</p>
+<p><strong>Cache strategy</strong>: Poll-based updates every 30 seconds, or streaming updates via SSE/WebSocket for near-instant propagation. Cache is keyed by environment (prod, staging). Typical cache size is small - few hundred KB for thousands of flags.</p>
+<p><strong>Consistent bucketing for A/B</strong>: The user must always see the same variant, even across different servers. I'd use deterministic hashing: <code>hash(user_id + flag_key) % 100</code>. If result &lt; rollout_percentage, user gets treatment. Same user always hashes to same bucket. The flag_key inclusion prevents all flags from bucketing the same users together.</p>
+<p><strong>Evaluation performance</strong>: Pre-parse rules at cache refresh time, not at evaluation time. Index rules by commonly-queried attributes. For complex targeting (hundreds of segments), consider rule compilation to efficient lookup structures.</p>
+<p><strong>Consistency across services</strong>: In a microservices architecture, all services must agree on flag values. Use a shared SDK with identical caching behavior. Or: centralized flag evaluation service that other services call (adds latency but guarantees consistency).&quot;</p>
+<hr />
+<h4 id="level-3-design-a-feature-flag-system-for-a-global-application-where-flag-changes-must-propagate-to-all-regions-within-5-seconds-but-the-system-must-remain-operational-if-the-flag-service-experiences-a-complete-outage-for-up-to-1-hour">Level 3: &quot;Design a feature flag system for a global application where flag changes must propagate to all regions within 5 seconds, but the system must remain operational if the flag service experiences a complete outage for up to 1 hour.&quot;</h4>
+<p><strong>What they're probing</strong>: Distributed systems resilience, eventual consistency, failure handling.</p>
+<p><strong>Strong Answer</strong>: &quot;These requirements create tension: fast propagation suggests short cache TTL and push-based updates, but outage resilience suggests long-lived local state that survives service failures.</p>
+<p><strong>Architecture</strong>:</p>
+<p><strong>Global flag service</strong>: Deploy flag configuration to a globally replicated datastore (DynamoDB Global Tables, Spanner, or CockroachDB). Writes go to primary region, replicate to read replicas in each region within 1-2 seconds.</p>
+<p><strong>Regional relay nodes</strong>: Each region has relay nodes that subscribe to the global store. Relays push updates to local application instances via SSE or gRPC streaming. This achieves the 5-second propagation: 1-2s replication + 1-2s relay processing + 1s push to apps.</p>
+<p><strong>Local SDK resilience</strong>: The SDK maintains a persistent local cache (file-based or embedded database, not just in-memory). On startup, SDK reads from local cache first, then connects to regional relay. If relay is unavailable, SDK operates on cached values indefinitely.</p>
+<p><strong>1-hour outage handling</strong>: During outage, apps continue with cached flag values. They can't receive updates, but they function. When service recovers, SDK reconnects and receives delta updates.</p>
+<p><strong>Cache warming at deploy time</strong>: New application instances might not have warm cache. Bake current flag values into the deployment artifact (configuration file bundled at build time). This guarantees fresh-enough defaults even if flag service is down during initial boot.</p>
+<p><strong>Monitoring and alerting</strong>: Track cache staleness across fleet. Alert if any instance has cache older than threshold (e.g., 10 minutes). During planned outages, pre-propagate expected flag states.</p>
+<p><strong>Trade-off acknowledged</strong>: With 1-hour cache validity, a flag change during outage won't propagate. This is acceptable for release flags (wait 1 hour to release), but concerning for kill switches (can't disable feature during outage). Mitigation: ops flags also configurable via environment variable as backup.&quot;</p>
+</div>
+<hr />
+<h2 id="cross-cutting-concerns">Cross-Cutting Concerns</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h3 id="security-considerations">Security Considerations</h3>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 16px 0">
+<div style="background: rgba(248, 81, 73, 0.1);border-radius: 8px; padding: 16px">
+<h5 style="color: #f85149; margin: 0 0 8px 0">CI/CD Security Risks</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px">
+<li><strong>Secret leakage</strong>: Secrets printed in logs, exfiltrated by malicious code</li>
+<li><strong>Supply chain attacks</strong>: Compromised dependencies, malicious base images</li>
+<li><strong>Pipeline injection</strong>: Attacker modifies pipeline config via PR</li>
+<li><strong>Credential theft</strong>: Stolen deployment credentials enable production access</li>
+</ul>
+</div>
+<div style="background: rgba(126, 231, 135, 0.1);border-radius: 8px; padding: 16px">
+<h5 style="color: #7ee787; margin: 0 0 8px 0">Mitigations</h5>
+<ul style="color: #c9d1d9; font-size: 13px; margin: 0; padding-left: 16px">
+<li><strong>Secret masking</strong>: Redact secrets from logs automatically</li>
+<li><strong>SBOM generation</strong>: Track all dependencies, scan for vulnerabilities</li>
+<li><strong>Protected branches</strong>: Require review for pipeline config changes</li>
+<li><strong>Short-lived credentials</strong>: OIDC tokens, assume roles, avoid static keys</li>
+</ul>
+</div>
+</div>
+<h3 id="observability-integration">Observability Integration</h3>
+<p>Deployment systems must integrate with <a href="/topics/system-architectures/monitoring">[monitoring]</a> and <a href="/topics/system-architectures/distributed-tracing">[distributed-tracing]</a>:</p>
+<div style="background: rgba(88, 166, 255, 0.1);border-radius: 8px; padding: 16px; margin: 16px 0">
+<p><strong>Deployment Events as Annotations</strong>: Every deployment should create an annotation in your metrics/APM system. This enables: correlating metric changes with deployments, comparing before/after performance, and automatic anomaly detection tied to releases.</p>
+<p><strong>Version Labels in Telemetry</strong>: All logs, metrics, and traces should include application version. This enables: filtering dashboards by version during canary, querying traces for specific release behavior, and understanding version distribution across fleet.</p>
+<p><strong>Deployment Metrics to Track</strong>:</p>
+<ul>
+<li>Deployment frequency (DORA metric)</li>
+<li>Lead time for changes (commit to production)</li>
+<li>Change failure rate (deployments requiring rollback)</li>
+<li>Mean time to recovery (time to rollback or fix)</li>
+</ul>
+</div>
+<h3 id="related-topics">Related Topics</h3>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0">
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center">
+<a href="/topics/system-architectures/container-orchestration" style="color: #58a6ff; text-decoration: none">[[Container Orchestration]]</a>
+<div style="color: #475569; font-size: 11px; margin-top: 4px">Kubernetes, ECS patterns</div>
+</div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center">
+<a href="/topics/system-architectures/service-mesh" style="color: #58a6ff; text-decoration: none">[[Service Mesh]]</a>
+<div style="color: #475569; font-size: 11px; margin-top: 4px">Traffic management, canary routing</div>
+</div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center">
+<a href="/topics/system-architectures/gitops" style="color: #58a6ff; text-decoration: none">[[GitOps]]</a>
+<div style="color: #475569; font-size: 11px; margin-top: 4px">Declarative deployment patterns</div>
+</div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center">
+<a href="/topics/system-architectures/infrastructure-as-code" style="color: #58a6ff; text-decoration: none">[[Infrastructure as Code]]</a>
+<div style="color: #475569; font-size: 11px; margin-top: 4px">Terraform, Pulumi patterns</div>
+</div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center">
+<a href="/topics/system-architectures/secrets-management" style="color: #58a6ff; text-decoration: none">[[Secrets Management]]</a>
+<div style="color: #475569; font-size: 11px; margin-top: 4px">Vault, credential rotation</div>
+</div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 12px; text-align: center">
+<a href="/topics/system-architectures/chaos-engineering" style="color: #58a6ff; text-decoration: none">[[Chaos Engineering]]</a>
+<div style="color: #475569; font-size: 11px; margin-top: 4px">Testing deployment resilience</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="summary-deployment-strategy-decision-framework">Summary: Deployment Strategy Decision Framework</h2>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div style="overflow-x: auto; margin: 16px 0">
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>Rolling</th>
+<th>Blue-Green</th>
+<th>Canary</th>
+<th>Feature Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rollback speed</strong></td>
+<td>Minutes</td>
+<td>Seconds</td>
+<td>Minutes</td>
+<td>Milliseconds</td>
+</tr>
+<tr>
+<td><strong>Blast radius</strong></td>
+<td>Gradual</td>
+<td>All users</td>
+<td>Controlled %</td>
+<td>Controlled %</td>
+</tr>
+<tr>
+<td><strong>Infrastructure cost</strong></td>
+<td>1x</td>
+<td>2x</td>
+<td>1.1x</td>
+<td>1x + flag service</td>
+</tr>
+<tr>
+<td><strong>Complexity</strong></td>
+<td>Low</td>
+<td>Medium</td>
+<td>High</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td><strong>Data migration support</strong></td>
+<td>Poor</td>
+<td>Poor</td>
+<td>Poor</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Stateless services</td>
+<td>Critical paths</td>
+<td>Validating with real traffic</td>
+<td>Decoupling deploy/release</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Decision Process</strong>:</p>
+<ol>
+<li>
+<p><strong>Default to rolling deployments</strong> - They're simple, cost-effective, and work for most services.</p>
+</li>
+<li>
+<p><strong>Add feature flags</strong> when you need instant rollback or want to decouple deployment from release.</p>
+</li>
+<li>
+<p><strong>Use canary</strong> when you need real traffic validation before full rollout and can invest in automated analysis.</p>
+</li>
+<li>
+<p><strong>Use blue-green</strong> when instant full-environment rollback is critical and you can afford 2x infrastructure.</p>
+</li>
+<li>
+<p><strong>Combine strategies</strong>: Deploy with rolling, gate features with flags, validate critical paths with canary analysis.</p>
+</li>
+</ol>
+</div>
+<hr />
+<h2 id="interview-preparation-checklist">Interview Preparation Checklist</h2>
+<div style="background: linear-gradient(135deg, #1f3d2d 0%, #3a5d4a 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<p><strong>Concepts you must be able to explain</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" /> How a CI/CD pipeline processes a commit from push to production</li>
+<li><input disabled="" type="checkbox" /> DAG scheduling and topological sort for pipeline execution</li>
+<li><input disabled="" type="checkbox" /> The database problem in blue-green deployments</li>
+<li><input disabled="" type="checkbox" /> Statistical analysis methods for canary evaluation</li>
+<li><input disabled="" type="checkbox" /> Consistent user bucketing for A/B experiments</li>
+<li><input disabled="" type="checkbox" /> Feature flag evaluation performance at scale</li>
+</ul>
+<p><strong>Trade-offs you should be able to discuss</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox" /> Ephemeral vs. persistent build agents</li>
+<li><input disabled="" type="checkbox" /> Push vs. pull deployment models</li>
+<li><input disabled="" type="checkbox" /> Server-side vs. client-side flag evaluation</li>
+<li><input disabled="" type="checkbox" /> Instant rollback (blue-green) vs. controlled blast radius (canary)</li>
+<li><input disabled="" type="checkbox" /> Deployment complexity vs. rollback speed</li>
+</ul>
+<p><strong>Red flags to avoid saying</strong>:</p>
+<ul>
+<li>&quot;Kubernetes is always the right choice for deployment&quot;</li>
+<li>&quot;Feature flags have no downsides&quot;</li>
+<li>&quot;We don't need rollback capability if we have good tests&quot;</li>
+<li>&quot;Canary deployments are always better than rolling&quot;</li>
+</ul>
+<p><strong>Strong signal statements</strong>:</p>
+<ul>
+<li>&quot;The choice of deployment strategy depends on rollback speed requirements, infrastructure budget, and team expertise&quot;</li>
+<li>&quot;Feature flags are technical debt by design - they need lifecycle management and removal deadlines&quot;</li>
+<li>&quot;The hardest part of blue-green is database migrations, not the traffic switching&quot;</li>
+<li>&quot;Canary analysis requires understanding both golden signals and business metrics&quot;</li>
+</ul>
+</div>

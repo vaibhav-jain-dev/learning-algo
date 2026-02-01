@@ -1,0 +1,1348 @@
+<h1 id="dependency-injection">Dependency Injection</h1>
+<h2 id="overview">Overview</h2>
+<p>Dependency Injection (DI) is a design pattern implementing <a href="/topics/design-patterns/inversion-of-control">[Inversion of Control]</a> where objects receive their dependencies from external sources rather than creating them internally. At its core, DI separates <strong>object construction</strong> from <strong>object use</strong>, enabling the dependent class to remain agnostic about how its collaborators are instantiated, configured, or managed.</p>
+<p><strong>Critical Insight</strong>: DI is not merely about &quot;passing things through constructors.&quot; It represents a fundamental architectural decision that inverts the traditional control flow of object creation, moving responsibility from the consumer to an external orchestrator (often called the <strong>composition root</strong>).</p>
+<h2 id="why-this-matters-for-interviews">Why This Matters for Interviews</h2>
+<h3 id="industry-prevalence-and-expectations">Industry Prevalence and Expectations</h3>
+<p>Every major enterprise framework is built around DI: Spring (Java), ASP.NET Core (C#), Angular (TypeScript), NestJS (Node.js), and FastAPI (Python). Interviewers expect candidates to understand not just the &quot;what&quot; but the &quot;why&quot; and &quot;when not to.&quot;</p>
+<h3 id="real-world-stakes">Real-World Stakes</h3>
+<p><strong>Uber's Payment System</strong>: Uber uses DI extensively to swap payment processors per region. In India, they inject UPI implementations; in the US, credit card processors. Same business logic, different payment infrastructure.</p>
+<p><strong>Netflix's Chaos Engineering</strong>: Netflix injects fault-tolerant wrappers around services. During chaos experiments, they inject implementations that randomly fail, testing system resilience without modifying business code.</p>
+<p><strong>Google's Testing Infrastructure</strong>: Google's codebase mandates constructor injection. This enables their massive test infrastructure to run millions of tests by injecting lightweight mocks instead of real services.</p>
+<hr />
+<h2 id="constructor-injection-vs-setter-injection">Constructor Injection vs Setter Injection</h2>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="text-align: center; margin-bottom: 24px">
+<span style="font-size: 1.4rem; font-weight: 700; color: #1e293b; letter-spacing: -0.5px">Injection Method Comparison</span>
+</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center">
+<div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #065f46 0%, #047857 100%); border-radius: 12px; padding: 20px">
+<div style="font-weight: 700; color: #ecfdf5; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px">
+<span style="background: #10b981; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem">PREFERRED</span>
+  Constructor Injection
+</div>
+<div style="color: #d1fae5; font-size: 0.9rem; line-height: 1.6">
+<div style="margin-bottom: 8px"><strong style="color: #6ee7b7">Invariant:</strong> Object cannot exist in invalid state</div>
+<div style="margin-bottom: 8px"><strong style="color: #6ee7b7">Immutability:</strong> Dependencies set once, never change</div>
+<div style="margin-bottom: 8px"><strong style="color: #6ee7b7">Explicit Contract:</strong> Constructor signature documents requirements</div>
+<div style="margin-bottom: 8px"><strong style="color: #6ee7b7">Thread Safety:</strong> No synchronization needed after construction</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 280px; background: linear-gradient(145deg, #92400e 0%, #b45309 100%); border-radius: 12px; padding: 20px">
+<div style="font-weight: 700; color: #fef3c7; font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px">
+<span style="background: #f59e0b; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: #451a03">SITUATIONAL</span>
+  Setter Injection
+</div>
+<div style="color: #fef3c7; font-size: 0.9rem; line-height: 1.6">
+<div style="margin-bottom: 8px"><strong style="color: #fcd34d">Optional Dependencies:</strong> Object works without them</div>
+<div style="margin-bottom: 8px"><strong style="color: #fcd34d">Reconfiguration:</strong> Change dependencies at runtime</div>
+<div style="margin-bottom: 8px"><strong style="color: #fcd34d">Circular Dependencies:</strong> Can break cycles (workaround)</div>
+<div style="margin-bottom: 8px"><strong style="color: #fcd34d">Legacy Integration:</strong> When constructors cannot change</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="constructor-injection-deep-mechanics">Constructor Injection: Deep Mechanics</h3>
+<p>Constructor injection mandates that all required dependencies be provided at object creation time. The object transitions directly from &quot;does not exist&quot; to &quot;fully initialized and valid.&quot;</p>
+<pre><code class="language-python">class PaymentProcessor:
+    def __init__(
+        self,
+        gateway: PaymentGateway,          # Required: No payment without gateway
+        fraud_detector: FraudDetector,    # Required: Must check fraud
+        logger: Logger                     # Required: Must audit all payments
+    ):
+        # Defensive validation - fail fast
+        if gateway is None:
+            raise ValueError(&quot;PaymentGateway is required&quot;)
+        if fraud_detector is None:
+            raise ValueError(&quot;FraudDetector is required&quot;)
+        if logger is None:
+            raise ValueError(&quot;Logger is required&quot;)
+
+        self._gateway = gateway
+        self._fraud_detector = fraud_detector
+        self._logger = logger
+        # Object is now FULLY initialized - no partial states possible
+
+    def process(self, payment: Payment) -&gt; PaymentResult:
+        # Can safely use all dependencies - guaranteed to be present
+        self._logger.info(f&quot;Processing payment {payment.id}&quot;)
+        # ...
+</code></pre>
+<div style="background: #fef3c7;padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 8px">Key Assumption</div>
+<div style="color: #78350f">Constructor injection assumes dependencies are available at object creation time. In scenarios with complex initialization order or async dependency resolution, this assumption may not hold, requiring alternative patterns like lazy proxies or provider functions.</div>
+</div>
+<h3 id="setter-injection-when-and-why">Setter Injection: When and Why</h3>
+<p>Setter injection should be reserved for <strong>truly optional</strong> dependencies where the object provides meaningful functionality without them.</p>
+<pre><code class="language-python">class ReportGenerator:
+    def __init__(self, data_source: DataSource):
+        self._data_source = data_source  # Required via constructor
+        self._cache = None                # Optional - will work without it
+        self._metrics = None              # Optional - will work without it
+
+    def set_cache(self, cache: Cache) -&gt; None:
+        &quot;&quot;&quot;Optional: Enable caching for repeated report generation.&quot;&quot;&quot;
+        self._cache = cache
+
+    def set_metrics(self, metrics: MetricsCollector) -&gt; None:
+        &quot;&quot;&quot;Optional: Enable performance monitoring.&quot;&quot;&quot;
+        self._metrics = metrics
+
+    def generate(self, report_type: str) -&gt; Report:
+        # Check cache if available
+        if self._cache:
+            cached = self._cache.get(report_type)
+            if cached:
+                return cached
+
+        start = time.time()
+        report = self._build_report(report_type)
+
+        # Record metrics if available
+        if self._metrics:
+            self._metrics.record(&quot;report_generation_ms&quot;, time.time() - start)
+
+        # Cache if available
+        if self._cache:
+            self._cache.set(report_type, report)
+
+        return report
+</code></pre>
+<div style="background: #fee2e2;padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 8px">Trade-off Alert</div>
+<div style="color: #7f1d1d">Setter injection introduces temporal coupling: the order in which setters are called may matter. It also creates mutable objects, complicating thread safety. Every setter is a potential source of bugs if dependencies are changed mid-operation.</div>
+</div>
+<h3 id="interface-injection-historical-context">Interface Injection (Historical Context)</h3>
+<p>Interface injection, where the dependency itself defines an injection method, is largely obsolete. Understanding it helps when encountering legacy codebases.</p>
+<pre><code class="language-java">// The dependency defines how it should be injected
+interface DatabaseAware {
+    void injectDatabase(Database db);
+}
+
+// Client must implement the interface
+class UserRepository implements DatabaseAware {
+    private Database db;
+
+    @Override
+    public void injectDatabase(Database db) {
+        this.db = db;
+    }
+}
+</code></pre>
+<p>This pattern died because it pollutes the client's interface with infrastructure concerns and creates tight coupling to the injection mechanism itself.</p>
+<h3 id="interview-deep-dive-constructor-vs-setter-injection">Interview Deep Dive: Constructor vs Setter Injection</h3>
+<p><strong>Level 1: Conceptual Understanding</strong></p>
+<p><strong>Q: When would you choose setter injection over constructor injection?</strong></p>
+<p>A: Setter injection is appropriate for truly optional dependencies that enhance functionality without being essential. Examples include caching layers, metrics collectors, or feature flag services. The key test: &quot;Can this object provide meaningful value without this dependency?&quot; If yes, setter injection is acceptable.</p>
+<p><strong>Level 2: Implementation Challenges</strong></p>
+<p><strong>Q: How do you handle circular dependencies when using constructor injection?</strong></p>
+<p>A: Circular dependencies often indicate design problems. However, when unavoidable:</p>
+<ol>
+<li><strong>Introduce an intermediary</strong>: Extract a third class that both depend on</li>
+<li><strong>Use lazy proxies</strong>: Inject a proxy that resolves the real dependency on first use</li>
+<li><strong>Event-based decoupling</strong>: Replace direct dependency with events via an event bus</li>
+<li><strong>Provider pattern</strong>: Inject a <code>Provider&lt;T&gt;</code> or <code>Lazy&lt;T&gt;</code> that defers instantiation</li>
+</ol>
+<pre><code class="language-python"># Lazy proxy approach
+class LazyServiceA:
+    def __init__(self, provider: Callable[[], ServiceA]):
+        self._provider = provider
+        self._instance = None
+
+    def __getattr__(self, name):
+        if self._instance is None:
+            self._instance = self._provider()
+        return getattr(self._instance, name)
+
+# ServiceB can now receive LazyServiceA in constructor
+class ServiceB:
+    def __init__(self, service_a: LazyServiceA):
+        self._service_a = service_a  # Won't resolve ServiceA yet
+</code></pre>
+<p><strong>Level 3: Architectural Trade-offs</strong></p>
+<p><strong>Q: A team argues that constructor injection creates &quot;constructor explosion&quot; with too many parameters. How do you address this while maintaining DI principles?</strong></p>
+<p>A: Constructor explosion is a <strong>symptom</strong>, not a problem with DI. It reveals that the class violates the <a href="/topics/design-patterns/solid-principles">[Single Responsibility Principle]</a>. Address this through:</p>
+<ol>
+<li><strong>Facade services</strong>: Group related dependencies into a cohesive service</li>
+</ol>
+<pre><code class="language-python"># Before: 8 dependencies
+class OrderProcessor:
+    def __init__(self, inventory, pricing, tax_calc, discount_engine,
+                 shipping_calc, payment, notification, audit):
+        ...
+
+# After: Grouped into domain-specific facades
+class OrderProcessor:
+    def __init__(self, pricing_facade: PricingFacade,
+                 fulfillment_facade: FulfillmentFacade,
+                 notification_service: NotificationService):
+        ...
+</code></pre>
+<ol start="2">
+<li><strong>Parameter objects</strong>: When multiple dependencies are always used together</li>
+<li><strong>Decomposition</strong>: Split the class into smaller, focused classes</li>
+</ol>
+<p>The goal is not to hide dependencies but to properly distribute responsibilities.</p>
+<hr />
+<h2 id="di-containers-internal-mechanisms">DI Containers: Internal Mechanisms</h2>
+<p>A DI Container (also called IoC Container) automates dependency resolution by maintaining a registry of types and their implementations, building object graphs automatically.</p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="text-align: center; margin-bottom: 24px">
+<span style="font-size: 1.3rem; font-weight: 700; color: #1e293b">DI Container Resolution Pipeline</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center">
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center">
+<div style="background: #7c3aed; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center">
+  Request Type
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9">container.resolve(UserService)</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem">-></div>
+<div style="background: #2563eb; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center">
+  Check Registry
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9">Find registered implementation</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem">-></div>
+<div style="background: #0891b2; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center">
+  Analyze Constructor
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9">Inspect parameter types</div>
+</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem">|</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center">
+<div style="background: #059669; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center">
+  Resolve Dependencies
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9">Recursively build each param</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem">-></div>
+<div style="background: #ca8a04; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center">
+  Apply Lifecycle
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9">Singleton? Scoped? Transient?</div>
+</div>
+<div style="color: #64748b; font-size: 1.5rem">-></div>
+<div style="background: #dc2626; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-align: center">
+  Return Instance
+<div style="font-size: 0.75rem; font-weight: 400; opacity: 0.9">Fully constructed object</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="lifecycle-management">Lifecycle Management</h3>
+<p>Containers manage object lifetimes through distinct scopes:</p>
+<table>
+<thead>
+<tr>
+<th>Lifecycle</th>
+<th>Behavior</th>
+<th>Use Case</th>
+<th>Memory Implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transient</strong></td>
+<td>New instance every resolution</td>
+<td>Stateless services, lightweight objects</td>
+<td>Can cause memory pressure if overused</td>
+</tr>
+<tr>
+<td><strong>Singleton</strong></td>
+<td>One instance for application lifetime</td>
+<td>Shared resources, connection pools</td>
+<td>Memory retained for app lifetime</td>
+</tr>
+<tr>
+<td><strong>Scoped</strong></td>
+<td>One instance per logical scope (request, transaction)</td>
+<td>Database contexts, user sessions</td>
+<td>Must properly dispose scope</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-python">class DIContainer:
+    def __init__(self):
+        self._registry: Dict[Type, Tuple[Type, Lifecycle]] = {}
+        self._singletons: Dict[Type, Any] = {}
+        self._current_scope: Optional[Dict[Type, Any]] = None
+
+    def register(self, interface: Type, implementation: Type,
+                 lifecycle: Lifecycle = Lifecycle.TRANSIENT):
+        self._registry[interface] = (implementation, lifecycle)
+
+    def resolve(self, interface: Type) -&gt; Any:
+        if interface not in self._registry:
+            raise ResolutionError(f&quot;No registration for {interface}&quot;)
+
+        impl_class, lifecycle = self._registry[interface]
+
+        # Check singleton cache
+        if lifecycle == Lifecycle.SINGLETON:
+            if interface in self._singletons:
+                return self._singletons[interface]
+
+        # Check scoped cache
+        if lifecycle == Lifecycle.SCOPED:
+            if self._current_scope is None:
+                raise ScopeError(&quot;No active scope for scoped resolution&quot;)
+            if interface in self._current_scope:
+                return self._current_scope[interface]
+
+        # Build instance with recursive dependency resolution
+        instance = self._build_instance(impl_class)
+
+        # Cache according to lifecycle
+        if lifecycle == Lifecycle.SINGLETON:
+            self._singletons[interface] = instance
+        elif lifecycle == Lifecycle.SCOPED:
+            self._current_scope[interface] = instance
+
+        return instance
+
+    def _build_instance(self, impl_class: Type) -&gt; Any:
+        &quot;&quot;&quot;Recursively resolve constructor dependencies.&quot;&quot;&quot;
+        constructor = impl_class.__init__
+        params = inspect.signature(constructor).parameters
+
+        dependencies = {}
+        for name, param in params.items():
+            if name == 'self':
+                continue
+
+            param_type = param.annotation
+            if param_type == inspect.Parameter.empty:
+                raise ResolutionError(
+                    f&quot;Cannot resolve untyped parameter '{name}' in {impl_class}&quot;
+                )
+
+            # Recursive resolution
+            dependencies[name] = self.resolve(param_type)
+
+        return impl_class(**dependencies)
+
+    @contextmanager
+    def create_scope(self):
+        &quot;&quot;&quot;Create a new resolution scope.&quot;&quot;&quot;
+        previous_scope = self._current_scope
+        self._current_scope = {}
+        try:
+            yield
+        finally:
+            # Dispose scoped instances if they implement disposal
+            for instance in self._current_scope.values():
+                if hasattr(instance, 'dispose'):
+                    instance.dispose()
+            self._current_scope = previous_scope
+</code></pre>
+<div style="background: #dbeafe;padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 8px">Design Choice</div>
+<div style="color: #1e3a8a">Scoped lifecycle requires explicit scope boundaries. In web frameworks, this typically aligns with HTTP request lifetime. In background workers, you must manually create and dispose scopes. Forgetting to dispose scopes causes memory leaks as scoped instances accumulate.</div>
+</div>
+<h3 id="registration-strategies">Registration Strategies</h3>
+<p><strong>Explicit Registration</strong>: Manual mapping of interfaces to implementations.</p>
+<pre><code class="language-python">container.register(IUserRepository, PostgresUserRepository, Lifecycle.SCOPED)
+container.register(IEmailService, SendGridEmailService, Lifecycle.SINGLETON)
+</code></pre>
+<p><strong>Convention-Based Registration</strong>: Auto-register based on naming patterns or attributes.</p>
+<pre><code class="language-python"># Auto-register all classes ending in &quot;Repository&quot; as scoped
+for cls in discover_classes(&quot;repositories&quot;):
+    if cls.__name__.endswith(&quot;Repository&quot;):
+        interface = find_interface(cls)
+        container.register(interface, cls, Lifecycle.SCOPED)
+</code></pre>
+<p><strong>Module-Based Registration</strong>: Group registrations into modules for organization.</p>
+<pre><code class="language-python">class PaymentModule:
+    def configure(self, container: Container):
+        container.register(IPaymentGateway, StripeGateway)
+        container.register(IFraudDetector, MaxMindFraudDetector)
+        container.register(IPaymentProcessor, PaymentProcessor)
+
+# Compose application from modules
+container.install(PaymentModule())
+container.install(NotificationModule())
+container.install(InventoryModule())
+</code></pre>
+<h3 id="interview-deep-dive-di-containers">Interview Deep Dive: DI Containers</h3>
+<p><strong>Level 1: Conceptual Understanding</strong></p>
+<p><strong>Q: What problem does a DI container solve that manual DI does not?</strong></p>
+<p>A: Manual DI (pure DI) requires explicit wiring at the composition root:</p>
+<pre><code class="language-python"># Manual DI - works fine for small apps
+db = PostgresDatabase(config.db_url)
+cache = RedisCache(config.redis_url)
+user_repo = UserRepository(db, cache)
+email = SendGridEmail(config.sendgrid_key)
+user_service = UserService(user_repo, email)
+</code></pre>
+<p>This becomes unmanageable as dependency graphs grow. Containers provide:</p>
+<ul>
+<li><strong>Automatic resolution</strong>: Container builds entire object graphs</li>
+<li><strong>Lifecycle management</strong>: Singleton, scoped, transient handled automatically</li>
+<li><strong>Late binding</strong>: Swap implementations via configuration without code changes</li>
+<li><strong>Validation</strong>: Containers can verify all dependencies are satisfiable at startup</li>
+</ul>
+<p><strong>Level 2: Implementation Challenges</strong></p>
+<p><strong>Q: How does a DI container detect circular dependencies, and what are the performance implications of this detection?</strong></p>
+<p>A: Containers detect cycles during resolution by tracking the &quot;resolution stack&quot;:</p>
+<pre><code class="language-python">def resolve(self, interface: Type, resolution_stack: Set[Type] = None) -&gt; Any:
+    if resolution_stack is None:
+        resolution_stack = set()
+
+    if interface in resolution_stack:
+        cycle = &quot; -&gt; &quot;.join(t.__name__ for t in resolution_stack)
+        raise CircularDependencyError(
+            f&quot;Circular dependency detected: {cycle} -&gt; {interface.__name__}&quot;
+        )
+
+    resolution_stack.add(interface)
+    try:
+        # ... resolution logic
+        for dep_type in dependency_types:
+            self.resolve(dep_type, resolution_stack.copy())
+    finally:
+        resolution_stack.discard(interface)
+</code></pre>
+<p><strong>Performance implications</strong>:</p>
+<ul>
+<li>O(n) space for the stack where n is maximum dependency depth</li>
+<li>Detection adds constant overhead per resolution</li>
+<li>Sophisticated containers perform cycle detection at registration time (compile-time), not resolution time (runtime), avoiding repeated checks</li>
+</ul>
+<p><strong>Level 3: Architectural Trade-offs</strong></p>
+<p><strong>Q: Your team debates using a DI container vs pure DI (manual wiring). Under what circumstances would you recommend pure DI over a container?</strong></p>
+<p>A: Pure DI is preferable when:</p>
+<ol>
+<li><strong>Small, stable dependency graphs</strong>: Under ~20 classes, manual wiring is clearer</li>
+<li><strong>Performance-critical paths</strong>: Containers add resolution overhead (reflection, hash lookups). Hot paths may benefit from direct instantiation</li>
+<li><strong>Compile-time safety priority</strong>: Pure DI catches wiring errors at compile time; containers defer to runtime</li>
+<li><strong>Team unfamiliarity</strong>: Containers have learning curves. Pure DI is immediately understandable</li>
+<li><strong>Library development</strong>: Libraries should not force container choices on consumers</li>
+</ol>
+<p>Container DI is preferable when:</p>
+<ol>
+<li><strong>Large, evolving graphs</strong>: 50+ classes with frequent changes</li>
+<li><strong>Multiple deployment configurations</strong>: Different environments need different implementations</li>
+<li><strong>Complex lifecycles</strong>: Managing scoped/singleton across request boundaries</li>
+<li><strong>Plugin architectures</strong>: Dynamic loading of implementations</li>
+</ol>
+<pre><code class="language-python"># Pure DI advantage: Compile-time error if UserRepository doesn't exist
+user_service = UserService(UserRepository(db))
+
+# Container DI risk: Runtime error if registration missing
+user_service = container.resolve(IUserService)  # May fail at runtime
+</code></pre>
+<hr />
+<h2 id="the-service-locator-anti-pattern">The Service Locator Anti-Pattern</h2>
+<p>The Service Locator pattern provides a global registry that any class can query for dependencies. While superficially similar to DI, it inverts control in the wrong direction.</p>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="text-align: center; margin-bottom: 20px">
+<span style="font-size: 1.3rem; font-weight: 700; color: #991b1b">Service Locator: Why It's Problematic</span>
+</div>
+<div style="display: flex; gap: 24px; flex-wrap: wrap">
+<div style="flex: 1; min-width: 260px">
+<div style="background: #fee2e2; border-radius: 10px; padding: 16px">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px">Hidden Dependencies</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5">
+  Class signature does not reveal what it needs. You must read every method to discover dependencies, making code reviews and refactoring dangerous.
+</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 260px">
+<div style="background: #fee2e2; border-radius: 10px; padding: 16px">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px">Testing Nightmare</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5">
+  Tests must configure global state before each test and clean up after. Parallel tests become impossible without careful isolation. Forgotten setup causes cryptic failures.
+</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 260px">
+<div style="background: #fee2e2; border-radius: 10px; padding: 16px">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px">Runtime Coupling</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.5">
+  Every class depends on the locator. Changing the locator API breaks everything. You've traded explicit dependencies for implicit coupling to infrastructure.
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="service-locator-vs-dependency-injection">Service Locator vs Dependency Injection</h3>
+<pre><code class="language-python"># SERVICE LOCATOR (Anti-Pattern)
+class OrderService:
+    def process_order(self, order: Order) -&gt; OrderResult:
+        # Dependencies are HIDDEN - discovered only by reading code
+        db = ServiceLocator.get(IDatabase)
+        email = ServiceLocator.get(IEmailService)
+        payment = ServiceLocator.get(IPaymentGateway)
+
+        # What if ServiceLocator isn't configured? Runtime explosion.
+        # What dependencies does this class have? Read every line to find out.
+
+        payment.charge(order.total)
+        db.save(order)
+        email.send_confirmation(order.customer_email)
+
+# DEPENDENCY INJECTION (Correct Pattern)
+class OrderService:
+    def __init__(
+        self,
+        db: IDatabase,
+        email: IEmailService,
+        payment: IPaymentGateway
+    ):
+        # Dependencies are EXPLICIT - visible in constructor signature
+        self._db = db
+        self._email = email
+        self._payment = payment
+
+    def process_order(self, order: Order) -&gt; OrderResult:
+        # Just use dependencies - no service location
+        self._payment.charge(order.total)
+        self._db.save(order)
+        self._email.send_confirmation(order.customer_email)
+</code></pre>
+<h3 id="why-service-locator-persists">Why Service Locator Persists</h3>
+<p>Despite being an anti-pattern, service locators appear in production code because:</p>
+<ol>
+<li><strong>Legacy migration</strong>: Easier to add a locator to legacy code than refactor all constructors</li>
+<li><strong>Framework constraints</strong>: Some frameworks don't support constructor injection in certain contexts</li>
+<li><strong>Cross-cutting concerns</strong>: Logging and metrics are sometimes accessed via locators to avoid polluting every constructor</li>
+<li><strong>Plugin systems</strong>: Dynamically loaded plugins may not know their dependencies at compile time</li>
+</ol>
+<div style="background: #fef9c3;padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<div style="font-weight: 700; color: #854d0e; margin-bottom: 8px">Nuanced Perspective</div>
+<div style="color: #713f12">In rare cases, a constrained service locator scoped to a specific bounded context may be acceptable. The key is minimizing its reach and treating it as a pragmatic compromise, not a design choice. Document why it exists and plan for its eventual removal.</div>
+</div>
+<h3 id="interview-deep-dive-service-locator">Interview Deep Dive: Service Locator</h3>
+<p><strong>Level 1: Conceptual Understanding</strong></p>
+<p><strong>Q: What is the fundamental difference between Service Locator and Dependency Injection?</strong></p>
+<p>A: The difference is <strong>who controls dependency acquisition</strong>:</p>
+<ul>
+<li><strong>DI</strong>: Dependencies are pushed to the consumer from outside. The class is passive, receiving what it needs.</li>
+<li><strong>Service Locator</strong>: The consumer actively pulls dependencies from a global registry. The class controls when and what it requests.</li>
+</ul>
+<p>DI enforces the <a href="/topics/design-patterns/solid-principles">[Dependency Inversion Principle]</a> - high-level modules don't depend on low-level modules. Service Locator violates this by making every class depend on the locator infrastructure.</p>
+<p><strong>Level 2: Implementation Challenges</strong></p>
+<p><strong>Q: You inherit a codebase using Service Locator throughout. How do you migrate to DI incrementally without breaking the system?</strong></p>
+<p>A: Implement the Strangler Fig pattern for DI migration:</p>
+<ol>
+<li><strong>Wrap the locator</strong>: Create a thin DI container that internally uses the locator</li>
+</ol>
+<pre><code class="language-python">class TransitionalContainer:
+    def __init__(self, legacy_locator: ServiceLocator):
+        self._locator = legacy_locator
+        self._di_registry: Dict[Type, Callable] = {}
+
+    def resolve(self, interface: Type) -&gt; Any:
+        # Prefer DI registration, fall back to locator
+        if interface in self._di_registry:
+            return self._di_registry[interface]()
+        return self._locator.get(interface)
+</code></pre>
+<ol start="2">
+<li><strong>New classes use DI</strong>: All new code uses constructor injection</li>
+<li><strong>Migrate leaf classes first</strong>: Classes with no downstream dependencies</li>
+<li><strong>Remove locator calls incrementally</strong>: One class at a time, add constructor parameters</li>
+<li><strong>Track progress</strong>: Maintain metrics on locator.get() call sites remaining</li>
+</ol>
+<p><strong>Level 3: Architectural Trade-offs</strong></p>
+<p><strong>Q: A senior engineer argues that Service Locator is acceptable for cross-cutting concerns like logging since &quot;every class needs logging anyway.&quot; How do you respond?</strong></p>
+<p>A: This argument has surface appeal but fails under scrutiny:</p>
+<p><strong>Counter-argument 1: Not every class needs every cross-cutting concern</strong></p>
+<pre><code class="language-python"># With locator, you'd never notice this class logs but shouldn't
+class PureCalculator:
+    def calculate(self, x: int, y: int) -&gt; int:
+        logger = ServiceLocator.get(ILogger)  # Why does math need logging?
+        logger.info(f&quot;Calculating {x} + {y}&quot;)
+        return x + y
+
+# With DI, the unnecessary dependency is visible
+class PureCalculator:
+    def __init__(self, logger: ILogger):  # Code review: &quot;Why does a calculator need a logger?&quot;
+        self._logger = logger
+</code></pre>
+<p><strong>Counter-argument 2: Testing impact</strong></p>
+<pre><code class="language-python"># Locator: Every test must configure global state
+def test_calculator():
+    ServiceLocator.register(ILogger, MockLogger())  # Easy to forget
+    try:
+        calc = PureCalculator()
+        assert calc.calculate(2, 3) == 5
+    finally:
+        ServiceLocator.reset()  # Easy to forget
+
+# DI: Test is self-contained
+def test_calculator():
+    calc = PureCalculator(MockLogger())  # Explicit, isolated
+    assert calc.calculate(2, 3) == 5
+</code></pre>
+<p><strong>Better alternatives for cross-cutting concerns</strong>:</p>
+<ul>
+<li><a href="/topics/design-patterns/aop">[Aspect-Oriented Programming]</a> for truly pervasive concerns</li>
+<li>Decorator pattern to wrap services with logging</li>
+<li>Structured logging that doesn't require injection (writes to stdout, collected externally)</li>
+</ul>
+<hr />
+<h2 id="testing-benefits-of-dependency-injection">Testing Benefits of Dependency Injection</h2>
+<p>DI transforms testing from painful integration exercises to fast, deterministic unit tests.</p>
+<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="text-align: center; margin-bottom: 24px">
+<span style="font-size: 1.3rem; font-weight: 700; color: #166534">Testing Transformation with DI</span>
+</div>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center">
+<div style="flex: 1; min-width: 300px">
+<div style="background: #fee2e2; border-radius: 12px; padding: 20px">
+<div style="color: #991b1b; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px">Without DI</div>
+<div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.8">
+<div>1. Spin up database container</div>
+<div>2. Run migrations</div>
+<div>3. Configure email server mock</div>
+<div>4. Set up payment sandbox</div>
+<div>5. Run single test (30+ seconds)</div>
+<div>6. Tear down everything</div>
+<div style="margin-top: 12px; padding-top: 12px">
+<strong>Result:</strong> 100 tests = 50+ minutes
+</div>
+</div>
+</div>
+</div>
+<div style="flex: 1; min-width: 300px">
+<div style="background: #dcfce7; border-radius: 12px; padding: 20px">
+<div style="color: #166534; font-weight: 700; font-size: 1.1rem; margin-bottom: 16px">With DI</div>
+<div style="color: #15803d; font-size: 0.9rem; line-height: 1.8">
+<div>1. Create mock objects</div>
+<div>2. Inject into class under test</div>
+<div>3. Run test (&lt;1ms)</div>
+<div style="margin-top: 12px; padding-top: 12px">
+<strong>Result:</strong> 100 tests = &lt;1 second
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="testing-patterns-enabled-by-di">Testing Patterns Enabled by DI</h3>
+<p><strong>Mock Injection for Isolation</strong></p>
+<pre><code class="language-python">class TestPaymentProcessor:
+    def test_successful_payment_sends_confirmation(self):
+        # Arrange: Create mocks
+        mock_gateway = Mock(spec=IPaymentGateway)
+        mock_gateway.charge.return_value = ChargeResult(success=True, transaction_id=&quot;txn_123&quot;)
+
+        mock_email = Mock(spec=IEmailService)
+        mock_logger = Mock(spec=ILogger)
+
+        # Inject mocks
+        processor = PaymentProcessor(
+            gateway=mock_gateway,
+            email_service=mock_email,
+            logger=mock_logger
+        )
+
+        # Act
+        result = processor.process(Payment(amount=100, customer_email=&quot;test@example.com&quot;))
+
+        # Assert
+        assert result.success
+        mock_gateway.charge.assert_called_once_with(100)
+        mock_email.send_confirmation.assert_called_once()
+        mock_logger.info.assert_called()  # Verify logging happened
+
+    def test_failed_payment_does_not_send_confirmation(self):
+        mock_gateway = Mock(spec=IPaymentGateway)
+        mock_gateway.charge.return_value = ChargeResult(success=False, error=&quot;Declined&quot;)
+
+        mock_email = Mock(spec=IEmailService)
+
+        processor = PaymentProcessor(
+            gateway=mock_gateway,
+            email_service=mock_email,
+            logger=Mock()
+        )
+
+        result = processor.process(Payment(amount=100, customer_email=&quot;test@example.com&quot;))
+
+        assert not result.success
+        mock_email.send_confirmation.assert_not_called()  # Critical: No email on failure
+</code></pre>
+<p><strong>Fake Implementations for Integration Testing</strong></p>
+<pre><code class="language-python">class InMemoryOrderRepository(IOrderRepository):
+    &quot;&quot;&quot;Fast, deterministic fake for testing.&quot;&quot;&quot;
+
+    def __init__(self):
+        self._orders: Dict[str, Order] = {}
+        self._save_count = 0  # Track for assertions
+
+    def save(self, order: Order) -&gt; None:
+        self._orders[order.id] = order
+        self._save_count += 1
+
+    def find_by_id(self, order_id: str) -&gt; Optional[Order]:
+        return self._orders.get(order_id)
+
+    def find_by_customer(self, customer_id: str) -&gt; List[Order]:
+        return [o for o in self._orders.values() if o.customer_id == customer_id]
+
+class TestOrderWorkflow:
+    def test_complete_order_workflow(self):
+        # Use fakes for realistic behavior without real infrastructure
+        order_repo = InMemoryOrderRepository()
+        inventory = InMemoryInventory(initial_stock={&quot;SKU001&quot;: 10})
+        payment = FakePaymentGateway(always_succeeds=True)
+
+        workflow = OrderWorkflow(
+            orders=order_repo,
+            inventory=inventory,
+            payment=payment,
+            notifications=StubNotificationService()
+        )
+
+        order = workflow.place_order(
+            customer_id=&quot;cust_123&quot;,
+            items=[OrderItem(sku=&quot;SKU001&quot;, quantity=2)]
+        )
+
+        # Verify state changes across multiple components
+        assert order_repo.find_by_id(order.id) is not None
+        assert inventory.get_stock(&quot;SKU001&quot;) == 8  # 10 - 2
+        assert len(payment.processed_transactions) == 1
+</code></pre>
+<p><strong>Spy Injection for Behavior Verification</strong></p>
+<pre><code class="language-python">class SpyEmailService(IEmailService):
+    &quot;&quot;&quot;Captures calls for later verification.&quot;&quot;&quot;
+
+    def __init__(self, delegate: IEmailService = None):
+        self._delegate = delegate
+        self.calls: List[Dict] = []
+
+    def send(self, to: str, subject: str, body: str) -&gt; bool:
+        self.calls.append({&quot;to&quot;: to, &quot;subject&quot;: subject, &quot;body&quot;: body})
+        if self._delegate:
+            return self._delegate.send(to, subject, body)
+        return True
+
+    def assert_sent_to(self, email: str):
+        recipients = [c[&quot;to&quot;] for c in self.calls]
+        assert email in recipients, f&quot;No email sent to {email}. Sent to: {recipients}&quot;
+
+def test_signup_sends_welcome_email():
+    spy = SpyEmailService()
+    service = UserSignupService(email_service=spy)
+
+    service.signup(&quot;newuser@example.com&quot;, &quot;password123&quot;)
+
+    spy.assert_sent_to(&quot;newuser@example.com&quot;)
+    assert any(&quot;welcome&quot; in c[&quot;subject&quot;].lower() for c in spy.calls)
+</code></pre>
+<h3 id="interview-deep-dive-testing-benefits">Interview Deep Dive: Testing Benefits</h3>
+<p><strong>Level 1: Conceptual Understanding</strong></p>
+<p><strong>Q: How does DI enable unit testing? Explain with a concrete example.</strong></p>
+<p>A: DI enables unit testing by allowing test code to substitute real dependencies with test doubles. Without DI:</p>
+<pre><code class="language-python"># Untestable: Hard-coded dependency
+class OrderService:
+    def __init__(self):
+        self._db = PostgresDatabase()  # Real DB - tests need actual Postgres
+
+    def create_order(self, order: Order):
+        self._db.save(order)  # Can't test without database
+</code></pre>
+<p>With DI:</p>
+<pre><code class="language-python"># Testable: Dependency injected
+class OrderService:
+    def __init__(self, db: IDatabase):
+        self._db = db
+
+    def create_order(self, order: Order):
+        self._db.save(order)
+
+# Test with mock
+def test_create_order():
+    mock_db = Mock(spec=IDatabase)
+    service = OrderService(db=mock_db)
+
+    service.create_order(Order(id=&quot;123&quot;))
+
+    mock_db.save.assert_called_once()  # Test without real database
+</code></pre>
+<p><strong>Level 2: Implementation Challenges</strong></p>
+<p><strong>Q: When should you use mocks vs fakes vs stubs in DI-based testing? What are the trade-offs?</strong></p>
+<p>A: Each test double serves different purposes:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stub</strong></td>
+<td>Return canned answers</td>
+<td>Simple, fast</td>
+<td>Doesn't verify behavior</td>
+</tr>
+<tr>
+<td><strong>Mock</strong></td>
+<td>Verify interactions</td>
+<td>Precise verification</td>
+<td>Brittle if implementation changes</td>
+</tr>
+<tr>
+<td><strong>Fake</strong></td>
+<td>Working implementation</td>
+<td>Realistic behavior</td>
+<td>Requires maintenance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decision guide</strong>:</p>
+<ul>
+<li><strong>Stub</strong> when you need the dependency to return values but don't care how it's called</li>
+<li><strong>Mock</strong> when verifying the class under test calls dependencies correctly (interaction testing)</li>
+<li><strong>Fake</strong> for integration-style tests that verify behavior across components</li>
+</ul>
+<pre><code class="language-python"># Stub: Just need a return value
+stub_config = Mock()
+stub_config.get_timeout.return_value = 30  # Don't care if called once or twice
+
+# Mock: Verify correct interaction
+mock_payment = Mock(spec=IPaymentGateway)
+# ... run code ...
+mock_payment.charge.assert_called_once_with(amount=100, currency=&quot;USD&quot;)
+
+# Fake: Test realistic scenarios
+fake_inventory = InMemoryInventory({&quot;SKU001&quot;: 5})
+# ... run code that should reduce inventory ...
+assert fake_inventory.get_stock(&quot;SKU001&quot;) == 3
+</code></pre>
+<p><strong>Level 3: Architectural Trade-offs</strong></p>
+<p><strong>Q: A team has 95% unit test coverage using DI with mocks, but production bugs keep appearing. What might be wrong, and how would you address it?</strong></p>
+<p>A: High mock-based coverage can create a false sense of security. Common issues:</p>
+<p><strong>Problem 1: Mocks don't reflect real behavior</strong></p>
+<pre><code class="language-python"># Mock says this works
+mock_db.save.return_value = True
+
+# Real database throws on duplicate key
+real_db.save(order)  # IntegrityError: duplicate primary key
+</code></pre>
+<p><strong>Solution</strong>: Use contract tests or fakes that enforce realistic constraints</p>
+<p><strong>Problem 2: Testing implementation, not behavior</strong></p>
+<pre><code class="language-python"># Brittle: Tests HOW it works
+mock_db.query.assert_called_with(&quot;SELECT * FROM users WHERE id = ?&quot;, [user_id])
+
+# Better: Tests WHAT it does
+assert result.email == &quot;expected@email.com&quot;
+</code></pre>
+<p><strong>Solution</strong>: Test outcomes, not internal method calls</p>
+<p><strong>Problem 3: Integration points untested</strong><br />
+Mocks at boundaries mean the actual integration is never tested.</p>
+<p><strong>Solution</strong>: Complement unit tests with:</p>
+<ul>
+<li><strong>Contract tests</strong>: Verify mocks match real implementations</li>
+<li><strong>Integration tests</strong>: Test real components together (fewer, slower)</li>
+<li><strong>Consumer-driven contracts</strong>: <a href="/topics/testing/contract-testing">[Contract Testing]</a> ensures API compatibility</li>
+</ul>
+<p><strong>Testing pyramid adjustment</strong>:</p>
+<pre><code>        /\
+       /  \  E2E (few - validate user journeys)
+      /----\
+     /      \ Integration (some - validate component interaction)
+    /--------\
+   /          \ Unit with DI (many - validate logic)
+  /------------\
+</code></pre>
+<hr />
+<h2 id="implementation-production-grade-di-container">Implementation: Production-Grade DI Container</h2>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Dict, Type, TypeVar, Generic, Callable, Optional, Any, List
+from enum import Enum, auto
+from contextlib import contextmanager
+import threading
+import inspect
+
+T = TypeVar('T')
+
+class Lifecycle(Enum):
+    &quot;&quot;&quot;Object lifecycle management strategies.&quot;&quot;&quot;
+    TRANSIENT = auto()   # New instance every time
+    SINGLETON = auto()   # One instance for container lifetime
+    SCOPED = auto()      # One instance per scope
+
+
+@dataclass
+class Registration:
+    &quot;&quot;&quot;Represents a service registration in the container.&quot;&quot;&quot;
+    interface: Type
+    implementation: Type
+    lifecycle: Lifecycle
+    factory: Optional[Callable[..., Any]] = None  # Custom factory function
+
+
+class ResolutionError(Exception):
+    &quot;&quot;&quot;Raised when dependency resolution fails.&quot;&quot;&quot;
+    pass
+
+
+class ScopeError(Exception):
+    &quot;&quot;&quot;Raised when scope-related operations fail.&quot;&quot;&quot;
+    pass
+
+
+class CircularDependencyError(Exception):
+    &quot;&quot;&quot;Raised when circular dependencies are detected.&quot;&quot;&quot;
+    pass
+
+
+class Scope:
+    &quot;&quot;&quot;Represents a resolution scope with its own instance cache.&quot;&quot;&quot;
+
+    def __init__(self, container: 'Container'):
+        self._container = container
+        self._instances: Dict[Type, Any] = {}
+        self._lock = threading.Lock()
+
+    def get_or_create(self, interface: Type, factory: Callable[[], Any]) -&gt; Any:
+        &quot;&quot;&quot;Get cached instance or create new one.&quot;&quot;&quot;
+        with self._lock:
+            if interface not in self._instances:
+                self._instances[interface] = factory()
+            return self._instances[interface]
+
+    def dispose(self):
+        &quot;&quot;&quot;Dispose all scoped instances.&quot;&quot;&quot;
+        for instance in self._instances.values():
+            if hasattr(instance, 'dispose'):
+                instance.dispose()
+            elif hasattr(instance, 'close'):
+                instance.close()
+            elif hasattr(instance, '__exit__'):
+                instance.__exit__(None, None, None)
+        self._instances.clear()
+
+
+class Container:
+    &quot;&quot;&quot;
+    Production-grade DI container with lifecycle management.
+
+    Features:
+    - Constructor injection with automatic dependency resolution
+    - Singleton, scoped, and transient lifecycles
+    - Circular dependency detection
+    - Thread-safe singleton management
+    - Custom factory support
+    &quot;&quot;&quot;
+
+    def __init__(self):
+        self._registrations: Dict[Type, Registration] = {}
+        self._singletons: Dict[Type, Any] = {}
+        self._singleton_lock = threading.Lock()
+        self._scope_local = threading.local()
+
+    def register(
+        self,
+        interface: Type[T],
+        implementation: Type[T] = None,
+        lifecycle: Lifecycle = Lifecycle.TRANSIENT,
+        factory: Callable[..., T] = None
+    ) -&gt; 'Container':
+        &quot;&quot;&quot;
+        Register a service implementation.
+
+        Args:
+            interface: The interface/abstract type to register
+            implementation: The concrete implementation type
+            lifecycle: How instances should be managed
+            factory: Optional custom factory function
+
+        Returns:
+            Self for fluent chaining
+        &quot;&quot;&quot;
+        if implementation is None and factory is None:
+            implementation = interface  # Self-registration
+
+        self._registrations[interface] = Registration(
+            interface=interface,
+            implementation=implementation,
+            lifecycle=lifecycle,
+            factory=factory
+        )
+        return self
+
+    def register_instance(self, interface: Type[T], instance: T) -&gt; 'Container':
+        &quot;&quot;&quot;Register a pre-created singleton instance.&quot;&quot;&quot;
+        self._registrations[interface] = Registration(
+            interface=interface,
+            implementation=type(instance),
+            lifecycle=Lifecycle.SINGLETON
+        )
+        self._singletons[interface] = instance
+        return self
+
+    def resolve(self, interface: Type[T]) -&gt; T:
+        &quot;&quot;&quot;
+        Resolve an instance of the requested type.
+
+        Automatically resolves all constructor dependencies recursively.
+        &quot;&quot;&quot;
+        return self._resolve_internal(interface, resolution_stack=set())
+
+    def _resolve_internal(self, interface: Type[T], resolution_stack: set) -&gt; T:
+        &quot;&quot;&quot;Internal resolution with circular dependency tracking.&quot;&quot;&quot;
+        if interface not in self._registrations:
+            raise ResolutionError(
+                f&quot;No registration found for {interface.__name__}. &quot;
+                f&quot;Did you forget to call container.register({interface.__name__}, ...)?&quot;
+            )
+
+        # Circular dependency detection
+        if interface in resolution_stack:
+            cycle_path = &quot; -&gt; &quot;.join(t.__name__ for t in resolution_stack)
+            raise CircularDependencyError(
+                f&quot;Circular dependency detected: {cycle_path} -&gt; {interface.__name__}&quot;
+            )
+
+        registration = self._registrations[interface]
+
+        # Handle based on lifecycle
+        if registration.lifecycle == Lifecycle.SINGLETON:
+            return self._resolve_singleton(interface, registration, resolution_stack)
+        elif registration.lifecycle == Lifecycle.SCOPED:
+            return self._resolve_scoped(interface, registration, resolution_stack)
+        else:
+            return self._create_instance(registration, resolution_stack)
+
+    def _resolve_singleton(
+        self,
+        interface: Type,
+        registration: Registration,
+        resolution_stack: set
+    ) -&gt; Any:
+        &quot;&quot;&quot;Resolve with singleton lifecycle (thread-safe).&quot;&quot;&quot;
+        if interface in self._singletons:
+            return self._singletons[interface]
+
+        with self._singleton_lock:
+            # Double-check after acquiring lock
+            if interface in self._singletons:
+                return self._singletons[interface]
+
+            instance = self._create_instance(registration, resolution_stack)
+            self._singletons[interface] = instance
+            return instance
+
+    def _resolve_scoped(
+        self,
+        interface: Type,
+        registration: Registration,
+        resolution_stack: set
+    ) -&gt; Any:
+        &quot;&quot;&quot;Resolve with scoped lifecycle.&quot;&quot;&quot;
+        scope = getattr(self._scope_local, 'current_scope', None)
+        if scope is None:
+            raise ScopeError(
+                f&quot;Cannot resolve scoped service {interface.__name__} &quot;
+                &quot;outside of a scope. Use 'with container.create_scope():'&quot;
+            )
+
+        return scope.get_or_create(
+            interface,
+            lambda: self._create_instance(registration, resolution_stack)
+        )
+
+    def _create_instance(self, registration: Registration, resolution_stack: set) -&gt; Any:
+        &quot;&quot;&quot;Create a new instance, resolving constructor dependencies.&quot;&quot;&quot;
+        resolution_stack = resolution_stack | {registration.interface}
+
+        # Use custom factory if provided
+        if registration.factory:
+            return registration.factory(self)
+
+        impl_class = registration.implementation
+
+        # Inspect constructor parameters
+        try:
+            sig = inspect.signature(impl_class.__init__)
+        except (ValueError, TypeError):
+            # No constructor or uninspectable - just instantiate
+            return impl_class()
+
+        # Resolve each constructor parameter
+        kwargs = {}
+        for param_name, param in sig.parameters.items():
+            if param_name == 'self':
+                continue
+
+            # Skip parameters with defaults if not registered
+            if param.annotation == inspect.Parameter.empty:
+                if param.default != inspect.Parameter.empty:
+                    continue
+                raise ResolutionError(
+                    f&quot;Cannot resolve parameter '{param_name}' in {impl_class.__name__}: &quot;
+                    &quot;no type annotation and no default value&quot;
+                )
+
+            param_type = param.annotation
+
+            # Handle Optional types
+            if hasattr(param_type, '__origin__') and param_type.__origin__ is type(None):
+                if param_type not in self._registrations:
+                    kwargs[param_name] = None
+                    continue
+
+            try:
+                kwargs[param_name] = self._resolve_internal(param_type, resolution_stack)
+            except ResolutionError:
+                if param.default != inspect.Parameter.empty:
+                    continue  # Use default value
+                raise
+
+        return impl_class(**kwargs)
+
+    @contextmanager
+    def create_scope(self):
+        &quot;&quot;&quot;
+        Create a new resolution scope.
+
+        Scoped services are cached within this scope and disposed when it exits.
+
+        Usage:
+            with container.create_scope():
+                service = container.resolve(IScopedService)
+        &quot;&quot;&quot;
+        scope = Scope(self)
+        previous_scope = getattr(self._scope_local, 'current_scope', None)
+        self._scope_local.current_scope = scope
+
+        try:
+            yield scope
+        finally:
+            scope.dispose()
+            self._scope_local.current_scope = previous_scope
+
+    def validate(self) -&gt; List[str]:
+        &quot;&quot;&quot;
+        Validate that all registrations can be resolved.
+
+        Returns list of errors (empty if valid).
+        &quot;&quot;&quot;
+        errors = []
+
+        for interface in self._registrations:
+            try:
+                # Create a temporary scope for validation
+                with self.create_scope():
+                    self.resolve(interface)
+            except Exception as e:
+                errors.append(f&quot;{interface.__name__}: {str(e)}&quot;)
+
+        return errors
+
+
+# ============================================================
+# Example Usage with Interfaces and Implementations
+# ============================================================
+
+class ILogger(ABC):
+    @abstractmethod
+    def info(self, message: str) -&gt; None: pass
+
+    @abstractmethod
+    def error(self, message: str, exception: Exception = None) -&gt; None: pass
+
+
+class IUserRepository(ABC):
+    @abstractmethod
+    def find_by_id(self, user_id: str) -&gt; Optional[Dict]: pass
+
+    @abstractmethod
+    def save(self, user: Dict) -&gt; None: pass
+
+
+class IEmailService(ABC):
+    @abstractmethod
+    def send(self, to: str, subject: str, body: str) -&gt; bool: pass
+
+
+# Implementations
+class ConsoleLogger(ILogger):
+    def info(self, message: str) -&gt; None:
+        print(f&quot;[INFO] {message}&quot;)
+
+    def error(self, message: str, exception: Exception = None) -&gt; None:
+        print(f&quot;[ERROR] {message}&quot;)
+        if exception:
+            print(f&quot;  Exception: {exception}&quot;)
+
+
+class PostgresUserRepository(IUserRepository):
+    def __init__(self, logger: ILogger):
+        self._logger = logger
+        self._logger.info(&quot;PostgresUserRepository initialized&quot;)
+
+    def find_by_id(self, user_id: str) -&gt; Optional[Dict]:
+        self._logger.info(f&quot;Finding user {user_id}&quot;)
+        return {&quot;id&quot;: user_id, &quot;name&quot;: &quot;John Doe&quot;}
+
+    def save(self, user: Dict) -&gt; None:
+        self._logger.info(f&quot;Saving user {user['id']}&quot;)
+
+
+class SmtpEmailService(IEmailService):
+    def __init__(self, logger: ILogger):
+        self._logger = logger
+
+    def send(self, to: str, subject: str, body: str) -&gt; bool:
+        self._logger.info(f&quot;Sending email to {to}: {subject}&quot;)
+        return True
+
+
+class UserService:
+    &quot;&quot;&quot;Business logic service with injected dependencies.&quot;&quot;&quot;
+
+    def __init__(
+        self,
+        user_repository: IUserRepository,
+        email_service: IEmailService,
+        logger: ILogger
+    ):
+        self._users = user_repository
+        self._email = email_service
+        self._logger = logger
+
+    def register_user(self, user_id: str, name: str, email: str) -&gt; Dict:
+        self._logger.info(f&quot;Registering user: {name}&quot;)
+
+        user = {&quot;id&quot;: user_id, &quot;name&quot;: name, &quot;email&quot;: email}
+        self._users.save(user)
+
+        self._email.send(
+            to=email,
+            subject=&quot;Welcome!&quot;,
+            body=f&quot;Hello {name}, welcome to our platform!&quot;
+        )
+
+        return user
+
+
+# Container configuration
+def configure_production_container() -&gt; Container:
+    container = Container()
+
+    container.register(ILogger, ConsoleLogger, Lifecycle.SINGLETON)
+    container.register(IUserRepository, PostgresUserRepository, Lifecycle.SCOPED)
+    container.register(IEmailService, SmtpEmailService, Lifecycle.TRANSIENT)
+    container.register(UserService, UserService, Lifecycle.SCOPED)
+
+    return container
+
+
+# Application usage
+if __name__ == &quot;__main__&quot;:
+    container = configure_production_container()
+
+    # Validate configuration at startup
+    errors = container.validate()
+    if errors:
+        print(&quot;Container configuration errors:&quot;)
+        for error in errors:
+            print(f&quot;  - {error}&quot;)
+        exit(1)
+
+    # Use within scope (e.g., HTTP request handling)
+    with container.create_scope():
+        user_service = container.resolve(UserService)
+        user_service.register_user(&quot;u123&quot;, &quot;Alice&quot;, &quot;alice@example.com&quot;)
+</code></pre>
+<hr />
+<h2 id="common-anti-patterns-and-solutions">Common Anti-Patterns and Solutions</h2>
+<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="text-align: center; margin-bottom: 24px">
+<span style="font-size: 1.3rem; font-weight: 700; color: #1e40af">DI Anti-Pattern Recognition Guide</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #fee2e2;border-radius: 10px; padding: 16px">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1; min-width: 200px">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px">Container Injection</div>
+<code style="color: #7f1d1d; font-size: 0.85rem">__init__(self, container: Container)</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem">
+<strong>Problem:</strong> Hides actual dependencies, defeats DI purpose<br>
+<strong>Fix:</strong> Inject specific dependencies, not the container
+</div>
+</div>
+</div>
+<div style="background: #fee2e2;border-radius: 10px; padding: 16px">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1; min-width: 200px">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px">Constructor Over-Injection</div>
+<code style="color: #7f1d1d; font-size: 0.85rem">__init__(a, b, c, d, e, f, g, h)</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem">
+<strong>Problem:</strong> Class has too many responsibilities<br>
+<strong>Fix:</strong> Split class, use facade services
+</div>
+</div>
+</div>
+<div style="background: #fee2e2;border-radius: 10px; padding: 16px">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1; min-width: 200px">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px">Ambient Context</div>
+<code style="color: #7f1d1d; font-size: 0.85rem">Logger.Current.Info(...)</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem">
+<strong>Problem:</strong> Global state, hidden dependency<br>
+<strong>Fix:</strong> Inject logger explicitly
+</div>
+</div>
+</div>
+<div style="background: #fee2e2;border-radius: 10px; padding: 16px">
+<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px">
+<div style="flex: 1; min-width: 200px">
+<div style="color: #991b1b; font-weight: 700; margin-bottom: 4px">Control Freak</div>
+<code style="color: #7f1d1d; font-size: 0.85rem">new ConcreteClass() inside methods</code>
+</div>
+<div style="flex: 2; min-width: 250px; color: #475569; font-size: 0.9rem">
+<strong>Problem:</strong> Tight coupling, untestable<br>
+<strong>Fix:</strong> Inject via constructor or use factory
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="related-patterns">Related Patterns</h2>
+<pre><code>    - [[Factory Method]](/topics/design-patterns/factory-method) - Create objects without specifying exact classes; often used by DI containers internally
+    - [[Abstract Factory]](/topics/design-patterns/abstract-factory) - Create families of related objects; DI can inject different factories per environment
+    - [[Strategy]](/topics/design-patterns/strategy) - Define interchangeable algorithms; DI makes strategy injection trivial
+    - [[Decorator]](/topics/design-patterns/decorator) - Add behavior to objects; DI enables automatic decoration during resolution
+    - [[Singleton]](/topics/design-patterns/singleton) - Ensure single instance; DI containers provide managed singleton lifecycle
+    - [[Facade]](/topics/design-patterns/facade) - Simplify complex subsystems; reduces constructor parameter explosion
+    - [[Inversion of Control]](/topics/design-patterns/inversion-of-control) - The broader principle that DI implements
+    - [[SOLID Principles]](/topics/design-patterns/solid-principles) - DI directly enables Dependency Inversion Principle
+</code></pre>
+<hr />
+<h2 id="key-takeaways-for-interviews">Key Takeaways for Interviews</h2>
+<ol>
+<li>
+<p><strong>DI is about object construction, not object use</strong> - The pattern separates how objects are created from how they are used</p>
+</li>
+<li>
+<p><strong>Constructor injection should be your default</strong> - It ensures objects are always valid and makes dependencies explicit</p>
+</li>
+<li>
+<p><strong>Service Locator hides dependencies</strong> - Visible constructor parameters are always preferable to hidden service lookups</p>
+</li>
+<li>
+<p><strong>DI containers are optional</strong> - Manual DI (pure DI) is valid and sometimes preferable for smaller systems</p>
+</li>
+<li>
+<p><strong>Too many dependencies signals design problems</strong> - DI makes <a href="/topics/design-patterns/solid-principles">[Single Responsibility Principle]</a> violations visible</p>
+</li>
+<li>
+<p><strong>Testing transformation is the killer feature</strong> - DI enables fast, deterministic, isolated unit tests</p>
+</li>
+<li>
+<p><strong>Lifecycle management matters</strong> - Understanding singleton vs scoped vs transient prevents subtle bugs</p>
+</li>
+</ol>

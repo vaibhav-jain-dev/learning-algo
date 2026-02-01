@@ -1,0 +1,1932 @@
+<h1 id="tic-tac-toe---machine-coding-deep-dive">Tic Tac Toe - Machine Coding Deep Dive</h1>
+<h2 id="problem-statement">Problem Statement</h2>
+<p>Design a production-ready Tic Tac Toe game supporting two players on an NxN board with configurable win conditions, O(1) win detection, undo functionality, and an unbeatable AI opponent using game theory.</p>
+<div style="background: #f8fafc;padding: 20px; border-radius: 8px; margin: 20px 0">
+<h4 style="color: #dc2626; margin-top: 0">Why This Problem Matters in Interviews</h4>
+<p style="color: #1e293b">Tic Tac Toe tests your ability to design clean abstractions, optimize algorithmic complexity, implement game theory (minimax), and handle state management - all core skills for building interactive systems, game engines, and decision-making algorithms.</p>
+</div>
+<hr />
+<h2 id="core-architecture-overview">Core Architecture Overview</h2>
+<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px">
+<div style="background: #f0fdf4;padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 140px">
+<div style="color: #fff; font-weight: bold; font-size: 14px">Game State Manager</div>
+<div style="color: #166534; font-size: 12px; margin-top: 8px">Board, Players, History</div>
+</div>
+<div style="color: #1e40af; font-size: 24px; display: flex; align-items: center">&#8594;</div>
+<div style="background: #eff6ff;padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 140px">
+<div style="color: #fff; font-weight: bold; font-size: 14px">Win Detector</div>
+<div style="color: #1e40af; font-size: 12px; margin-top: 8px">O(1) Counter System</div>
+</div>
+<div style="color: #1e40af; font-size: 24px; display: flex; align-items: center">&#8594;</div>
+<div style="background: #f5f3ff;padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 140px">
+<div style="color: #fff; font-weight: bold; font-size: 14px">AI Engine</div>
+<div style="color: #5b21b6; font-size: 12px; margin-top: 8px">Minimax + Alpha-Beta</div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="section-1-game-state-management">Section 1: Game State Management</h2>
+<h3 id="the-state-machine-model">The State Machine Model</h3>
+<p>Tic Tac Toe is fundamentally a <a href="/topics/system-design/state-machines">[finite state machine]</a> with deterministic transitions. Understanding this model is critical for building maintainable game logic.</p>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">State Transition Diagram</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #1e40af; font-weight: bold">INITIALIZED</div>
+<div style="color: #64748b">&#8594; Player X's turn</div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #22c55e; font-weight: bold">IN_PROGRESS</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-left: 40px">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #22c55e; font-weight: bold">IN_PROGRESS</div>
+<div style="color: #64748b">&#8594; Win detected</div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #ef4444; font-weight: bold">X_WINS | O_WINS</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-left: 40px">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #22c55e; font-weight: bold">IN_PROGRESS</div>
+<div style="color: #64748b">&#8594; Board full, no winner</div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #c2410c; font-weight: bold">DRAW</div>
+</div>
+</div>
+</div>
+<h3 id="core-data-structures">Core Data Structures</h3>
+<pre><code class="language-python">from enum import Enum
+from typing import Optional, List, Tuple
+from dataclasses import dataclass, field
+from abc import ABC, abstractmethod
+
+
+class Player(Enum):
+    &quot;&quot;&quot;
+    Enum representation ensures type safety and prevents invalid player values.
+
+    Design Decision: Using Enum over strings/integers provides:
+    - Compile-time checking in typed languages
+    - Exhaustive pattern matching
+    - Self-documenting code
+    &quot;&quot;&quot;
+    X = 'X'
+    O = 'O'
+
+    @property
+    def opponent(self) -&gt; 'Player':
+        &quot;&quot;&quot;O(1) opponent lookup - avoids conditional branching.&quot;&quot;&quot;
+        return Player.O if self == Player.X else Player.X
+
+
+class GameState(Enum):
+    &quot;&quot;&quot;
+    Explicit terminal states enable clean state machine logic.
+
+    Assumption: Game cannot be &quot;paused&quot; - only terminal or in-progress.
+    Trade-off: Adding PAUSED state would require persistence layer.
+    &quot;&quot;&quot;
+    IN_PROGRESS = &quot;in_progress&quot;
+    X_WINS = &quot;x_wins&quot;
+    O_WINS = &quot;o_wins&quot;
+    DRAW = &quot;draw&quot;
+
+    @property
+    def is_terminal(self) -&gt; bool:
+        return self != GameState.IN_PROGRESS
+
+
+@dataclass(frozen=True)
+class Move:
+    &quot;&quot;&quot;
+    Immutable move record for history tracking.
+
+    frozen=True ensures moves cannot be modified after creation,
+    which is critical for reliable undo operations.
+    &quot;&quot;&quot;
+    row: int
+    col: int
+    player: Player
+    timestamp: float = field(default_factory=lambda: __import__('time').time())
+
+    def __post_init__(self):
+        if self.row &lt; 0 or self.col &lt; 0:
+            raise ValueError(&quot;Move coordinates must be non-negative&quot;)
+</code></pre>
+<div style="background: #f0fdf4;padding: 20px; border-radius: 8px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Key Assumption</h4>
+<p style="color: #1e293b">The board is represented as a 2D array where <code>None</code> indicates an empty cell. This choice enables O(1) cell access but requires O(n^2) space. For sparse boards (large N with few moves), a <strong>dictionary-based representation</strong> <code>{(row, col): Player}</code> would be more memory-efficient.</p>
+</div>
+<h3 id="the-command-pattern-for-move-history">The Command Pattern for Move History</h3>
+<p>Implementing undo/redo requires the <a href="/topics/design-patterns/command">[Command Pattern]</a>:</p>
+<pre><code class="language-python">@dataclass
+class GameSnapshot:
+    &quot;&quot;&quot;
+    Complete game state for undo/redo operations.
+
+    Design Choice: Full snapshot vs. incremental delta
+    - Snapshot: Simpler, O(n^2) space per move
+    - Delta: Complex, O(1) space per move
+
+    For Tic Tac Toe (small board), snapshots are acceptable.
+    For Go/Chess, deltas are necessary.
+    &quot;&quot;&quot;
+    board: List[List[Optional[Player]]]
+    current_player: Player
+    state: GameState
+    moves_count: int
+    # Counter state for O(1) win detection
+    rows: dict
+    cols: dict
+    diag: dict
+    anti_diag: dict
+
+
+class TicTacToe:
+    &quot;&quot;&quot;
+    Main game controller implementing state management with O(1) win detection.
+
+    Invariants maintained:
+    1. current_player alternates X -&gt; O -&gt; X unless game ends
+    2. moves_count == number of non-None cells on board
+    3. Counter sums always reflect board state
+    &quot;&quot;&quot;
+
+    def __init__(self, n: int = 3):
+        if n &lt; 2:
+            raise ValueError(&quot;Board size must be at least 2&quot;)
+        if n &gt; 1000:
+            raise ValueError(&quot;Board size too large - consider memory constraints&quot;)
+
+        self.n = n
+        self.board: List[List[Optional[Player]]] = [
+            [None for _ in range(n)] for _ in range(n)
+        ]
+        self.current_player = Player.X
+        self.state = GameState.IN_PROGRESS
+        self.moves_count = 0
+        self.move_history: List[Move] = []
+
+        # O(1) win detection counters - the key optimization
+        self._init_counters()
+
+    def _init_counters(self) -&gt; None:
+        &quot;&quot;&quot;
+        Initialize win detection counters.
+
+        Each counter tracks how many marks a player has in that line.
+        When any counter reaches N, that player wins.
+
+        Space: O(4n) = O(n) for rows + cols + 2 diagonals
+        &quot;&quot;&quot;
+        self.rows = {Player.X: [0] * self.n, Player.O: [0] * self.n}
+        self.cols = {Player.X: [0] * self.n, Player.O: [0] * self.n}
+        self.diag = {Player.X: 0, Player.O: 0}      # Main diagonal
+        self.anti_diag = {Player.X: 0, Player.O: 0}  # Anti-diagonal
+
+    def make_move(self, row: int, col: int) -&gt; GameState:
+        &quot;&quot;&quot;
+        Execute a move with full validation and state update.
+
+        Time Complexity: O(1) - all operations are constant time
+
+        Raises:
+            ValueError: If move is invalid (out of bounds, cell occupied, game over)
+
+        Edge Cases Handled:
+        - Game already over
+        - Out of bounds coordinates
+        - Cell already occupied
+        - Last move causing win vs draw
+        &quot;&quot;&quot;
+        # Validation phase - fail fast
+        self._validate_move(row, col)
+
+        # Execution phase
+        player = self.current_player
+        self.board[row][col] = player
+        self.moves_count += 1
+        self.move_history.append(Move(row, col, player))
+
+        # Update counters - O(1)
+        self._update_counters(row, col, player, delta=1)
+
+        # State transition - O(1) win check
+        if self._check_win(player, row, col):
+            self.state = GameState.X_WINS if player == Player.X else GameState.O_WINS
+        elif self.moves_count == self.n * self.n:
+            self.state = GameState.DRAW
+        else:
+            self.current_player = player.opponent
+
+        return self.state
+
+    def _validate_move(self, row: int, col: int) -&gt; None:
+        &quot;&quot;&quot;Centralized validation with descriptive error messages.&quot;&quot;&quot;
+        if self.state.is_terminal:
+            raise ValueError(f&quot;Game is already over: {self.state.value}&quot;)
+
+        if not (0 &lt;= row &lt; self.n and 0 &lt;= col &lt; self.n):
+            raise ValueError(
+                f&quot;Move ({row}, {col}) out of bounds for {self.n}x{self.n} board&quot;
+            )
+
+        if self.board[row][col] is not None:
+            raise ValueError(
+                f&quot;Cell ({row}, {col}) already occupied by {self.board[row][col].value}&quot;
+            )
+
+    def _update_counters(self, row: int, col: int, player: Player, delta: int) -&gt; None:
+        &quot;&quot;&quot;
+        Update win detection counters.
+
+        delta = +1 for making a move
+        delta = -1 for undoing a move
+
+        Critical insight: A cell (row, col) is on the main diagonal if row == col
+        A cell is on the anti-diagonal if row + col == n - 1
+        Center cell of odd-sized boards is on BOTH diagonals!
+        &quot;&quot;&quot;
+        self.rows[player][row] += delta
+        self.cols[player][col] += delta
+
+        if row == col:
+            self.diag[player] += delta
+
+        if row + col == self.n - 1:
+            self.anti_diag[player] += delta
+
+    def _check_win(self, player: Player, row: int, col: int) -&gt; bool:
+        &quot;&quot;&quot;
+        O(1) win detection using counter comparison.
+
+        Only checks lines that pass through the last move position.
+        This is sufficient because a win can only occur from the last move.
+        &quot;&quot;&quot;
+        n = self.n
+        return (
+            self.rows[player][row] == n or
+            self.cols[player][col] == n or
+            (row == col and self.diag[player] == n) or
+            (row + col == n - 1 and self.anti_diag[player] == n)
+        )
+
+    def undo(self) -&gt; bool:
+        &quot;&quot;&quot;
+        Undo the last move, restoring previous state.
+
+        Returns False if no moves to undo.
+
+        Invariant: After undo, game state is exactly as before the undone move.
+        This is critical for minimax AI which relies on undo for backtracking.
+        &quot;&quot;&quot;
+        if not self.move_history:
+            return False
+
+        move = self.move_history.pop()
+        self.board[move.row][move.col] = None
+        self.moves_count -= 1
+
+        # Reverse counter updates
+        self._update_counters(move.row, move.col, move.player, delta=-1)
+
+        # Restore player and state
+        self.current_player = move.player
+        self.state = GameState.IN_PROGRESS
+
+        return True
+
+    def get_valid_moves(self) -&gt; List[Tuple[int, int]]:
+        &quot;&quot;&quot;
+        Return all legal move positions.
+
+        Time: O(n^2) - must scan entire board
+
+        Optimization opportunity: Maintain a set of empty cells
+        for O(1) access at cost of O(1) extra maintenance per move.
+        &quot;&quot;&quot;
+        if self.state.is_terminal:
+            return []
+
+        return [
+            (r, c)
+            for r in range(self.n)
+            for c in range(self.n)
+            if self.board[r][c] is None
+        ]
+
+    def clone(self) -&gt; 'TicTacToe':
+        &quot;&quot;&quot;
+        Create a deep copy for AI simulation.
+
+        Essential for minimax: we need to explore moves without
+        modifying the actual game state.
+        &quot;&quot;&quot;
+        import copy
+        new_game = TicTacToe(self.n)
+        new_game.board = copy.deepcopy(self.board)
+        new_game.current_player = self.current_player
+        new_game.state = self.state
+        new_game.moves_count = self.moves_count
+        new_game.move_history = copy.deepcopy(self.move_history)
+        new_game.rows = copy.deepcopy(self.rows)
+        new_game.cols = copy.deepcopy(self.cols)
+        new_game.diag = copy.deepcopy(self.diag)
+        new_game.anti_diag = copy.deepcopy(self.anti_diag)
+        return new_game
+</code></pre>
+<h3 id="interview-questions---game-state-management">Interview Questions - Game State Management</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
+<p><strong>Q1: Why use an Enum for Player instead of strings or integers?</strong></p>
+<p>Enums provide type safety, prevent typos, enable exhaustive pattern matching, and are self-documenting. With strings, <code>&quot;x&quot;</code> vs <code>&quot;X&quot;</code> could cause bugs. With integers, <code>3</code> has no semantic meaning.</p>
+<p><strong>Q2: How would you detect if the game is a draw before the board is full?</strong></p>
+<p>A draw is guaranteed if neither player can complete any line. Track &quot;blocked lines&quot; - a line is blocked if it contains marks from both players. If all 2n+2 lines are blocked, declare a draw early.</p>
+<pre><code class="language-python">def is_guaranteed_draw(self) -&gt; bool:
+    &quot;&quot;&quot;Check if draw is inevitable before board fills.&quot;&quot;&quot;
+    for i in range(self.n):
+        # Check if row i is still winnable by either player
+        if not (self.rows[Player.X][i] &gt; 0 and self.rows[Player.O][i] &gt; 0):
+            return False
+        if not (self.cols[Player.X][i] &gt; 0 and self.cols[Player.O][i] &gt; 0):
+            return False
+    # Check diagonals
+    if not (self.diag[Player.X] &gt; 0 and self.diag[Player.O] &gt; 0):
+        return False
+    if not (self.anti_diag[Player.X] &gt; 0 and self.anti_diag[Player.O] &gt; 0):
+        return False
+    return True
+</code></pre>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Design Trade-offs</h4>
+<p><strong>Q3: The current design stores the full board AND counters. Is this redundant? What are the trade-offs?</strong></p>
+<p>Yes, it's redundant - the board alone is sufficient for correctness. However:</p>
+<ul>
+<li><strong>With counters</strong>: O(1) win check, O(n) extra space</li>
+<li><strong>Without counters</strong>: O(n) win check per move, O(1) less space</li>
+</ul>
+<p>For n=3, difference is negligible. For n=1000, counters save 1000x time per move at cost of ~4000 integers. The trade-off favors counters for any interactive game where move latency matters.</p>
+<p><strong>Q4: How would you implement redo functionality?</strong></p>
+<p>Maintain two stacks: <code>undo_stack</code> and <code>redo_stack</code>. When undoing, push to redo_stack. When making a new move, clear redo_stack (branch point). When redoing, pop from redo_stack and execute.</p>
+<pre><code class="language-python">def redo(self) -&gt; bool:
+    if not self.redo_stack:
+        return False
+    move = self.redo_stack.pop()
+    self.make_move(move.row, move.col)  # This clears redo_stack!
+    return True
+</code></pre>
+<p><strong>Gotcha</strong>: The naive implementation above has a bug - <code>make_move</code> clears <code>redo_stack</code>. Need to either bypass the clear or use a flag.</p>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: Production Scenarios</h4>
+<p><strong>Q5: How would you handle concurrent players in a distributed system?</strong></p>
+<p>This requires <a href="/topics/system-design/distributed-locking">[distributed locking]</a> and <a href="/topics/system-design/optimistic-locking">[optimistic concurrency]</a>:</p>
+<ol>
+<li><strong>Version Vector</strong>: Each game state has a version number</li>
+<li><strong>Compare-and-Swap</strong>: Move request includes expected version</li>
+<li><strong>Conflict Resolution</strong>: If versions mismatch, reject move and return current state</li>
+<li><strong>Event Sourcing</strong>: Store moves as events, rebuild state on demand</li>
+</ol>
+<pre><code class="language-python">@dataclass
+class MoveRequest:
+    game_id: str
+    row: int
+    col: int
+    player_id: str
+    expected_version: int
+
+def apply_move_distributed(request: MoveRequest) -&gt; MoveResult:
+    with distributed_lock(request.game_id):
+        game = load_game(request.game_id)
+        if game.version != request.expected_version:
+            return MoveResult(success=False, current_state=game,
+                            error=&quot;Stale state - another move was made&quot;)
+        # Apply move...
+        game.version += 1
+        save_game(game)
+</code></pre>
+<p><strong>Q6: How would you persist game state for crash recovery while maintaining O(1) move performance?</strong></p>
+<p>Use <a href="/topics/system-design/event-sourcing">[event sourcing]</a>:</p>
+<ul>
+<li>Append moves to a Write-Ahead Log (WAL) synchronously</li>
+<li>Periodically snapshot full state asynchronously</li>
+<li>On recovery: Load latest snapshot, replay moves since snapshot</li>
+</ul>
+<p>The WAL append is O(1) and doesn't block the game loop. Full state reconstruction happens only on recovery.</p>
+</div>
+<hr />
+<h2 id="section-2-win-detection-algorithms">Section 2: Win Detection Algorithms</h2>
+<h3 id="the-counter-based-o1-approach">The Counter-Based O(1) Approach</h3>
+<p>The key insight is that we don't need to check the entire board - only the lines affected by the last move.</p>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Win Lines Through Any Cell</h4>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 16px">
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #22c55e; font-weight: bold; margin-bottom: 8px">Standard Cell (not on diagonal)</div>
+<div style="color: #64748b; font-size: 14px">
+Passes through exactly 2 lines:<br/>
+- 1 horizontal row<br/>
+- 1 vertical column
+</div>
+</div>
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px">Main Diagonal Cell (row == col)</div>
+<div style="color: #64748b; font-size: 14px">
+Passes through exactly 3 lines:<br/>
+- 1 horizontal row<br/>
+- 1 vertical column<br/>
+- 1 main diagonal
+</div>
+</div>
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #5b21b6; font-weight: bold; margin-bottom: 8px">Anti-Diagonal Cell (row + col == n-1)</div>
+<div style="color: #64748b; font-size: 14px">
+Passes through exactly 3 lines:<br/>
+- 1 horizontal row<br/>
+- 1 vertical column<br/>
+- 1 anti-diagonal
+</div>
+</div>
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #c2410c; font-weight: bold; margin-bottom: 8px">Center Cell (odd n only)</div>
+<div style="color: #64748b; font-size: 14px">
+Passes through exactly 4 lines:<br/>
+- 1 horizontal row<br/>
+- 1 vertical column<br/>
+- 1 main diagonal<br/>
+- 1 anti-diagonal
+</div>
+</div>
+</div>
+</div>
+<h3 id="leetcode-348---optimized-single-counter-approach">LeetCode 348 - Optimized Single-Counter Approach</h3>
+<p>The LeetCode variant uses a clever trick: instead of separate counters per player, use signed integers where Player 1 adds +1 and Player 2 adds -1.</p>
+<pre><code class="language-python">class TicTacToeLeetCode:
+    &quot;&quot;&quot;
+    LeetCode 348: Design Tic-Tac-Toe
+
+    Space optimization: Single counter per line instead of per-player-per-line.
+    Player 1: +1, Player 2: -1
+    Win condition: |counter| == n
+
+    Space: O(n) reduced from O(2n) = O(n) - same asymptotically but half the constants
+
+    Assumption: Moves are always valid (LeetCode guarantee).
+    In production, you'd still need validation.
+    &quot;&quot;&quot;
+
+    def __init__(self, n: int):
+        self.n = n
+        self.rows = [0] * n
+        self.cols = [0] * n
+        self.diag = 0
+        self.anti_diag = 0
+
+    def move(self, row: int, col: int, player: int) -&gt; int:
+        &quot;&quot;&quot;
+        Returns:
+            0 if no winner yet
+            1 if player 1 wins
+            2 if player 2 wins
+
+        Time: O(1) - exactly 4 operations regardless of board size
+        &quot;&quot;&quot;
+        # Delta: +1 for player 1, -1 for player 2
+        delta = 1 if player == 1 else -1
+        target = self.n if player == 1 else -self.n
+
+        self.rows[row] += delta
+        self.cols[col] += delta
+
+        if row == col:
+            self.diag += delta
+
+        if row + col == self.n - 1:
+            self.anti_diag += delta
+
+        # Check all four possible winning lines
+        if (self.rows[row] == target or
+            self.cols[col] == target or
+            self.diag == target or
+            self.anti_diag == target):
+            return player
+
+        return 0
+</code></pre>
+<div style="background: #f5f3ff;padding: 20px; border-radius: 8px; margin: 20px 0">
+<h4 style="color: #5b21b6; margin-top: 0">Trade-off Analysis: Two Counters vs Signed Counter</h4>
+<table style="width: 100%; color: #1e293b; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 8px">Aspect</th>
+<th style="text-align: left; padding: 8px">Two Counters</th>
+<th style="text-align: left; padding: 8px">Signed Counter</th>
+</tr>
+<tr >
+<td style="padding: 8px">Space</td>
+<td style="padding: 8px">4n + 4 integers</td>
+<td style="padding: 8px">2n + 2 integers</td>
+</tr>
+<tr >
+<td style="padding: 8px">Undo Support</td>
+<td style="padding: 8px">Easy (decrement)</td>
+<td style="padding: 8px">Easy (subtract delta)</td>
+</tr>
+<tr >
+<td style="padding: 8px">Draw Detection</td>
+<td style="padding: 8px">Check both counters > 0</td>
+<td style="padding: 8px">Cannot detect blocked lines</td>
+</tr>
+<tr>
+<td style="padding: 8px">Extensibility</td>
+<td style="padding: 8px">Supports 3+ players</td>
+<td style="padding: 8px">Only 2 players</td>
+</tr>
+</table>
+</div>
+<h3 id="alternative-direction-based-win-check-for-m-in-a-row">Alternative: Direction-Based Win Check (for M-in-a-row)</h3>
+<p>When win condition differs from board size (e.g., 5-in-a-row on a 15x15 Gomoku board), counters don't work. We need direction scanning:</p>
+<pre><code class="language-python">class MInARowWinDetector:
+    &quot;&quot;&quot;
+    Win detection for configurable M-in-a-row on NxN board.
+
+    Use case: Gomoku (15x15 board, 5 in a row wins)
+
+    Time Complexity: O(m) per move - must scan up to m cells in each direction
+    Cannot be reduced to O(1) because the position of the winning sequence
+    within a line can vary.
+    &quot;&quot;&quot;
+
+    # Direction vectors: (delta_row, delta_col)
+    DIRECTIONS = [
+        (0, 1),   # Horizontal (right)
+        (1, 0),   # Vertical (down)
+        (1, 1),   # Diagonal (down-right)
+        (1, -1),  # Anti-diagonal (down-left)
+    ]
+
+    def __init__(self, n: int, m: int):
+        if m &gt; n:
+            raise ValueError(f&quot;Win condition {m} cannot exceed board size {n}&quot;)
+        self.n = n
+        self.m = m
+        self.board: List[List[Optional[Player]]] = [
+            [None] * n for _ in range(n)
+        ]
+
+    def check_win_at(self, row: int, col: int, player: Player) -&gt; bool:
+        &quot;&quot;&quot;
+        Check if placing at (row, col) creates M-in-a-row.
+
+        Algorithm:
+        1. For each of the 4 directions
+        2. Count consecutive marks in positive direction
+        3. Count consecutive marks in negative direction
+        4. Total = 1 (current) + positive + negative
+        5. If total &gt;= M, player wins
+        &quot;&quot;&quot;
+        for dr, dc in self.DIRECTIONS:
+            count = 1  # The piece just placed
+
+            # Count in positive direction
+            count += self._count_direction(row, col, dr, dc, player)
+
+            # Count in negative direction
+            count += self._count_direction(row, col, -dr, -dc, player)
+
+            if count &gt;= self.m:
+                return True
+
+        return False
+
+    def _count_direction(
+        self,
+        row: int,
+        col: int,
+        dr: int,
+        dc: int,
+        player: Player
+    ) -&gt; int:
+        &quot;&quot;&quot;Count consecutive marks from (row, col) in direction (dr, dc).&quot;&quot;&quot;
+        count = 0
+        r, c = row + dr, col + dc
+
+        while (0 &lt;= r &lt; self.n and
+               0 &lt;= c &lt; self.n and
+               self.board[r][c] == player):
+            count += 1
+            r += dr
+            c += dc
+
+            # Optimization: stop early if we've found enough
+            if count &gt;= self.m - 1:
+                break
+
+        return count
+</code></pre>
+<h3 id="interview-questions---win-detection">Interview Questions - Win Detection</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
+<p><strong>Q1: Why is the center cell special for win detection?</strong></p>
+<p>The center cell (for odd-sized boards) lies on both diagonals. Position (n//2, n//2) satisfies both:</p>
+<ul>
+<li><code>row == col</code> (main diagonal condition)</li>
+<li><code>row + col == n - 1</code> (anti-diagonal condition when n is odd)</li>
+</ul>
+<p>This means a move on the center affects 4 counters instead of 2, making it strategically the most powerful position.</p>
+<p><strong>Q2: Can we achieve O(1) win detection for M-in-a-row where M != N?</strong></p>
+<p>No. The fundamental problem is that the winning sequence can start anywhere along the line. With N-in-a-row, there's only one possible sequence per line. With M &lt; N, there are N - M + 1 possible positions, and we must find which one (if any) is complete.</p>
+<p>However, we can optimize to O(M) instead of O(N) by only checking M cells in each direction from the last move.</p>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Algorithm Optimization</h4>
+<p><strong>Q3: How would you modify the counter approach to detect &quot;three corners&quot; as an alternate win condition?</strong></p>
+<p>Corners are fixed positions: (0,0), (0,n-1), (n-1,0), (n-1,n-1). Add dedicated corner counters:</p>
+<pre><code class="language-python">def __init__(self, n):
+    # ... existing counters ...
+    self.corners = {Player.X: 0, Player.O: 0}
+    self.corner_positions = {(0,0), (0,n-1), (n-1,0), (n-1,n-1)}
+
+def _update_counters(self, row, col, player, delta):
+    # ... existing updates ...
+    if (row, col) in self.corner_positions:
+        self.corners[player] += delta
+</code></pre>
+<p>Win condition becomes: <code>... or self.corners[player] &gt;= 3</code></p>
+<p><strong>Q4: The direction-based check visits cells multiple times across moves. How would you add caching?</strong></p>
+<p>Maintain &quot;streak counters&quot; for each cell in each direction:</p>
+<pre><code class="language-python"># streak[row][col][direction] = (player, length)
+# Represents the streak ending at (row, col) going in that direction
+
+def update_streaks(self, row, col, player):
+    for d, (dr, dc) in enumerate(DIRECTIONS):
+        prev_r, prev_c = row - dr, col - dc
+        if in_bounds(prev_r, prev_c):
+            prev_streak = self.streak[prev_r][prev_c][d]
+            if prev_streak[0] == player:
+                self.streak[row][col][d] = (player, prev_streak[1] + 1)
+            else:
+                self.streak[row][col][d] = (player, 1)
+</code></pre>
+<p>This achieves O(1) per move at cost of O(n^2 * 4) space.</p>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: System Design Scenarios</h4>
+<p><strong>Q5: You're building a spectator system where millions of users watch a game. Each move must broadcast win status. How do you scale win detection?</strong></p>
+<p>The win check itself is already O(1), so the bottleneck is <a href="/topics/system-design/pub-sub">[broadcasting]</a>. Solutions:</p>
+<ol>
+<li>
+<p><strong>Fan-out on write</strong>: After each move, push to all spectator connections</p>
+<ul>
+<li>Latency: Excellent</li>
+<li>Cost: Linear with spectators</li>
+</ul>
+</li>
+<li>
+<p><strong>Fan-out on read with caching</strong>: Spectators poll; cache the latest move</p>
+<ul>
+<li>Latency: Depends on poll interval</li>
+<li>Cost: Constant regardless of spectators</li>
+</ul>
+</li>
+<li>
+<p><strong>Hierarchical broadcast</strong>: Edge servers cache and distribute regionally</p>
+<ul>
+<li>Best of both worlds for global scale</li>
+</ul>
+</li>
+</ol>
+<p>The win detection result should be included in the move event, computed once at the source.</p>
+<p><strong>Q6: How would you implement win detection for a 3D Tic Tac Toe (NxNxN cube)?</strong></p>
+<p>In 3D, we have:</p>
+<ul>
+<li>3N^2 rows (N^2 lines in each of 3 orientations)</li>
+<li>6N + 4 diagonals (face diagonals + space diagonals)</li>
+</ul>
+<p>The counter approach extends naturally but requires more counters:</p>
+<pre><code class="language-python"># 3D counters
+self.xy_planes = [[0] * n for _ in range(n)]  # n^2 horizontal lines per z
+self.xz_planes = [[0] * n for _ in range(n)]  # n^2 lines per y
+self.yz_planes = [[0] * n for _ in range(n)]  # n^2 lines per x
+
+# Face diagonals: 6 faces * 2 diagonals = 12 counters
+# Space diagonals: 4 counters (corner to corner through center)
+self.space_diagonals = [0] * 4
+</code></pre>
+<p>A cell (x, y, z) is on a space diagonal if:</p>
+<ul>
+<li>x == y == z (main space diagonal)</li>
+<li>x == y == n-1-z (etc. for other 3)</li>
+</ul>
+</div>
+<hr />
+<h2 id="section-3-nxn-board-extensibility">Section 3: NxN Board Extensibility</h2>
+<h3 id="architectural-considerations">Architectural Considerations</h3>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Scaling Dimensions</h4>
+<table style="width: 100%; color: #1e293b; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 12px">Board Size</th>
+<th style="text-align: left; padding: 12px">Total States</th>
+<th style="text-align: left; padding: 12px">AI Feasibility</th>
+<th style="text-align: left; padding: 12px">Typical Use</th>
+</tr>
+<tr >
+<td style="padding: 12px">3x3</td>
+<td style="padding: 12px">~5,500</td>
+<td style="padding: 12px; color: #22c55e">Perfect play (minimax)</td>
+<td style="padding: 12px">Classic game</td>
+</tr>
+<tr >
+<td style="padding: 12px">4x4</td>
+<td style="padding: 12px">~6 million</td>
+<td style="padding: 12px; color: #22c55e">Perfect play with pruning</td>
+<td style="padding: 12px">Extended variant</td>
+</tr>
+<tr >
+<td style="padding: 12px">5x5 (4 to win)</td>
+<td style="padding: 12px">~10^12</td>
+<td style="padding: 12px; color: #c2410c">Heuristic required</td>
+<td style="padding: 12px">Gomoku variant</td>
+</tr>
+<tr >
+<td style="padding: 12px">15x15 (5 to win)</td>
+<td style="padding: 12px">~3^225</td>
+<td style="padding: 12px; color: #ef4444">MCTS or neural nets</td>
+<td style="padding: 12px">Gomoku</td>
+</tr>
+<tr>
+<td style="padding: 12px">19x19 (5 to win)</td>
+<td style="padding: 12px">~3^361</td>
+<td style="padding: 12px; color: #ef4444">AlphaGo-style</td>
+<td style="padding: 12px">Go (different rules)</td>
+</tr>
+</table>
+</div>
+<h3 id="configurable-win-conditions">Configurable Win Conditions</h3>
+<pre><code class="language-python">class ConfigurableTicTacToe:
+    &quot;&quot;&quot;
+    NxN board with M-in-a-row win condition.
+
+    Design decisions:
+    1. M &lt;= N enforced (can't win with more than board allows)
+    2. M &gt;= 2 enforced (1-in-a-row is trivially won)
+    3. Draws detected when board full OR when no winning lines possible
+
+    Edge case: N=10, M=10 behaves like standard NxN
+    Edge case: N=10, M=3 has many overlapping win possibilities
+    &quot;&quot;&quot;
+
+    def __init__(self, n: int = 3, m: Optional[int] = None,
+                 players: List[Player] = None):
+        &quot;&quot;&quot;
+        Args:
+            n: Board size (n x n)
+            m: Win condition (m in a row). Defaults to n.
+            players: List of players for multi-player support
+        &quot;&quot;&quot;
+        if n &lt; 2:
+            raise ValueError(&quot;Board size must be at least 2x2&quot;)
+
+        self.n = n
+        self.m = m if m is not None else n
+
+        if self.m &gt; n:
+            raise ValueError(f&quot;Win condition {self.m} &gt; board size {n}&quot;)
+        if self.m &lt; 2:
+            raise ValueError(&quot;Win condition must be at least 2&quot;)
+
+        # Multi-player support
+        self.players = players or [Player.X, Player.O]
+        self.current_player_idx = 0
+
+        self.board: List[List[Optional[Player]]] = [
+            [None] * n for _ in range(n)
+        ]
+        self.state = GameState.IN_PROGRESS
+        self.moves_count = 0
+
+        # Choose appropriate win detector
+        if self.m == n:
+            self._win_detector = CounterBasedWinDetector(n)
+        else:
+            self._win_detector = DirectionBasedWinDetector(n, self.m)
+
+    @property
+    def current_player(self) -&gt; Player:
+        return self.players[self.current_player_idx]
+
+    def _advance_player(self) -&gt; None:
+        &quot;&quot;&quot;Cycle to next player (supports &gt; 2 players).&quot;&quot;&quot;
+        self.current_player_idx = (
+            (self.current_player_idx + 1) % len(self.players)
+        )
+
+    def make_move(self, row: int, col: int) -&gt; GameState:
+        &quot;&quot;&quot;Execute move with dynamic win detection strategy.&quot;&quot;&quot;
+        # ... validation ...
+
+        player = self.current_player
+        self.board[row][col] = player
+        self.moves_count += 1
+
+        # Delegate to appropriate win detector
+        if self._win_detector.check_win(self.board, row, col, player):
+            self.state = self._get_win_state(player)
+        elif self._is_draw():
+            self.state = GameState.DRAW
+        else:
+            self._advance_player()
+
+        return self.state
+
+    def _is_draw(self) -&gt; bool:
+        &quot;&quot;&quot;
+        Check for draw condition.
+
+        Simple: Board is full
+        Advanced: No winnable lines remain (early draw detection)
+        &quot;&quot;&quot;
+        if self.moves_count &lt; self.n * self.n:
+            # Board not full - check if any winnable lines exist
+            # This is expensive O(n^2 * m) so we only do it periodically
+            if self.moves_count &gt; self.n * self.n * 0.7:  # After 70% full
+                return not self._has_winnable_line()
+            return False
+        return True
+
+    def _has_winnable_line(self) -&gt; bool:
+        &quot;&quot;&quot;Check if any player can still win.&quot;&quot;&quot;
+        # Check all possible M-length sequences
+        for r in range(self.n):
+            for c in range(self.n):
+                for dr, dc in [(0,1), (1,0), (1,1), (1,-1)]:
+                    if self._is_line_winnable(r, c, dr, dc):
+                        return True
+        return False
+
+    def _is_line_winnable(self, r: int, c: int, dr: int, dc: int) -&gt; bool:
+        &quot;&quot;&quot;Check if the M-length line starting at (r,c) is winnable.&quot;&quot;&quot;
+        players_in_line = set()
+        for i in range(self.m):
+            nr, nc = r + dr * i, c + dc * i
+            if not (0 &lt;= nr &lt; self.n and 0 &lt;= nc &lt; self.n):
+                return False  # Line goes out of bounds
+            if self.board[nr][nc] is not None:
+                players_in_line.add(self.board[nr][nc])
+
+        # Winnable if at most one player has marks in this line
+        return len(players_in_line) &lt;= 1
+</code></pre>
+<h3 id="strategy-pattern-for-win-detection">Strategy Pattern for Win Detection</h3>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+
+
+class WinDetector(ABC):
+    &quot;&quot;&quot;Abstract base for win detection strategies.&quot;&quot;&quot;
+
+    @abstractmethod
+    def check_win(
+        self,
+        board: List[List[Optional[Player]]],
+        row: int,
+        col: int,
+        player: Player
+    ) -&gt; bool:
+        &quot;&quot;&quot;Check if the last move at (row, col) wins for player.&quot;&quot;&quot;
+        pass
+
+    @abstractmethod
+    def update(self, row: int, col: int, player: Player, delta: int) -&gt; None:
+        &quot;&quot;&quot;Update internal state for a move (or undo with delta=-1).&quot;&quot;&quot;
+        pass
+
+
+class CounterBasedWinDetector(WinDetector):
+    &quot;&quot;&quot;O(1) detection for N-in-a-row on NxN board.&quot;&quot;&quot;
+
+    def __init__(self, n: int):
+        self.n = n
+        self.rows = {Player.X: [0]*n, Player.O: [0]*n}
+        self.cols = {Player.X: [0]*n, Player.O: [0]*n}
+        self.diag = {Player.X: 0, Player.O: 0}
+        self.anti_diag = {Player.X: 0, Player.O: 0}
+
+    def check_win(self, board, row, col, player) -&gt; bool:
+        n = self.n
+        return (
+            self.rows[player][row] == n or
+            self.cols[player][col] == n or
+            (row == col and self.diag[player] == n) or
+            (row + col == n - 1 and self.anti_diag[player] == n)
+        )
+
+    def update(self, row, col, player, delta) -&gt; None:
+        self.rows[player][row] += delta
+        self.cols[player][col] += delta
+        if row == col:
+            self.diag[player] += delta
+        if row + col == self.n - 1:
+            self.anti_diag[player] += delta
+
+
+class DirectionBasedWinDetector(WinDetector):
+    &quot;&quot;&quot;O(m) detection for M-in-a-row on NxN board.&quot;&quot;&quot;
+
+    DIRECTIONS = [(0, 1), (1, 0), (1, 1), (1, -1)]
+
+    def __init__(self, n: int, m: int):
+        self.n = n
+        self.m = m
+
+    def check_win(self, board, row, col, player) -&gt; bool:
+        for dr, dc in self.DIRECTIONS:
+            count = 1
+            count += self._count_dir(board, row, col, dr, dc, player)
+            count += self._count_dir(board, row, col, -dr, -dc, player)
+            if count &gt;= self.m:
+                return True
+        return False
+
+    def _count_dir(self, board, row, col, dr, dc, player) -&gt; int:
+        count = 0
+        r, c = row + dr, col + dc
+        while (0 &lt;= r &lt; self.n and 0 &lt;= c &lt; self.n and
+               board[r][c] == player and count &lt; self.m):
+            count += 1
+            r += dr
+            c += dc
+        return count
+
+    def update(self, row, col, player, delta) -&gt; None:
+        pass  # Stateless - board is source of truth
+</code></pre>
+<h3 id="interview-questions---nxn-extensibility">Interview Questions - NxN Extensibility</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
+<p><strong>Q1: What breaks when you scale from 3x3 to 100x100?</strong></p>
+<ol>
+<li><strong>Memory</strong>: Board alone is 10,000 cells; acceptable</li>
+<li><strong>Win check</strong>: O(1) with counters still works</li>
+<li><strong>AI (minimax)</strong>: Completely infeasible - game tree explodes</li>
+<li><strong>Draw detection</strong>: Scanning all lines becomes O(n^2) per check</li>
+<li><strong>Rendering</strong>: Console output becomes impractical</li>
+</ol>
+<p><strong>Q2: For a 10x10 board with 4-in-a-row, what's the maximum number of ways a single move can contribute to a win?</strong></p>
+<p>Each direction can have up to 4 winning sequences passing through a cell:</p>
+<ul>
+<li>Horizontal: cells at positions (col-3, col-2, col-1, col) through (col, col+1, col+2, col+3)</li>
+<li>Same for vertical and two diagonals</li>
+</ul>
+<p>Maximum: 4 directions x 4 sequences = 16 potential winning contributions.<br />
+For a center cell, it could complete any of these 16.</p>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Architecture Decisions</h4>
+<p><strong>Q3: How would you implement &quot;Misere&quot; Tic Tac Toe (getting N-in-a-row LOSES)?</strong></p>
+<p>Minimal change - just invert the win detection outcome:</p>
+<pre><code class="language-python">def make_move(self, row, col):
+    # ... existing logic ...
+    if self._check_win(player, row, col):
+        # Player who completed N-in-a-row LOSES
+        self.state = GameState.O_WINS if player == Player.X else GameState.X_WINS
+</code></pre>
+<p>For AI, also invert the evaluation function - maximize opponent's winning moves.</p>
+<p><strong>Q4: Design the system to support multiple game variants (standard, misere, 3D, hex) with minimal code duplication.</strong></p>
+<p>Use the <a href="/topics/design-patterns/strategy">[Strategy Pattern]</a> for pluggable components:</p>
+<pre><code class="language-python">class GameEngine:
+    def __init__(
+        self,
+        board: BoardInterface,
+        win_detector: WinDetectorInterface,
+        move_validator: ValidatorInterface,
+        state_evaluator: EvaluatorInterface  # For AI
+    ):
+        self.board = board
+        self.win_detector = win_detector
+        self.validator = move_validator
+        self.evaluator = state_evaluator
+</code></pre>
+<p>Variants only need to provide their own implementations of these interfaces.</p>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: Performance at Scale</h4>
+<p><strong>Q5: You need to support 1000x1000 boards for a massively multiplayer variant. What architectural changes are needed?</strong></p>
+<ol>
+<li>
+<p><strong>Sparse board representation</strong>: Use <code>Dict[(row, col), Player]</code> instead of 2D array</p>
+<ul>
+<li>10^6 cells but typically &lt; 1000 occupied</li>
+</ul>
+</li>
+<li>
+<p><strong>Chunked win detection</strong>: Divide board into regions, only check affected region</p>
+</li>
+<li>
+<p><strong>Lazy loading</strong>: For networked games, only load visible portion</p>
+</li>
+<li>
+<p><strong>Distributed state</strong>: Shard board across servers by region</p>
+</li>
+</ol>
+<pre><code class="language-python">class SparseBoard:
+    def __init__(self, n: int):
+        self.n = n
+        self.cells: Dict[Tuple[int, int], Player] = {}
+
+    def get(self, row: int, col: int) -&gt; Optional[Player]:
+        return self.cells.get((row, col))
+
+    def set(self, row: int, col: int, player: Player) -&gt; None:
+        self.cells[(row, col)] = player
+
+    def occupied_count(self) -&gt; int:
+        return len(self.cells)
+</code></pre>
+<p><strong>Q6: How would you implement &quot;territory&quot; mode where each player starts with pre-placed pieces?</strong></p>
+<ol>
+<li><strong>Initialization hook</strong>: <code>configure_initial_state(placements: List[Tuple[int, int, Player]])</code></li>
+<li><strong>Counter synchronization</strong>: After placing initial pieces, update all counters</li>
+<li><strong>Turn determination</strong>: First player could be based on piece count parity</li>
+<li><strong>Validation update</strong>: Ensure initial placements don't already contain wins</li>
+</ol>
+<pre><code class="language-python">def configure_initial_state(self, placements):
+    for row, col, player in placements:
+        self.board[row][col] = player
+        self._update_counters(row, col, player, delta=1)
+        self.moves_count += 1
+
+    # Validate no pre-existing wins
+    for row, col, player in placements:
+        if self._check_win(player, row, col):
+            raise ValueError(&quot;Initial configuration contains a win&quot;)
+</code></pre>
+</div>
+<hr />
+<h2 id="section-4-ai-opponent-minimax-with-alpha-beta-pruning">Section 4: AI Opponent (Minimax with Alpha-Beta Pruning)</h2>
+<h3 id="game-theory-foundation">Game Theory Foundation</h3>
+<p>Tic Tac Toe is a <a href="/topics/algorithms/game-theory">[zero-sum game]</a> with <a href="/topics/algorithms/game-theory">[perfect information]</a>. This means:</p>
+<ol>
+<li><strong>Zero-sum</strong>: One player's gain is exactly the other's loss</li>
+<li><strong>Perfect information</strong>: Both players see the complete game state</li>
+<li><strong>Deterministic</strong>: No randomness affects outcomes</li>
+<li><strong>Finite</strong>: Game always terminates</li>
+</ol>
+<p>These properties guarantee that an optimal strategy exists and can be computed.</p>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Minimax Game Tree Concept</h4>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px">
+<div style="background: #238636; color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: bold">
+MAX Layer (AI's turn) - Chooses highest value
+</div>
+<div style="color: #64748b; font-size: 24px">|</div>
+<div style="display: flex; gap: 40px">
+<div style="background: #1f6feb; color: #fff; padding: 10px 20px; border-radius: 6px">Score: 0</div>
+<div style="background: #1f6feb; color: #fff; padding: 10px 20px; border-radius: 6px">Score: +10</div>
+<div style="background: #1f6feb; color: #fff; padding: 10px 20px; border-radius: 6px">Score: -10</div>
+</div>
+<div style="color: #64748b; font-size: 24px">|</div>
+<div style="background: #f85149; color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: bold">
+MIN Layer (Opponent's turn) - Chooses lowest value
+</div>
+<div style="color: #64748b; font-size: 12px; margin-top: 8px">
+Scores: +10 = AI wins, -10 = Opponent wins, 0 = Draw
+</div>
+</div>
+</div>
+<h3 id="complete-minimax-implementation">Complete Minimax Implementation</h3>
+<pre><code class="language-python">from typing import Optional, Tuple
+from functools import lru_cache
+import math
+
+
+class TicTacToeAI:
+    &quot;&quot;&quot;
+    Unbeatable AI using Minimax with Alpha-Beta pruning.
+
+    Guaranteed outcomes:
+    - AI plays first: AI wins or draws
+    - AI plays second: AI draws (cannot force win against perfect play)
+
+    Complexity:
+    - Without pruning: O(b^d) where b=branching factor, d=depth
+    - With alpha-beta: O(b^(d/2)) in best case (move ordering)
+    - For 3x3: Maximum ~5500 states, but pruning reduces to ~150
+    &quot;&quot;&quot;
+
+    def __init__(self, game: TicTacToe, ai_player: Player = Player.O):
+        self.game = game
+        self.ai_player = ai_player
+        self.human_player = ai_player.opponent
+        self.nodes_evaluated = 0  # For performance analysis
+
+    def get_best_move(self) -&gt; Optional[Tuple[int, int]]:
+        &quot;&quot;&quot;
+        Find the optimal move for the AI player.
+
+        Returns None if game is over or not AI's turn.
+
+        Implementation note: We try center and corners first
+        as these are strategically stronger, improving pruning.
+        &quot;&quot;&quot;
+        if self.game.state.is_terminal:
+            return None
+
+        if self.game.current_player != self.ai_player:
+            return None
+
+        self.nodes_evaluated = 0
+        best_score = -math.inf
+        best_move = None
+        alpha = -math.inf
+        beta = math.inf
+
+        # Move ordering for better pruning
+        moves = self._order_moves(self.game.get_valid_moves())
+
+        for row, col in moves:
+            self.game.make_move(row, col)
+            score = self._minimax(
+                depth=0,
+                is_maximizing=False,  # Next move is opponent's
+                alpha=alpha,
+                beta=beta
+            )
+            self.game.undo()
+
+            if score &gt; best_score:
+                best_score = score
+                best_move = (row, col)
+
+            alpha = max(alpha, score)
+
+        return best_move
+
+    def _order_moves(self, moves: List[Tuple[int, int]]) -&gt; List[Tuple[int, int]]:
+        &quot;&quot;&quot;
+        Order moves for better alpha-beta pruning.
+
+        Strategic priority:
+        1. Center (highest connectivity)
+        2. Corners (second highest)
+        3. Edges (lowest strategic value)
+
+        This ordering can reduce nodes evaluated by 50%+
+        &quot;&quot;&quot;
+        n = self.game.n
+        center = n // 2
+
+        def priority(move):
+            r, c = move
+            if r == center and c == center:
+                return 0  # Highest priority
+            if (r in (0, n-1)) and (c in (0, n-1)):
+                return 1  # Corners
+            return 2  # Edges
+
+        return sorted(moves, key=priority)
+
+    def _minimax(
+        self,
+        depth: int,
+        is_maximizing: bool,
+        alpha: float,
+        beta: float
+    ) -&gt; int:
+        &quot;&quot;&quot;
+        Minimax algorithm with alpha-beta pruning.
+
+        Args:
+            depth: Current search depth (for depth-preferring scores)
+            is_maximizing: True if AI's turn (maximize), False if opponent's
+            alpha: Best score AI can guarantee (lower bound)
+            beta: Best score opponent can guarantee (upper bound)
+
+        Returns:
+            Score evaluation: positive favors AI, negative favors opponent
+
+        The depth parameter is crucial: we prefer winning sooner
+        and losing later, so we subtract depth from win scores.
+        &quot;&quot;&quot;
+        self.nodes_evaluated += 1
+
+        # Terminal state evaluation
+        if self.game.state.is_terminal:
+            return self._evaluate_terminal(depth)
+
+        if is_maximizing:
+            max_score = -math.inf
+            for row, col in self._order_moves(self.game.get_valid_moves()):
+                self.game.make_move(row, col)
+                score = self._minimax(depth + 1, False, alpha, beta)
+                self.game.undo()
+
+                max_score = max(max_score, score)
+                alpha = max(alpha, score)
+
+                # Beta cutoff - opponent won't allow this branch
+                if beta &lt;= alpha:
+                    break
+
+            return max_score
+        else:
+            min_score = math.inf
+            for row, col in self._order_moves(self.game.get_valid_moves()):
+                self.game.make_move(row, col)
+                score = self._minimax(depth + 1, True, alpha, beta)
+                self.game.undo()
+
+                min_score = min(min_score, score)
+                beta = min(beta, score)
+
+                # Alpha cutoff - AI won't allow this branch
+                if beta &lt;= alpha:
+                    break
+
+            return min_score
+
+    def _evaluate_terminal(self, depth: int) -&gt; int:
+        &quot;&quot;&quot;
+        Evaluate a terminal game state.
+
+        Scoring:
+        - AI wins: +10 - depth (prefer faster wins)
+        - Opponent wins: -10 + depth (prefer slower losses)
+        - Draw: 0
+
+        The depth adjustment ensures the AI:
+        1. Takes immediate wins over delayed wins
+        2. Delays losses as long as possible (opponent might blunder)
+        &quot;&quot;&quot;
+        if self.game.state == GameState.DRAW:
+            return 0
+
+        # Determine winner
+        winner = (Player.X if self.game.state == GameState.X_WINS
+                  else Player.O)
+
+        if winner == self.ai_player:
+            return 10 - depth  # Win sooner is better
+        else:
+            return depth - 10  # Lose later is better
+
+    def analyze_position(self) -&gt; dict:
+        &quot;&quot;&quot;
+        Analyze current position for debugging/UI.
+
+        Returns evaluation and best line of play.
+        &quot;&quot;&quot;
+        if self.game.state.is_terminal:
+            return {&quot;terminal&quot;: True, &quot;state&quot;: self.game.state}
+
+        move = self.get_best_move()
+
+        return {
+            &quot;best_move&quot;: move,
+            &quot;nodes_evaluated&quot;: self.nodes_evaluated,
+            &quot;position_score&quot;: self._get_position_score(),
+        }
+
+    def _get_position_score(self) -&gt; int:
+        &quot;&quot;&quot;Get static position score without full search.&quot;&quot;&quot;
+        self.game.make_move(*self.get_best_move())
+        score = self._minimax(0, False, -math.inf, math.inf)
+        self.game.undo()
+        return score
+</code></pre>
+<h3 id="advanced-transposition-tables-and-memoization">Advanced: Transposition Tables and Memoization</h3>
+<p>For larger boards, we need <a href="/topics/algorithms/dynamic-programming">[memoization]</a> to avoid recomputing identical positions:</p>
+<pre><code class="language-python">class TicTacToeAIWithMemo:
+    &quot;&quot;&quot;
+    Enhanced AI with transposition table (memoization).
+
+    Key insight: Many move sequences lead to the same board position.
+    Example: X(0,0)-&gt;O(1,1)-&gt;X(0,1) == X(0,1)-&gt;O(1,1)-&gt;X(0,0)
+
+    Transposition table stores: board_hash -&gt; (score, depth)
+    This can reduce computation by 80%+ for 4x4 boards.
+    &quot;&quot;&quot;
+
+    def __init__(self, game: TicTacToe, ai_player: Player = Player.O):
+        self.game = game
+        self.ai_player = ai_player
+        self.transposition_table: Dict[int, Tuple[int, int, int]] = {}
+        # Entry format: (score, depth, flag) where flag indicates bound type
+        self.EXACT = 0
+        self.LOWER = 1  # Alpha cutoff
+        self.UPPER = 2  # Beta cutoff
+
+    def _board_hash(self) -&gt; int:
+        &quot;&quot;&quot;
+        Compute hash of current board state.
+
+        Using tuple of tuples for immutability and hashability.
+        For larger boards, consider Zobrist hashing for O(1) incremental updates.
+        &quot;&quot;&quot;
+        return hash(tuple(
+            tuple(cell.value if cell else '.' for cell in row)
+            for row in self.game.board
+        ))
+
+    def _minimax_with_tt(
+        self,
+        depth: int,
+        is_max: bool,
+        alpha: float,
+        beta: float
+    ) -&gt; int:
+        &quot;&quot;&quot;Minimax with transposition table lookup.&quot;&quot;&quot;
+
+        # Check transposition table
+        board_hash = self._board_hash()
+        if board_hash in self.transposition_table:
+            tt_score, tt_depth, tt_flag = self.transposition_table[board_hash]
+
+            if tt_depth &gt;= depth:  # Stored result is deep enough
+                if tt_flag == self.EXACT:
+                    return tt_score
+                elif tt_flag == self.LOWER and tt_score &gt; alpha:
+                    alpha = tt_score
+                elif tt_flag == self.UPPER and tt_score &lt; beta:
+                    beta = tt_score
+
+                if alpha &gt;= beta:
+                    return tt_score
+
+        # Terminal check
+        if self.game.state.is_terminal:
+            return self._evaluate_terminal(depth)
+
+        # ... standard minimax logic ...
+
+        # Store result in transposition table
+        if best_score &lt;= alpha:
+            flag = self.UPPER
+        elif best_score &gt;= beta:
+            flag = self.LOWER
+        else:
+            flag = self.EXACT
+
+        self.transposition_table[board_hash] = (best_score, depth, flag)
+
+        return best_score
+</code></pre>
+<h3 id="zobrist-hashing-for-incremental-updates">Zobrist Hashing for Incremental Updates</h3>
+<pre><code class="language-python">import random
+
+
+class ZobristHasher:
+    &quot;&quot;&quot;
+    Zobrist hashing for O(1) incremental board hash updates.
+
+    Concept: Each (position, piece) combination has a random number.
+    Board hash = XOR of all pieces' random numbers.
+
+    Incremental update: hash ^= zobrist[pos][old_piece] ^ zobrist[pos][new_piece]
+
+    This avoids O(n^2) rehashing after every move.
+    &quot;&quot;&quot;
+
+    def __init__(self, n: int, seed: int = 42):
+        random.seed(seed)  # Reproducible for debugging
+
+        # Random values for each (row, col, player) combination
+        self.table = {
+            Player.X: [[random.getrandbits(64) for _ in range(n)] for _ in range(n)],
+            Player.O: [[random.getrandbits(64) for _ in range(n)] for _ in range(n)],
+        }
+
+        # Random value for &quot;whose turn&quot; - changes every move
+        self.turn_key = random.getrandbits(64)
+
+        self.current_hash = 0
+
+    def make_move(self, row: int, col: int, player: Player) -&gt; int:
+        &quot;&quot;&quot;Update hash for a move. Returns new hash.&quot;&quot;&quot;
+        self.current_hash ^= self.table[player][row][col]
+        self.current_hash ^= self.turn_key
+        return self.current_hash
+
+    def undo_move(self, row: int, col: int, player: Player) -&gt; int:
+        &quot;&quot;&quot;Undo hash update. XOR is its own inverse.&quot;&quot;&quot;
+        self.current_hash ^= self.table[player][row][col]
+        self.current_hash ^= self.turn_key
+        return self.current_hash
+</code></pre>
+<h3 id="interview-questions---ai-opponent">Interview Questions - AI Opponent</h3>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
+<p><strong>Q1: Why do we subtract depth from the win score?</strong></p>
+<p>Without depth adjustment, the AI treats all wins equally. It might delay a guaranteed win by several moves, which:</p>
+<ol>
+<li>Gives the opponent more chances to exploit bugs</li>
+<li>Appears &quot;stupid&quot; to human observers</li>
+<li>In time-limited games, could run out of time</li>
+</ol>
+<p>By preferring <code>10 - depth</code> over <code>10 - (depth + 2)</code>, the AI takes immediate wins.</p>
+<p><strong>Q2: What happens if we use DFS instead of minimax?</strong></p>
+<p>DFS doesn't consider opponent strategy - it just explores one path. Minimax assumes the opponent plays optimally (worst case for us). DFS might find a winning path that relies on opponent mistakes, which a perfect opponent won't make.</p>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Algorithm Optimization</h4>
+<p><strong>Q3: Alpha-beta pruning depends on move ordering. How would you learn good move ordering?</strong></p>
+<ol>
+<li>
+<p><strong>History heuristic</strong>: Track which moves caused cutoffs historically. Moves that frequently cause cutoffs are likely good.</p>
+</li>
+<li>
+<p><strong>Killer move heuristic</strong>: Store moves that caused cutoffs at each depth. Try them first at the same depth in other branches.</p>
+</li>
+<li>
+<p><strong>Iterative deepening</strong>: Search to depth 1, then 2, then 3... Use move ordering from depth d-1 for depth d.</p>
+</li>
+</ol>
+<pre><code class="language-python">def iterative_deepening_search(self, max_depth: int):
+    best_move = None
+    for depth in range(1, max_depth + 1):
+        best_move = self._search_to_depth(depth, best_move_hint=best_move)
+    return best_move
+</code></pre>
+<p><strong>Q4: How would you add difficulty levels to the AI?</strong></p>
+<p>Several approaches:</p>
+<ol>
+<li><strong>Depth limiting</strong>: Easy mode searches only 2 moves ahead</li>
+<li><strong>Epsilon-greedy</strong>: With probability ε, pick a random move instead of optimal</li>
+<li><strong>Temperature sampling</strong>: Convert scores to probabilities via softmax, sample</li>
+</ol>
+<pre><code class="language-python">def get_move_with_difficulty(self, difficulty: float) -&gt; Tuple[int, int]:
+    &quot;&quot;&quot;
+    difficulty: 0.0 = random, 1.0 = perfect
+    &quot;&quot;&quot;
+    if random.random() &gt; difficulty:
+        # Random move
+        return random.choice(self.game.get_valid_moves())
+
+    # Optimal move
+    return self.get_best_move()
+</code></pre>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: Advanced Techniques</h4>
+<p><strong>Q5: For a 10x10 board (5-in-a-row), minimax is infeasible. What alternatives exist?</strong></p>
+<ol>
+<li>
+<p><strong>Monte Carlo Tree Search (MCTS)</strong>:</p>
+<ul>
+<li>Random playouts to estimate position value</li>
+<li>Scales to huge state spaces (used in AlphaGo)</li>
+<li>Balances exploration vs exploitation</li>
+</ul>
+</li>
+<li>
+<p><strong>Heuristic evaluation + limited depth</strong>:</p>
+<ul>
+<li>Define static evaluation function (material, position, threats)</li>
+<li>Search only 4-6 moves ahead</li>
+<li>Evaluate leaf nodes with heuristics</li>
+</ul>
+</li>
+<li>
+<p><strong>Neural network evaluation</strong>:</p>
+<ul>
+<li>Train network to predict game outcome from position</li>
+<li>Use as evaluation function in shallow search</li>
+</ul>
+</li>
+</ol>
+<pre><code class="language-python">def heuristic_evaluate(self, board) -&gt; float:
+    &quot;&quot;&quot;
+    Static evaluation for non-terminal positions.
+
+    Features:
+    - Number of open lines (can still win)
+    - Threats (3-in-a-row with open ends)
+    - Center control
+    &quot;&quot;&quot;
+    score = 0
+
+    # Count open lines for each player
+    for player in [Player.X, Player.O]:
+        multiplier = 1 if player == self.ai_player else -1
+
+        open_fours = self._count_open_n(board, player, 4)
+        open_threes = self._count_open_n(board, player, 3)
+        open_twos = self._count_open_n(board, player, 2)
+
+        score += multiplier * (open_fours * 100 + open_threes * 10 + open_twos)
+
+    return score
+</code></pre>
+<p><strong>Q6: Explain how you would implement negamax as a simplification of minimax.</strong></p>
+<p>Negamax exploits the zero-sum property: <code>max(a, b) = -min(-a, -b)</code></p>
+<p>Instead of separate maximizing and minimizing logic, always maximize but negate the recursive result:</p>
+<pre><code class="language-python">def negamax(self, depth: int, alpha: float, beta: float, sign: int) -&gt; int:
+    &quot;&quot;&quot;
+    Negamax: simplified minimax using score negation.
+
+    sign: +1 if current player is AI, -1 if opponent
+    &quot;&quot;&quot;
+    if self.game.state.is_terminal:
+        return sign * self._evaluate_terminal(depth)
+
+    best = -math.inf
+    for move in self.game.get_valid_moves():
+        self.game.make_move(*move)
+        # Key insight: negate both the result AND swap alpha/beta
+        score = -self.negamax(depth + 1, -beta, -alpha, -sign)
+        self.game.undo()
+
+        best = max(best, score)
+        alpha = max(alpha, score)
+        if alpha &gt;= beta:
+            break
+
+    return best
+</code></pre>
+<p>This halves the code while maintaining identical behavior.</p>
+</div>
+<hr />
+<h2 id="complete-implementation---go">Complete Implementation - Go</h2>
+<pre><code class="language-go">package tictactoe
+
+import (
+	&quot;errors&quot;
+	&quot;fmt&quot;
+	&quot;math&quot;
+)
+
+// Player represents a game participant
+type Player int
+
+const (
+	Empty Player = iota
+	PlayerX
+	PlayerO
+)
+
+func (p Player) String() string {
+	switch p {
+	case PlayerX:
+		return &quot;X&quot;
+	case PlayerO:
+		return &quot;O&quot;
+	default:
+		return &quot; &quot;
+	}
+}
+
+func (p Player) Opponent() Player {
+	if p == PlayerX {
+		return PlayerO
+	}
+	return PlayerX
+}
+
+// GameState represents the current game status
+type GameState int
+
+const (
+	InProgress GameState = iota
+	XWins
+	OWins
+	Draw
+)
+
+func (s GameState) IsTerminal() bool {
+	return s != InProgress
+}
+
+// Move represents a single game action
+type Move struct {
+	Row    int
+	Col    int
+	Player Player
+}
+
+// TicTacToe is the main game controller
+type TicTacToe struct {
+	N             int
+	Board         [][]Player
+	CurrentPlayer Player
+	State         GameState
+	MovesCount    int
+	MoveHistory   []Move
+
+	// O(1) win detection counters
+	rows     map[Player][]int
+	cols     map[Player][]int
+	diag     map[Player]int
+	antiDiag map[Player]int
+}
+
+// NewTicTacToe creates a new game with the specified board size
+func NewTicTacToe(n int) (*TicTacToe, error) {
+	if n &lt; 2 {
+		return nil, errors.New(&quot;board size must be at least 2&quot;)
+	}
+
+	board := make([][]Player, n)
+	for i := range board {
+		board[i] = make([]Player, n)
+	}
+
+	return &amp;TicTacToe{
+		N:             n,
+		Board:         board,
+		CurrentPlayer: PlayerX,
+		State:         InProgress,
+		rows: map[Player][]int{
+			PlayerX: make([]int, n),
+			PlayerO: make([]int, n),
+		},
+		cols: map[Player][]int{
+			PlayerX: make([]int, n),
+			PlayerO: make([]int, n),
+		},
+		diag:     map[Player]int{PlayerX: 0, PlayerO: 0},
+		antiDiag: map[Player]int{PlayerX: 0, PlayerO: 0},
+	}, nil
+}
+
+// MakeMove executes a move with full validation
+func (g *TicTacToe) MakeMove(row, col int) (GameState, error) {
+	if err := g.validateMove(row, col); err != nil {
+		return g.State, err
+	}
+
+	player := g.CurrentPlayer
+	g.Board[row][col] = player
+	g.MovesCount++
+	g.MoveHistory = append(g.MoveHistory, Move{row, col, player})
+
+	g.updateCounters(row, col, player, 1)
+
+	if g.checkWin(player, row, col) {
+		if player == PlayerX {
+			g.State = XWins
+		} else {
+			g.State = OWins
+		}
+	} else if g.MovesCount == g.N*g.N {
+		g.State = Draw
+	} else {
+		g.CurrentPlayer = player.Opponent()
+	}
+
+	return g.State, nil
+}
+
+func (g *TicTacToe) validateMove(row, col int) error {
+	if g.State.IsTerminal() {
+		return fmt.Errorf(&quot;game is already over: %v&quot;, g.State)
+	}
+	if row &lt; 0 || row &gt;= g.N || col &lt; 0 || col &gt;= g.N {
+		return fmt.Errorf(&quot;move (%d, %d) out of bounds&quot;, row, col)
+	}
+	if g.Board[row][col] != Empty {
+		return fmt.Errorf(&quot;cell (%d, %d) already occupied&quot;, row, col)
+	}
+	return nil
+}
+
+func (g *TicTacToe) updateCounters(row, col int, player Player, delta int) {
+	g.rows[player][row] += delta
+	g.cols[player][col] += delta
+	if row == col {
+		g.diag[player] += delta
+	}
+	if row+col == g.N-1 {
+		g.antiDiag[player] += delta
+	}
+}
+
+func (g *TicTacToe) checkWin(player Player, row, col int) bool {
+	n := g.N
+	return g.rows[player][row] == n ||
+		g.cols[player][col] == n ||
+		(row == col &amp;&amp; g.diag[player] == n) ||
+		(row+col == n-1 &amp;&amp; g.antiDiag[player] == n)
+}
+
+// Undo reverses the last move
+func (g *TicTacToe) Undo() bool {
+	if len(g.MoveHistory) == 0 {
+		return false
+	}
+
+	move := g.MoveHistory[len(g.MoveHistory)-1]
+	g.MoveHistory = g.MoveHistory[:len(g.MoveHistory)-1]
+
+	g.Board[move.Row][move.Col] = Empty
+	g.MovesCount--
+	g.updateCounters(move.Row, move.Col, move.Player, -1)
+	g.CurrentPlayer = move.Player
+	g.State = InProgress
+
+	return true
+}
+
+// GetValidMoves returns all legal move positions
+func (g *TicTacToe) GetValidMoves() [][2]int {
+	if g.State.IsTerminal() {
+		return nil
+	}
+
+	var moves [][2]int
+	for r := 0; r &lt; g.N; r++ {
+		for c := 0; c &lt; g.N; c++ {
+			if g.Board[r][c] == Empty {
+				moves = append(moves, [2]int{r, c})
+			}
+		}
+	}
+	return moves
+}
+
+// AI implements minimax with alpha-beta pruning
+type AI struct {
+	game      *TicTacToe
+	aiPlayer  Player
+	evaluated int
+}
+
+// NewAI creates an AI opponent
+func NewAI(game *TicTacToe, player Player) *AI {
+	return &amp;AI{
+		game:     game,
+		aiPlayer: player,
+	}
+}
+
+// GetBestMove returns the optimal move for the AI
+func (ai *AI) GetBestMove() (*[2]int, error) {
+	if ai.game.State.IsTerminal() {
+		return nil, errors.New(&quot;game is over&quot;)
+	}
+	if ai.game.CurrentPlayer != ai.aiPlayer {
+		return nil, errors.New(&quot;not AI's turn&quot;)
+	}
+
+	ai.evaluated = 0
+	bestScore := math.Inf(-1)
+	var bestMove *[2]int
+
+	for _, move := range ai.orderMoves(ai.game.GetValidMoves()) {
+		ai.game.MakeMove(move[0], move[1])
+		score := ai.minimax(0, false, math.Inf(-1), math.Inf(1))
+		ai.game.Undo()
+
+		if score &gt; bestScore {
+			bestScore = score
+			m := move
+			bestMove = &amp;m
+		}
+	}
+
+	return bestMove, nil
+}
+
+func (ai *AI) orderMoves(moves [][2]int) [][2]int {
+	// Prioritize center and corners for better pruning
+	center := ai.game.N / 2
+	n := ai.game.N
+
+	priority := func(m [2]int) int {
+		r, c := m[0], m[1]
+		if r == center &amp;&amp; c == center {
+			return 0
+		}
+		if (r == 0 || r == n-1) &amp;&amp; (c == 0 || c == n-1) {
+			return 1
+		}
+		return 2
+	}
+
+	// Simple bubble sort for small move lists
+	for i := 0; i &lt; len(moves)-1; i++ {
+		for j := i + 1; j &lt; len(moves); j++ {
+			if priority(moves[j]) &lt; priority(moves[i]) {
+				moves[i], moves[j] = moves[j], moves[i]
+			}
+		}
+	}
+
+	return moves
+}
+
+func (ai *AI) minimax(depth int, isMax bool, alpha, beta float64) float64 {
+	ai.evaluated++
+
+	if ai.game.State.IsTerminal() {
+		return ai.evaluateTerminal(depth)
+	}
+
+	if isMax {
+		maxScore := math.Inf(-1)
+		for _, move := range ai.orderMoves(ai.game.GetValidMoves()) {
+			ai.game.MakeMove(move[0], move[1])
+			score := ai.minimax(depth+1, false, alpha, beta)
+			ai.game.Undo()
+
+			maxScore = math.Max(maxScore, score)
+			alpha = math.Max(alpha, score)
+			if beta &lt;= alpha {
+				break
+			}
+		}
+		return maxScore
+	} else {
+		minScore := math.Inf(1)
+		for _, move := range ai.orderMoves(ai.game.GetValidMoves()) {
+			ai.game.MakeMove(move[0], move[1])
+			score := ai.minimax(depth+1, true, alpha, beta)
+			ai.game.Undo()
+
+			minScore = math.Min(minScore, score)
+			beta = math.Min(beta, score)
+			if beta &lt;= alpha {
+				break
+			}
+		}
+		return minScore
+	}
+}
+
+func (ai *AI) evaluateTerminal(depth int) float64 {
+	switch ai.game.State {
+	case Draw:
+		return 0
+	case XWins:
+		if ai.aiPlayer == PlayerX {
+			return 10 - float64(depth)
+		}
+		return float64(depth) - 10
+	case OWins:
+		if ai.aiPlayer == PlayerO {
+			return 10 - float64(depth)
+		}
+		return float64(depth) - 10
+	}
+	return 0
+}
+</code></pre>
+<hr />
+<h2 id="complexity-summary">Complexity Summary</h2>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<table style="width: 100%; color: #1e293b; border-collapse: collapse">
+<tr style="background: #f8fafc">
+<th style="padding: 12px; text-align: left">Operation</th>
+<th style="padding: 12px; text-align: left">Naive</th>
+<th style="padding: 12px; text-align: left">Optimized</th>
+<th style="padding: 12px; text-align: left">Notes</th>
+</tr>
+<tr >
+<td style="padding: 12px">Make Move</td>
+<td style="padding: 12px; color: #c2410c">O(n)</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #64748b">Counter updates</td>
+</tr>
+<tr >
+<td style="padding: 12px">Win Check (N-in-a-row)</td>
+<td style="padding: 12px; color: #c2410c">O(n)</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #64748b">Counter comparison</td>
+</tr>
+<tr >
+<td style="padding: 12px">Win Check (M-in-a-row)</td>
+<td style="padding: 12px; color: #ef4444">O(n)</td>
+<td style="padding: 12px; color: #c2410c">O(m)</td>
+<td style="padding: 12px; color: #64748b">Direction scan</td>
+</tr>
+<tr >
+<td style="padding: 12px">Get Valid Moves</td>
+<td style="padding: 12px; color: #ef4444">O(n^2)</td>
+<td style="padding: 12px; color: #22c55e">O(1)*</td>
+<td style="padding: 12px; color: #64748b">*With set maintenance</td>
+</tr>
+<tr >
+<td style="padding: 12px">Undo</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #64748b">Pop from history</td>
+</tr>
+<tr >
+<td style="padding: 12px">AI (3x3)</td>
+<td style="padding: 12px; color: #ef4444">O(9!)</td>
+<td style="padding: 12px; color: #22c55e">~O(150)</td>
+<td style="padding: 12px; color: #64748b">Alpha-beta pruning</td>
+</tr>
+<tr>
+<td style="padding: 12px">Space</td>
+<td style="padding: 12px; color: #c2410c">O(n^2)</td>
+<td style="padding: 12px; color: #c2410c">O(n^2)</td>
+<td style="padding: 12px; color: #64748b">Board dominates</td>
+</tr>
+</table>
+</div>
+<hr />
+<h2 id="related-topics">Related Topics</h2>
+<ul>
+<li><a href="/topics/algorithms/game-theory">[Game Theory Fundamentals]</a> - Zero-sum games, Nash equilibrium</li>
+<li><a href="/topics/system-design/state-machines">[State Machine Design]</a> - Modeling game states</li>
+<li><a href="/topics/algorithms/minimax">[Minimax and Alpha-Beta]</a> - Game tree search</li>
+<li><a href="/topics/algorithms/mcts">[Monte Carlo Tree Search]</a> - For larger game spaces</li>
+<li><a href="/topics/design-patterns/command">[Command Pattern]</a> - Undo/redo implementation</li>
+<li><a href="/topics/design-patterns/strategy">[Strategy Pattern]</a> - Pluggable win detection</li>
+<li><a href="/topics/system-design/distributed-locking">[Distributed Systems]</a> - Multiplayer synchronization</li>
+</ul>
