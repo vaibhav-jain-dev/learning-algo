@@ -207,6 +207,9 @@ services:
       - KERNEL_MEMORY_LIMIT=256M
       # State persistence directory
       - STATE_DIR=/app/state
+      # PDF generation settings
+      - BASE_URL=http://localhost:8080
+      - PDF_DIR=/tmp/pdf-exports
       # PostgreSQL connection - override via env vars for external DB
       - DB_HOST=${DB_HOST:-dsalgo-postgres}
       - DB_PORT=${DB_PORT:-5432}
@@ -286,6 +289,9 @@ services:
       - PORT=8080
       - DEV_MODE=true
       - STATE_DIR=/app/state
+      # PDF generation settings
+      - BASE_URL=http://localhost:8080
+      - PDF_DIR=/tmp/pdf-exports
       # CORS - Allowed origins (comma-separated)
       # Domain: *.arvaibhav.cloud
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080,https://learn.arvaibhav.cloud,https://learn-api.arvaibhav.cloud,https://*.arvaibhav.cloud,*}

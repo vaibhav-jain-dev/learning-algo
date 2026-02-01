@@ -91,10 +91,11 @@ FROM python:3.12-alpine AS runtime
 LABEL maintainer="dsalgo-learn"
 LABEL app.name="dsalgo-learn-platform"
 
-# Install minimal dependencies only
+# Install minimal dependencies including wkhtmltopdf for PDF generation
 RUN apk add --no-cache \
     ca-certificates \
     wget \
+    wkhtmltopdf \
     && rm -rf /var/cache/apk/* /tmp/*
 
 # PYTHON DEPENDENCY CACHING: Copy requirements FIRST
