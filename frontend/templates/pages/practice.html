@@ -163,6 +163,45 @@ func main() {
         'sort.Strings', 'strings.Split', 'strings.Join', 'strconv.Atoi', 'strconv.Itoa'
     ];
 
+    // Extract local variables from Python code
+    function extractPythonVariables(code) {
+        const variables = new Set();
+
+        // Match function parameters: def func(param1, param2):
+        const funcParamRegex = /def\s+\w+\s*\(([^)]*)\)/g;
+        let match;
+        while ((match = funcParamRegex.exec(code)) !== null) {
+            const params = match[1].split(',');
+            params.forEach(function(p) {
+                // Handle type hints like "param: Type" and defaults like "param=value"
+                const paramName = p.split(':')[0].split('=')[0].trim();
+                if (paramName && /^[a-zA-Z_]\w*$/.test(paramName)) {
+                    variables.add(paramName);
+                }
+            });
+        }
+
+        // Match variable assignments: var = value
+        const assignRegex = /^\s*([a-zA-Z_]\w*)\s*=/gm;
+        while ((match = assignRegex.exec(code)) !== null) {
+            variables.add(match[1]);
+        }
+
+        // Match for loop variables: for var in ...
+        const forRegex = /for\s+([a-zA-Z_]\w*)\s+in/g;
+        while ((match = forRegex.exec(code)) !== null) {
+            variables.add(match[1]);
+        }
+
+        // Match with statements: with ... as var:
+        const withRegex = /with\s+.*\s+as\s+([a-zA-Z_]\w*)/g;
+        while ((match = withRegex.exec(code)) !== null) {
+            variables.add(match[1]);
+        }
+
+        return Array.from(variables);
+    }
+
     // Register Python hint helper
     CodeMirror.registerHelper('hint', 'python-custom', function(editor) {
         const cur = editor.getCursor();
@@ -172,12 +211,25 @@ func main() {
         const word = token.string;
         const lowerWord = word.toLowerCase();
 
+        // Extract local variables from current code
+        const code = editor.getValue();
+        const localVars = extractPythonVariables(code);
+
         let hints = [];
+
+        // Priority 1: Local variables (most relevant to current context)
         hints = hints.concat(
-            pythonKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+            localVars.filter(function(v) { return v.toLowerCase().indexOf(lowerWord) === 0; })
         );
+
+        // Priority 2: Python builtins (commonly used)
         hints = hints.concat(
             pythonBuiltins.filter(function(b) { return b.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        // Priority 3: Python keywords
+        hints = hints.concat(
+            pythonKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
         );
 
         // Remove duplicates
@@ -192,6 +244,46 @@ func main() {
         };
     });
 
+    // Extract local variables from Go code
+    function extractGoVariables(code) {
+        const variables = new Set();
+
+        // Match function parameters: func name(param1 type, param2 type)
+        const funcParamRegex = /func\s+(?:\([^)]*\)\s*)?\w*\s*\(([^)]*)\)/g;
+        let match;
+        while ((match = funcParamRegex.exec(code)) !== null) {
+            const params = match[1].split(',');
+            params.forEach(function(p) {
+                // Extract variable name before type
+                const parts = p.trim().split(/\s+/);
+                if (parts.length > 0 && /^[a-zA-Z_]\w*$/.test(parts[0])) {
+                    variables.add(parts[0]);
+                }
+            });
+        }
+
+        // Match variable declarations: var name type or var name = value
+        const varRegex = /var\s+([a-zA-Z_]\w*)/g;
+        while ((match = varRegex.exec(code)) !== null) {
+            variables.add(match[1]);
+        }
+
+        // Match short variable declarations: name := value
+        const shortDeclRegex = /([a-zA-Z_]\w*)\s*:=/g;
+        while ((match = shortDeclRegex.exec(code)) !== null) {
+            variables.add(match[1]);
+        }
+
+        // Match for loop variables: for i := or for _, v := range
+        const forRangeRegex = /for\s+(?:([a-zA-Z_]\w*)\s*,\s*)?([a-zA-Z_]\w*)\s*:?=/g;
+        while ((match = forRangeRegex.exec(code)) !== null) {
+            if (match[1] && match[1] !== '_') variables.add(match[1]);
+            if (match[2] && match[2] !== '_') variables.add(match[2]);
+        }
+
+        return Array.from(variables);
+    }
+
     // Register Go hint helper
     CodeMirror.registerHelper('hint', 'go-custom', function(editor) {
         const cur = editor.getCursor();
@@ -201,12 +293,25 @@ func main() {
         const word = token.string;
         const lowerWord = word.toLowerCase();
 
+        // Extract local variables from current code
+        const code = editor.getValue();
+        const localVars = extractGoVariables(code);
+
         let hints = [];
+
+        // Priority 1: Local variables (most relevant to current context)
         hints = hints.concat(
-            goKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
+            localVars.filter(function(v) { return v.toLowerCase().indexOf(lowerWord) === 0; })
         );
+
+        // Priority 2: Go builtins (commonly used)
         hints = hints.concat(
             goBuiltins.filter(function(b) { return b.toLowerCase().indexOf(lowerWord) === 0; })
+        );
+
+        // Priority 3: Go keywords
+        hints = hints.concat(
+            goKeywords.filter(function(k) { return k.toLowerCase().indexOf(lowerWord) === 0; })
         );
 
         // Remove duplicates
