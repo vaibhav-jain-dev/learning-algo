@@ -10,107 +10,63 @@
 /* Desktop - Better space utilization (1200px+) */
 @media (min-width: 1200px) {
     :root {
-        --max-content-width: 1400px;
-        --sidebar-width: 320px;
+        --max-content-width: 1600px;
+        --sidebar-width: 280px;
     }
 
-    /* Topic pages - expand to use more space */
+    /* Topic pages - centered with breathing room */
     .topic-page {
-        max-width: var(--max-content-width);
-        padding: 0 2rem;
-    }
-
-    /* Guide layout - wider sidebar and better content spacing */
-    .guide-layout {
-        max-width: var(--max-content-width);
-        margin: 0 auto;
         padding: 0 2rem;
     }
 
     .guide-sidebar {
-        width: 280px;
-        min-width: 280px;
+        width: 260px;
+        min-width: 260px;
     }
 
-    /* Learn subject pages - better grid layouts */
-    .learn-subject-page {
-        max-width: var(--max-content-width);
-    }
-
+    /* Learn subject pages - optimal grid layouts */
     .algorithm-cards,
     .ds-grid,
     .approach-container,
     .term-grid,
     .brain-branches {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
-
-    /* Topic grid - 3 columns on desktop */
-    .topic-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 1.5rem;
-    }
-
-    /* System design and architecture pages */
-    .unified-lessons,
-    .unified-dashboard {
-        max-width: var(--max-content-width);
-        margin: 0 auto;
-        padding: 0 2rem;
     }
 }
 
-/* Extra Large Screens (1600px+) - Maximize space usage */
+/* Extra Large Screens (1600px+) - Smart space usage */
 @media (min-width: 1600px) {
     :root {
         --max-content-width: 1800px;
-        --sidebar-width: 350px;
-    }
-
-    .topic-page,
-    .guide-layout,
-    .learn-subject-page,
-    .unified-lessons,
-    .unified-dashboard {
-        max-width: var(--max-content-width);
-    }
-
-    .guide-sidebar {
-        width: 320px;
-        min-width: 320px;
-    }
-
-    /* 4-column grids on very large screens */
-    .topic-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 2rem;
+        --sidebar-width: 280px;
     }
 
     .algorithm-cards,
     .ds-grid,
     .brain-branches {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 2rem;
     }
 
-    /* Home cards */
+    /* Home cards - 4 columns */
     .home .cards {
         grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
     }
 }
 
-/* Ultra Wide Screens (2000px+) */
+/* Ultra Wide Screens (2000px+) - Don't go crazy */
 @media (min-width: 2000px) {
     :root {
-        --max-content-width: 2000px;
-    }
-
-    .topic-grid {
-        grid-template-columns: repeat(5, 1fr);
+        --max-content-width: 1800px; /* Cap at 1800px for readability */
     }
 
     .algorithm-cards,
     .ds-grid {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        max-width: 1600px;
+        margin: 0 auto;
     }
 }
 

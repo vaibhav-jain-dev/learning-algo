@@ -1,0 +1,347 @@
+/* ============================================
+   SMART WIDESCREEN LAYOUTS
+   Intelligent use of space without ugly stretching
+   ============================================ */
+
+/* ============================================
+   CORE PRINCIPLE: Comfortable Reading Width
+   Text should never exceed ~70-80 characters per line
+   Extra space is used for complementary content
+   ============================================ */
+
+/* Base content comfortable width */
+:root {
+    --reading-width: 750px;  /* Optimal for reading */
+    --wide-reading-width: 900px;  /* For tables/code */
+    --side-panel-width: 280px;  /* For TOC/related content */
+}
+
+/* ============================================
+   TOPIC DETAIL PAGES - MAGAZINE LAYOUT
+   ============================================ */
+
+/* Add wrapper for topic content */
+.topic-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* On widescreen, add side panel for TOC */
+@media (min-width: 1400px) {
+    .topic-content-wrapper {
+        grid-template-columns: minmax(auto, var(--reading-width)) var(--side-panel-width);
+        gap: 3rem;
+    }
+
+    /* Main content stays at reading width */
+    .topic-content-wrapper > .main-content {
+        max-width: var(--reading-width);
+    }
+
+    /* Side panel for table of contents */
+    .topic-content-wrapper > .side-panel {
+        position: sticky;
+        top: calc(var(--header-height) + 1rem);
+        align-self: start;
+        max-height: calc(100vh - var(--header-height) - 2rem);
+        overflow-y: auto;
+    }
+}
+
+/* ============================================
+   UNIFIED LESSONS - TWO-COLUMN SMART LAYOUT
+   ============================================ */
+
+@media (min-width: 1400px) {
+    .unified-lessons .lesson {
+        max-width: var(--reading-width);
+    }
+
+    /* Tables and code blocks can be wider */
+    .unified-lessons .lesson table,
+    .unified-lessons .lesson .code-example,
+    .unified-lessons .lesson pre {
+        max-width: var(--wide-reading-width);
+    }
+
+    /* Side-by-side comparisons use full width */
+    .unified-lessons .lesson .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: var(--wide-reading-width);
+    }
+}
+
+/* ============================================
+   CONTENT SECTIONS - SMART SIDE-BY-SIDE
+   ============================================ */
+
+/* Two-column layout for comparison sections */
+.content-comparison {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .content-comparison {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* Magazine-style layout for rich content */
+.magazine-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 1200px) {
+    .magazine-layout {
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+    }
+
+    /* Main article */
+    .magazine-layout > .main-article {
+        max-width: var(--reading-width);
+    }
+
+    /* Sidebar content (images, diagrams, callouts) */
+    .magazine-layout > .sidebar-content {
+        position: sticky;
+        top: calc(var(--header-height) + 1rem);
+        align-self: start;
+    }
+}
+
+/* ============================================
+   GUIDE PAGES - OPTIMAL LAYOUT
+   ============================================ */
+
+@media (min-width: 1200px) {
+    .guide-layout {
+        display: grid;
+        grid-template-columns: 260px minmax(auto, var(--reading-width)) 1fr;
+        gap: 2rem;
+        max-width: 1800px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    /* Left sidebar - navigation */
+    .guide-layout > .guide-sidebar {
+        position: sticky;
+        top: calc(var(--header-height) + 1rem);
+        align-self: start;
+    }
+
+    /* Main content - comfortable reading width */
+    .guide-layout > .guide-content {
+        max-width: var(--reading-width);
+    }
+
+    /* Right panel - hidden by default, can be used for TOC */
+    .guide-layout > .guide-right-panel {
+        position: sticky;
+        top: calc(var(--header-height) + 1rem);
+        align-self: start;
+        display: block;
+    }
+}
+
+/* ============================================
+   INLINE CONTENT - SMART ADAPTATIONS
+   ============================================ */
+
+/* Styled divs with side-by-side content */
+div[style*="display: grid"][style*="grid-template-columns: 1fr 1fr"],
+div[style*="display: flex"][style*="gap"] {
+    max-width: var(--wide-reading-width) !important;
+}
+
+/* Tables should be wider than text */
+table {
+    max-width: var(--wide-reading-width);
+}
+
+/* Code blocks can be wider */
+pre,
+.code-example,
+.code-content {
+    max-width: var(--wide-reading-width);
+}
+
+/* Diagrams can use more space */
+.diagram-container,
+div[style*="display: flex; flex-direction: column; align-items: center"] {
+    max-width: var(--wide-reading-width) !important;
+}
+
+/* ============================================
+   VISUAL HIERARCHY - BETTER SPACING
+   ============================================ */
+
+/* Paragraphs optimal line length */
+p {
+    max-width: 75ch; /* 75 characters max */
+}
+
+/* Headings can be slightly wider */
+h1, h2, h3, h4, h5, h6 {
+    max-width: 80ch;
+}
+
+/* Lists comfortable width */
+ul, ol {
+    max-width: 70ch;
+}
+
+/* ============================================
+   GRID CARDS - RESPONSIVE COLUMNS
+   ============================================ */
+
+/* Topic grids - smart columns based on available space */
+.topic-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+
+@media (min-width: 768px) {
+    .topic-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (min-width: 1200px) {
+    .topic-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1600px) {
+    .topic-grid {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 1400px;
+    }
+}
+
+/* ============================================
+   CODE BLOCKS - SMART WIDTH
+   ============================================ */
+
+/* Code blocks use available space but don't get too wide */
+pre {
+    max-width: min(100%, var(--wide-reading-width));
+    overflow-x: auto;
+}
+
+@media (min-width: 1400px) {
+    /* On very wide screens, code can use more space */
+    pre {
+        max-width: 1000px;
+    }
+}
+
+/* ============================================
+   IMAGES AND MEDIA - RESPONSIVE
+   ============================================ */
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Diagrams and illustrations can be larger */
+.diagram,
+.illustration,
+figure {
+    max-width: var(--wide-reading-width);
+    margin: 2rem auto;
+}
+
+@media (min-width: 1400px) {
+    .diagram,
+    .illustration,
+    figure {
+        max-width: 1000px;
+    }
+}
+
+/* ============================================
+   MOBILE - KEEP SIMPLE SINGLE COLUMN
+   ============================================ */
+
+@media (max-width: 767px) {
+    /* All content full width on mobile */
+    .topic-content-wrapper,
+    .magazine-layout,
+    .guide-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Reset max-widths on mobile */
+    p, h1, h2, h3, h4, h5, h6, ul, ol, pre, table {
+        max-width: 100% !important;
+    }
+
+    /* Hide side panels on mobile */
+    .side-panel,
+    .guide-right-panel,
+    .sidebar-content {
+        display: none !important;
+    }
+}
+
+/* ============================================
+   PRINT - OPTIMIZE FOR PAPER
+   ============================================ */
+
+@media print {
+    :root {
+        --reading-width: 100%;
+        --wide-reading-width: 100%;
+    }
+
+    .side-panel,
+    .guide-right-panel,
+    .sidebar-content,
+    .guide-sidebar {
+        display: none !important;
+    }
+
+    .guide-layout,
+    .magazine-layout,
+    .topic-content-wrapper {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY - FOCUS MANAGEMENT
+   ============================================ */
+
+/* Ensure sticky elements don't cover focused content */
+*:focus-within {
+    scroll-margin-top: calc(var(--header-height) + 2rem);
+}
+
+/* ============================================
+   PERFORMANCE - GPU ACCELERATION
+   ============================================ */
+
+.guide-sidebar,
+.side-panel,
+.guide-right-panel {
+    will-change: transform;
+    transform: translateZ(0);
+}
