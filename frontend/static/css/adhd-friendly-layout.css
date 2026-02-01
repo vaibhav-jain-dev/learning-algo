@@ -616,9 +616,10 @@
 
 /* ============================================
    FINAL BORDER RESET - LOADED LAST FOR MAX SPECIFICITY
+   Override Tailwind's preflight which sets individual border properties
    ============================================ */
 
-/* Remove all borders from main UI components */
+/* Remove all borders from main UI components - target ALL border properties */
 .topic-card,
 .card,
 .quick-ref-card,
@@ -636,7 +637,9 @@ div.table-of-contents,
 .topic-badge,
 .nav-category,
 .topic-nav a {
-    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
     outline: none !important;
 }
 
@@ -651,13 +654,25 @@ div.table-of-contents,
 /* ============================================
    NUCLEAR OPTION - UNIVERSAL BORDER REMOVAL
    For pages using .topic-page, .adhd-layout, .topic-grid
+   Override Tailwind's preflight border-style: solid
    ============================================ */
 
 /* Remove borders from ALL elements inside main content containers */
 .topic-page *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr),
 .adhd-layout *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr),
 .topic-grid *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr) {
-    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+}
+
+/* Also target ::before and ::after pseudo-elements which Tailwind resets */
+.topic-page *::before, .topic-page *::after,
+.adhd-layout *::before, .adhd-layout *::after,
+.topic-grid *::before, .topic-grid *::after {
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
 }
 
 /* Re-apply shadows for cards */
@@ -678,11 +693,15 @@ div.table-of-contents,
     border-radius: inherit;
 }
 
-/* Preserve semantic borders only */
+/* Preserve semantic borders only - use individual properties */
 .topic-page .highlight-box,
 .adhd-layout .highlight-box {
-    border-left: 3px solid !important;
-    border-right: none !important;
-    border-top: none !important;
-    border-bottom: none !important;
+    border-left-width: 3px !important;
+    border-left-style: solid !important;
+    border-right-width: 0 !important;
+    border-right-style: none !important;
+    border-top-width: 0 !important;
+    border-top-style: none !important;
+    border-bottom-width: 0 !important;
+    border-bottom-style: none !important;
 }

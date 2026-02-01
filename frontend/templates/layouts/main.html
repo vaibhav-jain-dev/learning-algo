@@ -34,22 +34,42 @@
     <link rel="stylesheet" href="/static/css/smart-widescreen.css">
     <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
 
-    <!-- CRITICAL: Border removal - highest priority inline styles -->
+    <!-- CRITICAL: Border removal - override Tailwind's preflight border properties -->
     <style>
-        .topic-card, .card, .quick-ref-card, .tldr-box, .tag, .badge,
+        /* Reset Tailwind's preflight border styles */
+        .topic-card, .card, .quick-ref-card, .tldr-box,
         .concept-section, .collapsible-section, .comparison-column,
         .step-content, .progress-indicator, .table-of-contents,
         .topic-page .topic-card, .adhd-layout .topic-card,
         .topic-page .quick-ref-card, .adhd-layout .quick-ref-card,
         .topic-page .tldr-box, .adhd-layout .tldr-box,
-        .topic-grid .topic-card, .topic-grid > a {
-            border: none !important;
+        .topic-grid .topic-card, .topic-grid > a,
+        .nav-category, .adhd-nav-panel, .adhd-quick-ref {
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
             outline: none !important;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
         }
-        .tag, .badge, .topic-badge {
-            border: none !important;
+        .tag, .badge, .topic-badge, .tags span {
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
             box-shadow: none !important;
+        }
+        /* Override Tailwind's *, ::before, ::after reset */
+        .topic-page *, .topic-page *::before, .topic-page *::after,
+        .adhd-layout *, .adhd-layout *::before, .adhd-layout *::after,
+        .topic-grid *, .topic-grid *::before, .topic-grid *::after {
+            border-style: none !important;
+            border-color: transparent !important;
+        }
+        /* Preserve borders only for tables and code */
+        .topic-page table, .topic-page th, .topic-page td,
+        .topic-page pre, .topic-page code, .topic-page hr,
+        .adhd-layout table, .adhd-layout th, .adhd-layout td,
+        .adhd-layout pre, .adhd-layout code, .adhd-layout hr {
+            border-style: solid !important;
         }
     </style>
 
@@ -379,20 +399,27 @@
     <!-- FORCE BORDER REMOVAL - Runs after ALL CSS loads including Tailwind -->
     <script>
         (function() {
+            function removeBorderFromElement(el) {
+                // Set all individual border properties to override Tailwind's preflight
+                el.style.setProperty('border-width', '0', 'important');
+                el.style.setProperty('border-style', 'none', 'important');
+                el.style.setProperty('border-color', 'transparent', 'important');
+                el.style.setProperty('outline', 'none', 'important');
+            }
+
             function removeBorders() {
                 var selectors = [
                     '.topic-card', '.card', '.quick-ref-card', '.tldr-box',
                     '.tag', '.badge', '.topic-badge', '.table-of-contents',
                     '.concept-section', '.collapsible-section', '.comparison-column',
-                    '.step-content', '.progress-indicator', '.nav-category'
+                    '.step-content', '.progress-indicator', '.nav-category',
+                    '.adhd-nav-panel', '.adhd-quick-ref', '.quick-ref-list',
+                    '.quick-ref-item', '.quick-ref-header'
                 ];
 
                 selectors.forEach(function(selector) {
                     var elements = document.querySelectorAll(selector);
-                    elements.forEach(function(el) {
-                        el.style.setProperty('border', 'none', 'important');
-                        el.style.setProperty('outline', 'none', 'important');
-                    });
+                    elements.forEach(removeBorderFromElement);
                 });
 
                 // Also target any element inside topic-page, adhd-layout, topic-grid
@@ -402,8 +429,8 @@
                     children.forEach(function(child) {
                         var tag = child.tagName.toLowerCase();
                         if (tag !== 'table' && tag !== 'th' && tag !== 'td' &&
-                            tag !== 'pre' && tag !== 'code' && tag !== 'hr') {
-                            child.style.setProperty('border', 'none', 'important');
+                            tag !== 'pre' && tag !== 'code' && tag !== 'hr' && tag !== 'blockquote') {
+                            removeBorderFromElement(child);
                         }
                     });
                 });
@@ -423,6 +450,7 @@
                 // Run again after a short delay to catch any late-loading styles
                 setTimeout(removeBorders, 100);
                 setTimeout(removeBorders, 500);
+                setTimeout(removeBorders, 1000);
             });
         })();
     </script>
