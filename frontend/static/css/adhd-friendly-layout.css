@@ -101,7 +101,7 @@
     gap: 0.75rem;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: none;
 }
 
 .concept-icon {
@@ -252,7 +252,7 @@
     color: #059669;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: none;
 }
 
 .quick-ref-header::before {
@@ -271,7 +271,7 @@
     align-items: start;
     gap: 0.75rem;
     padding: 0.5rem 0;
-    border-bottom: 1px solid var(--color-border-light, #f1f5f9);
+    border-bottom: none;
 }
 
 .quick-ref-item:last-child {
@@ -484,7 +484,7 @@
     font-size: 1.1rem;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--color-border, #e2e8f0);
+    border-bottom: none;
 }
 
 .comparison-column.positive .comparison-header {
@@ -657,22 +657,26 @@ div.table-of-contents,
    Override Tailwind's preflight border-style: solid
    ============================================ */
 
-/* Remove borders from ALL elements inside main content containers */
+/* Remove borders from ALL elements inside main content containers - target ALL sides */
 .topic-page *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr),
 .adhd-layout *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr),
-.topic-grid *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr) {
-    border-width: 0 !important;
-    border-style: none !important;
-    border-color: transparent !important;
+.topic-grid *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr),
+.topic-detail-page *:not(table):not(th):not(td):not(pre):not(code):not(blockquote):not(hr) {
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
 }
 
 /* Also target ::before and ::after pseudo-elements which Tailwind resets */
 .topic-page *::before, .topic-page *::after,
 .adhd-layout *::before, .adhd-layout *::after,
-.topic-grid *::before, .topic-grid *::after {
-    border-width: 0 !important;
-    border-style: none !important;
-    border-color: transparent !important;
+.topic-grid *::before, .topic-grid *::after,
+.topic-detail-page *::before, .topic-detail-page *::after {
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
 }
 
 /* Re-apply shadows for cards */

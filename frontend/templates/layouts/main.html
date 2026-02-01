@@ -34,9 +34,9 @@
     <link rel="stylesheet" href="/static/css/smart-widescreen.css">
     <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
 
-    <!-- CRITICAL: Border removal - override Tailwind's preflight border properties -->
+    <!-- CRITICAL: Border removal - override ALL border properties including individual sides -->
     <style>
-        /* Reset Tailwind's preflight border styles */
+        /* Reset ALL border properties - both shorthand and individual sides */
         .topic-card, .card, .quick-ref-card, .tldr-box,
         .concept-section, .collapsible-section, .comparison-column,
         .step-content, .progress-indicator, .table-of-contents,
@@ -44,31 +44,44 @@
         .topic-page .quick-ref-card, .adhd-layout .quick-ref-card,
         .topic-page .tldr-box, .adhd-layout .tldr-box,
         .topic-grid .topic-card, .topic-grid > a,
-        .nav-category, .adhd-nav-panel, .adhd-quick-ref {
-            border-width: 0 !important;
-            border-style: none !important;
-            border-color: transparent !important;
+        .nav-category, .adhd-nav-panel, .adhd-quick-ref,
+        .quick-ref-header, .quick-ref-item, .concept-section-header,
+        .comparison-header, .collapsible-header, .topic-header {
+            border-top: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
+            border-left: none !important;
             outline: none !important;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
         }
         .tag, .badge, .topic-badge, .tags span {
-            border-width: 0 !important;
-            border-style: none !important;
-            border-color: transparent !important;
+            border-top: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
+            border-left: none !important;
             box-shadow: none !important;
         }
-        /* Override Tailwind's *, ::before, ::after reset */
+        /* Override ALL borders inside content containers */
         .topic-page *, .topic-page *::before, .topic-page *::after,
         .adhd-layout *, .adhd-layout *::before, .adhd-layout *::after,
-        .topic-grid *, .topic-grid *::before, .topic-grid *::after {
-            border-style: none !important;
-            border-color: transparent !important;
+        .topic-grid *, .topic-grid *::before, .topic-grid *::after,
+        .topic-detail-page *, .topic-detail-page *::before, .topic-detail-page *::after {
+            border-top-style: none !important;
+            border-right-style: none !important;
+            border-bottom-style: none !important;
+            border-left-style: none !important;
+            border-top-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            border-left-color: transparent !important;
         }
         /* Preserve borders only for tables and code */
         .topic-page table, .topic-page th, .topic-page td,
         .topic-page pre, .topic-page code, .topic-page hr,
         .adhd-layout table, .adhd-layout th, .adhd-layout td,
-        .adhd-layout pre, .adhd-layout code, .adhd-layout hr {
+        .adhd-layout pre, .adhd-layout code, .adhd-layout hr,
+        .topic-detail-page table, .topic-detail-page th, .topic-detail-page td,
+        .topic-detail-page pre, .topic-detail-page code, .topic-detail-page hr {
             border-style: solid !important;
         }
     </style>
@@ -403,10 +416,20 @@
     <script>
         (function() {
             function removeBorderFromElement(el) {
-                // Set all individual border properties to override Tailwind's preflight
-                el.style.setProperty('border-width', '0', 'important');
-                el.style.setProperty('border-style', 'none', 'important');
-                el.style.setProperty('border-color', 'transparent', 'important');
+                // Set ALL individual border properties explicitly
+                // This ensures border-top, border-right, border-bottom, border-left are all removed
+                el.style.setProperty('border-top-width', '0', 'important');
+                el.style.setProperty('border-right-width', '0', 'important');
+                el.style.setProperty('border-bottom-width', '0', 'important');
+                el.style.setProperty('border-left-width', '0', 'important');
+                el.style.setProperty('border-top-style', 'none', 'important');
+                el.style.setProperty('border-right-style', 'none', 'important');
+                el.style.setProperty('border-bottom-style', 'none', 'important');
+                el.style.setProperty('border-left-style', 'none', 'important');
+                el.style.setProperty('border-top-color', 'transparent', 'important');
+                el.style.setProperty('border-right-color', 'transparent', 'important');
+                el.style.setProperty('border-bottom-color', 'transparent', 'important');
+                el.style.setProperty('border-left-color', 'transparent', 'important');
                 el.style.setProperty('outline', 'none', 'important');
             }
 
@@ -417,7 +440,8 @@
                     '.concept-section', '.collapsible-section', '.comparison-column',
                     '.step-content', '.progress-indicator', '.nav-category',
                     '.adhd-nav-panel', '.adhd-quick-ref', '.quick-ref-list',
-                    '.quick-ref-item', '.quick-ref-header'
+                    '.quick-ref-item', '.quick-ref-header', '.concept-section-header',
+                    '.comparison-header', '.collapsible-header', '.topic-header'
                 ];
 
                 selectors.forEach(function(selector) {
@@ -426,7 +450,7 @@
                 });
 
                 // Also target any element inside topic-page, adhd-layout, topic-grid
-                var containers = document.querySelectorAll('.topic-page, .adhd-layout, .topic-grid');
+                var containers = document.querySelectorAll('.topic-page, .adhd-layout, .topic-grid, .topic-detail-page');
                 containers.forEach(function(container) {
                     var children = container.querySelectorAll('*');
                     children.forEach(function(child) {
