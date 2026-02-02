@@ -377,9 +377,17 @@
     border-radius: 20px;
     padding: 28px;
     margin: 24px 0;
-    overflow: hidden; /* No horizontal scroll */
+    overflow: visible; /* Allow content to be visible */
     border: 2px solid #e2e8f0;
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.03);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Ensure all diagram children fit within container */
+.diagram-container * {
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .diagram-container h4 {
@@ -644,6 +652,16 @@
     gap: 24px;
     align-items: start;
     width: 100%;
+    box-sizing: border-box;
+}
+
+/* Index Strategy box - make it full width and responsive */
+.index-strategy,
+.index-justification,
+[class*="index-"] {
+    grid-column: 1 / -1;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .schema-table {
@@ -731,6 +749,9 @@
     margin-top: 24px;
     border-left: 5px solid #f59e0b;
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
 .index-justification h5 {
@@ -745,6 +766,33 @@
     padding-left: 20px;
     font-size: 14px;
     color: #78350f;
+}
+
+.index-justification table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+}
+
+.index-justification table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+    color: #78350f;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+
+.index-justification table tr:last-child td {
+    border-bottom: none;
+}
+
+.index-justification table code {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
 }
 
 /* ===========================================
@@ -1781,10 +1829,10 @@
         max-width: 100%;
     }
 
-    /* Diagram container - NO SCROLL */
+    /* Diagram container - Responsive fit */
     .diagram-container {
         padding: 16px;
-        overflow: hidden;
+        overflow: visible;
     }
 
     .diagram-container h4 {
@@ -1872,6 +1920,34 @@
     .future-aspects,
     .followup-features {
         padding: 16px;
+    }
+
+    /* Index justification on mobile */
+    .index-justification {
+        padding: 12px;
+    }
+
+    .index-justification table {
+        font-size: 12px;
+    }
+
+    .index-justification table td {
+        padding: 8px 4px;
+        display: block;
+        width: 100%;
+    }
+
+    .index-justification table tr {
+        display: block;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .index-justification table tr:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
     }
 
     /* API endpoint */
