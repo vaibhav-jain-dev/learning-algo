@@ -79,7 +79,7 @@
 </style>
 <hr />
 <h2 id="table-of-contents">Table of Contents</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <ul>
 <li><a href="#problem-statement">Problem Statement</a>
 <ul>
@@ -153,7 +153,7 @@
 <hr />
 <h2 id="problem-statement-problem-statement">Problem Statement {#problem-statement}</h2>
 <p>Design a personalized news feed system that aggregates, ranks, and delivers relevant content from a user's social connections in near real-time at massive scale.</p>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="core-requirements-core-requirements">Core Requirements {#core-requirements}</h3>
 <table>
 <thead>
@@ -192,7 +192,7 @@
 </tbody>
 </table>
 </div>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<div>
 <h3 id="critical-assumptions-critical-assumptions">Critical Assumptions {#critical-assumptions}</h3>
 <p><strong>Assumption 1: Read-Heavy Workload</strong></p>
 <ul>
@@ -221,42 +221,42 @@
 </div>
 <hr />
 <h2 id="high-level-architecture-high-level-architecture">High-Level Architecture {#high-level-architecture}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="feed-system-component-flow-feed-system-component-flow">Feed System Component Flow {#feed-system-component-flow}</h3>
 <div class="flow-diagram">
-    <div class="flow-box primary" style="width: 200px">
+    <div class="flow-box primary">
         <strong>User Posts Content</strong><br>
-        <span style="font-size: 11px">API Gateway</span>
+        <span>API Gateway</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box success" style="width: 200px">
+    <div class="flow-box success">
         <strong>Ingestion Layer</strong><br>
-        <span style="font-size: 11px">Validate & Persist</span>
+        <span>Validate & Persist</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box warning" style="width: 200px">
+    <div class="flow-box warning">
         <strong>Fan-out Layer</strong><br>
-        <span style="font-size: 11px">Push to Followers</span>
+        <span>Push to Followers</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box purple" style="width: 200px">
+    <div class="flow-box purple">
         <strong>Aggregation Layer</strong><br>
-        <span style="font-size: 11px">Merge Sources</span>
+        <span>Merge Sources</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box danger" style="width: 200px">
+    <div class="flow-box danger">
         <strong>Ranking Layer</strong><br>
-        <span style="font-size: 11px">ML Scoring</span>
+        <span>ML Scoring</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box primary" style="width: 200px">
+    <div class="flow-box primary">
         <strong>Serving Layer</strong><br>
-        <span style="font-size: 11px">Cache & Deliver</span>
+        <span>Cache & Deliver</span>
     </div>
 </div>
-<div style="display: grid; grid-template-columns: 1fr; gap: 16px">
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 20px">
-<h4 style="color: #1d4ed8; margin: 0 0 16px 0">Layer 1: Ingestion Layer</h4>
+<div>
+<div>
+<h4>Layer 1: Ingestion Layer</h4>
 <p><strong>Components</strong>: API Gateway, Post Service, Event Bus</p>
 <p><strong>Responsibilities</strong>:</p>
 <ul>
@@ -266,8 +266,8 @@
 </ul>
 <p><strong>Key Metrics</strong>: Write latency p99 &lt; 500ms, durability 99.999%</p>
 </div>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 12px; padding: 20px">
-<h4 style="color: #15803d; margin: 0 0 16px 0">Layer 2: Fan-out Layer</h4>
+<div>
+<h4>Layer 2: Fan-out Layer</h4>
 <p><strong>Components</strong>: Fan-out Service, Social Graph Service, User Segmentation</p>
 <p><strong>Responsibilities</strong>:</p>
 <ul>
@@ -277,8 +277,8 @@
 </ul>
 <p><strong>Key Metrics</strong>: Fan-out completion &lt; 5s for 99% of posts</p>
 </div>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);border-radius: 12px; padding: 20px">
-<h4 style="color: #6d28d9; margin: 0 0 16px 0">Layer 3: Aggregation Layer</h4>
+<div>
+<h4>Layer 3: Aggregation Layer</h4>
 <p><strong>Components</strong>: Feed Aggregator, Content Sources, Merge Service</p>
 <p><strong>Responsibilities</strong>:</p>
 <ul>
@@ -288,8 +288,8 @@
 </ul>
 <p><strong>Key Metrics</strong>: Aggregation latency &lt; 50ms</p>
 </div>
-<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);border-radius: 12px; padding: 20px">
-<h4 style="color: #c2410c; margin: 0 0 16px 0">Layer 4: Ranking Layer</h4>
+<div>
+<h4>Layer 4: Ranking Layer</h4>
 <p><strong>Components</strong>: Feature Store, ML Inference, Ranking Models</p>
 <p><strong>Responsibilities</strong>:</p>
 <ul>
@@ -299,8 +299,8 @@
 </ul>
 <p><strong>Key Metrics</strong>: Ranking latency &lt; 100ms, model freshness &lt; 1 hour</p>
 </div>
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 20px">
-<h4 style="color: #dc2626; margin: 0 0 16px 0">Layer 5: Serving Layer</h4>
+<div>
+<h4>Layer 5: Serving Layer</h4>
 <p><strong>Components</strong>: Feed Cache, CDN, Real-time Updates</p>
 <p><strong>Responsibilities</strong>:</p>
 <ul>
@@ -314,9 +314,9 @@
 </div>
 <hr />
 <h2 id="fan-out-strategies-the-core-design-decision-fan-out-strategies">Fan-out Strategies: The Core Design Decision {#fan-out-strategies}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="fan-out-on-write-push-model-fan-out-on-write">Fan-out-on-Write (Push Model) {#fan-out-on-write}</h3>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Mechanism</strong>: When a user posts, immediately write the post ID to every follower's pre-computed feed list.</p>
 <div class="flow-diagram horizontal">
     <div class="flow-box success">
@@ -325,17 +325,17 @@
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box light">
         <strong>Get Followers</strong><br>
-        <span style="font-size: 10px">Social Graph</span>
+        <span>Social Graph</span>
     </div>
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box warning">
         <strong>Queue Jobs</strong><br>
-        <span style="font-size: 10px">Async</span>
+        <span>Async</span>
     </div>
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box primary">
         <strong>Write to Feeds</strong><br>
-        <span style="font-size: 10px">Redis ZADD</span>
+        <span>Redis ZADD</span>
     </div>
 </div>
 <pre><code class="language-python">class FanOutOnWriteService:
@@ -424,7 +424,7 @@
 </table>
 </div>
 <h3 id="fan-out-on-read-pull-model-fan-out-on-read">Fan-out-on-Read (Pull Model) {#fan-out-on-read}</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Mechanism</strong>: When a user requests their feed, dynamically fetch posts from all accounts they follow and merge/rank on the fly.</p>
 <div class="flow-diagram horizontal">
     <div class="flow-box primary">
@@ -433,12 +433,12 @@
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box light">
         <strong>Get Following</strong><br>
-        <span style="font-size: 10px">Social Graph</span>
+        <span>Social Graph</span>
     </div>
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box warning">
         <strong>Parallel Fetch</strong><br>
-        <span style="font-size: 10px">Posts from Each</span>
+        <span>Posts from Each</span>
     </div>
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box success">
@@ -541,31 +541,31 @@
 </table>
 </div>
 <h3 id="hybrid-model-facebooktwitter-approach-hybrid-model">Hybrid Model (Facebook/Twitter Approach) {#hybrid-model}</h3>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Mechanism</strong>: Use push for normal users, pull for celebrities. The threshold is tunable based on write capacity.</p>
 <div class="flow-diagram">
-    <div class="flow-box purple" style="width: 220px">
+    <div class="flow-box purple">
         <strong>New Post Created</strong>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box light" style="width: 220px">
+    <div class="flow-box light">
         <strong>Check Follower Count</strong>
     </div>
-    <div style="display: flex; gap: 40px; align-items: flex-start; margin: 10px 0">
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <span style="font-size: 12px; color: #22c55e">< 10K followers</span>
+    <div>
+        <div>
+            <span>< 10K followers</span>
             <div class="flow-arrow">&#8595;</div>
             <div class="flow-box success">
                 <strong>PUSH</strong><br>
-                <span style="font-size: 10px">Full Fan-out</span>
+                <span>Full Fan-out</span>
             </div>
         </div>
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <span style="font-size: 12px; color: #f59e0b">>= 10K followers</span>
+        <div>
+            <span>>= 10K followers</span>
             <div class="flow-arrow">&#8595;</div>
             <div class="flow-box warning">
                 <strong>PULL</strong><br>
-                <span style="font-size: 10px">Index Only</span>
+                <span>Index Only</span>
             </div>
         </div>
     </div>
@@ -692,26 +692,26 @@
 </div>
 <hr />
 <h2 id="ranking-algorithms-ranking-algorithms">Ranking Algorithms {#ranking-algorithms}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="evolution-of-feed-ranking-evolution-of-ranking">Evolution of Feed Ranking {#evolution-of-ranking}</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram horizontal">
     <div class="flow-box light">
         <strong>Phase 1</strong><br>
-        <span style="font-size: 10px">Chronological</span><br>
-        <span style="font-size: 9px; color: #64748b">Pre-2009</span>
+        <span>Chronological</span><br>
+        <span>Pre-2009</span>
     </div>
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box warning">
         <strong>Phase 2</strong><br>
-        <span style="font-size: 10px">EdgeRank</span><br>
-        <span style="font-size: 9px; color: #64748b">2009-2013</span>
+        <span>EdgeRank</span><br>
+        <span>2009-2013</span>
     </div>
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box success">
         <strong>Phase 3</strong><br>
-        <span style="font-size: 10px">ML Models</span><br>
-        <span style="font-size: 9px; color: #64748b">2013-Present</span>
+        <span>ML Models</span><br>
+        <span>2013-Present</span>
     </div>
 </div>
 <p><strong>Phase 1: Chronological (Pre-2009)</strong></p>
@@ -734,7 +734,7 @@
 </ul>
 </div>
 <h3 id="edgerank-the-foundation-edgerank">EdgeRank: The Foundation {#edgerank}</h3>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <pre><code class="language-python">class EdgeRankScorer:
     &quot;&quot;&quot;
     Facebook's original ranking algorithm (simplified).
@@ -863,29 +863,29 @@
 </table>
 </div>
 <h3 id="modern-ml-based-ranking-ml-ranking">Modern ML-Based Ranking {#ml-ranking}</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram">
-    <div class="flow-box light" style="width: 280px">
+    <div class="flow-box light">
         <strong>Stage 1: Candidate Generation</strong><br>
-        <span style="font-size: 11px">1000s &#8594; 500 candidates</span><br>
-        <span style="font-size: 10px; color: #64748b">Rules + Lightweight Models</span>
+        <span>1000s &#8594; 500 candidates</span><br>
+        <span>Rules + Lightweight Models</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box warning" style="width: 280px">
+    <div class="flow-box warning">
         <strong>Stage 2: First-Pass Ranking</strong><br>
-        <span style="font-size: 11px">500 &#8594; 50 candidates</span><br>
-        <span style="font-size: 10px; color: #64748b">Two-Tower Neural Network</span>
+        <span>500 &#8594; 50 candidates</span><br>
+        <span>Two-Tower Neural Network</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box success" style="width: 280px">
+    <div class="flow-box success">
         <strong>Stage 3: Final Ranking</strong><br>
-        <span style="font-size: 11px">50 &#8594; 20 candidates</span><br>
-        <span style="font-size: 10px; color: #64748b">Heavy Model (10K+ features)</span>
+        <span>50 &#8594; 20 candidates</span><br>
+        <span>Heavy Model (10K+ features)</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box primary" style="width: 280px">
+    <div class="flow-box primary">
         <strong>Post-Processing</strong><br>
-        <span style="font-size: 11px">Diversity, Dedup, Business Rules</span>
+        <span>Diversity, Dedup, Business Rules</span>
     </div>
 </div>
 <pre><code class="language-python">class MLRankingPipeline:
@@ -1117,28 +1117,28 @@
 </div>
 <hr />
 <h2 id="caching-strategies-caching-strategies">Caching Strategies {#caching-strategies}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="multi-layer-cache-architecture-multi-layer-cache">Multi-Layer Cache Architecture {#multi-layer-cache}</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram">
-    <div class="flow-box primary" style="width: 220px">
+    <div class="flow-box primary">
         <strong>L1: Client/CDN Edge</strong><br>
-        <span style="font-size: 11px">< 10ms | 1KB/user</span>
+        <span>< 10ms | 1KB/user</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box success" style="width: 220px">
+    <div class="flow-box success">
         <strong>L2: Regional Cache</strong><br>
-        <span style="font-size: 11px">< 20ms | 10KB/user</span>
+        <span>< 20ms | 10KB/user</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box warning" style="width: 220px">
+    <div class="flow-box warning">
         <strong>L3: Central Cache</strong><br>
-        <span style="font-size: 11px">< 50ms | 100KB/user</span>
+        <span>< 50ms | 100KB/user</span>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box danger" style="width: 220px">
+    <div class="flow-box danger">
         <strong>L4: Database</strong><br>
-        <span style="font-size: 11px">< 200ms | Source of Truth</span>
+        <span>< 200ms | Source of Truth</span>
     </div>
 </div>
 <p><strong>Cache Hierarchy</strong> (See <a href="/topics/system-design/caching">[caching]</a> for fundamentals):</p>
@@ -1185,7 +1185,7 @@
 </table>
 </div>
 <h3 id="feed-cache-implementation-feed-cache-implementation">Feed Cache Implementation {#feed-cache-implementation}</h3>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <pre><code class="language-python">class FeedCacheService:
     &quot;&quot;&quot;
     Multi-tier feed caching with intelligent invalidation.
@@ -1335,7 +1335,7 @@
 </code></pre>
 </div>
 <h3 id="cache-stampede-prevention-cache-stampede">Cache Stampede Prevention {#cache-stampede}</h3>
-<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram horizontal">
     <div class="flow-box danger">
         <strong>Cache Expires</strong>
@@ -1471,26 +1471,26 @@
 </code></pre>
 </div>
 <h3 id="tao-facebooks-graph-aware-cache-tao-cache">TAO: Facebook's Graph-Aware Cache {#tao-cache}</h3>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram">
-    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px">
+    <div>
         <div class="flow-box purple">
             <strong>Leader Cache</strong><br>
-            <span style="font-size: 10px">Handles Writes</span>
+            <span>Handles Writes</span>
         </div>
         <div class="flow-box light">
             <strong>Follower Cache 1</strong><br>
-            <span style="font-size: 10px">Read Replica</span>
+            <span>Read Replica</span>
         </div>
         <div class="flow-box light">
             <strong>Follower Cache 2</strong><br>
-            <span style="font-size: 10px">Read Replica</span>
+            <span>Read Replica</span>
         </div>
     </div>
     <div class="flow-arrow">&#8595;</div>
-    <div class="flow-box warning" style="width: 200px">
+    <div class="flow-box warning">
         <strong>MySQL Cluster</strong><br>
-        <span style="font-size: 10px">Source of Truth</span>
+        <span>Source of Truth</span>
     </div>
 </div>
 <pre><code class="language-python">class TAOCache:
@@ -1726,9 +1726,9 @@
 </div>
 <hr />
 <h2 id="social-graph-traversal-social-graph-traversal">Social Graph Traversal {#social-graph-traversal}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="graph-storage-patterns-graph-storage-patterns">Graph Storage Patterns {#graph-storage-patterns}</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Storage Options</strong> (See <a href="/topics/databases/graph-databases">[graph-databases]</a> for more):</p>
 <table>
 <thead>
@@ -1768,7 +1768,7 @@
 </table>
 </div>
 <h3 id="efficient-friend-of-friend-queries-friend-of-friend">Efficient Friend-of-Friend Queries {#friend-of-friend}</h3>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <pre><code class="language-python">class SocialGraphService:
     &quot;&quot;&quot;
     Social graph operations optimized for feed generation.
@@ -1915,19 +1915,19 @@
 </code></pre>
 </div>
 <h3 id="graph-partitioning-for-scale-graph-partitioning">Graph Partitioning for Scale {#graph-partitioning}</h3>
-<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram horizontal">
     <div class="flow-box warning">
         <strong>User A's Shard</strong><br>
-        <span style="font-size: 10px">A follows B, C</span>
+        <span>A follows B, C</span>
     </div>
     <div class="flow-box success">
         <strong>User B's Shard</strong><br>
-        <span style="font-size: 10px">B followed by A</span>
+        <span>B followed by A</span>
     </div>
     <div class="flow-box primary">
         <strong>User C's Shard</strong><br>
-        <span style="font-size: 10px">C followed by A</span>
+        <span>C followed by A</span>
     </div>
 </div>
 <pre><code class="language-python">class GraphPartitioningStrategy:
@@ -2038,9 +2038,9 @@
 </div>
 <hr />
 <h2 id="edge-cases--failure-modes-edge-cases-failure-modes">Edge Cases &amp; Failure Modes {#edge-cases-failure-modes}</h2>
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="celebrity-posting-spike-celebrity-spike">Celebrity Posting Spike {#celebrity-spike}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Scenario</strong>: A celebrity with 50M followers posts during a major event (Super Bowl, election night).</p>
 <div class="flow-diagram horizontal">
     <div class="flow-box danger">
@@ -2049,7 +2049,7 @@
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box warning">
         <strong>50M Feed Requests</strong><br>
-        <span style="font-size: 10px">Within seconds</span>
+        <span>Within seconds</span>
     </div>
     <div class="flow-arrow">&#8594;</div>
     <div class="flow-box light">
@@ -2083,7 +2083,7 @@
 <p><strong>Key Insight</strong>: For celebrities, switch to pull-only mode during spikes. The content cache handles the read load; don't try to push.</p>
 </div>
 <h3 id="cache-stampede-scenarios-cache-stampede-scenarios">Cache Stampede Scenarios {#cache-stampede-scenarios}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Scenario</strong>: Regional cache cluster fails, 10M users' feed caches are cold.</p>
 <p><strong>Problems</strong>:</p>
 <ul>
@@ -2116,7 +2116,7 @@
 </ul>
 </div>
 <h3 id="social-graph-inconsistencies-graph-inconsistencies">Social Graph Inconsistencies {#graph-inconsistencies}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Scenario</strong>: User A blocks User B, but due to replication lag, B still sees A's posts.</p>
 <p><strong>Problems</strong>:</p>
 <ul>
@@ -2151,7 +2151,7 @@
 <p><strong>Key Insight</strong>: Privacy operations are ALWAYS synchronous and bypass cache. Accept higher latency for correctness.</p>
 </div>
 <h3 id="ranking-model-failures-ranking-failures">Ranking Model Failures {#ranking-failures}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Scenario</strong>: ML inference service goes down or returns garbage predictions.</p>
 <p><strong>Problems</strong>:</p>
 <ul>
@@ -2207,11 +2207,11 @@
 </ol>
 </div>
 <h3 id="data-center-failover-datacenter-failover">Data Center Failover {#datacenter-failover}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <p><strong>Scenario</strong>: Entire data center goes offline (power failure, natural disaster).</p>
 <div class="flow-diagram">
-    <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center">
-        <div class="flow-box danger" style="text-decoration: line-through">
+    <div>
+        <div class="flow-box danger">
             <strong>US-EAST (Down)</strong>
         </div>
         <div class="flow-box success">
@@ -2269,29 +2269,29 @@
 </div>
 <hr />
 <h2 id="scaling-strategies-scaling-strategies">Scaling Strategies {#scaling-strategies}</h2>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="horizontal-scaling-patterns-horizontal-scaling">Horizontal Scaling Patterns {#horizontal-scaling}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram">
-    <div style="text-align: center; margin-bottom: 16px">
-        <strong style="color: #16a34a">Scaling Each Layer Independently</strong>
+    <div>
+        <strong>Scaling Each Layer Independently</strong>
     </div>
-    <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
+    <div>
         <div class="flow-box primary">
             <strong>API Gateway</strong><br>
-            <span style="font-size: 10px">Stateless, auto-scale</span>
+            <span>Stateless, auto-scale</span>
         </div>
         <div class="flow-box success">
             <strong>Fan-out Workers</strong><br>
-            <span style="font-size: 10px">Scale with queue depth</span>
+            <span>Scale with queue depth</span>
         </div>
         <div class="flow-box warning">
             <strong>Ranking Service</strong><br>
-            <span style="font-size: 10px">CPU-bound, GPU optional</span>
+            <span>CPU-bound, GPU optional</span>
         </div>
         <div class="flow-box purple">
             <strong>Cache Cluster</strong><br>
-            <span style="font-size: 10px">Memory-bound</span>
+            <span>Memory-bound</span>
         </div>
     </div>
 </div>
@@ -2393,7 +2393,7 @@
 </table>
 </div>
 <h3 id="data-partitioning-strategy-data-partitioning">Data Partitioning Strategy {#data-partitioning}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <pre><code class="language-python">class DataPartitioningStrategy:
     &quot;&quot;&quot;
     Different data types require different partitioning strategies.
@@ -2459,31 +2459,31 @@
 </table>
 </div>
 <h3 id="geographic-distribution-geographic-distribution">Geographic Distribution {#geographic-distribution}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <div class="flow-diagram">
-    <div style="text-align: center; margin-bottom: 20px">
-        <strong style="color: #16a34a">Multi-Region Architecture</strong>
+    <div>
+        <strong>Multi-Region Architecture</strong>
     </div>
-    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center">
-        <div style="background: #dcfce7; border-radius: 12px; padding: 16px; text-align: center">
+    <div>
+        <div>
             <strong>US-EAST</strong><br>
-            <span style="font-size: 11px">Primary for Americas</span><br>
-            <div style="margin-top: 8px">
-                <span class="flow-box success" style="padding: 4px 8px; font-size: 10px">Leader DB</span>
+            <span>Primary for Americas</span><br>
+            <div>
+                <span class="flow-box success">Leader DB</span>
             </div>
         </div>
-        <div style="background: #dbeafe; border-radius: 12px; padding: 16px; text-align: center">
+        <div>
             <strong>EU-WEST</strong><br>
-            <span style="font-size: 11px">Primary for Europe</span><br>
-            <div style="margin-top: 8px">
-                <span class="flow-box primary" style="padding: 4px 8px; font-size: 10px">Follower DB</span>
+            <span>Primary for Europe</span><br>
+            <div>
+                <span class="flow-box primary">Follower DB</span>
             </div>
         </div>
-        <div style="background: #fef3c7; border-radius: 12px; padding: 16px; text-align: center">
+        <div>
             <strong>AP-SOUTH</strong><br>
-            <span style="font-size: 11px">Primary for Asia</span><br>
-            <div style="margin-top: 8px">
-                <span class="flow-box warning" style="padding: 4px 8px; font-size: 10px">Follower DB</span>
+            <span>Primary for Asia</span><br>
+            <div>
+                <span class="flow-box warning">Follower DB</span>
             </div>
         </div>
     </div>
@@ -2572,7 +2572,7 @@
 </table>
 </div>
 <h3 id="capacity-planning-capacity-planning">Capacity Planning {#capacity-planning}</h3>
-<div style="background: white;border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <pre><code class="language-python">class CapacityPlanner:
     &quot;&quot;&quot;
     Estimate infrastructure requirements based on scale.
@@ -2665,9 +2665,9 @@
 </div>
 <hr />
 <h2 id="interview-deep-dive-3-level-recursive-questions-interview-deep-dive">Interview Deep Dive: 3-Level Recursive Questions {#interview-deep-dive}</h2>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="section-1-fan-out-strategy-questions-fanout-questions">Section 1: Fan-out Strategy Questions {#fanout-questions}</h3>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <h4 id="level-1-explain-the-difference-between-fan-out-on-write-and-fan-out-on-read">Level 1: &quot;Explain the difference between fan-out-on-write and fan-out-on-read.&quot;</h4>
 <p><strong>Strong Answer</strong>:</p>
 <p>&quot;Fan-out-on-write pushes content to followers' pre-computed feeds at write time. When a user posts, we write the post ID to every follower's feed list. This gives O(1) reads but O(N) writes where N is follower count.</p>
@@ -2697,7 +2697,7 @@
 <p>In practice, celebrity posts are so frequently accessed that cache misses are rare. The real scenario is more about handling bursts when a celebrity posts, not cache expiration.&quot;</p>
 </div>
 <h3 id="section-2-ranking-algorithm-questions-ranking-questions">Section 2: Ranking Algorithm Questions {#ranking-questions}</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <h4 id="level-1-how-would-you-rank-posts-in-a-news-feed">Level 1: &quot;How would you rank posts in a news feed?&quot;</h4>
 <p><strong>Strong Answer</strong>:</p>
 <p>&quot;I'd use a multi-stage ranking funnel:</p>
@@ -2739,7 +2739,7 @@ Value: {likes: 5, comments: 2, shares: 1, last_interaction: timestamp}
 <p>There's a freshness trade-off: streaming updates have seconds of delay, batch updates might be hours old. For critical features like 'did user just block this person', we might have a real-time check. For interaction history, a few minutes of staleness is acceptable.&quot;</p>
 </div>
 <h3 id="section-3-caching-strategy-questions-caching-questions">Section 3: Caching Strategy Questions {#caching-questions}</h3>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <h4 id="level-1-how-would-you-cache-the-news-feed">Level 1: &quot;How would you cache the news feed?&quot;</h4>
 <p><strong>Strong Answer</strong>:</p>
 <p>&quot;I'd use a multi-layer cache strategy:</p>
@@ -2769,7 +2769,7 @@ Value: {likes: 5, comments: 2, shares: 1, last_interaction: timestamp}
 <p>The real scaling secret is that most data is cold. 99.8% cache hit rate means we almost never hit the database. The 0.2% misses are spread across time and easily handled by database capacity.&quot;</p>
 </div>
 <h3 id="section-4-social-graph-questions-graph-questions">Section 4: Social Graph Questions {#graph-questions}</h3>
-<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);border-radius: 12px; padding: 24px; margin: 16px 0">
+<div>
 <h4 id="level-1-how-would-you-store-the-social-graph-for-a-facebook-like-application">Level 1: &quot;How would you store the social graph for a Facebook-like application?&quot;</h4>
 <p><strong>Strong Answer</strong>:</p>
 <p>&quot;The social graph has two main entities: nodes like users, pages, and groups, and edges like friendships, follows, and memberships.</p>
@@ -2815,7 +2815,7 @@ Value: {likes: 5, comments: 2, shares: 1, last_interaction: timestamp}
 </div>
 <hr />
 <h2 id="cross-referenced-concepts-cross-references">Cross-Referenced Concepts {#cross-references}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="related-system-design-topics">Related System Design Topics</h3>
 <table>
 <thead>
@@ -2903,7 +2903,7 @@ Value: {likes: 5, comments: 2, shares: 1, last_interaction: timestamp}
 </div>
 <hr />
 <h2 id="design-decision-summary-design-summary">Design Decision Summary {#design-summary}</h2>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="when-to-use-each-pattern">When to Use Each Pattern</h3>
 <table>
 <thead>

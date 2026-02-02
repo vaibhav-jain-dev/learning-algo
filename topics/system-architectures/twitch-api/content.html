@@ -1,17 +1,17 @@
 <h1 id="design-the-twitch-api">Design The Twitch API</h1>
 <h2 id="overview">Overview</h2>
-<p>A live streaming platform enables creators to broadcast video content to millions of concurrent viewers with real-time chat interaction. The architecture must handle <span style="color:#00ff00"><strong>video ingest</strong></span>, <span style="color:#00ff00"><strong>real-time transcoding</strong></span>, <span style="color:#00ff00"><strong>global CDN delivery</strong></span>, <span style="color:#00ff00"><strong>WebSocket-based chat</strong></span>, and <span style="color:#00ff00"><strong>personalized recommendations</strong></span>.</p>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: #1e293b">
-<h4 style="margin-top: 0; color: #1e293b; font-size: 18px">Core Equation</h4>
-<div style="font-family: 'Courier New', monospace; font-size: 16px; background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center">
+<p>A live streaming platform enables creators to broadcast video content to millions of concurrent viewers with real-time chat interaction. The architecture must handle <span><strong>video ingest</strong></span>, <span><strong>real-time transcoding</strong></span>, <span><strong>global CDN delivery</strong></span>, <span><strong>WebSocket-based chat</strong></span>, and <span><strong>personalized recommendations</strong></span>.</p>
+<div>
+<h4>Core Equation</h4>
+<div>
     Streaming Platform = Ingest + Transcode + CDN Delivery + Real-time Chat + VOD Storage + Recommendations
 </div>
 </div>
-<p><strong>Critical Assumption</strong>: The platform assumes viewers have variable network conditions. <span style="color:#00ff00"><strong>Adaptive bitrate streaming (ABR)</strong></span> allows seamless quality switching without rebuffering. If network is stable, this complexity adds overhead.</p>
+<p><strong>Critical Assumption</strong>: The platform assumes viewers have variable network conditions. <span><strong>Adaptive bitrate streaming (ABR)</strong></span> allows seamless quality switching without rebuffering. If network is stable, this complexity adds overhead.</p>
 <p><strong>Key Trade-off</strong>: Latency vs. Stability. Lower latency means smaller buffers and more rebuffering risk. Higher latency provides stable playback but reduces interactivity. This trade-off drives most streaming architecture decisions.</p>
 <hr />
 <h2 id="core-requirements">Core Requirements</h2>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="functional-requirements">Functional Requirements</h3>
 <ul>
 <li><strong>Live Streaming</strong>: Ingest RTMP, transcode to multiple qualities, deliver via HLS/DASH</li>
@@ -32,100 +32,100 @@
 <hr />
 <h2 id="section-1-high-level-architecture">Section 1: High-Level Architecture</h2>
 <h3 id="system-components-overview">System Components Overview</h3>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
-<h4 style="color: #58a6ff; text-align: center; margin: 0 0 24px 0">TWITCH STREAMING ARCHITECTURE</h4>
-<div style="display: flex; flex-direction: column; gap: 16px">
+<div>
+<h4>TWITCH STREAMING ARCHITECTURE</h4>
+<div>
     <!-- Broadcaster -->
-<div style="display: flex; justify-content: center">
-<div style="background: linear-gradient(135deg, #9146ff 0%, #772ce8 100%); padding: 16px 32px; border-radius: 12px; text-align: center; color: #1e293b">
-<strong style="font-size: 16px">BROADCASTER</strong>
-<p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.9">OBS / Streamlabs / Hardware Encoder</p>
-<p style="margin: 4px 0 0 0; font-size: 11px; opacity: 0.7">RTMP Push to Ingest</p>
+<div>
+<div>
+<strong>BROADCASTER</strong>
+<p>OBS / Streamlabs / Hardware Encoder</p>
+<p>RTMP Push to Ingest</p>
 </div>
 </div>
-<div style="text-align: center; color: #9146ff; font-size: 24px">↓</div>
+<div>↓</div>
 <pre><code>&lt;!-- Ingest Layer --&gt;
 </code></pre>
-<div style="background: rgba(145, 70, 255, 0.1);border-radius: 12px; padding: 20px">
-<h5 style="color: #9146ff; margin: 0 0 16px 0; text-align: center">INGEST LAYER (Edge Locations)</h5>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px">
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #475569; font-size: 12px">US-EAST</span><br>
-<span style="color: #1e293b; font-size: 11px">ingest-iad.twitch.tv</span>
+<div>
+<h5>INGEST LAYER (Edge Locations)</h5>
+<div>
+<div>
+<span>US-EAST</span><br>
+<span>ingest-iad.twitch.tv</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #475569; font-size: 12px">US-WEST</span><br>
-<span style="color: #1e293b; font-size: 11px">ingest-lax.twitch.tv</span>
+<div>
+<span>US-WEST</span><br>
+<span>ingest-lax.twitch.tv</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #475569; font-size: 12px">EU-WEST</span><br>
-<span style="color: #1e293b; font-size: 11px">ingest-ams.twitch.tv</span>
+<div>
+<span>EU-WEST</span><br>
+<span>ingest-ams.twitch.tv</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #475569; font-size: 12px">AP-NORTHEAST</span><br>
-<span style="color: #1e293b; font-size: 11px">ingest-tyo.twitch.tv</span>
+<div>
+<span>AP-NORTHEAST</span><br>
+<span>ingest-tyo.twitch.tv</span>
 </div>
 </div>
 </div>
-<div style="text-align: center; color: #f0883e; font-size: 24px">↓</div>
+<div>↓</div>
   <!-- Media Processing -->
-<div style="background: rgba(240, 136, 62, 0.1);border-radius: 12px; padding: 20px">
-<h5 style="color: #f0883e; margin: 0 0 16px 0; text-align: center">MEDIA PROCESSING (GPU Clusters)</h5>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<strong style="color: #f0883e">Transcoder</strong>
-<p style="color: #475569; font-size: 12px; margin: 8px 0 0 0">Real-time encoding to multiple quality levels (1080p60, 720p60, 480p30, 360p30, 160p)</p>
+<div>
+<h5>MEDIA PROCESSING (GPU Clusters)</h5>
+<div>
+<div>
+<strong>Transcoder</strong>
+<p>Real-time encoding to multiple quality levels (1080p60, 720p60, 480p30, 360p30, 160p)</p>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<strong style="color: #f0883e">Packager</strong>
-<p style="color: #475569; font-size: 12px; margin: 8px 0 0 0">Segment into HLS (.m3u8 + .ts) with 2-4 second segments for CDN delivery</p>
+<div>
+<strong>Packager</strong>
+<p>Segment into HLS (.m3u8 + .ts) with 2-4 second segments for CDN delivery</p>
 </div>
 </div>
 </div>
-<div style="display: flex; justify-content: center; gap: 100px">
-<div style="text-align: center; color: #58a6ff; font-size: 24px">↓</div>
-<div style="text-align: center; color: #3fb950; font-size: 24px">↓</div>
+<div>
+<div>↓</div>
+<div>↓</div>
 </div>
   <!-- Origin + VOD -->
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: rgba(88, 166, 255, 0.1);border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0; text-align: center">ORIGIN SERVERS</h5>
-<p style="color: #475569; font-size: 12px; text-align: center; margin: 0">Live segment cache, playlist generation, CDN origin pull</p>
+<div>
+<div>
+<h5>ORIGIN SERVERS</h5>
+<p>Live segment cache, playlist generation, CDN origin pull</p>
 </div>
-<div style="background: rgba(63, 185, 80, 0.1);border-radius: 12px; padding: 20px">
-<h5 style="color: #3fb950; margin: 0 0 12px 0; text-align: center">VOD STORAGE (S3)</h5>
-<p style="color: #475569; font-size: 12px; text-align: center; margin: 0">Archived streams, clips, thumbnails, metadata</p>
+<div>
+<h5>VOD STORAGE (S3)</h5>
+<p>Archived streams, clips, thumbnails, metadata</p>
 </div>
 </div>
-<div style="text-align: center; color: #58a6ff; font-size: 24px">↓</div>
+<div>↓</div>
   <!-- CDN Layer -->
-<div style="background: rgba(88, 166, 255, 0.1);border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 16px 0; text-align: center">CDN EDGE LAYER (100+ PoPs Globally)</h5>
-<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px">
-<span style="color: #1e293b; font-size: 11px">Edge PoP 1</span>
+<div>
+<h5>CDN EDGE LAYER (100+ PoPs Globally)</h5>
+<div>
+<div>
+<span>Edge PoP 1</span>
 </div>
-<div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px">
-<span style="color: #1e293b; font-size: 11px">Edge PoP 2</span>
+<div>
+<span>Edge PoP 2</span>
 </div>
-<div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px">
-<span style="color: #1e293b; font-size: 11px">Edge PoP 3</span>
+<div>
+<span>Edge PoP 3</span>
 </div>
-<div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px">
-<span style="color: #1e293b; font-size: 11px">...</span>
+<div>
+<span>...</span>
 </div>
-<div style="background: #f8fafc; padding: 8px 16px; border-radius: 8px">
-<span style="color: #1e293b; font-size: 11px">Edge PoP N</span>
+<div>
+<span>Edge PoP N</span>
 </div>
 </div>
-<p style="color: #58a6ff; font-size: 11px; text-align: center; margin: 12px 0 0 0">~95% cache hit rate for popular streams</p>
+<p>~95% cache hit rate for popular streams</p>
 </div>
-<div style="text-align: center; color: #1e293b; font-size: 24px">↓</div>
+<div>↓</div>
   <!-- Viewers -->
-<div style="display: flex; justify-content: center">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: #1e293b">
-<strong style="font-size: 16px">VIEWERS (Millions)</strong>
-<p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.9">HLS playback via native player or hls.js</p>
+<div>
+<div>
+<strong>VIEWERS (Millions)</strong>
+<p>HLS playback via native player or hls.js</p>
 </div>
 </div>
 </div>
@@ -135,207 +135,207 @@
 <hr />
 <h2 id="section-2-live-streaming-pipeline">Section 2: Live Streaming Pipeline</h2>
 <h3 id="deep-mechanics">Deep Mechanics</h3>
-<p>The live streaming pipeline transforms a single <span style="color:#00ff00"><strong>RTMP stream</strong></span> from the broadcaster into multiple <span style="color:#00ff00"><strong>HLS streams</strong></span> at different quality levels, delivered globally through CDN edge servers. The pipeline operates in real-time with strict latency budgets.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
-<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0">VIDEO PROCESSING PIPELINE</h4>
-<div style="display: flex; flex-direction: column; gap: 20px">
-  <!-- Ingest Stage -->
-<div style="background: rgba(145, 70, 255, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #9146ff; margin: 0 0 12px 0">STAGE 1: INGEST (from broadcaster)</h5>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+<p>The live streaming pipeline transforms a single <span><strong>RTMP stream</strong></span> from the broadcaster into multiple <span><strong>HLS streams</strong></span> at different quality levels, delivered globally through CDN edge servers. The pipeline operates in real-time with strict latency budgets.</p>
 <div>
-<p style="color: #475569; font-size: 13px; margin: 0"><strong style="color: #1e293b">Protocol:</strong> RTMP (Real-Time Messaging Protocol)</p>
-<p style="color: #475569; font-size: 13px; margin: 8px 0 0 0"><strong style="color: #1e293b">Input:</strong> 1080p60, 6000 kbps, x264/NVENC</p>
-<p style="color: #475569; font-size: 13px; margin: 8px 0 0 0"><strong style="color: #1e293b">Auth:</strong> Stream key validation</p>
+<h4>VIDEO PROCESSING PIPELINE</h4>
+<div>
+  <!-- Ingest Stage -->
+<div>
+<h5>STAGE 1: INGEST (from broadcaster)</h5>
+<div>
+<div>
+<p><strong>Protocol:</strong> RTMP (Real-Time Messaging Protocol)</p>
+<p><strong>Input:</strong> 1080p60, 6000 kbps, x264/NVENC</p>
+<p><strong>Auth:</strong> Stream key validation</p>
 </div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px">
-<span style="color: #16a34a">rtmp://ingest-nyc.twitch.tv/app/</span><br>
-<span style="color: #475569">live_abc123_streamkey</span>
+<div>
+<span>rtmp://ingest-nyc.twitch.tv/app/</span><br>
+<span>live_abc123_streamkey</span>
 </div>
 </div>
 </div>
   <!-- Transcode Stage -->
-<div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #f0883e; margin: 0 0 12px 0">STAGE 2: TRANSCODE (real-time ABR ladder)</h5>
-<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px">
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold; font-size: 14px">1080p60</span><br>
-<span style="color: #475569; font-size: 11px">6000 kbps</span><br>
-<span style="color: #58a6ff; font-size: 10px">Source</span>
+<div>
+<h5>STAGE 2: TRANSCODE (real-time ABR ladder)</h5>
+<div>
+<div>
+<span>1080p60</span><br>
+<span>6000 kbps</span><br>
+<span>Source</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold; font-size: 14px">720p60</span><br>
-<span style="color: #475569; font-size: 11px">3000 kbps</span><br>
-<span style="color: #58a6ff; font-size: 10px">High</span>
+<div>
+<span>720p60</span><br>
+<span>3000 kbps</span><br>
+<span>High</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold; font-size: 14px">480p30</span><br>
-<span style="color: #475569; font-size: 11px">1500 kbps</span><br>
-<span style="color: #58a6ff; font-size: 10px">Medium</span>
+<div>
+<span>480p30</span><br>
+<span>1500 kbps</span><br>
+<span>Medium</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold; font-size: 14px">360p30</span><br>
-<span style="color: #475569; font-size: 11px">800 kbps</span><br>
-<span style="color: #58a6ff; font-size: 10px">Low</span>
+<div>
+<span>360p30</span><br>
+<span>800 kbps</span><br>
+<span>Low</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold; font-size: 14px">160p</span><br>
-<span style="color: #475569; font-size: 11px">400 kbps</span><br>
-<span style="color: #58a6ff; font-size: 10px">Audio-only</span>
+<div>
+<span>160p</span><br>
+<span>400 kbps</span><br>
+<span>Audio-only</span>
 </div>
 </div>
-<p style="color: #475569; font-size: 12px; margin: 12px 0 0 0"><strong style="color: #1e293b">Note:</strong> Partners get full ladder. Affiliates get limited transcodes. Regular streamers may get source-only.</p>
+<p><strong>Note:</strong> Partners get full ladder. Affiliates get limited transcodes. Regular streamers may get source-only.</p>
 </div>
   <!-- Package Stage -->
-<div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0">STAGE 3: PACKAGE (HLS segmentation)</h5>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
 <div>
-<p style="color: #475569; font-size: 13px; margin: 0"><strong style="color: #1e293b">Format:</strong> HLS (.m3u8 manifest + .ts segments)</p>
-<p style="color: #475569; font-size: 13px; margin: 8px 0 0 0"><strong style="color: #1e293b">Segment Duration:</strong> 2-4 seconds (normal), 1-2s (low-latency)</p>
-<p style="color: #475569; font-size: 13px; margin: 8px 0 0 0"><strong style="color: #1e293b">Latency:</strong> 10-15s normal, 3-5s low-latency mode</p>
+<h5>STAGE 3: PACKAGE (HLS segmentation)</h5>
+<div>
+<div>
+<p><strong>Format:</strong> HLS (.m3u8 manifest + .ts segments)</p>
+<p><strong>Segment Duration:</strong> 2-4 seconds (normal), 1-2s (low-latency)</p>
+<p><strong>Latency:</strong> 10-15s normal, 3-5s low-latency mode</p>
 </div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px">
-<span style="color: #16a34a">#EXTM3U</span><br>
-<span style="color: #475569">#EXT-X-VERSION:3</span><br>
-<span style="color: #475569">#EXT-X-TARGETDURATION:4</span><br>
-<span style="color: #475569">#EXTINF:4.000,</span><br>
-<span style="color: #58a6ff">segment_00001.ts</span><br>
-<span style="color: #475569">#EXTINF:4.000,</span><br>
-<span style="color: #58a6ff">segment_00002.ts</span>
+<div>
+<span>#EXTM3U</span><br>
+<span>#EXT-X-VERSION:3</span><br>
+<span>#EXT-X-TARGETDURATION:4</span><br>
+<span>#EXTINF:4.000,</span><br>
+<span>segment_00001.ts</span><br>
+<span>#EXTINF:4.000,</span><br>
+<span>segment_00002.ts</span>
 </div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="latency-stack-breakdown">Latency Stack Breakdown</h3>
-<div style="background: #f0fdf4;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #166534; margin-top: 0">Where Latency Comes From</h4>
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold">Encoding</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px">
-<span style="color: #475569; font-size: 14px"><strong>1-2 seconds</strong> - Broadcaster's encoder (OBS) buffers frames before sending</span>
+<div>
+<h4>Where Latency Comes From</h4>
+<div>
+<div>
+<div>Encoding</div>
+<div>
+<span><strong>1-2 seconds</strong> - Broadcaster's encoder (OBS) buffers frames before sending</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold">Network</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px">
-<span style="color: #475569; font-size: 14px"><strong>0.1-0.5 seconds</strong> - RTMP upload from broadcaster to ingest server</span>
+<div>
+<div>Network</div>
+<div>
+<span><strong>0.1-0.5 seconds</strong> - RTMP upload from broadcaster to ingest server</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold">Transcoding</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px">
-<span style="color: #475569; font-size: 14px"><strong>1-2 seconds</strong> - GPU cluster processes and outputs multiple quality levels</span>
+<div>
+<div>Transcoding</div>
+<div>
+<span><strong>1-2 seconds</strong> - GPU cluster processes and outputs multiple quality levels</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold">Segmentation</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px">
-<span style="color: #475569; font-size: 14px"><strong>2-4 seconds</strong> - Must wait for full segment before it can be delivered</span>
+<div>
+<div>Segmentation</div>
+<div>
+<span><strong>2-4 seconds</strong> - Must wait for full segment before it can be delivered</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold">CDN</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px">
-<span style="color: #475569; font-size: 14px"><strong>0.1-0.5 seconds</strong> - Propagation from origin to edge + edge to viewer</span>
+<div>
+<div>CDN</div>
+<div>
+<span><strong>0.1-0.5 seconds</strong> - Propagation from origin to edge + edge to viewer</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #22c55e; color: #1e293b; min-width: 120px; padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: bold">Player Buffer</div>
-<div style="flex: 1; background: white; padding: 12px 16px; border-radius: 8px">
-<span style="color: #475569; font-size: 14px"><strong>4-8 seconds</strong> - Player buffers 2-3 segments before playback starts</span>
+<div>
+<div>Player Buffer</div>
+<div>
+<span><strong>4-8 seconds</strong> - Player buffers 2-3 segments before playback starts</span>
 </div>
 </div>
 </div>
-<div style="background: #dcfce7; padding: 16px; border-radius: 8px; margin-top: 16px">
-<strong style="color: #166534">Total:</strong>
-<span style="color: #15803d"> Normal mode: 10-15 seconds | Low-latency mode: 3-5 seconds (smaller segments, fewer buffered)</span>
+<div>
+<strong>Total:</strong>
+<span> Normal mode: 10-15 seconds | Low-latency mode: 3-5 seconds (smaller segments, fewer buffered)</span>
 </div>
 </div>
 <h3 id="live-streaming-interview-questions-3-levels-deep">Live Streaming Interview Questions (3 Levels Deep)</h3>
-<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e40af; margin-top: 0">Level 1: Why does Twitch use HLS instead of WebRTC for live streaming?</h4>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> HLS (HTTP Live Streaming) uses HTTP-based segment delivery, which integrates seamlessly with existing <span style="color:#00ff00">**CDN infrastructure**</span>. A popular streamer with 100K viewers needs each video segment cached and served from edge locations globally. WebRTC is designed for peer-to-peer, low-latency scenarios (video calls) but doesn't have the CDN caching layer needed for broadcast. The economics are clear: serving 100K viewers at 5Mbps via WebRTC from origin = 500 Gbps from your servers. With CDN + HLS, that traffic is distributed across hundreds of edge PoPs with 95%+ cache hit rates.</p>
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: How do you achieve sub-5-second latency with HLS when segments are 4 seconds long?</h5>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Standard HLS has 10-30 second latency because you wait for: segment encoding + upload + CDN propagation + player buffer (2-3 segments). <span style="color:#00ff00">**Low-Latency HLS (LL-HLS)**</span> attacks each component: (1) <strong>Partial Segments:</strong> Instead of waiting for full 4s segment, emit 200ms "parts" using <span style="color:#00ff00">**Chunked Transfer Encoding**</span>. (2) <strong>Playlist Delta Updates:</strong> Instead of re-fetching entire playlist, server pushes just the delta via HTTP/2 push. (3) <strong>Reduced Buffering:</strong> Player buffers 2-3 parts instead of 2-3 full segments. (4) <strong>Preload Hints:</strong> Playlist includes hints about next parts so player can request them early. Trade-off: Lower latency = more origin requests, less cache efficiency, more rebuffering on poor connections. See [[latency-throughput]](/topic/system-design/latency-throughput) for optimization strategies.</p>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
-<h6 style="color: #1e40af; margin-top: 0">Level 3: A streamer in Australia is broadcasting to viewers in Europe. How do you minimize the latency disadvantage compared to local streamers?</h6>
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> Cross-continental streaming faces ~300ms network RTT just for physics. Minimize additional latency through: (1) <strong>Regional Ingest:</strong> Streamer connects to closest ingest server (Sydney). RTMP upload latency minimized. (2) <strong>Internal Backbone:</strong> Transcoded segments travel over optimized internal network (not public internet) from Sydney transcoding cluster to EU origin. Use dedicated fiber/peering arrangements. (3) <strong>Origin Replication:</strong> Push segments to EU origin servers proactively rather than waiting for CDN pull. EU origin serves EU edge PoPs. (4) <strong>Edge Pre-positioning:</strong> For popular streamers, pre-warm major edge PoPs by predicting where viewers will be based on historical data. (5) <strong>Anycast DNS:</strong> Viewers automatically routed to nearest edge PoP regardless of origin location. (6) <strong>Accept the floor:</strong> Physics sets a ~150ms minimum for AU-to-EU. Focus on not adding more. (7) <strong>Measure end-to-end:</strong> Track glass-to-glass latency per region. Alert on regression. Real implementation: Twitch maintains dedicated inter-region backbones and replicates segments to regional origin clusters.</p>
+<div>
+<h4>Level 1: Why does Twitch use HLS instead of WebRTC for live streaming?</h4>
+<p><strong>Answer:</strong> HLS (HTTP Live Streaming) uses HTTP-based segment delivery, which integrates seamlessly with existing <span>**CDN infrastructure**</span>. A popular streamer with 100K viewers needs each video segment cached and served from edge locations globally. WebRTC is designed for peer-to-peer, low-latency scenarios (video calls) but doesn't have the CDN caching layer needed for broadcast. The economics are clear: serving 100K viewers at 5Mbps via WebRTC from origin = 500 Gbps from your servers. With CDN + HLS, that traffic is distributed across hundreds of edge PoPs with 95%+ cache hit rates.</p>
+<div>
+<h5>Level 2: How do you achieve sub-5-second latency with HLS when segments are 4 seconds long?</h5>
+<p><strong>Answer:</strong> Standard HLS has 10-30 second latency because you wait for: segment encoding + upload + CDN propagation + player buffer (2-3 segments). <span>**Low-Latency HLS (LL-HLS)**</span> attacks each component: (1) <strong>Partial Segments:</strong> Instead of waiting for full 4s segment, emit 200ms "parts" using <span>**Chunked Transfer Encoding**</span>. (2) <strong>Playlist Delta Updates:</strong> Instead of re-fetching entire playlist, server pushes just the delta via HTTP/2 push. (3) <strong>Reduced Buffering:</strong> Player buffers 2-3 parts instead of 2-3 full segments. (4) <strong>Preload Hints:</strong> Playlist includes hints about next parts so player can request them early. Trade-off: Lower latency = more origin requests, less cache efficiency, more rebuffering on poor connections. See [[latency-throughput]](/topic/system-design/latency-throughput) for optimization strategies.</p>
+<div>
+<h6>Level 3: A streamer in Australia is broadcasting to viewers in Europe. How do you minimize the latency disadvantage compared to local streamers?</h6>
+<p><strong>Answer:</strong> Cross-continental streaming faces ~300ms network RTT just for physics. Minimize additional latency through: (1) <strong>Regional Ingest:</strong> Streamer connects to closest ingest server (Sydney). RTMP upload latency minimized. (2) <strong>Internal Backbone:</strong> Transcoded segments travel over optimized internal network (not public internet) from Sydney transcoding cluster to EU origin. Use dedicated fiber/peering arrangements. (3) <strong>Origin Replication:</strong> Push segments to EU origin servers proactively rather than waiting for CDN pull. EU origin serves EU edge PoPs. (4) <strong>Edge Pre-positioning:</strong> For popular streamers, pre-warm major edge PoPs by predicting where viewers will be based on historical data. (5) <strong>Anycast DNS:</strong> Viewers automatically routed to nearest edge PoP regardless of origin location. (6) <strong>Accept the floor:</strong> Physics sets a ~150ms minimum for AU-to-EU. Focus on not adding more. (7) <strong>Measure end-to-end:</strong> Track glass-to-glass latency per region. Alert on regression. Real implementation: Twitch maintains dedicated inter-region backbones and replicates segments to regional origin clusters.</p>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="section-3-real-time-chat-system">Section 3: Real-Time Chat System</h2>
 <h3 id="deep-mechanics-1">Deep Mechanics</h3>
-<p>Chat at Twitch scale is a <span style="color:#00ff00"><strong>massive fan-out problem</strong></span>: one message from a viewer must reach 100K+ connected clients in near real-time. The architecture uses hierarchical distribution with edge WebSocket servers consuming from a central message bus.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
-<h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0">CHAT ARCHITECTURE FOR 100K+ VIEWERS</h4>
-<div style="display: flex; flex-direction: column; gap: 20px">
+<p>Chat at Twitch scale is a <span><strong>massive fan-out problem</strong></span>: one message from a viewer must reach 100K+ connected clients in near real-time. The architecture uses hierarchical distribution with edge WebSocket servers consuming from a central message bus.</p>
+<div>
+<h4>CHAT ARCHITECTURE FOR 100K+ VIEWERS</h4>
+<div>
   <!-- Chat Ingest -->
-<div style="background: rgba(163, 113, 247, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #a371f7; margin: 0 0 12px 0">CHAT INGEST SERVERS</h5>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px">
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Validate</span><br>
-<span style="color: #475569; font-size: 11px">Auth, permissions</span>
+<div>
+<h5>CHAT INGEST SERVERS</h5>
+<div>
+<div>
+<span>Validate</span><br>
+<span>Auth, permissions</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Rate Limit</span><br>
-<span style="color: #475569; font-size: 11px">1 msg/sec/user</span>
+<div>
+<span>Rate Limit</span><br>
+<span>1 msg/sec/user</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Moderate</span><br>
-<span style="color: #475569; font-size: 11px">AutoMod, filters</span>
+<div>
+<span>Moderate</span><br>
+<span>AutoMod, filters</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Enrich</span><br>
-<span style="color: #475569; font-size: 11px">Badges, emotes</span>
+<div>
+<span>Enrich</span><br>
+<span>Badges, emotes</span>
 </div>
 </div>
 </div>
-<div style="text-align: center; color: #a371f7; font-size: 24px">↓</div>
+<div>↓</div>
   <!-- Message Queue -->
-<div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #f0883e; margin: 0 0 12px 0">MESSAGE QUEUE (Kafka)</h5>
-<p style="color: #475569; font-size: 13px; margin: 0"><strong style="color: #1e293b">Topic:</strong> chat.{channel_id} | <strong style="color: #1e293b">Partitions:</strong> By user_id % N | <strong style="color: #1e293b">Retention:</strong> 2 hours</p>
-<p style="color: #475569; font-size: 12px; margin: 8px 0 0 0">Provides ordered delivery, durability, and decouples ingest from distribution</p>
+<div>
+<h5>MESSAGE QUEUE (Kafka)</h5>
+<p><strong>Topic:</strong> chat.{channel_id} | <strong>Partitions:</strong> By user_id % N | <strong>Retention:</strong> 2 hours</p>
+<p>Provides ordered delivery, durability, and decouples ingest from distribution</p>
 </div>
-<div style="text-align: center; color: #58a6ff; font-size: 24px">↓</div>
+<div>↓</div>
   <!-- Edge WebSocket Servers -->
-<div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 16px 0">EDGE WEBSOCKET SERVERS</h5>
-<div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #58a6ff; font-weight: bold">WS Server 1</span><br>
-<span style="color: #475569; font-size: 11px">10K connections</span>
+<div>
+<h5>EDGE WEBSOCKET SERVERS</h5>
+<div>
+<div>
+<span>WS Server 1</span><br>
+<span>10K connections</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #58a6ff; font-weight: bold">WS Server 2</span><br>
-<span style="color: #475569; font-size: 11px">10K connections</span>
+<div>
+<span>WS Server 2</span><br>
+<span>10K connections</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #58a6ff; font-weight: bold">WS Server 3</span><br>
-<span style="color: #475569; font-size: 11px">10K connections</span>
+<div>
+<span>WS Server 3</span><br>
+<span>10K connections</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #475569; font-weight: bold">...</span>
+<div>
+<span>...</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #58a6ff; font-weight: bold">WS Server N</span><br>
-<span style="color: #475569; font-size: 11px">10K connections</span>
+<div>
+<span>WS Server N</span><br>
+<span>10K connections</span>
 </div>
 </div>
-<p style="color: #58a6ff; font-size: 12px; text-align: center; margin: 12px 0 0 0">For 100K viewer stream → ~10 edge servers needed</p>
+<p>For 100K viewer stream → ~10 edge servers needed</p>
 </div>
-<div style="text-align: center; color: #3fb950; font-size: 24px">↓</div>
+<div>↓</div>
   <!-- Viewers -->
-<div style="display: flex; justify-content: center">
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); padding: 16px 48px; border-radius: 12px; text-align: center; color: #1e293b">
-<strong style="font-size: 16px">VIEWERS (100K+)</strong>
-<p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.9">WebSocket connection to nearest edge server</p>
+<div>
+<div>
+<strong>VIEWERS (100K+)</strong>
+<p>WebSocket connection to nearest edge server</p>
 </div>
 </div>
 </div>
@@ -534,86 +534,86 @@
                                                       ```
 </code></pre>
 <h3 id="chat-interview-questions-3-levels-deep">Chat Interview Questions (3 Levels Deep)</h3>
-<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e40af; margin-top: 0">Level 1: How do you scale chat for 100K+ concurrent viewers in a single channel?</h4>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> The core challenge is <span style="color:#00ff00">**fan-out**</span>: one message needs to reach 100K connected clients. You can't have one server holding 100K WebSocket connections. The architecture is hierarchical: (1) <strong>Chat Ingest Layer</strong> receives messages, validates, rate-limits, applies moderation. (2) <strong>Message Queue (Kafka)</strong> provides topic per channel, ordered delivery, handles burst writes. (3) <strong>Edge WebSocket Servers</strong> each hold ~10K connections, consume from Kafka, broadcast to connected users. For 100K viewers, you need ~10 edge servers. Key insight: chat is <span style="color:#00ff00">**eventually consistent**</span> - if message delivery is delayed 100ms between edge servers, nobody notices.</p>
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: How do you handle a chat message storm during a viral moment (streamer wins tournament)?</h5>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Viral moments cause chat to spike 10-100x normal volume. Multiple mitigation layers: (1) <strong>Slow Mode:</strong> Force N seconds between messages per user - reduces eligible senders. (2) <strong>Sub-only Mode:</strong> Only subscribers can chat - dramatic reduction in volume. (3) <strong>Client-side Throttling:</strong> Player shows subset of messages to prevent UI lag. Client randomly samples messages above threshold. (4) <strong>R9K Mode:</strong> Block duplicate/similar messages - prevents copy-paste spam. (5) <strong>Graceful Degradation:</strong> Under extreme load, delay messages rather than drop them. Queue depth alerts trigger auto-slow-mode. (6) <strong>Edge Server Scaling:</strong> Auto-scale WebSocket servers based on connection count and CPU. Use [[rate-limiting]](/topic/system-design/rate-limiting) patterns at multiple layers.</p>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
-<h6 style="color: #1e40af; margin-top: 0">Level 3: A user is connected to Edge Server A but sends a message. How does that message reach users connected to Edge Server B, and how do you ensure ordering?</h6>
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> This requires understanding the full message flow and consistency model. (1) <strong>Message Path:</strong> User on Edge A sends message -> Chat Ingest Server (not Edge A!) validates and writes to Kafka -> All Edge Servers (A, B, C...) consume from Kafka and broadcast. Edge servers are <em>read-only distributors</em>, not message originators. (2) <strong>Ordering Guarantee:</strong> Kafka provides <span style="color:#00ff00">**partition-level ordering**</span>. We partition by user_id, so messages from same user are ordered. Messages from different users may be reordered between edges - this is acceptable for chat. (3) <strong>Cross-Edge Consistency:</strong> Edge A and Edge B consume from the same Kafka topic but may be at different offsets (one is behind). This means User X on Edge A might see a message before User Y on Edge B. Acceptable delay is ~100ms. (4) <strong>Total Ordering Alternative:</strong> If strict ordering required (e.g., auction), use single partition or sequence numbers. But this limits throughput. (5) <strong>Edge Case - Message Dedup:</strong> If Kafka consumer restarts, it may re-deliver messages. Edge servers must deduplicate by message ID to prevent duplicates. Use bloom filter or small LRU cache of recent message IDs.</p>
+<div>
+<h4>Level 1: How do you scale chat for 100K+ concurrent viewers in a single channel?</h4>
+<p><strong>Answer:</strong> The core challenge is <span>**fan-out**</span>: one message needs to reach 100K connected clients. You can't have one server holding 100K WebSocket connections. The architecture is hierarchical: (1) <strong>Chat Ingest Layer</strong> receives messages, validates, rate-limits, applies moderation. (2) <strong>Message Queue (Kafka)</strong> provides topic per channel, ordered delivery, handles burst writes. (3) <strong>Edge WebSocket Servers</strong> each hold ~10K connections, consume from Kafka, broadcast to connected users. For 100K viewers, you need ~10 edge servers. Key insight: chat is <span>**eventually consistent**</span> - if message delivery is delayed 100ms between edge servers, nobody notices.</p>
+<div>
+<h5>Level 2: How do you handle a chat message storm during a viral moment (streamer wins tournament)?</h5>
+<p><strong>Answer:</strong> Viral moments cause chat to spike 10-100x normal volume. Multiple mitigation layers: (1) <strong>Slow Mode:</strong> Force N seconds between messages per user - reduces eligible senders. (2) <strong>Sub-only Mode:</strong> Only subscribers can chat - dramatic reduction in volume. (3) <strong>Client-side Throttling:</strong> Player shows subset of messages to prevent UI lag. Client randomly samples messages above threshold. (4) <strong>R9K Mode:</strong> Block duplicate/similar messages - prevents copy-paste spam. (5) <strong>Graceful Degradation:</strong> Under extreme load, delay messages rather than drop them. Queue depth alerts trigger auto-slow-mode. (6) <strong>Edge Server Scaling:</strong> Auto-scale WebSocket servers based on connection count and CPU. Use [[rate-limiting]](/topic/system-design/rate-limiting) patterns at multiple layers.</p>
+<div>
+<h6>Level 3: A user is connected to Edge Server A but sends a message. How does that message reach users connected to Edge Server B, and how do you ensure ordering?</h6>
+<p><strong>Answer:</strong> This requires understanding the full message flow and consistency model. (1) <strong>Message Path:</strong> User on Edge A sends message -> Chat Ingest Server (not Edge A!) validates and writes to Kafka -> All Edge Servers (A, B, C...) consume from Kafka and broadcast. Edge servers are <em>read-only distributors</em>, not message originators. (2) <strong>Ordering Guarantee:</strong> Kafka provides <span>**partition-level ordering**</span>. We partition by user_id, so messages from same user are ordered. Messages from different users may be reordered between edges - this is acceptable for chat. (3) <strong>Cross-Edge Consistency:</strong> Edge A and Edge B consume from the same Kafka topic but may be at different offsets (one is behind). This means User X on Edge A might see a message before User Y on Edge B. Acceptable delay is ~100ms. (4) <strong>Total Ordering Alternative:</strong> If strict ordering required (e.g., auction), use single partition or sequence numbers. But this limits throughput. (5) <strong>Edge Case - Message Dedup:</strong> If Kafka consumer restarts, it may re-deliver messages. Edge servers must deduplicate by message ID to prevent duplicates. Use bloom filter or small LRU cache of recent message IDs.</p>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="section-4-vod-storage-and-clips">Section 4: VOD Storage and Clips</h2>
 <h3 id="deep-mechanics-2">Deep Mechanics</h3>
-<p><span style="color:#00ff00"><strong>VOD (Video on Demand)</strong></span> stores past broadcasts for later viewing. Unlike live streaming where segments are ephemeral, VOD requires long-term storage with efficient retrieval. <span style="color:#00ff00"><strong>Clips</strong></span> are short highlights extracted from live or VOD content.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
-<h4 style="color: #3fb950; text-align: center; margin: 0 0 24px 0">VOD STORAGE ARCHITECTURE</h4>
-<div style="display: flex; flex-direction: column; gap: 20px">
+<p><span><strong>VOD (Video on Demand)</strong></span> stores past broadcasts for later viewing. Unlike live streaming where segments are ephemeral, VOD requires long-term storage with efficient retrieval. <span><strong>Clips</strong></span> are short highlights extracted from live or VOD content.</p>
+<div>
+<h4>VOD STORAGE ARCHITECTURE</h4>
+<div>
   <!-- Live Pipeline -->
-<div style="display: flex; gap: 20px; align-items: stretch">
-<div style="background: rgba(145, 70, 255, 0.15);border-radius: 12px; padding: 20px; flex: 1">
-<h5 style="color: #9146ff; margin: 0 0 12px 0">LIVE PIPELINE</h5>
-<p style="color: #475569; font-size: 13px; margin: 0">During stream, segments are cached in memory/SSD for low-latency delivery</p>
+<div>
+<div>
+<h5>LIVE PIPELINE</h5>
+<p>During stream, segments are cached in memory/SSD for low-latency delivery</p>
 </div>
-<div style="display: flex; align-items: center; color: #3fb950; font-size: 24px">→</div>
-<div style="background: rgba(63, 185, 80, 0.15);border-radius: 12px; padding: 20px; flex: 1">
-<h5 style="color: #3fb950; margin: 0 0 12px 0">VOD ARCHIVE</h5>
-<p style="color: #475569; font-size: 13px; margin: 0">After stream ends, segments are archived to object storage (S3)</p>
+<div>→</div>
+<div>
+<h5>VOD ARCHIVE</h5>
+<p>After stream ends, segments are archived to object storage (S3)</p>
 </div>
 </div>
   <!-- Storage Tiers -->
-<div style="background: rgba(63, 185, 80, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #3fb950; margin: 0 0 16px 0">TIERED STORAGE</h5>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<span style="color: #3fb950; font-weight: bold">HOT (0-7 days)</span><br>
-<span style="color: #475569; font-size: 12px">S3 Standard</span><br>
-<span style="color: #1e293b; font-size: 11px; margin-top: 8px; display: block">$0.023/GB/month</span>
-<span style="color: #475569; font-size: 11px">Most replays happen in first week</span>
+<div>
+<h5>TIERED STORAGE</h5>
+<div>
+<div>
+<span>HOT (0-7 days)</span><br>
+<span>S3 Standard</span><br>
+<span>$0.023/GB/month</span>
+<span>Most replays happen in first week</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<span style="color: #f0883e; font-weight: bold">WARM (7-60 days)</span><br>
-<span style="color: #475569; font-size: 12px">S3 Standard-IA</span><br>
-<span style="color: #1e293b; font-size: 11px; margin-top: 8px; display: block">$0.0125/GB/month</span>
-<span style="color: #475569; font-size: 11px">Infrequent access, fast retrieval</span>
+<div>
+<span>WARM (7-60 days)</span><br>
+<span>S3 Standard-IA</span><br>
+<span>$0.0125/GB/month</span>
+<span>Infrequent access, fast retrieval</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<span style="color: #475569; font-weight: bold">COLD (60+ days)</span><br>
-<span style="color: #475569; font-size: 12px">S3 Glacier</span><br>
-<span style="color: #1e293b; font-size: 11px; margin-top: 8px; display: block">$0.004/GB/month</span>
-<span style="color: #475569; font-size: 11px">Archive, retrieval takes minutes</span>
+<div>
+<span>COLD (60+ days)</span><br>
+<span>S3 Glacier</span><br>
+<span>$0.004/GB/month</span>
+<span>Archive, retrieval takes minutes</span>
 </div>
 </div>
 </div>
   <!-- VOD Structure -->
-<div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0">VOD DATA STRUCTURE</h5>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px">
-<span style="color: #16a34a">s3://twitch-vods/</span><br>
-<span style="color: #475569">  ├── {channel_id}/</span><br>
-<span style="color: #475569">  │   ├── {vod_id}/</span><br>
-<span style="color: #58a6ff">  │   │   ├── manifest.m3u8</span><br>
-<span style="color: #58a6ff">  │   │   ├── 1080p60/</span><br>
-<span style="color: #475569">  │   │   │   ├── 00001.ts</span><br>
-<span style="color: #475569">  │   │   │   ├── 00002.ts</span><br>
-<span style="color: #475569">  │   │   │   └── ...</span><br>
-<span style="color: #58a6ff">  │   │   ├── 720p60/</span><br>
-<span style="color: #58a6ff">  │   │   ├── thumbnails/</span><br>
-<span style="color: #58a6ff">  │   │   └── metadata.json</span>
+<div>
+<h5>VOD DATA STRUCTURE</h5>
+<div>
+<div>
+<span>s3://twitch-vods/</span><br>
+<span>  ├── {channel_id}/</span><br>
+<span>  │   ├── {vod_id}/</span><br>
+<span>  │   │   ├── manifest.m3u8</span><br>
+<span>  │   │   ├── 1080p60/</span><br>
+<span>  │   │   │   ├── 00001.ts</span><br>
+<span>  │   │   │   ├── 00002.ts</span><br>
+<span>  │   │   │   └── ...</span><br>
+<span>  │   │   ├── 720p60/</span><br>
+<span>  │   │   ├── thumbnails/</span><br>
+<span>  │   │   └── metadata.json</span>
 </div>
 <div>
-<p style="color: #475569; font-size: 13px; margin: 0"><strong style="color: #1e293b">Typical VOD Size:</strong></p>
-<p style="color: #475569; font-size: 12px; margin: 4px 0">4-hour stream @ 1080p60 = ~50GB</p>
-<p style="color: #475569; font-size: 12px; margin: 4px 0">With all quality levels = ~100GB</p>
-<p style="color: #475569; font-size: 13px; margin: 16px 0 0 0"><strong style="color: #1e293b">Retention:</strong></p>
-<p style="color: #475569; font-size: 12px; margin: 4px 0">Partners: 60 days</p>
-<p style="color: #475569; font-size: 12px; margin: 4px 0">Turbo/Prime: 60 days</p>
-<p style="color: #475569; font-size: 12px; margin: 4px 0">Regular: 14 days</p>
+<p><strong>Typical VOD Size:</strong></p>
+<p>4-hour stream @ 1080p60 = ~50GB</p>
+<p>With all quality levels = ~100GB</p>
+<p><strong>Retention:</strong></p>
+<p>Partners: 60 days</p>
+<p>Turbo/Prime: 60 days</p>
+<p>Regular: 14 days</p>
 </div>
 </div>
 </div>
@@ -726,120 +726,120 @@
                                                                                       ```
 </code></pre>
 <h3 id="vod-interview-questions-3-levels-deep">VOD Interview Questions (3 Levels Deep)</h3>
-<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e40af; margin-top: 0">Level 1: How do you efficiently store VODs when a popular streamer broadcasts 8 hours daily?</h4>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> An 8-hour stream at 1080p60 with all quality levels is ~200GB. For a platform with 100K daily streams, that's petabytes per day. The solution is <span style="color:#00ff00">**tiered storage**</span>: (1) <strong>Hot tier (S3 Standard)</strong> for first 7 days - most VOD views happen in this window. (2) <strong>Warm tier (S3 Standard-IA)</strong> for days 7-60 - cheaper, retrieval still fast. (3) <strong>Cold tier (S3 Glacier)</strong> for 60+ days - very cheap, minutes to retrieve. (4) <strong>Retention limits:</strong> Regular users get 14 days, Partners get 60 days. Automatic deletion prevents unbounded growth. (5) <strong>Transcoding on demand:</strong> Only store source quality long-term; regenerate lower qualities on-demand for cold VODs.</p>
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: A user wants to clip a moment from 30 seconds ago in a live stream. How do you serve this instantly?</h5>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Clips require access to recent stream segments. Architecture: (1) <strong>Segment Buffer:</strong> During live stream, keep last 2 hours of segments in memory/SSD cache on origin servers. This is the "clip window." (2) <strong>Instant Clip Creation:</strong> When user clips, we already have segments cached - no need to fetch from cold storage. (3) <strong>Async Processing:</strong> Return clip ID immediately. Background worker combines segments, generates thumbnail, uploads to S3. Client polls for completion (typically 5-10 seconds). (4) <strong>Pre-generated Thumbnails:</strong> Generate thumbnails every 10 seconds during live stream. Clip can use nearest pre-generated thumbnail while final one is processing. See [[storage]](/topic/system-design/storage) for tiered caching strategies.</p>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
-<h6 style="color: #1e40af; margin-top: 0">Level 3: How do you handle seeking to any timestamp in a 10-hour VOD without downloading the entire file?</h6>
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> This is where <span style="color:#00ff00">**HLS segment indexing**</span> shines. (1) <strong>Manifest Structure:</strong> The .m3u8 playlist contains entries for every segment with duration. Player can calculate which segment contains target timestamp. (2) <strong>Byte-Range Requests:</strong> Segments are stored as discrete files. Player requests only the needed segment(s) via HTTP Range requests. (3) <strong>Keyframe Index:</strong> For frame-accurate seeking, we need an index of <span style="color:#00ff00">**I-frames (keyframes)**</span>. HLS #EXT-X-I-FRAME-STREAM-INF provides this. Without keyframe, must decode from previous keyframe. (4) <strong>Segment Granularity:</strong> 4-second segments mean worst-case 4 seconds of "overshoot" when seeking. For precise seeking, use smaller segments or byte-range within segments. (5) <strong>Thumbnail Scrubbing:</strong> Generate sprite sheets (grid of thumbnails) at 10-second intervals. As user scrubs, show thumbnail instantly while actual video loads. (6) <strong>Prefetching:</strong> Once user starts watching, prefetch next N segments. If they seek forward, likely segments already cached. (7) <strong>CDN Caching:</strong> Popular VOD segments are cached at edge. Seeking within popular VODs is fast because segments are edge-cached.</p>
+<div>
+<h4>Level 1: How do you efficiently store VODs when a popular streamer broadcasts 8 hours daily?</h4>
+<p><strong>Answer:</strong> An 8-hour stream at 1080p60 with all quality levels is ~200GB. For a platform with 100K daily streams, that's petabytes per day. The solution is <span>**tiered storage**</span>: (1) <strong>Hot tier (S3 Standard)</strong> for first 7 days - most VOD views happen in this window. (2) <strong>Warm tier (S3 Standard-IA)</strong> for days 7-60 - cheaper, retrieval still fast. (3) <strong>Cold tier (S3 Glacier)</strong> for 60+ days - very cheap, minutes to retrieve. (4) <strong>Retention limits:</strong> Regular users get 14 days, Partners get 60 days. Automatic deletion prevents unbounded growth. (5) <strong>Transcoding on demand:</strong> Only store source quality long-term; regenerate lower qualities on-demand for cold VODs.</p>
+<div>
+<h5>Level 2: A user wants to clip a moment from 30 seconds ago in a live stream. How do you serve this instantly?</h5>
+<p><strong>Answer:</strong> Clips require access to recent stream segments. Architecture: (1) <strong>Segment Buffer:</strong> During live stream, keep last 2 hours of segments in memory/SSD cache on origin servers. This is the "clip window." (2) <strong>Instant Clip Creation:</strong> When user clips, we already have segments cached - no need to fetch from cold storage. (3) <strong>Async Processing:</strong> Return clip ID immediately. Background worker combines segments, generates thumbnail, uploads to S3. Client polls for completion (typically 5-10 seconds). (4) <strong>Pre-generated Thumbnails:</strong> Generate thumbnails every 10 seconds during live stream. Clip can use nearest pre-generated thumbnail while final one is processing. See [[storage]](/topic/system-design/storage) for tiered caching strategies.</p>
+<div>
+<h6>Level 3: How do you handle seeking to any timestamp in a 10-hour VOD without downloading the entire file?</h6>
+<p><strong>Answer:</strong> This is where <span>**HLS segment indexing**</span> shines. (1) <strong>Manifest Structure:</strong> The .m3u8 playlist contains entries for every segment with duration. Player can calculate which segment contains target timestamp. (2) <strong>Byte-Range Requests:</strong> Segments are stored as discrete files. Player requests only the needed segment(s) via HTTP Range requests. (3) <strong>Keyframe Index:</strong> For frame-accurate seeking, we need an index of <span>**I-frames (keyframes)**</span>. HLS #EXT-X-I-FRAME-STREAM-INF provides this. Without keyframe, must decode from previous keyframe. (4) <strong>Segment Granularity:</strong> 4-second segments mean worst-case 4 seconds of "overshoot" when seeking. For precise seeking, use smaller segments or byte-range within segments. (5) <strong>Thumbnail Scrubbing:</strong> Generate sprite sheets (grid of thumbnails) at 10-second intervals. As user scrubs, show thumbnail instantly while actual video loads. (6) <strong>Prefetching:</strong> Once user starts watching, prefetch next N segments. If they seek forward, likely segments already cached. (7) <strong>CDN Caching:</strong> Popular VOD segments are cached at edge. Seeking within popular VODs is fast because segments are edge-cached.</p>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="section-5-transcoding-pipeline">Section 5: Transcoding Pipeline</h2>
 <h3 id="deep-mechanics-3">Deep Mechanics</h3>
-<p><span style="color:#00ff00"><strong>Real-time transcoding</strong></span> is the most computationally intensive component. It converts the broadcaster's single input stream into multiple quality levels (ABR ladder) with strict latency requirements - processing must be faster than real-time.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
-<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0">TRANSCODING INFRASTRUCTURE</h4>
-<div style="display: flex; flex-direction: column; gap: 20px">
+<p><span><strong>Real-time transcoding</strong></span> is the most computationally intensive component. It converts the broadcaster's single input stream into multiple quality levels (ABR ladder) with strict latency requirements - processing must be faster than real-time.</p>
+<div>
+<h4>TRANSCODING INFRASTRUCTURE</h4>
+<div>
   <!-- GPU Cluster -->
-<div style="background: rgba(240, 136, 62, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #f0883e; margin: 0 0 16px 0">GPU TRANSCODING CLUSTER</h5>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold">NVIDIA T4</span><br>
-<span style="color: #475569; font-size: 11px">8-12 streams/GPU</span><br>
-<span style="color: #1e293b; font-size: 10px">NVENC encoder</span>
+<div>
+<h5>GPU TRANSCODING CLUSTER</h5>
+<div>
+<div>
+<span>NVIDIA T4</span><br>
+<span>8-12 streams/GPU</span><br>
+<span>NVENC encoder</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold">NVIDIA T4</span><br>
-<span style="color: #475569; font-size: 11px">8-12 streams/GPU</span><br>
-<span style="color: #1e293b; font-size: 10px">NVENC encoder</span>
+<div>
+<span>NVIDIA T4</span><br>
+<span>8-12 streams/GPU</span><br>
+<span>NVENC encoder</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #f0883e; font-weight: bold">NVIDIA T4</span><br>
-<span style="color: #475569; font-size: 11px">8-12 streams/GPU</span><br>
-<span style="color: #1e293b; font-size: 10px">NVENC encoder</span>
+<div>
+<span>NVIDIA T4</span><br>
+<span>8-12 streams/GPU</span><br>
+<span>NVENC encoder</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center">
-<span style="color: #475569; font-weight: bold">...</span>
+<div>
+<span>...</span>
 </div>
 </div>
-<p style="color: #475569; font-size: 12px; margin: 12px 0 0 0"><strong style="color: #1e293b">Scale:</strong> 100K concurrent streams × 5 outputs = 500K parallel encoding jobs</p>
+<p><strong>Scale:</strong> 100K concurrent streams × 5 outputs = 500K parallel encoding jobs</p>
 </div>
   <!-- Transcoding Tiers -->
-<div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 16px 0">TRANSCODING TIERS (Business Logic)</h5>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<span style="color: #9146ff; font-weight: bold">PARTNERS</span><br>
-<span style="color: #475569; font-size: 12px; margin-top: 8px; display: block">Full ABR ladder</span>
-<span style="color: #1e293b; font-size: 11px">1080p, 720p, 480p, 360p, 160p</span><br>
-<span style="color: #3fb950; font-size: 11px">Always guaranteed</span>
+<div>
+<h5>TRANSCODING TIERS (Business Logic)</h5>
+<div>
+<div>
+<span>PARTNERS</span><br>
+<span>Full ABR ladder</span>
+<span>1080p, 720p, 480p, 360p, 160p</span><br>
+<span>Always guaranteed</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<span style="color: #58a6ff; font-weight: bold">AFFILIATES</span><br>
-<span style="color: #475569; font-size: 12px; margin-top: 8px; display: block">Limited ladder</span>
-<span style="color: #1e293b; font-size: 11px">Source + 720p + 480p</span><br>
-<span style="color: #f0883e; font-size: 11px">When capacity available</span>
+<div>
+<span>AFFILIATES</span><br>
+<span>Limited ladder</span>
+<span>Source + 720p + 480p</span><br>
+<span>When capacity available</span>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<span style="color: #475569; font-weight: bold">REGULAR</span><br>
-<span style="color: #475569; font-size: 12px; margin-top: 8px; display: block">Source only</span>
-<span style="color: #1e293b; font-size: 11px">No transcoding</span><br>
-<span style="color: #ef4444; font-size: 11px">Viewers need bandwidth</span>
+<div>
+<span>REGULAR</span><br>
+<span>Source only</span>
+<span>No transcoding</span><br>
+<span>Viewers need bandwidth</span>
 </div>
 </div>
 </div>
   <!-- Quality Ladder -->
-<div style="background: rgba(63, 185, 80, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #3fb950; margin: 0 0 12px 0">ABR LADDER ENCODING SETTINGS</h5>
-<div style="overflow-x: auto">
-<table style="width: 100%; border-collapse: collapse; font-size: 12px">
-<tr >
-<th style="padding: 8px; text-align: left; color: #3fb950">Quality</th>
-<th style="padding: 8px; text-align: left; color: #3fb950">Resolution</th>
-<th style="padding: 8px; text-align: left; color: #3fb950">Bitrate</th>
-<th style="padding: 8px; text-align: left; color: #3fb950">Frame Rate</th>
-<th style="padding: 8px; text-align: left; color: #3fb950">Keyframe</th>
-</tr>
-<tr >
-<td style="padding: 8px; color: #1e293b">Source</td>
-<td style="padding: 8px; color: #475569">1920×1080</td>
-<td style="padding: 8px; color: #475569">6000 kbps</td>
-<td style="padding: 8px; color: #475569">60 fps</td>
-<td style="padding: 8px; color: #475569">2 sec</td>
-</tr>
-<tr >
-<td style="padding: 8px; color: #1e293b">720p60</td>
-<td style="padding: 8px; color: #475569">1280×720</td>
-<td style="padding: 8px; color: #475569">3000 kbps</td>
-<td style="padding: 8px; color: #475569">60 fps</td>
-<td style="padding: 8px; color: #475569">2 sec</td>
-</tr>
-<tr >
-<td style="padding: 8px; color: #1e293b">480p30</td>
-<td style="padding: 8px; color: #475569">852×480</td>
-<td style="padding: 8px; color: #475569">1500 kbps</td>
-<td style="padding: 8px; color: #475569">30 fps</td>
-<td style="padding: 8px; color: #475569">2 sec</td>
-</tr>
-<tr >
-<td style="padding: 8px; color: #1e293b">360p30</td>
-<td style="padding: 8px; color: #475569">640×360</td>
-<td style="padding: 8px; color: #475569">800 kbps</td>
-<td style="padding: 8px; color: #475569">30 fps</td>
-<td style="padding: 8px; color: #475569">2 sec</td>
+<div>
+<h5>ABR LADDER ENCODING SETTINGS</h5>
+<div>
+<table>
+<tr>
+<th>Quality</th>
+<th>Resolution</th>
+<th>Bitrate</th>
+<th>Frame Rate</th>
+<th>Keyframe</th>
 </tr>
 <tr>
-<td style="padding: 8px; color: #1e293b">160p (audio)</td>
-<td style="padding: 8px; color: #475569">284×160</td>
-<td style="padding: 8px; color: #475569">400 kbps</td>
-<td style="padding: 8px; color: #475569">30 fps</td>
-<td style="padding: 8px; color: #475569">2 sec</td>
+<td>Source</td>
+<td>1920×1080</td>
+<td>6000 kbps</td>
+<td>60 fps</td>
+<td>2 sec</td>
+</tr>
+<tr>
+<td>720p60</td>
+<td>1280×720</td>
+<td>3000 kbps</td>
+<td>60 fps</td>
+<td>2 sec</td>
+</tr>
+<tr>
+<td>480p30</td>
+<td>852×480</td>
+<td>1500 kbps</td>
+<td>30 fps</td>
+<td>2 sec</td>
+</tr>
+<tr>
+<td>360p30</td>
+<td>640×360</td>
+<td>800 kbps</td>
+<td>30 fps</td>
+<td>2 sec</td>
+</tr>
+<tr>
+<td>160p (audio)</td>
+<td>284×160</td>
+<td>400 kbps</td>
+<td>30 fps</td>
+<td>2 sec</td>
 </tr>
 </table>
 </div>
@@ -989,69 +989,69 @@
                                                                                                               ```
 </code></pre>
 <h3 id="transcoding-interview-questions-3-levels-deep">Transcoding Interview Questions (3 Levels Deep)</h3>
-<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e40af; margin-top: 0">Level 1: Why does Twitch need to transcode streams? Can't viewers just watch the source quality?</h4>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> <span style="color:#00ff00">**Adaptive Bitrate (ABR)**</span> streaming is essential because viewers have varying network conditions. A viewer on mobile data can't sustain 6 Mbps for 1080p60. Without transcoding, that viewer either rebuffers constantly or can't watch at all. Transcoding creates multiple quality options (720p, 480p, 360p) so the player can automatically switch based on available bandwidth. Additionally, transcoding normalizes the input - streamers use different encoders, bitrates, and settings. Transcoding ensures consistent output format for CDN delivery.</p>
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: Transcoding is expensive. How does Twitch decide which streams get transcoding and which don't?</h5>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Transcoding economics drive a tiered approach: (1) <strong>Partners:</strong> Guaranteed full quality ladder (5 outputs) regardless of capacity. They generate revenue through ads and subs, justifying cost. (2) <strong>Affiliates:</strong> Get transcoding when capacity available. If GPU cluster is at 80% capacity, new affiliates may only get source + 1-2 qualities. (3) <strong>Regular streamers:</strong> Source-only (passthrough) - no transcoding. Most regular streams have <10 viewers who likely have good internet. (4) <strong>Dynamic allocation:</strong> System monitors GPU utilization. When capacity frees up (streams end), affiliates waiting for transcoding get upgraded. When a partner goes live, lower-priority streams may be downgraded. See [[resource-allocation]](/topic/system-design/distributed-systems) for scheduling patterns.</p>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
-<h6 style="color: #1e40af; margin-top: 0">Level 3: The transcoding cluster is at 95% capacity and a popular partner is about to go live. How do you ensure they get resources without degrading other partners?</h6>
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> This requires sophisticated <span style="color:#00ff00">**resource management with preemption**</span>: (1) <strong>Capacity Reservation:</strong> Reserve 10-15% of cluster capacity for partner burst. This "reserved" capacity can be used by affiliates but is preemptible. (2) <strong>Preemption Priority:</strong> When partner needs resources: first preempt affiliate streams above their minimum tier (reduce 3 outputs to 2), then preempt regular passthrough streams if needed. Never preempt partners. (3) <strong>Graceful Degradation:</strong> Don't instantly drop quality - give stream 30 seconds to wind down, let viewers' players adapt. (4) <strong>Predictive Scaling:</strong> If scheduled events (esports, big streamers' schedules), pre-scale GPU capacity. Use historical data to predict peak demand. (5) <strong>Multi-Region:</strong> Spread transcoding across regions. If US-East is constrained, route some streams to US-West transcoding (acceptable latency for output to CDN). (6) <strong>Quality Reduction vs Stream Drop:</strong> Never drop a stream entirely - instead reduce quality ladder. A partner with 3 outputs is better than a dropped stream. (7) <strong>Cost-Based Spillover:</strong> In extreme cases, use cloud GPU instances (AWS g4dn) as overflow. More expensive but prevents degradation.</p>
+<div>
+<h4>Level 1: Why does Twitch need to transcode streams? Can't viewers just watch the source quality?</h4>
+<p><strong>Answer:</strong> <span>**Adaptive Bitrate (ABR)**</span> streaming is essential because viewers have varying network conditions. A viewer on mobile data can't sustain 6 Mbps for 1080p60. Without transcoding, that viewer either rebuffers constantly or can't watch at all. Transcoding creates multiple quality options (720p, 480p, 360p) so the player can automatically switch based on available bandwidth. Additionally, transcoding normalizes the input - streamers use different encoders, bitrates, and settings. Transcoding ensures consistent output format for CDN delivery.</p>
+<div>
+<h5>Level 2: Transcoding is expensive. How does Twitch decide which streams get transcoding and which don't?</h5>
+<p><strong>Answer:</strong> Transcoding economics drive a tiered approach: (1) <strong>Partners:</strong> Guaranteed full quality ladder (5 outputs) regardless of capacity. They generate revenue through ads and subs, justifying cost. (2) <strong>Affiliates:</strong> Get transcoding when capacity available. If GPU cluster is at 80% capacity, new affiliates may only get source + 1-2 qualities. (3) <strong>Regular streamers:</strong> Source-only (passthrough) - no transcoding. Most regular streams have <10 viewers who likely have good internet. (4) <strong>Dynamic allocation:</strong> System monitors GPU utilization. When capacity frees up (streams end), affiliates waiting for transcoding get upgraded. When a partner goes live, lower-priority streams may be downgraded. See [[resource-allocation]](/topic/system-design/distributed-systems) for scheduling patterns.</p>
+<div>
+<h6>Level 3: The transcoding cluster is at 95% capacity and a popular partner is about to go live. How do you ensure they get resources without degrading other partners?</h6>
+<p><strong>Answer:</strong> This requires sophisticated <span>**resource management with preemption**</span>: (1) <strong>Capacity Reservation:</strong> Reserve 10-15% of cluster capacity for partner burst. This "reserved" capacity can be used by affiliates but is preemptible. (2) <strong>Preemption Priority:</strong> When partner needs resources: first preempt affiliate streams above their minimum tier (reduce 3 outputs to 2), then preempt regular passthrough streams if needed. Never preempt partners. (3) <strong>Graceful Degradation:</strong> Don't instantly drop quality - give stream 30 seconds to wind down, let viewers' players adapt. (4) <strong>Predictive Scaling:</strong> If scheduled events (esports, big streamers' schedules), pre-scale GPU capacity. Use historical data to predict peak demand. (5) <strong>Multi-Region:</strong> Spread transcoding across regions. If US-East is constrained, route some streams to US-West transcoding (acceptable latency for output to CDN). (6) <strong>Quality Reduction vs Stream Drop:</strong> Never drop a stream entirely - instead reduce quality ladder. A partner with 3 outputs is better than a dropped stream. (7) <strong>Cost-Based Spillover:</strong> In extreme cases, use cloud GPU instances (AWS g4dn) as overflow. More expensive but prevents degradation.</p>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="section-6-recommendation-engine">Section 6: Recommendation Engine</h2>
 <h3 id="deep-mechanics-4">Deep Mechanics</h3>
-<p>The <span style="color:#00ff00"><strong>recommendation engine</strong></span> personalizes content discovery, helping viewers find streams they'll enjoy. Unlike Netflix (catalog of fixed content), Twitch recommendations must account for real-time factors: who is currently live, viewer count trends, and stream recency.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
-<h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0">RECOMMENDATION SYSTEM ARCHITECTURE</h4>
-<div style="display: flex; flex-direction: column; gap: 20px">
+<p>The <span><strong>recommendation engine</strong></span> personalizes content discovery, helping viewers find streams they'll enjoy. Unlike Netflix (catalog of fixed content), Twitch recommendations must account for real-time factors: who is currently live, viewer count trends, and stream recency.</p>
+<div>
+<h4>RECOMMENDATION SYSTEM ARCHITECTURE</h4>
+<div>
   <!-- Data Sources -->
-<div style="background: rgba(163, 113, 247, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #a371f7; margin: 0 0 16px 0">DATA SOURCES</h5>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px">
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Watch History</span><br>
-<span style="color: #475569; font-size: 11px">Channels, duration, recency</span>
+<div>
+<h5>DATA SOURCES</h5>
+<div>
+<div>
+<span>Watch History</span><br>
+<span>Channels, duration, recency</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Follows/Subs</span><br>
-<span style="color: #475569; font-size: 11px">Explicit preferences</span>
+<div>
+<span>Follows/Subs</span><br>
+<span>Explicit preferences</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Interactions</span><br>
-<span style="color: #475569; font-size: 11px">Chat, clips, raids</span>
+<div>
+<span>Interactions</span><br>
+<span>Chat, clips, raids</span>
 </div>
-<div style="background: #f8fafc; padding: 12px; border-radius: 8px; text-align: center">
-<span style="color: #1e293b; font-size: 13px">Real-time</span><br>
-<span style="color: #475569; font-size: 11px">Live status, viewers, trends</span>
+<div>
+<span>Real-time</span><br>
+<span>Live status, viewers, trends</span>
 </div>
 </div>
 </div>
   <!-- Model Pipeline -->
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px">
-<div style="background: rgba(240, 136, 62, 0.15);border-radius: 12px; padding: 20px">
-<h5 style="color: #f0883e; margin: 0 0 12px 0">CANDIDATE GENERATION</h5>
-<p style="color: #475569; font-size: 12px; margin: 0">Retrieve 1000s of potentially relevant streams using lightweight models (embedding similarity, collaborative filtering)</p>
+<div>
+<div>
+<h5>CANDIDATE GENERATION</h5>
+<p>Retrieve 1000s of potentially relevant streams using lightweight models (embedding similarity, collaborative filtering)</p>
 </div>
-<div style="background: rgba(88, 166, 255, 0.15);border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 12px 0">RANKING</h5>
-<p style="color: #475569; font-size: 12px; margin: 0">Deep neural network scores candidates on predicted engagement (watch time, follows, interactions)</p>
+<div>
+<h5>RANKING</h5>
+<p>Deep neural network scores candidates on predicted engagement (watch time, follows, interactions)</p>
 </div>
-<div style="background: rgba(63, 185, 80, 0.15);border-radius: 12px; padding: 20px">
-<h5 style="color: #3fb950; margin: 0 0 12px 0">FILTERING & DIVERSITY</h5>
-<p style="color: #475569; font-size: 12px; margin: 0">Remove duplicates, apply business rules, ensure category diversity, inject exploration</p>
+<div>
+<h5>FILTERING & DIVERSITY</h5>
+<p>Remove duplicates, apply business rules, ensure category diversity, inject exploration</p>
 </div>
 </div>
   <!-- Signals -->
-<div style="background: rgba(88, 166, 255, 0.15); border-radius: 12px; padding: 20px">
-<h5 style="color: #58a6ff; margin: 0 0 16px 0">RANKING SIGNALS (Feature Engineering)</h5>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px">
 <div>
-<strong style="color: #1e293b; font-size: 13px">User-Stream Affinity</strong>
-<ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px">
+<h5>RANKING SIGNALS (Feature Engineering)</h5>
+<div>
+<div>
+<strong>User-Stream Affinity</strong>
+<ul>
 <li>Cosine similarity of user/streamer embeddings</li>
 <li>Shared viewers (collaborative signal)</li>
 <li>Category match to watch history</li>
@@ -1059,8 +1059,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b; font-size: 13px">Stream Quality Signals</strong>
-<ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px">
+<strong>Stream Quality Signals</strong>
+<ul>
 <li>Current viewer count (social proof)</li>
 <li>Viewer trend (growing vs declining)</li>
 <li>Chat activity rate</li>
@@ -1068,8 +1068,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b; font-size: 13px">Contextual Features</strong>
-<ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px">
+<strong>Contextual Features</strong>
+<ul>
 <li>Time of day / day of week</li>
 <li>User's current session length</li>
 <li>Recently watched in session</li>
@@ -1077,8 +1077,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b; font-size: 13px">Business Rules</strong>
-<ul style="color: #475569; font-size: 12px; margin: 8px 0 0 0; padding-left: 20px">
+<strong>Business Rules</strong>
+<ul>
 <li>Partner boost (contractual requirements)</li>
 <li>New streamer boost (growth program)</li>
 <li>Promoted content (sponsored)</li>
@@ -1342,30 +1342,30 @@
                                                                                                                       ```
 </code></pre>
 <h3 id="recommendation-interview-questions-3-levels-deep">Recommendation Interview Questions (3 Levels Deep)</h3>
-<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e40af; margin-top: 0">Level 1: How does Twitch's recommendation system differ from Netflix's?</h4>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> The key difference is <span style="color:#00ff00">**real-time inventory**</span>. Netflix has a fixed catalog - recommendations can be precomputed and cached. Twitch's "catalog" changes constantly: streams go live/offline, viewer counts fluctuate, chat activity varies. This means: (1) Recommendations must incorporate real-time signals (who is live now, trending streams). (2) Cannot fully precompute - must generate on-request with fresh data. (3) "Quality" is temporal - a stream that was great 2 hours ago might be boring now. (4) Cold start for new streams - need to surface new content without historical engagement data.</p>
-<div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: A new streamer with zero followers goes live. How do you give them a chance to be discovered?</h5>
-<p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> This is the <span style="color:#00ff00">**cold start problem**</span> for content. Strategies: (1) <strong>Exploration injection:</strong> Reserve 5-10% of recommendation slots for exploration. Randomly sample new/low-viewer streams to surface them. (2) <strong>Category-based seeding:</strong> If user watches Minecraft, new Minecraft streamers get boosted in their feed. Category match is a strong signal even without history. (3) <strong>Engagement velocity:</strong> Track early signals like follower rate, chat engagement relative to viewer count. High engagement rate suggests quality even with low absolute numbers. (4) <strong>Raid/host boost:</strong> If established streamer raids a small channel, that's a strong endorsement signal - boost discovery. (5) <strong>New streamer program:</strong> Explicit boost for first N streams or first 30 days. Related: [[machine-learning]](/topic/system-design/ml-systems) exploration-exploitation tradeoffs.</p>
-<div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
-<h6 style="color: #1e40af; margin-top: 0">Level 3: How do you prevent the recommendation system from creating a "rich get richer" effect where top streamers dominate all recommendations?</h6>
-<p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> <span style="color:#00ff00">**Popularity bias**</span> is real and requires explicit mitigation: (1) <strong>Log-transform viewer counts:</strong> Use log(viewers) instead of raw count as a feature. Difference between 100 and 1000 viewers is more meaningful than 100K vs 101K. (2) <strong>Calibration by category:</strong> A 500-viewer speedrunner is "popular" for that category; normalize by category distribution. (3) <strong>Diversity constraints:</strong> Max 2-3 streams from same popularity tier per page. Force mix of large, medium, small streams. (4) <strong>Personalization over popularity:</strong> Weight user-specific affinity signals (embedding similarity, watch history) more than global popularity. A user who loves niche content should see niche streams. (5) <strong>Position-aware training:</strong> Train ranking model on data that accounts for position bias - clicks on position 1 aren't more "valuable" than position 10. Use techniques like IPW (Inverse Propensity Weighting). (6) <strong>A/B test for ecosystem health:</strong> Track not just click-through rate but metrics like "unique streamers watched per user" and "new streamers reaching 100 concurrent viewers." Optimize for healthy ecosystem, not just engagement. (7) <strong>Editorial curation:</strong> Human-curated "Rising Stars" or "Hidden Gems" sections that surface quality small streamers identified by content team.</p>
+<div>
+<h4>Level 1: How does Twitch's recommendation system differ from Netflix's?</h4>
+<p><strong>Answer:</strong> The key difference is <span>**real-time inventory**</span>. Netflix has a fixed catalog - recommendations can be precomputed and cached. Twitch's "catalog" changes constantly: streams go live/offline, viewer counts fluctuate, chat activity varies. This means: (1) Recommendations must incorporate real-time signals (who is live now, trending streams). (2) Cannot fully precompute - must generate on-request with fresh data. (3) "Quality" is temporal - a stream that was great 2 hours ago might be boring now. (4) Cold start for new streams - need to surface new content without historical engagement data.</p>
+<div>
+<h5>Level 2: A new streamer with zero followers goes live. How do you give them a chance to be discovered?</h5>
+<p><strong>Answer:</strong> This is the <span>**cold start problem**</span> for content. Strategies: (1) <strong>Exploration injection:</strong> Reserve 5-10% of recommendation slots for exploration. Randomly sample new/low-viewer streams to surface them. (2) <strong>Category-based seeding:</strong> If user watches Minecraft, new Minecraft streamers get boosted in their feed. Category match is a strong signal even without history. (3) <strong>Engagement velocity:</strong> Track early signals like follower rate, chat engagement relative to viewer count. High engagement rate suggests quality even with low absolute numbers. (4) <strong>Raid/host boost:</strong> If established streamer raids a small channel, that's a strong endorsement signal - boost discovery. (5) <strong>New streamer program:</strong> Explicit boost for first N streams or first 30 days. Related: [[machine-learning]](/topic/system-design/ml-systems) exploration-exploitation tradeoffs.</p>
+<div>
+<h6>Level 3: How do you prevent the recommendation system from creating a "rich get richer" effect where top streamers dominate all recommendations?</h6>
+<p><strong>Answer:</strong> <span>**Popularity bias**</span> is real and requires explicit mitigation: (1) <strong>Log-transform viewer counts:</strong> Use log(viewers) instead of raw count as a feature. Difference between 100 and 1000 viewers is more meaningful than 100K vs 101K. (2) <strong>Calibration by category:</strong> A 500-viewer speedrunner is "popular" for that category; normalize by category distribution. (3) <strong>Diversity constraints:</strong> Max 2-3 streams from same popularity tier per page. Force mix of large, medium, small streams. (4) <strong>Personalization over popularity:</strong> Weight user-specific affinity signals (embedding similarity, watch history) more than global popularity. A user who loves niche content should see niche streams. (5) <strong>Position-aware training:</strong> Train ranking model on data that accounts for position bias - clicks on position 1 aren't more "valuable" than position 10. Use techniques like IPW (Inverse Propensity Weighting). (6) <strong>A/B test for ecosystem health:</strong> Track not just click-through rate but metrics like "unique streamers watched per user" and "new streamers reaching 100 concurrent viewers." Optimize for healthy ecosystem, not just engagement. (7) <strong>Editorial curation:</strong> Human-curated "Rising Stars" or "Hidden Gems" sections that surface quality small streamers identified by content team.</p>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="section-7-scale-phases">Section 7: Scale Phases</h2>
 <h3 id="phase-1-starting-phase-mvp">Phase 1: Starting Phase (MVP)</h3>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f1f5f9; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <p><strong>Assumptions:</strong><br />
 - <strong>Streamers</strong>: 100 - 1,000 concurrent<br />
 - <strong>Viewers</strong>: 10K - 100K concurrent<br />
 - <strong>Chat messages</strong>: 10K - 100K/minute<br />
 - <strong>Budget</strong>: $10,000 - $50,000/month</p>
 <p><strong>Architecture Decision: Use Managed Services</strong></p>
-<div style="background: rgba(63, 185, 80, 0.1); border-radius: 8px; padding: 16px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1441,8 +1441,8 @@
 </div>
 </div>
 <h3 id="phase-2-growth-phase">Phase 2: Growth Phase</h3>
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f1f5f9; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <p><strong>Assumptions:</strong><br />
 - <strong>Streamers</strong>: 10K concurrent<br />
 - <strong>Viewers</strong>: 1M concurrent<br />
@@ -1450,7 +1450,7 @@
 - <strong>Budget</strong>: $100,000 - $500,000/month</p>
 <p><strong>Architecture Decision: Hybrid (Managed + Custom)</strong></p>
 <p>At this scale, managed service costs become significant. Start building custom components for highest-cost items while keeping others managed.</p>
-<div style="background: rgba(88, 166, 255, 0.1); border-radius: 8px; padding: 16px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1491,8 +1491,8 @@
 </div>
 </div>
 <h3 id="phase-3-twitch-scale">Phase 3: Twitch Scale</h3>
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f1f5f9; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <p><strong>Assumptions:</strong><br />
 - <strong>Concurrent streamers</strong>: 100K+<br />
 - <strong>Concurrent viewers</strong>: 15M+ peak<br />
@@ -1500,7 +1500,7 @@
 - <strong>Video bandwidth</strong>: 100+ Tbps</p>
 <p><strong>Architecture Decision: Fully Custom</strong></p>
 <p>At Twitch scale, nearly everything is custom-built for cost and control.</p>
-<div style="background: rgba(163, 113, 247, 0.1); border-radius: 8px; padding: 16px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1542,52 +1542,52 @@
 </div>
 <hr />
 <h2 id="trade-off-analysis">Trade-off Analysis</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="core-trade-offs-in-live-streaming">Core Trade-offs in Live Streaming</h3>
-<table style="width: 100%; border-collapse: collapse; font-size: 14px">
-<tr >
-<th style="padding: 12px; text-align: left; color: #58a6ff">Trade-off</th>
-<th style="padding: 12px; text-align: left; color: #58a6ff">Option A</th>
-<th style="padding: 12px; text-align: left; color: #58a6ff">Option B</th>
-<th style="padding: 12px; text-align: left; color: #58a6ff">Twitch's Choice</th>
-</tr>
-<tr >
-<td style="padding: 12px; color: #1e293b">Latency vs. Stability</td>
-<td style="padding: 12px; color: #475569">Low latency (3-5s), more rebuffering</td>
-<td style="padding: 12px; color: #475569">Higher latency (15-30s), stable</td>
-<td style="padding: 12px; color: #3fb950">User-selectable, default stable</td>
-</tr>
-<tr >
-<td style="padding: 12px; color: #1e293b">Transcode Cost vs. Quality</td>
-<td style="padding: 12px; color: #475569">Transcode all (expensive)</td>
-<td style="padding: 12px; color: #475569">Partners only (cheaper)</td>
-<td style="padding: 12px; color: #3fb950">Tiered by streamer level</td>
-</tr>
-<tr >
-<td style="padding: 12px; color: #1e293b">Chat Consistency vs. Perf</td>
-<td style="padding: 12px; color: #475569">Strong ordering (slower)</td>
-<td style="padding: 12px; color: #475569">Eventually consistent (faster)</td>
-<td style="padding: 12px; color: #3fb950">Eventually consistent</td>
-</tr>
-<tr >
-<td style="padding: 12px; color: #1e293b">Recommendations</td>
-<td style="padding: 12px; color: #475569">Popularity-based (simple)</td>
-<td style="padding: 12px; color: #475569">Personalized (complex)</td>
-<td style="padding: 12px; color: #3fb950">Personalized with diversity</td>
+<table>
+<tr>
+<th>Trade-off</th>
+<th>Option A</th>
+<th>Option B</th>
+<th>Twitch's Choice</th>
 </tr>
 <tr>
-<td style="padding: 12px; color: #1e293b">VOD Retention</td>
-<td style="padding: 12px; color: #475569">Keep forever (expensive)</td>
-<td style="padding: 12px; color: #475569">Aggressive deletion (cheap)</td>
-<td style="padding: 12px; color: #3fb950">Tiered by user level</td>
+<td>Latency vs. Stability</td>
+<td>Low latency (3-5s), more rebuffering</td>
+<td>Higher latency (15-30s), stable</td>
+<td>User-selectable, default stable</td>
+</tr>
+<tr>
+<td>Transcode Cost vs. Quality</td>
+<td>Transcode all (expensive)</td>
+<td>Partners only (cheaper)</td>
+<td>Tiered by streamer level</td>
+</tr>
+<tr>
+<td>Chat Consistency vs. Perf</td>
+<td>Strong ordering (slower)</td>
+<td>Eventually consistent (faster)</td>
+<td>Eventually consistent</td>
+</tr>
+<tr>
+<td>Recommendations</td>
+<td>Popularity-based (simple)</td>
+<td>Personalized (complex)</td>
+<td>Personalized with diversity</td>
+</tr>
+<tr>
+<td>VOD Retention</td>
+<td>Keep forever (expensive)</td>
+<td>Aggressive deletion (cheap)</td>
+<td>Tiered by user level</td>
 </tr>
 </table>
 </div>
 <hr />
 <h2 id="interview-tips">Interview Tips</h2>
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="red-flags-in-your-answer">Red Flags in Your Answer</h3>
-<div style="background: #3d1f1f; border-radius: 8px; padding: 16px; margin: 16px 0">
+<div>
 <pre><code>                                                                                                                          - **&quot;Use WebRTC for the main broadcast stream&quot;** - Shows lack of understanding of scale requirements
                                                                                                                           - **&quot;Store chat messages in SQL database&quot;** - Missed the real-time/ephemeral nature of chat
                                                                                                                           - **&quot;Build custom CDN from scratch&quot;** - Unless you're at Twitch scale, this is over-engineering
@@ -1597,7 +1597,7 @@
 </code></pre>
 </div>
 <h3 id="impressive-statements">Impressive Statements</h3>
-<div style="background: #1f3d1f; border-radius: 8px; padding: 16px; margin: 16px 0">
+<div>
 <pre><code>                                                                                                                          - **&quot;For &lt; 100 concurrent streamers, I'd use AWS IVS rather than building transcoding infrastructure&quot;** - Shows pragmatism
                                                                                                                           - **&quot;The median stream has very few viewers, so optimize for the common case while handling viral moments&quot;** - Demonstrates workload understanding
                                                                                                                           - **&quot;Chat can be eventually consistent because viewers don't notice 100ms delay between edge servers&quot;** - Shows consistency trade-off awareness

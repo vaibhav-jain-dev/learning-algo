@@ -1,93 +1,93 @@
 <h1 id="circuit-breaker-pattern">Circuit Breaker Pattern</h1>
-<nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 24px 0">
-<h2 style="color: #1e293b; margin: 0 0 16px 0; font-size: 18px; font-weight: 600">Table of Contents</h2>
-<ul style="list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px">
-<li><a href="#overview" style="color: #3b82f6; text-decoration: none; font-size: 14px">Overview</a></li>
-<li><a href="#why-this-matters" style="color: #3b82f6; text-decoration: none; font-size: 14px">Why This Matters in Interviews</a></li>
-<li><a href="#three-states" style="color: #3b82f6; text-decoration: none; font-size: 14px">The Three States: Deep Dive</a></li>
-<li><a href="#failure-thresholds" style="color: #3b82f6; text-decoration: none; font-size: 14px">Failure Thresholds and Counting Strategies</a></li>
-<li><a href="#timeout-strategies" style="color: #3b82f6; text-decoration: none; font-size: 14px">Timeout Strategies</a></li>
-<li><a href="#bulkhead-pattern" style="color: #3b82f6; text-decoration: none; font-size: 14px">The Bulkhead Pattern</a></li>
-<li><a href="#cascading-failures" style="color: #3b82f6; text-decoration: none; font-size: 14px">Cascading Failures</a></li>
-<li><a href="#configuration-reference" style="color: #3b82f6; text-decoration: none; font-size: 14px">Configuration Parameters Reference</a></li>
-<li><a href="#code-implementation" style="color: #3b82f6; text-decoration: none; font-size: 14px">Code Implementation</a></li>
-<li><a href="#fallback-strategies" style="color: #3b82f6; text-decoration: none; font-size: 14px">Fallback Strategies</a></li>
-<li><a href="#edge-cases-failure-modes" style="color: #3b82f6; text-decoration: none; font-size: 14px">Edge Cases & Failure Modes</a></li>
-<li><a href="#common-pitfalls" style="color: #3b82f6; text-decoration: none; font-size: 14px">Common Pitfalls</a></li>
-<li><a href="#interview-questions" style="color: #3b82f6; text-decoration: none; font-size: 14px">Interview Questions</a></li>
-<li><a href="#monitoring-alerting" style="color: #3b82f6; text-decoration: none; font-size: 14px">Monitoring and Alerting</a></li>
-<li><a href="#related-patterns" style="color: #3b82f6; text-decoration: none; font-size: 14px">Circuit Breaker vs Related Patterns</a></li>
-<li><a href="#related-topics" style="color: #3b82f6; text-decoration: none; font-size: 14px">Related Topics</a></li>
+<nav class="toc">
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#why-this-matters">Why This Matters in Interviews</a></li>
+<li><a href="#three-states">The Three States: Deep Dive</a></li>
+<li><a href="#failure-thresholds">Failure Thresholds and Counting Strategies</a></li>
+<li><a href="#timeout-strategies">Timeout Strategies</a></li>
+<li><a href="#bulkhead-pattern">The Bulkhead Pattern</a></li>
+<li><a href="#cascading-failures">Cascading Failures</a></li>
+<li><a href="#configuration-reference">Configuration Parameters Reference</a></li>
+<li><a href="#code-implementation">Code Implementation</a></li>
+<li><a href="#fallback-strategies">Fallback Strategies</a></li>
+<li><a href="#edge-cases-failure-modes">Edge Cases & Failure Modes</a></li>
+<li><a href="#common-pitfalls">Common Pitfalls</a></li>
+<li><a href="#interview-questions">Interview Questions</a></li>
+<li><a href="#monitoring-alerting">Monitoring and Alerting</a></li>
+<li><a href="#related-patterns">Circuit Breaker vs Related Patterns</a></li>
+<li><a href="#related-topics">Related Topics</a></li>
 </ul>
 </nav>
 <h2 id="overview">Overview</h2>
-<p>The <span style="color:#10b981"><strong>Circuit Breaker pattern</strong></span> is a stability pattern that prevents cascading failures in distributed systems. Like an electrical circuit breaker that trips to prevent house fires, a software circuit breaker stops making requests to a failing service, giving it time to recover while providing fallback responses.</p>
+<p>The <span><strong>Circuit Breaker pattern</strong></span> is a stability pattern that prevents cascading failures in distributed systems. Like an electrical circuit breaker that trips to prevent house fires, a software circuit breaker stops making requests to a failing service, giving it time to recover while providing fallback responses.</p>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600">CIRCUIT BREAKER STATE MACHINE</h3>
+<h3>CIRCUIT BREAKER STATE MACHINE</h3>
 <div class="flow-row">
-<div class="flow-box success" style="min-width: 150px">
+<div class="flow-box success">
 <div class="flow-box-title">CLOSED</div>
 <div class="flow-box-subtitle">Normal Operation</div>
-<div style="font-size: 11px; margin-top: 4px; opacity: 0.9">All requests pass through</div>
+<div>All requests pass through</div>
 </div>
 <div class="flow-arrow">
-<div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
-<div style="background: rgba(239, 68, 68, 0.1); color: #dc2626; font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: 600">failures >= threshold</div>
-<span style="font-size: 24px">&#8594;</span>
+<div>
+<div>failures>= threshold</div>
+<span>&#8594;</span>
 </div>
 </div>
-<div class="flow-box error" style="min-width: 150px">
+<div class="flow-box error">
 <div class="flow-box-title">OPEN</div>
 <div class="flow-box-subtitle">Circuit Tripped</div>
-<div style="font-size: 11px; margin-top: 4px; opacity: 0.9">Requests fail immediately</div>
+<div>Requests fail immediately</div>
 </div>
 <div class="flow-arrow">
-<div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
-<div style="background: rgba(245, 158, 11, 0.1); color: #92400e; font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: 600">timeout expires</div>
-<span style="font-size: 24px">&#8594;</span>
+<div>
+<div>timeout expires</div>
+<span>&#8594;</span>
 </div>
 </div>
-<div class="flow-box warning" style="min-width: 150px">
+<div class="flow-box warning">
 <div class="flow-box-title">HALF-OPEN</div>
 <div class="flow-box-subtitle">Testing Recovery</div>
-<div style="font-size: 11px; margin-top: 4px; opacity: 0.9">Limited probe requests</div>
+<div>Limited probe requests</div>
 </div>
 </div>
-<div style="display: flex; justify-content: center; gap: 60px; margin-top: 24px; flex-wrap: wrap">
-<div style="display: flex; align-items: center; gap: 8px">
-<div style="width: 12px; height: 12px; background: #22c55e; border-radius: 50%"></div>
-<span style="color: #16a34a; font-size: 13px; font-weight: 500">probe success &#8594; CLOSED</span>
+<div>
+<div>
+<div></div>
+<span>probe success &#8594; CLOSED</span>
 </div>
-<div style="display: flex; align-items: center; gap: 8px">
-<div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%"></div>
-<span style="color: #dc2626; font-size: 13px; font-weight: 500">probe failure &#8594; OPEN</span>
-</div>
-</div>
+<div>
+<div></div>
+<span>probe failure &#8594; OPEN</span>
 </div>
 </div>
-<p><strong>The Core Insight</strong>: When you call an external service and it starts failing, instead of repeatedly hammering it (which wastes resources and might make things worse), you <span style="color:#10b981"><strong>&quot;open the circuit&quot;</strong></span> - immediately reject requests for a cooling-off period, then carefully test if the service has recovered.</p>
+</div>
+</div>
+<p><strong>The Core Insight</strong>: When you call an external service and it starts failing, instead of repeatedly hammering it (which wastes resources and might make things worse), you <span><strong>&quot;open the circuit&quot;</strong></span> - immediately reject requests for a cooling-off period, then carefully test if the service has recovered.</p>
 <hr />
 <h2 id="why-this-matters">Why This Matters in Interviews</h2>
-<p>Circuit breakers are essential infrastructure at companies with <a href="/topic/system-design/microservices">[microservices]</a> architectures. Understanding this pattern demonstrates you can design systems that <span style="color:#10b981"><strong>fail gracefully</strong></span> rather than catastrophically.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">CIRCUIT BREAKERS IN PRODUCTION</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 20px">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 8px">Netflix (Hystrix)</div>
-<div style="color: #7f1d1d; font-size: 13px">Pioneered circuit breakers in microservices. When their recommendations service fails, users still see content - just without personalized suggestions. Hystrix handled billions of thread-isolated calls daily.</div>
+<p>Circuit breakers are essential infrastructure at companies with <a href="/topic/system-design/microservices">[microservices]</a> architectures. Understanding this pattern demonstrates you can design systems that <span><strong>fail gracefully</strong></span> rather than catastrophically.</p>
+<div>
+<h3>CIRCUIT BREAKERS IN PRODUCTION</h3>
+<div>
+<div>
+<div>Netflix (Hystrix)</div>
+<div>Pioneered circuit breakers in microservices. When their recommendations service fails, users still see content - just without personalized suggestions. Hystrix handled billions of thread-isolated calls daily.</div>
 </div>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px">Uber</div>
-<div style="color: #1d4ed8; font-size: 13px">Uses circuit breakers between pricing, dispatch, and payment services. A payment outage cannot crash ride-hailing - rides continue, payment retries later with queued transactions.</div>
+<div>
+<div>Uber</div>
+<div>Uses circuit breakers between pricing, dispatch, and payment services. A payment outage cannot crash ride-hailing - rides continue, payment retries later with queued transactions.</div>
 </div>
-<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 12px; padding: 20px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 8px">Amazon</div>
-<div style="color: #047857; font-size: 13px">Every microservice uses circuit breakers. Product recommendations failing cannot prevent checkout. They pioneered the "cell-based architecture" to contain blast radius.</div>
+<div>
+<div>Amazon</div>
+<div>Every microservice uses circuit breakers. Product recommendations failing cannot prevent checkout. They pioneered the "cell-based architecture" to contain blast radius.</div>
 </div>
-<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 8px">Stripe</div>
-<div style="color: #b45309; font-size: 13px">Protects payment processing from third-party fraud detection services. If fraud check times out, use cached risk score rather than failing the payment - graceful degradation.</div>
+<div>
+<div>Stripe</div>
+<div>Protects payment processing from third-party fraud detection services. If fraud check times out, use cached risk score rather than failing the payment - graceful degradation.</div>
 </div>
 </div>
 </div>
@@ -98,242 +98,242 @@
 <h3 id="state-closed">State 1: CLOSED (Normal Operation)</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600">CLOSED STATE - REQUEST FLOW</h4>
+<h4>CLOSED STATE - REQUEST FLOW</h4>
 <div class="flow-row">
 <div class="flow-box info">
 <div class="flow-box-title">Client</div>
 </div>
 <div class="flow-arrow">&#8594;</div>
-<div class="flow-box success" style="position: relative">
+<div class="flow-box success">
 <div class="flow-box-title">Circuit Breaker</div>
-<div class="diagram-badge success" style="position: absolute; top: -8px; right: -8px">CLOSED</div>
+<div class="diagram-badge success">CLOSED</div>
 </div>
-<div class="flow-arrow" style="color: #22c55e">&#8594;</div>
+<div class="flow-arrow">&#8594;</div>
 <div class="flow-box neutral">
 <div class="flow-box-title">Service</div>
 </div>
 </div>
-<div style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 16px 20px;margin-top: 16px; max-width: 500px">
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center">
 <div>
-<div style="color: #166534; font-weight: 700; font-size: 14px">Behavior</div>
-<div style="color: #15803d; font-size: 13px; margin-top: 4px">All requests pass through normally</div>
+<div>
+<div>
+<div>Behavior</div>
+<div>All requests pass through normally</div>
 </div>
 <div>
-<div style="color: #166534; font-weight: 700; font-size: 14px">Tracking</div>
-<div style="color: #15803d; font-size: 13px; margin-top: 4px">Counting failures in sliding window</div>
+<div>Tracking</div>
+<div>Counting failures in sliding window</div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<p>In the <span style="color:#10b981"><strong>CLOSED state</strong></span>, the circuit breaker is like a closed electrical circuit - current (requests) flows through normally:</p>
+<p>In the <span><strong>CLOSED state</strong></span>, the circuit breaker is like a closed electrical circuit - current (requests) flows through normally:</p>
 <ul>
 <li><strong>All requests pass through</strong> to the downstream service</li>
-<li>The circuit breaker <strong>tracks success/failure metrics</strong> within a <span style="color:#10b981"><strong>sliding window</strong></span></li>
-<li>If failures exceed the <span style="color:#10b981"><strong>failure threshold</strong></span>, circuit &quot;trips&quot; to OPEN</li>
+<li>The circuit breaker <strong>tracks success/failure metrics</strong> within a <span><strong>sliding window</strong></span></li>
+<li>If failures exceed the <span><strong>failure threshold</strong></span>, circuit &quot;trips&quot; to OPEN</li>
 <li>Slow calls (exceeding latency threshold) may also count as failures</li>
 </ul>
 <h3 id="state-open">State 2: OPEN (Failing Fast)</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600">OPEN STATE - FAIL FAST</h4>
+<h4>OPEN STATE - FAIL FAST</h4>
 <div class="flow-row">
 <div class="flow-box info">
 <div class="flow-box-title">Client</div>
 </div>
 <div class="flow-arrow">&#8594;</div>
-<div class="flow-box error" style="position: relative">
+<div class="flow-box error">
 <div class="flow-box-title">Circuit Breaker</div>
-<div class="diagram-badge error" style="position: absolute; top: -8px; right: -8px">OPEN</div>
+<div class="diagram-badge error">OPEN</div>
 </div>
-<div class="flow-arrow" style="color: #ef4444; font-weight: bold">&#10007;</div>
-<div class="flow-box neutral" style="opacity: 0.5; text-decoration: line-through">
+<div class="flow-arrow">&#10007;</div>
+<div class="flow-box neutral">
 <div class="flow-box-title">Service</div>
 </div>
 </div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; max-width: 500px">
-<div style="background: rgba(239, 68, 68, 0.1); border-radius: 12px; padding: 16px; text-align: center">
-<div style="color: #dc2626; font-weight: 700; font-size: 14px">Behavior</div>
-<div style="color: #b91c1c; font-size: 13px; margin-top: 4px">Requests immediately rejected</div>
+<div>
+<div>
+<div>Behavior</div>
+<div>Requests immediately rejected</div>
 </div>
-<div style="background: rgba(239, 68, 68, 0.1); border-radius: 12px; padding: 16px; text-align: center">
-<div style="color: #dc2626; font-weight: 700; font-size: 14px">Response</div>
-<div style="color: #b91c1c; font-size: 13px; margin-top: 4px">Fallback or error returned</div>
-</div>
-</div>
-<div style="background: rgba(245, 158, 11, 0.1); border-radius: 8px; padding: 12px; text-align: center; margin-top: 12px; max-width: 500px">
-<div style="color: #92400e; font-size: 13px">
-<span style="font-weight: 700">Timer Running:</span> After timeout (e.g., 30s) &#8594; transitions to HALF-OPEN
+<div>
+<div>Response</div>
+<div>Fallback or error returned</div>
 </div>
 </div>
+<div>
+<div>
+<span>Timer Running:</span> After timeout (e.g., 30s) &#8594; transitions to HALF-OPEN
 </div>
 </div>
-<p>The <span style="color:#10b981"><strong>OPEN state</strong></span> is the circuit breaker's protective mode:</p>
+</div>
+</div>
+<p>The <span><strong>OPEN state</strong></span> is the circuit breaker's protective mode:</p>
 <ul>
 <li><strong>Requests immediately fail</strong> without calling the downstream service</li>
-<li>Returns a <span style="color:#10b981"><strong>fallback response</strong></span> or throws a circuit open exception</li>
+<li>Returns a <span><strong>fallback response</strong></span> or throws a circuit open exception</li>
 <li><strong>No load on the failing service</strong> - gives it time to recover</li>
-<li>After a configurable <span style="color:#10b981"><strong>timeout duration</strong></span>, transitions to HALF-OPEN</li>
-<li>This is the <span style="color:#10b981"><strong>&quot;fail fast&quot;</strong></span> principle in action</li>
+<li>After a configurable <span><strong>timeout duration</strong></span>, transitions to HALF-OPEN</li>
+<li>This is the <span><strong>&quot;fail fast&quot;</strong></span> principle in action</li>
 </ul>
 <h3 id="state-half-open">State 3: HALF-OPEN (Testing Recovery)</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600">HALF-OPEN STATE - PROBE TESTING</h4>
+<h4>HALF-OPEN STATE - PROBE TESTING</h4>
 <div class="flow-row">
 <div class="flow-box info">
 <div class="flow-box-title">Probe Request</div>
 <div class="flow-box-subtitle">1 of N allowed</div>
 </div>
 <div class="flow-arrow">&#8594;</div>
-<div class="flow-box warning" style="position: relative">
+<div class="flow-box warning">
 <div class="flow-box-title">Circuit Breaker</div>
-<div class="diagram-badge warning" style="position: absolute; top: -8px; right: -8px">HALF-OPEN</div>
+<div class="diagram-badge warning">HALF-OPEN</div>
 </div>
-<div class="flow-arrow" style="color: #f59e0b">&#8594;?</div>
+<div class="flow-arrow">&#8594;?</div>
 <div class="flow-box neutral">
 <div class="flow-box-title">Service</div>
 </div>
 </div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; max-width: 600px">
-<div style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 16px; text-align: center">
-<div style="color: #166534; font-weight: 700; font-size: 15px">Probe Succeeds</div>
-<div style="color: #15803d; font-size: 24px; margin: 8px 0">&#8595;</div>
-<div class="diagram-badge success" style="padding: 8px 16px">CLOSED</div>
-<div style="color: #166534; font-size: 12px; margin-top: 8px">Reset failure count, resume normal operation</div>
+<div>
+<div>
+<div>Probe Succeeds</div>
+<div>&#8595;</div>
+<div class="diagram-badge success">CLOSED</div>
+<div>Reset failure count, resume normal operation</div>
 </div>
-<div style="background: rgba(239, 68, 68, 0.1); border-radius: 12px; padding: 16px; text-align: center">
-<div style="color: #dc2626; font-weight: 700; font-size: 15px">Probe Fails</div>
-<div style="color: #b91c1c; font-size: 24px; margin: 8px 0">&#8595;</div>
-<div class="diagram-badge error" style="padding: 8px 16px">OPEN</div>
-<div style="color: #dc2626; font-size: 12px; margin-top: 8px">Reset timeout, wait again before retrying</div>
-</div>
-</div>
+<div>
+<div>Probe Fails</div>
+<div>&#8595;</div>
+<div class="diagram-badge error">OPEN</div>
+<div>Reset timeout, wait again before retrying</div>
 </div>
 </div>
-<p>The <span style="color:#10b981"><strong>HALF-OPEN state</strong></span> is the recovery testing phase:</p>
+</div>
+</div>
+<p>The <span><strong>HALF-OPEN state</strong></span> is the recovery testing phase:</p>
 <ul>
 <li>Allows a <strong>limited number of probe requests</strong> through (e.g., 1-3 requests)</li>
 <li>Other requests continue to fail fast while probing</li>
 <li>If probe requests <strong>succeed</strong> (meeting success threshold), circuit closes</li>
 <li>If any probe request <strong>fails</strong>, circuit opens again with reset timeout</li>
-<li>This prevents <span style="color:#10b981"><strong>&quot;thundering herd&quot;</strong></span> when a service comes back up</li>
+<li>This prevents <span><strong>&quot;thundering herd&quot;</strong></span> when a service comes back up</li>
 </ul>
 <hr />
 <h2 id="failure-thresholds">Failure Thresholds and Counting Strategies</h2>
 <p>The way you count and evaluate failures significantly impacts circuit breaker effectiveness.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">FAILURE THRESHOLD STRATEGIES</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px">
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px; font-size: 15px">Count-Based Threshold</div>
-<div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px">Trip after N consecutive or total failures in window.</div>
-<div style="background: #eff6ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px">
-<div style="color: #1e40af">failure_threshold: 5</div>
-<div style="color: #64748b; margin-top: 4px"># Trip after 5 failures in window</div>
+<div>
+<h3>FAILURE THRESHOLD STRATEGIES</h3>
+<div>
+<div>
+<div>Count-Based Threshold</div>
+<div>Trip after N consecutive or total failures in window.</div>
+<div>
+<div>failure_threshold: 5</div>
+<div># Trip after 5 failures in window</div>
 </div>
-<div style="color: #475569; font-size: 12px; margin-top: 12px">
-<span style="color: #22c55e; font-weight: 600">Pro:</span> Simple to understand<br>
-<span style="color: #ef4444; font-weight: 600">Con:</span> Doesn't account for request volume
-</div>
-</div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px; font-size: 15px">Percentage-Based Threshold</div>
-<div style="color: #047857; font-size: 13px; margin-bottom: 12px">Trip when failure rate exceeds percentage (with minimum calls).</div>
-<div style="background: #ecfdf5; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px">
-<div style="color: #065f46">failure_rate_threshold: 50%</div>
-<div style="color: #065f46">minimum_calls: 10</div>
-<div style="color: #64748b; margin-top: 4px"># Need 10+ calls, 50%+ failure</div>
-</div>
-<div style="color: #475569; font-size: 12px; margin-top: 12px">
-<span style="color: #22c55e; font-weight: 600">Pro:</span> Adapts to traffic volume<br>
-<span style="color: #ef4444; font-weight: 600">Con:</span> Needs minimum sample size
+<div>
+<span>Pro:</span> Simple to understand<br>
+<span>Con:</span> Doesn't account for request volume
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 12px; font-size: 15px">Slow Call Threshold</div>
-<div style="color: #b45309; font-size: 13px; margin-bottom: 12px">Count slow responses (exceeding latency threshold) as failures.</div>
-<div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px">
-<div style="color: #92400e">slow_call_threshold: 5s</div>
-<div style="color: #92400e">slow_call_rate_threshold: 80%</div>
-<div style="color: #64748b; margin-top: 4px"># Trip if 80%+ calls > 5s</div>
+<div>
+<div>Percentage-Based Threshold</div>
+<div>Trip when failure rate exceeds percentage (with minimum calls).</div>
+<div>
+<div>failure_rate_threshold: 50%</div>
+<div>minimum_calls: 10</div>
+<div># Need 10+ calls, 50%+ failure</div>
 </div>
-<div style="color: #475569; font-size: 12px; margin-top: 12px">
-<span style="color: #22c55e; font-weight: 600">Pro:</span> Detects degradation before timeout<br>
-<span style="color: #ef4444; font-weight: 600">Con:</span> Requires latency tracking
+<div>
+<span>Pro:</span> Adapts to traffic volume<br>
+<span>Con:</span> Needs minimum sample size
+</div>
+</div>
+<div>
+<div>Slow Call Threshold</div>
+<div>Count slow responses (exceeding latency threshold) as failures.</div>
+<div>
+<div>slow_call_threshold: 5s</div>
+<div>slow_call_rate_threshold: 80%</div>
+<div># Trip if 80%+ calls> 5s</div>
+</div>
+<div>
+<span>Pro:</span> Detects degradation before timeout<br>
+<span>Con:</span> Requires latency tracking
 </div>
 </div>
 </div>
 </div>
 <h3 id="sliding-window-types">Sliding Window Types</h3>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600">SLIDING WINDOW IMPLEMENTATIONS</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Count-Based Sliding Window</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 16px">Records last N calls regardless of time. Memory efficient but time-insensitive.</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 12px">
-<div style="display: flex; gap: 4px; justify-content: center; margin-bottom: 8px">
-<div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px">S</div>
-<div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px">S</div>
-<div style="width: 24px; height: 24px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px">F</div>
-<div style="width: 24px; height: 24px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px">S</div>
-<div style="width: 24px; height: 24px; background: #ef4444; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px">F</div>
+<div>
+<h4>SLIDING WINDOW IMPLEMENTATIONS</h4>
+<div>
+<div>
+<div>Count-Based Sliding Window</div>
+<div>Records last N calls regardless of time. Memory efficient but time-insensitive.</div>
+<div>
+<div>
+<div>S</div>
+<div>S</div>
+<div>F</div>
+<div>S</div>
+<div>F</div>
 </div>
-<div style="color: #64748b; font-size: 11px; text-align: center">Last 5 calls: 2 failures = 40% failure rate</div>
+<div>Last 5 calls: 2 failures = 40% failure rate</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px">Time-Based Sliding Window</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 16px">Records calls within last N seconds. More accurate for variable traffic.</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 12px">
-<div style="display: flex; align-items: end; gap: 4px; justify-content: center; margin-bottom: 8px">
-<div style="width: 20px; height: 30px; background: #22c55e; border-radius: 4px"></div>
-<div style="width: 20px; height: 20px; background: #22c55e; border-radius: 4px"></div>
-<div style="width: 20px; height: 40px; background: #ef4444; border-radius: 4px"></div>
-<div style="width: 20px; height: 25px; background: #22c55e; border-radius: 4px"></div>
-<div style="width: 20px; height: 35px; background: #ef4444; border-radius: 4px"></div>
+<div>
+<div>Time-Based Sliding Window</div>
+<div>Records calls within last N seconds. More accurate for variable traffic.</div>
+<div>
+<div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
 </div>
-<div style="color: #64748b; font-size: 11px; text-align: center">Last 60 seconds: aggregated by buckets</div>
+<div>Last 60 seconds: aggregated by buckets</div>
 </div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="timeout-strategies">Timeout Strategies</h2>
-<p><span style="color:#10b981"><strong>Timeout configuration</strong></span> is critical - it determines how quickly your circuit breaker responds to failures and how conservatively it tests recovery.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">TIMEOUT CONFIGURATION</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 24px">
-<div style="background: white; padding: 20px; border-radius: 12px">
-<div style="color: #4338ca; font-weight: 700; margin-bottom: 12px">Wait Duration in Open State</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 12px">How long to wait before testing recovery.</div>
-<div style="background: #eef2ff; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #4338ca">
+<p><span><strong>Timeout configuration</strong></span> is critical - it determines how quickly your circuit breaker responds to failures and how conservatively it tests recovery.</p>
+<div>
+<h3>TIMEOUT CONFIGURATION</h3>
+<div>
+<div>
+<div>Wait Duration in Open State</div>
+<div>How long to wait before testing recovery.</div>
+<div>
 wait_duration: 30s
 </div>
-<div style="color: #64748b; font-size: 12px; margin-top: 10px">
+<div>
 <strong>Too short:</strong> Overwhelm recovering service<br>
 <strong>Too long:</strong> Slow recovery, poor UX
 </div>
 </div>
-<div style="background: white; padding: 20px; border-radius: 12px">
-<div style="color: #be185d; font-weight: 700; margin-bottom: 12px">Call Timeout</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 12px">Maximum time to wait for a response before counting as failure.</div>
-<div style="background: #fdf2f8; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #be185d">
+<div>
+<div>Call Timeout</div>
+<div>Maximum time to wait for a response before counting as failure.</div>
+<div>
 call_timeout: 5s
 </div>
-<div style="color: #64748b; font-size: 12px; margin-top: 10px">
+<div>
 Should be less than client's timeout to fail gracefully.
 </div>
 </div>
-<div style="background: white; padding: 20px; border-radius: 12px">
-<div style="color: #0f766e; font-weight: 700; margin-bottom: 12px">Exponential Backoff</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 12px">Increase wait duration after each failed recovery attempt.</div>
-<div style="background: #f0fdfa; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #0f766e">
+<div>
+<div>Exponential Backoff</div>
+<div>Increase wait duration after each failed recovery attempt.</div>
+<div>
 base: 30s, max: 5m, multiplier: 2
 </div>
-<div style="color: #64748b; font-size: 12px; margin-top: 10px">
+<div>
 30s &#8594; 60s &#8594; 120s &#8594; 240s &#8594; 300s
 </div>
 </div>
@@ -373,86 +373,86 @@ base: 30s, max: 5m, multiplier: 2
 </table>
 <hr />
 <h2 id="bulkhead-pattern">The Bulkhead Pattern</h2>
-<p>The <span style="color:#10b981"><strong>Bulkhead pattern</strong></span> complements circuit breakers by isolating resources so a failure in one area cannot exhaust resources needed by others - like watertight compartments in a ship.</p>
+<p>The <span><strong>Bulkhead pattern</strong></span> complements circuit breakers by isolating resources so a failure in one area cannot exhaust resources needed by others - like watertight compartments in a ship.</p>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">BULKHEAD PATTERN - RESOURCE ISOLATION</h3>
-<div class="flow-row" style="gap: 32px">
-<div style="background: white; border-radius: 16px; padding: 24px;min-width: 200px">
-<div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 16px">Without Bulkhead</div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 16px">
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
-<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d">Thread 1</div>
-<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d">Thread 2</div>
-<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d">Thread 3</div>
-<div style="background: #fca5a5; padding: 8px; border-radius: 6px; text-align: center; font-size: 11px; color: #7f1d1d">Thread 4</div>
+<h3>BULKHEAD PATTERN - RESOURCE ISOLATION</h3>
+<div class="flow-row">
+<div>
+<div>Without Bulkhead</div>
+<div>
+<div>
+<div>Thread 1</div>
+<div>Thread 2</div>
+<div>Thread 3</div>
+<div>Thread 4</div>
 </div>
-<div style="color: #991b1b; font-size: 11px; text-align: center; margin-top: 12px; font-weight: 600">All threads stuck waiting for slow Service A</div>
+<div>All threads stuck waiting for slow Service A</div>
 </div>
-<div style="text-align: center; margin-top: 12px; color: #dc2626; font-size: 12px">Service B, C, D also blocked!</div>
+<div>Service B, C, D also blocked!</div>
 </div>
-<div class="flow-arrow" style="font-size: 32px">&#8594;</div>
-<div style="background: white; border-radius: 16px; padding: 24px;min-width: 280px">
-<div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 16px">With Bulkhead</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
-<div style="background: #fee2e2; border-radius: 8px; padding: 12px">
-<div style="color: #dc2626; font-size: 10px; font-weight: 600; text-align: center">Service A Pool (2)</div>
-<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center">
-<div style="background: #fca5a5; padding: 4px 8px; border-radius: 4px; font-size: 9px">T1</div>
-<div style="background: #fca5a5; padding: 4px 8px; border-radius: 4px; font-size: 9px">T2</div>
-</div>
-</div>
-<div style="background: #dcfce7; border-radius: 8px; padding: 12px">
-<div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center">Service B Pool (2)</div>
-<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center">
-<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px">T3</div>
-<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px">T4</div>
+<div class="flow-arrow">&#8594;</div>
+<div>
+<div>With Bulkhead</div>
+<div>
+<div>
+<div>Service A Pool (2)</div>
+<div>
+<div>T1</div>
+<div>T2</div>
 </div>
 </div>
-<div style="background: #dcfce7; border-radius: 8px; padding: 12px">
-<div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center">Service C Pool (2)</div>
-<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center">
-<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px">T5</div>
-<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px">T6</div>
+<div>
+<div>Service B Pool (2)</div>
+<div>
+<div>T3</div>
+<div>T4</div>
 </div>
 </div>
-<div style="background: #dcfce7; border-radius: 8px; padding: 12px">
-<div style="color: #166534; font-size: 10px; font-weight: 600; text-align: center">Service D Pool (2)</div>
-<div style="display: flex; gap: 4px; margin-top: 8px; justify-content: center">
-<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px">T7</div>
-<div style="background: #86efac; padding: 4px 8px; border-radius: 4px; font-size: 9px">T8</div>
+<div>
+<div>Service C Pool (2)</div>
+<div>
+<div>T5</div>
+<div>T6</div>
+</div>
+</div>
+<div>
+<div>Service D Pool (2)</div>
+<div>
+<div>T7</div>
+<div>T8</div>
 </div>
 </div>
 </div>
-<div style="text-align: center; margin-top: 12px; color: #166534; font-size: 12px">Service A isolated, B/C/D unaffected!</div>
+<div>Service A isolated, B/C/D unaffected!</div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="bulkhead-types">Bulkhead Types</h3>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #4338ca; font-weight: 700; margin-bottom: 12px">Thread Pool Bulkhead</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 12px">Dedicate a fixed thread pool to each dependency. Threads waiting for slow service don't block other services.</div>
-<div style="background: #eef2ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #4338ca">
+<div>
+<div>
+<div>
+<div>Thread Pool Bulkhead</div>
+<div>Dedicate a fixed thread pool to each dependency. Threads waiting for slow service don't block other services.</div>
+<div>
 payment_pool: max=10<br>
 inventory_pool: max=20<br>
 notification_pool: max=5
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 12px">Semaphore Bulkhead</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 12px">Limit concurrent calls using a semaphore. Lighter weight than thread pools but less isolation.</div>
-<div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #92400e">
+<div>
+<div>Semaphore Bulkhead</div>
+<div>Limit concurrent calls using a semaphore. Lighter weight than thread pools but less isolation.</div>
+<div>
 max_concurrent_calls: 25<br>
 max_wait_duration: 100ms
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px">Connection Pool Bulkhead</div>
-<div style="color: #475569; font-size: 13px; margin-bottom: 12px">Separate [[connection pools]](/topic/system-design/connection-pooling) per dependency. Prevents one service from exhausting all connections.</div>
-<div style="background: #ecfdf5; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #065f46">
+<div>
+<div>Connection Pool Bulkhead</div>
+<div>Separate [[connection pools]](/topic/system-design/connection-pooling) per dependency. Prevents one service from exhausting all connections.</div>
+<div>
 db_primary: max_conn=50<br>
 db_replica: max_conn=100<br>
 cache: max_conn=25
@@ -512,75 +512,75 @@ class ResilientServiceClient:
 </code></pre>
 <hr />
 <h2 id="cascading-failures">Cascading Failures: The Problem Circuit Breakers Solve</h2>
-<p><span style="color:#10b981"><strong>Cascading failures</strong></span> occur when a failure in one service causes failures in dependent services, which then cause failures in their dependents, creating a domino effect that can bring down an entire system.</p>
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #dc2626; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">CASCADING FAILURE ANATOMY</h3>
-<div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto">
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">1</div>
-<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px">
-<div style="color: #dc2626; font-weight: 600">Database Slowdown</div>
-<div style="color: #7f1d1d; font-size: 13px">Service D's database becomes slow due to lock contention</div>
+<p><span><strong>Cascading failures</strong></span> occur when a failure in one service causes failures in dependent services, which then cause failures in their dependents, creating a domino effect that can bring down an entire system.</p>
+<div>
+<h3>CASCADING FAILURE ANATOMY</h3>
+<div>
+<div>
+<div>1</div>
+<div>
+<div>Database Slowdown</div>
+<div>Service D's database becomes slow due to lock contention</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">2</div>
-<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px">
-<div style="color: #dc2626; font-weight: 600">Service D Threads Exhaust</div>
-<div style="color: #7f1d1d; font-size: 13px">All threads waiting for slow DB, cannot accept new requests</div>
+<div>
+<div>2</div>
+<div>
+<div>Service D Threads Exhaust</div>
+<div>All threads waiting for slow DB, cannot accept new requests</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">3</div>
-<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px">
-<div style="color: #dc2626; font-weight: 600">Service C Threads Exhaust</div>
-<div style="color: #7f1d1d; font-size: 13px">Service C waits for D, its threads also become blocked</div>
+<div>
+<div>3</div>
+<div>
+<div>Service C Threads Exhaust</div>
+<div>Service C waits for D, its threads also become blocked</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">4</div>
-<div style="flex: 1; background: white; border-radius: 8px; padding: 12px 16px">
-<div style="color: #dc2626; font-weight: 600">Services A & B Fail</div>
-<div style="color: #7f1d1d; font-size: 13px">A and B depend on C, they also exhaust threads waiting</div>
+<div>
+<div>4</div>
+<div>
+<div>Services A & B Fail</div>
+<div>A and B depend on C, they also exhaust threads waiting</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: #7f1d1d; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">5</div>
-<div style="flex: 1; background: #7f1d1d; border-radius: 8px; padding: 12px 16px">
-<div style="color: white; font-weight: 600">Complete System Outage</div>
-<div style="color: #fecaca; font-size: 13px">API Gateway cannot reach any service - entire platform down</div>
+<div>
+<div>5</div>
+<div>
+<div>Complete System Outage</div>
+<div>API Gateway cannot reach any service - entire platform down</div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="preventing-cascading-failures">How Circuit Breakers Prevent Cascading Failures</h3>
-<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #065f46; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">WITH CIRCUIT BREAKERS</h3>
-<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px">
-<div style="background: white; border-radius: 12px; padding: 16px 20px;text-align: center">
-<div style="color: #166534; font-weight: 700">Service A</div>
-<div style="color: #15803d; font-size: 12px; margin-top: 4px">Operating normally</div>
-<div style="background: #22c55e; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px">Fallback for C</div>
+<div>
+<h3>WITH CIRCUIT BREAKERS</h3>
+<div>
+<div>
+<div>Service A</div>
+<div>Operating normally</div>
+<div>Fallback for C</div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 16px 20px;text-align: center">
-<div style="color: #166534; font-weight: 700">Service B</div>
-<div style="color: #15803d; font-size: 12px; margin-top: 4px">Operating normally</div>
-<div style="background: #22c55e; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px">Fallback for C</div>
+<div>
+<div>Service B</div>
+<div>Operating normally</div>
+<div>Fallback for C</div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 16px 20px;text-align: center">
-<div style="color: #92400e; font-weight: 700">Service C</div>
-<div style="color: #b45309; font-size: 12px; margin-top: 4px">Circuit OPEN for D</div>
-<div style="background: #f59e0b; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px">Degraded mode</div>
+<div>
+<div>Service C</div>
+<div>Circuit OPEN for D</div>
+<div>Degraded mode</div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 16px 20px;text-align: center">
-<div style="color: #dc2626; font-weight: 700">Service D</div>
-<div style="color: #b91c1c; font-size: 12px; margin-top: 4px">DB issues</div>
-<div style="background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 8px">Isolated failure</div>
+<div>
+<div>Service D</div>
+<div>DB issues</div>
+<div>Isolated failure</div>
 </div>
 </div>
-<div style="background: white; border-radius: 8px; padding: 16px">
-<div style="color: #166534; font-weight: 600; margin-bottom: 8px">Result:</div>
-<div style="color: #047857; font-size: 13px">
+<div>
+<div>Result:</div>
+<div>
 <div>&#8226; Service D's failure is <strong>isolated</strong> - it cannot affect A or B</div>
 <div>&#8226; Service C <strong>fails fast</strong> for D calls, uses cached data or defaults</div>
 <div>&#8226; Users experience <strong>degraded service</strong>, not complete outage</div>
@@ -590,32 +590,32 @@ class ResilientServiceClient:
 </div>
 <hr />
 <h2 id="configuration-reference">Configuration Parameters Reference</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 20px 0; font-size: 16px; font-weight: 600">KEY CONFIGURATION OPTIONS</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px">
-<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px">Failure Threshold</div>
-<div style="color: #1d4ed8; font-size: 13px">Number or percentage of failures before opening circuit (e.g., 5 failures or 50%)</div>
+<div>
+<h3>KEY CONFIGURATION OPTIONS</h3>
+<div>
+<div>
+<div>Failure Threshold</div>
+<div>Number or percentage of failures before opening circuit (e.g., 5 failures or 50%)</div>
 </div>
-<div style="background: #dcfce7; padding: 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: 600; margin-bottom: 8px">Success Threshold</div>
-<div style="color: #15803d; font-size: 13px">Number of successes in half-open to close circuit (e.g., 3 consecutive)</div>
+<div>
+<div>Success Threshold</div>
+<div>Number of successes in half-open to close circuit (e.g., 3 consecutive)</div>
 </div>
-<div style="background: #fef3c7; padding: 16px; border-radius: 8px">
-<div style="color: #92400e; font-weight: 600; margin-bottom: 8px">Timeout Duration</div>
-<div style="color: #b45309; font-size: 13px">How long to stay open before testing (e.g., 30 seconds)</div>
+<div>
+<div>Timeout Duration</div>
+<div>How long to stay open before testing (e.g., 30 seconds)</div>
 </div>
-<div style="background: #f3e8ff; padding: 16px; border-radius: 8px">
-<div style="color: #6b21a8; font-weight: 600; margin-bottom: 8px">Sliding Window Size</div>
-<div style="color: #7c3aed; font-size: 13px">Time window or call count for failure tracking (e.g., 60s or last 100 calls)</div>
+<div>
+<div>Sliding Window Size</div>
+<div>Time window or call count for failure tracking (e.g., 60s or last 100 calls)</div>
 </div>
-<div style="background: #fef2f2; padding: 16px; border-radius: 8px">
-<div style="color: #dc2626; font-weight: 600; margin-bottom: 8px">Half-Open Limit</div>
-<div style="color: #b91c1c; font-size: 13px">Max concurrent requests in half-open state (e.g., 3 probe requests)</div>
+<div>
+<div>Half-Open Limit</div>
+<div>Max concurrent requests in half-open state (e.g., 3 probe requests)</div>
 </div>
-<div style="background: #ecfdf5; padding: 16px; border-radius: 8px">
-<div style="color: #065f46; font-weight: 600; margin-bottom: 8px">Slow Call Threshold</div>
-<div style="color: #047857; font-size: 13px">Response time that counts as "slow" (e.g., 5 seconds)</div>
+<div>
+<div>Slow Call Threshold</div>
+<div>Response time that counts as "slow" (e.g., 5 seconds)</div>
 </div>
 </div>
 </div>
@@ -1060,34 +1060,34 @@ func (cb *CircuitBreaker) recordFailure() {
 </code></pre>
 <hr />
 <h2 id="fallback-strategies">Fallback Strategies</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">FALLBACK OPTIONS WHEN CIRCUIT IS OPEN</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
-<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Return Cached Data</div>
-<div style="color: #15803d; font-size: 13px; margin-bottom: 12px">Serve stale but acceptable data from [[cache]](/topic/system-design/caching) when fresh data unavailable.</div>
-<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #166534">
+<div>
+<h3>FALLBACK OPTIONS WHEN CIRCUIT IS OPEN</h3>
+<div>
+<div>
+<div>Return Cached Data</div>
+<div>Serve stale but acceptable data from [[cache]](/topic/system-design/caching) when fresh data unavailable.</div>
+<div>
 return cache.get(key) or DEFAULT
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Queue for Later</div>
-<div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px">Add request to a [[message queue]](/topic/system-design/message-queues) and process when service recovers.</div>
-<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #1e40af">
+<div>
+<div>Queue for Later</div>
+<div>Add request to a [[message queue]](/topic/system-design/message-queues) and process when service recovers.</div>
+<div>
 queue.add(request)<br>return "Processing soon"
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 12px">Default Response</div>
-<div style="color: #b45309; font-size: 13px; margin-bottom: 12px">Return a safe default that allows the user to continue their workflow.</div>
-<div style="background: #fefce8; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #92400e">
+<div>
+<div>Default Response</div>
+<div>Return a safe default that allows the user to continue their workflow.</div>
+<div>
 return {"recommendations": []}
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 12px; padding: 20px">
-<div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px">Alternative Service</div>
-<div style="color: #7c3aed; font-size: 13px; margin-bottom: 12px">Call a backup service or use degraded functionality from another source.</div>
-<div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #6b21a8">
+<div>
+<div>Alternative Service</div>
+<div>Call a backup service or use degraded functionality from another source.</div>
+<div>
 return backup_service.call()
 </div>
 </div>
@@ -1096,71 +1096,71 @@ return backup_service.call()
 <hr />
 <h2 id="edge-cases-failure-modes">Edge Cases & Failure Modes</h2>
 <p>Understanding edge cases is critical for building robust circuit breakers. Here are the scenarios that often trip up implementations.</p>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">CRITICAL EDGE CASES</h3>
-<div style="display: grid; gap: 20px">
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 8px">1. Race Conditions at Threshold Boundary</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">Multiple threads can simultaneously reach the failure threshold, causing multiple state transitions or inconsistent state.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Use atomic operations or proper locking when checking and transitioning states. Ensure state transitions are idempotent.</div>
+<div>
+<h3>CRITICAL EDGE CASES</h3>
+<div>
+<div>
+<div>1. Race Conditions at Threshold Boundary</div>
+<div>Multiple threads can simultaneously reach the failure threshold, causing multiple state transitions or inconsistent state.</div>
+<div>
+<div>Mitigation:</div>
+<div>Use atomic operations or proper locking when checking and transitioning states. Ensure state transitions are idempotent.</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 8px">2. Circuit Flapping</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">Service is intermittently healthy, causing rapid OPEN -> HALF-OPEN -> CLOSED -> OPEN cycles. This creates unpredictable behavior and confuses monitoring.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Implement exponential backoff on open duration. Require multiple consecutive successes to close. Add hysteresis to prevent rapid transitions.</div>
+<div>
+<div>2. Circuit Flapping</div>
+<div>Service is intermittently healthy, causing rapid OPEN -> HALF-OPEN -> CLOSED -> OPEN cycles. This creates unpredictable behavior and confuses monitoring.</div>
+<div>
+<div>Mitigation:</div>
+<div>Implement exponential backoff on open duration. Require multiple consecutive successes to close. Add hysteresis to prevent rapid transitions.</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px">3. Cold Start / Insufficient Data</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">On startup or after a long idle period, there's insufficient data to calculate meaningful failure rates. A single failure could trip a percentage-based threshold.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Require minimum_calls before applying rate-based thresholds. Start with optimistic assumptions and tighten as data accumulates.</div>
+<div>
+<div>3. Cold Start / Insufficient Data</div>
+<div>On startup or after a long idle period, there's insufficient data to calculate meaningful failure rates. A single failure could trip a percentage-based threshold.</div>
+<div>
+<div>Mitigation:</div>
+<div>Require minimum_calls before applying rate-based thresholds. Start with optimistic assumptions and tighten as data accumulates.</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 8px">4. Partial Failures / Endpoint-Specific Issues</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">One endpoint of a service fails while others are healthy. A single circuit for the entire service blocks healthy endpoints.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Use per-endpoint circuit breakers or use granular circuit keys (service + endpoint + method). Balance granularity against memory overhead.</div>
+<div>
+<div>4. Partial Failures / Endpoint-Specific Issues</div>
+<div>One endpoint of a service fails while others are healthy. A single circuit for the entire service blocks healthy endpoints.</div>
+<div>
+<div>Mitigation:</div>
+<div>Use per-endpoint circuit breakers or use granular circuit keys (service + endpoint + method). Balance granularity against memory overhead.</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px">5. Clock Skew / Time-Based Window Issues</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">In distributed systems, clock skew between nodes can cause time-based sliding windows to behave inconsistently.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Use monotonic clocks for duration calculations. Keep circuit breaker state local to each instance rather than shared across nodes.</div>
+<div>
+<div>5. Clock Skew / Time-Based Window Issues</div>
+<div>In distributed systems, clock skew between nodes can cause time-based sliding windows to behave inconsistently.</div>
+<div>
+<div>Mitigation:</div>
+<div>Use monotonic clocks for duration calculations. Keep circuit breaker state local to each instance rather than shared across nodes.</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #be185d; font-weight: 700; margin-bottom: 8px">6. Thundering Herd on Recovery</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">When circuit closes, all pending requests suddenly flood the recovering service, potentially causing immediate re-failure.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Use gradual traffic ramp-up. Combine with rate limiting on circuit close. Add jitter to timeouts across instances to stagger recovery probes.</div>
+<div>
+<div>6. Thundering Herd on Recovery</div>
+<div>When circuit closes, all pending requests suddenly flood the recovering service, potentially causing immediate re-failure.</div>
+<div>
+<div>Mitigation:</div>
+<div>Use gradual traffic ramp-up. Combine with rate limiting on circuit close. Add jitter to timeouts across instances to stagger recovery probes.</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #0891b2; font-weight: 700; margin-bottom: 8px">7. Memory Leak in Sliding Window</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">Under high load, time-based sliding windows can accumulate large numbers of records before cleanup runs, causing memory pressure.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Use bucketed aggregation instead of per-call records. Set hard limits on record count. Consider count-based windows for high-throughput services.</div>
+<div>
+<div>7. Memory Leak in Sliding Window</div>
+<div>Under high load, time-based sliding windows can accumulate large numbers of records before cleanup runs, causing memory pressure.</div>
+<div>
+<div>Mitigation:</div>
+<div>Use bucketed aggregation instead of per-call records. Set hard limits on record count. Consider count-based windows for high-throughput services.</div>
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<div style="color: #c2410c; font-weight: 700; margin-bottom: 8px">8. Circuit Breaker Itself Fails</div>
-<div style="color: #475569; font-size: 14px; margin-bottom: 12px">Bug in circuit breaker logic causes it to always reject requests, even when the downstream service is healthy.</div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 13px">Mitigation:</div>
-<div style="color: #475569; font-size: 13px">Implement "fail open" policy - if circuit breaker throws exception, allow request through. Add health checks for circuit breaker itself. Provide admin override to force circuit closed.</div>
+<div>
+<div>8. Circuit Breaker Itself Fails</div>
+<div>Bug in circuit breaker logic causes it to always reject requests, even when the downstream service is healthy.</div>
+<div>
+<div>Mitigation:</div>
+<div>Implement "fail open" policy - if circuit breaker throws exception, allow request through. Add health checks for circuit breaker itself. Provide admin override to force circuit closed.</div>
 </div>
 </div>
 </div>
@@ -1255,50 +1255,50 @@ class TestCircuitBreakerEdgeCases:
 </code></pre>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">1. Not Distinguishing Error Types</div>
-<div style="color: #7f1d1d; font-size: 14px">Not all errors should trip the circuit. A 400 Bad Request is a <strong>client error</strong>, not a service failure. Only count 5xx errors, timeouts, and connection failures.</div>
+<div>
+<div>1. Not Distinguishing Error Types</div>
+<div>Not all errors should trip the circuit. A 400 Bad Request is a <strong>client error</strong>, not a service failure. Only count 5xx errors, timeouts, and connection failures.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">2. Setting Thresholds Too Low</div>
-<div style="color: #7f1d1d; font-size: 14px">A threshold of 2-3 failures can cause false trips during normal network jitter. Start with higher thresholds (5-10) and use percentage-based thresholds with minimum sample size.</div>
+<div>
+<div>2. Setting Thresholds Too Low</div>
+<div>A threshold of 2-3 failures can cause false trips during normal network jitter. Start with higher thresholds (5-10) and use percentage-based thresholds with minimum sample size.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">3. Forgetting the Fallback</div>
-<div style="color: #7f1d1d; font-size: 14px">A circuit breaker without a fallback just converts slow failures to fast failures. Always provide a <strong>degraded experience</strong> - even "try again later" is better than a crash.</div>
+<div>
+<div>3. Forgetting the Fallback</div>
+<div>A circuit breaker without a fallback just converts slow failures to fast failures. Always provide a <strong>degraded experience</strong> - even "try again later" is better than a crash.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">4. One Circuit Per Service (Not Per Instance)</div>
-<div style="color: #7f1d1d; font-size: 14px">If you have one circuit for "payment service" but 10 instances, one bad instance trips the circuit for all. Consider per-instance circuits or use service mesh instance-level routing.</div>
+<div>
+<div>4. One Circuit Per Service (Not Per Instance)</div>
+<div>If you have one circuit for "payment service" but 10 instances, one bad instance trips the circuit for all. Consider per-instance circuits or use service mesh instance-level routing.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">5. Not Monitoring Circuit State</div>
-<div style="color: #7f1d1d; font-size: 14px">Circuit breakers should emit metrics. Alert when circuits open frequently - it indicates an underlying problem that needs investigation, not just protection.</div>
+<div>
+<div>5. Not Monitoring Circuit State</div>
+<div>Circuit breakers should emit metrics. Alert when circuits open frequently - it indicates an underlying problem that needs investigation, not just protection.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">6. No Timeout on Downstream Calls</div>
-<div style="color: #7f1d1d; font-size: 14px">Circuit breakers detect failures, but if your calls have no timeout, they hang forever and the circuit never sees a failure. Always set timeouts - they're a prerequisite for circuit breakers.</div>
+<div>
+<div>6. No Timeout on Downstream Calls</div>
+<div>Circuit breakers detect failures, but if your calls have no timeout, they hang forever and the circuit never sees a failure. Always set timeouts - they're a prerequisite for circuit breakers.</div>
 </div>
 <hr />
 <h2 id="interview-questions">3-Level Recursive Interview Questions</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<div>
 <h3 id="q1-retry-vs-circuit-breaker">Q1: Why use a circuit breaker instead of just retries?</h3>
-<div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
-<div style="color: #475569; font-size: 14px">
-<p>Retries keep hammering a failing service, potentially making things worse by adding load to an already struggling service. Circuit breakers <span style="color:#10b981"><strong>stop all requests immediately</strong></span>, reducing load on the failing service, <span style="color:#10b981"><strong>fail fast</strong></span> to free up client resources, give the service time to recover, and prevent <span style="color:#10b981"><strong>cascading failures</strong></span> through the system.</p>
+<div>
+<div>Level 1 Answer:</div>
+<div>
+<p>Retries keep hammering a failing service, potentially making things worse by adding load to an already struggling service. Circuit breakers <span><strong>stop all requests immediately</strong></span>, reducing load on the failing service, <span><strong>fail fast</strong></span> to free up client resources, give the service time to recover, and prevent <span><strong>cascading failures</strong></span> through the system.</p>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0 16px 24px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px">Follow-up L2: How do you decide between retries and circuit breakers - can you use both?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L2: How do you decide between retries and circuit breakers - can you use both?</div>
+<div>
 <p>Yes, you should use both together in the right order. The pattern is: <strong>Request -&gt; <a href="/topic/system-design/rate-limiting">[Rate Limiter]</a> -&gt; Timeout -&gt; Circuit Breaker -&gt; Retry -&gt; Service</strong></p>
-<p>Retries handle <span style="color:#10b981"><strong>transient failures</strong></span> (network blips, temporary overload). Circuit breakers handle <span style="color:#10b981"><strong>persistent failures</strong></span> (service down, database unavailable). Retries should be attempted INSIDE the circuit breaker - if the circuit is open, don't retry at all. Use exponential backoff with jitter on retries to avoid thundering herd.</p>
+<p>Retries handle <span><strong>transient failures</strong></span> (network blips, temporary overload). Circuit breakers handle <span><strong>persistent failures</strong></span> (service down, database unavailable). Retries should be attempted INSIDE the circuit breaker - if the circuit is open, don't retry at all. Use exponential backoff with jitter on retries to avoid thundering herd.</p>
 </div>
 </div>
-<div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Follow-up L3: What happens if your circuit breaker itself fails or has a bug? How do you make it resilient?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L3: What happens if your circuit breaker itself fails or has a bug? How do you make it resilient?</div>
+<div>
 <p>This is critical - a buggy circuit breaker could block all traffic to a healthy service! Strategies:</p>
 <ol>
 <li><strong>Fail Open</strong>: If circuit breaker logic throws an exception, allow the request through</li>
@@ -1312,34 +1312,34 @@ class TestCircuitBreakerEdgeCases:
 </div>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<div>
 <h3 id="q2-microservices-implementation">Q2: How would you implement circuit breakers in a microservices architecture?</h3>
-<div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Level 1 Answer:</div>
+<div>
 <p>Each service should have circuit breakers for every external dependency it calls. Use a library like Resilience4j (Java), Polly (.NET), or implement your own. The circuit breaker wraps outgoing HTTP calls and tracks failures. When failures exceed the threshold, it trips to open state and returns fallback responses. After a timeout, it allows probe requests to test recovery.</p>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0 16px 24px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px">Follow-up L2: Should circuit breakers be client-side or use a service mesh? What are the tradeoffs?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L2: Should circuit breakers be client-side or use a service mesh? What are the tradeoffs?</div>
+<div>
 <p>Both approaches are valid with different tradeoffs:</p>
 <p><strong>Client-Side (In-Application)</strong>:</p>
 <ul>
-<li><span style="color:#10b981"><strong>Pros</strong></span>: Full control, custom fallbacks, language-specific optimizations, no infrastructure dependency</li>
+<li><span><strong>Pros</strong></span>: Full control, custom fallbacks, language-specific optimizations, no infrastructure dependency</li>
 <li><strong>Cons</strong>: Inconsistent implementations across services, harder to update centrally</li>
 </ul>
 <p><strong>Service Mesh (Istio/Linkerd)</strong>:</p>
 <ul>
-<li><span style="color:#10b981"><strong>Pros</strong></span>: Consistent behavior, language-agnostic, centrally configurable, no code changes</li>
+<li><span><strong>Pros</strong></span>: Consistent behavior, language-agnostic, centrally configurable, no code changes</li>
 <li><strong>Cons</strong>: Less flexible fallbacks, infrastructure complexity, sidecar overhead, harder to customize per-endpoint</li>
 </ul>
 <p><strong>Hybrid Approach</strong>: Use service mesh for basic circuit breaking (open/close), but implement application-level fallback logic. The mesh handles the &quot;fail fast&quot; part, your code handles &quot;what to do when it fails fast.&quot;</p>
 </div>
 </div>
-<div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Follow-up L3: How do you handle circuit breakers in a multi-region deployment where latency between regions varies significantly?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L3: How do you handle circuit breakers in a multi-region deployment where latency between regions varies significantly?</div>
+<div>
 <p>Multi-region adds complexity:</p>
 <ol>
 <li>
@@ -1369,11 +1369,11 @@ class TestCircuitBreakerEdgeCases:
 </div>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<div>
 <h3 id="q3-payment-system-design">Q3: Design a payment system with circuit breakers. What happens when the payment provider is down?</h3>
-<div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Level 1 Answer:</div>
+<div>
 <p>Create separate circuit breakers for each payment provider (Stripe, PayPal, etc.). When primary provider fails:</p>
 <ol>
 <li>Circuit opens after 5 failures in 60 seconds</li>
@@ -1384,10 +1384,10 @@ class TestCircuitBreakerEdgeCases:
 </ol>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0 16px 24px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px">Follow-up L2: How do you handle idempotency when retrying queued payments? What if the original payment actually succeeded?</div>
-<div style="color: #475569; font-size: 14px">
-<p><span style="color:#10b981"><strong>Idempotency</strong></span> is critical for payments:</p>
+<div>
+<div>Follow-up L2: How do you handle idempotency when retrying queued payments? What if the original payment actually succeeded?</div>
+<div>
+<p><span><strong>Idempotency</strong></span> is critical for payments:</p>
 <ol>
 <li><strong>Idempotency Keys</strong>: Generate a unique key per payment attempt, store it with the request</li>
 <li><strong>Before Queuing</strong>: Record the payment intent with status &quot;pending&quot; in your database</li>
@@ -1415,9 +1415,9 @@ class TestCircuitBreakerEdgeCases:
 </code></pre>
 </div>
 </div>
-<div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Follow-up L3: During a prolonged outage (hours), how do you handle the growing payment queue and communicate with users?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L3: During a prolonged outage (hours), how do you handle the growing payment queue and communicate with users?</div>
+<div>
 <p>Extended outage requires both technical and UX solutions:</p>
 <p><strong>Technical Handling</strong>:</p>
 <ol>
@@ -1448,18 +1448,18 @@ if oldest_item_age &gt; timedelta(hours=2):
 </div>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<div>
 <h3 id="q4-bulkhead-explanation">Q4: Explain the bulkhead pattern and how it works with circuit breakers.</h3>
-<div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
-<div style="color: #475569; font-size: 14px">
-<p>The <span style="color:#10b981"><strong>bulkhead pattern</strong></span> isolates resources (threads, connections, memory) for different components so a failure in one doesn't exhaust resources needed by others. Like watertight compartments in a ship - one breach doesn't sink the whole vessel.</p>
+<div>
+<div>Level 1 Answer:</div>
+<div>
+<p>The <span><strong>bulkhead pattern</strong></span> isolates resources (threads, connections, memory) for different components so a failure in one doesn't exhaust resources needed by others. Like watertight compartments in a ship - one breach doesn't sink the whole vessel.</p>
 <p>Combined with circuit breakers: Bulkhead limits HOW MANY concurrent requests can be waiting. Circuit breaker decides WHETHER to send requests based on failure rate. Together, they prevent both resource exhaustion AND cascading failures.</p>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0 16px 24px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px">Follow-up L2: How do you size bulkhead pools? What happens if you size them wrong?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L2: How do you size bulkhead pools? What happens if you size them wrong?</div>
+<div>
 <p>Sizing is empirical but follows principles:</p>
 <p><strong>Too Small</strong>:</p>
 <ul>
@@ -1493,9 +1493,9 @@ if oldest_item_age &gt; timedelta(hours=2):
 </code></pre>
 </div>
 </div>
-<div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Follow-up L3: In an async/event-driven system, how do you implement bulkheads differently than in a thread-per-request model?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L3: In an async/event-driven system, how do you implement bulkheads differently than in a thread-per-request model?</div>
+<div>
 <p>Async systems don't have traditional thread pools, so bulkhead implementation differs:</p>
 <p><strong>1. Semaphore-Based Limiting</strong>:</p>
 <pre><code class="language-python"># Async semaphore limits concurrent operations
@@ -1521,11 +1521,11 @@ class AsyncBulkhead:
 </div>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<div>
 <h3 id="q5-testing-circuit-breakers">Q5: How do you test circuit breakers and validate they work correctly?</h3>
-<div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Level 1 Answer:</div>
+<div>
 <p>Testing circuit breakers requires multiple approaches:</p>
 <ol>
 <li><strong>Unit Tests</strong>: Mock the downstream service, inject failures, verify state transitions</li>
@@ -1535,9 +1535,9 @@ class AsyncBulkhead:
 </ol>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0 16px 24px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 12px">Follow-up L2: What specific scenarios should you test? What are the edge cases?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L2: What specific scenarios should you test? What are the edge cases?</div>
+<div>
 <p><strong>Core Scenarios</strong>:</p>
 <ol>
 <li><strong>Threshold Boundary</strong>: Verify circuit trips at exactly N failures, not N-1 or N+1</li>
@@ -1583,9 +1583,9 @@ def test_race_condition_on_threshold():
 </code></pre>
 </div>
 </div>
-<div style="background: #ecfdf5; border-radius: 12px; padding: 20px; margin: 16px 0 16px 48px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Follow-up L3: How do you safely do chaos engineering with circuit breakers in production?</div>
-<div style="color: #475569; font-size: 14px">
+<div>
+<div>Follow-up L3: How do you safely do chaos engineering with circuit breakers in production?</div>
+<div>
 <p>Production chaos engineering requires careful safeguards:</p>
 <p><strong>1. Blast Radius Control</strong>:</p>
 <ul>
@@ -1697,7 +1697,7 @@ groups:
 </code></pre>
 <hr />
 <h2 id="related-patterns">Circuit Breaker vs Related Patterns</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
+<div>
 <table>
 <thead>
 <tr>

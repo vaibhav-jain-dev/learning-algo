@@ -1,5 +1,5 @@
 <h1 id="design-slack">Design Slack</h1>
-<nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<nav class="toc">
 <h2 id="table-of-contents">Table of Contents</h2>
 <ul>
 <li><a href="#problem-statement">Problem Statement</a></li>
@@ -28,7 +28,7 @@
 <hr />
 <h2 id="problem-statement-problem-statement">Problem Statement {#problem-statement}</h2>
 <p>Design a real-time team communication platform with channels, direct messages, file sharing, and integrations.</p>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="core-requirements-core-requirements">Core Requirements {#core-requirements}</h3>
 <ul>
 <li><strong>Workspaces</strong>: Multi-tenant team environments</li>
@@ -49,7 +49,7 @@
 <div class="flow-box-subtitle">Web | iOS | Android</div>
 </div>
 <div class="flow-arrow vertical">&#8595;</div>
-<div style="color: #64748b; font-size: 12px; text-align: center">WebSocket + REST</div>
+<div>WebSocket + REST</div>
 <div class="flow-box primary">
 <div class="flow-box-title">EDGE / API GATEWAY</div>
 <div class="flow-box-subtitle">Auth, Rate Limit, Routing</div>
@@ -95,7 +95,7 @@
 <h2 id="real-time-messaging-real-time-messaging">Real-Time Messaging {#real-time-messaging}</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #f97316; text-align: center; margin: 0 0 24px 0">MESSAGE DELIVERY FLOW</h4>
+<h4>MESSAGE DELIVERY FLOW</h4>
 <div class="flow-box success">
 <div class="flow-box-title">User A sends message in #general</div>
 </div>
@@ -107,8 +107,8 @@
 <div class="flow-arrow vertical">&#8595;</div>
 <div class="flow-box purple">
 <div class="flow-box-title">2. Publish to Redis Pub/Sub</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 12px; margin-top: 8px; font-family: monospace; font-size: 11px">
-<span style="color: #ef4444">PUBLISH</span> channel:#general:messages<br/>
+<div>
+<span>PUBLISH</span> channel:#general:messages<br/>
 {"id": "msg_123", "text": "Hello!", "user": "user_A"}
 </div>
 </div>
@@ -136,8 +136,8 @@
 </div>
 <hr />
 <h2 id="phase-1-starting-phase-phase-1-starting-phase">Phase 1: Starting Phase {#phase-1-starting-phase}</h2>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="assumptions-phase-1-assumptions">Assumptions {#phase-1-assumptions}</h3>
 <pre><code>- **Workspaces**: 100 - 1,000
 - **Users**: 5,000 - 50,000
@@ -223,8 +223,8 @@ await ws.send(json.dumps(message))
 </div>
 <hr />
 <h2 id="phase-2-medium-scale-phase-2-medium-scale">Phase 2: Medium Scale {#phase-2-medium-scale}</h2>
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="microservices-architecture-microservices-architecture">Microservices Architecture {#microservices-architecture}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
@@ -350,8 +350,8 @@ self.redis.publish(f'presence:{ws_id}', json.dumps({
 </div>
 <hr />
 <h2 id="phase-3-slack-scale-phase-3-slack-scale">Phase 3: Slack Scale {#phase-3-slack-scale}</h2>
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="assumptions-phase-3-assumptions">Assumptions {#phase-3-assumptions}</h3>
 <pre><code>- **Workspaces**: 750K+ paid
 - **Users**: 20M+ daily active
@@ -361,10 +361,10 @@ self.redis.publish(f'presence:{ws_id}', json.dumps({
 <h3 id="global-architecture-global-architecture">Global Architecture {#global-architecture}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #8b5cf6; text-align: center; margin: 0 0 24px 0">SLACK GLOBAL ARCHITECTURE</h4>
+<h4>SLACK GLOBAL ARCHITECTURE</h4>
 <div class="architecture-layer">
-<div class="architecture-layer-title" style="color: #3b82f6">EDGE LAYER</div>
-<p style="color: #475569; font-size: 13px; margin-bottom: 16px">Terminate WebSocket connections at edge for low latency</p>
+<div class="architecture-layer-title">EDGE LAYER</div>
+<p>Terminate WebSocket connections at edge for low latency</p>
 <div class="flow-row">
 <div class="flow-box success"><div class="flow-box-title">US-EAST</div></div>
 <div class="flow-box primary"><div class="flow-box-title">US-WEST</div></div>
@@ -374,7 +374,7 @@ self.redis.publish(f'presence:{ws_id}', json.dumps({
 </div>
 <div class="flow-arrow vertical">&#8595;</div>
 <div class="architecture-layer">
-<div class="architecture-layer-title" style="color: #f97316">MESSAGE BUS (Kafka)</div>
+<div class="architecture-layer-title">MESSAGE BUS (Kafka)</div>
 <div class="flow-row">
 <div class="diagram-badge info">messages.{workspace_id}</div>
 <div class="diagram-badge purple">presence.{workspace_id}</div>
@@ -384,23 +384,23 @@ self.redis.publish(f'presence:{ws_id}', json.dumps({
 </div>
 <div class="flow-arrow vertical">&#8595;</div>
 <div class="architecture-layer">
-<div class="architecture-layer-title" style="color: #8b5cf6">CELL ARCHITECTURE</div>
-<p style="color: #475569; font-size: 12px; text-align: center; margin-bottom: 16px">Each workspace assigned to a "cell" = independent stack of services</p>
+<div class="architecture-layer-title">CELL ARCHITECTURE</div>
+<p>Each workspace assigned to a "cell" = independent stack of services</p>
 <div class="flow-row">
 <div class="flow-box success">
 <div class="flow-box-title">CELL-1</div>
 <div class="flow-box-subtitle">100K workspaces</div>
-<div style="font-size: 10px; margin-top: 8px; opacity: 0.8">Postgres | Redis | Services</div>
+<div>Postgres | Redis | Services</div>
 </div>
 <div class="flow-box primary">
 <div class="flow-box-title">CELL-2</div>
 <div class="flow-box-subtitle">100K workspaces</div>
-<div style="font-size: 10px; margin-top: 8px; opacity: 0.8">Postgres | Redis | Services</div>
+<div>Postgres | Redis | Services</div>
 </div>
 <div class="flow-box purple">
 <div class="flow-box-title">CELL-N</div>
 <div class="flow-box-subtitle">100K workspaces</div>
-<div style="font-size: 10px; margin-top: 8px; opacity: 0.8">Postgres | Redis | Services</div>
+<div>Postgres | Redis | Services</div>
 </div>
 </div>
 </div>
@@ -445,7 +445,7 @@ Recipients: users,
 </div>
 <hr />
 <h2 id="aws-technologies--alternatives-aws-technologies-alternatives">AWS Technologies &amp; Alternatives {#aws-technologies-alternatives}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -497,36 +497,36 @@ Recipients: users,
 </div>
 <hr />
 <h2 id="distributed-systems-considerations-distributed-systems-considerations">Distributed Systems Considerations {#distributed-systems-considerations}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="1-message-ordering-message-ordering">1. Message Ordering {#message-ordering}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #3b82f6; margin: 0 0 16px 0; text-align: center">GUARANTEED MESSAGE ORDERING</h4>
-<div class="data-card-accent warning" style="padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<div style="color: #f97316; font-weight: bold; margin-bottom: 8px">Challenge</div>
-<div style="color: #475569; font-size: 13px">Messages must appear in correct order per channel across distributed servers</div>
+<h4>GUARANTEED MESSAGE ORDERING</h4>
+<div class="data-card-accent warning">
+<div>Challenge</div>
+<div>Messages must appear in correct order per channel across distributed servers</div>
 </div>
-<div class="data-card-accent success" style="padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<div style="color: #10b981; font-weight: bold; margin-bottom: 12px">Solution: Slack Timestamp (ts)</div>
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-bottom: 12px">
-<div style="color: #3b82f6; font-family: monospace; font-size: 14px">Format: "1234567890.123456"</div>
+<div class="data-card-accent success">
+<div>Solution: Slack Timestamp (ts)</div>
+<div>
+<div>Format: "1234567890.123456"</div>
 </div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8">
-<div style="margin-bottom: 8px"><span style="color: #8b5cf6; font-weight: bold">Components:</span></div>
-<div style="padding-left: 16px">- Unix timestamp (seconds): 1234567890</div>
-<div style="padding-left: 16px">- Microsecond precision: .123456</div>
-<div style="padding-left: 16px">- Unique within channel</div>
-<div style="margin-top: 12px; margin-bottom: 8px"><span style="color: #8b5cf6; font-weight: bold">Properties:</span></div>
-<div style="padding-left: 16px">- Lexicographically sortable</div>
-<div style="padding-left: 16px">- Can be used as message ID</div>
-<div style="padding-left: 16px">- Enables cursor-based pagination</div>
+<div>
+<div><span>Components:</span></div>
+<div>- Unix timestamp (seconds): 1234567890</div>
+<div>- Microsecond precision: .123456</div>
+<div>- Unique within channel</div>
+<div><span>Properties:</span></div>
+<div>- Lexicographically sortable</div>
+<div>- Can be used as message ID</div>
+<div>- Enables cursor-based pagination</div>
 </div>
 </div>
-<div class="data-card-accent error" style="padding: 16px; border-radius: 8px">
-<div style="color: #ef4444; font-weight: bold; margin-bottom: 8px">Conflict Resolution</div>
-<div style="color: #475569; font-size: 12px">If ts collision (rare): append sequence number</div>
-<div style="background: #f8fafc; border-radius: 6px; padding: 8px 12px; margin-top: 8px; font-family: monospace; font-size: 12px">
-<span style="color: #475569">"1234567890.123456"</span> <span style="color: #f97316">-></span> <span style="color: #10b981">"1234567890.123456.1"</span>
+<div class="data-card-accent error">
+<div>Conflict Resolution</div>
+<div>If ts collision (rare): append sequence number</div>
+<div>
+<span>"1234567890.123456"</span> <span>-></span> <span>"1234567890.123456.1"</span>
 </div>
 </div>
 </div>
@@ -566,7 +566,7 @@ return self.redis.zrange(key, 0, -1)
 <h3 id="3-search-indexing-search-indexing">3. Search Indexing {#search-indexing}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #8b5cf6; margin: 0 0 20px 0; text-align: center">Message Indexing Pipeline</h4>
+<h4>Message Indexing Pipeline</h4>
 <div class="flow-box success">
 <div class="flow-box-title">Message Created</div>
 </div>
@@ -589,7 +589,7 @@ return self.redis.zrange(key, 0, -1)
 </div>
 <hr />
 <h2 id="edge-cases--failure-modes-edge-cases-failure-modes">Edge Cases &amp; Failure Modes {#edge-cases-failure-modes}</h2>
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="websocket-connection-failures-websocket-connection-failures">WebSocket Connection Failures {#websocket-connection-failures}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
@@ -611,7 +611,7 @@ return self.redis.zrange(key, 0, -1)
 </div>
 </div>
 </div>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Scenario 1: WebSocket server crashes</strong></p>
 <ul>
 <li>Client detects via missed heartbeat (no pong in 60 seconds)</li>
@@ -655,7 +655,7 @@ return self.redis.zrange(key, 0, -1)
 </div>
 </div>
 </div>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Scenario 1: Message service crashes mid-processing</strong></p>
 <ul>
 <li>Kafka retains message (hasn't been acknowledged)</li>
@@ -678,7 +678,7 @@ return self.redis.zrange(key, 0, -1)
 </ul>
 </div>
 <h3 id="large-channel-failures-large-channel-failures">Large Channel Failures {#large-channel-failures}</h3>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Scenario: WebSocket server handling 5,000 channel members crashes</strong></p>
 <ol>
 <li>Those 5,000 users disconnect, attempt reconnect</li>
@@ -697,7 +697,7 @@ return self.redis.zrange(key, 0, -1)
 </ol>
 </div>
 <h3 id="data-corruption--recovery-data-corruption-recovery">Data Corruption &amp; Recovery {#data-corruption-recovery}</h3>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Scenario: Redis unread counters get corrupted</strong></p>
 <ul>
 <li>Counter shows &quot;0 unread&quot; but channel has messages</li>
@@ -716,11 +716,11 @@ return self.redis.zrange(key, 0, -1)
 </div>
 <hr />
 <h2 id="scaling-strategies-for-real-time-messaging-scaling-strategies-real-time">Scaling Strategies for Real-Time Messaging {#scaling-strategies-real-time}</h2>
-<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="connection-scaling-connection-scaling">Connection Scaling {#connection-scaling}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #10b981; margin: 0 0 20px 0; text-align: center">WEBSOCKET SCALING STRATEGIES</h4>
+<h4>WEBSOCKET SCALING STRATEGIES</h4>
 <div class="flow-row">
 <div class="flow-box success">
 <div class="flow-box-title">10K Users</div>
@@ -739,7 +739,7 @@ return self.redis.zrange(key, 0, -1)
 </div>
 </div>
 </div>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Strategy 1: Vertical Scaling (Up to 50K connections)</strong></p>
 <pre><code>- Single server with epoll/kqueue can handle 50K+ WebSockets
 - Memory: ~2-4KB per connection = 200MB for 50K connections
@@ -760,7 +760,7 @@ return self.redis.zrange(key, 0, -1)
 </code></pre>
 </div>
 <h3 id="message-throughput-scaling-message-throughput-scaling">Message Throughput Scaling {#message-throughput-scaling}</h3>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -825,7 +825,7 @@ return self.redis.zrange(key, 0, -1)
 </div>
 </div>
 </div>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Channel Size Thresholds:</strong></p>
 <table>
 <thead>
@@ -851,7 +851,7 @@ return self.redis.zrange(key, 0, -1)
 </table>
 </div>
 <h3 id="presence--typing-at-scale-presence-typing-scale">Presence &amp; Typing at Scale {#presence-typing-scale}</h3>
-<div style="background: #ffffff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Challenge</strong>: 20M DAU, each heartbeating every 30s = 666K presence updates/second</p>
 <p><strong>Solutions:</strong></p>
 <ol>
@@ -876,17 +876,17 @@ def get_channel_presence(channel_id):
 </div>
 <hr />
 <h2 id="interview-deep-dive-questions-interview-deep-dive-questions">Interview Deep Dive Questions {#interview-deep-dive-questions}</h2>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="1-why-websocket-over-long-polling-why-websocket">1. &quot;Why WebSocket over Long Polling?&quot; {#why-websocket}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>**What They're Probing**: Understanding of real-time protocol trade-offs and when complexity is justified.
 
 **Strong Answer**:
 
 WebSockets provide true bidirectional communication with significantly lower latency and overhead compared to alternatives. Here's the detailed breakdown:
 </code></pre>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">Step-by-Step Connection Comparison</div>
+<div>
+<div>Step-by-Step Connection Comparison</div>
 <p><strong>Long Polling Flow (when user sends message to #general):</strong></p>
 <ol>
 <li>Client sends HTTP POST with message</li>
@@ -905,8 +905,8 @@ WebSockets provide true bidirectional communication with significantly lower lat
 <li><strong>Total latency: 10-20ms typical, sub-100ms P99</strong></li>
 </ol>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Real Numbers from Production Systems</div>
+<div>
+<div>Real Numbers from Production Systems</div>
 <pre><code>  - **Slack's WebSocket**: Maintains ~10 million concurrent connections across their fleet
   - **Connection overhead**: Each WebSocket uses ~2-4KB of memory server-side vs ~10-20KB for HTTP keep-alive connections
   - **Message throughput**: Single WebSocket server can handle 50,000+ connections with proper tuning (epoll/kqueue)
@@ -914,8 +914,8 @@ WebSockets provide true bidirectional communication with significantly lower lat
   - **Reconnection**: On average, 2-5% of connections reconnect per minute due to network changes
 </code></pre>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">WebSocket Connection Handling Details</div>
+<div>
+<div>WebSocket Connection Handling Details</div>
 <p><strong>Initial Connection Flow:</strong></p>
 <ol>
 <li>Client initiates HTTP request with <code>Upgrade: websocket</code> header</li>
@@ -930,8 +930,8 @@ WebSockets provide true bidirectional communication with significantly lower lat
 - Each connection tracked with unique <code>connection_id</code><br />
 - On message send, gateway looks up all active connections for recipients</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px">Failure Scenarios & Handling</div>
+<div>
+<div>Failure Scenarios & Handling</div>
 <p><strong>Scenario 1: WebSocket server crashes</strong><br />
 - Client detects via missed heartbeat (no pong in 60 seconds)<br />
 - Client attempts reconnect with exponential backoff: 1s, 2s, 4s, 8s... max 30s<br />
@@ -956,15 +956,15 @@ WebSockets provide true bidirectional communication with significantly lower lat
 </code></pre>
 </div>
 <h3 id="2-how-do-you-handle-message-ordering-across-distributed-servers-message-ordering-question">2. &quot;How do you handle message ordering across distributed servers?&quot; {#message-ordering-question}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>**What They're Probing**: Distributed systems fundamentals - can you reason about consistency?
 
 **Strong Answer**:
 
 Message ordering in a distributed chat system is solved through careful timestamp generation and channel-level partitioning. Here's how Slack approaches this:
 </code></pre>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">Slack Timestamp Format Deep Dive</div>
+<div>
+<div>Slack Timestamp Format Deep Dive</div>
 <p><strong>Format</strong>: <code>{unix_seconds}.{microseconds}</code> e.g., <code>1705619234.847293</code></p>
 <p><strong>Why this format works:</strong><br />
 - <strong>Lexicographically sortable</strong>: String comparison gives correct chronological order<br />
@@ -981,8 +981,8 @@ Message ordering in a distributed chat system is solved through careful timestam
 </ol>
 <p><strong>Collision probability</strong>: At 1000 messages/second in a single channel, ~0.1% chance of same-microsecond collision. Sequence suffix handles this cleanly.</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Channel-Level Ordering Guarantees</div>
+<div>
+<div>Channel-Level Ordering Guarantees</div>
 <p><strong>Key insight</strong>: We only need ordering WITHIN a channel, not globally.</p>
 <p><strong>Implementation:</strong></p>
 <ol>
@@ -995,8 +995,8 @@ Message ordering in a distributed chat system is solved through careful timestam
 <code>User A sends &quot;Hello&quot; at t=100.001 -&gt; Kafka partition 7 User B sends &quot;Hi&quot; at t=100.002 -&gt; Kafka partition 7 User C sends &quot;Hey&quot; at t=100.001 -&gt; Kafka partition 7 (same microsecond!)</code></p>
 <p>Consumer processes in order: Hello, Hi, Hey (C's message gets ts=100.001.1)</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Real Scenario: Message Ordering Edge Cases</div>
+<div>
+<div>Real Scenario: Message Ordering Edge Cases</div>
 <p><strong>Scenario: User sends 2 messages rapidly</strong></p>
 <ol>
 <li>User types &quot;Hello&quot; and hits enter at t=100.001</li>
@@ -1014,8 +1014,8 @@ Message ordering in a distributed chat system is solved through careful timestam
 - Server can reorder within small window (100ms) before committing<br />
 - Trade-off: Adds complexity but preserves user intent</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px">Failure Scenarios</div>
+<div>
+<div>Failure Scenarios</div>
 <p><strong>Scenario 1: Message service crashes mid-processing</strong><br />
 - Kafka retains message (hasn't been acknowledged)<br />
 - New service instance picks up from last committed offset<br />
@@ -1038,15 +1038,15 @@ Message ordering in a distributed chat system is solved through careful timestam
 </code></pre>
 </div>
 <h3 id="3-why-cell-architecture-for-multi-tenancy-cell-architecture-question">3. &quot;Why cell architecture for multi-tenancy?&quot; {#cell-architecture-question}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>**What They're Probing**: Do you understand isolation, blast radius, and operational complexity trade-offs?
 
 **Strong Answer**:
 
 Cell architecture is Slack's approach to achieving fault isolation and operational flexibility at massive scale. Let me break down how it works and when you actually need it.
 </code></pre>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">What is a Cell?</div>
+<div>
+<div>What is a Cell?</div>
 <p>A &quot;cell&quot; is a complete, independent deployment of all services needed to run workspaces:</p>
 <p><strong>Cell-1 contains:</strong><br />
 - PostgreSQL cluster (primary + 2 replicas)<br />
@@ -1058,8 +1058,8 @@ Cell architecture is Slack's approach to achieving fault isolation and operation
 <p><strong>Each cell serves ~100,000 workspaces completely independently.</strong></p>
 <p>When you join Acme Corp's Slack workspace, your requests go to Cell-7 (for example). Another company's workspace might be on Cell-12. You never interact.</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Real Scenario: Why Cells Save You</div>
+<div>
+<div>Real Scenario: Why Cells Save You</div>
 <p><strong>Scenario: Database corruption in Cell-3</strong></p>
 <p><strong>Without cells (shared database):</strong><br />
 - All 750,000 workspaces affected<br />
@@ -1073,8 +1073,8 @@ Cell architecture is Slack's approach to achieving fault isolation and operation
 - Impact: &quot;Some users experienced issues&quot; - manageable PR</p>
 <p><strong>Real numbers</strong>: If Slack's availability target is 99.99% (52 minutes downtime/year), cells let them have a 4-hour outage affecting 13% of users while still meeting SLA globally.</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Cell Benefits Beyond Fault Isolation</div>
+<div>
+<div>Cell Benefits Beyond Fault Isolation</div>
 <p><strong>1. Compliance Isolation</strong><br />
 - EU workspaces: Cell-EU-1, Cell-EU-2 (data stays in Frankfurt)<br />
 - US Government: Cell-GOV-1 with FedRAMP compliance<br />
@@ -1094,8 +1094,8 @@ Cell architecture is Slack's approach to achieving fault isolation and operation
 - If issues: other cells unaffected<br />
 - Spread upgrades across cells over 2 weeks</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px">The Complexity Cost</div>
+<div>
+<div>The Complexity Cost</div>
 <p><strong>What you're signing up for with cells:</strong></p>
 <ol>
 <li><strong>N copies of everything</strong>: 10 cells = 10 PostgreSQL clusters to manage</li>
@@ -1109,8 +1109,8 @@ Cell architecture is Slack's approach to achieving fault isolation and operation
 - 10 cells: Need 3-5 SREs dedicated to infrastructure<br />
 - Cost: ~$500K-1M/year in additional engineering</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 12px">When You DON'T Need Cells</div>
+<div>
+<div>When You DON'T Need Cells</div>
 <p><strong>Simpler alternatives that scale further than you'd think:</strong></p>
 <table>
 <thead>
@@ -1156,15 +1156,15 @@ Cell architecture is Slack's approach to achieving fault isolation and operation
 </code></pre>
 </div>
 <h3 id="4-how-would-you-handle-a-channel-with-50000-members-large-channel-question">4. &quot;How would you handle a channel with 50,000 members?&quot; {#large-channel-question}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>**What They're Probing**: Fanout problem understanding and creative solutions.
 
 **Strong Answer**:
 
 Large channels represent one of the hardest problems in chat systems - the fanout problem. Here's how to think about it systematically:
 </code></pre>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">The Math Problem</div>
+<div>
+<div>The Math Problem</div>
 <p><strong>Scenario: CEO posts &quot;Happy Friday!&quot; to #all-hands (50,000 members)</strong></p>
 <p><strong>Naive approach:</strong><br />
 - 50,000 WebSocket messages to send<br />
@@ -1174,8 +1174,8 @@ Large channels represent one of the hardest problems in chat systems - the fanou
 - Plus: 50,000 database reads to check &quot;is user online?&quot;</p>
 <p><strong>This doesn't scale.</strong> At Slack's size with channels like #random in large companies, you'd melt servers.</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Solution 1: Server-Side Batching (What Slack Does)</div>
+<div>
+<div>Solution 1: Server-Side Batching (What Slack Does)</div>
 <p><strong>Key insight</strong>: Users connect to WebSocket servers. Batch by server, not by user.</p>
 <p><strong>Flow when CEO posts to #all-hands:</strong></p>
 <ol>
@@ -1214,8 +1214,8 @@ Large channels represent one of the hardest problems in chat systems - the fanou
   ```
 </code></pre>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Solution 2: Lazy Delivery</div>
+<div>
+<div>Solution 2: Lazy Delivery</div>
 <p><strong>Key insight</strong>: Only 10-20% of members are online at any time.</p>
 <p><strong>Implementation:</strong></p>
 <ol>
@@ -1232,8 +1232,8 @@ Large channels represent one of the hardest problems in chat systems - the fanou
 - Pre-fetch on app backgrounding<br />
 - Push notification triggers background sync on mobile</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 12px">Solution 3: Tiered Channel Behavior</div>
+<div>
+<div>Solution 3: Tiered Channel Behavior</div>
 <p><strong>Slack's actual limits and behaviors:</strong></p>
 <table>
 <thead>
@@ -1263,8 +1263,8 @@ Large channels represent one of the hardest problems in chat systems - the fanou
 - Read receipts at scale are meaningless anyway<br />
 - Restricting who can post reduces message volume dramatically</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px">Failure Scenarios</div>
+<div>
+<div>Failure Scenarios</div>
 <p><strong>Scenario: WebSocket server handling 5,000 channel members crashes</strong></p>
 <ol>
 <li>Those 5,000 users disconnect, attempt reconnect</li>
@@ -1290,15 +1290,15 @@ Large channels represent one of the hardest problems in chat systems - the fanou
 </code></pre>
 </div>
 <h3 id="5-how-do-you-ensure-message-delivery-when-a-user-is-temporarily-offline-offline-delivery-question">5. &quot;How do you ensure message delivery when a user is temporarily offline?&quot; {#offline-delivery-question}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>**What They're Probing**: At-least-once delivery, sync protocols, and state reconciliation.
 
 **Strong Answer**:
 
 Offline message handling requires distinguishing between &quot;guaranteed message persistence&quot; and &quot;real-time delivery.&quot; Here's the comprehensive approach:
 </code></pre>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">The Two Guarantees</div>
+<div>
+<div>The Two Guarantees</div>
 <p><strong>Guarantee 1: Message Persistence (Strong)</strong><br />
 - Every message is written to PostgreSQL before sender gets &quot;sent&quot; confirmation<br />
 - Database has synchronous replication to standby<br />
@@ -1310,8 +1310,8 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 - No retry queue for real-time events<br />
 - Client responsible for catching up</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Sync Protocol: How Catch-Up Works</div>
+<div>
+<div>Sync Protocol: How Catch-Up Works</div>
 <p><strong>When user reconnects to WebSocket:</strong></p>
 <pre><code>  ```python
   # Client sends on reconnect
@@ -1350,8 +1350,8 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 <li>Client shows &quot;Loading...&quot; spinner per channel during sync</li>
 </ol>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Unread Count Management</div>
+<div>
+<div>Unread Count Management</div>
 <p><strong>Challenge</strong>: Computing &quot;47 unread messages&quot; requires counting DB rows - expensive at scale.</p>
 <p><strong>Solution: Maintained counter in Redis</strong></p>
 <pre><code>  ```python
@@ -1380,8 +1380,8 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 - 50,000 member channel: ~5 seconds to update all counters (pipelined)<br />
 - User with 500 channels: Fetch all unreads in ~2ms</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 12px">Mobile Push Notifications</div>
+<div>
+<div>Mobile Push Notifications</div>
 <p><strong>Flow when user is completely offline (app killed):</strong></p>
 <ol>
 <li>Message posted mentioning @john</li>
@@ -1405,8 +1405,8 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 - Messages still persisted, delivered when app opens<br />
 - Exception: &quot;@channel&quot; in emergency channels always push</p>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px">Failure Scenarios</div>
+<div>
+<div>Failure Scenarios</div>
 <p><strong>Scenario 1: User offline for 7 days, then reconnects</strong><br />
 - 500 channels, potentially 50,000 messages<br />
 - Can't sync all at once (timeout, memory)<br />
@@ -1436,7 +1436,7 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </div>
 <hr />
 <h2 id="why-this-technology-why-this-technology">Why This Technology? {#why-this-technology}</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="decision-matrix-decision-matrix">Decision Matrix {#decision-matrix}</h3>
 <table>
 <thead>
@@ -1493,64 +1493,64 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </tbody>
 </table>
 <h3 id="key-technology-trade-offs-key-technology-tradeoffs">Key Technology Trade-offs {#key-technology-tradeoffs}</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 16px 0">
-<h4 style="color: #58a6ff; margin: 0 0 20px 0; text-align: center">WebSocket Gateway: Custom vs Managed (AWS API Gateway)</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: #f1f5f9; border-radius: 12px; padding: 16px">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 12px">Managed (API Gateway WebSocket)</div>
-<div style="color: #16a34a; font-size: 12px; margin-bottom: 4px">+ No infrastructure to manage</div>
-<div style="color: #16a34a; font-size: 12px; margin-bottom: 4px">+ Auto-scaling built in</div>
-<div style="color: #f85149; font-size: 12px; margin-bottom: 4px">- $1.00 per million connection-minutes</div>
-<div style="color: #f85149; font-size: 12px; margin-bottom: 4px">- 10M concurrent = ~$300K/month</div>
-<div style="color: #f85149; font-size: 12px">- Limited customization</div>
+<div>
+<h4>WebSocket Gateway: Custom vs Managed (AWS API Gateway)</h4>
+<div>
+<div>
+<div>Managed (API Gateway WebSocket)</div>
+<div>+ No infrastructure to manage</div>
+<div>+ Auto-scaling built in</div>
+<div>- $1.00 per million connection-minutes</div>
+<div>- 10M concurrent = ~$300K/month</div>
+<div>- Limited customization</div>
 </div>
-<div style="background: #f1f5f9; border-radius: 12px; padding: 16px">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 12px">Custom (like Slack)</div>
-<div style="color: #16a34a; font-size: 12px; margin-bottom: 4px">+ Full protocol control</div>
-<div style="color: #16a34a; font-size: 12px; margin-bottom: 4px">+ ~$50K/month for 10M connections</div>
-<div style="color: #16a34a; font-size: 12px; margin-bottom: 4px">+ Custom batching, compression</div>
-<div style="color: #f85149; font-size: 12px; margin-bottom: 4px">- Engineering cost to build</div>
-<div style="color: #f85149; font-size: 12px">- Need deep expertise</div>
+<div>
+<div>Custom (like Slack)</div>
+<div>+ Full protocol control</div>
+<div>+ ~$50K/month for 10M connections</div>
+<div>+ Custom batching, compression</div>
+<div>- Engineering cost to build</div>
+<div>- Need deep expertise</div>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center">
-<span style="color: #58a6ff; font-weight: bold">Decision Point:</span> <span style="color: #475569">Custom makes sense at > 100K concurrent connections</span>
+<div>
+<span>Decision Point:</span> <span>Custom makes sense at> 100K concurrent connections</span>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="when-simpler-solutions-work-when-simpler-solutions-work">When Simpler Solutions Work {#when-simpler-solutions-work}</h2>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="the-100month-chat-app-simple-chat-app">The $100/month Chat App {#simple-chat-app}</h3>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>Scenario</strong>: Startup building team chat for &lt; 1000 concurrent users</p>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px">
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">Architecture</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8">
+<div>
+<div>
+<div>Architecture</div>
+<div>
 <div>- Single Node.js + Socket.io</div>
 <div>- PostgreSQL on RDS ($50/mo)</div>
 <div>- Redis for pub/sub ($25/mo)</div>
 <div>- S3 for files ($10/mo)</div>
 <div>- EC2 t3.medium ($30/mo)</div>
 </div>
-<div style="color: #16a34a; font-weight: bold; margin-top: 12px">Total: ~$115/month</div>
+<div>Total: ~$115/month</div>
 </div>
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">This Handles</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8">
+<div>
+<div>This Handles</div>
+<div>
 <div>- 1000 concurrent WebSockets</div>
 <div>- 100K messages/day</div>
 <div>- Basic presence/typing</div>
 <div>- File uploads</div>
 </div>
-<div style="color: #f85149; font-weight: bold; margin-top: 12px; font-size: 12px">You do NOT need: Kafka, Elasticsearch, Cell architecture, Custom gateway, Microservices</div>
+<div>You do NOT need: Kafka, Elasticsearch, Cell architecture, Custom gateway, Microservices</div>
 </div>
 </div>
 </div>
 <h3 id="when-firebasepusher-is-enough-firebase-pusher">When Firebase/Pusher is Enough {#firebase-pusher}</h3>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1616,47 +1616,47 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 - Live updates without WebSocket complexity</p>
 </div>
 <h3 id="when-you-dont-need-cell-architecture-no-cell-architecture">When You Don't Need Cell Architecture {#no-cell-architecture}</h3>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div style="background: #f8fafc;border-radius: 0 8px 8px 0; padding: 12px 16px">
-<div style="color: #238636; font-weight: bold; font-size: 13px">Single-tenant database (workspace_id column)</div>
-<div style="color: #475569; font-size: 12px; margin-top: 4px">Works until: Individual workspace needs isolation, DB > 5TB, or 10K+ workspaces</div>
+<div>
+<div>
+<div>
+<div>Single-tenant database (workspace_id column)</div>
+<div>Works until: Individual workspace needs isolation, DB> 5TB, or 10K+ workspaces</div>
 </div>
-<div style="background: #f8fafc;border-radius: 0 8px 8px 0; padding: 12px 16px">
-<div style="color: #1f6feb; font-weight: bold; font-size: 13px">Schema-per-tenant (Postgres schemas)</div>
-<div style="color: #475569; font-size: 12px; margin-top: 4px">Works until: 100+ schemas (migrations painful), connection pooling complex</div>
+<div>
+<div>Schema-per-tenant (Postgres schemas)</div>
+<div>Works until: 100+ schemas (migrations painful), connection pooling complex</div>
 </div>
-<div style="background: #f8fafc;border-radius: 0 8px 8px 0; padding: 12px 16px">
-<div style="color: #a371f7; font-weight: bold; font-size: 13px">Cell architecture needed when</div>
-<div style="color: #475569; font-size: 12px; margin-top: 4px">Fault isolation critical (enterprise SLA), regulatory requirements (EU vs US), 100K+ tenants</div>
+<div>
+<div>Cell architecture needed when</div>
+<div>Fault isolation critical (enterprise SLA), regulatory requirements (EU vs US), 100K+ tenants</div>
 </div>
 </div>
 </div>
 <h3 id="discords-surprisingly-simple-architecture-discord-architecture">Discord's Surprisingly Simple Architecture {#discord-architecture}</h3>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
+<div>
 <blockquote>
 <p>&quot;Discord uses a single process per guild (server). Each guild runs on one machine. For huge guilds (500K+ members), they just use a beefier machine.&quot;</p>
 </blockquote>
 <p><strong>Key Insight</strong>: Sharding by organizational unit (guild/workspace) is simpler than you think.</p>
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px; margin-top: 16px">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 12px">Discord's approach:</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8">
+<div>
+<div>Discord's approach:</div>
+<div>
 <div>- Guild ID determines which process handles it</div>
 <div>- No complex distributed transactions within a guild</div>
 <div>- Cross-guild features are eventually consistent</div>
 <div>- Scaling = add more machines, assign new guilds to them</div>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-top: 12px">
-<span style="color: #f0883e; font-weight: bold">For your design:</span> <span style="color: #475569; font-size: 13px">Consider whether workspace-per-process could simplify your architecture before jumping to distributed everything.</span>
+<div>
+<span>For your design:</span> <span>Consider whether workspace-per-process could simplify your architecture before jumping to distributed everything.</span>
 </div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="trade-off-analysis--mitigation-trade-off-analysis-mitigation">Trade-off Analysis &amp; Mitigation {#trade-off-analysis-mitigation}</h2>
-<div style="background: linear-gradient(135deg, #f0883e 0%, #f9826c 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="critical-trade-offs-critical-tradeoffs">Critical Trade-offs {#critical-tradeoffs}</h3>
 <pre><code>| Trade-off | Option A | Option B | Mitigation |
 |-----------|----------|----------|------------|
@@ -1666,29 +1666,29 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 | **Features vs Complexity** | Full Slack clone | MVP subset | Ship DMs + channels first, add threads/reactions later |
 </code></pre>
 <h3 id="detailed-trade-off-real-time-consistency-realtime-consistency-tradeoff">Detailed Trade-off: Real-time Consistency {#realtime-consistency-tradeoff}</h3>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 16px">Problem: User A sends message, User B should see it immediately</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px">
-<div style="background: #f8fafc;border-radius: 12px; padding: 16px">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px">Option 1: Synchronous</div>
-<div style="color: #475569; font-size: 11px; margin-bottom: 8px">Send -> Store -> Publish -> Wait for ACKs -> Respond</div>
-<div style="color: #16a34a; font-size: 11px; margin-bottom: 2px">+ Guaranteed delivery before response</div>
-<div style="color: #16a34a; font-size: 11px; margin-bottom: 8px">+ Simpler mental model</div>
-<div style="color: #f85149; font-size: 11px; margin-bottom: 2px">- Slow (P99 = slowest recipient)</div>
-<div style="color: #f85149; font-size: 11px">- Doesn't scale</div>
+<div>
+<div>Problem: User A sends message, User B should see it immediately</div>
+<div>
+<div>
+<div>Option 1: Synchronous</div>
+<div>Send -> Store -> Publish -> Wait for ACKs -> Respond</div>
+<div>+ Guaranteed delivery before response</div>
+<div>+ Simpler mental model</div>
+<div>- Slow (P99 = slowest recipient)</div>
+<div>- Doesn't scale</div>
 </div>
-<div style="background: #f8fafc;border-radius: 12px; padding: 16px">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Option 2: Asynchronous</div>
-<div style="color: #475569; font-size: 11px; margin-bottom: 8px">Send -> Store -> Respond -> (async) Publish</div>
-<div style="color: #16a34a; font-size: 11px; margin-bottom: 2px">+ Fast response to sender</div>
-<div style="color: #16a34a; font-size: 11px; margin-bottom: 8px">+ Scales well</div>
-<div style="color: #f85149; font-size: 11px; margin-bottom: 2px">- Recipient might not receive immediately</div>
-<div style="color: #f85149; font-size: 11px">- Need separate delivery tracking</div>
+<div>
+<div>Option 2: Asynchronous</div>
+<div>Send -> Store -> Respond -> (async) Publish</div>
+<div>+ Fast response to sender</div>
+<div>+ Scales well</div>
+<div>- Recipient might not receive immediately</div>
+<div>- Need separate delivery tracking</div>
 </div>
 </div>
-<div style="background: #f8fafc;border-radius: 12px; padding: 16px">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 12px">Slack's Approach: Optimistic + Verification</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8">
+<div>
+<div>Slack's Approach: Optimistic + Verification</div>
+<div>
 <div>1. Sender gets immediate "sent" confirmation</div>
 <div>2. Message stored durably (source of truth)</div>
 <div>3. Real-time delivery is best-effort</div>
@@ -1698,7 +1698,7 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </div>
 </div>
 <h3 id="mitigating-websocket-complexity-websocket-complexity">Mitigating WebSocket Complexity {#websocket-complexity}</h3>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1735,34 +1735,34 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </table>
 </div>
 <h3 id="cost-optimization-at-scale-cost-optimization">Cost Optimization at Scale {#cost-optimization}</h3>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 20px; margin: 16px 0">
-<div style="color: #58a6ff; font-weight: bold; margin-bottom: 16px">10M Daily Active Users - Cost Breakdown & Optimization</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px">
-<div style="color: #f85149; font-weight: bold; margin-bottom: 12px">Before Optimization</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8">
+<div>
+<div>10M Daily Active Users - Cost Breakdown & Optimization</div>
+<div>
+<div>
+<div>Before Optimization</div>
+<div>
 <div>Compute: $150K/mo</div>
 <div>Database: $80K/mo</div>
 <div>Bandwidth: $50K/mo</div>
 <div>Search: $40K/mo</div>
 </div>
-<div style="color: #f85149; font-weight: bold; margin-top: 12px">Total: $320K/month</div>
+<div>Total: $320K/month</div>
 </div>
-<div style="background: #f8fafc; border-radius: 10px; padding: 16px">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">After Optimization</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.8">
+<div>
+<div>After Optimization</div>
+<div>
 <div>Compute: $80K/mo (auto-scaling, spot)</div>
 <div>Database: $45K/mo (hot/cold tiering)</div>
 <div>Bandwidth: $25K/mo (compression, CDN)</div>
 <div>Search: $20K/mo (index last 90 days)</div>
 </div>
-<div style="color: #16a34a; font-weight: bold; margin-top: 12px">Total: $170K/month</div>
+<div>Total: $170K/month</div>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-top: 16px">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 8px">Key Optimizations:</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.6">
-  1. Message archival: Move messages > 90 days to cold storage |
+<div>
+<div>Key Optimizations:</div>
+<div>
+  1. Message archival: Move messages> 90 days to cold storage |
   2. Spot instances: Use for stateless workers |
   3. Reserved instances: For predictable base load |
   4. Connection multiplexing: Multiple channels per WebSocket |
@@ -1774,7 +1774,7 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </div>
 <hr />
 <h2 id="interview-tips-interview-tips">Interview Tips {#interview-tips}</h2>
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="key-discussion-points-key-discussion-points">Key Discussion Points {#key-discussion-points}</h3>
 <ol>
 <li><strong>Real-time delivery</strong>: WebSocket + Pub/Sub pattern</li>
@@ -1784,7 +1784,7 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 <li><strong>Multi-tenancy</strong>: Start simple, cell architecture at scale</li>
 </ol>
 <h3 id="what-makes-a-strong-answer-strong-answer">What Makes a Strong Answer {#strong-answer}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>**Demonstrate judgment, not just knowledge**:
 - &quot;At this scale, I would... but if we grow to X, we'd need to...&quot;
 - &quot;The trade-off here is... so I'd choose... because...&quot;
@@ -1797,7 +1797,7 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </code></pre>
 </div>
 <h3 id="red-flags-what-not-to-say-red-flags">Red Flags (What NOT to Say) {#red-flags}</h3>
-<div style="background: linear-gradient(135deg, #d73a49 0%, #cb2431 100%); border-radius: 8px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>| Red Flag | Why It's Bad | Better Alternative |
 |----------|--------------|-------------------|
 | &quot;We need microservices from day one&quot; | Over-engineering; shows lack of pragmatism | &quot;Start monolith, extract services as needed&quot; |
@@ -1809,7 +1809,7 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </code></pre>
 </div>
 <h3 id="impressive-statements-what-to-say-impressive-statements">Impressive Statements (What TO Say) {#impressive-statements}</h3>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 8px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>| Statement | Why It Impresses |
 |-----------|------------------|
 | &quot;For &lt; 1000 concurrent users, Socket.io on a single server handles this fine&quot; | Shows pragmatism and scale awareness |
@@ -1822,7 +1822,7 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </code></pre>
 </div>
 <h3 id="common-follow-up-questions-common-followup-questions">Common Follow-up Questions {#common-followup-questions}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
+<div>
 <pre><code>| Question | Key Points to Cover |
 |----------|-------------------|
 | &quot;How do you handle message editing/deletion?&quot; | Soft delete flag, propagate update event, handle in-flight messages |
@@ -1835,36 +1835,36 @@ Offline message handling requires distinguishing between &quot;guaranteed messag
 </code></pre>
 </div>
 <h3 id="interview-framework-the-4-phase-approach-interview-framework">Interview Framework: The 4-Phase Approach {#interview-framework}</h3>
-<div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: #f8fafc;border-radius: 0 8px 8px 0; padding: 16px">
-<div style="color: #238636; font-weight: bold; margin-bottom: 8px">Phase 1: Clarify & Scope (2-3 min)</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.6">
+<div>
+<div>
+<div>
+<div>Phase 1: Clarify & Scope (2-3 min)</div>
+<div>
           - "Is this B2B like Slack or B2C like Discord?"<br>
             - "What's our scale target? 10K or 10M users?"<br>
               - "Any specific features to focus on?"<br>
                 - "Real-time critical or slight delays OK?"
 </div>
 </div>
-<div style="background: #f8fafc;border-radius: 0 8px 8px 0; padding: 16px">
-<div style="color: #1f6feb; font-weight: bold; margin-bottom: 8px">Phase 2: High-Level Design (10 min)</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.6">
+<div>
+<div>Phase 2: High-Level Design (10 min)</div>
+<div>
                 - Draw box diagram (clients, gateway, services, data)<br>
                   - Identify core message flow<br>
                     - Call out hard parts: "The challenge here is..."
 </div>
 </div>
-<div style="background: #f8fafc;border-radius: 0 8px 8px 0; padding: 16px">
-<div style="color: #a371f7; font-weight: bold; margin-bottom: 8px">Phase 3: Deep Dive (15-20 min)</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.6">
+<div>
+<div>Phase 3: Deep Dive (15-20 min)</div>
+<div>
                     - Pick 2-3 components to detail<br>
                       - Discuss trade-offs explicitly<br>
                         - Show evolution: "At 10K... at 1M users..."
 </div>
 </div>
-<div style="background: #f8fafc;border-radius: 0 8px 8px 0; padding: 16px">
-<div style="color: #f0883e; font-weight: bold; margin-bottom: 8px">Phase 4: Extensions & Edge Cases (5-10 min)</div>
-<div style="color: #475569; font-size: 12px; line-height: 1.6">
+<div>
+<div>Phase 4: Extensions & Edge Cases (5-10 min)</div>
+<div>
                         - How does this handle failure?<br>
                           - What about mobile/offline?<br>
                             - How would we add feature X?

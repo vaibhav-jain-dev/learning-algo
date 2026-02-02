@@ -1,5 +1,5 @@
 <h1 id="design-airbnb">Design Airbnb</h1>
-<nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<nav class="toc">
 <h2 id="table-of-contents">Table of Contents</h2>
 <ul>
 <li><a href="#problem-statement">Problem Statement</a></li>
@@ -25,7 +25,7 @@
 <hr />
 <h2 id="problem-statement-problem-statement">Problem Statement {#problem-statement}</h2>
 <p>Design a vacation rental marketplace that connects hosts with guests for property bookings.</p>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="core-requirements-core-requirements">Core Requirements {#core-requirements}</h3>
 <ul>
 <li><strong>Listings</strong>: Property creation, photos, amenities, pricing</li>
@@ -40,45 +40,45 @@
 <h2 id="high-level-architecture-high-level-architecture">High-Level Architecture {#high-level-architecture}</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0">AIRBNB SYSTEM ARCHITECTURE</h3>
+<h3>AIRBNB SYSTEM ARCHITECTURE</h3>
 <!-- Clients -->
-<div class="flow-box success" style="padding: 16px 32px">
+<div class="flow-box success">
 <div class="flow-box-title">CLIENTS</div>
 <div class="flow-box-subtitle">Web | iOS | Android</div>
 </div>
 <!-- Arrow -->
 <div class="flow-arrow">&#8595;</div>
 <!-- API Gateway -->
-<div class="flow-box primary" style="width: 80%; max-width: 500px; padding: 16px 48px">
+<div class="flow-box primary">
 <div class="flow-box-title">API GATEWAY</div>
 <div class="flow-box-subtitle">Rate Limiting | Auth | Routing</div>
 </div>
 <!-- Arrow -->
 <div class="flow-arrow">&#8595;</div>
 <!-- Services Row -->
-<div class="flow-row" style="width: 100%">
+<div class="flow-row">
 <!-- Listing Service -->
-<div class="flow-box orange" style="flex: 1; min-width: 180px; max-width: 220px">
-<div class="flow-box-title" style="font-size: 13px">LISTING SERVICE</div>
-<div style="color: inherit; font-size: 11px; line-height: 1.6; text-align: left; opacity: 0.85">
+<div class="flow-box orange">
+<div class="flow-box-title">LISTING SERVICE</div>
+<div>
 &#8226; CRUD Operations<br/>
 &#8226; Photo Management<br/>
 &#8226; Amenities & Pricing
 </div>
 </div>
 <!-- Search Service -->
-<div class="flow-box info" style="flex: 1; min-width: 180px; max-width: 220px">
-<div class="flow-box-title" style="font-size: 13px">SEARCH SERVICE</div>
-<div style="color: inherit; font-size: 11px; line-height: 1.6; text-align: left; opacity: 0.85">
+<div class="flow-box info">
+<div class="flow-box-title">SEARCH SERVICE</div>
+<div>
 &#8226; Geo-spatial Queries<br/>
 &#8226; Faceted Filters<br/>
 &#8226; ML-based Rankings
 </div>
 </div>
 <!-- Booking Service -->
-<div class="flow-box purple" style="flex: 1; min-width: 180px; max-width: 220px">
-<div class="flow-box-title" style="font-size: 13px">BOOKING SERVICE</div>
-<div style="color: inherit; font-size: 11px; line-height: 1.6; text-align: left; opacity: 0.85">
+<div class="flow-box purple">
+<div class="flow-box-title">BOOKING SERVICE</div>
+<div>
 &#8226; Reservations<br/>
 &#8226; Availability Checks<br/>
 &#8226; Payment Processing
@@ -86,15 +86,15 @@
 </div>
 </div>
 <!-- Pricing Service -->
-<div class="flow-box success" style="width: 200px">
-<div class="flow-box-title" style="font-size: 13px">PRICING SERVICE</div>
+<div class="flow-box success">
+<div class="flow-box-title">PRICING SERVICE</div>
 <div class="flow-box-subtitle">Dynamic | Seasonal | Demand-based</div>
 </div>
 <!-- Arrow -->
 <div class="flow-arrow">&#8595;</div>
 <!-- Kafka -->
-<div class="flow-box error" style="padding: 14px 40px">
-<div class="flow-box-title" style="font-size: 13px">KAFKA EVENT BUS</div>
+<div class="flow-box error">
+<div class="flow-box-title">KAFKA EVENT BUS</div>
 <div class="flow-box-subtitle">Async Communication | Event Sourcing</div>
 </div>
 </div>
@@ -103,24 +103,24 @@
 <h2 id="search-system-search-system">Search System {#search-system}</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #f97316; text-align: center; margin: 0 0 24px 0">LISTING SEARCH PIPELINE</h4>
+<h4>LISTING SEARCH PIPELINE</h4>
 <!-- Search Query Input -->
-<div class="flow-box primary" style="width: 100%; max-width: 500px">
+<div class="flow-box primary">
 <div class="flow-box-title">Search Query: "Paris, Dec 15-20, 2 guests"</div>
 </div>
 <!-- Pipeline Steps -->
-<div style="display: flex; flex-direction: column; gap: 12px; width: 100%">
+<div>
 <!-- Step 1: Geo Filter -->
 <div class="data-card data-card-accent orange">
 <div class="data-card-content">
 <div class="data-card-header">
-<div class="data-card-title" style="color: #f97316">STEP 1: GEO FILTER</div>
+<div class="data-card-title">STEP 1: GEO FILTER</div>
 <span class="diagram-badge orange">50,000 listings</span>
 </div>
 <div class="data-card-description">
 &#8226; Parse "Paris" to bounding box / polygon coordinates<br/>
 &#8226; Filter listings within geographic area using spatial index<br/>
-&#8226; Use Elasticsearch <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #3b82f6">geo_shape</code> query
+&#8226; Use Elasticsearch <code>geo_shape</code> query
 </div>
 </div>
 </div>
@@ -130,7 +130,7 @@
 <div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-header">
-<div class="data-card-title" style="color: #3b82f6">STEP 2: AVAILABILITY FILTER</div>
+<div class="data-card-title">STEP 2: AVAILABILITY FILTER</div>
 <span class="diagram-badge info">15,000 listings</span>
 </div>
 <div class="data-card-description">
@@ -146,11 +146,11 @@
 <div class="data-card data-card-accent purple">
 <div class="data-card-content">
 <div class="data-card-header">
-<div class="data-card-title" style="color: #8b5cf6">STEP 3: CAPACITY + FILTERS</div>
+<div class="data-card-title">STEP 3: CAPACITY + FILTERS</div>
 <span class="diagram-badge purple">5,000 listings</span>
 </div>
 <div class="data-card-description">
-&#8226; Filter: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #3b82f6">guests >= 2</code><br/>
+&#8226; Filter: <code>guests>= 2</code><br/>
 &#8226; Apply price range, property type, amenities filters<br/>
 &#8226; Apply Instant Book, Superhost, accessibility filters
 </div>
@@ -162,11 +162,11 @@
 <div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-header">
-<div class="data-card-title" style="color: #10b981">STEP 4: RANKING</div>
+<div class="data-card-title">STEP 4: RANKING</div>
 <span class="diagram-badge success">Top 100 ranked</span>
 </div>
 <div class="data-card-description">
-<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11px; color: #475569">
+<div>
 Ranking Score = w1 * quality_score<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w2 * review_score<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ w3 * response_rate<br/>
@@ -184,8 +184,8 @@ Ranking Score = w1 * quality_score<br/>
 <h2 id="scale-strategy-scale-strategy">Scale Strategy {#scale-strategy}</h2>
 <p>This section outlines how the architecture evolves from startup to Airbnb scale, with specific triggers for when to add complexity.</p>
 <h3 id="phase-1-starting-phase-phase-1-starting-phase">Phase 1: Starting Phase {#phase-1-starting-phase}</h3>
-<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h4 id="assumptions-phase1-assumptions">Assumptions {#phase1-assumptions}</h4>
 <ul>
 <li><strong>Listings</strong>: 1,000 - 50,000</li>
@@ -246,8 +246,8 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <hr />
 <h3 id="phase-2-medium-scale-phase-2-medium-scale">Phase 2: Medium Scale {#phase-2-medium-scale}</h3>
-<div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h4 id="assumptions-phase2-assumptions">Assumptions {#phase2-assumptions}</h4>
 <ul>
 <li><strong>Listings</strong>: 50,000 - 500,000</li>
@@ -257,89 +257,89 @@ Ranking Score = w1 * quality_score<br/>
 </ul>
 <h4 id="availability-calendar-availability-calendar">Availability Calendar {#availability-calendar}</h4>
 <div class="diagram-container">
-<div class="flow-diagram" style="align-items: stretch">
-<h4 style="color: #3b82f6; margin: 0 0 16px 0; text-align: center">Calendar Storage Strategy</h4>
+<div class="flow-diagram">
+<h4>Calendar Storage Strategy</h4>
 <!-- Option 1: Date-based rows -->
-<div style="margin-bottom: 24px; width: 100%">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 12px">Option 1: Date-based rows (Simple)</div>
-<div style="overflow-x: auto">
-<table style="width: 100%; border-collapse: collapse; font-size: 12px">
+<div>
+<div>Option 1: Date-based rows (Simple)</div>
+<div>
+<table>
 <thead>
-<tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%)">
-<th style="padding: 10px; color: #475569; text-align: left">listing_id</th>
-<th style="padding: 10px; color: #475569; text-align: left">date</th>
-<th style="padding: 10px; color: #475569; text-align: left">available</th>
-<th style="padding: 10px; color: #475569; text-align: left">price</th>
-<th style="padding: 10px; color: #475569; text-align: left">min_nights</th>
+<tr>
+<th>listing_id</th>
+<th>date</th>
+<th>available</th>
+<th>price</th>
+<th>min_nights</th>
 </tr>
 </thead>
 <tbody>
-<tr style="background: #f8fafc">
-<td style="padding: 10px; color: #64748b">L1</td>
-<td style="padding: 10px; color: #64748b">2024-12-15</td>
-<td style="padding: 10px; color: #ef4444">false</td>
-<td style="padding: 10px; color: #64748b">$150</td>
-<td style="padding: 10px; color: #64748b">2</td>
+<tr>
+<td>L1</td>
+<td>2024-12-15</td>
+<td>false</td>
+<td>$150</td>
+<td>2</td>
 </tr>
-<tr style="background: #ffffff">
-<td style="padding: 10px; color: #64748b">L1</td>
-<td style="padding: 10px; color: #64748b">2024-12-16</td>
-<td style="padding: 10px; color: #ef4444">false</td>
-<td style="padding: 10px; color: #64748b">$150</td>
-<td style="padding: 10px; color: #64748b">2</td>
+<tr>
+<td>L1</td>
+<td>2024-12-16</td>
+<td>false</td>
+<td>$150</td>
+<td>2</td>
 </tr>
-<tr style="background: #f8fafc">
-<td style="padding: 10px; color: #64748b">L1</td>
-<td style="padding: 10px; color: #64748b">2024-12-17</td>
-<td style="padding: 10px; color: #10b981">true</td>
-<td style="padding: 10px; color: #64748b">$175</td>
-<td style="padding: 10px; color: #64748b">2</td>
+<tr>
+<td>L1</td>
+<td>2024-12-17</td>
+<td>true</td>
+<td>$175</td>
+<td>2</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <!-- Option 2: Range-based -->
-<div style="margin-bottom: 24px; width: 100%">
-<div style="color: #10b981; font-weight: bold; font-size: 13px; margin-bottom: 12px">Option 2: Range-based (Better for queries)</div>
-<div style="overflow-x: auto">
-<table style="width: 100%; border-collapse: collapse; font-size: 12px">
+<div>
+<div>Option 2: Range-based (Better for queries)</div>
+<div>
+<table>
 <thead>
-<tr style="background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%)">
-<th style="padding: 10px; color: #475569; text-align: left">listing_id</th>
-<th style="padding: 10px; color: #475569; text-align: left">start_date</th>
-<th style="padding: 10px; color: #475569; text-align: left">end_date</th>
-<th style="padding: 10px; color: #475569; text-align: left">type</th>
-<th style="padding: 10px; color: #475569; text-align: left">booking_id</th>
+<tr>
+<th>listing_id</th>
+<th>start_date</th>
+<th>end_date</th>
+<th>type</th>
+<th>booking_id</th>
 </tr>
 </thead>
 <tbody>
-<tr style="background: #f8fafc">
-<td style="padding: 10px; color: #64748b">L1</td>
-<td style="padding: 10px; color: #64748b">2024-12-15</td>
-<td style="padding: 10px; color: #64748b">2024-12-17</td>
-<td style="padding: 10px; color: #ef4444">booked</td>
-<td style="padding: 10px; color: #3b82f6">B123</td>
+<tr>
+<td>L1</td>
+<td>2024-12-15</td>
+<td>2024-12-17</td>
+<td>booked</td>
+<td>B123</td>
 </tr>
-<tr style="background: #ffffff">
-<td style="padding: 10px; color: #64748b">L1</td>
-<td style="padding: 10px; color: #64748b">2024-12-20</td>
-<td style="padding: 10px; color: #64748b">2024-12-25</td>
-<td style="padding: 10px; color: #f97316">blocked</td>
-<td style="padding: 10px; color: #94a3b8">null</td>
+<tr>
+<td>L1</td>
+<td>2024-12-20</td>
+<td>2024-12-25</td>
+<td>blocked</td>
+<td>null</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <!-- Query Example -->
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; width: 100%">
-<div style="color: #8b5cf6; font-weight: bold; font-size: 12px; margin-bottom: 8px">Query: Available Dec 15-20?</div>
-<pre style="margin: 0; color: #475569; font-size: 11px; overflow-x: auto"><code>SELECT NOT EXISTS(
+<div>
+<div>Query: Available Dec 15-20?</div>
+<pre><code>SELECT NOT EXISTS(
   SELECT 1 FROM calendar_blocks
   WHERE listing_id = L1
   AND start_date < '2024-12-20'
-  AND end_date > '2024-12-15'
+  AND end_date> '2024-12-15'
 )</code></pre>
 </div>
 </div>
@@ -379,8 +379,8 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <hr />
 <h3 id="phase-3-airbnb-scale-phase-3-airbnb-scale">Phase 3: Airbnb Scale {#phase-3-airbnb-scale}</h3>
-<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h4 id="assumptions-phase3-assumptions">Assumptions {#phase3-assumptions}</h4>
 <ul>
 <li><strong>Listings</strong>: 7M+ active</li>
@@ -391,10 +391,10 @@ Ranking Score = w1 * quality_score<br/>
 <h4 id="booking-flow-at-scale-booking-flow-scale">Booking Flow at Scale {#booking-flow-scale}</h4>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #ef4444; text-align: center; margin: 0 0 20px 0">DOUBLE-BOOKING PREVENTION</h4>
-<div class="data-card data-card-accent error" style="width: 100%; max-width: 500px">
+<h4>DOUBLE-BOOKING PREVENTION</h4>
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #ef4444">Problem Statement</div>
+<div class="data-card-title">Problem Statement</div>
 <div class="data-card-description">Two guests try to book same listing for same dates simultaneously</div>
 </div>
 </div>
@@ -412,16 +412,16 @@ Ranking Score = w1 * quality_score<br/>
 <!-- Arrow -->
 <div class="flow-arrow">&#8595; &#8595;</div>
 <!-- Booking Service -->
-<div class="flow-box purple" style="width: 80%; max-width: 400px">
+<div class="flow-box purple">
 <div class="flow-box-title">BOOKING SERVICE</div>
 </div>
 <!-- Arrow -->
 <div class="flow-arrow">&#8595;</div>
 <!-- Redis Lock -->
-<div class="flow-box error" style="padding: 20px; width: 90%; max-width: 500px">
+<div class="flow-box error">
 <div class="flow-box-title">Distributed Lock (Redis)</div>
-<div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px; text-align: center; margin: 10px 0">
-<code style="color: #fef3c7; font-size: 11px">SETNX lock:listing:L1:2024-12-15-20</code>
+<div>
+<code>SETNX lock:listing:L1:2024-12-15-20</code>
 </div>
 <div class="flow-box-subtitle">First request wins, second waits or fails fast</div>
 </div>
@@ -429,9 +429,9 @@ Ranking Score = w1 * quality_score<br/>
 <div class="flow-arrow">&#8595;</div>
 <!-- Results -->
 <div class="flow-row">
-<div class="flow-box success" style="flex: 1; max-width: 200px">
-<div class="flow-box-title" style="font-size: 12px">Guest A - SUCCESS</div>
-<div style="font-size: 10px; line-height: 1.6; text-align: left; opacity: 0.9">
+<div class="flow-box success">
+<div class="flow-box-title">Guest A - SUCCESS</div>
+<div>
 &#10003; Lock acquired<br/>
 &#10003; Check availability<br/>
 &#10003; Create booking<br/>
@@ -439,9 +439,9 @@ Ranking Score = w1 * quality_score<br/>
 &#10003; Release lock
 </div>
 </div>
-<div class="flow-box neutral" style="flex: 1; max-width: 200px">
-<div class="flow-box-title" style="font-size: 12px; color: #ef4444">Guest B - DENIED</div>
-<div style="font-size: 10px; line-height: 1.6; text-align: left; opacity: 0.9">
+<div class="flow-box neutral">
+<div class="flow-box-title">Guest B - DENIED</div>
+<div>
 &#10007; Lock denied<br/>
 &#10007; Return: "Not available"<br/>
 &nbsp;&nbsp;&nbsp;or retry after TTL
@@ -453,31 +453,31 @@ Ranking Score = w1 * quality_score<br/>
 <h4 id="search-sharding-search-sharding">Search Sharding {#search-sharding}</h4>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #3b82f6; text-align: center; margin: 0 0 20px 0">GEO-BASED SEARCH SHARDING</h4>
-<div style="color: #64748b; font-size: 12px; text-align: center; margin-bottom: 20px">Elasticsearch Cluster per Region</div>
+<h4>GEO-BASED SEARCH SHARDING</h4>
+<div>Elasticsearch Cluster per Region</div>
 <!-- Regional Clusters -->
-<div class="flow-row" style="margin-bottom: 24px">
-<div class="flow-box info" style="min-width: 150px">
+<div class="flow-row">
+<div class="flow-box info">
 <div class="flow-box-title">US Cluster</div>
 <div class="flow-box-subtitle">US listings</div>
-<div style="font-weight: bold; margin-top: 4px">2M docs</div>
+<div>2M docs</div>
 </div>
-<div class="flow-box success" style="min-width: 150px">
+<div class="flow-box success">
 <div class="flow-box-title">EU Cluster</div>
 <div class="flow-box-subtitle">EU listings</div>
-<div style="font-weight: bold; margin-top: 4px">3M docs</div>
+<div>3M docs</div>
 </div>
-<div class="flow-box purple" style="min-width: 150px">
+<div class="flow-box purple">
 <div class="flow-box-title">APAC Cluster</div>
 <div class="flow-box-subtitle">APAC listings</div>
-<div style="font-weight: bold; margin-top: 4px">2M docs</div>
+<div>2M docs</div>
 </div>
 </div>
 <!-- Query Routing & Benefits -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; width: 100%">
+<div>
 <div class="data-card data-card-accent orange">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #f97316">Query Routing</div>
+<div class="data-card-title">Query Routing</div>
 <div class="data-card-description">
 &#8226; Parse search location from query<br/>
 &#8226; Route to appropriate regional cluster<br/>
@@ -487,7 +487,7 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <div class="data-card data-card-accent success">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #10b981">Benefits</div>
+<div class="data-card-title">Benefits</div>
 <div class="data-card-description">
 &#8226; Reduced index size per cluster<br/>
 &#8226; Lower latency for regional searches<br/>
@@ -502,12 +502,12 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <hr />
 <h2 id="edge-cases--failure-modes-edge-cases-failure-modes">Edge Cases &amp; Failure Modes {#edge-cases-failure-modes}</h2>
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="critical-edge-cases-critical-edge-cases">Critical Edge Cases {#critical-edge-cases}</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin: 20px 0">
+<div>
 <div class="data-card data-card-accent error">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #ef4444">Double-Booking Race Condition</div>
+<div class="data-card-title">Double-Booking Race Condition</div>
 <div class="data-card-description">
 <strong>Scenario:</strong> Two guests book same dates within milliseconds<br/>
 <strong>Solution:</strong> Distributed lock + database unique constraint + idempotency keys<br/>
@@ -517,7 +517,7 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <div class="data-card data-card-accent warning">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #f59e0b">Payment Failure Mid-Booking</div>
+<div class="data-card-title">Payment Failure Mid-Booking</div>
 <div class="data-card-description">
 <strong>Scenario:</strong> Calendar blocked but payment fails<br/>
 <strong>Solution:</strong> Saga pattern with compensation - unblock calendar on payment failure<br/>
@@ -527,7 +527,7 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <div class="data-card data-card-accent info">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #3b82f6">Stale Search Results</div>
+<div class="data-card-title">Stale Search Results</div>
 <div class="data-card-description">
 <strong>Scenario:</strong> Guest clicks listing that was just booked<br/>
 <strong>Solution:</strong> Real-time availability check on listing detail page<br/>
@@ -537,7 +537,7 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <div class="data-card data-card-accent purple">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #8b5cf6">Host Cancellation</div>
+<div class="data-card-title">Host Cancellation</div>
 <div class="data-card-description">
 <strong>Scenario:</strong> Host cancels confirmed booking<br/>
 <strong>Solution:</strong> Penalty system, automatic refund, rebooking assistance<br/>
@@ -548,7 +548,7 @@ Ranking Score = w1 * quality_score<br/>
 </div>
 <h3 id="failure-mode-handling-failure-mode-handling">Failure Mode Handling {#failure-mode-handling}</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="align-items: stretch">
+<div class="flow-diagram">
 <table>
 <thead>
 <tr>
@@ -712,18 +712,18 @@ Ranking Score = w1 * quality_score<br/>
 <h2 id="distributed-systems-considerations-distributed-systems-considerations">Distributed Systems Considerations {#distributed-systems-considerations}</h2>
 <div class="diagram-container">
 <h3 id="1-consistency-for-bookings-consistency-bookings">1. Consistency for Bookings {#consistency-bookings}</h3>
-<div class="flow-row" style="margin: 16px 0">
-<div class="flow-box success" style="flex: 1; min-width: 200px">
-<div class="flow-box-title" style="font-size: 12px">Strong Consistency Required</div>
-<div style="font-size: 11px; line-height: 1.7; text-align: left; opacity: 0.9">
+<div class="flow-row">
+<div class="flow-box success">
+<div class="flow-box-title">Strong Consistency Required</div>
+<div>
 &#8226; Availability checks<br/>
 &#8226; Booking creation<br/>
 &#8226; Payment processing
 </div>
 </div>
-<div class="flow-box neutral" style="flex: 1; min-width: 200px">
-<div class="flow-box-title" style="font-size: 12px">Eventual Consistency OK</div>
-<div style="font-size: 11px; line-height: 1.7; text-align: left; opacity: 0.9">
+<div class="flow-box neutral">
+<div class="flow-box-title">Eventual Consistency OK</div>
+<div>
 &#8226; Search results<br/>
 &#8226; Reviews display<br/>
 &#8226; Analytics data
@@ -770,7 +770,7 @@ class BookingService:
 </div>
 <hr />
 <h2 id="interview-deep-dive-questions-interview-deep-dive-questions">Interview Deep Dive Questions {#interview-deep-dive-questions}</h2>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="1-how-do-you-prevent-double-booking-question-double-booking">1. &quot;How do you prevent double-booking?&quot; {#question-double-booking}</h3>
 <p><strong>What They're Probing</strong>: Understanding of race conditions, distributed locking, and consistency guarantees in concurrent systems.</p>
 <p><strong>Strong Answer</strong>:</p>
@@ -1330,10 +1330,10 @@ For &lt; 10K listings, skip Kafka entirely. Direct database queries with proper 
 </tbody>
 </table>
 <h3 id="key-decision-drivers-key-decision-drivers">Key Decision Drivers {#key-decision-drivers}</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px">
+<div>
 <div class="data-card data-card-accent info">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #3b82f6">Elasticsearch over PostgreSQL Full-Text</div>
+<div class="data-card-title">Elasticsearch over PostgreSQL Full-Text</div>
 <div class="data-card-description">
 &#9679; Geo-spatial + text + filters combined: ES wins<br/>
 &#9679; Custom relevance scoring: ES has function_score<br/>
@@ -1345,7 +1345,7 @@ For &lt; 10K listings, skip Kafka entirely. Direct database queries with proper 
 </div>
 <div class="data-card data-card-accent error">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #ef4444">Redis for Locking over Database Locks</div>
+<div class="data-card-title">Redis for Locking over Database Locks</div>
 <div class="data-card-description">
 &#9679; Multiple service instances: Redis required<br/>
 &#9679; Lock with TTL (prevent deadlocks): Redis native<br/>
@@ -1356,7 +1356,7 @@ For &lt; 10K listings, skip Kafka entirely. Direct database queries with proper 
 </div>
 <div class="data-card data-card-accent success">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #10b981">Kafka over Simpler Queues</div>
+<div class="data-card-title">Kafka over Simpler Queues</div>
 <div class="data-card-description">
 &#9679; Event replay for debugging: Kafka required<br/>
 &#9679; Multiple consumers per event: Kafka excels<br/>
@@ -1370,36 +1370,36 @@ For &lt; 10K listings, skip Kafka entirely. Direct database queries with proper 
 </div>
 <hr />
 <h2 id="when-simpler-solutions-work-when-simpler-solutions-work">When Simpler Solutions Work {#when-simpler-solutions-work}</h2>
-<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="the-400month-rental-platform-architecture-simple-architecture">The &quot;$400/month Rental Platform&quot; Architecture {#simple-architecture}</h3>
 <p>For a regional vacation rental platform (think: &quot;Cabins in Vermont&quot; or &quot;Beach houses in Outer Banks&quot;):</p>
 <div class="diagram-container">
-<div class="flow-diagram" style="align-items: stretch">
-<h4 style="color: #64748b; margin: 0 0 16px 0; text-align: center">Reality Check</h4>
-<div class="flow-row" style="margin-bottom: 20px">
-<div class="flow-box primary" style="flex: 1; min-width: 100px">
-<div style="font-size: 18px; font-weight: bold">500-5,000</div>
+<div class="flow-diagram">
+<h4>Reality Check</h4>
+<div class="flow-row">
+<div class="flow-box primary">
+<div>500-5,000</div>
 <div class="flow-box-subtitle">listings</div>
 </div>
-<div class="flow-box success" style="flex: 1; min-width: 100px">
-<div style="font-size: 18px; font-weight: bold">50-500</div>
+<div class="flow-box success">
+<div>50-500</div>
 <div class="flow-box-subtitle">bookings/day</div>
 </div>
-<div class="flow-box warning" style="flex: 1; min-width: 100px">
-<div style="font-size: 18px; font-weight: bold">10,000</div>
+<div class="flow-box warning">
+<div>10,000</div>
 <div class="flow-box-subtitle">monthly users</div>
 </div>
-<div class="flow-box purple" style="flex: 1; min-width: 100px">
-<div style="font-size: 18px; font-weight: bold">$400-800</div>
+<div class="flow-box purple">
+<div>$400-800</div>
 <div class="flow-box-subtitle">infra/month</div>
 </div>
 </div>
-<h4 style="color: #10b981; margin: 0 0 16px 0; text-align: center">What You Actually Need</h4>
+<h4>What You Actually Need</h4>
 <!-- Vercel/Railway -->
-<div class="flow-box info" style="width: 100%; max-width: 400px">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
-<div style="text-align: left">
+<div class="flow-box info">
+<div>
+<div>
 <div class="flow-box-title">Vercel / Railway</div>
 <div class="flow-box-subtitle">Next.js App</div>
 </div>
@@ -1408,14 +1408,14 @@ For &lt; 10K listings, skip Kafka entirely. Direct database queries with proper 
 </div>
 <div class="flow-arrow">&#8595;</div>
 <!-- PostgreSQL -->
-<div class="flow-box success" style="width: 100%; max-width: 400px">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
-<div style="text-align: left">
+<div class="flow-box success">
+<div>
+<div>
 <div class="flow-box-title">PostgreSQL (Supabase)</div>
 </div>
 <span class="diagram-badge success">$25/month</span>
 </div>
-<div style="font-size: 11px; line-height: 1.6; text-align: left; margin-top: 10px; opacity: 0.9">
+<div>
 &#8226; Listings table with PostGIS for geo queries<br/>
 &#8226; Calendar table (date-per-row, it's fine!)<br/>
 &#8226; GIN index for amenities JSONB<br/>
@@ -1424,16 +1424,16 @@ For &lt; 10K listings, skip Kafka entirely. Direct database queries with proper 
 </div>
 <div class="flow-arrow">&#8595;</div>
 <!-- Stripe + Cloudflare -->
-<div class="flow-box purple" style="width: 100%; max-width: 400px">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
-<div style="text-align: left">
+<div class="flow-box purple">
+<div>
+<div>
 <div class="flow-box-title">Stripe + Cloudflare</div>
 <div class="flow-box-subtitle">Payments + Image CDN + R2 Storage</div>
 </div>
 <span class="diagram-badge purple">~$50/month</span>
 </div>
 </div>
-<div class="flow-box success" style="width: 100%; max-width: 400px; margin-top: 16px">
+<div class="flow-box success">
 <div class="flow-box-title">Total: ~$100/month (scales to 10K listings easily)</div>
 </div>
 </div>
@@ -1487,27 +1487,27 @@ LIMIT 20;
 </code></pre>
 <h3 id="when-you-dont-need-distributed-locking-when-no-distributed-locking">When You DON'T Need Distributed Locking {#when-no-distributed-locking}</h3>
 <div class="diagram-container">
-<div style="color: #f97316; font-weight: bold; font-size: 13px; margin-bottom: 16px">Question: Do I need Redis for double-booking prevention?</div>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: center; gap: 12px">
-<span style="color: #10b981; font-size: 16px">&#10003;</span>
-<span style="color: #64748b; font-size: 12px"><strong style="color: #0f172a">Single database instance?</strong> SELECT FOR UPDATE is enough</span>
+<div>Question: Do I need Redis for double-booking prevention?</div>
+<div>
+<div>
+<span>&#10003;</span>
+<span><strong>Single database instance?</strong> SELECT FOR UPDATE is enough</span>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<span style="color: #10b981; font-size: 16px">&#10003;</span>
-<span style="color: #64748b; font-size: 12px"><strong style="color: #0f172a">< 10 concurrent booking attempts/second?</strong> Database locks fine</span>
+<div>
+<span>&#10003;</span>
+<span><strong>< 10 concurrent booking attempts/second?</strong> Database locks fine</span>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<span style="color: #10b981; font-size: 16px">&#10003;</span>
-<span style="color: #64748b; font-size: 12px"><strong style="color: #0f172a">Monolithic application?</strong> Transaction isolation handles it</span>
+<div>
+<span>&#10003;</span>
+<span><strong>Monolithic application?</strong> Transaction isolation handles it</span>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<span style="color: #f97316; font-size: 16px">&#9888;</span>
-<span style="color: #64748b; font-size: 12px"><strong style="color: #0f172a">Multiple service instances writing?</strong> Now consider Redis</span>
+<div>
+<span>&#9888;</span>
+<span><strong>Multiple service instances writing?</strong> Now consider Redis</span>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<span style="color: #ef4444; font-size: 16px">&#9679;</span>
-<span style="color: #64748b; font-size: 12px"><strong style="color: #0f172a">Global distribution with latency concerns?</strong> Redis + careful design</span>
+<div>
+<span>&#9679;</span>
+<span><strong>Global distribution with latency concerns?</strong> Redis + careful design</span>
 </div>
 </div>
 </div>
@@ -1551,8 +1551,8 @@ LIMIT 20;
 </div>
 <hr />
 <h2 id="trade-off-analysis--mitigation-trade-off-analysis-mitigation">Trade-off Analysis &amp; Mitigation {#trade-off-analysis-mitigation}</h2>
-<div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="consistency-vs-availability-trade-offs-consistency-availability-tradeoffs">Consistency vs. Availability Trade-offs {#consistency-availability-tradeoffs}</h3>
 <table>
 <thead>
@@ -1599,30 +1599,30 @@ LIMIT 20;
 <h3 id="search-latency-vs-accuracy-trade-offs-search-latency-accuracy">Search Latency vs. Accuracy Trade-offs {#search-latency-accuracy}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #3b82f6; text-align: center; margin: 0 0 20px 0">SEARCH FRESHNESS SPECTRUM</h4>
+<h4>SEARCH FRESHNESS SPECTRUM</h4>
 <div class="flow-row">
-<div class="flow-box success" style="flex: 1; min-width: 140px">
-<div class="flow-box-title" style="font-size: 12px">Real-time (0s)</div>
-<div style="font-size: 20px; font-weight: bold; margin: 4px 0">Direct ES</div>
+<div class="flow-box success">
+<div class="flow-box-title">Real-time (0s)</div>
+<div>Direct ES</div>
 <div class="flow-box-subtitle">100ms latency</div>
 <div class="flow-box-subtitle">Always accurate</div>
 </div>
-<div class="flow-box primary" style="flex: 1; min-width: 140px">
-<div class="flow-box-title" style="font-size: 12px">Cached (5min)</div>
-<div style="font-size: 20px; font-weight: bold; margin: 4px 0">Redis Cache</div>
+<div class="flow-box primary">
+<div class="flow-box-title">Cached (5min)</div>
+<div>Redis Cache</div>
 <div class="flow-box-subtitle">5ms latency</div>
 <div class="flow-box-subtitle">Mostly accurate</div>
 </div>
-<div class="flow-box neutral" style="flex: 1; min-width: 140px">
-<div class="flow-box-title" style="font-size: 12px">Stale</div>
-<div style="font-size: 20px; font-weight: bold; margin: 4px 0">CDN Cache</div>
+<div class="flow-box neutral">
+<div class="flow-box-title">Stale</div>
+<div>CDN Cache</div>
 <div class="flow-box-subtitle">1ms latency</div>
 <div class="flow-box-subtitle">Often stale</div>
 </div>
 </div>
-<div class="data-card data-card-accent success" style="width: 100%; margin-top: 16px">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #10b981">Recommendation</div>
+<div class="data-card-title">Recommendation</div>
 <div class="data-card-description">
 &#8226; Search listing page: 30s Redis cache (acceptable stale)<br/>
 &#8226; Listing detail: Real-time availability check<br/>
@@ -1633,44 +1633,44 @@ LIMIT 20;
 </div>
 </div>
 <h3 id="double-booking-prevention-defense-in-depth-defense-in-depth">Double-Booking Prevention: Defense in Depth {#defense-in-depth}</h3>
-<div style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0">
+<div>
 <div class="data-card data-card-accent error">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #ef4444">Layer 1: Distributed Lock (Redis)</div>
+<div class="data-card-title">Layer 1: Distributed Lock (Redis)</div>
 <div class="data-card-description">
 &#8226; SETNX with TTL prevents concurrent attempts<br/>
-&#8226; <span style="color: #f97316">Failure mode:</span> Lock expires before completion<br/>
-&#8226; <span style="color: #10b981">Mitigation:</span> Short TTL (5s) + optimistic locking
+&#8226; <span>Failure mode:</span> Lock expires before completion<br/>
+&#8226; <span>Mitigation:</span> Short TTL (5s) + optimistic locking
 </div>
 </div>
 </div>
 <div class="data-card data-card-accent success">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #10b981">Layer 2: Database Constraints</div>
+<div class="data-card-title">Layer 2: Database Constraints</div>
 <div class="data-card-description">
 &#8226; UNIQUE constraint on (listing_id, date, type='booked')<br/>
-&#8226; <span style="color: #f97316">Failure mode:</span> None - database rejects duplicates<br/>
-&#8226; <span style="color: #10b981">Mitigation:</span> This is your safety net
+&#8226; <span>Failure mode:</span> None - database rejects duplicates<br/>
+&#8226; <span>Mitigation:</span> This is your safety net
 </div>
 </div>
 </div>
 <div class="data-card data-card-accent info">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #3b82f6">Layer 3: Optimistic Locking</div>
+<div class="data-card-title">Layer 3: Optimistic Locking</div>
 <div class="data-card-description">
 &#8226; Version number on calendar, check-and-set<br/>
-&#8226; <span style="color: #f97316">Failure mode:</span> Retry on version mismatch<br/>
-&#8226; <span style="color: #10b981">Mitigation:</span> Exponential backoff, max 3 retries
+&#8226; <span>Failure mode:</span> Retry on version mismatch<br/>
+&#8226; <span>Mitigation:</span> Exponential backoff, max 3 retries
 </div>
 </div>
 </div>
 <div class="data-card data-card-accent purple">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #8b5cf6">Layer 4: Idempotency Keys</div>
+<div class="data-card-title">Layer 4: Idempotency Keys</div>
 <div class="data-card-description">
 &#8226; Client sends unique booking_request_id<br/>
-&#8226; <span style="color: #f97316">Failure mode:</span> Duplicate bookings from retries<br/>
-&#8226; <span style="color: #10b981">Mitigation:</span> Check for existing booking with same key
+&#8226; <span>Failure mode:</span> Duplicate bookings from retries<br/>
+&#8226; <span>Mitigation:</span> Check for existing booking with same key
 </div>
 </div>
 </div>
@@ -1722,7 +1722,7 @@ LIMIT 20;
 </div>
 <hr />
 <h2 id="interview-tips-interview-tips">Interview Tips {#interview-tips}</h2>
-<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-radius: 12px; padding: 24px; margin: 20px 0; color: #e2e8f0">
+<div>
 <h3 id="key-discussion-points-key-discussion-points">Key Discussion Points {#key-discussion-points}</h3>
 <ol>
 <li><strong>Search ranking</strong>: Balancing relevance, quality, revenue - mention that Airbnb optimizes for booking likelihood, not just relevance</li>
@@ -1739,7 +1739,7 @@ LIMIT 20;
 </ul>
 <hr />
 <h3 id="red-flags-what-not-to-say-red-flags">Red Flags (What NOT to Say) {#red-flags}</h3>
-<div style="background: rgba(248, 81, 73, 0.1);padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1784,7 +1784,7 @@ LIMIT 20;
 </div>
 <hr />
 <h3 id="impressive-statements-what-to-say-impressive-statements">Impressive Statements (What TO Say) {#impressive-statements}</h3>
-<div style="background: rgba(59, 130, 246, 0.1);padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1830,7 +1830,7 @@ LIMIT 20;
 </div>
 <hr />
 <h3 id="scaling-triggers-cheat-sheet-scaling-triggers">Scaling Triggers Cheat Sheet {#scaling-triggers}</h3>
-<div style="background: rgba(139, 92, 246, 0.1);padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0">
+<div>
 <table>
 <thead>
 <tr>

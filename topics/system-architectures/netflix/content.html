@@ -1,5 +1,5 @@
 <h1 id="design-netflix">Design Netflix</h1>
-<nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<nav class="toc">
 <h2 id="table-of-contents">Table of Contents</h2>
 <ul>
 <li><a href="#problem-statement">Problem Statement</a></li>
@@ -21,7 +21,7 @@
 </nav>
 <h2 id="problem-statement">Problem Statement</h2>
 <p>Design a video streaming platform that serves millions of concurrent viewers with personalized content recommendations.</p>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="core-requirements">Core Requirements</h3>
 <ul>
 <li><strong>Video Streaming</strong>: Adaptive bitrate streaming</li>
@@ -35,42 +35,42 @@
 <hr />
 <h2 id="high-level-architecture">High-Level Architecture</h2>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 600px">
-<h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0">NETFLIX STREAMING ARCHITECTURE</h3>
+<div class="flow-diagram">
+<h3>NETFLIX STREAMING ARCHITECTURE</h3>
 <div class="flow-row">
-<div class="flow-box primary" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)">
+<div class="flow-box primary">
 <div class="flow-box-title">DNS (Route53)</div>
 <div class="flow-box-subtitle">GeoDNS Routing</div>
 </div>
 </div>
-<div class="flow-arrow" style="font-size: 28px">↓</div>
-<div class="flow-row" style="gap: 12px">
-<div class="flow-box error" style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); color: white;min-width: 110px">
+<div class="flow-arrow">↓</div>
+<div class="flow-row">
+<div class="flow-box error">
 <div class="flow-box-title">OPEN CONNECT</div>
 <div class="flow-box-subtitle">US-EAST</div>
 </div>
-<div class="flow-box error" style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); color: white;min-width: 110px">
+<div class="flow-box error">
 <div class="flow-box-title">OPEN CONNECT</div>
 <div class="flow-box-subtitle">EU-WEST</div>
 </div>
-<div class="flow-box error" style="background: linear-gradient(135deg, #e50914 0%, #b91c1c 100%); color: white;min-width: 110px">
+<div class="flow-box error">
 <div class="flow-box-title">OPEN CONNECT</div>
 <div class="flow-box-subtitle">AP-SOUTH</div>
 </div>
 </div>
-<div style="background: #fef2f2;border-radius: 8px; padding: 8px 16px; text-align: center">
-<span style="color: #dc2626; font-size: 13px">OPEN CONNECT CDN (ISP-Embedded Servers)</span>
+<div>
+<span>OPEN CONNECT CDN (ISP-Embedded Servers)</span>
 </div>
-<div class="flow-arrow" style="color: #f59e0b">↓ Cache Miss?</div>
-<div style="background: #fff7ed;border-radius: 16px; padding: 20px; width: 100%; max-width: 400px">
-<div style="text-align: center; color: #d97706; font-weight: bold; margin-bottom: 16px">AWS REGION</div>
+<div class="flow-arrow">↓ Cache Miss?</div>
+<div>
+<div>AWS REGION</div>
 <div class="flow-row">
-<div class="flow-box primary" style="width: 100%">
+<div class="flow-box primary">
 <div class="flow-box-title">API Gateway (Zuul)</div>
 </div>
 </div>
 <div class="flow-arrow">↓</div>
-<div class="flow-row" style="gap: 12px">
+<div class="flow-row">
 <div class="flow-box info">
 <div class="flow-box-title">Playback</div>
 <div class="flow-box-subtitle">Service</div>
@@ -82,7 +82,7 @@
 </div>
 <div class="flow-arrow">↓</div>
 <div class="flow-row">
-<div class="flow-box warning" style="width: 100%">
+<div class="flow-box warning">
 <div class="flow-box-title">S3 (Video Storage)</div>
 </div>
 </div>
@@ -92,56 +92,56 @@
 <hr />
 <h2 id="video-transcoding-pipeline">Video Transcoding Pipeline</h2>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 700px">
-<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0">CONTENT PROCESSING PIPELINE</h4>
+<div class="flow-diagram">
+<h4>CONTENT PROCESSING PIPELINE</h4>
 <div class="flow-row">
-<div class="flow-box purple" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); color: white">
+<div class="flow-box purple">
 <div class="flow-box-title">Original Video (4K Master)</div>
 </div>
 </div>
-<div class="flow-arrow" style="color: #7c3aed; font-size: 28px">↓</div>
-<div style="background: #f1f5f9;border-radius: 16px; padding: 20px; width: 100%">
-<h4 style="text-align: center; color: #d97706; margin: 0 0 20px 0">TRANSCODING PIPELINE</h4>
-<div style="background: #dbeafe;border-radius: 12px; padding: 16px; margin-bottom: 16px">
-<div style="color: #1d4ed8; font-weight: bold; margin-bottom: 8px">Step 1: Ingest & Validate</div>
-<ul style="color: #475569; font-size: 13px; margin: 0; padding-left: 20px">
+<div class="flow-arrow">↓</div>
+<div>
+<h4>TRANSCODING PIPELINE</h4>
+<div>
+<div>Step 1: Ingest & Validate</div>
+<ul>
 <li>Check codec compatibility</li>
 <li>Validate audio tracks (5.1, stereo)</li>
 <li>Extract subtitles</li>
 <li>Generate thumbnail sprites</li>
 </ul>
 </div>
-<div style="background: #f0fdf4;border-radius: 12px; padding: 16px; margin-bottom: 16px">
-<div style="color: #16a34a; font-weight: bold; margin-bottom: 12px">Step 2: Encode Multiple Profiles</div>
-<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 8px">
-<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px"><strong style="color: #16a34a">4K HDR</strong><br><span style="font-size: 11px; color: #475569">25 Mbps</span></div>
-<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px"><strong style="color: #16a34a">1080p</strong><br><span style="font-size: 11px; color: #475569">8 Mbps</span></div>
-<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px"><strong style="color: #16a34a">720p</strong><br><span style="font-size: 11px; color: #475569">4 Mbps</span></div>
+<div>
+<div>Step 2: Encode Multiple Profiles</div>
+<div>
+<div><strong>4K HDR</strong><br><span>25 Mbps</span></div>
+<div><strong>1080p</strong><br><span>8 Mbps</span></div>
+<div><strong>720p</strong><br><span>4 Mbps</span></div>
 </div>
-<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px">
-<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px"><strong style="color: #16a34a">480p</strong><br><span style="font-size: 11px; color: #475569">2 Mbps</span></div>
-<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px"><strong style="color: #16a34a">360p</strong><br><span style="font-size: 11px; color: #475569">1 Mbps</span></div>
-<div style="background: white; border-radius: 6px; padding: 8px 12px; text-align: center; min-width: 80px"><strong style="color: #16a34a">240p</strong><br><span style="font-size: 11px; color: #475569">0.5 Mbps</span></div>
+<div>
+<div><strong>480p</strong><br><span>2 Mbps</span></div>
+<div><strong>360p</strong><br><span>1 Mbps</span></div>
+<div><strong>240p</strong><br><span>0.5 Mbps</span></div>
 </div>
-<div style="color: #475569; font-size: 12px; text-align: center">
+<div>
 <strong>Encoding:</strong> H.264, H.265, VP9, AV1<br>
 <strong>Audio:</strong> AAC, Dolby Digital, Dolby Atmos
 </div>
 </div>
-<div style="background: #faf5ff;border-radius: 12px; padding: 16px; margin-bottom: 16px">
-<div style="color: #6d28d9; font-weight: bold; margin-bottom: 8px">Step 3: Segment for Streaming</div>
-<div style="color: #475569; font-size: 13px">
+<div>
+<div>Step 3: Segment for Streaming</div>
+<div>
   Split into 4-second chunks (MPEG-DASH / HLS)<br>
-<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 11px">segment_001.m4s segment_002.m4s segment_003.m4s ...</code><br><br>
+<code>segment_001.m4s segment_002.m4s segment_003.m4s ...</code><br><br>
 Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</code> (DASH)
 </div>
 </div>
-<div style="background: #fff7ed;border-radius: 12px; padding: 12px; text-align: center">
-<div style="color: #d97706; font-weight: bold">Step 4: Distribute to CDN</div>
-<div style="color: #475569; font-size: 13px">Push to S3 → Replicate to Open Connect appliances</div>
+<div>
+<div>Step 4: Distribute to CDN</div>
+<div>Push to S3 → Replicate to Open Connect appliances</div>
 </div>
 </div>
-<div class="flow-row" style="margin-top: 16px; gap: 16px">
+<div class="flow-row">
 <div class="flow-box info">
 <div class="flow-box-title">Processing Time</div>
 <div class="flow-box-subtitle">~4 hours for 2-hour movie</div>
@@ -155,8 +155,8 @@ Generate manifest files: <code>master.m3u8</code> (HLS), <code>manifest.mpd</cod
 </div>
 <hr />
 <h2 id="phase-1-starting-phase">Phase 1: Starting Phase</h2>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="assumptions">Assumptions</h3>
 <ul>
 <li><strong>Users</strong>: 1,000 - 50,000</li>
@@ -218,8 +218,8 @@ class VideoService:
 </div>
 <hr />
 <h2 id="phase-2-medium-scale">Phase 2: Medium Scale</h2>
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="assumptions-1">Assumptions</h3>
 <ul>
 <li><strong>Users</strong>: 10M - 100M</li>
@@ -229,17 +229,17 @@ class VideoService:
 </ul>
 <h3 id="microservices-architecture">Microservices Architecture</h3>
 <div class="diagram-container">
-<div class="architecture-diagram" style="max-width: 800px">
+<div class="architecture-diagram">
 <div class="architecture-layer">
 <div class="architecture-layer-title">API GATEWAY</div>
 <div class="architecture-components">
-<div class="flow-box primary" style="width: 100%; max-width: 300px">
+<div class="flow-box primary">
 <div class="flow-box-title">Zuul Gateway</div>
 <div class="flow-box-subtitle">API Gateway & Load Balancing</div>
 </div>
 </div>
 </div>
-<div class="flow-arrow" style="font-size: 24px">↓</div>
+<div class="flow-arrow">↓</div>
 <div class="architecture-layer">
 <div class="architecture-layer-title">CORE SERVICES</div>
 <div class="architecture-components">
@@ -257,17 +257,17 @@ class VideoService:
 </div>
 </div>
 </div>
-<div class="flow-arrow" style="font-size: 24px">↓</div>
+<div class="flow-arrow">↓</div>
 <div class="architecture-layer">
 <div class="architecture-layer-title">EVENT BUS</div>
 <div class="architecture-components">
-<div class="flow-box warning" style="width: 100%; max-width: 250px">
+<div class="flow-box warning">
 <div class="flow-box-title">Kafka</div>
 <div class="flow-box-subtitle">Event Streaming</div>
 </div>
 </div>
 </div>
-<div class="flow-arrow" style="font-size: 24px">↓</div>
+<div class="flow-arrow">↓</div>
 <div class="architecture-layer">
 <div class="architecture-layer-title">BACKGROUND SERVICES</div>
 <div class="architecture-components">
@@ -289,20 +289,20 @@ class VideoService:
 </div>
 <h3 id="adaptive-bitrate-streaming">Adaptive Bitrate Streaming</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 700px">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0">ADAPTIVE BITRATE (ABR) ALGORITHM</h4>
-<div style="background: white; border-radius: 12px; padding: 20px;width: 100%">
-<div style="margin-bottom: 16px">
-<strong style="color: #1d4ed8">Client Monitoring:</strong>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px">
+<div class="flow-diagram">
+<h4>ADAPTIVE BITRATE (ABR) ALGORITHM</h4>
+<div>
+<div>
+<strong>Client Monitoring:</strong>
+<div>
 <div class="diagram-badge info">Buffer Level</div>
 <div class="diagram-badge info">Download Speed</div>
 <div class="diagram-badge info">Latency (RTT)</div>
 </div>
 </div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px">
-<strong style="color: #475569">Decision Logic:</strong>
-<pre style="background: #0f172a; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 12px; overflow-x: auto; margin-top: 8px">
+<div>
+<strong>Decision Logic:</strong>
+<pre>
 if buffer_level < 5s:
     # Emergency - drop to lowest quality
     select_quality('240p')
@@ -318,25 +318,25 @@ keep_current()<br />
 </pre></p>
 </div>
 <div>
-<strong style="color: #1d4ed8">Quality Ladder:</strong>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px">
-<div class="flow-box success" style="min-width: auto; padding: 8px 12px">
-<div class="flow-box-title" style="font-size: 12px">4K</div>
+<strong>Quality Ladder:</strong>
+<div>
+<div class="flow-box success">
+<div class="flow-box-title">4K</div>
 <div class="flow-box-subtitle">25Mbps</div>
 </div>
-<span style="color: #94a3b8">↔</span>
-<div class="flow-box success" style="min-width: auto; padding: 8px 12px">
-<div class="flow-box-title" style="font-size: 12px">1080p</div>
+<span>↔</span>
+<div class="flow-box success">
+<div class="flow-box-title">1080p</div>
 <div class="flow-box-subtitle">8Mbps</div>
 </div>
-<span style="color: #94a3b8">↔</span>
-<div class="flow-box success" style="min-width: auto; padding: 8px 12px">
-<div class="flow-box-title" style="font-size: 12px">720p</div>
+<span>↔</span>
+<div class="flow-box success">
+<div class="flow-box-title">720p</div>
 <div class="flow-box-subtitle">4Mbps</div>
 </div>
-<span style="color: #94a3b8">↔</span>
-<div class="flow-box success" style="min-width: auto; padding: 8px 12px">
-<div class="flow-box-title" style="font-size: 12px">480p</div>
+<span>↔</span>
+<div class="flow-box success">
+<div class="flow-box-title">480p</div>
 <div class="flow-box-subtitle">2Mbps</div>
 </div>
 </div>
@@ -348,8 +348,8 @@ keep_current()<br />
 </div>
 <hr />
 <h2 id="phase-3-netflix-scale">Phase 3: Netflix Scale</h2>
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="assumptions-2">Assumptions</h3>
 <ul>
 <li><strong>Users</strong>: 250M+ subscribers</li>
@@ -359,60 +359,60 @@ keep_current()<br />
 </ul>
 <h3 id="open-connect-cdn">Open Connect CDN</h3>
 <div class="diagram-container">
-<div class="architecture-diagram" style="max-width: 800px">
-<div class="architecture-layer" style="background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%)">
-<div class="architecture-layer-title" style="color: #d97706">AWS (CONTROL PLANE)</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px">
-<div class="data-card-accent info" style="padding: 12px">
+<div class="architecture-diagram">
+<div class="architecture-layer">
+<div class="architecture-layer-title">AWS (CONTROL PLANE)</div>
+<div>
+<div class="data-card-accent info">
 <div class="data-card-title">Playback API</div>
 </div>
-<div class="data-card-accent info" style="padding: 12px">
+<div class="data-card-accent info">
 <div class="data-card-title">Content Steering</div>
 </div>
-<div class="data-card-accent info" style="padding: 12px">
+<div class="data-card-accent info">
 <div class="data-card-title">DRM Licenses</div>
 </div>
-<div class="data-card-accent info" style="padding: 12px">
+<div class="data-card-accent info">
 <div class="data-card-title">Authentication</div>
 </div>
 </div>
 </div>
-<div style="text-align: center; color: #94a3b8; font-size: 12px; margin: 8px 0">Control messages ↓</div>
-<div class="architecture-layer" style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)">
-<div class="architecture-layer-title" style="color: #dc2626">OPEN CONNECT APPLIANCES (ISP-Embedded)</div>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 16px">
-<div class="flow-box error" style="min-width: 90px">
-<div class="flow-box-title" style="font-size: 12px">AT&T OCA</div>
+<div>Control messages ↓</div>
+<div class="architecture-layer">
+<div class="architecture-layer-title">OPEN CONNECT APPLIANCES (ISP-Embedded)</div>
+<div>
+<div class="flow-box error">
+<div class="flow-box-title">AT&T OCA</div>
 </div>
-<div class="flow-box error" style="min-width: 90px">
-<div class="flow-box-title" style="font-size: 12px">Comcast OCA</div>
+<div class="flow-box error">
+<div class="flow-box-title">Comcast OCA</div>
 </div>
-<div class="flow-box error" style="min-width: 90px">
-<div class="flow-box-title" style="font-size: 12px">Verizon OCA</div>
+<div class="flow-box error">
+<div class="flow-box-title">Verizon OCA</div>
 </div>
-<div class="flow-box error" style="min-width: 90px">
-<div class="flow-box-title" style="font-size: 12px">Vodafone OCA</div>
+<div class="flow-box error">
+<div class="flow-box-title">Vodafone OCA</div>
 </div>
 </div>
-<div style="background: white; border-radius: 8px; padding: 12px; font-size: 13px; color: #475569">
+<div>
 <strong>Each OCA:</strong> 100+ TB SSD storage | 90%+ cache hit rate | &lt;1ms latency to user
 </div>
 </div>
-<div style="text-align: center; color: #94a3b8; font-size: 12px; margin: 8px 0">Video streams ↓</div>
-<div class="architecture-layer" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)">
-<div class="architecture-layer-title" style="color: #16a34a">END USERS</div>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center">
-<div class="flow-box success" style="min-width: 80px">
-<div class="flow-box-title" style="font-size: 12px">TV</div>
+<div>Video streams ↓</div>
+<div class="architecture-layer">
+<div class="architecture-layer-title">END USERS</div>
+<div>
+<div class="flow-box success">
+<div class="flow-box-title">TV</div>
 </div>
-<div class="flow-box success" style="min-width: 80px">
-<div class="flow-box-title" style="font-size: 12px">Web</div>
+<div class="flow-box success">
+<div class="flow-box-title">Web</div>
 </div>
-<div class="flow-box success" style="min-width: 80px">
-<div class="flow-box-title" style="font-size: 12px">Mobile</div>
+<div class="flow-box success">
+<div class="flow-box-title">Mobile</div>
 </div>
-<div class="flow-box success" style="min-width: 80px">
-<div class="flow-box-title" style="font-size: 12px">Gaming</div>
+<div class="flow-box success">
+<div class="flow-box-title">Gaming</div>
 </div>
 </div>
 </div>
@@ -420,13 +420,13 @@ keep_current()<br />
 </div>
 <h3 id="recommendation-system">Recommendation System</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 700px">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0">PERSONALIZATION PIPELINE</h4>
-<div class="flow-row" style="gap: 20px; align-items: flex-start">
-<div style="flex: 1; min-width: 200px">
-<div class="flow-box info" style="height: auto; padding: 16px">
+<div class="flow-diagram">
+<h4>PERSONALIZATION PIPELINE</h4>
+<div class="flow-row">
+<div>
+<div class="flow-box info">
 <div class="flow-box-title">User Signals</div>
-<ul style="text-align: left; font-size: 11px; margin: 8px 0 0 0; padding-left: 16px; color: inherit; opacity: 0.9">
+<ul>
 <li>Watch history</li>
 <li>Ratings</li>
 <li>Search queries</li>
@@ -436,10 +436,10 @@ keep_current()<br />
 </ul>
 </div>
 </div>
-<div style="flex: 1; min-width: 200px">
-<div class="flow-box purple" style="height: auto; padding: 16px">
+<div>
+<div class="flow-box purple">
 <div class="flow-box-title">Content Features</div>
-<ul style="text-align: left; font-size: 11px; margin: 8px 0 0 0; padding-left: 16px; color: inherit; opacity: 0.9">
+<ul>
 <li>Genre, actors, director</li>
 <li>Language, country</li>
 <li>Release year</li>
@@ -449,37 +449,37 @@ keep_current()<br />
 </div>
 </div>
 </div>
-<div class="flow-arrow" style="font-size: 24px">↓</div>
-<div style="background: white;border-radius: 12px; padding: 20px; width: 100%">
-<div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 12px">ML MODEL ENSEMBLE</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px">
-<div class="data-card-accent info" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Collaborative Filtering</div>
-<div class="data-card-description" style="font-size: 10px">"Users like you watched..."</div>
+<div class="flow-arrow">↓</div>
+<div>
+<div>ML MODEL ENSEMBLE</div>
+<div>
+<div class="data-card-accent info">
+<div class="data-card-title">Collaborative Filtering</div>
+<div class="data-card-description">"Users like you watched..."</div>
 </div>
-<div class="data-card-accent purple" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Content-Based</div>
-<div class="data-card-description" style="font-size: 10px">"Because you watched X..."</div>
+<div class="data-card-accent purple">
+<div class="data-card-title">Content-Based</div>
+<div class="data-card-description">"Because you watched X..."</div>
 </div>
-<div class="data-card-accent success" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Deep Learning</div>
-<div class="data-card-description" style="font-size: 10px">Complex pattern recognition</div>
+<div class="data-card-accent success">
+<div class="data-card-title">Deep Learning</div>
+<div class="data-card-description">Complex pattern recognition</div>
 </div>
-<div class="data-card-accent warning" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Trending</div>
-<div class="data-card-description" style="font-size: 10px">What's hot right now</div>
+<div class="data-card-accent warning">
+<div class="data-card-title">Trending</div>
+<div class="data-card-description">What's hot right now</div>
 </div>
 </div>
 </div>
-<div class="flow-arrow" style="font-size: 24px">↓</div>
-<div class="flow-box warning" style="width: 100%">
+<div class="flow-arrow">↓</div>
+<div class="flow-box warning">
 <div class="flow-box-title">Ranking & Diversity</div>
 <div class="flow-box-subtitle">A/B tested algorithms, genre diversity, fresh content boost</div>
 </div>
-<div class="flow-arrow" style="font-size: 24px">↓</div>
-<div style="background: #f0fdf4;border-radius: 12px; padding: 16px; width: 100%">
-<div style="font-weight: bold; color: #16a34a; margin-bottom: 8px; text-align: center">PERSONALIZED ROWS</div>
-<div style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: center">
+<div class="flow-arrow">↓</div>
+<div>
+<div>PERSONALIZED ROWS</div>
+<div>
 <span class="diagram-badge success">Continue Watching</span>
 <span class="diagram-badge success">Because you watched...</span>
 <span class="diagram-badge success">Trending Now</span>
@@ -493,7 +493,7 @@ keep_current()<br />
 </div>
 <hr />
 <h2 id="aws-technologies-alternatives">AWS Technologies & Alternatives</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -549,53 +549,53 @@ keep_current()<br />
 </tbody>
 </table>
 <h3 id="netflix-oss-stack">Netflix OSS Stack</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin: 16px 0">
-<div style="background: rgba(88, 166, 255, 0.1);border-radius: 12px; padding: 16px">
-<h5 style="color: #1d4ed8; margin: 0 0 8px 0">Zuul</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0">API Gateway with dynamic routing</p>
+<div>
+<div>
+<h5>Zuul</h5>
+<p>API Gateway with dynamic routing</p>
 </div>
-<div style="background: rgba(126, 231, 135, 0.1);border-radius: 12px; padding: 16px">
-<h5 style="color: #16a34a; margin: 0 0 8px 0">Eureka</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0">Service discovery</p>
+<div>
+<h5>Eureka</h5>
+<p>Service discovery</p>
 </div>
-<div style="background: rgba(240, 136, 62, 0.1);border-radius: 12px; padding: 16px">
-<h5 style="color: #f0883e; margin: 0 0 8px 0">Hystrix</h5>
-<p style="color: #8b949e; font-size: 12px; margin: 0">Circuit breaker pattern</p>
+<div>
+<h5>Hystrix</h5>
+<p>Circuit breaker pattern</p>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="distributed-systems-considerations">Distributed Systems Considerations</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="chaos-engineering">1. Chaos Engineering</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 650px">
-<h4 style="color: #dc2626; text-align: center; margin: 0 0 20px 0">CHAOS MONKEY (Netflix)</h4>
-<div style="background: white; border-radius: 12px; padding: 20px; width: 100%">
-<div style="background: #fef2f2; border-radius: 8px; padding: 12px; margin-bottom: 16px; text-align: center">
-<em style="color: #dc2626">"The best way to avoid failure is to fail constantly"</em>
+<div class="flow-diagram">
+<h4>CHAOS MONKEY (Netflix)</h4>
+<div>
+<div>
+<em>"The best way to avoid failure is to fail constantly"</em>
 </div>
-<div style="font-weight: bold; color: #475569; margin-bottom: 12px">Chaos Tools:</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px">
-<div class="data-card-accent error" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Chaos Monkey</div>
-<div class="data-card-description" style="font-size: 11px">Randomly kills instances</div>
+<div>Chaos Tools:</div>
+<div>
+<div class="data-card-accent error">
+<div class="data-card-title">Chaos Monkey</div>
+<div class="data-card-description">Randomly kills instances</div>
 </div>
-<div class="data-card-accent error" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Chaos Gorilla</div>
-<div class="data-card-description" style="font-size: 11px">Kills entire availability zone</div>
+<div class="data-card-accent error">
+<div class="data-card-title">Chaos Gorilla</div>
+<div class="data-card-description">Kills entire availability zone</div>
 </div>
-<div class="data-card-accent error" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Chaos Kong</div>
-<div class="data-card-description" style="font-size: 11px">Kills entire region</div>
+<div class="data-card-accent error">
+<div class="data-card-title">Chaos Kong</div>
+<div class="data-card-description">Kills entire region</div>
 </div>
-<div class="data-card-accent warning" style="padding: 10px">
-<div class="data-card-title" style="font-size: 12px">Latency Monkey</div>
-<div class="data-card-description" style="font-size: 11px">Injects network delays</div>
+<div class="data-card-accent warning">
+<div class="data-card-title">Latency Monkey</div>
+<div class="data-card-description">Injects network delays</div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center">
-<strong style="color: #16a34a">Result:</strong> <span style="color: #475569">Netflix stays up even during AWS outages</span>
+<div>
+<strong>Result:</strong> <span>Netflix stays up even during AWS outages</span>
 </div>
 </div>
 </div>
@@ -621,19 +621,19 @@ keep_current()<br />
 </code></pre>
 <h3 id="content-steering">3. Content Steering</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 650px">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0">INTELLIGENT CDN ROUTING</h4>
-<div style="background: white; border-radius: 12px; padding: 20px; width: 100%">
-<div style="display: flex; flex-direction: column; gap: 12px">
+<div class="flow-diagram">
+<h4>INTELLIGENT CDN ROUTING</h4>
+<div>
+<div>
 <div class="flow-row">
-<div class="flow-box info" style="width: 100%">
+<div class="flow-box info">
 <div class="flow-box-title">1. Playback API receives request</div>
 </div>
 </div>
 <div class="flow-arrow">↓</div>
-<div style="background: #f1f5f9; border-radius: 8px; padding: 12px">
-<strong style="color: #475569">2. Evaluate available OCAs:</strong>
-<div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px">
+<div>
+<strong>2. Evaluate available OCAs:</strong>
+<div>
 <span class="diagram-badge info">Geographic proximity</span>
 <span class="diagram-badge info">Current load</span>
 <span class="diagram-badge info">Health status</span>
@@ -642,15 +642,15 @@ keep_current()<br />
 </div>
 <div class="flow-arrow">↓</div>
 <div class="flow-row">
-<div class="flow-box success" style="width: 100%">
+<div class="flow-box success">
 <div class="flow-box-title">3. Return ranked list of servers</div>
 <div class="flow-box-subtitle">manifest.m3u8: Primary + Fallback URLs</div>
 </div>
 </div>
 <div class="flow-arrow">↓</div>
-<div style="background: #fff7ed; border-radius: 8px; padding: 12px">
-<strong style="color: #d97706">4. Client switches servers if:</strong>
-<div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px">
+<div>
+<strong>4. Client switches servers if:</strong>
+<div>
 <span class="diagram-badge warning">Server becomes slow</span>
 <span class="diagram-badge warning">Connection drops</span>
 <span class="diagram-badge warning">Buffer runs low</span>
@@ -663,14 +663,14 @@ keep_current()<br />
 </div>
 <hr />
 <h2 id="edge-cases-failure-modes">Edge Cases & Failure Modes</h2>
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="what-happens-when-things-go-wrong">What Happens When Things Go Wrong</h3>
 <p>Understanding failure modes is critical for building resilient streaming systems. Here are the key scenarios and how Netflix handles them:</p>
 <h4 id="infrastructure-failures">Infrastructure Failures</h4>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 700px">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; width: 100%">
-<div class="data-card-accent error" style="padding: 16px">
+<div class="flow-diagram">
+<div>
+<div class="data-card-accent error">
 <div class="data-card-header">
 <div class="data-card-title">OCA Node Failure</div>
 <span class="diagram-badge error">HIGH IMPACT</span>
@@ -681,7 +681,7 @@ keep_current()<br />
 <strong>Recovery:</strong> Automatic failover to backup OCA or commercial CDN
 </div>
 </div>
-<div class="data-card-accent error" style="padding: 16px">
+<div class="data-card-accent error">
 <div class="data-card-header">
 <div class="data-card-title">Origin S3 Outage</div>
 <span class="diagram-badge error">CRITICAL</span>
@@ -692,7 +692,7 @@ keep_current()<br />
 <strong>Recovery:</strong> Multi-region S3, OCA has local cache for weeks
 </div>
 </div>
-<div class="data-card-accent warning" style="padding: 16px">
+<div class="data-card-accent warning">
 <div class="data-card-header">
 <div class="data-card-title">Transcoding Backlog</div>
 <span class="diagram-badge warning">MEDIUM</span>
@@ -703,7 +703,7 @@ keep_current()<br />
 <strong>Recovery:</strong> Burst to spot instances, prioritize by popularity
 </div>
 </div>
-<div class="data-card-accent error" style="padding: 16px">
+<div class="data-card-accent error">
 <div class="data-card-header">
 <div class="data-card-title">DRM Server Overload</div>
 <span class="diagram-badge error">HIGH IMPACT</span>
@@ -714,7 +714,7 @@ keep_current()<br />
 <strong>Recovery:</strong> Geo-distributed servers, aggressive caching
 </div>
 </div>
-<div class="data-card-accent error" style="padding: 16px">
+<div class="data-card-accent error">
 <div class="data-card-header">
 <div class="data-card-title">DNS Resolution Failure</div>
 <span class="diagram-badge error">CRITICAL</span>
@@ -725,7 +725,7 @@ keep_current()<br />
 <strong>Recovery:</strong> Multiple DNS providers, long TTLs during incidents
 </div>
 </div>
-<div class="data-card-accent warning" style="padding: 16px">
+<div class="data-card-accent warning">
 <div class="data-card-header">
 <div class="data-card-title">Database Partition</div>
 <span class="diagram-badge warning">MEDIUM</span>
@@ -740,7 +740,7 @@ keep_current()<br />
 </div>
 </div>
 <h4 id="client-side-edge-cases">Client-Side Edge Cases</h4>
-<div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -790,39 +790,39 @@ keep_current()<br />
 </div>
 <h4 id="viral-content-surge">Viral Content Surge (10x Traffic Overnight)</h4>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 650px">
-<div style="background: white; border-radius: 12px; padding: 20px; width: 100%">
-<div style="font-weight: bold; color: #1d4ed8; margin-bottom: 16px; text-align: center">TRAFFIC SPIKE HANDLING STRATEGY</div>
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div class="data-card-accent success" style="padding: 12px">
+<div class="flow-diagram">
+<div>
+<div>TRAFFIC SPIKE HANDLING STRATEGY</div>
+<div>
+<div class="data-card-accent success">
 <div class="data-card-title">Pre-positioning</div>
 <div class="data-card-description">Push new releases to all OCAs days before launch (Stranger Things effect)</div>
 </div>
-<div class="data-card-accent info" style="padding: 12px">
+<div class="data-card-accent info">
 <div class="data-card-title">Local Cache Serving</div>
 <div class="data-card-description">OCAs serve from cache without hitting origin - scales independently</div>
 </div>
-<div class="data-card-accent purple" style="padding: 12px">
+<div class="data-card-accent purple">
 <div class="data-card-title">Auto-Scaling API</div>
 <div class="data-card-description">Playback API on AWS can spin up 100K+ instances automatically</div>
 </div>
-<div class="data-card-accent warning" style="padding: 12px">
+<div class="data-card-accent warning">
 <div class="data-card-title">Cache Eviction</div>
 <div class="data-card-description">Less popular content evicted from OCA to make room for viral content</div>
 </div>
-<div class="data-card-accent orange" style="padding: 12px">
+<div class="data-card-accent orange">
 <div class="data-card-title">Global Quality Cap</div>
 <div class="data-card-description">Temporarily cap quality globally (COVID: Netflix reduced bandwidth 25%)</div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center">
-<strong style="color: #16a34a">Key Insight:</strong> <span style="color: #475569">Separate control plane (API) from data plane (video) - videos already playing continue even if AWS slows</span>
+<div>
+<strong>Key Insight:</strong> <span>Separate control plane (API) from data plane (video) - videos already playing continue even if AWS slows</span>
 </div>
 </div>
 </div>
 </div>
 <h4 id="graceful-degradation">Graceful Degradation Strategy</h4>
-<div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p>When under extreme load, Netflix degrades gracefully rather than failing completely:</p>
 <ol>
 <li><strong>Disable personalization</strong> - Show generic &quot;Top 10&quot; instead of personalized recommendations</li>
@@ -836,7 +836,7 @@ keep_current()<br />
 </div>
 <hr />
 <h2 id="interview-deep-dive-questions">Interview Deep Dive Questions</h2>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="1-why-transcode-to-multiple-bitrates-upfront-instead-of-on-demand">1. &quot;Why transcode to multiple bitrates upfront instead of on-demand?&quot;</h3>
 <p><strong>What They're Probing</strong>: Understanding of compute costs vs storage costs, user experience trade-offs, and system design economics.</p>
 <p><strong>Strong Answer</strong>:</p>
@@ -879,7 +879,7 @@ keep_current()<br />
 </div>
 <hr />
 <h2 id="why-this-technology">Why This Technology?</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="technology-decision-matrix">Technology Decision Matrix</h3>
 <table>
 <thead>
@@ -937,42 +937,42 @@ keep_current()<br />
 </table>
 <h3 id="encoding-decision-tree">Encoding Decision Tree</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 700px">
+<div class="flow-diagram">
 <div class="flow-row">
-<div class="flow-box primary" style="width: 100%">
+<div class="flow-box primary">
 <div class="flow-box-title">Monthly Video Volume?</div>
 </div>
 </div>
-<div class="flow-arrow" style="font-size: 24px">↓</div>
-<div class="flow-row" style="gap: 16px; align-items: flex-start">
-<div style="flex: 1; min-width: 150px; text-align: center">
+<div class="flow-arrow">↓</div>
+<div class="flow-row">
+<div>
 <div class="flow-box success">
 <div class="flow-box-title">&lt;100 videos</div>
 </div>
 <div class="flow-arrow">↓</div>
-<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; font-size: 12px">
+<div>
 <strong>Cloudflare Stream / Mux</strong><br>
-<span style="color: #475569">~$500/mo</span>
+<span>~$500/mo</span>
 </div>
 </div>
-<div style="flex: 1; min-width: 150px; text-align: center">
+<div>
 <div class="flow-box warning">
 <div class="flow-box-title">100-10K videos</div>
 </div>
 <div class="flow-arrow">↓</div>
-<div style="background: #fff7ed; border-radius: 8px; padding: 12px; font-size: 12px">
+<div>
 <strong>AWS Elemental MediaConvert</strong><br>
-<span style="color: #475569">~$5K/mo</span>
+<span>~$5K/mo</span>
 </div>
 </div>
-<div style="flex: 1; min-width: 150px; text-align: center">
+<div>
 <div class="flow-box error">
 <div class="flow-box-title">&gt;10K videos</div>
 </div>
 <div class="flow-arrow">↓</div>
-<div style="background: #fef2f2; border-radius: 8px; padding: 12px; font-size: 12px">
+<div>
 <strong>Custom Pipeline</strong><br>
-<span style="color: #475569">$50K+/mo</span>
+<span>$50K+/mo</span>
 </div>
 </div>
 </div>
@@ -980,77 +980,77 @@ keep_current()<br />
 </div>
 <h3 id="cdn-selection-framework">CDN Selection Framework</h3>
 <div class="diagram-container">
-<div style="padding: 20px; width: 100%">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<div>
+<table>
 <thead>
-<tr style="background: #f1f5f9">
-<th style="padding: 12px; text-align: left">Monthly Traffic</th>
-<th style="padding: 12px; text-align: left">Recommendation</th>
+<tr>
+<th>Monthly Traffic</th>
+<th>Recommendation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="padding: 10px"><strong>&lt; 1 TB</strong></td>
-<td style="padding: 10px">CloudFront/Bunny CDN free tier</td>
+<td><strong>&lt; 1 TB</strong></td>
+<td>CloudFront/Bunny CDN free tier</td>
 </tr>
 <tr>
-<td style="padding: 10px"><strong>1-100 TB</strong></td>
-<td style="padding: 10px">CloudFront ($0.085/GB → ~$8,500/mo max)</td>
+<td><strong>1-100 TB</strong></td>
+<td>CloudFront ($0.085/GB → ~$8,500/mo max)</td>
 </tr>
 <tr>
-<td style="padding: 10px"><strong>100 TB - 1 PB</strong></td>
-<td style="padding: 10px">Negotiate enterprise CDN rates (~$0.02/GB)</td>
+<td><strong>100 TB - 1 PB</strong></td>
+<td>Negotiate enterprise CDN rates (~$0.02/GB)</td>
 </tr>
 <tr>
-<td style="padding: 10px"><strong>1-10 PB</strong></td>
-<td style="padding: 10px">Multi-CDN strategy (Akamai + CloudFront + Fastly)</td>
+<td><strong>1-10 PB</strong></td>
+<td>Multi-CDN strategy (Akamai + CloudFront + Fastly)</td>
 </tr>
 <tr>
-<td style="padding: 10px"><strong>&gt; 10 PB</strong></td>
-<td style="padding: 10px">Consider own CDN nodes in major IXPs</td>
+<td><strong>&gt; 10 PB</strong></td>
+<td>Consider own CDN nodes in major IXPs</td>
 </tr>
-<tr style="background: #fef2f2">
-<td style="padding: 10px"><strong>&gt; 100 PB</strong></td>
-<td style="padding: 10px">Full Open Connect style (ISP-embedded)</td>
+<tr>
+<td><strong>&gt; 100 PB</strong></td>
+<td>Full Open Connect style (ISP-embedded)</td>
 </tr>
 </tbody>
 </table>
-<div style="background: #eff6ff; border-radius: 8px; padding: 12px; margin-top: 16px; text-align: center">
-<strong style="color: #1d4ed8">Netflix:</strong> ~1 Exabyte/month = Open Connect is 10-100x cheaper than commercial
+<div>
+<strong>Netflix:</strong> ~1 Exabyte/month = Open Connect is 10-100x cheaper than commercial
 </div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="when-simpler-solutions-work">When Simpler Solutions Work</h2>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="simple-video-platform">The "$500/Month Video Platform" That Handles 90% of Use Cases</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 700px">
-<h4 style="color: #16a34a; text-align: center; margin: 0 0 20px 0">SIMPLE VIDEO PLATFORM ARCHITECTURE</h4>
-<p style="text-align: center; color: #475569; margin-bottom: 20px">&lt;1M views/month, &lt;1000 videos</p>
-<div style="background: white; border-radius: 12px; padding: 20px; width: 100%">
-<div class="data-card-accent success" style="padding: 16px; margin-bottom: 12px">
+<div class="flow-diagram">
+<h4>SIMPLE VIDEO PLATFORM ARCHITECTURE</h4>
+<p>&lt;1M views/month, &lt;1000 videos</p>
+<div>
+<div class="data-card-accent success">
 <div class="data-card-title">Upload: Cloudflare Stream or Mux</div>
 <div class="data-card-description">
 Auto-transcodes to HLS with 3 quality levels | Generates thumbnails | Provides embed URL<br>
 <strong>Cost:</strong> ~$0.05/min uploaded + $1/1000 views
 </div>
 </div>
-<div class="data-card-accent info" style="padding: 16px; margin-bottom: 12px">
+<div class="data-card-accent info">
 <div class="data-card-title">Playback: Embed iframe or SDK</div>
 <div class="data-card-description">
 ABR handled automatically | Global CDN included | Analytics included
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<strong style="color: #16a34a">Total Cost (100 hours content, 500K views/month):</strong><br>
-<span style="color: #475569">Upload: $300 (one-time) | Streaming: $500/month</span>
+<div>
+<strong>Total Cost (100 hours content, 500K views/month):</strong><br>
+<span>Upload: $300 (one-time) | Streaming: $500/month</span>
 </div>
-<div style="background: #fef2f2; border-radius: 8px; padding: 12px">
-<strong style="color: #dc2626">What you DON'T need to build:</strong>
-<div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px">
+<div>
+<strong>What you DON'T need to build:</strong>
+<div>
 <span class="diagram-badge error">Transcoding pipeline</span>
 <span class="diagram-badge error">CDN infrastructure</span>
 <span class="diagram-badge error">ABR logic</span>
@@ -1110,7 +1110,7 @@ ABR handled automatically | Global CDN included | Analytics included
 </table>
 <p><strong>Rule of Thumb</strong>: If your video is a feature, not the product, embed YouTube/Vimeo.</p>
 <h3 id="when-you-dont-need-your-own-cdn">When You DON'T Need Your Own CDN</h3>
-<div style="background: rgba(240, 136, 62, 0.1);border-radius: 12px; padding: 16px; margin: 16px 0">
+<div>
 <p><strong>Signs You Should Use CloudFront/Akamai Instead of Building:</strong></p>
 <ol>
 <li><strong>&lt; $100K/month in CDN costs</strong> - Transaction costs of building outweigh savings</li>
@@ -1123,10 +1123,10 @@ ABR handled automatically | Global CDN included | Analytics included
 </div>
 <h3 id="pragmatic-encoding-ladder">HLS with 3 Quality Levels Covers 90% of Use Cases</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 600px">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0">PRAGMATIC ENCODING LADDER</h4>
-<div style="background: white; border-radius: 12px; padding: 20px; width: 100%">
-<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 16px">
+<div class="flow-diagram">
+<h4>PRAGMATIC ENCODING LADDER</h4>
+<div>
+<div>
 <div class="flow-box info">
 <div class="flow-box-title">1080p @ 5 Mbps</div>
 <div class="flow-box-subtitle">Good connections, desktop</div>
@@ -1140,18 +1140,18 @@ ABR handled automatically | Global CDN included | Analytics included
 <div class="flow-box-subtitle">Poor connections, fallback</div>
 </div>
 </div>
-<div style="font-size: 13px; color: #475569">
+<div>
 <strong>Why this works:</strong>
-<ul style="margin: 8px 0; padding-left: 20px">
+<ul>
 <li>H.264 has universal hardware decode support</li>
 <li>3 levels = ~3x storage (manageable)</li>
 <li>Covers 95% of bandwidth conditions</li>
-<li>VP9/AV1 only worth it at >10M users</li>
+<li>VP9/AV1 only worth it at>10M users</li>
 </ul>
 </div>
-<div style="background: #fff7ed; border-radius: 8px; padding: 12px; margin-top: 12px">
-<strong style="color: #d97706">Add 4K only when:</strong>
-<span style="color: #475569"> Premium tier pricing justifies cost AND users have 4K displays + bandwidth</span>
+<div>
+<strong>Add 4K only when:</strong>
+<span> Premium tier pricing justifies cost AND users have 4K displays + bandwidth</span>
 </div>
 </div>
 </div>
@@ -1192,89 +1192,89 @@ ABR handled automatically | Global CDN included | Analytics included
 </div>
 <hr />
 <h2 id="trade-off-analysis-mitigation">Trade-off Analysis & Mitigation</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="critical-trade-offs-in-video-streaming">Critical Trade-offs in Video Streaming</h3>
 <div class="diagram-container">
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px; width: 100%">
-<div style="background: white; border-radius: 12px; padding: 20px">
-<h4 style="color: #1d4ed8; margin: 0 0 16px 0">Trade-off 1: Upfront vs On-Demand Transcoding</h4>
-<div style="margin-bottom: 12px">
-<strong style="color: #16a34a">Upfront (Netflix):</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<div>
+<h4>Trade-off 1: Upfront vs On-Demand Transcoding</h4>
+<div>
+<strong>Upfront (Netflix):</strong>
+<ul>
 <li>PRO: Instant playback, predictable costs</li>
 <li>PRO: Per-title optimization (VMAF-based)</li>
 <li>CON: Wasted compute for unwatched content</li>
 </ul>
 </div>
-<div style="margin-bottom: 12px">
-<strong style="color: #f59e0b">On-Demand:</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<strong>On-Demand:</strong>
+<ul>
 <li>PRO: Pay only for what's watched</li>
 <li>CON: First viewer waits for transcoding</li>
 </ul>
 </div>
-<div style="background: #f0fdf4; border-radius: 6px; padding: 10px; font-size: 12px">
-<strong style="color: #16a34a">Mitigation:</strong> Hybrid - upfront for popular, on-demand for long-tail
+<div>
+<strong>Mitigation:</strong> Hybrid - upfront for popular, on-demand for long-tail
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<h4 style="color: #1d4ed8; margin: 0 0 16px 0">Trade-off 2: Quality Levels vs Storage</h4>
-<div style="margin-bottom: 12px">
-<strong style="color: #16a34a">More levels (6-8):</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<h4>Trade-off 2: Quality Levels vs Storage</h4>
+<div>
+<strong>More levels (6-8):</strong>
+<ul>
 <li>PRO: Smoother quality transitions</li>
 <li>CON: 6-8x storage costs</li>
 </ul>
 </div>
-<div style="margin-bottom: 12px">
-<strong style="color: #f59e0b">Fewer levels (3):</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<strong>Fewer levels (3):</strong>
+<ul>
 <li>PRO: Simple, manageable storage</li>
 <li>CON: Noticeable quality jumps</li>
 </ul>
 </div>
-<div style="background: #f0fdf4; border-radius: 6px; padding: 10px; font-size: 12px">
-<strong style="color: #16a34a">Mitigation:</strong> Start with 3, add levels when user complaints justify
+<div>
+<strong>Mitigation:</strong> Start with 3, add levels when user complaints justify
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<h4 style="color: #1d4ed8; margin: 0 0 16px 0">Trade-off 3: Own CDN vs Commercial</h4>
-<div style="margin-bottom: 12px">
-<strong style="color: #16a34a">Own CDN (Open Connect):</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<h4>Trade-off 3: Own CDN vs Commercial</h4>
+<div>
+<strong>Own CDN (Open Connect):</strong>
+<ul>
 <li>PRO: 10-100x cost savings at scale</li>
 <li>CON: Years to build, massive team</li>
 </ul>
 </div>
-<div style="margin-bottom: 12px">
-<strong style="color: #f59e0b">Commercial CDN:</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<strong>Commercial CDN:</strong>
+<ul>
 <li>PRO: Works today, DDoS protection</li>
 <li>CON: Per-GB costs add up at scale</li>
 </ul>
 </div>
-<div style="background: #f0fdf4; border-radius: 6px; padding: 10px; font-size: 12px">
-<strong style="color: #16a34a">Mitigation:</strong> Commercial until >$500K/month CDN costs
+<div>
+<strong>Mitigation:</strong> Commercial until>$500K/month CDN costs
 </div>
 </div>
-<div style="background: white; border-radius: 12px; padding: 20px">
-<h4 style="color: #1d4ed8; margin: 0 0 16px 0">Trade-off 4: Segment Length</h4>
-<div style="margin-bottom: 12px">
-<strong style="color: #16a34a">Short (2 seconds):</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<h4>Trade-off 4: Segment Length</h4>
+<div>
+<strong>Short (2 seconds):</strong>
+<ul>
 <li>PRO: Faster quality adaptation</li>
 <li>CON: More HTTP requests, worse compression</li>
 </ul>
 </div>
-<div style="margin-bottom: 12px">
-<strong style="color: #f59e0b">Long (10 seconds):</strong>
-<ul style="font-size: 13px; color: #475569; margin: 4px 0; padding-left: 20px">
+<div>
+<strong>Long (10 seconds):</strong>
+<ul>
 <li>PRO: Better compression, fewer requests</li>
 <li>CON: Slow quality adaptation, high startup latency</li>
 </ul>
 </div>
-<div style="background: #f0fdf4; border-radius: 6px; padding: 10px; font-size: 12px">
-<strong style="color: #16a34a">Mitigation:</strong> 4-6 second segments (industry standard)
+<div>
+<strong>Mitigation:</strong> 4-6 second segments (industry standard)
 </div>
 </div>
 </div>
@@ -1282,7 +1282,7 @@ ABR handled automatically | Global CDN included | Analytics included
 </div>
 <hr />
 <h2 id="interview-tips">Interview Tips</h2>
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0; color: white">
+<div>
 <h3 id="key-discussion-points">Key Discussion Points</h3>
 <ol>
 <li><strong>CDN architecture</strong>: Why Netflix built Open Connect and at what scale it makes sense</li>
@@ -1301,9 +1301,9 @@ ABR handled automatically | Global CDN included | Analytics included
 </div>
 <hr />
 <h2 id="red-flags-impressive-statements">Red Flags & Impressive Statements</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+<div>
 <h3 id="red-flags-what-not-to-say">Red Flags (What NOT to Say)</h3>
-<div style="background: rgba(248, 81, 73, 0.1);border-radius: 12px; padding: 16px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1347,7 +1347,7 @@ ABR handled automatically | Global CDN included | Analytics included
 </table>
 </div>
 <h3 id="impressive-statements-what-to-say">Impressive Statements (What TO Say)</h3>
-<div style="background: rgba(46, 160, 67, 0.1);border-radius: 12px; padding: 16px; margin: 16px 0">
+<div>
 <table>
 <thead>
 <tr>
@@ -1389,21 +1389,21 @@ ABR handled automatically | Global CDN included | Analytics included
 </div>
 <h3 id="scale-appropriate-responses">Scale-Appropriate Responses</h3>
 <div class="diagram-container">
-<div class="flow-diagram" style="max-width: 700px">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 20px 0">INTERVIEWER: "Design a video streaming platform"</h4>
-<div style="background: white; border-radius: 12px; padding: 20px; width: 100%">
-<div style="background: #fef2f2; border-radius: 8px; padding: 12px; margin-bottom: 16px">
-<strong style="color: #dc2626">WRONG:</strong> <span style="color: #475569">Jump straight to Netflix architecture</span>
+<div class="flow-diagram">
+<h4>INTERVIEWER: "Design a video streaming platform"</h4>
+<div>
+<div>
+<strong>WRONG:</strong> <span>Jump straight to Netflix architecture</span>
 </div>
-<div style="background: #f0fdf4; border-radius: 8px; padding: 12px">
-<strong style="color: #16a34a">RIGHT:</strong> <span style="color: #475569">"Before diving into architecture, let me clarify scale:</span>
-<ul style="color: #475569; font-size: 13px; margin: 8px 0; padding-left: 20px">
+<div>
+<strong>RIGHT:</strong> <span>"Before diving into architecture, let me clarify scale:</span>
+<ul>
 <li>How many concurrent viewers are we targeting?</li>
 <li>Is this user-generated content or premium licensed?</li>
 <li>What's the latency requirement (VOD vs live)?</li>
 <li>What's the team size and timeline?</li>
 </ul>
-<span style="color: #475569">For 10K users, I'd propose simple architecture with managed services. For 10M users, we'd discuss custom CDN nodes and microservices. For 100M+, we're looking at Netflix-style infrastructure."</span>
+<span>For 10K users, I'd propose simple architecture with managed services. For 10M users, we'd discuss custom CDN nodes and microservices. For 100M+, we're looking at Netflix-style infrastructure."</span>
 </div>
 </div>
 </div>

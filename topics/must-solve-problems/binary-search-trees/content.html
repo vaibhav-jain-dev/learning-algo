@@ -2,9 +2,9 @@
 <h2 id="category-overview">Category Overview</h2>
 <p>A Binary Search Tree (BST) is a hierarchical data structure that combines the efficiency of binary search with the flexibility of linked structures. The defining property is that for every node, all values in its left subtree are strictly less than the node's value, and all values in the right subtree are greater (or equal, depending on implementation).</p>
 <p>BSTs are fundamental because they provide an elegant way to maintain sorted data while supporting efficient insertions, deletions, and lookups. They form the conceptual foundation for more advanced self-balancing trees like AVL trees, Red-Black trees, and B-trees used in databases.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h3 style="color: #1e293b; margin-top: 0">BST Core Properties</h3>
-<div style="color: #334155">
+<div>
+<h3>BST Core Properties</h3>
+<div>
 <ul>
 <li><strong>Ordering Invariant</strong>: Left subtree < Node < Right subtree (for all nodes)</li>
 <li><strong>In-order Traversal</strong>: Yields elements in sorted ascending order</li>
@@ -23,46 +23,46 @@
 <li>Can be solved iteratively or recursively, showing versatility</li>
 </ul>
 <h2 id="key-patterns">Key Patterns</h2>
-<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
-<h3 style="color: #1e293b; margin-top: 0">BST Pattern Recognition Guide</h3>
-<div style="display: flex; flex-direction: column; gap: 12px">
+<div>
+<h3>BST Pattern Recognition Guide</h3>
+<div>
 <!-- BST Property Exploitation -->
-<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 16px; border-radius: 10px">
-<div style="font-weight: 700; color: #1e40af">BST Property Exploitation</div>
-<div style="color: #1e3a8a; font-size: 0.9rem">Finding elements, closest value, min/max finding</div>
-<div style="color: #1e40af; font-size: 0.85rem"><span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px">Search in BST</span> <span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px">Find Closest</span> <span style="background: rgba(59,130,246,0.2); padding: 2px 6px; border-radius: 4px">Validate BST</span></div>
+<div>
+<div>BST Property Exploitation</div>
+<div>Finding elements, closest value, min/max finding</div>
+<div><span>Search in BST</span> <span>Find Closest</span> <span>Validate BST</span></div>
 </div>
 <!-- In-Order Traversal -->
-<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 16px; border-radius: 10px">
-<div style="font-weight: 700; color: #166534">In-Order Traversal</div>
-<div style="color: #14532d; font-size: 0.9rem">Sorted order needed, range queries, k-th elem</div>
-<div style="color: #166534; font-size: 0.85rem"><span style="background: rgba(34,197,94,0.2); padding: 2px 6px; border-radius: 4px">Kth Smallest/Largest</span> <span style="background: rgba(34,197,94,0.2); padding: 2px 6px; border-radius: 4px">Convert to Sorted List</span></div>
+<div>
+<div>In-Order Traversal</div>
+<div>Sorted order needed, range queries, k-th elem</div>
+<div><span>Kth Smallest/Largest</span> <span>Convert to Sorted List</span></div>
 </div>
 <!-- Range Validation -->
-<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 16px; border-radius: 10px">
-<div style="font-weight: 700; color: #7c3aed">Range Validation</div>
-<div style="color: #6b21a8; font-size: 0.9rem">Validating BST, checking constraints at each node</div>
-<div style="color: #7c3aed; font-size: 0.85rem"><span style="background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px">Validate BST</span> <span style="background: rgba(168,85,247,0.2); padding: 2px 6px; border-radius: 4px">Recover BST</span></div>
+<div>
+<div>Range Validation</div>
+<div>Validating BST, checking constraints at each node</div>
+<div><span>Validate BST</span> <span>Recover BST</span></div>
 </div>
 <!-- Construction -->
-<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 16px; border-radius: 10px">
-<div style="font-weight: 700; color: #92400e">Construction</div>
-<div style="color: #78350f; font-size: 0.9rem">Building BST from arrays, reconstruction</div>
-<div style="color: #92400e; font-size: 0.85rem"><span style="background: rgba(245,158,11,0.2); padding: 2px 6px; border-radius: 4px">Sorted Array to BST</span> <span style="background: rgba(245,158,11,0.2); padding: 2px 6px; border-radius: 4px">Reconstruct Preorder</span></div>
+<div>
+<div>Construction</div>
+<div>Building BST from arrays, reconstruction</div>
+<div><span>Sorted Array to BST</span> <span>Reconstruct Preorder</span></div>
 </div>
 <!-- Successor/Predecessor -->
-<div style="display: grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 12px; background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 16px; border-radius: 10px">
-<div style="font-weight: 700; color: #0369a1">Successor/Predecessor</div>
-<div style="color: #0c4a6e; font-size: 0.9rem">Finding next/prev in sorted order</div>
-<div style="color: #0369a1; font-size: 0.85rem"><span style="background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px">BST Iterator</span> <span style="background: rgba(14,165,233,0.2); padding: 2px 6px; border-radius: 4px">In-order Successor</span></div>
+<div>
+<div>Successor/Predecessor</div>
+<div>Finding next/prev in sorted order</div>
+<div><span>BST Iterator</span> <span>In-order Successor</span></div>
 </div>
 </div>
 </div>
 <h3 id="pattern-1-bst-property-exploitation">Pattern 1: BST Property Exploitation</h3>
 <p>The BST property enables binary search in a tree structure. At each node, you can eliminate half the remaining nodes by comparing with the target.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">BST Search Visualization</h4>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h4>BST Search Visualization</h4>
+<pre>
 Finding value 12 in BST:
 <p>10        &lt;- 12 &gt; 10, go RIGHT<br />
 /    <br />
@@ -82,9 +82,9 @@ Finding value 12 in BST:
 </div>
 <h3 id="pattern-2-in-order-traversal">Pattern 2: In-Order Traversal</h3>
 <p>In-order traversal (Left -&gt; Node -&gt; Right) of a BST produces elements in sorted ascending order. This property is crucial for problems involving sorted sequences.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">In-Order Traversal Visualization</h4>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h4>In-Order Traversal Visualization</h4>
+<pre>
 BST Structure:
   10
   /    \
@@ -113,9 +113,9 @@ For kth largest, do reverse in-order (Right -&gt; Node -&gt; Left)<br />
 </div>
 <h3 id="pattern-3-range-validation">Pattern 3: Range Validation</h3>
 <p>When validating a BST, each node must fall within a valid range. This range narrows as you descend the tree.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Range Validation Visualization</h4>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h4>Range Validation Visualization</h4>
+<pre>
 Valid BST Validation:
 <p>10           Range: (-inf, +inf) -&gt; 10 is valid<br />
 /    <br />
@@ -183,9 +183,9 @@ def find_closest_value_in_bst(tree, target):
 <h3 id="problem-2-validate-bst">Problem 2: Validate BST</h3>
 <p><strong>Problem</strong>: Determine if a binary tree is a valid BST.</p>
 <p><strong>Approach</strong>: Pass valid range (min, max) to each node recursively.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Validation Logic</h4>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h4>Validation Logic</h4>
+<pre>
 Key Insight: A node is valid if:
 1. Its value is within the allowed range (min_val, max_val)
 2. All nodes in its left subtree are valid with range (min_val, node.value)
@@ -246,9 +246,9 @@ def validate_bst_inorder(tree):
 <h3 id="problem-3-bst-construction-from-sorted-array">Problem 3: BST Construction from Sorted Array</h3>
 <p><strong>Problem</strong>: Given a sorted array, construct a height-balanced BST.</p>
 <p><strong>Approach</strong>: Use the middle element as root, recursively build subtrees.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Construction Visualization</h4>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h4>Construction Visualization</h4>
+<pre>
 Sorted Array: [1, 2, 5, 7, 10, 13, 14, 15, 22]
   Indices: 0  1  2  3   4   5   6   7   8
 <p>Step 1: Middle index = 4, value = 10 -&gt; ROOT<br />
@@ -350,9 +350,9 @@ def find_kth_smallest(tree, k):
 <h3 id="problem-5-bst-reconstruction-from-preorder">Problem 5: BST Reconstruction from Preorder</h3>
 <p><strong>Problem</strong>: Reconstruct a BST from its preorder traversal.</p>
 <p><strong>Approach</strong>: Use range validation while building - first element is root, subsequent elements must respect BST property.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Preorder Reconstruction Logic</h4>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h4>Preorder Reconstruction Logic</h4>
+<pre>
 Preorder: [10, 4, 2, 1, 5, 17, 19, 18]
 <p>Key Insight: In preorder (Root -&gt; Left -&gt; Right):</p>
 <ul>
@@ -492,64 +492,64 @@ def build_bst(preorder, idx, min_val, max_val):
         return current.value
 </code></pre>
 <h2 id="complexity-analysis-summary">Complexity Analysis Summary</h2>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h3 style="color: #1e293b; margin-top: 0">BST Operations Complexity</h3>
-<table style="width: 100%; border-collapse: collapse; color: #334155">
-<tr style="background: #e2e8f0">
-<th style="padding: 12px; text-align: left">Operation</th>
-<th style="padding: 12px; text-align: left">Average</th>
-<th style="padding: 12px; text-align: left">Worst</th>
-<th style="padding: 12px; text-align: left">Space</th>
+<div>
+<h3>BST Operations Complexity</h3>
+<table>
+<tr>
+<th>Operation</th>
+<th>Average</th>
+<th>Worst</th>
+<th>Space</th>
 </tr>
 <tr>
-<td style="padding: 10px">Search</td>
-<td style="padding: 10px">O(log n)</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(1)</td>
+<td>Search</td>
+<td>O(log n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
 </tr>
 <tr>
-<td style="padding: 10px">Insert</td>
-<td style="padding: 10px">O(log n)</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(1)</td>
+<td>Insert</td>
+<td>O(log n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
 </tr>
 <tr>
-<td style="padding: 10px">Delete</td>
-<td style="padding: 10px">O(log n)</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(1)</td>
+<td>Delete</td>
+<td>O(log n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
 </tr>
 <tr>
-<td style="padding: 10px">Find Min/Max</td>
-<td style="padding: 10px">O(log n)</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(1)</td>
+<td>Find Min/Max</td>
+<td>O(log n)</td>
+<td>O(n)</td>
+<td>O(1)</td>
 </tr>
 <tr>
-<td style="padding: 10px">In-order Traversal</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(h)</td>
+<td>In-order Traversal</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(h)</td>
 </tr>
 <tr>
-<td style="padding: 10px">Validate BST</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(h)</td>
+<td>Validate BST</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(h)</td>
 </tr>
 <tr>
-<td style="padding: 10px">Build from Sorted</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(n)</td>
-<td style="padding: 10px">O(n)</td>
+<td>Build from Sorted</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(n)</td>
 </tr>
 </table>
-<p style="color: #64748b; margin-top: 12px"><em>Note: Worst case occurs when BST degenerates to a linked list (all nodes on one side)</em></p>
+<p><em>Note: Worst case occurs when BST degenerates to a linked list (all nodes on one side)</em></p>
 </div>
 <h2 id="common-mistakes">Common Mistakes</h2>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h3 style="color: #1e293b; margin-top: 0">Pitfalls to Avoid</h3>
-<div style="color: #334155">
+<div>
+<h3>Pitfalls to Avoid</h3>
+<div>
 <ol>
 <li>
 <p><strong>Incorrect Validation</strong>: Only checking immediate parent-child relationship instead of propagating range constraints from ancestors</p>
@@ -589,9 +589,9 @@ def build_bst(preorder, idx, min_val, max_val):
 </div>
 </div>
 <h2 id="interview-tips">Interview Tips</h2>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Problem-Solving Framework for BST</h4>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h4>Problem-Solving Framework for BST</h4>
+<pre>
 Step 1: Identify if BST property helps
   - Can you eliminate half the tree at each step?
   - Is sorted order useful for the problem?
@@ -663,9 +663,9 @@ Step 1: Identify if BST property helps
 <li>Right Smaller Than (BST augmentation)</li>
 <li>Sum BSTs</li>
 </ol>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h3 style="color: #1e293b; margin-top: 0">Quick Reference</h3>
-<pre style="background: #ffffff;border-radius: 8px; padding: 16px; color: #334155">
+<div>
+<h3>Quick Reference</h3>
+<pre>
 Traversal Orders:
   In-order:    Left -> Node -> Right  (gives SORTED order)
   Pre-order:   Node -> Left -> Right  (useful for copying)

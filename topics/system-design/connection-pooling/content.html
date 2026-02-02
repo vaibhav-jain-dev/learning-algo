@@ -1,19 +1,19 @@
 <h1 id="connection-pooling">Connection Pooling</h1>
 <h2 id="overview">Overview</h2>
 <p>Connection pooling is a resource management pattern that maintains a cache of pre-established database or network connections for reuse, eliminating the overhead of creating new connections for each request. This technique is fundamental to building high-performance, scalable systems.</p>
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 24px; margin: 20px 0; color: white">
-<h4 style="margin-top: 0; color: white">Core Insight</h4>
-<p style="margin: 0; font-size: 16px">Connection creation involves TCP handshakes, TLS negotiation, authentication, and session setup - typically 50-200ms. A pool amortizes this cost across thousands of requests by reusing established connections, reducing per-request overhead to sub-millisecond acquisition times.</p>
+<div>
+<h4>Core Insight</h4>
+<p>Connection creation involves TCP handshakes, TLS negotiation, authentication, and session setup - typically 50-200ms. A pool amortizes this cost across thousands of requests by reusing established connections, reducing per-request overhead to sub-millisecond acquisition times.</p>
 </div>
 <p><strong>The Car Rental Analogy</strong>: A connection pool operates like a car rental fleet. Instead of manufacturing a vehicle for each customer (connection creation) and scrapping it afterward (connection teardown), you maintain a managed fleet where customers borrow available vehicles and return them for others to use.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Connection Establishment Cost Breakdown</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
 <div>
-<div style="color: #dc2626; font-weight: 600; margin-bottom: 12px">Without Pooling (Per Request)</div>
-<div style="background: #fef2f2; padding: 16px; border-radius: 8px;font-size: 14px">
-<div style="margin-bottom: 8px"><strong style="color: #1e293b">Sequential Operations:</strong></div>
-<ol style="color: #475569; margin: 0; padding-left: 20px">
+<h4>Connection Establishment Cost Breakdown</h4>
+<div>
+<div>
+<div>Without Pooling (Per Request)</div>
+<div>
+<div><strong>Sequential Operations:</strong></div>
+<ol>
 <li>DNS resolution: 1-50ms (cached) to 200ms</li>
 <li>TCP 3-way handshake: 1 RTT (0.5-100ms)</li>
 <li>TLS handshake: 2 RTTs (1-200ms)</li>
@@ -22,22 +22,22 @@
 <li>Execute query: 1-50ms</li>
 <li>Connection teardown: 1-5ms</li>
 </ol>
-<div style="margin-top: 12px; color: #dc2626; font-weight: 600">Total: 12-665ms per request</div>
+<div>Total: 12-665ms per request</div>
 </div>
 </div>
 <div>
-<div style="color: #16a34a; font-weight: 600; margin-bottom: 12px">With Pooling (Per Request)</div>
-<div style="background: #f0fdf4; padding: 16px; border-radius: 8px;font-size: 14px">
-<div style="margin-bottom: 8px"><strong style="color: #1e293b">Optimized Path:</strong></div>
-<ol style="color: #475569; margin: 0; padding-left: 20px">
+<div>With Pooling (Per Request)</div>
+<div>
+<div><strong>Optimized Path:</strong></div>
+<ol>
 <li>Acquire lock on pool: 0.001-0.01ms</li>
 <li>Find idle connection: 0.001-0.05ms</li>
 <li>Validate connection (optional): 0.1-1ms</li>
 <li>Execute query: 1-50ms</li>
 <li>Return to pool: 0.001-0.01ms</li>
 </ol>
-<div style="margin-top: 12px; color: #16a34a; font-weight: 600">Total: 1-51ms per request</div>
-<div style="margin-top: 8px; color: #166534; font-size: 13px">10-100x improvement in connection overhead</div>
+<div>Total: 1-51ms per request</div>
+<div>10-100x improvement in connection overhead</div>
 </div>
 </div>
 </div>
@@ -47,51 +47,51 @@
 <p>Understanding the complete lifecycle of pooled connections is critical for debugging production issues and optimizing performance.</p>
 <h3 id="connection-states">Connection States</h3>
 <p>Every connection in a pool transitions through well-defined states, each with specific behaviors and constraints.</p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Connection State Machine</h4>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: stretch; gap: 16px">
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #1e40af">CREATING</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Connection is being established. TCP handshake, TLS negotiation, and authentication in progress. Not yet available for checkout.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Transitions to: IDLE (success) | INVALID (failure)</div>
+<div>
+<h4>Connection State Machine</h4>
+<div>
+<div>
+<div>
+<strong>CREATING</strong>
+<p>Connection is being established. TCP handshake, TLS negotiation, and authentication in progress. Not yet available for checkout.</p>
+<div>Transitions to: IDLE (success) | INVALID (failure)</div>
 </div>
-<div style="background: #dcfce7; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #166534">IDLE</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Connection established and available in pool. Ready for checkout. Subject to idle timeout eviction and periodic validation.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Transitions to: IN_USE | VALIDATING | EVICTING</div>
-</div>
-</div>
-<div style="display: flex; align-items: stretch; gap: 16px">
-<div style="background: #fef3c7; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #92400e">IN_USE</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Connection checked out to application code. Pool tracks checkout time for leak detection. Cannot be assigned to other requesters.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Transitions to: IDLE (returned) | INVALID (error)</div>
-</div>
-<div style="background: #e0e7ff; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #4338ca">VALIDATING</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Connection undergoing health check via validation query. Temporarily unavailable. Validation runs before checkout or periodically on idle connections.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Transitions to: IDLE (pass) | INVALID (fail)</div>
+<div>
+<strong>IDLE</strong>
+<p>Connection established and available in pool. Ready for checkout. Subject to idle timeout eviction and periodic validation.</p>
+<div>Transitions to: IN_USE | VALIDATING | EVICTING</div>
 </div>
 </div>
-<div style="display: flex; align-items: stretch; gap: 16px">
-<div style="background: #fef2f2; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #991b1b">INVALID</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Connection marked for removal. May have failed validation, exceeded lifetime, or encountered network error. Will be closed and removed from pool.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Transitions to: CLOSED (terminal)</div>
+<div>
+<div>
+<strong>IN_USE</strong>
+<p>Connection checked out to application code. Pool tracks checkout time for leak detection. Cannot be assigned to other requesters.</p>
+<div>Transitions to: IDLE (returned) | INVALID (error)</div>
 </div>
-<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #334155">CLOSED</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Terminal state. Connection resources released, TCP socket closed. Connection object garbage collected. Pool may create replacement if below minimum.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Terminal state - no transitions</div>
+<div>
+<strong>VALIDATING</strong>
+<p>Connection undergoing health check via validation query. Temporarily unavailable. Validation runs before checkout or periodically on idle connections.</p>
+<div>Transitions to: IDLE (pass) | INVALID (fail)</div>
+</div>
+</div>
+<div>
+<div>
+<strong>INVALID</strong>
+<p>Connection marked for removal. May have failed validation, exceeded lifetime, or encountered network error. Will be closed and removed from pool.</p>
+<div>Transitions to: CLOSED (terminal)</div>
+</div>
+<div>
+<strong>CLOSED</strong>
+<p>Terminal state. Connection resources released, TCP socket closed. Connection object garbage collected. Pool may create replacement if below minimum.</p>
+<div>Terminal state - no transitions</div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="checkout-and-return-mechanics">Checkout and Return Mechanics</h3>
-<div style="background: #fffbeb;border-radius: 12px; padding: 20px; margin: 20px 0">
-<h4 style="color: #92400e; margin-top: 0">Critical Assumption</h4>
-<p style="color: #78350f; margin: 0">Connection pools assume that application code will <strong>always</strong> return borrowed connections, even when exceptions occur. Failure to return connections leads to pool exhaustion - one of the most common production issues.</p>
+<div>
+<h4>Critical Assumption</h4>
+<p>Connection pools assume that application code will <strong>always</strong> return borrowed connections, even when exceptions occur. Failure to return connections leads to pool exhaustion - one of the most common production issues.</p>
 </div>
 <p><strong>Checkout Algorithm (Simplified)</strong>:</p>
 <pre><code>1. Acquire pool lock (mutex/semaphore)
@@ -126,12 +126,12 @@
    c. Optionally create replacement
 5. Release lock
 </code></pre>
-<div style="background: #f0fdf4;border-radius: 12px; padding: 20px; margin: 20px 0">
-<h4 style="color: #166534; margin-top: 0">Design Choice: LIFO vs FIFO Connection Selection</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
 <div>
-<strong style="color: #15803d">LIFO (Most Recently Used)</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h4>Design Choice: LIFO vs FIFO Connection Selection</h4>
+<div>
+<div>
+<strong>LIFO (Most Recently Used)</strong>
+<ul>
 <li>HikariCP default strategy</li>
 <li>Better cache locality (hot connections)</li>
 <li>Allows idle connections to age out</li>
@@ -139,8 +139,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #15803d">FIFO (Least Recently Used)</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>FIFO (Least Recently Used)</strong>
+<ul>
 <li>Even distribution of connection usage</li>
 <li>Prevents connection starvation</li>
 <li>Better for connection-affinity scenarios</li>
@@ -150,13 +150,13 @@
 </div>
 </div>
 <h3 id="interview-questions-connection-lifecycle">Interview Questions: Connection Lifecycle</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Level 1: What happens when a connection is checked out from the pool?</h4>
-<p style="color: #475569; margin-bottom: 16px"><strong>Answer:</strong> The pool acquires a lock, searches for an available idle connection, validates it (if configured), marks it as IN_USE, updates metadata (lastUsedTime, checkout timestamp for leak detection), releases the lock, and returns the connection to the caller. If no idle connections exist and the pool hasn't reached maxSize, a new connection is created. If at maxSize, the requester blocks until a connection becomes available or timeout occurs.</p>
-<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: How does the pool handle the case where all connections are in use and a new request arrives?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> The pool implements a wait queue using a condition variable or semaphore. The requesting thread:</p>
-<ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px">
+<div>
+<h4>Level 1: What happens when a connection is checked out from the pool?</h4>
+<p><strong>Answer:</strong> The pool acquires a lock, searches for an available idle connection, validates it (if configured), marks it as IN_USE, updates metadata (lastUsedTime, checkout timestamp for leak detection), releases the lock, and returns the connection to the caller. If no idle connections exist and the pool hasn't reached maxSize, a new connection is created. If at maxSize, the requester blocks until a connection becomes available or timeout occurs.</p>
+<div>
+<h5>Level 2: How does the pool handle the case where all connections are in use and a new request arrives?</h5>
+<p><strong>Answer:</strong> The pool implements a wait queue using a condition variable or semaphore. The requesting thread:</p>
+<ol>
 <li>Checks if pool size < maxPoolSize; if so, creates a new connection</li>
 <li>If at max, adds itself to a wait queue (typically a ConcurrentLinkedQueue)</li>
 <li>Blocks on a condition variable with the connectionTimeout deadline</li>
@@ -164,14 +164,14 @@
 <li>The awakened thread re-checks for available connections (spurious wakeup handling)</li>
 <li>If timeout expires before acquisition, throws SQLException/TimeoutException</li>
 </ol>
-<p style="color: #475569; margin-top: 12px">HikariCP uses a custom SuspendResumeLock for this, avoiding traditional synchronized blocks for better performance.</p>
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 3: What are the trade-offs between fair (FIFO) and unfair (LIFO) wait queue ordering, and how do they affect tail latency?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong></p>
-<div style="display: grid; gap: 12px">
+<p>HikariCP uses a custom SuspendResumeLock for this, avoiding traditional synchronized blocks for better performance.</p>
 <div>
-<strong style="color: #1e293b">Fair Ordering (FIFO):</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h5>Level 3: What are the trade-offs between fair (FIFO) and unfair (LIFO) wait queue ordering, and how do they affect tail latency?</h5>
+<p><strong>Answer:</strong></p>
+<div>
+<div>
+<strong>Fair Ordering (FIFO):</strong>
+<ul>
 <li>Guarantees bounded wait time - no thread starves</li>
 <li>Better P99 latency under sustained high load</li>
 <li>Requires maintaining queue order, slightly higher overhead</li>
@@ -179,8 +179,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Unfair Ordering (LIFO):</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Unfair Ordering (LIFO):</strong>
+<ul>
 <li>Higher throughput - wakes arbitrary thread, less coordination</li>
 <li>Can cause starvation under sustained load</li>
 <li>Better average latency but worse tail latency</li>
@@ -188,8 +188,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Production Consideration:</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">HikariCP uses unfair ordering by default because in real workloads, the pool rarely stays at 100% utilization continuously. The throughput benefits outweigh starvation risk. However, for latency-sensitive applications (trading systems, real-time APIs), fair ordering with strict timeout enforcement is preferred.</p>
+<strong>Production Consideration:</strong>
+<p>HikariCP uses unfair ordering by default because in real workloads, the pool rarely stays at 100% utilization continuously. The throughput benefits outweigh starvation risk. However, for latency-sensitive applications (trading systems, real-time APIs), fair ordering with strict timeout enforcement is preferred.</p>
 </div>
 </div>
 </div>
@@ -199,50 +199,50 @@
 <h2 id="pool-sizing-strategy">Pool Sizing Strategy</h2>
 <p>Pool sizing is counterintuitive: larger pools often perform worse than smaller ones. Understanding why requires knowledge of database internals and operating system scheduling.</p>
 <h3 id="the-fundamental-constraint">The Fundamental Constraint</h3>
-<div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; padding: 24px; margin: 20px 0; color: white">
-<h4 style="margin-top: 0; color: white">Little's Law Applied to Connection Pools</h4>
-<p style="margin: 0; font-size: 16px">L = lambda * W</p>
-<p style="margin: 8px 0 0 0; font-size: 14px">Where L = average connections in use, lambda = request arrival rate, W = average request duration. If you have 100 requests/second with 50ms average duration, you need only 5 connections on average. Pool size should be based on peak concurrent needs plus headroom, not total request volume.</p>
+<div>
+<h4>Little's Law Applied to Connection Pools</h4>
+<p>L = lambda * W</p>
+<p>Where L = average connections in use, lambda = request arrival rate, W = average request duration. If you have 100 requests/second with 50ms average duration, you need only 5 connections on average. Pool size should be based on peak concurrent needs plus headroom, not total request volume.</p>
 </div>
 <h3 id="the-hikaricp-formula">The HikariCP Formula</h3>
 <p>HikariCP, widely considered the fastest Java connection pool, recommends this formula based on extensive PostgreSQL benchmarking:</p>
 <pre><code>pool_size = ((core_count * 2) + effective_spindle_count)
 </code></pre>
 <p><strong>For modern SSDs</strong>: <code>pool_size = (core_count * 2) + 1</code></p>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Why This Works: Database Thread Model</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
 <div>
-<strong style="color: #334155">CPU-Bound Operations</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0">Query parsing, planning, joins, aggregations, and result formatting are CPU-bound. A database with N CPU cores can only execute N such operations truly in parallel.</p>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 13px; color: #64748b">
+<h4>Why This Works: Database Thread Model</h4>
+<div>
+<div>
+<strong>CPU-Bound Operations</strong>
+<p>Query parsing, planning, joins, aggregations, and result formatting are CPU-bound. A database with N CPU cores can only execute N such operations truly in parallel.</p>
+<div>
 <code>core_count * 2</code> accounts for hyperthreading, where each core can context-switch between two threads while one waits on memory/cache.
 </div>
 </div>
 <div>
-<strong style="color: #334155">I/O-Bound Operations</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0">Reading data from disk allows the CPU to context-switch to another query. Traditional spinning disks have high seek latency, allowing more concurrent queries per spindle.</p>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; font-size: 13px; color: #64748b">
+<strong>I/O-Bound Operations</strong>
+<p>Reading data from disk allows the CPU to context-switch to another query. Traditional spinning disks have high seek latency, allowing more concurrent queries per spindle.</p>
+<div>
 <code>effective_spindle_count</code> is 1 for SSD (minimal I/O wait) or higher for RAID arrays with spinning disks.
 </div>
 </div>
 </div>
 </div>
 <h3 id="sizing-examples">Sizing Examples</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Production Pool Sizing Scenarios</h4>
-<div style="display: grid; gap: 16px">
-<div style="background: #f1f5f9; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Scenario 1: Single Application, Dedicated Database</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<div>
+<h4>Production Pool Sizing Scenarios</h4>
+<div>
+<div>
+<strong>Scenario 1: Single Application, Dedicated Database</strong>
+<ul>
 <li>Database: 8-core server with NVMe SSD</li>
 <li>Optimal pool: (8 * 2) + 1 = 17 connections</li>
 <li>With 4 app server instances: 17 / 4 = 4-5 connections per instance</li>
 </ul>
 </div>
-<div style="background: #f1f5f9; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Scenario 2: Microservices with Shared Database</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<div>
+<strong>Scenario 2: Microservices with Shared Database</strong>
+<ul>
 <li>Database: 16-core with SSD, max_connections = 200</li>
 <li>Optimal active: (16 * 2) + 1 = 33 concurrent queries</li>
 <li>20 microservices, each with 3 instances = 60 connection sources</li>
@@ -250,9 +250,9 @@
 <li>Total pool capacity: 60 * 2 = 120 < 200 (safe margin for admin)</li>
 </ul>
 </div>
-<div style="background: #f1f5f9; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Scenario 3: Serverless with External Pooler</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<div>
+<strong>Scenario 3: Serverless with External Pooler</strong>
+<ul>
 <li>Lambda functions: 1000 concurrent executions possible</li>
 <li>Database: 8-core PostgreSQL, max_connections = 100</li>
 <li>Without pooler: 1000 Lambdas = 1000 connections needed (impossible)</li>
@@ -263,12 +263,12 @@
 </div>
 </div>
 <h3 id="the-oversizing-problem">The Oversizing Problem</h3>
-<div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #991b1b; margin-top: 0">Why Bigger Pools Are Slower</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
 <div>
-<strong style="color: #dc2626">Pool Size: 200 Connections</strong>
-<ul style="color: #7f1d1d; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h4>Why Bigger Pools Are Slower</h4>
+<div>
+<div>
+<strong>Pool Size: 200 Connections</strong>
+<ul>
 <li>200 queries competing for 8 CPU cores</li>
 <li>OS context-switches between 200 database backends</li>
 <li>Each context switch: 1-10 microseconds + cache invalidation</li>
@@ -278,8 +278,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #16a34a">Pool Size: 17 Connections</strong>
-<ul style="color: #166534; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Pool Size: 17 Connections</strong>
+<ul>
 <li>17 queries with minimal contention</li>
 <li>Most queries run to completion without preemption</li>
 <li>Excellent CPU cache utilization</li>
@@ -291,27 +291,27 @@
 </div>
 </div>
 <h3 id="interview-questions-pool-sizing">Interview Questions: Pool Sizing</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Level 1: How do you determine the optimal connection pool size?</h4>
-<p style="color: #475569; margin-bottom: 16px"><strong>Answer:</strong> Start with the HikariCP formula: (CPU cores * 2) + effective_spindle_count. For a database server with 8 cores and SSD storage, this gives (8 * 2) + 1 = 17 connections. This accounts for hyperthreading (2x cores) and minimal I/O wait with SSDs (+1). The key insight is that the database can only truly parallelize work up to its CPU count, and adding more connections creates context-switching overhead that slows everything down.</p>
-<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: How should pool sizing change when you have multiple application instances connecting to the same database?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> The total optimal connection count remains the same (based on database capacity), but must be divided across instances:</p>
-<ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px">
+<div>
+<h4>Level 1: How do you determine the optimal connection pool size?</h4>
+<p><strong>Answer:</strong> Start with the HikariCP formula: (CPU cores * 2) + effective_spindle_count. For a database server with 8 cores and SSD storage, this gives (8 * 2) + 1 = 17 connections. This accounts for hyperthreading (2x cores) and minimal I/O wait with SSDs (+1). The key insight is that the database can only truly parallelize work up to its CPU count, and adding more connections creates context-switching overhead that slows everything down.</p>
+<div>
+<h5>Level 2: How should pool sizing change when you have multiple application instances connecting to the same database?</h5>
+<p><strong>Answer:</strong> The total optimal connection count remains the same (based on database capacity), but must be divided across instances:</p>
+<ol>
 <li><strong>Calculate database optimal</strong>: (cores * 2) + 1 = total_optimal</li>
 <li><strong>Inventory connection sources</strong>: Count all app instances, background workers, admin tools</li>
 <li><strong>Allocate per source</strong>: total_optimal / source_count = per_instance_size</li>
 <li><strong>Set minimums</strong>: Ensure at least 2 connections per instance for availability</li>
 <li><strong>Reserve headroom</strong>: Keep 10-20% of max_connections for admin access</li>
 </ol>
-<p style="color: #475569; margin-top: 12px"><strong>Example</strong>: 16-core database (optimal: 33), 10 app instances = 3 connections each. Total: 30 connections, leaving headroom in typical max_connections=100.</p>
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 3: How does pool sizing interact with connection multiplexers like PgBouncer, and when would you use different pooling modes?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> Connection multiplexers add a layer between applications and databases, enabling connection sharing across process boundaries:</p>
-<div style="display: grid; gap: 12px">
+<p><strong>Example</strong>: 16-core database (optimal: 33), 10 app instances = 3 connections each. Total: 30 connections, leaving headroom in typical max_connections=100.</p>
 <div>
-<strong style="color: #1e293b">Session Pooling Mode:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h5>Level 3: How does pool sizing interact with connection multiplexers like PgBouncer, and when would you use different pooling modes?</h5>
+<p><strong>Answer:</strong> Connection multiplexers add a layer between applications and databases, enabling connection sharing across process boundaries:</p>
+<div>
+<div>
+<strong>Session Pooling Mode:</strong>
+<ul>
 <li>Client holds server connection for entire session</li>
 <li>Supports all PostgreSQL features (prepared statements, temp tables)</li>
 <li>Limited multiplexing benefit - useful mainly for connection limiting</li>
@@ -319,8 +319,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Transaction Pooling Mode:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Transaction Pooling Mode:</strong>
+<ul>
 <li>Server connection assigned only during transaction</li>
 <li>Excellent multiplexing - 1000 clients can share 20 connections</li>
 <li>Breaks: session variables, prepared statements, LISTEN/NOTIFY</li>
@@ -328,8 +328,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Statement Pooling Mode:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Statement Pooling Mode:</strong>
+<ul>
 <li>Server connection reassigned after each statement</li>
 <li>Maximum multiplexing, but breaks multi-statement transactions</li>
 <li>Only works for autocommit workloads</li>
@@ -337,8 +337,8 @@
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Sizing with Multiplexer:</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">PgBouncer-to-database pool uses HikariCP formula. Client-to-PgBouncer can be much larger (thousands) since these are lightweight. The key metric becomes transaction queue depth in PgBouncer, not connection count. Alert when queue time exceeds acceptable latency thresholds.</p>
+<strong>Sizing with Multiplexer:</strong>
+<p>PgBouncer-to-database pool uses HikariCP formula. Client-to-PgBouncer can be much larger (thousands) since these are lightweight. The key metric becomes transaction queue depth in PgBouncer, not connection count. Alert when queue time exceeds acceptable latency thresholds.</p>
 </div>
 </div>
 </div>
@@ -348,31 +348,31 @@
 <h2 id="health-checks-and-connection-validation">Health Checks and Connection Validation</h2>
 <p>Connections can become invalid while sitting idle in the pool due to network issues, database restarts, firewall timeouts, or load balancer idle connection termination. Validation ensures applications don't receive broken connections.</p>
 <h3 id="validation-strategies">Validation Strategies</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Connection Validation Approaches</h4>
-<div style="display: grid; gap: 16px">
-<div style="display: flex; gap: 16px; align-items: stretch">
-<div style="background: #dcfce7; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #166534">Test on Borrow</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Validate connection before returning to caller. Guarantees valid connection but adds latency to every checkout.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Overhead: 0.5-2ms per checkout</div>
+<div>
+<h4>Connection Validation Approaches</h4>
+<div>
+<div>
+<div>
+<strong>Test on Borrow</strong>
+<p>Validate connection before returning to caller. Guarantees valid connection but adds latency to every checkout.</p>
+<div>Overhead: 0.5-2ms per checkout</div>
 </div>
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #1e40af">Test on Return</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Validate when connection returned. Catches connections broken during use but doesn't prevent stale idle connections.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Overhead: 0.5-2ms per return (async possible)</div>
+<div>
+<strong>Test on Return</strong>
+<p>Validate when connection returned. Catches connections broken during use but doesn't prevent stale idle connections.</p>
+<div>Overhead: 0.5-2ms per return (async possible)</div>
 </div>
 </div>
-<div style="display: flex; gap: 16px; align-items: stretch">
-<div style="background: #fef3c7; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #92400e">Test While Idle</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Background thread periodically validates idle connections. No checkout latency but may miss connections that break between validation and use.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Overhead: Background thread, periodic DB load</div>
+<div>
+<div>
+<strong>Test While Idle</strong>
+<p>Background thread periodically validates idle connections. No checkout latency but may miss connections that break between validation and use.</p>
+<div>Overhead: Background thread, periodic DB load</div>
 </div>
-<div style="background: #f3e8ff; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #7c3aed">Test if Idle Threshold</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Only validate if connection idle longer than threshold (e.g., 30 seconds). Balances validation overhead with staleness risk.</p>
-<div style="margin-top: 8px; font-size: 12px; color: #64748b">Overhead: Conditional, typically &lt;10% of checkouts</div>
+<div>
+<strong>Test if Idle Threshold</strong>
+<p>Only validate if connection idle longer than threshold (e.g., 30 seconds). Balances validation overhead with staleness risk.</p>
+<div>Overhead: Conditional, typically &lt;10% of checkouts</div>
 </div>
 </div>
 </div>
@@ -396,10 +396,10 @@ SELECT 1
 -- Oracle (alternative with session check)
 SELECT 1 FROM v$session WHERE audsid = SYS_CONTEXT('USERENV', 'SESSIONID')
 </code></pre>
-<div style="background: #fffbeb;border-radius: 12px; padding: 20px; margin: 20px 0">
-<h4 style="color: #92400e; margin-top: 0">Trade-off: Validation Overhead vs Reliability</h4>
-<p style="color: #78350f; margin: 0 0 12px 0">JDBC 4.0+ introduced <code>Connection.isValid(timeout)</code> which uses lightweight protocol-level pings instead of executing queries. HikariCP uses this by default, avoiding the overhead of query execution while still verifying the connection is responsive.</p>
-<p style="color: #78350f; margin: 0"><strong>Recommendation:</strong> Use native isValid() for JDBC 4+ drivers. For older drivers or when database-side state must be verified, use lightweight validation queries. Set validation timeout lower than connection timeout to allow retry.</p>
+<div>
+<h4>Trade-off: Validation Overhead vs Reliability</h4>
+<p>JDBC 4.0+ introduced <code>Connection.isValid(timeout)</code> which uses lightweight protocol-level pings instead of executing queries. HikariCP uses this by default, avoiding the overhead of query execution while still verifying the connection is responsive.</p>
+<p><strong>Recommendation:</strong> Use native isValid() for JDBC 4+ drivers. For older drivers or when database-side state must be verified, use lightweight validation queries. Set validation timeout lower than connection timeout to allow retry.</p>
 </div>
 <h3 id="handling-network-partitions-and-stale-connections">Handling Network Partitions and Stale Connections</h3>
 <p>Connections can become &quot;half-open&quot; - the client believes the connection is alive, but the server has closed it. This commonly occurs due to:</p>
@@ -409,58 +409,58 @@ SELECT 1 FROM v$session WHERE audsid = SYS_CONTEXT('USERENV', 'SESSIONID')
 <li><strong>NAT gateway timeouts</strong>: Cloud NAT typically 5-15 minutes</li>
 <li><strong>Database server restarts</strong>: Planned maintenance, failover events</li>
 </ol>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Connection Keepalive Configuration</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
 <div>
-<strong style="color: #334155">TCP Keepalive (OS Level)</strong>
-<pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto">
+<h4>Connection Keepalive Configuration</h4>
+<div>
+<div>
+<strong>TCP Keepalive (OS Level)</strong>
+<pre>
 # Linux - in /etc/sysctl.conf
   net.ipv4.tcp_keepalive_time = 60
   net.ipv4.tcp_keepalive_intvl = 10
 net.ipv4.tcp_keepalive_probes = 6</pre>
-<p style="color: #64748b; font-size: 13px; margin-top: 8px">Sends keepalive after 60s idle, retries every 10s, gives up after 6 failures (120s total)</p>
+<p>Sends keepalive after 60s idle, retries every 10s, gives up after 6 failures (120s total)</p>
 </div>
 <div>
-<strong style="color: #334155">Application Keepalive (Pool Level)</strong>
-<pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto">
+<strong>Application Keepalive (Pool Level)</strong>
+<pre>
 # HikariCP configuration
   keepaliveTime: 30000  # 30 seconds
   validationTimeout: 5000  # 5 seconds
 <h1 id="pgbouncer">PgBouncer</h1>
 <p>server_idle_timeout = 60</pre></p>
-<p style="color: #64748b; font-size: 13px; margin-top: 8px">Pool sends lightweight ping to keep connections alive and detect failures proactively</p>
+<p>Pool sends lightweight ping to keep connections alive and detect failures proactively</p>
 </div>
 </div>
 </div>
 <h3 id="interview-questions-health-checks">Interview Questions: Health Checks</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Level 1: How do connection pools detect and handle broken connections?</h4>
-<p style="color: #475569; margin-bottom: 16px"><strong>Answer:</strong> Pools use multiple strategies: (1) Validation queries or JDBC isValid() calls before returning connections to callers, (2) Background threads that periodically test idle connections, (3) Exception handling that marks connections invalid when database errors occur, and (4) Maximum lifetime limits that force connections to be recycled regardless of apparent health. When a broken connection is detected, the pool removes it and optionally creates a replacement to maintain minimum pool size.</p>
-<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: What happens when the database server restarts and all pooled connections become invalid simultaneously?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> This is a "connection storm" scenario with cascading effects:</p>
-<ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px">
+<div>
+<h4>Level 1: How do connection pools detect and handle broken connections?</h4>
+<p><strong>Answer:</strong> Pools use multiple strategies: (1) Validation queries or JDBC isValid() calls before returning connections to callers, (2) Background threads that periodically test idle connections, (3) Exception handling that marks connections invalid when database errors occur, and (4) Maximum lifetime limits that force connections to be recycled regardless of apparent health. When a broken connection is detected, the pool removes it and optionally creates a replacement to maintain minimum pool size.</p>
+<div>
+<h5>Level 2: What happens when the database server restarts and all pooled connections become invalid simultaneously?</h5>
+<p><strong>Answer:</strong> This is a "connection storm" scenario with cascading effects:</p>
+<ol>
 <li><strong>Detection</strong>: First request per connection fails with connection reset or timeout</li>
 <li><strong>Pool response</strong>: Each failed connection marked invalid, removed from pool</li>
 <li><strong>Replacement surge</strong>: Pool attempts to create new connections simultaneously</li>
 <li><strong>Database impact</strong>: Hundreds of connection attempts hit recovering database</li>
 <li><strong>Potential overload</strong>: Database authentication becomes bottleneck</li>
 </ol>
-<p style="color: #475569; margin-top: 12px"><strong>Mitigations</strong>:</p>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<p><strong>Mitigations</strong>:</p>
+<ul>
 <li>Exponential backoff on connection creation failures</li>
 <li>Rate limiting connection creation attempts (HikariCP does this)</li>
 <li>Circuit breaker pattern to stop attempts when database is down</li>
 <li>Graceful degradation - return errors rather than queue indefinitely</li>
 </ul>
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 3: How would you design a connection pool that maintains high availability during a database failover event in a primary-replica setup?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> This requires coordination between pool, application, and database infrastructure:</p>
-<div style="display: grid; gap: 12px">
 <div>
-<strong style="color: #1e293b">DNS-Based Failover:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h5>Level 3: How would you design a connection pool that maintains high availability during a database failover event in a primary-replica setup?</h5>
+<p><strong>Answer:</strong> This requires coordination between pool, application, and database infrastructure:</p>
+<div>
+<div>
+<strong>DNS-Based Failover:</strong>
+<ul>
 <li>Connection string uses DNS name (e.g., primary.db.internal)</li>
 <li>DNS updated to point to new primary after failover</li>
 <li>Pool must respect DNS TTL - don't cache resolved IPs indefinitely</li>
@@ -468,8 +468,8 @@ net.ipv4.tcp_keepalive_probes = 6</pre>
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Smart Driver Failover (e.g., AWS RDS Proxy, PgPool):</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Smart Driver Failover (e.g., AWS RDS Proxy, PgPool):</strong>
+<ul>
 <li>Proxy maintains connections to all nodes</li>
 <li>Detects failover via replication lag or write attempt failure</li>
 <li>Transparently redirects to new primary</li>
@@ -477,8 +477,8 @@ net.ipv4.tcp_keepalive_probes = 6</pre>
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Application-Level Handling:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Application-Level Handling:</strong>
+<ul>
 <li>Detect "read-only" error indicating writes to replica</li>
 <li>Invalidate all connections on topology change detection</li>
 <li>Implement retry with backoff for transient failures</li>
@@ -486,8 +486,8 @@ net.ipv4.tcp_keepalive_probes = 6</pre>
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Critical Timing Considerations:</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Failover typically takes 30-60 seconds. During this window: (1) Queue requests don't accept new connections, (2) In-flight transactions may need rollback and retry, (3) Connection timeout should be shorter than typical failover time to allow retry, (4) Application health checks should account for database unavailability.</p>
+<strong>Critical Timing Considerations:</strong>
+<p>Failover typically takes 30-60 seconds. During this window: (1) Queue requests don't accept new connections, (2) In-flight transactions may need rollback and retry, (3) Connection timeout should be shorter than typical failover time to allow retry, (4) Application health checks should account for database unavailability.</p>
 </div>
 </div>
 </div>
@@ -497,54 +497,54 @@ net.ipv4.tcp_keepalive_probes = 6</pre>
 <h2 id="pool-exhaustion">Pool Exhaustion</h2>
 <p>Pool exhaustion occurs when all connections are checked out and new requests cannot acquire connections within the timeout period. This is one of the most common and impactful production issues.</p>
 <h3 id="causes-of-pool-exhaustion">Causes of Pool Exhaustion</h3>
-<div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #991b1b; margin-top: 0">Common Pool Exhaustion Patterns</h4>
-<div style="display: grid; gap: 12px">
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Connection Leaks</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Connections acquired but never returned due to missing finally blocks, exception paths that skip return, or references held indefinitely. Pool gradually drains until exhausted.</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<h4>Common Pool Exhaustion Patterns</h4>
+<div>
+<div>
+<strong>Connection Leaks</strong>
+<p>Connections acquired but never returned due to missing finally blocks, exception paths that skip return, or references held indefinitely. Pool gradually drains until exhausted.</p>
+<div>
 <strong>Detection:</strong> Active connections increases monotonically without corresponding release. Leak detection timeout triggers warnings.
 </div>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Long-Running Transactions</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Transactions that hold connections for extended periods (large batch imports, report generation, external API calls within transaction). Starves short transactions.</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<strong>Long-Running Transactions</strong>
+<p>Transactions that hold connections for extended periods (large batch imports, report generation, external API calls within transaction). Starves short transactions.</p>
+<div>
 <strong>Detection:</strong> Average transaction duration spikes. Some connections held for minutes while others cycle rapidly.
 </div>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Downstream Dependency Timeout</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Application holds database connection while waiting for slow external service. Connection tied up even though database is idle. 30-second API timeout = 30-second connection hold.</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<strong>Downstream Dependency Timeout</strong>
+<p>Application holds database connection while waiting for slow external service. Connection tied up even though database is idle. 30-second API timeout = 30-second connection hold.</p>
+<div>
 <strong>Detection:</strong> Correlates with external service latency spikes. Connection in use but database shows connection idle.
 </div>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Traffic Spike Beyond Capacity</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Legitimate traffic increase exceeds pool's ability to serve. All connections in use for valid work. Queued requests timeout waiting.</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<strong>Traffic Spike Beyond Capacity</strong>
+<p>Legitimate traffic increase exceeds pool's ability to serve. All connections in use for valid work. Queued requests timeout waiting.</p>
+<div>
 <strong>Detection:</strong> Connection wait time increases across all requests. High utilization correlates with request volume.
 </div>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Database Lock Contention</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Queries blocked waiting for row/table locks. Connections held while waiting for locks that never release (deadlock) or release slowly (hot row updates).</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<strong>Database Lock Contention</strong>
+<p>Queries blocked waiting for row/table locks. Connections held while waiting for locks that never release (deadlock) or release slowly (hot row updates).</p>
+<div>
 <strong>Detection:</strong> Database shows queries in "waiting" state. <code>pg_stat_activity</code> shows lock waits.
 </div>
 </div>
 </div>
 </div>
 <h3 id="pool-exhaustion-detection-and-prevention">Pool Exhaustion Detection and Prevention</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Leak Detection Mechanisms</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
 <div>
-<strong style="color: #334155">HikariCP Leak Detection</strong>
-<pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto">
-# Warn if connection held > 60 seconds
+<h4>Leak Detection Mechanisms</h4>
+<div>
+<div>
+<strong>HikariCP Leak Detection</strong>
+<pre>
+# Warn if connection held> 60 seconds
   leakDetectionThreshold: 60000
 <h1 id="log-output-includes-stack-trace">Log output includes stack trace</h1>
 <h1 id="where-connection-was-acquired">where connection was acquired:</h1>
@@ -553,8 +553,8 @@ net.ipv4.tcp_keepalive_probes = 6</pre>
 <h1 id="followspre">follows</pre></h1>
 </div>
 <div>
-<strong style="color: #334155">Application-Level Tracking</strong>
-<pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto">
+<strong>Application-Level Tracking</strong>
+<pre>
 # Store checkout location
   checkout_info = {
   'thread': threading.current_thread(),
@@ -567,12 +567,12 @@ active_checkouts[conn.id] = checkout_info</pre>
 </div>
 </div>
 <h3 id="graceful-degradation-strategies">Graceful Degradation Strategies</h3>
-<div style="background: #f0fdf4;border-radius: 12px; padding: 20px; margin: 20px 0">
-<h4 style="color: #166534; margin-top: 0">Design Choice: Fail-Fast vs Queue-and-Wait</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
 <div>
-<strong style="color: #15803d">Fail-Fast (Short Timeout)</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h4>Design Choice: Fail-Fast vs Queue-and-Wait</h4>
+<div>
+<div>
+<strong>Fail-Fast (Short Timeout)</strong>
+<ul>
 <li>Connection timeout: 1-3 seconds</li>
 <li>Immediately return error to client</li>
 <li>Prevents request pile-up</li>
@@ -581,8 +581,8 @@ active_checkouts[conn.id] = checkout_info</pre>
 </ul>
 </div>
 <div>
-<strong style="color: #15803d">Queue-and-Wait (Longer Timeout)</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Queue-and-Wait (Longer Timeout)</strong>
+<ul>
 <li>Connection timeout: 30-60 seconds</li>
 <li>Requests queue, eventually complete</li>
 <li>Higher success rate for batch/background jobs</li>
@@ -593,13 +593,13 @@ active_checkouts[conn.id] = checkout_info</pre>
 </div>
 </div>
 <h3 id="interview-questions-pool-exhaustion">Interview Questions: Pool Exhaustion</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Level 1: What causes connection pool exhaustion and how do you detect it?</h4>
-<p style="color: #475569; margin-bottom: 16px"><strong>Answer:</strong> Pool exhaustion occurs when all connections are in use and requests cannot acquire new ones. Primary causes include: connection leaks (not returning connections), long-running transactions, holding connections during external API calls, traffic spikes, and database lock contention. Detection involves monitoring metrics like: pool utilization (should stay below 80%), connection wait time (spikes indicate exhaustion), timeout counts (any is concerning), and active connection duration (identifies leaks). Most pools provide these metrics via JMX, Prometheus endpoints, or logging.</p>
-<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: How would you debug a connection leak in a production Java application?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> Systematic debugging approach:</p>
-<ol style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px">
+<div>
+<h4>Level 1: What causes connection pool exhaustion and how do you detect it?</h4>
+<p><strong>Answer:</strong> Pool exhaustion occurs when all connections are in use and requests cannot acquire new ones. Primary causes include: connection leaks (not returning connections), long-running transactions, holding connections during external API calls, traffic spikes, and database lock contention. Detection involves monitoring metrics like: pool utilization (should stay below 80%), connection wait time (spikes indicate exhaustion), timeout counts (any is concerning), and active connection duration (identifies leaks). Most pools provide these metrics via JMX, Prometheus endpoints, or logging.</p>
+<div>
+<h5>Level 2: How would you debug a connection leak in a production Java application?</h5>
+<p><strong>Answer:</strong> Systematic debugging approach:</p>
+<ol>
 <li><strong>Enable leak detection</strong>: Set HikariCP <code>leakDetectionThreshold=60000</code> to log stack traces of connections held over 60 seconds</li>
 <li><strong>Analyze stack traces</strong>: Leaked connection logs show exact code location where connection was acquired but not returned</li>
 <li><strong>Check exception handlers</strong>: Look for try blocks without finally, or catch blocks that return/throw without releasing</li>
@@ -607,44 +607,44 @@ active_checkouts[conn.id] = checkout_info</pre>
 <li><strong>Review async code</strong>: CompletableFuture chains, callbacks, and reactive streams often lose connection context</li>
 <li><strong>Database-side verification</strong>: Query pg_stat_activity/information_schema.processlist to see actual connection states</li>
 </ol>
-<pre style="background: #f1f5f9; color: #1e293b;padding: 12px; border-radius: 6px; font-size: 12px; margin-top: 12px; overflow-x: auto">
+<pre>
   -- PostgreSQL: Find long-running idle connections
   SELECT pid, usename, application_name, state,
   query_start, now() - query_start as duration
   FROM pg_stat_activity
   WHERE state = 'idle'
-AND now() - query_start > interval '5 minutes';</pre>
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 3: Design a connection pool that automatically recovers from exhaustion without operator intervention.</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> Self-healing pool design requires multiple defense layers:</p>
-<div style="display: grid; gap: 12px">
+AND now() - query_start> interval '5 minutes';</pre>
 <div>
-<strong style="color: #1e293b">Proactive Prevention:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h5>Level 3: Design a connection pool that automatically recovers from exhaustion without operator intervention.</h5>
+<p><strong>Answer:</strong> Self-healing pool design requires multiple defense layers:</p>
+<div>
+<div>
+<strong>Proactive Prevention:</strong>
+<ul>
 <li><strong>Hard lease timeout</strong>: Force-close connections held beyond maximum duration (e.g., 5 minutes) regardless of application state. Log the forced closure with stack trace for debugging.</li>
 <li><strong>Connection wrapper</strong>: Wrap returned connections to track checkout time and implement automatic return on GC finalization (backup only, not primary mechanism)</li>
 <li><strong>Request-scoped connections</strong>: Tie connection lifecycle to HTTP request lifecycle - framework ensures return on request completion</li>
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Reactive Recovery:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Reactive Recovery:</strong>
+<ul>
 <li><strong>Circuit breaker integration</strong>: When pool exhaustion rate exceeds threshold, open circuit to shed load immediately rather than queueing</li>
 <li><strong>Priority lanes</strong>: Reserve 10-20% of pool for critical operations (health checks, admin). Regular traffic cannot access reserved connections.</li>
 <li><strong>Elastic pool bounds</strong>: Allow temporary overflow above maxSize during recovery, with aggressive eviction once pressure subsides</li>
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Observability for Automated Response:</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Observability for Automated Response:</strong>
+<ul>
 <li>Export metrics: active_connections, waiting_threads, acquisition_time_p99</li>
 <li>Alert pipeline: PagerDuty/automated runbook when thresholds exceeded</li>
 <li>Automated remediation: Scale app instances, trigger connection reset, failover to read replica for non-write traffic</li>
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Implementation Trade-off:</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Force-closing connections may leave database transactions uncommitted. The pool must issue ROLLBACK before closing and log affected request IDs for manual reconciliation. Some data loss is acceptable compared to complete system unavailability - this is a conscious design trade-off documented in runbooks.</p>
+<strong>Implementation Trade-off:</strong>
+<p>Force-closing connections may leave database transactions uncommitted. The pool must issue ROLLBACK before closing and log affected request IDs for manual reconciliation. Some data loss is acceptable compared to complete system unavailability - this is a conscious design trade-off documented in runbooks.</p>
 </div>
 </div>
 </div>
@@ -654,27 +654,27 @@ AND now() - query_start > interval '5 minutes';</pre>
 <h2 id="hikaricp-deep-dive">HikariCP Deep Dive</h2>
 <p>HikariCP is the de facto standard for Java connection pooling, known for its performance and reliability. Understanding its internals reveals best practices applicable to any pool implementation.</p>
 <h3 id="why-hikaricp-is-fast">Why HikariCP Is Fast</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">HikariCP Performance Optimizations</h4>
-<div style="display: grid; gap: 16px">
-<div style="display: flex; gap: 16px; align-items: stretch">
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #1e40af">ConcurrentBag Data Structure</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Custom lock-free data structure using ThreadLocal for thread-affinity. Each thread preferentially reuses its last connection, minimizing CAS operations and cache misses.</p>
+<div>
+<h4>HikariCP Performance Optimizations</h4>
+<div>
+<div>
+<div>
+<strong>ConcurrentBag Data Structure</strong>
+<p>Custom lock-free data structure using ThreadLocal for thread-affinity. Each thread preferentially reuses its last connection, minimizing CAS operations and cache misses.</p>
 </div>
-<div style="background: #dcfce7; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #166534">FastList Implementation</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Optimized ArrayList replacement that eliminates range checking on get(), uses direct array access, and optimizes for LIFO access patterns typical in connection pools.</p>
+<div>
+<strong>FastList Implementation</strong>
+<p>Optimized ArrayList replacement that eliminates range checking on get(), uses direct array access, and optimizes for LIFO access patterns typical in connection pools.</p>
 </div>
 </div>
-<div style="display: flex; gap: 16px; align-items: stretch">
-<div style="background: #fef3c7; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #92400e">Bytecode-Level Proxying</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Uses Javassist to generate proxy classes at startup rather than reflection-based proxies at runtime. Eliminates reflection overhead on every method call.</p>
+<div>
+<div>
+<strong>Bytecode-Level Proxying</strong>
+<p>Uses Javassist to generate proxy classes at startup rather than reflection-based proxies at runtime. Eliminates reflection overhead on every method call.</p>
 </div>
-<div style="background: #f3e8ff; padding: 16px; border-radius: 8px; flex: 1">
-<strong style="color: #7c3aed">Micro-optimization Focus</strong>
-<p style="color: #475569; font-size: 14px; margin: 8px 0 0 0">Avoids Collections.synchronizedList, uses primitive arrays, eliminates unnecessary object creation, optimizes for modern JIT compilation patterns.</p>
+<div>
+<strong>Micro-optimization Focus</strong>
+<p>Avoids Collections.synchronizedList, uses primitive arrays, eliminates unnecessary object creation, optimizes for modern JIT compilation patterns.</p>
 </div>
 </div>
 </div>
@@ -710,10 +710,10 @@ spring:
       transaction-isolation: TRANSACTION_READ_COMMITTED
       initialization-fail-timeout: 1  # Fail fast on startup
 </code></pre>
-<div style="background: #fffbeb;border-radius: 12px; padding: 20px; margin: 20px 0">
-<h4 style="color: #92400e; margin-top: 0">Critical Configuration Insight</h4>
-<p style="color: #78350f; margin: 0 0 12px 0"><strong>minimumIdle = maximumPoolSize</strong>: HikariCP authors recommend keeping these equal. Rationale: Creating connections is expensive, and sizing down during low traffic then scaling up creates latency spikes. Better to maintain consistent pool size based on expected peak needs.</p>
-<p style="color: #78350f; margin: 0"><strong>Exception</strong>: Set minimumIdle lower only if you have many connection sources and need to minimize database connection count during off-peak hours.</p>
+<div>
+<h4>Critical Configuration Insight</h4>
+<p><strong>minimumIdle = maximumPoolSize</strong>: HikariCP authors recommend keeping these equal. Rationale: Creating connections is expensive, and sizing down during low traffic then scaling up creates latency spikes. Better to maintain consistent pool size based on expected peak needs.</p>
+<p><strong>Exception</strong>: Set minimumIdle lower only if you have many connection sources and need to minimize database connection count during off-peak hours.</p>
 </div>
 <h3 id="monitoring-hikaricp">Monitoring HikariCP</h3>
 <pre><code class="language-java">// Programmatic access to HikariCP metrics
@@ -733,52 +733,52 @@ int waitingThreads = poolMXBean.getThreadsAwaitingConnection();
 // - hikaricp_connections_timeout_total
 // - hikaricp_connections_acquire_seconds (histogram)
 </code></pre>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">HikariCP Alerting Thresholds</h4>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px">
-<div style="background: #fef3c7; padding: 12px; border-radius: 8px">
-<strong style="color: #92400e">Warning</strong>
-<ul style="color: #78350f; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
-<li>Utilization > 70% for 5 minutes</li>
-<li>Wait time P99 > 100ms</li>
-<li>Pending threads > 0 for 1 minute</li>
+<div>
+<h4>HikariCP Alerting Thresholds</h4>
+<div>
+<div>
+<strong>Warning</strong>
+<ul>
+<li>Utilization> 70% for 5 minutes</li>
+<li>Wait time P99> 100ms</li>
+<li>Pending threads> 0 for 1 minute</li>
 <li>Connection creation errors</li>
 </ul>
 </div>
-<div style="background: #fef2f2; padding: 12px; border-radius: 8px">
-<strong style="color: #991b1b">Critical</strong>
-<ul style="color: #7f1d1d; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
-<li>Utilization > 90%</li>
+<div>
+<strong>Critical</strong>
+<ul>
+<li>Utilization> 90%</li>
 <li>Any connection timeouts</li>
-<li>Pending threads > poolSize</li>
+<li>Pending threads> poolSize</li>
 <li>Leak detection warnings</li>
 </ul>
 </div>
 </div>
 </div>
 <h3 id="interview-questions-hikaricp">Interview Questions: HikariCP</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Level 1: What makes HikariCP faster than other Java connection pools?</h4>
-<p style="color: #475569; margin-bottom: 16px"><strong>Answer:</strong> HikariCP achieves superior performance through several optimizations: (1) A custom ConcurrentBag data structure that uses ThreadLocal for connection affinity, reducing lock contention, (2) Javassist-generated bytecode proxies instead of runtime reflection, (3) FastList implementation optimized for LIFO access patterns, (4) Aggressive elimination of synchronization through lock-free algorithms, (5) Careful avoidance of object allocation in hot paths. These micro-optimizations compound to deliver 2-3x better throughput than alternatives like C3P0 or DBCP.</p>
-<div style="background: #eff6ff; padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 2: Explain the role of maxLifetime and how you would tune it for a database behind a load balancer.</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong></p>
-<p style="color: #475569; margin-bottom: 12px"><strong>maxLifetime Purpose:</strong> Forces connection recycling after a maximum age, preventing issues from: memory leaks in database session state, load balancer connection tracking limits, database-side idle connection cleanup, and ensuring connections reflect schema changes.</p>
-<p style="color: #475569; margin-bottom: 12px"><strong>Load Balancer Considerations:</strong></p>
-<ul style="color: #475569; margin: 0 0 12px 0; padding-left: 20px; font-size: 14px">
+<div>
+<h4>Level 1: What makes HikariCP faster than other Java connection pools?</h4>
+<p><strong>Answer:</strong> HikariCP achieves superior performance through several optimizations: (1) A custom ConcurrentBag data structure that uses ThreadLocal for connection affinity, reducing lock contention, (2) Javassist-generated bytecode proxies instead of runtime reflection, (3) FastList implementation optimized for LIFO access patterns, (4) Aggressive elimination of synchronization through lock-free algorithms, (5) Careful avoidance of object allocation in hot paths. These micro-optimizations compound to deliver 2-3x better throughput than alternatives like C3P0 or DBCP.</p>
+<div>
+<h5>Level 2: Explain the role of maxLifetime and how you would tune it for a database behind a load balancer.</h5>
+<p><strong>Answer:</strong></p>
+<p><strong>maxLifetime Purpose:</strong> Forces connection recycling after a maximum age, preventing issues from: memory leaks in database session state, load balancer connection tracking limits, database-side idle connection cleanup, and ensuring connections reflect schema changes.</p>
+<p><strong>Load Balancer Considerations:</strong></p>
+<ul>
 <li>AWS ELB/ALB has 3600-second (1 hour) idle timeout by default</li>
 <li>Set maxLifetime to 80% of the smallest timeout in the path</li>
 <li>Example: ELB timeout = 3600s, PostgreSQL tcp_keepalives_idle = 7200s</li>
 <li>maxLifetime = 3600 * 0.8 = 2880 seconds (48 minutes)</li>
 </ul>
-<p style="color: #475569; margin: 0"><strong>Critical Detail:</strong> HikariCP applies variance (up to 2.5%) to maxLifetime to prevent all connections from expiring simultaneously, which would cause a connection creation storm.</p>
-<div style="background: #dbeafe; padding: 16px; border-radius: 8px; margin-top: 16px">
-<h5 style="color: #1e40af; margin-top: 0">Level 3: How would you modify HikariCP's behavior to implement tenant-aware connection pooling in a multi-tenant SaaS application?</h5>
-<p style="color: #475569; margin-bottom: 12px"><strong>Answer:</strong> Multi-tenant pooling requires careful architecture decisions:</p>
-<div style="display: grid; gap: 12px">
+<p><strong>Critical Detail:</strong> HikariCP applies variance (up to 2.5%) to maxLifetime to prevent all connections from expiring simultaneously, which would cause a connection creation storm.</p>
 <div>
-<strong style="color: #1e293b">Option 1: Pool-per-Tenant</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<h5>Level 3: How would you modify HikariCP's behavior to implement tenant-aware connection pooling in a multi-tenant SaaS application?</h5>
+<p><strong>Answer:</strong> Multi-tenant pooling requires careful architecture decisions:</p>
+<div>
+<div>
+<strong>Option 1: Pool-per-Tenant</strong>
+<ul>
 <li>Create separate HikariDataSource for each tenant</li>
 <li>Use AbstractRoutingDataSource to route based on tenant context</li>
 <li>Pros: Full isolation, per-tenant metrics, independent sizing</li>
@@ -787,8 +787,8 @@ int waitingThreads = poolMXBean.getThreadsAwaitingConnection();
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Option 2: Shared Pool with Session Variable</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Option 2: Shared Pool with Session Variable</strong>
+<ul>
 <li>Single pool, set tenant context on checkout via SET app.tenant_id = 'xyz'</li>
 <li>Row-level security policies enforce tenant isolation in database</li>
 <li>Must reset session on return (HikariCP connectionInitSql for reset)</li>
@@ -798,8 +798,8 @@ int waitingThreads = poolMXBean.getThreadsAwaitingConnection();
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Option 3: Schema-per-Tenant with Connection Affinity</strong>
-<ul style="color: #475569; margin: 8px 0 0 0; padding-left: 20px; font-size: 14px">
+<strong>Option 3: Schema-per-Tenant with Connection Affinity</strong>
+<ul>
 <li>Each tenant has dedicated schema, shared database</li>
 <li>Extend HikariCP's ConcurrentBag to track schema affinity</li>
 <li>Prefer connections already set to requested schema</li>
@@ -809,8 +809,8 @@ int waitingThreads = poolMXBean.getThreadsAwaitingConnection();
 </ul>
 </div>
 <div>
-<strong style="color: #1e293b">Implementation Sketch:</strong>
-<pre style="background: #f1f5f9; color: #1e293b;padding: 12px; border-radius: 6px; font-size: 12px; overflow-x: auto">
+<strong>Implementation Sketch:</strong>
+<pre>
   public class TenantAwareDataSource extends AbstractRoutingDataSource {
   @Override
   protected Object determineCurrentLookupKey() {
@@ -1383,13 +1383,13 @@ if metrics['utilization'] &gt; 0.8:
 </code></pre>
 <hr />
 <h2 id="common-anti-patterns-and-mistakes">Common Anti-Patterns and Mistakes</h2>
-<div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #991b1b; margin-top: 0">Critical Mistakes to Avoid</h4>
-<div style="display: grid; gap: 16px">
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Creating Pool Per Request</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">The pool must be a singleton. Creating a new pool per request means creating new connections per request, negating all pooling benefits.</p>
-<pre style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 12px; color: #7f1d1d">
+<div>
+<h4>Critical Mistakes to Avoid</h4>
+<div>
+<div>
+<strong>Creating Pool Per Request</strong>
+<p>The pool must be a singleton. Creating a new pool per request means creating new connections per request, negating all pooling benefits.</p>
+<pre>
 # WRONG - creates pool every request
   def handle_request():
   pool = ConnectionPool(factory, config)  # New pool!
@@ -1397,10 +1397,10 @@ if metrics['utilization'] &gt; 0.8:
 # ...
 pool.close()  # Connections destroyed</pre>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Holding Connections During External Calls</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Never hold a database connection while calling external APIs, reading files, or doing compute. This ties up connections for non-database work.</p>
-<pre style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 12px; color: #7f1d1d">
+<div>
+<strong>Holding Connections During External Calls</strong>
+<p>Never hold a database connection while calling external APIs, reading files, or doing compute. This ties up connections for non-database work.</p>
+<pre>
 # WRONG - holds connection during HTTP call
   with pool.connection() as conn:
   user = fetch_user(conn, user_id)
@@ -1414,24 +1414,24 @@ enriched = call_external_api(user)  # No connection held<br />
 with pool.connection() as conn:<br />
 save_enriched(conn, enriched)</pre></p>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Pool Size = Database max_connections</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Always leave headroom. PostgreSQL max_connections=100 doesn't mean your pool should be 100. Reserve for admin, replication, and other applications.</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<strong>Pool Size = Database max_connections</strong>
+<p>Always leave headroom. PostgreSQL max_connections=100 doesn't mean your pool should be 100. Reserve for admin, replication, and other applications.</p>
+<div>
 <strong>Rule:</strong> Total pool sizes across all sources should be &lt; 80% of max_connections
 </div>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">No Connection Validation</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Idle connections become stale due to firewalls, load balancers, and network issues. Without validation, applications receive broken connections.</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<strong>No Connection Validation</strong>
+<p>Idle connections become stale due to firewalls, load balancers, and network issues. Without validation, applications receive broken connections.</p>
+<div>
 <strong>Minimum:</strong> Enable validation for connections idle &gt; 30 seconds
 </div>
 </div>
-<div style="background: white; padding: 16px; border-radius: 8px">
-<strong style="color: #1e293b">Ignoring Pool Metrics</strong>
-<p style="color: #475569; margin: 8px 0 0 0; font-size: 14px">Pool exhaustion is preventable with proper monitoring. Alert on utilization &gt; 80%, any timeouts, and growing active connection count.</p>
-<div style="background: #fef2f2; padding: 8px 12px; border-radius: 4px; margin-top: 8px; font-size: 13px">
+<div>
+<strong>Ignoring Pool Metrics</strong>
+<p>Pool exhaustion is preventable with proper monitoring. Alert on utilization &gt; 80%, any timeouts, and growing active connection count.</p>
+<div>
 <strong>Must-have alerts:</strong> Utilization, timeout count, pending requests, leak warnings
 </div>
 </div>
@@ -1449,19 +1449,19 @@ save_enriched(conn, enriched)</pre></p>
 </ul>
 <hr />
 <h2 id="quick-reference">Quick Reference</h2>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #1e293b; margin-top: 0">Connection Pooling Cheat Sheet</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 20px">
 <div>
-<h5 style="color: #334155; margin-bottom: 12px">Pool Sizing Formula</h5>
-<div style="background: #f1f5f9; color: #1e293b;padding: 12px; border-radius: 6px; font-family: monospace; font-size: 14px">
+<h4>Connection Pooling Cheat Sheet</h4>
+<div>
+<div>
+<h5>Pool Sizing Formula</h5>
+<div>
   pool_size = (cpu_cores * 2) + 1
 </div>
-<p style="color: #64748b; font-size: 13px; margin-top: 8px">Example: 8-core database = 17 connections optimal</p>
+<p>Example: 8-core database = 17 connections optimal</p>
 </div>
 <div>
-<h5 style="color: #334155; margin-bottom: 12px">Key Timeouts</h5>
-<ul style="color: #475569; margin: 0; padding-left: 20px; font-size: 14px">
+<h5>Key Timeouts</h5>
+<ul>
 <li>connectionTimeout: 5-30s</li>
 <li>idleTimeout: 5-10 minutes</li>
 <li>maxLifetime: 30 minutes</li>
@@ -1469,53 +1469,53 @@ save_enriched(conn, enriched)</pre></p>
 </ul>
 </div>
 </div>
-<div style="padding-top: 20px; margin-bottom: 20px">
-<h5 style="color: #334155; margin-bottom: 12px">Alert Thresholds</h5>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px">
-<div style="background: #fef3c7; padding: 12px; border-radius: 6px; text-align: center">
-<div style="font-weight: 600; color: #92400e">Utilization</div>
-<div style="color: #78350f; font-size: 13px">Warn: &gt;70%</div>
-<div style="color: #78350f; font-size: 13px">Critical: &gt;90%</div>
+<div>
+<h5>Alert Thresholds</h5>
+<div>
+<div>
+<div>Utilization</div>
+<div>Warn: &gt;70%</div>
+<div>Critical: &gt;90%</div>
 </div>
-<div style="background: #fef3c7; padding: 12px; border-radius: 6px; text-align: center">
-<div style="font-weight: 600; color: #92400e">Wait Time</div>
-<div style="color: #78350f; font-size: 13px">Warn: P99 &gt;100ms</div>
-<div style="color: #78350f; font-size: 13px">Critical: P99 &gt;1s</div>
+<div>
+<div>Wait Time</div>
+<div>Warn: P99 &gt;100ms</div>
+<div>Critical: P99 &gt;1s</div>
 </div>
-<div style="background: #fef3c7; padding: 12px; border-radius: 6px; text-align: center">
-<div style="font-weight: 600; color: #92400e">Timeouts</div>
-<div style="color: #78350f; font-size: 13px">Warn: Any</div>
-<div style="color: #78350f; font-size: 13px">Critical: &gt;1/min</div>
+<div>
+<div>Timeouts</div>
+<div>Warn: Any</div>
+<div>Critical: &gt;1/min</div>
 </div>
-<div style="background: #fef3c7; padding: 12px; border-radius: 6px; text-align: center">
-<div style="font-weight: 600; color: #92400e">Pending</div>
-<div style="color: #78350f; font-size: 13px">Warn: &gt;0 for 1m</div>
-<div style="color: #78350f; font-size: 13px">Critical: &gt;pool size</div>
+<div>
+<div>Pending</div>
+<div>Warn: &gt;0 for 1m</div>
+<div>Critical: &gt;pool size</div>
 </div>
 </div>
 </div>
-<div style="padding-top: 20px">
-<h5 style="color: #334155; margin-bottom: 12px">Popular Connection Poolers</h5>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px">
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<strong style="color: #1e293b">Application-Level</strong>
-<ul style="color: #64748b; margin: 8px 0 0 0; padding-left: 16px; font-size: 13px">
+<div>
+<h5>Popular Connection Poolers</h5>
+<div>
+<div>
+<strong>Application-Level</strong>
+<ul>
 <li>HikariCP (Java)</li>
 <li>SQLAlchemy (Python)</li>
 <li>node-postgres (Node.js)</li>
 </ul>
 </div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<strong style="color: #1e293b">External Poolers</strong>
-<ul style="color: #64748b; margin: 8px 0 0 0; padding-left: 16px; font-size: 13px">
+<div>
+<strong>External Poolers</strong>
+<ul>
 <li>PgBouncer (PostgreSQL)</li>
 <li>ProxySQL (MySQL)</li>
 <li>Odyssey (PostgreSQL)</li>
 </ul>
 </div>
-<div style="background: #f1f5f9; padding: 12px; border-radius: 6px">
-<strong style="color: #1e293b">Cloud Managed</strong>
-<ul style="color: #64748b; margin: 8px 0 0 0; padding-left: 16px; font-size: 13px">
+<div>
+<strong>Cloud Managed</strong>
+<ul>
 <li>AWS RDS Proxy</li>
 <li>Azure SQL connection pooling</li>
 <li>Cloud SQL Proxy (GCP)</li>

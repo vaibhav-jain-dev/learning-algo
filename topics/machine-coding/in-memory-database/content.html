@@ -1,70 +1,70 @@
 <h1 id="in-memory-database-design">In-Memory Database Design</h1>
 <h2 id="overview-and-motivation">Overview and Motivation</h2>
 <p>An in-memory database stores and manages data primarily in RAM rather than on disk, achieving microsecond-level latency for read/write operations. This machine coding problem tests your understanding of <a href="/data-structures/hash-tables">[hash-tables]</a>, <a href="/system-design/concurrency">[concurrency]</a>, transaction semantics, and memory management - skills directly applicable to building systems like Redis, Memcached, or the caching layer of any high-performance application.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 28px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: 700; font-size: 18px; margin-bottom: 16px">Why This Problem Matters</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.9">
-<div style="margin-bottom: 12px"><span style="color: #0369a1; font-weight: 600">Interview Frequency:</span> Asked at Amazon, Google, Stripe, and database companies (Redis Labs, MongoDB)</div>
-<div style="margin-bottom: 12px"><span style="color: #0369a1; font-weight: 600">Skills Tested:</span> Data structure selection, concurrent programming, transaction isolation, memory efficiency</div>
-<div><span style="color: #0369a1; font-weight: 600">Real-World Relevance:</span> Understanding in-memory stores is crucial for caching strategies, session management, and high-throughput applications</div>
+<div>
+<div>Why This Problem Matters</div>
+<div>
+<div><span>Interview Frequency:</span> Asked at Amazon, Google, Stripe, and database companies (Redis Labs, MongoDB)</div>
+<div><span>Skills Tested:</span> Data structure selection, concurrent programming, transaction isolation, memory efficiency</div>
+<div><span>Real-World Relevance:</span> Understanding in-memory stores is crucial for caching strategies, session management, and high-throughput applications</div>
 </div>
 </div>
 <hr />
 <h2 id="core-architecture">Core Architecture</h2>
 <h3 id="high-level-system-design">High-Level System Design</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 18px; text-align: center; margin-bottom: 28px">In-Memory Database Architecture</div>
-<div style="display: flex; flex-direction: column; gap: 24px">
-<div style="background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; font-size: 14px; text-align: center; margin-bottom: 16px">Client Interface Layer</div>
-<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #1e40af; font-weight: 600; font-size: 12px">Command Parser</div>
-<div style="color: #64748b; font-size: 10px">GET, SET, DELETE</div>
+<div>
+<div>In-Memory Database Architecture</div>
+<div>
+<div>
+<div>Client Interface Layer</div>
+<div>
+<div>
+<div>Command Parser</div>
+<div>GET, SET, DELETE</div>
 </div>
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #1e40af; font-weight: 600; font-size: 12px">Transaction Manager</div>
-<div style="color: #64748b; font-size: 10px">BEGIN, COMMIT, ROLLBACK</div>
+<div>
+<div>Transaction Manager</div>
+<div>BEGIN, COMMIT, ROLLBACK</div>
 </div>
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #1e40af; font-weight: 600; font-size: 12px">Type Router</div>
-<div style="color: #64748b; font-size: 10px">String, List, Hash, Set</div>
-</div>
-</div>
-</div>
-<div style="display: flex; justify-content: center">
-<div style="width: 0; height: 0"></div>
-</div>
-<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; font-size: 14px; text-align: center; margin-bottom: 16px">Storage Engine</div>
-<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #166534; font-weight: 600; font-size: 12px">Primary Store</div>
-<div style="color: #64748b; font-size: 10px">HashMap&lt;K, Entry&gt;</div>
-</div>
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #166534; font-weight: 600; font-size: 12px">TTL Index</div>
-<div style="color: #64748b; font-size: 10px">MinHeap&lt;Expiry&gt;</div>
-</div>
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #166534; font-weight: 600; font-size: 12px">Secondary Indexes</div>
-<div style="color: #64748b; font-size: 10px">Optional B-Tree/Hash</div>
+<div>
+<div>Type Router</div>
+<div>String, List, Hash, Set</div>
 </div>
 </div>
 </div>
-<div style="display: flex; justify-content: center">
-<div style="width: 0; height: 0"></div>
+<div>
+<div></div>
 </div>
-<div style="background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; font-size: 14px; text-align: center; margin-bottom: 16px">Persistence Layer (Optional)</div>
-<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #92400e; font-weight: 600; font-size: 12px">Write-Ahead Log</div>
-<div style="color: #64748b; font-size: 10px">Append-only durability</div>
+<div>
+<div>Storage Engine</div>
+<div>
+<div>
+<div>Primary Store</div>
+<div>HashMap&lt;K, Entry&gt;</div>
 </div>
-<div style="background: #fff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #92400e; font-weight: 600; font-size: 12px">Snapshot Engine</div>
-<div style="color: #64748b; font-size: 10px">Point-in-time backup</div>
+<div>
+<div>TTL Index</div>
+<div>MinHeap&lt;Expiry&gt;</div>
+</div>
+<div>
+<div>Secondary Indexes</div>
+<div>Optional B-Tree/Hash</div>
+</div>
+</div>
+</div>
+<div>
+<div></div>
+</div>
+<div>
+<div>Persistence Layer (Optional)</div>
+<div>
+<div>
+<div>Write-Ahead Log</div>
+<div>Append-only durability</div>
+</div>
+<div>
+<div>Snapshot Engine</div>
+<div>Point-in-time backup</div>
 </div>
 </div>
 </div>
@@ -74,9 +74,9 @@
 <h2 id="section-1-key-value-store-foundation">Section 1: Key-Value Store Foundation</h2>
 <h3 id="internal-data-structure">Internal Data Structure</h3>
 <p>The core of any in-memory database is a <a href="/data-structures/hash-tables">[hash-table]</a> providing O(1) average-case lookup. However, the naive implementation hides critical design decisions.</p>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 12px">Key Design Decision: Entry Structure</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Key Design Decision: Entry Structure</div>
+<div>
 The entry stored for each key is not just the value - it includes metadata critical for TTL, type checking, and memory management. This metadata overhead (typically 24-48 bytes per entry) is a conscious trade-off between memory efficiency and feature richness.
 </div>
 </div>
@@ -125,9 +125,9 @@ class Entry:
         self.access_count += 1
 </code></pre>
 <h3 id="hash-table-internals">Hash Table Internals</h3>
-<div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Critical Implementation Detail: Collision Resolution</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Critical Implementation Detail: Collision Resolution</div>
+<div>
 <p><strong>Chaining (Redis approach):</strong></p>
 <ul>
 <li>Each bucket contains a linked list of entries</li>
@@ -215,11 +215,11 @@ class Entry:
         return False
 </code></pre>
 <h3 id="memory-layout-considerations">Memory Layout Considerations</h3>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Assumption: Memory is the Primary Constraint</div>
-<div style="color: #14532d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Assumption: Memory is the Primary Constraint</div>
+<div>
 In-memory databases assume RAM is both the primary storage AND the bottleneck. Design decisions optimize for:
-<ul style="margin-top: 8px">
+<ul>
 <li><strong>Memory density:</strong> Store more keys per GB of RAM</li>
 <li><strong>Memory fragmentation:</strong> Avoid external fragmentation from malloc/free cycles</li>
 <li><strong>Cache efficiency:</strong> Keep hot data in CPU cache hierarchy</li>
@@ -227,27 +227,27 @@ In-memory databases assume RAM is both the primary storage AND the bottleneck. D
 </div>
 </div>
 <h3 id="interview-questions-key-value-stores">Interview Questions: Key-Value Stores</h3>
-<div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #6b21a8; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #7c3aed; font-weight: 600">Q: Why use a hash table instead of a tree-based structure for the primary store?</div>
-<div style="color: #4c1d95; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Foundational Understanding</div>
+<div>
+<div>Q: Why use a hash table instead of a tree-based structure for the primary store?</div>
+<div>
 <strong>A:</strong> Hash tables provide O(1) average-case for GET/SET/DELETE, while balanced trees offer O(log n). For a database with millions of keys, this difference is significant: 1 operation vs. ~20 comparisons. Trees are useful when you need range queries or sorted iteration, which hash tables cannot provide efficiently.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #86198f; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Depth</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #a21caf; font-weight: 600">Q: What happens when the hash table needs to resize? How does Redis handle this?</div>
-<div style="color: #701a75; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
+<div>Q: What happens when the hash table needs to resize? How does Redis handle this?</div>
+<div>
 <strong>A:</strong> Naive resize copies all entries to a new array (O(n)), causing latency spikes. Redis uses incremental rehashing: it maintains two hash tables during resize, gradually migrating entries (1-10 per operation). This bounds worst-case latency but doubles memory temporarily. The resize is triggered when load factor exceeds 1.0 (if no background save) or 5.0 (during persistence).
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #9d174d; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Production Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #be185d; font-weight: 600">Q: How would you protect against hash-flooding DoS attacks where an attacker crafts keys that all hash to the same bucket?</div>
-<div style="color: #831843; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 3: Production Considerations</div>
+<div>
+<div>Q: How would you protect against hash-flooding DoS attacks where an attacker crafts keys that all hash to the same bucket?</div>
+<div>
 <strong>A:</strong> Three approaches: (1) Use cryptographically secure hash functions with random seeds (SipHash-2-4), making collision prediction computationally infeasible. (2) Limit hash table operations per client/second using [[rate-limiting]](/system-design/rate-limiting). (3) Monitor bucket depth and alert/reject when chains exceed threshold. Redis switched from djb2 to SipHash after CVE-2012-0769. Python randomizes hash seeds since 3.3 (PYTHONHASHSEED).
 </div>
 </div>
@@ -257,24 +257,24 @@ In-memory databases assume RAM is both the primary storage AND the bottleneck. D
 <hr />
 <h2 id="section-2-indexing-strategies">Section 2: Indexing Strategies</h2>
 <h3 id="primary-vs-secondary-indexes">Primary vs Secondary Indexes</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 16px; margin-bottom: 20px">Index Architecture</div>
-<div style="display: flex; gap: 20px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 280px; background: #dbeafe; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; font-size: 14px; margin-bottom: 12px">Primary Index (Always Present)</div>
-<div style="color: #1e3a8a; font-size: 13px; line-height: 1.7">
-<div style="margin-bottom: 8px"><strong>Structure:</strong> Hash table (key -> Entry)</div>
-<div style="margin-bottom: 8px"><strong>Lookup:</strong> O(1) by exact key</div>
-<div style="margin-bottom: 8px"><strong>Range Query:</strong> Not supported</div>
+<div>
+<div>Index Architecture</div>
+<div>
+<div>
+<div>Primary Index (Always Present)</div>
+<div>
+<div><strong>Structure:</strong> Hash table (key -> Entry)</div>
+<div><strong>Lookup:</strong> O(1) by exact key</div>
+<div><strong>Range Query:</strong> Not supported</div>
 <div><strong>Memory:</strong> ~64 bytes per key (overhead)</div>
 </div>
 </div>
-<div style="flex: 1; min-width: 280px; background: #dcfce7; border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; font-size: 14px; margin-bottom: 12px">Secondary Index (Optional)</div>
-<div style="color: #14532d; font-size: 13px; line-height: 1.7">
-<div style="margin-bottom: 8px"><strong>Structure:</strong> B-Tree, Skip List, or Hash</div>
-<div style="margin-bottom: 8px"><strong>Lookup:</strong> O(log n) or O(1)</div>
-<div style="margin-bottom: 8px"><strong>Range Query:</strong> Supported (B-Tree/Skip List)</div>
+<div>
+<div>Secondary Index (Optional)</div>
+<div>
+<div><strong>Structure:</strong> B-Tree, Skip List, or Hash</div>
+<div><strong>Lookup:</strong> O(log n) or O(1)</div>
+<div><strong>Range Query:</strong> Supported (B-Tree/Skip List)</div>
 <div><strong>Memory:</strong> Additional ~32-64 bytes per indexed key</div>
 </div>
 </div>
@@ -368,9 +368,9 @@ class TTLIndex:
 </code></pre>
 <h3 id="skip-list-for-sorted-data">Skip List for Sorted Data</h3>
 <p>Redis sorted sets (ZSET) use a <a href="/data-structures/skip-list">[skip-list]</a> - understanding this demonstrates deep knowledge.</p>
-<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: 700; margin-bottom: 12px">Trade-off: Skip List vs Balanced Tree</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Trade-off: Skip List vs Balanced Tree</div>
+<div>
 <table>
 <thead>
 <tr>
@@ -487,27 +487,27 @@ class SkipList:
         self.length += 1
 </code></pre>
 <h3 id="interview-questions-indexing">Interview Questions: Indexing</h3>
-<div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #15803d; font-weight: 600">Q: Why do we need a separate TTL index? Can't we just iterate the main hash table?</div>
-<div style="color: #14532d; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Foundational Understanding</div>
+<div>
+<div>Q: Why do we need a separate TTL index? Can't we just iterate the main hash table?</div>
+<div>
 <strong>A:</strong> Iterating the hash table to find expired keys is O(n), which doesn't scale. With millions of keys, checking each on every cleanup cycle would destroy performance. The TTL heap gives O(1) access to the minimum expiration time, letting us efficiently find only the keys that need processing.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #065f46; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Depth</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #059669; font-weight: 600">Q: The TTL heap can accumulate stale entries (keys deleted or TTL updated). How do you prevent unbounded growth?</div>
-<div style="color: #064e3b; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
+<div>Q: The TTL heap can accumulate stale entries (keys deleted or TTL updated). How do you prevent unbounded growth?</div>
+<div>
 <strong>A:</strong> Three strategies: (1) Lazy cleanup - when processing expires, verify the key still exists and TTL matches before deleting. (2) Periodic rebuild - if stale ratio exceeds threshold (e.g., 50%), rebuild the heap from scratch during low-traffic periods. (3) Indexed heap - maintain a hash map of key positions for O(log n) deletion when TTL changes. Redis uses approach (1) combined with probabilistic sampling.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #047857; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Production Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #0d9488; font-weight: 600">Q: How would you implement secondary indexes that survive restarts without rebuilding from scratch?</div>
-<div style="color: #134e4a; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 3: Production Considerations</div>
+<div>
+<div>Q: How would you implement secondary indexes that survive restarts without rebuilding from scratch?</div>
+<div>
 <strong>A:</strong> Two approaches: (1) Persist index alongside data - during snapshot (RDB), serialize both the main data and index structures. During load, reconstruct the index. (2) WAL-based recovery - include index operations in the write-ahead log. On restart, replay WAL to rebuild indexes. Redis primarily uses approach (1) for RDB and doesn't persist secondary index structure in AOF (rebuilds on load). For custom indexes, you'd want approach (2) to avoid full scans during recovery.
 </div>
 </div>
@@ -517,42 +517,42 @@ class SkipList:
 <hr />
 <h2 id="section-3-ttl-expiration-mechanisms">Section 3: TTL Expiration Mechanisms</h2>
 <h3 id="expiration-strategies">Expiration Strategies</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 16px; margin-bottom: 20px">TTL Implementation Approaches</div>
-<div style="display: flex; gap: 16px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 250px; background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);border-radius: 12px; padding: 18px">
-<div style="color: #92400e; font-weight: 700; font-size: 14px; margin-bottom: 10px">Lazy Expiration</div>
-<div style="color: #78350f; font-size: 12px; line-height: 1.7">
+<div>
+<div>TTL Implementation Approaches</div>
+<div>
+<div>
+<div>Lazy Expiration</div>
+<div>
 Check TTL only when key is accessed. Expired keys remain in memory until next access.
-<div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 6px">
-<div style="color: #92400e; font-weight: 600; font-size: 11px">Pros:</div>
-<div style="color: #78350f; font-size: 11px">Zero CPU overhead when idle</div>
-<div style="color: #92400e; font-weight: 600; font-size: 11px; margin-top: 4px">Cons:</div>
-<div style="color: #78350f; font-size: 11px">Memory leak for unaccessed keys</div>
+<div>
+<div>Pros:</div>
+<div>Zero CPU overhead when idle</div>
+<div>Cons:</div>
+<div>Memory leak for unaccessed keys</div>
 </div>
 </div>
 </div>
-<div style="flex: 1; min-width: 250px; background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);border-radius: 12px; padding: 18px">
-<div style="color: #1e40af; font-weight: 700; font-size: 14px; margin-bottom: 10px">Active Expiration</div>
-<div style="color: #1e3a8a; font-size: 12px; line-height: 1.7">
+<div>
+<div>Active Expiration</div>
+<div>
 Background thread periodically scans for expired keys using TTL index.
-<div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 6px">
-<div style="color: #1e40af; font-weight: 600; font-size: 11px">Pros:</div>
-<div style="color: #1e3a8a; font-size: 11px">Memory reclaimed promptly</div>
-<div style="color: #1e40af; font-weight: 600; font-size: 11px; margin-top: 4px">Cons:</div>
-<div style="color: #1e3a8a; font-size: 11px">CPU cost even when idle</div>
+<div>
+<div>Pros:</div>
+<div>Memory reclaimed promptly</div>
+<div>Cons:</div>
+<div>CPU cost even when idle</div>
 </div>
 </div>
 </div>
-<div style="flex: 1; min-width: 250px; background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 12px; padding: 18px">
-<div style="color: #166534; font-weight: 700; font-size: 14px; margin-bottom: 10px">Hybrid (Redis)</div>
-<div style="color: #14532d; font-size: 12px; line-height: 1.7">
+<div>
+<div>Hybrid (Redis)</div>
+<div>
 Combine both: lazy check on access + probabilistic active cleanup.
-<div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 6px">
-<div style="color: #166534; font-weight: 600; font-size: 11px">Pros:</div>
-<div style="color: #14532d; font-size: 11px">Balances memory and CPU</div>
-<div style="color: #166534; font-weight: 600; font-size: 11px; margin-top: 4px">Cons:</div>
-<div style="color: #14532d; font-size: 11px">More complex implementation</div>
+<div>
+<div>Pros:</div>
+<div>Balances memory and CPU</div>
+<div>Cons:</div>
+<div>More complex implementation</div>
 </div>
 </div>
 </div>
@@ -660,55 +660,55 @@ class TTLManager:
         ]
 </code></pre>
 <h3 id="edge-cases-in-ttl-handling">Edge Cases in TTL Handling</h3>
-<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: 700; margin-bottom: 16px">Critical Edge Cases</div>
-<div style="background: #fff; border-radius: 8px; padding: 14px; margin-bottom: 10px">
-<div style="color: #dc2626; font-weight: 600; font-size: 13px">Clock Skew / Time Travel</div>
-<div style="color: #7f1d1d; font-size: 12px; margin-top: 6px; line-height: 1.6">
+<div>
+<div>Critical Edge Cases</div>
+<div>
+<div>Clock Skew / Time Travel</div>
+<div>
 System clock can jump forward (NTP sync) or backward (VM restore). Use monotonic clock for TTL calculations or store absolute Unix timestamp and handle gracefully.
 </div>
 </div>
-<div style="background: #fff; border-radius: 8px; padding: 14px; margin-bottom: 10px">
-<div style="color: #dc2626; font-weight: 600; font-size: 13px">TTL During Transaction</div>
-<div style="color: #7f1d1d; font-size: 12px; margin-top: 6px; line-height: 1.6">
+<div>
+<div>TTL During Transaction</div>
+<div>
 Should a key expire during an active transaction? Options: (1) Expire immediately (breaks transaction isolation), (2) Extend TTL until commit (unpredictable behavior), (3) Snapshot TTL at BEGIN (what Redis does for WATCH).
 </div>
 </div>
-<div style="background: #fff; border-radius: 8px; padding: 14px; margin-bottom: 10px">
-<div style="color: #dc2626; font-weight: 600; font-size: 13px">TTL Precision vs Memory</div>
-<div style="color: #7f1d1d; font-size: 12px; margin-top: 6px; line-height: 1.6">
+<div>
+<div>TTL Precision vs Memory</div>
+<div>
 Storing millisecond precision (8-byte float) vs second precision (4-byte int). For millions of keys, this doubles TTL storage. Redis uses millisecond precision because cache invalidation often needs sub-second accuracy.
 </div>
 </div>
-<div style="background: #fff; border-radius: 8px; padding: 14px">
-<div style="color: #dc2626; font-weight: 600; font-size: 13px">Mass Expiration Storm</div>
-<div style="color: #7f1d1d; font-size: 12px; margin-top: 6px; line-height: 1.6">
+<div>
+<div>Mass Expiration Storm</div>
+<div>
 If many keys expire at the same timestamp (e.g., cache populated at startup + same TTL), deletion storm causes latency spike. Solution: Add random jitter to TTL (e.g., 300s + random(0,60)).
 </div>
 </div>
 </div>
 <h3 id="interview-questions-ttl-expiration">Interview Questions: TTL Expiration</h3>
-<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #991b1b; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #dc2626; font-weight: 600">Q: Why not just use a background thread that checks every key's TTL?</div>
-<div style="color: #7f1d1d; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Foundational Understanding</div>
+<div>
+<div>Q: Why not just use a background thread that checks every key's TTL?</div>
+<div>
 <strong>A:</strong> Full scan is O(n) per cycle. With 10 million keys and 100ms cycle, you'd need to check 100 million keys/second. This saturates CPU and competes with client requests. Probabilistic sampling achieves similar results with O(1) bounded work per cycle.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #b91c1c; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Depth</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #ef4444; font-weight: 600">Q: How does lazy expiration interact with memory eviction (like LRU)? Which happens first?</div>
-<div style="color: #991b1b; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
+<div>Q: How does lazy expiration interact with memory eviction (like LRU)? Which happens first?</div>
+<div>
 <strong>A:</strong> TTL expiration should happen BEFORE eviction policy. Expired keys are "dead" and must be cleaned regardless of memory pressure. The order is: (1) Check TTL - if expired, delete (free memory). (2) If still over memory limit, apply eviction policy (LRU/LFU/random). This prevents evicting valid keys while expired keys consume memory. Redis processes expirations before eviction during memory pressure.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #b91c1c; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Production Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #f87171; font-weight: 600">Q: In a replicated setup, should TTL expiration happen on the primary and propagate, or independently on each replica?</div>
-<div style="color: #991b1b; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 3: Production Considerations</div>
+<div>
+<div>Q: In a replicated setup, should TTL expiration happen on the primary and propagate, or independently on each replica?</div>
+<div>
 <strong>A:</strong> Primary-driven expiration is safer: primary deletes and replicates DEL commands. Independent expiration on replicas causes divergence due to clock skew (replica might expire before/after primary). However, this means replica memory can grow if replication lags. Redis uses primary-driven: primary sends explicit DEL when expiring, and replicas wait for that DEL. Replicas do return NULL for expired keys on read (read-only lazy expiration) but don't actually delete until instructed.
 </div>
 </div>
@@ -718,9 +718,9 @@ If many keys expire at the same timestamp (e.g., cache populated at startup + sa
 <hr />
 <h2 id="section-4-transaction-support">Section 4: Transaction Support</h2>
 <h3 id="transaction-semantics">Transaction Semantics</h3>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Design Decision: Transaction Isolation Level</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Design Decision: Transaction Isolation Level</div>
+<div>
 Most in-memory databases use <strong>READ UNCOMMITTED</strong> within a session (you see your own uncommitted changes) but operations are atomic. This differs from SQL databases' default READ COMMITTED. The trade-off: simpler implementation and higher performance at the cost of potential dirty reads in multi-session scenarios.
 </div>
 </div>
@@ -865,9 +865,9 @@ class TransactionManager:
         return count
 </code></pre>
 <h3 id="concurrent-transaction-handling">Concurrent Transaction Handling</h3>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 12px">Trade-off: Concurrency Model</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Trade-off: Concurrency Model</div>
+<div>
 <p><strong>Option 1: Single-Threaded (Redis approach)</strong></p>
 <ul>
 <li>All operations serialized through event loop</li>
@@ -960,27 +960,27 @@ class ThreadSafeInMemoryDB:
             return self._txn_manager.rollback()
 </code></pre>
 <h3 id="interview-questions-transactions">Interview Questions: Transactions</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e40af; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #2563eb; font-weight: 600">Q: What's the difference between your transaction implementation and SQL ACID transactions?</div>
-<div style="color: #1e3a8a; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Foundational Understanding</div>
+<div>
+<div>Q: What's the difference between your transaction implementation and SQL ACID transactions?</div>
+<div>
 <strong>A:</strong> Our implementation provides Atomicity (rollback undoes all changes) and partial Consistency (type checking). We don't provide full Isolation (other clients see uncommitted writes) or Durability (data is lost on crash). SQL databases typically provide all four, but at significant performance cost. Redis MULTI/EXEC also doesn't provide isolation - it just batches commands for atomic execution.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #1d4ed8; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Depth</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #3b82f6; font-weight: 600">Q: How does snapshot storage for nested transactions work? If I BEGIN, SET x, BEGIN, SET x, ROLLBACK, what value should x have?</div>
-<div style="color: #1e40af; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
+<div>Q: How does snapshot storage for nested transactions work? If I BEGIN, SET x, BEGIN, SET x, ROLLBACK, what value should x have?</div>
+<div>
 <strong>A:</strong> Each transaction level stores the value from BEFORE that transaction started. Let's trace: (1) Original x=5. (2) Outer BEGIN - empty snapshot. (3) SET x=10 - outer records snapshot[x]=5, store has x=10. (4) Inner BEGIN - empty snapshot. (5) SET x=15 - inner records snapshot[x]=10, store has x=15. (6) Inner ROLLBACK - restores x=10 from inner snapshot. Now x=10, which is correct - we rolled back only the inner transaction's changes.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #1d4ed8; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Production Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #60a5fa; font-weight: 600">Q: How would you implement optimistic locking with WATCH semantics like Redis?</div>
-<div style="color: #1e40af; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 3: Production Considerations</div>
+<div>
+<div>Q: How would you implement optimistic locking with WATCH semantics like Redis?</div>
+<div>
 <strong>A:</strong> WATCH provides optimistic concurrency control: (1) WATCH key - record current version/value. (2) Read key, compute new value in application. (3) MULTI...EXEC - at EXEC time, check if watched keys changed since WATCH. If yes, abort (return null). If no, execute atomically. Implementation: maintain a version counter per key, increment on every write. WATCH stores {key: version} mapping. EXEC checks all watched versions match current. This enables check-and-set without holding locks during application computation, improving concurrency for read-heavy workloads.
 </div>
 </div>
@@ -990,44 +990,44 @@ class ThreadSafeInMemoryDB:
 <hr />
 <h2 id="section-5-persistence-options">Section 5: Persistence Options</h2>
 <h3 id="persistence-strategies-overview">Persistence Strategies Overview</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 16px; text-align: center; margin-bottom: 24px">Persistence Mechanisms Comparison</div>
-<div style="display: flex; gap: 20px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 300px; background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; font-size: 15px; margin-bottom: 14px">RDB (Snapshot)</div>
-<div style="color: #1e3a8a; font-size: 13px; line-height: 1.8">
+<div>
+<div>Persistence Mechanisms Comparison</div>
+<div>
+<div>
+<div>RDB (Snapshot)</div>
+<div>
 Point-in-time snapshot of entire dataset. Similar to [[database-backups]](/system-design/storage).
-<div style="margin-top: 12px">
-<div style="font-weight: 600; color: #1e40af">Characteristics:</div>
-<ul style="margin: 6px 0; padding-left: 18px">
+<div>
+<div>Characteristics:</div>
+<ul>
 <li>Compact binary format</li>
 <li>Fast restart (load entire file)</li>
 <li>Data loss between snapshots</li>
 <li>Fork() for copy-on-write</li>
 </ul>
 </div>
-<div style="margin-top: 12px; padding: 10px; background: #fff; border-radius: 8px">
-<div style="color: #1e40af; font-weight: 600; font-size: 12px">Use When:</div>
-<div style="color: #3b82f6; font-size: 11px">Acceptable to lose last few minutes of data; need fast restarts</div>
+<div>
+<div>Use When:</div>
+<div>Acceptable to lose last few minutes of data; need fast restarts</div>
 </div>
 </div>
 </div>
-<div style="flex: 1; min-width: 300px; background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; font-size: 15px; margin-bottom: 14px">AOF (Append-Only File)</div>
-<div style="color: #14532d; font-size: 13px; line-height: 1.8">
+<div>
+<div>AOF (Append-Only File)</div>
+<div>
 Log every write operation. Classic [[write-ahead-log]](/system-design/storage) pattern.
-<div style="margin-top: 12px">
-<div style="font-weight: 600; color: #166534">Characteristics:</div>
-<ul style="margin: 6px 0; padding-left: 18px">
+<div>
+<div>Characteristics:</div>
+<ul>
 <li>Configurable durability (fsync policy)</li>
 <li>Human-readable (if text-based)</li>
 <li>Slower restart (replay log)</li>
 <li>File grows unbounded (needs compaction)</li>
 </ul>
 </div>
-<div style="margin-top: 12px; padding: 10px; background: #fff; border-radius: 8px">
-<div style="color: #166534; font-weight: 600; font-size: 12px">Use When:</div>
-<div style="color: #22c55e; font-size: 11px">Need strong durability; can accept slower restarts</div>
+<div>
+<div>Use When:</div>
+<div>Need strong durability; can accept slower restarts</div>
 </div>
 </div>
 </div>
@@ -1350,28 +1350,28 @@ class SnapshotManager:
                 (time_since_save &gt;= time_threshold and self._changes_since_save &gt; 0))
 </code></pre>
 <h3 id="interview-questions-persistence">Interview Questions: Persistence</h3>
-<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #92400e; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #d97706; font-weight: 600">Q: Why would you choose AOF over RDB snapshots, or vice versa?</div>
-<div style="color: #78350f; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Foundational Understanding</div>
+<div>
+<div>Q: Why would you choose AOF over RDB snapshots, or vice versa?</div>
+<div>
 <strong>A:</strong> RDB: Faster restarts (load single file vs replay log), more compact storage, better for backups/replication. AOF: Better durability (configurable fsync), can recover up to last second of data, human-readable for debugging. Many systems (including Redis) use BOTH: RDB for fast recovery baseline, AOF for incremental durability. On restart: load RDB first, then replay AOF entries newer than RDB timestamp.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #b45309; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Depth</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #f59e0b; font-weight: 600">Q: How does fork() enable consistent snapshots without blocking? What's the memory overhead?</div>
-<div style="color: #92400e; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
+<div>Q: How does fork() enable consistent snapshots without blocking? What's the memory overhead?</div>
+<div>
 <strong>A:</strong> fork() creates a child process that shares memory pages with parent via copy-on-write (COW). Initially, both processes point to same physical memory. When parent writes, OS copies that specific page before modification. Child sees pre-fork state. Memory overhead: minimal initially, up to 2x in worst case if parent modifies every page during save. In practice, Redis sees 10-30% memory spike. Mitigation: transparent huge pages can amplify COW cost (2MB pages vs 4KB), so Redis recommends disabling THP.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #b45309; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Production Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #fbbf24; font-weight: 600">Q: How would you handle the case where AOF file becomes corrupted mid-write due to power failure?</div>
-<div style="color: #92400e; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> Multiple strategies: (1) Each entry is self-contained (newline-delimited), so partial final entry can be detected and truncated. (2) Add CRC checksum per entry or per block to detect corruption. (3) Maintain atomic write guarantee: write full entry to buffer, fsync. If entry > filesystem block size, corruption possible. Redis uses redis-check-aof tool to fix truncated files. (4) Shadow paging: write to new location, update pointer atomically (like SQLite WAL mode). (5) Keep old AOF as backup until new one is verified. Recovery: truncate at last valid entry, accept bounded data loss.
+<div>
+<div>Level 3: Production Considerations</div>
+<div>
+<div>Q: How would you handle the case where AOF file becomes corrupted mid-write due to power failure?</div>
+<div>
+<strong>A:</strong> Multiple strategies: (1) Each entry is self-contained (newline-delimited), so partial final entry can be detected and truncated. (2) Add CRC checksum per entry or per block to detect corruption. (3) Maintain atomic write guarantee: write full entry to buffer, fsync. If entry> filesystem block size, corruption possible. Redis uses redis-check-aof tool to fix truncated files. (4) Shadow paging: write to new location, update pointer atomically (like SQLite WAL mode). (5) Keep old AOF as backup until new one is verified. Recovery: truncate at last valid entry, accept bounded data loss.
 </div>
 </div>
 </div>
@@ -2094,8 +2094,8 @@ if __name__ == &quot;__main__&quot;:
 </code></pre>
 <hr />
 <h2 id="complexity-summary">Complexity Summary</h2>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 16px; margin-bottom: 16px">Time and Space Complexity</div>
+<div>
+<div>Time and Space Complexity</div>
 <table>
 <thead>
 <tr>
@@ -2197,53 +2197,53 @@ if __name__ == &quot;__main__&quot;:
 <hr />
 <h2 id="section-6-advanced-data-structures">Section 6: Advanced Data Structures</h2>
 <h3 id="b-tree-and-b-tree-for-range-queries">B-Tree and B+ Tree for Range Queries</h3>
-<p>While <span style="color: #16a34a; font-weight: 600">hash maps</span> provide O(1) lookup, they cannot efficiently support <span style="color: #16a34a; font-weight: 600">range queries</span> like &quot;find all keys between A and B&quot;. For these operations, we need ordered data structures. See <a href="/system-design/database-sharding">[database-sharding]</a> for how these structures scale across nodes.</p>
-<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 18px; text-align: center; margin-bottom: 28px">B+ Tree Structure for In-Memory Database</div>
-<div style="display: flex; flex-direction: column; gap: 20px; align-items: center">
-<div style="background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);border-radius: 12px; padding: 16px 32px; text-align: center">
-<div style="color: #92400e; font-weight: 700; font-size: 14px; margin-bottom: 8px">Root Node (Internal)</div>
-<div style="display: flex; gap: 8px; justify-content: center">
-<div style="background: #fff;padding: 8px 16px; border-radius: 6px; font-family: monospace; font-size: 12px">key: 50</div>
-<div style="background: #fff;padding: 8px 16px; border-radius: 6px; font-family: monospace; font-size: 12px">key: 100</div>
+<p>While <span>hash maps</span> provide O(1) lookup, they cannot efficiently support <span>range queries</span> like &quot;find all keys between A and B&quot;. For these operations, we need ordered data structures. See <a href="/system-design/database-sharding">[database-sharding]</a> for how these structures scale across nodes.</p>
+<div>
+<div>B+ Tree Structure for In-Memory Database</div>
+<div>
+<div>
+<div>Root Node (Internal)</div>
+<div>
+<div>key: 50</div>
+<div>key: 100</div>
 </div>
 </div>
-<div style="display: flex; justify-content: center; gap: 80px">
-<div style="width: 2px; height: 30px; background: #94a3b8"></div>
-<div style="width: 2px; height: 30px; background: #94a3b8"></div>
-<div style="width: 2px; height: 30px; background: #94a3b8"></div>
+<div>
+<div></div>
+<div></div>
+<div></div>
 </div>
-<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
-<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 10px; padding: 12px 16px; text-align: center; min-width: 120px">
-<div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 6px">Leaf Node</div>
-<div style="font-family: monospace; font-size: 11px; color: #14532d">10, 20, 30, 40</div>
-<div style="font-size: 10px; color: #6b7280; margin-top: 4px">+ data pointers</div>
+<div>
+<div>
+<div>Leaf Node</div>
+<div>10, 20, 30, 40</div>
+<div>+ data pointers</div>
 </div>
-<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 10px; padding: 12px 16px; text-align: center; min-width: 120px">
-<div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 6px">Leaf Node</div>
-<div style="font-family: monospace; font-size: 11px; color: #14532d">50, 60, 70, 80</div>
-<div style="font-size: 10px; color: #6b7280; margin-top: 4px">+ data pointers</div>
+<div>
+<div>Leaf Node</div>
+<div>50, 60, 70, 80</div>
+<div>+ data pointers</div>
 </div>
-<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 10px; padding: 12px 16px; text-align: center; min-width: 120px">
-<div style="color: #166534; font-weight: 600; font-size: 12px; margin-bottom: 6px">Leaf Node</div>
-<div style="font-family: monospace; font-size: 11px; color: #14532d">100, 110, 120</div>
-<div style="font-size: 10px; color: #6b7280; margin-top: 4px">+ data pointers</div>
-</div>
-</div>
-<div style="display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 8px">
-<div style="background: #dbeafe; padding: 6px 12px; border-radius: 6px; font-size: 11px; color: #1e40af">Leaf nodes linked for range scans</div>
-<div style="color: #3b82f6">→→→</div>
+<div>
+<div>Leaf Node</div>
+<div>100, 110, 120</div>
+<div>+ data pointers</div>
 </div>
 </div>
+<div>
+<div>Leaf nodes linked for range scans</div>
+<div>→→→</div>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Key Insight: B+ Tree Advantages for In-Memory Use</div>
-<div style="color: #14532d; font-size: 14px; line-height: 1.8">
-<ul style="margin: 0; padding-left: 20px">
-<li><span style="color: #16a34a; font-weight: 600">Cache-friendly</span>: High fanout (100-1000 keys per node) means shallow trees (2-4 levels for millions of keys)</li>
-<li><span style="color: #16a34a; font-weight: 600">Range queries</span>: O(log n + k) where k = result size, thanks to linked leaf nodes</li>
-<li><span style="color: #16a34a; font-weight: 600">Sorted iteration</span>: Sequential scan through leaf chain for ORDER BY operations</li>
-<li><span style="color: #16a34a; font-weight: 600">Prefix compression</span>: Internal nodes only store separator keys, not full data</li>
+</div>
+</div>
+<div>
+<div>Key Insight: B+ Tree Advantages for In-Memory Use</div>
+<div>
+<ul>
+<li><span>Cache-friendly</span>: High fanout (100-1000 keys per node) means shallow trees (2-4 levels for millions of keys)</li>
+<li><span>Range queries</span>: O(log n + k) where k = result size, thanks to linked leaf nodes</li>
+<li><span>Sorted iteration</span>: Sequential scan through leaf chain for ORDER BY operations</li>
+<li><span>Prefix compression</span>: Internal nodes only store separator keys, not full data</li>
 </ul>
 </div>
 </div>
@@ -2425,41 +2425,41 @@ class BPlusTree:
         return None
 </code></pre>
 <h3 id="hash-map-vs-b-tree-decision-matrix">Hash Map vs B-Tree: Decision Matrix</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 16px; margin-bottom: 20px">When to Use Each Data Structure</div>
-<div style="display: flex; gap: 20px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 280px; background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; font-size: 15px; margin-bottom: 14px">Use Hash Map When</div>
-<div style="color: #1e3a8a; font-size: 13px; line-height: 1.9">
-<div style="margin-bottom: 8px">Primary key lookup (GET by key)</div>
-<div style="margin-bottom: 8px">Existence checks (EXISTS)</div>
-<div style="margin-bottom: 8px">Session/cache storage</div>
-<div style="margin-bottom: 8px">No ordering requirements</div>
-<div style="margin-bottom: 8px">Maximum single-key performance</div>
-<div style="background: #fff; padding: 10px; border-radius: 8px; margin-top: 12px">
-<div style="color: #1e40af; font-weight: 600; font-size: 12px">Complexity: O(1) average</div>
-<div style="color: #3b82f6; font-size: 11px">Examples: Redis strings, Memcached</div>
+<div>
+<div>When to Use Each Data Structure</div>
+<div>
+<div>
+<div>Use Hash Map When</div>
+<div>
+<div>Primary key lookup (GET by key)</div>
+<div>Existence checks (EXISTS)</div>
+<div>Session/cache storage</div>
+<div>No ordering requirements</div>
+<div>Maximum single-key performance</div>
+<div>
+<div>Complexity: O(1) average</div>
+<div>Examples: Redis strings, Memcached</div>
 </div>
 </div>
 </div>
-<div style="flex: 1; min-width: 280px; background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; font-size: 15px; margin-bottom: 14px">Use B-Tree When</div>
-<div style="color: #14532d; font-size: 13px; line-height: 1.9">
-<div style="margin-bottom: 8px">Range queries (BETWEEN, >, <)</div>
-<div style="margin-bottom: 8px">Sorted iteration (ORDER BY)</div>
-<div style="margin-bottom: 8px">Prefix matching (LIKE 'abc%')</div>
-<div style="margin-bottom: 8px">Min/Max operations</div>
-<div style="margin-bottom: 8px">Time-series with windowing</div>
-<div style="background: #fff; padding: 10px; border-radius: 8px; margin-top: 12px">
-<div style="color: #166534; font-weight: 600; font-size: 12px">Complexity: O(log n)</div>
-<div style="color: #22c55e; font-size: 11px">Examples: Redis ZSET, SQLite indexes</div>
+<div>
+<div>Use B-Tree When</div>
+<div>
+<div>Range queries (BETWEEN,>, <)</div>
+<div>Sorted iteration (ORDER BY)</div>
+<div>Prefix matching (LIKE 'abc%')</div>
+<div>Min/Max operations</div>
+<div>Time-series with windowing</div>
+<div>
+<div>Complexity: O(log n)</div>
+<div>Examples: Redis ZSET, SQLite indexes</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="radix-tree-for-prefix-operations">Radix Tree for Prefix Operations</h3>
-<p>For string-heavy workloads requiring <span style="color: #16a34a; font-weight: 600">prefix matching</span>, a <a href="/data-structures/tries">[radix-tree]</a> (compressed trie) offers optimal performance. Redis uses this internally for key pattern matching.</p>
+<p>For string-heavy workloads requiring <span>prefix matching</span>, a <a href="/data-structures/tries">[radix-tree]</a> (compressed trie) offers optimal performance. Redis uses this internally for key pattern matching.</p>
 <pre><code class="language-python">from dataclasses import dataclass, field
 from typing import Dict, Optional, List, Any
 
@@ -2620,28 +2620,28 @@ class RadixTree:
             self._collect_all(child, prefix + child.edge_label, results)
 </code></pre>
 <h3 id="interview-questions-data-structures">Interview Questions: Data Structures</h3>
-<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #065f46; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #059669; font-weight: 600">Q: Why does Redis use both hash tables AND skip lists for sorted sets?</div>
-<div style="color: #064e3b; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> Redis ZSET stores data in both structures simultaneously: (1) <span style="color: #16a34a; font-weight: 600">Hash table</span> maps member -> score for O(1) score lookup and duplicate detection. (2) <span style="color: #16a34a; font-weight: 600">Skip list</span> orders by score for O(log n) range queries. The space overhead (storing each member twice) is acceptable because it enables both ZSCORE (O(1)) and ZRANGEBYSCORE (O(log n + k)) to be fast. This is a classic <span style="color: #16a34a; font-weight: 600">space-time tradeoff</span>.
+<div>
+<div>Level 1: Foundational Understanding</div>
+<div>
+<div>Q: Why does Redis use both hash tables AND skip lists for sorted sets?</div>
+<div>
+<strong>A:</strong> Redis ZSET stores data in both structures simultaneously: (1) <span>Hash table</span> maps member -> score for O(1) score lookup and duplicate detection. (2) <span>Skip list</span> orders by score for O(log n) range queries. The space overhead (storing each member twice) is acceptable because it enables both ZSCORE (O(1)) and ZRANGEBYSCORE (O(log n + k)) to be fast. This is a classic <span>space-time tradeoff</span>.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #047857; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Depth</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #10b981; font-weight: 600">Q: How would you implement a secondary index that supports both equality and range queries efficiently?</div>
-<div style="color: #065f46; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> Use a <span style="color: #16a34a; font-weight: 600">B+ tree</span> as the index structure. For equality (WHERE age = 25): traverse tree to leaf, O(log n). For range (WHERE age BETWEEN 20 AND 30): traverse to first matching leaf, then scan linked leaves, O(log n + k). For composite indexes (age, name): B+ tree with composite keys enables both "age = 25" and "age = 25 AND name LIKE 'A%'" efficiently. Maintain hash table for primary key, B+ tree for secondary indexes. Index updates must be <span style="color: #16a34a; font-weight: 600">atomic with data updates</span> - use transaction to update both.
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
+<div>Q: How would you implement a secondary index that supports both equality and range queries efficiently?</div>
+<div>
+<strong>A:</strong> Use a <span>B+ tree</span> as the index structure. For equality (WHERE age = 25): traverse tree to leaf, O(log n). For range (WHERE age BETWEEN 20 AND 30): traverse to first matching leaf, then scan linked leaves, O(log n + k). For composite indexes (age, name): B+ tree with composite keys enables both "age = 25" and "age = 25 AND name LIKE 'A%'" efficiently. Maintain hash table for primary key, B+ tree for secondary indexes. Index updates must be <span>atomic with data updates</span> - use transaction to update both.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #047857; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Production Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #34d399; font-weight: 600">Q: How would you handle memory pressure when B-tree indexes become too large for available RAM?</div>
-<div style="color: #065f46; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> Several strategies: (1) <span style="color: #16a34a; font-weight: 600">Partial indexes</span>: Only index frequently queried subset (WHERE status = 'active'). (2) <span style="color: #16a34a; font-weight: 600">Index eviction</span>: Treat cold index nodes as evictable cache, rebuild from WAL on access. (3) <span style="color: #16a34a; font-weight: 600">Sparse indexes</span>: Index every Nth key, scan within blocks. (4) <span style="color: #16a34a; font-weight: 600">Bloom filters</span>: Pre-filter queries that definitely won't match before B-tree lookup - see [[caching]](/system-design/caching). (5) <span style="color: #16a34a; font-weight: 600">Hybrid storage</span>: Keep hot internal nodes in memory, cold leaves on SSD with memory-mapped access. Modern systems like RocksDB use LSM trees which are designed for memory/disk hybrid from the start.
+<div>
+<div>Level 3: Production Considerations</div>
+<div>
+<div>Q: How would you handle memory pressure when B-tree indexes become too large for available RAM?</div>
+<div>
+<strong>A:</strong> Several strategies: (1) <span>Partial indexes</span>: Only index frequently queried subset (WHERE status = 'active'). (2) <span>Index eviction</span>: Treat cold index nodes as evictable cache, rebuild from WAL on access. (3) <span>Sparse indexes</span>: Index every Nth key, scan within blocks. (4) <span>Bloom filters</span>: Pre-filter queries that definitely won't match before B-tree lookup - see [[caching]](/system-design/caching). (5) <span>Hybrid storage</span>: Keep hot internal nodes in memory, cold leaves on SSD with memory-mapped access. Modern systems like RocksDB use LSM trees which are designed for memory/disk hybrid from the start.
 </div>
 </div>
 </div>
@@ -2650,33 +2650,33 @@ class RadixTree:
 <hr />
 <h2 id="section-7-query-optimization">Section 7: Query Optimization</h2>
 <h3 id="query-planning-and-execution">Query Planning and Execution</h3>
-<p><span style="color: #16a34a; font-weight: 600">Query optimization</span> in in-memory databases differs from disk-based systems because I/O is not the bottleneck - instead, we optimize for CPU cache efficiency and memory access patterns.</p>
-<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
-<div style="font-weight: 700; color: #1e293b; font-size: 18px; text-align: center; margin-bottom: 28px">Query Execution Pipeline</div>
-<div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center">
-<div style="background: linear-gradient(180deg, #fee2e2 0%, #fef2f2 100%);border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px">
-<div style="color: #991b1b; font-weight: 700; font-size: 12px">Parse</div>
-<div style="color: #7f1d1d; font-size: 10px; margin-top: 4px">Command validation</div>
+<p><span>Query optimization</span> in in-memory databases differs from disk-based systems because I/O is not the bottleneck - instead, we optimize for CPU cache efficiency and memory access patterns.</p>
+<div>
+<div>Query Execution Pipeline</div>
+<div>
+<div>
+<div>Parse</div>
+<div>Command validation</div>
 </div>
-<div style="color: #94a3b8; font-size: 20px">→</div>
-<div style="background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 100%);border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px">
-<div style="color: #92400e; font-weight: 700; font-size: 12px">Plan</div>
-<div style="color: #78350f; font-size: 10px; margin-top: 4px">Index selection</div>
+<div>→</div>
+<div>
+<div>Plan</div>
+<div>Index selection</div>
 </div>
-<div style="color: #94a3b8; font-size: 20px">→</div>
-<div style="background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px">
-<div style="color: #166534; font-weight: 700; font-size: 12px">Optimize</div>
-<div style="color: #14532d; font-size: 10px; margin-top: 4px">Cost estimation</div>
+<div>→</div>
+<div>
+<div>Optimize</div>
+<div>Cost estimation</div>
 </div>
-<div style="color: #94a3b8; font-size: 20px">→</div>
-<div style="background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px">
-<div style="color: #1e40af; font-weight: 700; font-size: 12px">Execute</div>
-<div style="color: #1e3a8a; font-size: 10px; margin-top: 4px">Data retrieval</div>
+<div>→</div>
+<div>
+<div>Execute</div>
+<div>Data retrieval</div>
 </div>
-<div style="color: #94a3b8; font-size: 20px">→</div>
-<div style="background: linear-gradient(180deg, #f3e8ff 0%, #faf5ff 100%);border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 100px">
-<div style="color: #6b21a8; font-weight: 700; font-size: 12px">Return</div>
-<div style="color: #581c87; font-size: 10px; margin-top: 4px">Serialize result</div>
+<div>→</div>
+<div>
+<div>Return</div>
+<div>Serialize result</div>
 </div>
 </div>
 </div>
@@ -2850,18 +2850,18 @@ class TableStats:
     distinct_values: Dict[str, int]
 </code></pre>
 <h3 id="memory-efficient-query-execution">Memory-Efficient Query Execution</h3>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Design Principle: Streaming vs Materialization</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Design Principle: Streaming vs Materialization</div>
+<div>
 For complex queries with multiple operations (filter, sort, aggregate), choose between:
-<div style="display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 200px; background: #fff; padding: 12px; border-radius: 8px">
-<div style="font-weight: 600; color: #1e40af; font-size: 13px">Materialization</div>
-<div style="font-size: 12px; color: #3b82f6; margin-top: 4px">Store intermediate results. Simpler but uses O(n) memory.</div>
+<div>
+<div>
+<div>Materialization</div>
+<div>Store intermediate results. Simpler but uses O(n) memory.</div>
 </div>
-<div style="flex: 1; min-width: 200px; background: #fff; padding: 12px; border-radius: 8px">
-<div style="font-weight: 600; color: #1e40af; font-size: 13px">Streaming/Pipelining</div>
-<div style="font-size: 12px; color: #3b82f6; margin-top: 4px">Process row-by-row. O(1) memory but can't backtrack.</div>
+<div>
+<div>Streaming/Pipelining</div>
+<div>Process row-by-row. O(1) memory but can't backtrack.</div>
 </div>
 </div>
 </div>
@@ -3059,28 +3059,28 @@ def example_query_execution(store: dict):
     return results
 </code></pre>
 <h3 id="interview-questions-query-optimization">Interview Questions: Query Optimization</h3>
-<div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #86198f; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #c026d3; font-weight: 600">Q: When would a full table scan be faster than using an index in an in-memory database?</div>
-<div style="color: #701a75; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> When the query would return most of the table (>20-30%). Index lookup requires: (1) B-tree traversal O(log n), then (2) random access to each matching row. Full scan is sequential O(n) but <span style="color: #16a34a; font-weight: 600">cache-friendly</span> - CPU prefetcher works well. Also when the table is small (<1000 rows), index overhead exceeds benefit. Modern optimizers use <span style="color: #16a34a; font-weight: 600">selectivity estimation</span> to choose.
+<div>
+<div>Level 1: Foundational Understanding</div>
+<div>
+<div>Q: When would a full table scan be faster than using an index in an in-memory database?</div>
+<div>
+<strong>A:</strong> When the query would return most of the table (>20-30%). Index lookup requires: (1) B-tree traversal O(log n), then (2) random access to each matching row. Full scan is sequential O(n) but <span>cache-friendly</span> - CPU prefetcher works well. Also when the table is small (<1000 rows), index overhead exceeds benefit. Modern optimizers use <span>selectivity estimation</span> to choose.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fae8ff 0%, #f5d0fe 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #a21caf; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Depth</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #d946ef; font-weight: 600">Q: How would you implement index intersection for queries with multiple predicates?</div>
-<div style="color: #86198f; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> For query "WHERE age > 30 AND city = 'NYC'": (1) Use age B-tree index to get matching row IDs (Set A). (2) Use city hash index to get matching row IDs (Set B). (3) Compute A intersect B - this gives final candidates. (4) Fetch actual rows only for intersection. Key optimization: Start with more selective predicate (city = 'NYC' likely returns fewer rows). For <span style="color: #16a34a; font-weight: 600">bitmap indexes</span>, intersection is just AND operation on bit vectors - very fast. Trade-off: Index intersection needs random access to multiple indexes, sometimes sequential scan + filter is faster.
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
+<div>Q: How would you implement index intersection for queries with multiple predicates?</div>
+<div>
+<strong>A:</strong> For query "WHERE age> 30 AND city = 'NYC'": (1) Use age B-tree index to get matching row IDs (Set A). (2) Use city hash index to get matching row IDs (Set B). (3) Compute A intersect B - this gives final candidates. (4) Fetch actual rows only for intersection. Key optimization: Start with more selective predicate (city = 'NYC' likely returns fewer rows). For <span>bitmap indexes</span>, intersection is just AND operation on bit vectors - very fast. Trade-off: Index intersection needs random access to multiple indexes, sometimes sequential scan + filter is faster.
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #f5d0fe 0%, #f0abfc 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #a21caf; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Production Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #e879f9; font-weight: 600">Q: How do you handle query optimization when statistics are stale or unavailable?</div>
-<div style="color: #86198f; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> Multiple strategies: (1) <span style="color: #16a34a; font-weight: 600">Adaptive execution</span>: Start with estimated plan, collect actual statistics during execution, re-optimize mid-query if estimates were very wrong. (2) <span style="color: #16a34a; font-weight: 600">Background statistics collection</span>: Sample table periodically (Redis scans 10 random keys/100ms for info commands). (3) <span style="color: #16a34a; font-weight: 600">Conservative defaults</span>: Assume 10% selectivity for unknown predicates. (4) <span style="color: #16a34a; font-weight: 600">Hybrid plans</span>: For uncertain cases, prepare both indexed and scan plans, choose at runtime based on first few rows. PostgreSQL uses "Generic" vs "Custom" plans. (5) <span style="color: #16a34a; font-weight: 600">Query hints</span>: Let developers force specific access paths when they know better than optimizer.
+<div>
+<div>Level 3: Production Considerations</div>
+<div>
+<div>Q: How do you handle query optimization when statistics are stale or unavailable?</div>
+<div>
+<strong>A:</strong> Multiple strategies: (1) <span>Adaptive execution</span>: Start with estimated plan, collect actual statistics during execution, re-optimize mid-query if estimates were very wrong. (2) <span>Background statistics collection</span>: Sample table periodically (Redis scans 10 random keys/100ms for info commands). (3) <span>Conservative defaults</span>: Assume 10% selectivity for unknown predicates. (4) <span>Hybrid plans</span>: For uncertain cases, prepare both indexed and scan plans, choose at runtime based on first few rows. PostgreSQL uses "Generic" vs "Custom" plans. (5) <span>Query hints</span>: Let developers force specific access paths when they know better than optimizer.
 </div>
 </div>
 </div>
@@ -3089,29 +3089,29 @@ def example_query_execution(store: dict):
 <hr />
 <h2 id="section-8-comprehensive-interview-deep-dive">Section 8: Comprehensive Interview Deep-Dive</h2>
 <p>This section presents a complete 3-level recursive interview covering all aspects of in-memory database design.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 28px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: 700; font-size: 20px; margin-bottom: 20px; text-align: center">Master Interview: In-Memory Database Architecture</div>
-<div style="color: #94a3b8; font-size: 14px; text-align: center">The following simulates a deep-dive technical interview covering all major topics</div>
+<div>
+<div>Master Interview: In-Memory Database Architecture</div>
+<div>The following simulates a deep-dive technical interview covering all major topics</div>
 </div>
 <h3 id="core-architecture-questions">Core Architecture Questions</h3>
-<div style="background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #0f766e; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: System Design Foundation</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #0d9488; font-weight: 600">Q: Walk me through how you would design the core architecture of an in-memory database from scratch.</div>
-<div style="color: #134e4a; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: System Design Foundation</div>
+<div>
+<div>Q: Walk me through how you would design the core architecture of an in-memory database from scratch.</div>
+<div>
 <strong>A:</strong> I would design it in layers:
-<p><strong>1. Storage Layer:</strong> Primary <span style="color: #16a34a; font-weight: 600">hash table</span> for O(1) key-value operations. Each entry contains: value, data type, TTL metadata, and access statistics for eviction. Using slots (Python) or packed structs to minimize per-entry overhead.</p>
-<p><strong>2. Index Layer:</strong> Optional <span style="color: #16a34a; font-weight: 600">secondary indexes</span> - B+ trees for range queries, radix trees for prefix matching, skip lists for sorted sets. TTL heap (min-heap) for expiration management.</p>
-<p><strong>3. Transaction Layer:</strong> Stack-based nested transactions with <span style="color: #16a34a; font-weight: 600">copy-on-write snapshots</span> per modified key. Support BEGIN/COMMIT/ROLLBACK with merge semantics for nested commits.</p>
+<p><strong>1. Storage Layer:</strong> Primary <span>hash table</span> for O(1) key-value operations. Each entry contains: value, data type, TTL metadata, and access statistics for eviction. Using slots (Python) or packed structs to minimize per-entry overhead.</p>
+<p><strong>2. Index Layer:</strong> Optional <span>secondary indexes</span> - B+ trees for range queries, radix trees for prefix matching, skip lists for sorted sets. TTL heap (min-heap) for expiration management.</p>
+<p><strong>3. Transaction Layer:</strong> Stack-based nested transactions with <span>copy-on-write snapshots</span> per modified key. Support BEGIN/COMMIT/ROLLBACK with merge semantics for nested commits.</p>
 <p><strong>4. Persistence Layer (optional):</strong> WAL for durability with configurable fsync policy. Periodic RDB snapshots using fork() for copy-on-write consistency.</p>
 <p><strong>5. Concurrency Layer:</strong> Single-threaded event loop (Redis model) OR RLock-based thread safety. Single-threaded avoids locking complexity and is surprisingly performant for memory-bound workloads.</p>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #0f766e; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Deep Implementation</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #14b8a6; font-weight: 600">Q: You mentioned copy-on-write snapshots. Explain exactly how nested transaction rollback works when the same key is modified at multiple nesting levels.</div>
-<div style="color: #115e59; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 2: Deep Implementation</div>
+<div>
+<div>Q: You mentioned copy-on-write snapshots. Explain exactly how nested transaction rollback works when the same key is modified at multiple nesting levels.</div>
+<div>
 <strong>A:</strong> Let me trace through an example:
 <pre><code>Initial: x = 5
 1. BEGIN (outer)    - outer.snapshot = {}
@@ -3123,18 +3123,18 @@ def example_query_execution(store: dict):
 7. Result: x = 10   - outer transaction's value preserved
 </code></pre>
 <p>Key insight: Each transaction level records the value from BEFORE that transaction started, not the original value. On rollback, we restore from that level's snapshot. On commit, we merge the child's original values into the parent (in case parent hasn't touched those keys yet).</p>
-<p>This is <span style="color: #16a34a; font-weight: 600">O(modified_keys)</span> per transaction, not O(all_keys), because we use lazy snapshotting - only capture on first write.</p>
+<p>This is <span>O(modified_keys)</span> per transaction, not O(all_keys), because we use lazy snapshotting - only capture on first write.</p>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #99f6e4 0%, #5eead4 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #0f766e; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Edge Cases and Production</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #2dd4bf; font-weight: 600">Q: What happens if a transaction modifies millions of keys? How would you optimize for memory during large transactions?</div>
-<div style="color: #115e59; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 3: Edge Cases and Production</div>
+<div>
+<div>Q: What happens if a transaction modifies millions of keys? How would you optimize for memory during large transactions?</div>
+<div>
 <strong>A:</strong> This is a real production concern. Options:
 <p><strong>1. Transaction Size Limits:</strong> Enforce maximum keys per transaction. Fail early if exceeded. This is the simplest and what most systems do.</p>
 <p><strong>2. Streaming Snapshots:</strong> Instead of deep copying values, store references to immutable value objects. Values become copy-on-write at object level. More complex but O(1) per key.</p>
-<p><strong>3. <span style="color: #16a34a; font-weight: 600">Command Logging</span>:</strong> Instead of value snapshots, log the inverse operation: SET x = 10 -&gt; log &quot;SET x = 5&quot; (old value). Rollback replays log in reverse. O(operations) memory, not O(key_size).</p>
+<p><strong>3. <span>Command Logging</span>:</strong> Instead of value snapshots, log the inverse operation: SET x = 10 -&gt; log &quot;SET x = 5&quot; (old value). Rollback replays log in reverse. O(operations) memory, not O(key_size).</p>
 <p><strong>4. Checkpoint-Based:</strong> For very large transactions, checkpoint to disk periodically. Rollback replays from checkpoint + memory log. Trades disk I/O for memory.</p>
 <p><strong>5. Two-Phase Transactions:</strong> For distributed scenarios, use prepare/commit phases with WAL. This naturally bounds in-memory state. See <a href="/system-design/distributed-locking">[distributed-locking]</a>.</p>
 <p>Redis limits MULTI/EXEC transactions by memory and simply fails if exceeded. For a custom implementation, I'd combine approach (1) with (3) - limit size and use command logging for better memory efficiency.</p>
@@ -3144,38 +3144,38 @@ def example_query_execution(store: dict):
 </div>
 </div>
 <h3 id="ttl-and-expiration-deep-dive">TTL and Expiration Deep-Dive</h3>
-<div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #9a3412; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Expiration Mechanisms</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #ea580c; font-weight: 600">Q: Compare and contrast lazy expiration vs active expiration. When would you use each?</div>
-<div style="color: #7c2d12; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Expiration Mechanisms</div>
+<div>
+<div>Q: Compare and contrast lazy expiration vs active expiration. When would you use each?</div>
+<div>
 <strong>A:</strong>
-<p><strong><span style="color: #16a34a; font-weight: 600">Lazy Expiration</span>:</strong> Check TTL only when key is accessed. If expired, delete and return nil.</p>
+<p><strong><span>Lazy Expiration</span>:</strong> Check TTL only when key is accessed. If expired, delete and return nil.</p>
 <ul>
 <li>Pros: Zero CPU overhead when idle, simplest to implement</li>
 <li>Cons: Expired keys consume memory until accessed, &quot;memory leak&quot; for cold data</li>
 <li>Use when: Low memory pressure, most keys are accessed regularly</li>
 </ul>
-<p><strong><span style="color: #16a34a; font-weight: 600">Active Expiration</span>:</strong> Background thread periodically scans for expired keys.</p>
+<p><strong><span>Active Expiration</span>:</strong> Background thread periodically scans for expired keys.</p>
 <ul>
 <li>Pros: Memory reclaimed promptly, bounded memory overhead from expired keys</li>
 <li>Cons: CPU cost even when idle, can cause latency if not throttled</li>
 <li>Use when: High memory pressure, many keys with TTL, cold data common</li>
 </ul>
-<p><strong><span style="color: #16a34a; font-weight: 600">Hybrid (Redis)</span>:</strong> Combine both - lazy check on access + probabilistic background cleanup.</p>
+<p><strong><span>Hybrid (Redis)</span>:</strong> Combine both - lazy check on access + probabilistic background cleanup.</p>
 <ul>
 <li>Best of both worlds with complexity tradeoff</li>
 <li>Use when: Production systems with SLA requirements</li>
 </ul>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #c2410c; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Complexity</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #f97316; font-weight: 600">Q: The TTL heap can have stale entries when keys are deleted or TTL is updated. How do you prevent unbounded heap growth?</div>
-<div style="color: #9a3412; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 2: Implementation Complexity</div>
+<div>
+<div>Q: The TTL heap can have stale entries when keys are deleted or TTL is updated. How do you prevent unbounded heap growth?</div>
+<div>
 <strong>A:</strong> Three strategies with different trade-offs:
-<p><strong>1. <span style="color: #16a34a; font-weight: 600">Lazy Cleanup</span> (Redis approach):</strong></p>
+<p><strong>1. <span>Lazy Cleanup</span> (Redis approach):</strong></p>
 <ul>
 <li>When popping from heap, verify key exists AND TTL matches</li>
 <li>Stale entries are discarded, not processed</li>
@@ -3189,7 +3189,7 @@ def example_query_execution(store: dict):
 <li>No stale entries, but more complex</li>
 <li>Extra O(n) memory for position tracking</li>
 </ul>
-<p><strong>3. <span style="color: #16a34a; font-weight: 600">Periodic Rebuild</span>:</strong></p>
+<p><strong>3. <span>Periodic Rebuild</span>:</strong></p>
 <ul>
 <li>Track stale_ratio = stale_entries / total_entries</li>
 <li>When ratio &gt; threshold (e.g., 50%), rebuild heap from scratch</li>
@@ -3199,12 +3199,12 @@ def example_query_execution(store: dict):
 <p>I'd recommend (1) for most cases with (3) as safeguard. Production Redis uses (1) with monitoring.</p>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #c2410c; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Distributed Considerations</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #fb923c; font-weight: 600">Q: In a replicated setup, how should TTL expiration be coordinated between primary and replicas?</div>
-<div style="color: #9a3412; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> This is tricky due to <span style="color: #16a34a; font-weight: 600">clock skew</span> between nodes. Options:
+<div>
+<div>Level 3: Distributed Considerations</div>
+<div>
+<div>Q: In a replicated setup, how should TTL expiration be coordinated between primary and replicas?</div>
+<div>
+<strong>A:</strong> This is tricky due to <span>clock skew</span> between nodes. Options:
 <p><strong>1. Primary-Driven Expiration (Redis approach):</strong></p>
 <ul>
 <li>Primary runs expiration logic, sends explicit DEL commands to replicas</li>
@@ -3234,11 +3234,11 @@ def example_query_execution(store: dict):
 </div>
 </div>
 <h3 id="persistence-strategy-deep-dive">Persistence Strategy Deep-Dive</h3>
-<div style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #9d174d; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Durability Fundamentals</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #db2777; font-weight: 600">Q: Explain the trade-off between AOF fsync policies: always, every-second, and never.</div>
-<div style="color: #831843; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Durability Fundamentals</div>
+<div>
+<div>Q: Explain the trade-off between AOF fsync policies: always, every-second, and never.</div>
+<div>
 <strong>A:</strong>
 <table>
 <thead>
@@ -3270,16 +3270,16 @@ def example_query_execution(store: dict):
 </tr>
 </tbody>
 </table>
-<p><span style="color: #16a34a; font-weight: 600">Key insight:</span> fsync() is expensive because it forces data to stable storage. SSDs: ~100us. HDDs: ~10ms. Without fsync, data may be in OS buffer cache, lost on power failure.</p>
+<p><span>Key insight:</span> fsync() is expensive because it forces data to stable storage. SSDs: ~100us. HDDs: ~10ms. Without fsync, data may be in OS buffer cache, lost on power failure.</p>
 <p><strong>everysec</strong> is the sweet spot - you accept losing the last second of data in exchange for 100x better throughput. Most applications can tolerate this. For the rare cases needing true durability, use <strong>always</strong> or external transaction coordinator.</p>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #be185d; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Implementation Details</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #ec4899; font-weight: 600">Q: How does fork()-based snapshotting work, and what are the memory implications?</div>
-<div style="color: #9d174d; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> fork() creates a child process with <span style="color: #16a34a; font-weight: 600">copy-on-write (COW)</span> semantics:
+<div>
+<div>Level 2: Implementation Details</div>
+<div>
+<div>Q: How does fork()-based snapshotting work, and what are the memory implications?</div>
+<div>
+<strong>A:</strong> fork() creates a child process with <span>copy-on-write (COW)</span> semantics:
 <p><strong>1. Initial State:</strong> Parent and child share all memory pages (marked read-only in page tables)</p>
 <p><strong>2. On Write by Parent:</strong> OS intercepts write, copies page to new location, then allows write. Child still sees original page.</p>
 <p><strong>3. Child Writes Snapshot:</strong> Iterates through shared memory, writes to file. Sees consistent point-in-time view.</p>
@@ -3291,17 +3291,17 @@ def example_query_execution(store: dict):
 </ul>
 <p><strong>Pitfalls:</strong></p>
 <ul>
-<li><span style="color: #16a34a; font-weight: 600">Transparent Huge Pages (THP)</span>: COW copies 2MB at a time instead of 4KB. Can cause massive memory spikes. Disable THP for Redis.</li>
+<li><span>Transparent Huge Pages (THP)</span>: COW copies 2MB at a time instead of 4KB. Can cause massive memory spikes. Disable THP for Redis.</li>
 <li>Long-running saves with heavy writes: Memory keeps growing. Monitor and alert.</li>
 <li>Fork() itself takes O(n) time for page table copy (though memory is shared)</li>
 </ul>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #be185d; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Failure Scenarios</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #f472b6; font-weight: 600">Q: Walk me through recovery from: (1) crash during AOF write, (2) crash during RDB save, (3) corrupt AOF file mid-way.</div>
-<div style="color: #9d174d; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 3: Failure Scenarios</div>
+<div>
+<div>Q: Walk me through recovery from: (1) crash during AOF write, (2) crash during RDB save, (3) corrupt AOF file mid-way.</div>
+<div>
 <strong>A:</strong>
 <p><strong>1. Crash During AOF Write:</strong></p>
 <ul>
@@ -3319,7 +3319,7 @@ def example_query_execution(store: dict):
 </ul>
 <p><strong>3. Corrupt AOF Mid-way (disk error, bit rot):</strong></p>
 <ul>
-<li><span style="color: #16a34a; font-weight: 600">Checksum verification</span> detects corruption during replay</li>
+<li><span>Checksum verification</span> detects corruption during replay</li>
 <li>Options: (a) Stop at corruption point, (b) Skip corrupt entry and continue</li>
 <li>redis-check-aof tool: fixes by truncating at corruption</li>
 <li>Best practice: Keep RDB snapshots + AOF. Corruption likely means data after RDB is questionable anyway.</li>
@@ -3338,27 +3338,27 @@ def example_query_execution(store: dict):
 </div>
 </div>
 <h3 id="concurrency-and-threading">Concurrency and Threading</h3>
-<div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #5b21b6; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Concurrency Models</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #7c3aed; font-weight: 600">Q: Redis is single-threaded yet handles 100K+ operations/second. How is this possible?</div>
-<div style="color: #4c1d95; font-size: 13px; margin-top: 8px; line-height: 1.7">
+<div>
+<div>Level 1: Concurrency Models</div>
+<div>
+<div>Q: Redis is single-threaded yet handles 100K+ operations/second. How is this possible?</div>
+<div>
 <strong>A:</strong> Several factors combine to make single-threaded in-memory databases fast:
-<p><strong>1. <span style="color: #16a34a; font-weight: 600">Memory-bound, not CPU-bound</span>:</strong> Operations are simple (hash lookup, list append). CPU isn't the bottleneck - memory access is.</p>
+<p><strong>1. <span>Memory-bound, not CPU-bound</span>:</strong> Operations are simple (hash lookup, list append). CPU isn't the bottleneck - memory access is.</p>
 <p><strong>2. No Lock Contention:</strong> Zero overhead from locks, context switches, cache invalidation between cores.</p>
-<p><strong>3. <span style="color: #16a34a; font-weight: 600">Efficient Event Loop</span>:</strong> epoll/kqueue handle thousands of connections with O(1) per event. Network I/O is non-blocking.</p>
+<p><strong>3. <span>Efficient Event Loop</span>:</strong> epoll/kqueue handle thousands of connections with O(1) per event. Network I/O is non-blocking.</p>
 <p><strong>4. Request Pipelining:</strong> Clients can send multiple commands without waiting. Server batches responses.</p>
 <p><strong>5. Simple Operations:</strong> Most ops are O(1). Compare to SQL query planning, disk I/O, etc.</p>
 <p><strong>The Reality:</strong> Single core can do ~100K simple ops/second easily. If you need more, shard across instances (Redis Cluster). This is often simpler than complex multi-threaded synchronization.</p>
 <p><strong>Redis 6+ Threading:</strong> I/O threads for network handling. Core operations still single-threaded. Best of both worlds.</p>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #6d28d9; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 2: Lock Implementation</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 12px">
-<div style="color: #8b5cf6; font-weight: 600">Q: If you choose multi-threaded, explain why RLock is necessary instead of regular Lock for in-memory database.</div>
-<div style="color: #5b21b6; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> <span style="color: #16a34a; font-weight: 600">RLock (reentrant lock)</span> allows the same thread to acquire the lock multiple times:
+<div>
+<div>Level 2: Lock Implementation</div>
+<div>
+<div>Q: If you choose multi-threaded, explain why RLock is necessary instead of regular Lock for in-memory database.</div>
+<div>
+<strong>A:</strong> <span>RLock (reentrant lock)</span> allows the same thread to acquire the lock multiple times:
 <pre><code class="language-python">def set_with_ttl(key, value, ttl):
     with self._lock:  # First acquisition
         self.set(key, value)  # Contains: with self._lock
@@ -3380,12 +3380,12 @@ def example_query_execution(store: dict):
 <p><strong>Alternative:</strong> Use lock only at top-level public API, make all internal methods assume lock is held. Cleaner but error-prone.</p>
 </div>
 </div>
-<div style="background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);border-radius: 12px; padding: 20px; margin-top: 16px">
-<div style="color: #6d28d9; font-weight: 700; font-size: 14px; margin-bottom: 16px">Level 3: Advanced Concurrency</div>
-<div style="background: #fff; border-radius: 8px; padding: 16px">
-<div style="color: #a78bfa; font-weight: 600">Q: How would you implement lock-free concurrent reads with single-writer semantics?</div>
-<div style="color: #5b21b6; font-size: 13px; margin-top: 8px; line-height: 1.7">
-<strong>A:</strong> Use <span style="color: #16a34a; font-weight: 600">Read-Copy-Update (RCU)</span> or <span style="color: #16a34a; font-weight: 600">SeqLock</span> pattern:
+<div>
+<div>Level 3: Advanced Concurrency</div>
+<div>
+<div>Q: How would you implement lock-free concurrent reads with single-writer semantics?</div>
+<div>
+<strong>A:</strong> Use <span>Read-Copy-Update (RCU)</span> or <span>SeqLock</span> pattern:
 <p><strong>SeqLock Approach:</strong></p>
 <pre><code class="language-python">class SeqLockStore:
     def __init__(self):
@@ -3429,18 +3429,18 @@ def example_query_execution(store: dict):
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #0c4a6e; font-weight: 700; font-size: 16px; margin-bottom: 16px">Explore Further</div>
-<div style="display: flex; flex-wrap: wrap; gap: 12px">
-<a href="/data-structures/hash-tables" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Hash Tables]]</a>
-<a href="/data-structures/skip-list" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Skip Lists]]</a>
-<a href="/system-design/caching" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Caching Strategies]]</a>
-<a href="/system-design/storage" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Storage Systems]]</a>
-<a href="/system-design/rate-limiting" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Rate Limiting]]</a>
-<a href="/system-design/concurrency-patterns" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Concurrency Patterns]]</a>
-<a href="/system-design/distributed-locking" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Distributed Locking]]</a>
-<a href="/system-design/database-sharding" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[Database Sharding]]</a>
-<a href="/machine-coding/lru-cache" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[LRU Cache]]</a>
-<a href="/system-design/cap-theorem" style="background: #fff;padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #0369a1; font-weight: 500; font-size: 13px">[[CAP Theorem]]</a>
+<div>
+<div>Explore Further</div>
+<div>
+<a href="/data-structures/hash-tables">[[Hash Tables]]</a>
+<a href="/data-structures/skip-list">[[Skip Lists]]</a>
+<a href="/system-design/caching">[[Caching Strategies]]</a>
+<a href="/system-design/storage">[[Storage Systems]]</a>
+<a href="/system-design/rate-limiting">[[Rate Limiting]]</a>
+<a href="/system-design/concurrency-patterns">[[Concurrency Patterns]]</a>
+<a href="/system-design/distributed-locking">[[Distributed Locking]]</a>
+<a href="/system-design/database-sharding">[[Database Sharding]]</a>
+<a href="/machine-coding/lru-cache">[[LRU Cache]]</a>
+<a href="/system-design/cap-theorem">[[CAP Theorem]]</a>
 </div>
 </div>

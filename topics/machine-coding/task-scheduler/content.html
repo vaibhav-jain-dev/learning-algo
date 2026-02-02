@@ -4,7 +4,7 @@
 <hr />
 <h2 id="core-concepts-deep-dive">Core Concepts Deep Dive</h2>
 <h3 id="1-priority-queue-internals">1. Priority Queue Internals</h3>
-<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Why Priority Queues are Fundamental to Scheduling</strong></p>
 <p>A task scheduler's primary operation is answering: &quot;What task should run next?&quot; This requires constant access to the minimum element (earliest scheduled time), making <a href="/data-structures/priority-queue">[priority-queues]</a> the natural choice.</p>
 <p><strong>Internal Mechanism: Binary Heap</strong></p>
@@ -16,42 +16,42 @@
 <li><strong>insertion_order</strong>: Stability - FIFO for identical time+priority (prevents starvation)</li>
 </ol>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px">Heap Operations Visualized</h4>
-<div style="display: flex; flex-wrap: wrap; gap: 16px">
-<div style="background: #f0fdf4; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px">
-<div style="color: #166534; font-weight: bold; font-size: 13px; margin-bottom: 12px">Insert (Push)</div>
-<div style="color: #1e293b; font-size: 11px; line-height: 1.8">
+<div>
+<h4>Heap Operations Visualized</h4>
+<div>
+<div>
+<div>Insert (Push)</div>
+<div>
   1. Add element at end<br>
-2. <span style="color: #ea580c">Bubble-up</span>: swap with parent while smaller<br>
+2. <span>Bubble-up</span>: swap with parent while smaller<br>
   3. Stop when heap invariant restored
 </div>
-<div style="color: #64748b; font-size: 10px; margin-top: 8px">Time: O(log n)</div>
+<div>Time: O(log n)</div>
 </div>
-<div style="background: #fef2f2; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px">
-<div style="color: #991b1b; font-weight: bold; font-size: 13px; margin-bottom: 12px">Extract-Min (Pop)</div>
-<div style="color: #1e293b; font-size: 11px; line-height: 1.8">
+<div>
+<div>Extract-Min (Pop)</div>
+<div>
   1. Remove root (min element)<br>
   2. Move last element to root<br>
-3. <span style="color: #ea580c">Bubble-down</span>: swap with smaller child
+3. <span>Bubble-down</span>: swap with smaller child
 </div>
-<div style="color: #64748b; font-size: 10px; margin-top: 8px">Time: O(log n)</div>
+<div>Time: O(log n)</div>
 </div>
-<div style="background: #f5f3ff; padding: 16px; border-radius: 8px; flex: 1; min-width: 200px">
-<div style="color: #5b21b6; font-weight: bold; font-size: 13px; margin-bottom: 12px">Peek</div>
-<div style="color: #1e293b; font-size: 11px; line-height: 1.8">
+<div>
+<div>Peek</div>
+<div>
   1. Return root element<br>
   2. No modification needed<br>
   3. Heap unchanged
 </div>
-<div style="color: #64748b; font-size: 10px; margin-top: 8px">Time: O(1)</div>
+<div>Time: O(1)</div>
 </div>
 </div>
-<div style="background: #fff7ed; padding: 16px; border-radius: 8px; margin-top: 16px">
-<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px">Critical Insight: Decrease-Key Problem</div>
-<div style="color: #1e293b; font-size: 11px">
+<div>
+<div>Critical Insight: Decrease-Key Problem</div>
+<div>
   Standard binary heaps lack efficient decrease-key (needed for task rescheduling). Solutions:
-<ul style="margin: 8px 0 0 16px; padding: 0">
+<ul>
 <li><strong>Lazy deletion</strong>: Mark old entry invalid, insert new one. O(1) update but O(n) space waste</li>
 <li><strong>Index tracking</strong>: Maintain position map. O(log n) update with O(n) extra space</li>
 <li><strong>Fibonacci heap</strong>: O(1) amortized decrease-key but complex implementation</li>
@@ -59,7 +59,7 @@
 </div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Assumption</strong>: Tasks arrive independently and uniformly over time.</p>
 <p><strong>Trade-off Analysis: Data Structure Selection</strong></p>
 <table>
@@ -112,15 +112,15 @@
 <p><strong>Design Choice</strong>: For most schedulers, a binary heap with lazy deletion provides the best simplicity-to-performance ratio. Use timing wheels when you have millions of tasks with second-level granularity (like network timeouts).</p>
 </div>
 <h4 id="interview-questions-priority-queue">Interview Questions: Priority Queue</h4>
-<div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Level 1</strong>: Why use a min-heap instead of a sorted array for task scheduling?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p>Sorted arrays have O(n) insertion (shifting elements) but O(1) removal of minimum. Min-heaps have O(log n) for both. Since schedulers frequently insert new tasks, the heap's balanced performance wins. With 10,000 tasks, heap insertion takes ~13 comparisons vs 5,000 average shifts for sorted arrays.</p>
 </details>
 <p><strong>Level 2</strong>: How would you handle efficient task cancellation in a heap-based scheduler?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p>Three approaches:</p>
 <ol>
 <li><strong>Lazy deletion</strong>: Mark task as cancelled, skip during extraction. Pros: O(1) cancel. Cons: Memory bloat, requires periodic cleanup.</li>
@@ -131,7 +131,7 @@
 </details>
 <p><strong>Level 3</strong>: Design a priority queue that supports O(1) insertion for tasks scheduled within the next hour, while maintaining correctness for all tasks.</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p>Use a <strong>Hierarchical Timing Wheel</strong> combined with a heap:</p>
 <ol>
 <li><strong>Near-future tasks (0-60 min)</strong>: Timing wheel with 60 slots (1-minute granularity). Insert is O(1) - hash timestamp to slot.</li>
@@ -144,35 +144,35 @@
 </div>
 <hr />
 <h3 id="2-cron-expression-parsing">2. Cron Expression Parsing</h3>
-<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>The Cron Expression Format</strong></p>
 <p>Standard cron: <code>minute hour day-of-month month day-of-week</code></p>
 <p>Extended (6-field): <code>second minute hour day-of-month month day-of-week</code></p>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; background: #eff6ff; padding: 16px; border-radius: 8px">
-<div style="text-align: center; min-width: 100px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">minute</div>
-<div style="color: #64748b; font-size: 10px">(0-59)</div>
-<div style="color: #3b82f6; font-size: 18px; font-family: monospace">*</div>
+<div>
+<div>
+<div>minute</div>
+<div>(0-59)</div>
+<div>*</div>
 </div>
-<div style="text-align: center; min-width: 100px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">hour</div>
-<div style="color: #64748b; font-size: 10px">(0-23)</div>
-<div style="color: #3b82f6; font-size: 18px; font-family: monospace">*</div>
+<div>
+<div>hour</div>
+<div>(0-23)</div>
+<div>*</div>
 </div>
-<div style="text-align: center; min-width: 100px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">day of month</div>
-<div style="color: #64748b; font-size: 10px">(1-31)</div>
-<div style="color: #3b82f6; font-size: 18px; font-family: monospace">*</div>
+<div>
+<div>day of month</div>
+<div>(1-31)</div>
+<div>*</div>
 </div>
-<div style="text-align: center; min-width: 100px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">month</div>
-<div style="color: #64748b; font-size: 10px">(1-12)</div>
-<div style="color: #3b82f6; font-size: 18px; font-family: monospace">*</div>
+<div>
+<div>month</div>
+<div>(1-12)</div>
+<div>*</div>
 </div>
-<div style="text-align: center; min-width: 100px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">day of week</div>
-<div style="color: #64748b; font-size: 10px">(0-6, Sun=0)</div>
-<div style="color: #3b82f6; font-size: 18px; font-family: monospace">*</div>
+<div>
+<div>day of week</div>
+<div>(0-6, Sun=0)</div>
+<div>*</div>
 </div>
 </div>
 <p><strong>Special Characters</strong>:<br />
@@ -184,33 +184,33 @@
 - <code>W</code> - Nearest weekday<br />
 - <code>#</code> - Nth occurrence (<code>2#3</code> = third Monday)</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px">Cron Parser State Machine</h4>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px">
-<div style="background: #f0fdf4; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px">
-<div style="color: #166534; font-weight: bold; font-size: 11px">TOKENIZE</div>
-<div style="color: #1e293b; font-size: 9px">Split by spaces</div>
+<div>
+<h4>Cron Parser State Machine</h4>
+<div>
+<div>
+<div>
+<div>TOKENIZE</div>
+<div>Split by spaces</div>
 </div>
-<div style="color: #22c55e; font-size: 20px">&#8594;</div>
-<div style="background: #eff6ff; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px">
-<div style="color: #1e40af; font-weight: bold; font-size: 11px">PARSE FIELD</div>
-<div style="color: #1e293b; font-size: 9px">Handle *, ranges, steps</div>
+<div>&#8594;</div>
+<div>
+<div>PARSE FIELD</div>
+<div>Handle *, ranges, steps</div>
 </div>
-<div style="color: #3b82f6; font-size: 20px">&#8594;</div>
-<div style="background: #f5f3ff; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px">
-<div style="color: #5b21b6; font-weight: bold; font-size: 11px">EXPAND</div>
-<div style="color: #1e293b; font-size: 9px">Generate value sets</div>
+<div>&#8594;</div>
+<div>
+<div>EXPAND</div>
+<div>Generate value sets</div>
 </div>
-<div style="color: #8b5cf6; font-size: 20px">&#8594;</div>
-<div style="background: #fff7ed; padding: 12px 16px; border-radius: 8px; text-align: center; min-width: 100px">
-<div style="color: #c2410c; font-weight: bold; font-size: 11px">VALIDATE</div>
-<div style="color: #1e293b; font-size: 9px">Check bounds</div>
+<div>&#8594;</div>
+<div>
+<div>VALIDATE</div>
+<div>Check bounds</div>
 </div>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px">Example: Parsing "*/15 9-17 * * MON-FRI"</div>
-<div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8">
+<div>
+<div>Example: Parsing "*/15 9-17 * * MON-FRI"</div>
+<div>
   minute: */15 &#8594; {0, 15, 30, 45}<br>
   hour: 9-17 &#8594; {9, 10, 11, 12, 13, 14, 15, 16, 17}<br>
   day: * &#8594; {1, 2, ..., 31}<br>
@@ -220,7 +220,7 @@
 </div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Assumption</strong>: Server timezone is consistent. Daylight saving time transitions are handled.</p>
 <p><strong>The Next Execution Time Algorithm</strong></p>
 <p>Given current time and cron expression, find the next valid execution time:</p>
@@ -248,7 +248,7 @@
 </code></pre>
 <p><strong>Design Choice</strong>: Most production cron libraries use smart jumping with field-by-field advancement. When a field doesn't match, jump to its next valid value and reset all smaller fields.</p>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Edge Cases That Break Naive Implementations</strong></p>
 <ol>
 <li>
@@ -278,10 +278,10 @@
 </ol>
 </div>
 <h4 id="interview-questions-cron-expressions">Interview Questions: Cron Expressions</h4>
-<div style="background: #f5f3ff;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Level 1</strong>: Parse the cron expression <code>0 */2 * * *</code> and explain when it fires.</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <pre><code>                    - minute: 0 (exactly on the hour)
                     - hour: */2 = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22} (every 2 hours)
                     - day/month/dow: * (any)
@@ -290,7 +290,7 @@
 </details>
 <p><strong>Level 2</strong>: How would you handle timezone-aware cron scheduling when users are in different timezones?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p>Store and compute in UTC internally, convert for user display:</p>
 <ol>
 <li><strong>Storage</strong>: Store cron expression + user's timezone (e.g., &quot;America/New_York&quot;)</li>
@@ -302,7 +302,7 @@
 </details>
 <p><strong>Level 3</strong>: Design an efficient data structure to support querying &quot;which tasks fire in the next N minutes&quot; across 1 million cron-scheduled tasks.</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p><strong>Problem</strong>: Computing next-fire for 1M tasks on every query is too slow.</p>
 <p><strong>Solution</strong>: Pre-computed timeline with lazy refresh</p>
 <ol>
@@ -330,7 +330,7 @@ Time: O(log M + K) where M = unique timestamps, K = matching tasks</p>
 </div>
 <hr />
 <h3 id="3-distributed-scheduling">3. Distributed Scheduling</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>The Distributed Scheduling Challenge</strong></p>
 <p>Single-node schedulers don't scale. Multiple scheduler nodes introduce:<br />
 - <strong>Consistency</strong>: Same task might be picked by multiple nodes<br />
@@ -338,73 +338,73 @@ Time: O(log M + K) where M = unique timestamps, K = matching tasks</p>
 - <strong>Partition tolerance</strong>: Network splits shouldn't cause duplicate execution</p>
 <p>This is a classic <a href="/system-design/cap-theorem">[CAP theorem]</a> trade-off scenario.</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px">Distributed Scheduling Architectures</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px">
-<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 16px">Leader-Based (Active-Passive)</div>
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div style="background: #f0fdf4;padding: 12px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">LEADER</div>
-<div style="color: #166534; font-size: 9px">Schedules all tasks</div>
+<div>
+<h4>Distributed Scheduling Architectures</h4>
+<div>
+<div>
+<div>Leader-Based (Active-Passive)</div>
+<div>
+<div>
+<div>LEADER</div>
+<div>Schedules all tasks</div>
 </div>
-<div style="display: flex; justify-content: center; gap: 8px">
-<div style="background: #30363d; padding: 10px; border-radius: 6px; text-align: center">
-<div style="color: #64748b; font-size: 10px">Follower 1</div>
-<div style="color: #6e7681; font-size: 8px">Standby</div>
+<div>
+<div>
+<div>Follower 1</div>
+<div>Standby</div>
 </div>
-<div style="background: #30363d; padding: 10px; border-radius: 6px; text-align: center">
-<div style="color: #64748b; font-size: 10px">Follower 2</div>
-<div style="color: #6e7681; font-size: 8px">Standby</div>
+<div>
+<div>Follower 2</div>
+<div>Standby</div>
 </div>
 </div>
 </div>
-<div style="color: #1e293b; font-size: 11px; margin-top: 12px">
+<div>
 <strong>Pros</strong>: Simple, no coordination<br>
 <strong>Cons</strong>: Leader bottleneck, failover delay
 </div>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px">
-<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 16px">Partition-Based (Active-Active)</div>
-<div style="display: flex; justify-content: space-around; gap: 8px">
-<div style="background: #eff6ff;padding: 12px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">Node 1</div>
-<div style="color: #1e40af; font-size: 9px">Tasks 0-999</div>
+<div>
+<div>Partition-Based (Active-Active)</div>
+<div>
+<div>
+<div>Node 1</div>
+<div>Tasks 0-999</div>
 </div>
-<div style="background: #f5f3ff;padding: 12px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">Node 2</div>
-<div style="color: #5b21b6; font-size: 9px">Tasks 1000-1999</div>
+<div>
+<div>Node 2</div>
+<div>Tasks 1000-1999</div>
 </div>
-<div style="background: #fff7ed;padding: 12px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">Node 3</div>
-<div style="color: #fff; font-size: 9px">Tasks 2000-2999</div>
+<div>
+<div>Node 3</div>
+<div>Tasks 2000-2999</div>
 </div>
 </div>
-<div style="color: #1e293b; font-size: 11px; margin-top: 12px">
+<div>
 <strong>Pros</strong>: Scales horizontally, no SPOF<br>
 <strong>Cons</strong>: Rebalancing complexity on node changes
 </div>
 </div>
 </div>
-<div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin-top: 20px">
-<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 12px">Coordination Mechanisms</div>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px">
-<div style="text-align: center">
-<div style="color: #166534; font-size: 11px; font-weight: bold">[[ZooKeeper]](/system-design/zookeeper)</div>
-<div style="color: #64748b; font-size: 9px">Leader election, distributed locks</div>
+<div>
+<div>Coordination Mechanisms</div>
+<div>
+<div>
+<div>[[ZooKeeper]](/system-design/zookeeper)</div>
+<div>Leader election, distributed locks</div>
 </div>
-<div style="text-align: center">
-<div style="color: #1e40af; font-size: 11px; font-weight: bold">[[Redis]](/databases/redis)</div>
-<div style="color: #64748b; font-size: 9px">SETNX for locks, Redlock for safety</div>
+<div>
+<div>[[Redis]](/databases/redis)</div>
+<div>SETNX for locks, Redlock for safety</div>
 </div>
-<div style="text-align: center">
-<div style="color: #5b21b6; font-size: 11px; font-weight: bold">[[etcd]](/system-design/etcd)</div>
-<div style="color: #64748b; font-size: 9px">Lease-based locking, watch API</div>
-</div>
-</div>
+<div>
+<div>[[etcd]](/system-design/etcd)</div>
+<div>Lease-based locking, watch API</div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+</div>
+</div>
+<div>
 <p><strong>Assumption</strong>: Network partitions are possible but rare. Clocks are synchronized within acceptable bounds (NTP).</p>
 <p><strong>The Lock-Based Approach (Pessimistic)</strong></p>
 <pre><code>                      ```python
@@ -428,12 +428,12 @@ Time: O(log M + K) where M = unique timestamps, K = matching tasks</p>
 - <strong>Global lock</strong>: Simplest but defeats the purpose of distribution</p>
 <p><strong>Design Choice</strong>: Task-level locks with lock pooling. Maintain a connection pool to Redis/ZooKeeper to amortize connection overhead.</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px">Database-Based Scheduling with Row Locking</h4>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 16px">
-<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 8px">The "Claim" Pattern</div>
-<div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8">
-<span style="color: #c2410c">-- Atomic claim: only one node succeeds</span><br>
+<div>
+<h4>Database-Based Scheduling with Row Locking</h4>
+<div>
+<div>The "Claim" Pattern</div>
+<div>
+<span>-- Atomic claim: only one node succeeds</span><br>
   UPDATE tasks<br>
   SET status = 'running',<br>
   &nbsp;&nbsp;&nbsp;&nbsp;claimed_by = 'node-1',<br>
@@ -443,22 +443,22 @@ Time: O(log M + K) where M = unique timestamps, K = matching tasks</p>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AND scheduled_time <= NOW()<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORDER BY scheduled_time, priority DESC<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIMIT 1<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #dc2626">FOR UPDATE SKIP LOCKED</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>FOR UPDATE SKIP LOCKED</span>)<br>
   RETURNING *;
 </div>
 </div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: #238636; padding: 12px; border-radius: 8px">
-<div style="color: #fff; font-weight: bold; font-size: 11px">SKIP LOCKED Advantage</div>
-<div style="color: #166534; font-size: 10px; margin-top: 4px">Nodes don't block each other. If row is locked, skip to next candidate.</div>
+<div>
+<div>
+<div>SKIP LOCKED Advantage</div>
+<div>Nodes don't block each other. If row is locked, skip to next candidate.</div>
 </div>
-<div style="background: #f85149; padding: 12px; border-radius: 8px">
-<div style="color: #fff; font-weight: bold; font-size: 11px">Without SKIP LOCKED</div>
-<div style="color: #ffd7d5; font-size: 10px; margin-top: 4px">Nodes serialize on same row. Throughput collapses under load.</div>
+<div>
+<div>Without SKIP LOCKED</div>
+<div>Nodes serialize on same row. Throughput collapses under load.</div>
 </div>
 </div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Critical Distributed Scheduling Pitfalls</strong></p>
 <ol>
 <li>
@@ -479,10 +479,10 @@ Time: O(log M + K) where M = unique timestamps, K = matching tasks</p>
 </ol>
 </div>
 <h4 id="interview-questions-distributed-scheduling">Interview Questions: Distributed Scheduling</h4>
-<div style="background: #f5f3ff;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Level 1</strong>: Why can't we simply use a shared database table with optimistic locking for distributed task scheduling?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p>Optimistic locking (version numbers/timestamps) causes high contention:</p>
 <ol>
 <li>Node A reads task with version=1</li>
@@ -494,7 +494,7 @@ Time: O(log M + K) where M = unique timestamps, K = matching tasks</p>
 </details>
 <p><strong>Level 2</strong>: How would you implement leader election for a scheduler cluster using Redis?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <pre><code>                                              ```python
                                               class RedisLeaderElection:
                                               def __init__(self, redis_client, key, node_id, ttl=30):
@@ -537,7 +537,7 @@ Time: O(log M + K) where M = unique timestamps, K = matching tasks</p>
 </details>
 <p><strong>Level 3</strong>: Design a scheduler that guarantees exactly-once execution even during network partitions, without relying on distributed transactions.</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p><strong>Approach: Idempotent execution + outbox pattern + deduplication</strong></p>
 <ol>
 <li>
@@ -590,7 +590,7 @@ return existing.result  # Idempotent return</p>
 </div>
 <hr />
 <h3 id="4-failure-recovery">4. Failure Recovery</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Failure Modes in Task Scheduling</strong></p>
 <table>
 <thead>
@@ -629,21 +629,21 @@ return existing.result  # Idempotent return</p>
 </tbody>
 </table>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px">Heartbeat-Based Failure Detection</h4>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 200px; background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px">Worker Heartbeat Loop</div>
-<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.8">
+<div>
+<h4>Heartbeat-Based Failure Detection</h4>
+<div>
+<div>
+<div>
+<div>Worker Heartbeat Loop</div>
+<div>
   while running:<br>
   &nbsp;&nbsp;send_heartbeat(worker_id, current_task)<br>
   &nbsp;&nbsp;sleep(heartbeat_interval)
 </div>
 </div>
-<div style="flex: 1; min-width: 200px; background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px">Recovery Monitor Loop</div>
-<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.8">
+<div>
+<div>Recovery Monitor Loop</div>
+<div>
   while running:<br>
   &nbsp;&nbsp;stale = find_stale_heartbeats(threshold)<br>
   &nbsp;&nbsp;for worker in stale:<br>
@@ -652,9 +652,9 @@ return existing.result  # Idempotent return</p>
 </div>
 </div>
 </div>
-<div style="background: #f0fdf4; padding: 16px; border-radius: 8px">
-<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px">Tuning Heartbeat Parameters</div>
-<div style="color: #1e293b; font-size: 11px">
+<div>
+<div>Tuning Heartbeat Parameters</div>
+<div>
 <strong>heartbeat_interval</strong>: 10-30 seconds typical. Too fast = network overhead. Too slow = delayed detection.<br>
 <strong>failure_threshold</strong>: Usually 3x heartbeat_interval. Accounts for network jitter, GC pauses.<br>
 <strong>check_interval</strong>: heartbeat_interval / 2. Ensures timely detection.
@@ -662,7 +662,7 @@ return existing.result  # Idempotent return</p>
 </div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Assumption</strong>: Task execution is either idempotent or has built-in deduplication.</p>
 <p><strong>Retry Strategies with <a href="/algorithms/exponential-backoff">[Exponential Backoff]</a></strong></p>
 <pre><code>                                                            ```python
@@ -722,49 +722,49 @@ return existing.result  # Idempotent return</p>
 </table>
 <p><strong>Design Choice</strong>: Exponential backoff with full jitter is the default for modern systems. It spreads retry load over time, preventing synchronized retry storms after an outage recovers.</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px">Dead Letter Queue Pattern</h4>
-<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap">
-<div style="flex: 2; min-width: 250px">
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: #f0fdf4;padding: 10px 14px; border-radius: 8px">
-<div style="color: #fff; font-size: 10px; font-weight: bold">Main Queue</div>
+<div>
+<h4>Dead Letter Queue Pattern</h4>
+<div>
+<div>
+<div>
+<div>
+<div>
+<div>Main Queue</div>
 </div>
-<div style="color: #166534">&#8594;</div>
-<div style="background: #f8fafc; padding: 10px 14px; border-radius: 8px">
-<div style="color: #1e293b; font-size: 10px">Process Task</div>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 12px; margin-left: 120px">
-<div style="color: #dc2626">&#8595; failure</div>
-</div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: #fff7ed;padding: 10px 14px; border-radius: 8px">
-<div style="color: #fff; font-size: 10px; font-weight: bold">Retry Queue</div>
-</div>
-<div style="color: #c2410c">&#8594;</div>
-<div style="background: #f8fafc; padding: 10px 14px; border-radius: 8px">
-<div style="color: #1e293b; font-size: 10px">Retry (with backoff)</div>
+<div>&#8594;</div>
+<div>
+<div>Process Task</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px; margin-left: 120px">
-<div style="color: #dc2626">&#8595; max retries exceeded</div>
+<div>
+<div>&#8595; failure</div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 10px 14px; border-radius: 8px">
-<div style="color: #fff; font-size: 10px; font-weight: bold">Dead Letter Queue</div>
+<div>
+<div>
+<div>Retry Queue</div>
 </div>
-<div style="color: #dc2626">&#8594;</div>
-<div style="background: #f8fafc; padding: 10px 14px; border-radius: 8px">
-<div style="color: #1e293b; font-size: 10px">Manual review / Alert</div>
-</div>
-</div>
+<div>&#8594;</div>
+<div>
+<div>Retry (with backoff)</div>
 </div>
 </div>
-<div style="flex: 1; min-width: 180px; background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #1e40af; font-weight: bold; font-size: 11px; margin-bottom: 8px">DLQ Contents</div>
-<div style="color: #1e293b; font-size: 10px; line-height: 1.6">
+<div>
+<div>&#8595; max retries exceeded</div>
+</div>
+<div>
+<div>
+<div>Dead Letter Queue</div>
+</div>
+<div>&#8594;</div>
+<div>
+<div>Manual review / Alert</div>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div>DLQ Contents</div>
+<div>
                                                                       - Original task payload<br>
                                                                         - All retry attempt logs<br>
                                                                           - Final error message<br>
@@ -775,7 +775,7 @@ return existing.result  # Idempotent return</p>
 </div>
 </div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>The &quot;Stuck Task&quot; Problem</strong></p>
 <p>Scenario: Worker claims task, starts execution, hangs indefinitely (deadlock, infinite loop, waiting on external resource).</p>
 <p><strong>Detection Approaches</strong>:</p>
@@ -804,17 +804,17 @@ return existing.result  # Idempotent return</p>
 </ol>
 </div>
 <h4 id="interview-questions-failure-recovery">Interview Questions: Failure Recovery</h4>
-<div style="background: #f5f3ff;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Level 1</strong>: What's the difference between at-least-once and at-most-once task execution semantics?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p><strong>At-most-once</strong>: Task executed 0 or 1 times. Achieved by acknowledging before execution. If worker dies during execution, task is lost. Use for: logging, metrics, non-critical notifications.</p>
 <p><strong>At-least-once</strong>: Task executed 1 or more times. Achieved by acknowledging after execution. If worker dies after execution but before ack, task is re-executed. Use for: payments (with idempotency), order processing.</p>
 <p><strong>Exactly-once</strong>: Task executed exactly 1 time. Requires idempotent operations + at-least-once delivery + deduplication. Hardest to achieve.</p>
 </details>
 <p><strong>Level 2</strong>: Design a visibility timeout mechanism for a database-backed task queue.</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <pre><code>                                                                        ```sql
                                                                         -- Schema
                                                                         CREATE TABLE tasks (
@@ -858,7 +858,7 @@ return existing.result  # Idempotent return</p>
 </details>
 <p><strong>Level 3</strong>: How would you implement checkpoint-based recovery for long-running tasks that process millions of records?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <pre><code>                                                                        ```python
                                                                         class CheckpointedTask:
                                                                         def __init__(self, task_id, checkpoint_store):
@@ -919,59 +919,59 @@ return existing.result  # Idempotent return</p>
 </div>
 <hr />
 <h3 id="5-job-dependencies-and-dag-execution">5. Job Dependencies and DAG Execution</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Why Job Dependencies Matter</strong></p>
-<p>Real-world workflows rarely consist of independent tasks. <span style="color: #166534"><strong>Data pipelines</strong></span>, <span style="color: #166534"><strong>ETL processes</strong></span>, and <span style="color: #166534"><strong>CI/CD builds</strong></span> all require tasks to execute in specific orders, with later tasks depending on outputs from earlier ones.</p>
+<p>Real-world workflows rarely consist of independent tasks. <span><strong>Data pipelines</strong></span>, <span><strong>ETL processes</strong></span>, and <span><strong>CI/CD builds</strong></span> all require tasks to execute in specific orders, with later tasks depending on outputs from earlier ones.</p>
 <p><strong>The Core Problem</strong>: How do you ensure Task B doesn't start until Task A completes successfully, while maximizing parallelism across independent branches?</p>
-<p><strong>Solution</strong>: Model workflows as <span style="color: #166534"><strong>Directed Acyclic Graphs (DAGs)</strong></span> where nodes are tasks and edges represent dependencies.</p>
+<p><strong>Solution</strong>: Model workflows as <span><strong>Directed Acyclic Graphs (DAGs)</strong></span> where nodes are tasks and edges represent dependencies.</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px">DAG-Based Task Execution Model</h4>
-<div style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap">
-<div style="background: #f0fdf4;padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px">
-<div style="color: #fff; font-weight: bold; font-size: 12px">Extract</div>
-<div style="color: #166534; font-size: 9px">Source Data</div>
+<div>
+<h4>DAG-Based Task Execution Model</h4>
+<div>
+<div>
+<div>
+<div>Extract</div>
+<div>Source Data</div>
 </div>
-<div style="color: #166534; font-size: 24px">&#8594;</div>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<div style="background: #eff6ff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">Transform A</div>
-<div style="color: #1e40af; font-size: 8px">Clean Users</div>
+<div>&#8594;</div>
+<div>
+<div>
+<div>Transform A</div>
+<div>Clean Users</div>
 </div>
-<div style="background: #eff6ff;padding: 10px 16px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">Transform B</div>
-<div style="color: #1e40af; font-size: 8px">Clean Orders</div>
-</div>
-</div>
-<div style="color: #1e40af; font-size: 24px">&#8594;</div>
-<div style="background: #f5f3ff;padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px">
-<div style="color: #fff; font-weight: bold; font-size: 12px">Join</div>
-<div style="color: #5b21b6; font-size: 9px">Merge Data</div>
-</div>
-<div style="color: #5b21b6; font-size: 24px">&#8594;</div>
-<div style="background: #fff7ed;padding: 14px 20px; border-radius: 10px; text-align: center; min-width: 80px">
-<div style="color: #fff; font-weight: bold; font-size: 12px">Load</div>
-<div style="color: #fff; font-size: 9px">Data Warehouse</div>
+<div>
+<div>Transform B</div>
+<div>Clean Orders</div>
 </div>
 </div>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px">
-<div style="background: #f8fafc; padding: 14px; border-radius: 8px">
-<div style="color: #166534; font-weight: bold; font-size: 11px; margin-bottom: 8px">Parallelism</div>
-<div style="color: #1e293b; font-size: 10px">Transform A and B run concurrently since both only depend on Extract</div>
+<div>&#8594;</div>
+<div>
+<div>Join</div>
+<div>Merge Data</div>
 </div>
-<div style="background: #f8fafc; padding: 14px; border-radius: 8px">
-<div style="color: #1e40af; font-weight: bold; font-size: 11px; margin-bottom: 8px">Barrier Sync</div>
-<div style="color: #1e293b; font-size: 10px">Join waits for ALL upstream transforms before starting</div>
-</div>
-<div style="background: #f8fafc; padding: 14px; border-radius: 8px">
-<div style="color: #c2410c; font-weight: bold; font-size: 11px; margin-bottom: 8px">Failure Propagation</div>
-<div style="color: #1e293b; font-size: 10px">If Transform A fails, Join and Load are skipped (not executed)</div>
+<div>&#8594;</div>
+<div>
+<div>Load</div>
+<div>Data Warehouse</div>
 </div>
 </div>
+<div>
+<div>
+<div>Parallelism</div>
+<div>Transform A and B run concurrently since both only depend on Extract</div>
+</div>
+<div>
+<div>Barrier Sync</div>
+<div>Join waits for ALL upstream transforms before starting</div>
+</div>
+<div>
+<div>Failure Propagation</div>
+<div>If Transform A fails, Join and Load are skipped (not executed)</div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+</div>
+</div>
+<div>
 <p><strong>Assumption</strong>: Tasks within a DAG share execution context (variables, outputs).</p>
 <p><strong>Dependency Resolution Algorithm</strong> using <a href="/algorithms/topological-sort">[Topological Sort]</a>:</p>
 <pre><code>                                                                      ```python
@@ -1061,88 +1061,88 @@ return existing.result  # Idempotent return</p>
 </table>
 <p><strong>Design Choice</strong>: Apache Airflow uses explicit <code>&gt;&gt;</code> operator (<code>task_a &gt;&gt; task_b</code>) for readability. Prefect uses return values for type safety. Choose based on team familiarity.</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px">Dependency State Machine</h4>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px">
-<div style="background: #30363d; padding: 12px 16px; border-radius: 8px; text-align: center">
-<div style="color: #64748b; font-weight: bold; font-size: 11px">WAITING</div>
-<div style="color: #6e7681; font-size: 9px">Deps not met</div>
-</div>
-<div style="color: #166534; font-size: 18px">&#8594;<br><span style="font-size: 9px">all deps done</span></div>
-<div style="background: #f0fdf4;padding: 12px 16px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">READY</div>
-<div style="color: #166534; font-size: 9px">Can execute</div>
-</div>
-<div style="color: #1e40af; font-size: 18px">&#8594;<br><span style="font-size: 9px">worker picks</span></div>
-<div style="background: #eff6ff;padding: 12px 16px; border-radius: 8px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 11px">RUNNING</div>
-<div style="color: #1e40af; font-size: 9px">Executing</div>
-</div>
-<div style="display: flex; flex-direction: column; gap: 4px; align-items: center">
-<div style="color: #166534; font-size: 14px">&#8594; <span style="font-size: 9px; color: #166534">success</span></div>
-<div style="color: #dc2626; font-size: 14px">&#8594; <span style="font-size: 9px; color: #dc2626">failure</span></div>
-</div>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<div style="background: #f0fdf4;padding: 8px 12px; border-radius: 6px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 10px">SUCCESS</div>
-</div>
-<div style="background: linear-gradient(135deg, #da3633 0%, #f85149 100%); padding: 8px 12px; border-radius: 6px; text-align: center">
-<div style="color: #fff; font-weight: bold; font-size: 10px">FAILED</div>
-</div>
-</div>
-</div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 10px">Downstream Failure Handling Strategies</div>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px">
 <div>
-<div style="color: #166534; font-size: 11px; font-weight: bold">all_success (default)</div>
-<div style="color: #64748b; font-size: 10px">Run only if ALL upstream succeeded</div>
+<h4>Dependency State Machine</h4>
+<div>
+<div>
+<div>
+<div>WAITING</div>
+<div>Deps not met</div>
+</div>
+<div>&#8594;<br><span>all deps done</span></div>
+<div>
+<div>READY</div>
+<div>Can execute</div>
+</div>
+<div>&#8594;<br><span>worker picks</span></div>
+<div>
+<div>RUNNING</div>
+<div>Executing</div>
 </div>
 <div>
-<div style="color: #1e40af; font-size: 11px; font-weight: bold">all_done</div>
-<div style="color: #64748b; font-size: 10px">Run when all upstream completed (success or fail)</div>
+<div>&#8594; <span>success</span></div>
+<div>&#8594; <span>failure</span></div>
 </div>
 <div>
-<div style="color: #5b21b6; font-size: 11px; font-weight: bold">one_success</div>
-<div style="color: #64748b; font-size: 10px">Run if ANY upstream succeeded</div>
+<div>
+<div>SUCCESS</div>
 </div>
 <div>
-<div style="color: #c2410c; font-size: 11px; font-weight: bold">none_failed</div>
-<div style="color: #64748b; font-size: 10px">Run if no upstream failed (skipped is OK)</div>
+<div>FAILED</div>
+</div>
+</div>
+</div>
+<div>
+<div>Downstream Failure Handling Strategies</div>
+<div>
+<div>
+<div>all_success (default)</div>
+<div>Run only if ALL upstream succeeded</div>
+</div>
+<div>
+<div>all_done</div>
+<div>Run when all upstream completed (success or fail)</div>
+</div>
+<div>
+<div>one_success</div>
+<div>Run if ANY upstream succeeded</div>
+</div>
+<div>
+<div>none_failed</div>
+<div>Run if no upstream failed (skipped is OK)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Critical Edge Cases in Dependency Management</strong></p>
 <ol>
 <li>
-<p><span style="color: #166534"><strong>Diamond Dependencies</strong></span>: A → B, A → C, B → D, C → D. Task D has two paths from A. Ensure D doesn't run twice and receives outputs from both B and C.</p>
+<p><span><strong>Diamond Dependencies</strong></span>: A → B, A → C, B → D, C → D. Task D has two paths from A. Ensure D doesn't run twice and receives outputs from both B and C.</p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Dynamic Dependencies</strong></span>: Task creates new tasks at runtime. How do you handle dependencies on not-yet-existing tasks? Solutions:<br />
+<p><span><strong>Dynamic Dependencies</strong></span>: Task creates new tasks at runtime. How do you handle dependencies on not-yet-existing tasks? Solutions:<br />
 - <strong>Deferred resolution</strong>: Dependency references are strings, resolved at execution time<br />
 - <strong>Task factories</strong>: Parent task spawns child DAG as atomic unit</p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Cross-DAG Dependencies</strong></span>: Task in DAG-1 depends on task in DAG-2. Options:<br />
+<p><span><strong>Cross-DAG Dependencies</strong></span>: Task in DAG-1 depends on task in DAG-2. Options:<br />
 - <strong>Sensors</strong>: DAG-1 task polls for DAG-2 completion (Airflow approach)<br />
 - <strong>Events</strong>: DAG-2 publishes completion event, DAG-1 subscribes<br />
 - <strong>Shared state</strong>: Both check common database/cache for status</p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Conditional Dependencies</strong></span>: Task B depends on A only if A produced specific output. Requires runtime dependency evaluation, not static DAG structure.</p>
+<p><span><strong>Conditional Dependencies</strong></span>: Task B depends on A only if A produced specific output. Requires runtime dependency evaluation, not static DAG structure.</p>
 </li>
 </ol>
 </div>
 <h4 id="interview-questions-job-dependencies">Interview Questions: Job Dependencies</h4>
-<div style="background: #f5f3ff;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Level 1</strong>: What happens if you have a cycle in your task dependency graph?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
-<p>A cycle creates an impossible situation: Task A waits for B, B waits for C, C waits for A. No task can ever start. This is called a <span style="color: #166534"><strong>deadlock</strong></span>.</p>
+<summary>Answer</summary>
+<p>A cycle creates an impossible situation: Task A waits for B, B waits for C, C waits for A. No task can ever start. This is called a <span><strong>deadlock</strong></span>.</p>
 <p><strong>Detection</strong>: Run <a href="/algorithms/graph-cycle-detection">[cycle detection]</a> using DFS. If you find a back edge (edge to a node currently in the recursion stack), there's a cycle.</p>
 <p><strong>Prevention</strong>: Validate DAG structure at definition time, before any task executes. Reject workflows with cycles.</p>
 <pre><code>                                                                            ```python
@@ -1170,20 +1170,20 @@ return existing.result  # Idempotent return</p>
 </details>
 <p><strong>Level 2</strong>: How would you implement partial DAG re-execution after a mid-pipeline failure?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p>Scenario: 5-task pipeline runs. Task 3 fails. After fixing, user wants to resume from task 3 without re-running tasks 1-2.</p>
 <p><strong>Implementation</strong>:</p>
 <ol>
 <li>
-<p><span style="color: #166534"><strong>Persist task outputs</strong></span>: Store each task's output with execution ID<br />
+<p><span><strong>Persist task outputs</strong></span>: Store each task's output with execution ID<br />
 <code>python outputs[f&quot;{dag_run_id}:{task_id}&quot;] = task_result </code></p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Mark task states</strong></span>: Track which tasks completed successfully in this run<br />
+<p><span><strong>Mark task states</strong></span>: Track which tasks completed successfully in this run<br />
 <code>python task_states = { &quot;task_1&quot;: &quot;success&quot;, &quot;task_2&quot;: &quot;success&quot;, &quot;task_3&quot;: &quot;failed&quot;, &quot;task_4&quot;: &quot;skipped&quot;,  # downstream of failure &quot;task_5&quot;: &quot;skipped&quot; } </code></p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Selective re-execution</strong></span>:<br />
+<p><span><strong>Selective re-execution</strong></span>:<br />
 ```python<br />
 def rerun_from_failure(dag_run_id, failed_task_id):<br />
 # Get all downstream tasks (including failed one)<br />
@@ -1198,14 +1198,14 @@ to_rerun = get_downstream_tasks(failed_task_id) | {failed_task_id}</p>
 </code></pre>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Dependency resolution</strong></span>: When task 3 runs, it loads outputs from tasks 1-2 from storage instead of waiting for them to execute.</p>
+<p><span><strong>Dependency resolution</strong></span>: When task 3 runs, it loads outputs from tasks 1-2 from storage instead of waiting for them to execute.</p>
 </li>
 </ol>
 <p>Airflow calls this &quot;clearing&quot; a task - it resets the task and all downstream tasks to pending state.</p>
 </details>
 <p><strong>Level 3</strong>: Design a scheduler that supports dynamic task fan-out where one task spawns N child tasks at runtime, and a downstream task must wait for all N to complete.</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p><strong>Challenge</strong>: Traditional DAGs have static structure. Here, the number of child tasks is unknown until runtime.</p>
 <p><strong>Solution: Dynamic Task Groups with Barrier Synchronization</strong></p>
 <pre><code>                                                                            ```python
@@ -1297,16 +1297,16 @@ to_rerun = get_downstream_tasks(failed_task_id) | {failed_task_id}</p>
 <p><strong>Key Design Decisions</strong>:</p>
 <ol>
 <li>
-<p><span style="color: #166534"><strong>Group abstraction</strong></span>: Downstream depends on group, not individual tasks. Group is single entity in dependency graph.</p>
+<p><span><strong>Group abstraction</strong></span>: Downstream depends on group, not individual tasks. Group is single entity in dependency graph.</p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Barrier synchronization</strong></span>: Atomic counter tracks child completion. Downstream task wakes when barrier complete.</p>
+<p><span><strong>Barrier synchronization</strong></span>: Atomic counter tracks child completion. Downstream task wakes when barrier complete.</p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Failure semantics</strong></span>: Define policy - fail-fast (first child failure cancels siblings) or wait-all (collect all results, then fail).</p>
+<p><span><strong>Failure semantics</strong></span>: Define policy - fail-fast (first child failure cancels siblings) or wait-all (collect all results, then fail).</p>
 </li>
 <li>
-<p><span style="color: #166534"><strong>Result aggregation</strong></span>: Store child results in shared location. Downstream task retrieves all results:<br />
+<p><span><strong>Result aggregation</strong></span>: Store child results in shared location. Downstream task retrieves all results:<br />
 <code>python def collect_results(group_id) -&gt; List[Any]: return [outputs[f&quot;{group_id}_{i}&quot;] for i in range(barrier.expected)] </code></p>
 </li>
 </ol>
@@ -1315,7 +1315,7 @@ to_rerun = get_downstream_tasks(failed_task_id) | {failed_task_id}</p>
 </div>
 <hr />
 <h3 id="6-idempotency">6. Idempotency</h3>
-<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Why Idempotency is Non-Negotiable for Schedulers</strong></p>
 <p>In distributed systems, exactly-once delivery is a myth. Networks fail, workers crash, retries happen. Your system WILL execute the same task multiple times. The question is: will that break things?</p>
 <p><strong>Definition</strong>: An operation is idempotent if executing it multiple times has the same effect as executing it once.</p>
@@ -1328,39 +1328,39 @@ to_rerun = get_downstream_tasks(failed_task_id) | {failed_task_id}</p>
 - <code>INSERT INTO orders (...)</code> (creates new row each time)<br />
 - <code>POST /api/orders</code> (creates new resource)</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px">Idempotency Key Pattern</h4>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px">The Pattern</div>
-<div style="color: #1e293b; font-size: 11px; font-family: monospace; line-height: 1.8">
-<span style="color: #c2410c">def</span> process_with_idempotency(idempotency_key, operation):<br>
-&nbsp;&nbsp;<span style="color: #64748b"># Check if already processed</span><br>
+<div>
+<h4>Idempotency Key Pattern</h4>
+<div>
+<div>
+<div>The Pattern</div>
+<div>
+<span>def</span> process_with_idempotency(idempotency_key, operation):<br>
+&nbsp;&nbsp;<span># Check if already processed</span><br>
   &nbsp;&nbsp;existing = idempotency_store.get(idempotency_key)<br>
-&nbsp;&nbsp;<span style="color: #c2410c">if</span> existing:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #c2410c">return</span> existing.result &nbsp;<span style="color: #64748b"># Return cached result</span><br>
+&nbsp;&nbsp;<span>if</span> existing:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span> existing.result &nbsp;<span># Return cached result</span><br>
   <br>
-&nbsp;&nbsp;<span style="color: #64748b"># Execute operation</span><br>
+&nbsp;&nbsp;<span># Execute operation</span><br>
   &nbsp;&nbsp;result = operation()<br>
   <br>
-&nbsp;&nbsp;<span style="color: #64748b"># Store result (with TTL for cleanup)</span><br>
-&nbsp;&nbsp;idempotency_store.set(idempotency_key, result, ttl=<span style="color: #1e40af">86400</span>)<br>
+&nbsp;&nbsp;<span># Store result (with TTL for cleanup)</span><br>
+&nbsp;&nbsp;idempotency_store.set(idempotency_key, result, ttl=<span>86400</span>)<br>
   <br>
-&nbsp;&nbsp;<span style="color: #c2410c">return</span> result
+&nbsp;&nbsp;<span>return</span> result
 </div>
 </div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-<div style="background: #238636; padding: 12px; border-radius: 8px">
-<div style="color: #fff; font-weight: bold; font-size: 11px; margin-bottom: 4px">Good Idempotency Keys</div>
-<div style="color: #166534; font-size: 10px">
+<div>
+<div>
+<div>Good Idempotency Keys</div>
+<div>
                                                                                                               - task_id + scheduled_time<br>
                                                                                                                 - order_id + action + timestamp<br>
                                                                                                                   - user_id + operation + date
 </div>
 </div>
-<div style="background: #f85149; padding: 12px; border-radius: 8px">
-<div style="color: #fff; font-weight: bold; font-size: 11px; margin-bottom: 4px">Bad Idempotency Keys</div>
-<div style="color: #ffd7d5; font-size: 10px">
+<div>
+<div>Bad Idempotency Keys</div>
+<div>
                                                                                                                   - Random UUID (different each retry)<br>
                                                                                                                     - Timestamp only (too granular)<br>
                                                                                                                       - Mutable fields (user can change)
@@ -1369,7 +1369,7 @@ to_rerun = get_downstream_tasks(failed_task_id) | {failed_task_id}</p>
 </div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Assumption</strong>: Idempotency keys are unique per logical operation instance.</p>
 <p><strong>Trade-off</strong>: Idempotency storage strategies</p>
 <table>
@@ -1405,55 +1405,55 @@ to_rerun = get_downstream_tasks(failed_task_id) | {failed_task_id}</p>
 </table>
 <p><strong>Design Choice</strong>: Use Redis with 24-hour TTL for most scheduled tasks. Tasks that run daily have natural idempotency keys (task_id + date). For critical financial operations, use database with indefinite retention.</p>
 </div>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #5b21b6; margin: 0 0 24px 0; font-size: 16px">Making Non-Idempotent Operations Idempotent</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px">Problem: Additive Operations</div>
-<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6">
-<span style="color: #64748b">-- Non-idempotent: runs twice = double credit</span><br>
+<div>
+<h4>Making Non-Idempotent Operations Idempotent</h4>
+<div>
+<div>
+<div>Problem: Additive Operations</div>
+<div>
+<span>-- Non-idempotent: runs twice = double credit</span><br>
   UPDATE accounts<br>
   SET balance = balance + 100<br>
   WHERE user_id = 5;
 </div>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px">Solution: Transaction Log</div>
-<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6">
-<span style="color: #64748b">-- Idempotent: unique constraint prevents duplicate</span><br>
+<div>
+<div>Solution: Transaction Log</div>
+<div>
+<span>-- Idempotent: unique constraint prevents duplicate</span><br>
   INSERT INTO transactions<br>
   &nbsp;&nbsp;(id, user_id, amount, idempotency_key)<br>
   VALUES (gen_id(), 5, 100, 'task-123-2024-01-15')<br>
   ON CONFLICT (idempotency_key) DO NOTHING;<br><br>
-<span style="color: #64748b">-- Balance computed from transactions</span><br>
+<span>-- Balance computed from transactions</span><br>
   SELECT SUM(amount) FROM transactions<br>
   WHERE user_id = 5;
 </div>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #dc2626; font-weight: bold; font-size: 12px; margin-bottom: 12px">Problem: External API Calls</div>
-<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6">
-<span style="color: #64748b"># Non-idempotent: duplicate emails</span><br>
+<div>
+<div>Problem: External API Calls</div>
+<div>
+<span># Non-idempotent: duplicate emails</span><br>
   email_api.send(<br>
   &nbsp;&nbsp;to='user@example.com',<br>
   &nbsp;&nbsp;subject='Your order shipped'<br>
   )
 </div>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 12px">Solution: Check-then-send with Lock</div>
-<div style="color: #1e293b; font-size: 10px; font-family: monospace; line-height: 1.6">
-<span style="color: #64748b"># Idempotent: check before sending</span><br>
+<div>
+<div>Solution: Check-then-send with Lock</div>
+<div>
+<span># Idempotent: check before sending</span><br>
   key = f'email_sent:{order_id}:shipped'<br>
   if not redis.setnx(key, '1', ex=86400):<br>
-&nbsp;&nbsp;return <span style="color: #64748b"># Already sent</span><br><br>
+&nbsp;&nbsp;return <span># Already sent</span><br><br>
   email_api.send(...)<br>
-<span style="color: #64748b"># If send fails, key expires, retry works</span>
+<span># If send fails, key expires, retry works</span>
 </div>
 </div>
 </div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>The Idempotency-Atomicity Gap</strong></p>
 <p>Dangerous pattern:<br />
 ```python<br />
@@ -1485,10 +1485,10 @@ return get_cached_result(idempotency_key)</p>
 </code></pre>
 </div>
 <h4 id="interview-questions-idempotency">Interview Questions: Idempotency</h4>
-<div style="background: #f5f3ff;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Level 1</strong>: Why is <code>INSERT INTO table VALUES (...)</code> not idempotent, and how would you make it idempotent?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p>Each INSERT creates a new row with a new auto-generated ID. Running twice = two rows.</p>
 <p><strong>Solutions</strong>:</p>
 <ol>
@@ -1508,7 +1508,7 @@ return get_cached_result(idempotency_key)</p>
 </details>
 <p><strong>Level 2</strong>: How do you handle idempotency when your task calls multiple external services sequentially?</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p><strong>Saga pattern with compensation</strong>:</p>
 <pre><code>                                                                                                                                                      ```python
                                                                                                                                                       class OrderSaga:
@@ -1561,7 +1561,7 @@ return get_cached_result(idempotency_key)</p>
 </details>
 <p><strong>Level 3</strong>: Design an idempotency system that handles concurrent duplicate requests arriving within milliseconds of each other.</p>
 <details>
-<summary style="color: #5b21b6; cursor: pointer">Answer</summary>
+<summary>Answer</summary>
 <p><strong>Problem</strong>: Two requests with same idempotency key arrive simultaneously. Both check &quot;is processed?&quot; -&gt; both get &quot;no&quot; -&gt; both execute.</p>
 <p><strong>Solution: Distributed lock with request coalescing</strong></p>
 <pre><code>                                                                                                                                                      ```python
@@ -3012,39 +3012,39 @@ return get_cached_result(idempotency_key)</p>
 </code></pre>
 <hr />
 <h2 id="design-considerations-summary">Design Considerations Summary</h2>
-<div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin: 0 0 24px 0; font-size: 16px">Architecture Decision Matrix</h4>
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px">
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: bold; font-size: 12px; margin-bottom: 8px">Single Node</div>
-<div style="color: #1e293b; font-size: 10px; line-height: 1.6">
+<div>
+<h4>Architecture Decision Matrix</h4>
+<div>
+<div>
+<div>Single Node</div>
+<div>
   Use when: < 10K tasks, simple ops<br>
   Data structure: Binary min-heap<br>
   Concurrency: Condition variables<br>
   Recovery: Process restart
 </div>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px; margin-bottom: 8px">Multi-Node (Leader)</div>
-<div style="color: #1e293b; font-size: 10px; line-height: 1.6">
+<div>
+<div>Multi-Node (Leader)</div>
+<div>
   Use when: Need HA, < 100K tasks<br>
   Coordination: ZooKeeper/etcd<br>
   Concurrency: Leader election<br>
   Recovery: Automatic failover
 </div>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #5b21b6; font-weight: bold; font-size: 12px; margin-bottom: 8px">Multi-Node (Partitioned)</div>
-<div style="color: #1e293b; font-size: 10px; line-height: 1.6">
-  Use when: > 100K tasks, horizontal scale<br>
+<div>
+<div>Multi-Node (Partitioned)</div>
+<div>
+  Use when:> 100K tasks, horizontal scale<br>
   Coordination: Consistent hashing<br>
   Concurrency: Partition locks<br>
   Recovery: Partition rebalancing
 </div>
 </div>
-<div style="background: #f8fafc; padding: 16px; border-radius: 8px">
-<div style="color: #c2410c; font-weight: bold; font-size: 12px; margin-bottom: 8px">Database-Backed</div>
-<div style="color: #1e293b; font-size: 10px; line-height: 1.6">
+<div>
+<div>Database-Backed</div>
+<div>
   Use when: Durability critical, audit needed<br>
   Data structure: Indexed table<br>
   Concurrency: SKIP LOCKED<br>
@@ -3055,20 +3055,20 @@ return get_cached_result(idempotency_key)</p>
 </div>
 <hr />
 <h2 id="deep-dive-interview-qa-3-level-recursive-format">Deep-Dive Interview Q&amp;A: 3-Level Recursive Format</h2>
-<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e40af; margin: 0 0 24px 0">Complete Task Scheduler System Design</h3>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px">
-<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 1: "Design a task scheduler system"</div>
+<div>
+<h3>Complete Task Scheduler System Design</h3>
+<div>
+<div>Level 1: "Design a task scheduler system"</div>
 <details>
-<summary style="color: #5b21b6; cursor: pointer; font-size: 13px">Comprehensive Answer</summary>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
+<summary>Comprehensive Answer</summary>
+<div>
 <p><strong>High-Level Architecture</strong>:</p>
 <p>A task scheduler consists of four main components:</p>
 <ol>
-<li><span style="color: #166534"><strong>Task Storage</strong></span>: Where task definitions and states are persisted</li>
-<li><span style="color: #166534"><strong>Scheduler Core</strong></span>: Determines which tasks to execute and when</li>
-<li><span style="color: #166534"><strong>Worker Pool</strong></span>: Executes the actual task logic</li>
-<li><span style="color: #166534"><strong>Coordination Layer</strong></span>: Handles distributed concerns (if multi-node)</li>
+<li><span><strong>Task Storage</strong></span>: Where task definitions and states are persisted</li>
+<li><span><strong>Scheduler Core</strong></span>: Determines which tasks to execute and when</li>
+<li><span><strong>Worker Pool</strong></span>: Executes the actual task logic</li>
+<li><span><strong>Coordination Layer</strong></span>: Handles distributed concerns (if multi-node)</li>
 </ol>
 <p><strong>Core Data Structures</strong>:</p>
 <pre><code>                                                                                                                                                                                  ```python
@@ -3091,7 +3091,7 @@ return get_cached_result(idempotency_key)</p>
 </code></pre>
 <p><strong>Scheduling Algorithm</strong>:</p>
 <ol>
-<li>Maintain a <span style="color: #166534"><strong>min-heap</strong></span> ordered by scheduled_time</li>
+<li>Maintain a <span><strong>min-heap</strong></span> ordered by scheduled_time</li>
 <li>Worker threads wait on condition variable</li>
 <li>When top task's scheduled_time &lt;= now, pop and execute</li>
 <li>After execution, handle retries or schedule next occurrence</li>
@@ -3105,12 +3105,12 @@ return get_cached_result(idempotency_key)</p>
 </div>
 </details>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px">
-<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 2: "How do you ensure exactly-once execution in a distributed scheduler?"</div>
+<div>
+<div>Level 2: "How do you ensure exactly-once execution in a distributed scheduler?"</div>
 <details>
-<summary style="color: #5b21b6; cursor: pointer; font-size: 13px">Comprehensive Answer</summary>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
-<p><strong>The Core Challenge</strong>: In distributed systems, &quot;exactly-once&quot; is theoretically impossible due to the <a href="/algorithms/two-generals">[Two Generals Problem]</a>. We achieve <span style="color: #166534"><strong>effectively exactly-once</strong></span> through:</p>
+<summary>Comprehensive Answer</summary>
+<div>
+<p><strong>The Core Challenge</strong>: In distributed systems, &quot;exactly-once&quot; is theoretically impossible due to the <a href="/algorithms/two-generals">[Two Generals Problem]</a>. We achieve <span><strong>effectively exactly-once</strong></span> through:</p>
 <p><strong>Strategy 1: At-Least-Once Delivery + Idempotency</strong></p>
 <pre><code>                                                                                                                                                                                  ```python
                                                                                                                                                                                   def execute_task(task):
@@ -3171,17 +3171,17 @@ return get_cached_result(idempotency_key)</p>
 </div>
 </details>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px">
-<div style="color: #5b21b6; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 3: "What if the idempotency store (Redis) fails during the check-and-set?"</div>
+<div>
+<div>Level 3: "What if the idempotency store (Redis) fails during the check-and-set?"</div>
 <details>
-<summary style="color: #5b21b6; cursor: pointer; font-size: 13px">Comprehensive Answer</summary>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
+<summary>Comprehensive Answer</summary>
+<div>
 <p><strong>Failure Modes</strong>:</p>
 <ol>
-<li><span style="color: #dc2626"><strong>Redis down before SETNX</strong></span>: Can't check, can't proceed</li>
-<li><span style="color: #dc2626"><strong>Redis down after SETNX, before task execution</strong></span>: Key set but work not done</li>
-<li><span style="color: #dc2626"><strong>Redis down after execution, before caching result</strong></span>: Work done but key may expire</li>
-<li><span style="color: #dc2626"><strong>Redis comes back with data loss</strong></span>: Keys gone, duplicates possible</li>
+<li><span><strong>Redis down before SETNX</strong></span>: Can't check, can't proceed</li>
+<li><span><strong>Redis down after SETNX, before task execution</strong></span>: Key set but work not done</li>
+<li><span><strong>Redis down after execution, before caching result</strong></span>: Work done but key may expire</li>
+<li><span><strong>Redis comes back with data loss</strong></span>: Keys gone, duplicates possible</li>
 </ol>
 <p><strong>Solution: Multi-Layer Idempotency</strong></p>
 <pre><code>                                                                                                                                                                                  ```python
@@ -3302,38 +3302,38 @@ return get_cached_result(idempotency_key)</p>
 </details>
 </div>
 </div>
-<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e40af; margin: 0 0 24px 0">Distributed Scheduling Deep Dive</h3>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px">
-<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 1: "How do you scale a task scheduler horizontally?"</div>
+<div>
+<h3>Distributed Scheduling Deep Dive</h3>
+<div>
+<div>Level 1: "How do you scale a task scheduler horizontally?"</div>
 <details>
-<summary style="color: #5b21b6; cursor: pointer; font-size: 13px">Comprehensive Answer</summary>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
+<summary>Comprehensive Answer</summary>
+<div>
 <p><strong>Approach 1: Leader-Based (Active-Passive)</strong></p>
 <p>One node is the scheduler (leader), others are workers only:</p>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0">
-<div style="background: #eff6ff; padding: 12px 16px; border-radius: 8px;text-align: center">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">Leader</div>
-<div style="color: #64748b; font-size: 10px">schedules tasks</div>
+<div>
+<div>
+<div>Leader</div>
+<div>schedules tasks</div>
 </div>
-<div style="color: #3b82f6; font-size: 16px">&#8594;</div>
-<div style="background: #f0fdf4; padding: 12px 16px; border-radius: 8px;text-align: center">
-<div style="color: #166534; font-weight: bold; font-size: 12px">Task Queue</div>
+<div>&#8594;</div>
+<div>
+<div>Task Queue</div>
 </div>
-<div style="color: #22c55e; font-size: 16px">&#8592;</div>
-<div style="display: flex; flex-direction: column; gap: 4px">
-<div style="background: #fff7ed; padding: 8px 12px; border-radius: 6px;text-align: center">
-<span style="color: #c2410c; font-size: 11px">Worker 1</span>
+<div>&#8592;</div>
+<div>
+<div>
+<span>Worker 1</span>
 </div>
-<div style="background: #fff7ed; padding: 8px 12px; border-radius: 6px;text-align: center">
-<span style="color: #c2410c; font-size: 11px">Worker 2</span>
+<div>
+<span>Worker 2</span>
 </div>
-<div style="background: #fff7ed; padding: 8px 12px; border-radius: 6px;text-align: center">
-<span style="color: #c2410c; font-size: 11px">Worker 3</span>
+<div>
+<span>Worker 3</span>
 </div>
 </div>
 </div>
-<div style="text-align: center; color: #64748b; font-size: 11px; margin-top: 8px">Leader heartbeat/election via ZooKeeper/etcd</div>
+<div>Leader heartbeat/election via ZooKeeper/etcd</div>
 <pre><code>                                                                                                                                                                                  - Leader handles all scheduling decisions
                                                                                                                                                                                   - Workers pull tasks from shared queue
                                                                                                                                                                                   - On leader failure, election promotes new leader
@@ -3378,23 +3378,23 @@ return get_cached_result(idempotency_key)</p>
 </div>
 </details>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px">
-<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 2: "How do you handle scheduler node failures without losing tasks?"</div>
+<div>
+<div>Level 2: "How do you handle scheduler node failures without losing tasks?"</div>
 <details>
-<summary style="color: #5b21b6; cursor: pointer; font-size: 13px">Comprehensive Answer</summary>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
-<p><strong>Principle</strong>: <span style="color: #166534">Separate task ownership from task execution</span></p>
+<summary>Comprehensive Answer</summary>
+<div>
+<p><strong>Principle</strong>: <span>Separate task ownership from task execution</span></p>
 <p><strong>Solution Architecture</strong>:</p>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; flex-direction: column; align-items: center; background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0">
-<div style="background: #eff6ff; padding: 16px 24px; border-radius: 8px;text-align: center; width: 100%; max-width: 400px">
-<div style="color: #1e40af; font-weight: bold; font-size: 14px">Durable Task Store</div>
-<div style="color: #64748b; font-size: 11px; margin-top: 4px">PostgreSQL, MySQL, or distributed KV store</div>
-<div style="color: #1e293b; font-size: 10px; margin-top: 8px; font-family: monospace">tasks: id, payload, status, owner_node, heartbeat_time</div>
+<div>
+<div>
+<div>Durable Task Store</div>
+<div>PostgreSQL, MySQL, or distributed KV store</div>
+<div>tasks: id, payload, status, owner_node, heartbeat_time</div>
 </div>
-<div style="display: flex; justify-content: center; gap: 8px">
-<span style="color: #3b82f6">&#8593;</span>
-<span style="color: #3b82f6">&#8593;</span>
-<span style="color: #3b82f6">&#8593;</span>
+<div>
+<span>&#8593;</span>
+<span>&#8593;</span>
+<span>&#8593;</span>
 </div>
   [Scheduler-1]       [Scheduler-2]       [Scheduler-3]
   (owns tasks       (owns tasks          (owns tasks
@@ -3468,12 +3468,12 @@ migrations.append((task_id, old_owner, new_owner))</p>
 </div>
                                                                                                                                                                                     </details>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px">
-<div style="color: #5b21b6; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 3: "How do you prevent thundering herd when a failed node's tasks are redistributed?"</div>
+<div>
+<div>Level 3: "How do you prevent thundering herd when a failed node's tasks are redistributed?"</div>
 <pre><code>                                                                                                                                                                                &lt;details&gt;
                                                                                                                                                                                   &lt;summary style=&quot;color: #5b21b6; cursor: pointer; font-size: 13px;&quot;&gt;Comprehensive Answer&lt;/summary&gt;
 </code></pre>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
+<div>
 <pre><code>                                                                                                                                                                                    **The Problem**: Node-3 dies. It owned 1000 tasks. All surviving nodes detect this simultaneously and try to claim all 1000 tasks at once:
                                                                                                                                                                                     - Database gets hammered with UPDATE queries
                                                                                                                                                                                     - Lock contention spikes
@@ -3594,14 +3594,14 @@ RETURNING *<br />
                                                                                                                                                                                     </details>
 </div>
 </div>
-<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e40af; margin: 0 0 24px 0">Cron and Timing Deep Dive</h3>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px">
-<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 1: "How do you implement cron-style recurring tasks?"</div>
+<div>
+<h3>Cron and Timing Deep Dive</h3>
+<div>
+<div>Level 1: "How do you implement cron-style recurring tasks?"</div>
 <pre><code>                                                                                                                                                                                &lt;details&gt;
                                                                                                                                                                                   &lt;summary style=&quot;color: #5b21b6; cursor: pointer; font-size: 13px;&quot;&gt;Comprehensive Answer&lt;/summary&gt;
 </code></pre>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
+<div>
 <pre><code>                                                                                                                                                                                    **Core Concept**: Parse cron expression into field constraints, then find next matching datetime.
 
                                                                                                                                                                                     ```python
@@ -3665,20 +3665,20 @@ scheduler.enqueue(new_task)<br />
 </div>
                                                                                                                                                                                     </details>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 24px">
-<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 2: "How do you handle daylight saving time transitions?"</div>
+<div>
+<div>Level 2: "How do you handle daylight saving time transitions?"</div>
 <pre><code>                                                                                                                                                                                &lt;details&gt;
                                                                                                                                                                                   &lt;summary style=&quot;color: #5b21b6; cursor: pointer; font-size: 13px;&quot;&gt;Comprehensive Answer&lt;/summary&gt;
 </code></pre>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
+<div>
 <pre><code>                                                                                                                                                                                    **The Problem**:
 </code></pre>
 <ul>
 <li>
-<p><span style="color: #dc2626"><strong>Spring Forward</strong></span>: 2:00 AM → 3:00 AM (2:30 AM doesn't exist)</p>
+<p><span><strong>Spring Forward</strong></span>: 2:00 AM → 3:00 AM (2:30 AM doesn't exist)</p>
 </li>
 <li>
-<p><span style="color: #c2410c"><strong>Fall Back</strong></span>: 2:00 AM → 1:00 AM (1:30 AM happens twice)</p>
+<p><span><strong>Fall Back</strong></span>: 2:00 AM → 1:00 AM (1:30 AM happens twice)</p>
 <pre><code>                                                                                                                                                                                  **Scenario 1**: Task scheduled for 2:30 AM on spring-forward day
 
                                                                                                                                                                                   ```python
@@ -3750,12 +3750,12 @@ self.tz = pytz.timezone(user_timezone)</p>
 </div>
                                                                                                                                                                                     </details>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; margin-left: 48px">
-<div style="color: #5b21b6; font-weight: bold; font-size: 14px; margin-bottom: 12px">Level 3: "How do you efficiently query 'which cron tasks fire in the next 5 minutes' across millions of tasks?"</div>
+<div>
+<div>Level 3: "How do you efficiently query 'which cron tasks fire in the next 5 minutes' across millions of tasks?"</div>
 <pre><code>                                                                                                                                                                                &lt;details&gt;
                                                                                                                                                                                   &lt;summary style=&quot;color: #5b21b6; cursor: pointer; font-size: 13px;&quot;&gt;Comprehensive Answer&lt;/summary&gt;
 </code></pre>
-<div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px">
+<div>
 <pre><code>                                                                                                                                                                                    **The Problem**: Computing `next_run()` for 1 million cron tasks on every scheduler tick is too slow.
 
                                                                                                                                                                                     **Solution: Pre-computed Next-Fire Index**

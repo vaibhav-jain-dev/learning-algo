@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="scroll-behavior: smooth;">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,62 +8,8 @@
     <title>{{.Title}}</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 
-    <!-- SINGLE SOURCE CSS - Clean UI (shadow-based, no borders) -->
+    <!-- SINGLE CSS FILE - Clean shadow-based design -->
     <link rel="stylesheet" href="/static/css/clean-ui.css">
-
-    <!-- Legacy CSS for specific pages (will be gradually migrated) -->
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="/static/css/topic-detail.css">
-    <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
-
-    <!-- AGGRESSIVE BORDER RESET - Loaded LAST to override everything -->
-    <style>
-        /* Nuclear border reset - override ALL CSS */
-        *, *::before, *::after {
-            border: 0 none transparent !important;
-            outline: 0 none transparent !important;
-        }
-
-        /* Re-enable borders ONLY for elements that actually need them */
-        table { border-collapse: collapse !important; }
-        th, td { border: 1px solid #e2e8f0 !important; padding: 8px 12px !important; }
-        pre { border: 1px solid #334155 !important; }
-        code:not(pre code) { border: 0 !important; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
-        hr { border: 0 !important; border-top: 1px solid #e2e8f0 !important; }
-        blockquote { border: 0 !important; border-left: 4px solid #3b82f6 !important; padding-left: 16px !important; }
-        input, textarea, select { border: 1px solid #cbd5e1 !important; }
-        button { border: 0 !important; }
-
-        /* Cards use shadows only */
-        .topic-card, .card, .quick-ref-card, .tldr-box,
-        .table-of-contents, .concept-section, .panel,
-        .content-box, .toc, .adhd-nav-panel, .adhd-quick-ref,
-        .topic-content, .nav-category, [class*="box"], [class*="card"] {
-            border: 0 none transparent !important;
-            background: #fff !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
-            border-radius: 12px !important;
-        }
-
-        /* Tags - pill style */
-        .tag, .badge, .topic-badge, .tags span, [class*="tag"], [class*="badge"] {
-            border: 0 none transparent !important;
-            background: #f1f5f9 !important;
-            box-shadow: none !important;
-            border-radius: 999px !important;
-        }
-
-        /* Mobile responsive */
-        @media (max-width: 1199px) {
-            .adhd-nav-panel, .adhd-quick-ref, .nav-panel, .quick-panel { display: none !important; }
-            .adhd-main-content, .detail-main, .adhd-layout { max-width: 100% !important; width: 100% !important; display: block !important; }
-        }
-        @media (max-width: 768px) {
-            .topic-grid { grid-template-columns: 1fr !important; }
-            .nav { display: none; }
-            .nav.mobile-open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; }
-        }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -71,24 +17,21 @@
             <span class="logo-icon">&lt;/&gt;</span>
             <span class="logo-text">DSAlgo</span>
         </a>
-        <button class="mobile-menu-btn" onclick="document.getElementById('main-nav').classList.toggle('mobile-open')" aria-label="Menu">
-            &#9776;
-        </button>
+        <button class="mobile-menu-btn" onclick="document.getElementById('main-nav').classList.toggle('mobile-open')" aria-label="Menu">☰</button>
         <nav class="nav" id="main-nav">
-            <a href="/practice" class="nav-pill">&#9654; Practice</a>
-            <a href="/200-problems" class="nav-pill">&#127942; 200 Problems</a>
-            <a href="/roadmap" class="nav-pill">&#128199; Roadmap</a>
-            <a href="/sql" class="nav-pill">&#128451; SQL</a>
-            <a href="/elasticsearch" class="nav-pill">&#128269; Elasticsearch</a>
-            <a href="/redis" class="nav-pill">&#9889; Redis</a>
-            <a href="/golang" class="nav-pill">&#128025; Go</a>
-            <a href="/python" class="nav-pill">&#128013; Python</a>
-            <a href="/python-asyncio" class="nav-pill">&#9889; Asyncio</a>
-            <a href="/system-design" class="nav-pill">&#127959; System Design</a>
-            <a href="/system-architectures" class="nav-pill">&#128203; Architectures</a>
-            <a href="/design-patterns" class="nav-pill">&#129513; Patterns</a>
-            <a href="/machine-coding" class="nav-pill">&#9881; Machine Coding</a>
-            <a href="/microservices" class="nav-pill">&#128230; Microservices</a>
+            <a href="/practice" class="nav-pill">▶ Practice</a>
+            <a href="/200-problems" class="nav-pill">🏆 200 Problems</a>
+            <a href="/roadmap" class="nav-pill">📋 Roadmap</a>
+            <a href="/sql" class="nav-pill">🗃 SQL</a>
+            <a href="/elasticsearch" class="nav-pill">🔍 Elasticsearch</a>
+            <a href="/redis" class="nav-pill">⚡ Redis</a>
+            <a href="/golang" class="nav-pill">🐹 Go</a>
+            <a href="/python" class="nav-pill">🐍 Python</a>
+            <a href="/system-design" class="nav-pill">🏗 System Design</a>
+            <a href="/system-architectures" class="nav-pill">📋 Architectures</a>
+            <a href="/design-patterns" class="nav-pill">🧩 Patterns</a>
+            <a href="/machine-coding" class="nav-pill">⚙ Machine Coding</a>
+            <a href="/microservices" class="nav-pill">📦 Microservices</a>
         </nav>
     </header>
 
@@ -96,29 +39,12 @@
         {{embed}}
     </main>
 
-    <!-- HTMX -->
+    <!-- Minimal JS -->
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-
-    <!-- Core JS -->
-    <script src="/static/js/lazy-loader.js" defer></script>
-    <script src="/static/js/state-manager.js" defer></script>
-    <script src="/static/js/adhd-enhancements.js" defer></script>
-
     <script>
         // Highlight active nav
-        document.querySelectorAll('.nav-pill').forEach(function(pill) {
-            if (pill.getAttribute('href') === window.location.pathname) {
-                pill.classList.add('active');
-            }
-        });
-
-        // Code highlighting
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof LazyLoader !== 'undefined') {
-                LazyLoader.loadHighlight().then(function() {
-                    if (typeof hljs !== 'undefined') hljs.highlightAll();
-                });
-            }
+        document.querySelectorAll('.nav-pill').forEach(function(p) {
+            if (p.getAttribute('href') === location.pathname) p.classList.add('active');
         });
     </script>
 </body>

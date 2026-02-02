@@ -1,7 +1,7 @@
 <h1 id="design-dunzo-logistics">Design Dunzo Logistics</h1>
 <h2 id="table-of-contents-toc">Table of Contents {#toc}</h2>
-<div class="diagram-container" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)">
-<div style="width: 100%; max-width: 800px">
+<div class="diagram-container">
+<div>
 <h3 id="overview">Overview</h3>
 <ul>
 <li><a href="#problem-statement">Problem Statement</a></li>
@@ -36,7 +36,7 @@
 <hr />
 <h2 id="problem-statement-problem-statement">Problem Statement {#problem-statement}</h2>
 <p>Design a hyperlocal delivery platform that enables pick-up and drop services, grocery delivery, and package delivery within a city.</p>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="core-requirements-core-requirements">Core Requirements {#core-requirements}</h3>
 <ul>
 <li><strong>Multi-category Delivery</strong>: Groceries, food, packages, documents</li>
@@ -51,7 +51,7 @@
 <h2 id="high-level-architecture-high-level-architecture">High-Level Architecture {#high-level-architecture}</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%">HYPERLOCAL DELIVERY ARCHITECTURE</h4>
+<h4>HYPERLOCAL DELIVERY ARCHITECTURE</h4>
 <!-- Customer Layer -->
 <div class="flow-box success">
 <div class="flow-box-title">CUSTOMERS</div>
@@ -99,9 +99,9 @@
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
 <!-- Kafka -->
-<div class="flow-box warning" style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); color: #fbbf24">
+<div class="flow-box warning">
 <div class="flow-box-title">KAFKA</div>
-<div class="flow-box-subtitle" style="color: #fef3c7">Event Streaming</div>
+<div class="flow-box-subtitle">Event Streaming</div>
 </div>
 </div>
 </div>
@@ -109,9 +109,9 @@
 <h2 id="order-flow-order-flow">Order Flow {#order-flow}</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #f0883e; text-align: center; margin: 0 0 24px 0; width: 100%">ORDER LIFECYCLE</h4>
+<h4>ORDER LIFECYCLE</h4>
 <!-- Step 1: Order Creation -->
-<div class="data-card data-card-accent info" style="width: 100%; max-width: 500px">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">1. ORDER CREATION</span>
@@ -127,7 +127,7 @@
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
 <!-- Step 2: Partner Matching -->
-<div class="data-card data-card-accent warning" style="width: 100%; max-width: 500px">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">2. PARTNER MATCHING</span>
@@ -139,13 +139,13 @@ Find best partner based on:<br/>
 - Current load (active orders)<br/>
 - Partner rating/performance score<br/>
 - Vehicle type requirements<br/><br/>
-<strong style="color: #f59e0b">Matching radius: 3km -> 5km -> 7km (expanding circles)</strong>
+<strong>Matching radius: 3km -> 5km -> 7km (expanding circles)</strong>
 </div>
 </div>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
 <!-- Step 3: Pickup Phase -->
-<div class="data-card data-card-accent purple" style="width: 100%; max-width: 500px">
+<div class="data-card data-card-accent purple">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">3. PICKUP PHASE</span>
@@ -160,7 +160,7 @@ Find best partner based on:<br/>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
 <!-- Step 4: Delivery Phase -->
-<div class="data-card data-card-accent success" style="width: 100%; max-width: 500px">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">4. DELIVERY PHASE</span>
@@ -175,7 +175,7 @@ Find best partner based on:<br/>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
 <!-- Step 5: Completion -->
-<div class="data-card data-card-accent orange" style="width: 100%; max-width: 500px">
+<div class="data-card data-card-accent orange">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">5. COMPLETION</span>
@@ -192,8 +192,8 @@ Find best partner based on:<br/>
 </div>
 <hr />
 <h2 id="phase-1-starting-phase-phase-1-starting-phase">Phase 1: Starting Phase {#phase-1-starting-phase}</h2>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="assumptions-phase1-assumptions">Assumptions {#phase1-assumptions}</h3>
 <ul>
 <li><strong>Cities</strong>: 1-3</li>
@@ -295,17 +295,17 @@ class DispatchService:
 </div>
 <hr />
 <h2 id="phase-2-medium-scale-phase-2-medium-scale">Phase 2: Medium Scale {#phase-2-medium-scale}</h2>
-<div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="route-optimization-route-optimization">Route Optimization {#route-optimization}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%">MULTI-STOP ROUTE OPTIMIZATION</h4>
-<div style="width: 100%; max-width: 600px; margin-bottom: 20px">
-<p style="text-align: center; color: #64748b; font-weight: 600">Problem: Partner has multiple orders to deliver</p>
+<h4>MULTI-STOP ROUTE OPTIMIZATION</h4>
+<div>
+<p>Problem: Partner has multiple orders to deliver</p>
 </div>
-<div class="flow-row" style="width: 100%">
-<div class="data-card data-card-accent error" style="flex: 1; min-width: 250px">
+<div class="flow-row">
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">NAIVE ROUTE</span>
@@ -316,11 +316,11 @@ Order A: Pickup P1 -> Drop D1<br/>
 Order B: Pickup P2 -> Drop D2<br/>
 Order C: Pickup P3 -> Drop D3<br/><br/>
 Route: P1 -> D1 -> P2 -> D2 -> P3 -> D3<br/>
-<strong style="color: #ef4444">Total: 15 km</strong>
+<strong>Total: 15 km</strong>
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent success" style="flex: 1; min-width: 250px">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">OPTIMIZED ROUTE (TSP-like)</span>
@@ -329,12 +329,12 @@ Route: P1 -> D1 -> P2 -> D2 -> P3 -> D3<br/>
 <div class="data-card-description">
 Batch pickups, then optimize drops<br/><br/>
 Route: P1 -> P2 -> P3 -> D2 -> D1 -> D3<br/><br/>
-<strong style="color: #10b981">Total: 10 km (33% savings)</strong>
+<strong>Total: 10 km (33% savings)</strong>
 </div>
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="width: 100%; max-width: 600px; margin-top: 20px">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">CONSTRAINTS</span>
@@ -346,7 +346,7 @@ Route: P1 -> P2 -> P3 -> D2 -> D1 -> D3<br/><br/>
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent info" style="width: 100%; max-width: 600px; margin-top: 16px">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">ALGORITHM</span>
@@ -423,7 +423,7 @@ Modified TSP with precedence constraints<br/>
 <h3 id="partner-location-tracking-location-tracking">Partner Location Tracking {#location-tracking}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0; width: 100%">LOCATION TRACKING PIPELINE</h4>
+<h4>LOCATION TRACKING PIPELINE</h4>
 <!-- Partner App -->
 <div class="flow-box orange">
 <div class="flow-box-title">Partner App</div>
@@ -439,18 +439,18 @@ Modified TSP with precedence constraints<br/>
 <!-- Redis -->
 <div class="flow-box error">
 <div class="flow-box-title">REDIS</div>
-<div class="flow-box-subtitle" style="font-family: monospace; font-size: 10px">
+<div class="flow-box-subtitle">
 GEOADD partners:active lng lat partner_id<br/>
 HSET partner:{id}:location lat lng timestamp speed<br/>
-<strong style="color: #fbbf24">TTL: 60 seconds (offline if no update)</strong>
+<strong>TTL: 60 seconds (offline if no update)</strong>
 </div>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
-<p style="color: #64748b; font-size: 12px; margin: 0">Publish location changes</p>
+<p>Publish location changes</p>
 <!-- Kafka -->
-<div class="flow-box warning" style="background: linear-gradient(135deg, #1f1f1f 0%, #2f2f2f 100%); color: #fbbf24">
+<div class="flow-box warning">
 <div class="flow-box-title">KAFKA</div>
-<div class="flow-box-subtitle" style="color: #fef3c7">
+<div class="flow-box-subtitle">
 Topic: partner.locations<br/><br/>
 <strong>Consumers:</strong> ETA Calculator | Customer Tracker | Analytics
 </div>
@@ -461,8 +461,8 @@ Topic: partner.locations<br/><br/>
 </div>
 <hr />
 <h2 id="phase-3-dunzo-scale-phase-3-dunzo-scale">Phase 3: Dunzo Scale {#phase-3-dunzo-scale}</h2>
-<div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="assumptions-phase3-assumptions">Assumptions {#phase3-assumptions}</h3>
 <ul>
 <li><strong>Cities</strong>: 25+</li>
@@ -473,14 +473,14 @@ Topic: partner.locations<br/><br/>
 <h3 id="city-based-microservices-city-microservices">City-Based Microservices {#city-microservices}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<h4 style="color: #a855f7; text-align: center; margin: 0 0 24px 0; width: 100%">DUNZO MULTI-CITY ARCHITECTURE</h4>
+<h4>DUNZO MULTI-CITY ARCHITECTURE</h4>
 <!-- Global Layer -->
-<div class="data-card" style="width: 100%; max-width: 700px">
+<div class="data-card">
 <div class="data-card-content">
 <div class="data-card-header">
-<span class="data-card-title" style="color: #3b82f6">GLOBAL LAYER</span>
+<span class="data-card-title">GLOBAL LAYER</span>
 </div>
-<div class="flow-row" style="margin-top: 12px">
+<div class="flow-row">
 <span class="diagram-badge info">User Service</span>
 <span class="diagram-badge success">Payment Service</span>
 <span class="diagram-badge orange">Marketing Service</span>
@@ -492,26 +492,26 @@ Topic: partner.locations<br/><br/>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
 <!-- City Clusters -->
-<div class="data-card" style="width: 100%; max-width: 700px">
+<div class="data-card">
 <div class="data-card-content">
 <div class="data-card-header">
-<span class="data-card-title" style="color: #a855f7">CITY CLUSTERS</span>
+<span class="data-card-title">CITY CLUSTERS</span>
 </div>
-<div class="flow-row" style="margin-top: 12px">
-<div class="flow-box success" style="min-width: 150px">
+<div class="flow-row">
+<div class="flow-box success">
 <div class="flow-box-title">BANGALORE</div>
 <div class="flow-box-subtitle">Order | Dispatch | Track</div>
-<div style="margin-top: 8px"><span class="diagram-badge success">15K partners</span></div>
+<div><span class="diagram-badge success">15K partners</span></div>
 </div>
-<div class="flow-box orange" style="min-width: 150px">
+<div class="flow-box orange">
 <div class="flow-box-title">MUMBAI</div>
 <div class="flow-box-subtitle">Order | Dispatch | Track</div>
-<div style="margin-top: 8px"><span class="diagram-badge orange">12K partners</span></div>
+<div><span class="diagram-badge orange">12K partners</span></div>
 </div>
-<div class="flow-box info" style="min-width: 150px">
+<div class="flow-box info">
 <div class="flow-box-title">DELHI</div>
 <div class="flow-box-subtitle">Order | Dispatch | Track</div>
-<div style="margin-top: 8px"><span class="diagram-badge info">10K partners</span></div>
+<div><span class="diagram-badge info">10K partners</span></div>
 </div>
 </div>
 </div>
@@ -623,34 +623,34 @@ Topic: partner.locations<br/><br/>
 <hr />
 <h2 id="distributed-systems-considerations-distributed-systems">Distributed Systems Considerations {#distributed-systems}</h2>
 <div class="diagram-container">
-<div style="width: 100%; max-width: 800px">
+<div>
 <h3 id="1-order-assignment-consistency-assignment-consistency">1. Order Assignment Consistency {#assignment-consistency}</h3>
-<div class="data-card data-card-accent warning" style="margin-bottom: 16px">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-header">
-<span class="data-card-title" style="color: #f97316">Challenge</span>
+<span class="data-card-title">Challenge</span>
 </div>
 <div class="data-card-description">Multiple dispatchers trying to assign same partner</div>
 </div>
 </div>
-<div class="data-card data-card-accent success" style="margin-bottom: 24px">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-header">
-<span class="data-card-title" style="color: #10b981">Solution</span>
+<span class="data-card-title">Solution</span>
 </div>
 <div class="data-card-description">Distributed lock on partner</div>
 </div>
 </div>
-<div class="flow-diagram" style="padding: 0">
-<h5 style="text-align: center; color: #64748b; margin-bottom: 16px">PARTNER ASSIGNMENT FLOW</h5>
-<div class="data-card data-card-accent info" style="width: 100%">
+<div class="flow-diagram">
+<h5>PARTNER ASSIGNMENT FLOW</h5>
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-title">STEP 1: Acquire Lock</div>
-<div class="data-card-description" style="font-family: monospace">SETNX partner_lock:{id} order_id EX 30</div>
+<div class="data-card-description">SETNX partner_lock:{id} order_id EX 30</div>
 </div>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
-<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-title">STEP 2: If Lock Acquired</div>
 <div class="data-card-description">
@@ -661,7 +661,7 @@ Topic: partner.locations<br/><br/>
 </div>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
-<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-title">STEP 3: If Partner Accepts</div>
 <div class="data-card-description">
@@ -672,7 +672,7 @@ Topic: partner.locations<br/><br/>
 </div>
 </div>
 <div class="flow-arrow vertical">&#x2193;</div>
-<div class="data-card data-card-accent error" style="width: 100%">
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
 <div class="data-card-title">STEP 4: If Partner Rejects/Timeout</div>
 <div class="data-card-description">
@@ -683,25 +683,25 @@ Topic: partner.locations<br/><br/>
 </div>
 </div>
 <h3 id="2-location-update-at-scale-location-scale">2. Location Update at Scale {#location-scale}</h3>
-<div class="data-card data-card-accent warning" style="margin: 24px 0">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
-<div class="data-card-title" style="color: #f97316">50K partners x 1 update/5s = 10K updates/second</div>
+<div class="data-card-title">50K partners x 1 update/5s = 10K updates/second</div>
 </div>
 </div>
-<div class="flow-row" style="gap: 12px">
-<div class="flow-box info" style="flex: 1">
+<div class="flow-row">
+<div class="flow-box info">
 <div class="flow-box-title">Ingestion</div>
 <div class="flow-box-subtitle">Redis Streams for high-throughput writes</div>
 </div>
-<div class="flow-box success" style="flex: 1">
+<div class="flow-box success">
 <div class="flow-box-title">Persistence</div>
 <div class="flow-box-subtitle">Batch writes to PostgreSQL every minute</div>
 </div>
-<div class="flow-box orange" style="flex: 1">
+<div class="flow-box orange">
 <div class="flow-box-title">Real-time</div>
 <div class="flow-box-subtitle">Served from Redis only (hot data)</div>
 </div>
-<div class="flow-box purple" style="flex: 1">
+<div class="flow-box purple">
 <div class="flow-box-title">Historical</div>
 <div class="flow-box-subtitle">TimescaleDB for time-series analytics</div>
 </div>
@@ -711,19 +711,19 @@ Topic: partner.locations<br/><br/>
 <hr />
 <h2 id="scaling-strategies-scaling-strategies">Scaling Strategies {#scaling-strategies}</h2>
 <div class="diagram-container">
-<div style="width: 100%; max-width: 800px">
+<div>
 <h3 id="horizontal-scaling-approach-horizontal-scaling">Horizontal Scaling Approach {#horizontal-scaling}</h3>
-<div class="flow-diagram" style="padding: 0; margin-bottom: 24px">
+<div class="flow-diagram">
 <div class="flow-row">
-<div class="flow-box primary" style="flex: 1">
+<div class="flow-box primary">
 <div class="flow-box-title">Geographic Sharding</div>
 <div class="flow-box-subtitle">Partition by city/region</div>
 </div>
-<div class="flow-box success" style="flex: 1">
+<div class="flow-box success">
 <div class="flow-box-title">Read Replicas</div>
 <div class="flow-box-subtitle">Scale read-heavy operations</div>
 </div>
-<div class="flow-box warning" style="flex: 1">
+<div class="flow-box warning">
 <div class="flow-box-title">Caching Layers</div>
 <div class="flow-box-subtitle">Redis for hot data</div>
 </div>
@@ -767,7 +767,7 @@ Topic: partner.locations<br/><br/>
 </tbody>
 </table>
 <h3 id="caching-strategy-caching-strategy">Caching Strategy {#caching-strategy}</h3>
-<div class="data-card data-card-accent info" style="margin: 16px 0">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-title">Multi-Layer Cache Architecture</div>
 <div class="data-card-description">
@@ -848,8 +848,8 @@ Topic: partner.locations<br/><br/>
                 self.process_dispatch(order_event)
 </code></pre>
 <h3 id="auto-scaling-configuration-auto-scaling">Auto-Scaling Configuration {#auto-scaling}</h3>
-<div class="flow-row" style="gap: 12px; margin: 16px 0">
-<div class="data-card data-card-accent info" style="flex: 1">
+<div class="flow-row">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-title">API Gateway</div>
 <div class="data-card-description">
@@ -859,7 +859,7 @@ Target: 1000 RPS/instance
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent success" style="flex: 1">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-title">Dispatch Workers</div>
 <div class="data-card-description">
@@ -869,7 +869,7 @@ Target: < 100 pending orders
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="flex: 1">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-title">Location Service</div>
 <div class="data-card-description">
@@ -942,10 +942,10 @@ Target: 5K connections/instance
 <hr />
 <h2 id="edge-cases--failure-modes-edge-cases-failure-modes">Edge Cases &amp; Failure Modes {#edge-cases-failure-modes}</h2>
 <div class="diagram-container">
-<div style="width: 100%; max-width: 800px">
+<div>
 <h3 id="critical-failure-scenarios-critical-failures">Critical Failure Scenarios {#critical-failures}</h3>
-<div class="flow-diagram" style="padding: 0">
-<div class="data-card data-card-accent error" style="width: 100%; margin-bottom: 16px">
+<div class="flow-diagram">
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">FAILURE: Partner Cancels Mid-Delivery</span>
@@ -953,13 +953,13 @@ Target: 5K connections/instance
 </div>
 <div class="data-card-description">
 <strong>Impact:</strong> Customer has been charged, package in transit<br/>
-<strong>Detection:</strong> GPS anomaly, explicit cancellation, connectivity loss > 3 min<br/>
+<strong>Detection:</strong> GPS anomaly, explicit cancellation, connectivity loss> 3 min<br/>
 <strong>Recovery:</strong> Rescue protocol - find nearby partner within 1-2km radius<br/>
 <strong>SLA:</strong> Reassignment within 4 minutes, 94% rescue success rate
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent error" style="width: 100%; margin-bottom: 16px">
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">FAILURE: Redis Location Cache Down</span>
@@ -973,7 +973,7 @@ Target: 5K connections/instance
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="width: 100%; margin-bottom: 16px">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">FAILURE: Partner App Loses Connectivity</span>
@@ -987,7 +987,7 @@ Target: 5K connections/instance
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="width: 100%; margin-bottom: 16px">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">FAILURE: Kafka Consumer Lag</span>
@@ -995,13 +995,13 @@ Target: 5K connections/instance
 </div>
 <div class="data-card-description">
 <strong>Impact:</strong> Delayed order processing, customer waiting<br/>
-<strong>Detection:</strong> Consumer lag > 1000 messages, processing time > 30s<br/>
+<strong>Detection:</strong> Consumer lag> 1000 messages, processing time> 30s<br/>
 <strong>Recovery:</strong> Auto-scaling consumers, priority queue bypass for urgent orders<br/>
 <strong>RTO:</strong> < 2 minutes with proper alerting
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent info" style="width: 100%; margin-bottom: 16px">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">FAILURE: ML ETA Model Returns Outliers</span>
@@ -1015,7 +1015,7 @@ Target: 5K connections/instance
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent info" style="width: 100%">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">FAILURE: Payment Gateway Timeout</span>
@@ -1023,7 +1023,7 @@ Target: 5K connections/instance
 </div>
 <div class="data-card-description">
 <strong>Impact:</strong> Order stuck in pending state<br/>
-<strong>Detection:</strong> Payment API response > 5 seconds<br/>
+<strong>Detection:</strong> Payment API response> 5 seconds<br/>
 <strong>Recovery:</strong> Async payment processing, proceed with delivery on credit for trusted customers<br/>
 <strong>RTO:</strong> Retry queue with 3x attempts over 5 minutes
 </div>
@@ -1031,7 +1031,7 @@ Target: 5K connections/instance
 </div>
 </div>
 <h3 id="edge-case-handling-edge-case-handling">Edge Case Handling {#edge-case-handling}</h3>
-<div style="margin-top: 24px">
+<div>
 <h4 id="1-no-partners-available-no-partners">1. No Partners Available {#no-partners}</h4>
 <pre><code class="language-python">class NoPartnerHandler:
     &quot;&quot;&quot;Handle scenarios when no partners are available.&quot;&quot;&quot;
@@ -1141,8 +1141,8 @@ Target: 5K connections/instance
 </code></pre>
 </div>
 <h3 id="disaster-recovery-disaster-recovery">Disaster Recovery {#disaster-recovery}</h3>
-<div class="flow-row" style="gap: 12px; margin-top: 24px">
-<div class="data-card data-card-accent error" style="flex: 1">
+<div class="flow-row">
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
 <div class="data-card-title">Complete City Outage</div>
 <div class="data-card-description">
@@ -1152,7 +1152,7 @@ Target: 5K connections/instance
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="flex: 1">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-title">Database Corruption</div>
 <div class="data-card-description">
@@ -1162,7 +1162,7 @@ Target: 5K connections/instance
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent info" style="flex: 1">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-title">Third-Party API Failure</div>
 <div class="data-card-description">
@@ -1177,7 +1177,7 @@ Target: 5K connections/instance
 </div>
 <hr />
 <h2 id="interview-deep-dive-questions-interview-deep-dive">Interview Deep Dive Questions {#interview-deep-dive}</h2>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="1-how-do-you-optimize-multi-stop-routes-question-route-optimization">1. &quot;How do you optimize multi-stop routes?&quot; {#question-route-optimization}</h3>
 <p><strong>What They're Probing</strong>: Understanding of TSP variants, real-world constraints, computational complexity trade-offs</p>
 <p><strong>Strong Answer</strong>:</p>
@@ -1561,7 +1561,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 <hr />
 <h2 id="why-this-technology-why-this-technology">Why This Technology? {#why-this-technology}</h2>
 <div class="diagram-container">
-<div style="width: 100%; max-width: 800px">
+<div>
 <h3 id="technology-decision-matrix-tech-decision-matrix">Technology Decision Matrix {#tech-decision-matrix}</h3>
 <table>
 <thead>
@@ -1612,47 +1612,47 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </tbody>
 </table>
 <h3 id="when-to-upgrade-technology-when-to-upgrade">When to Upgrade Technology {#when-to-upgrade}</h3>
-<div class="flow-diagram" style="padding: 0; gap: 12px">
-<div class="data-card data-card-accent info" style="width: 100%">
+<div class="flow-diagram">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">PostgreSQL Location Queries -> Redis GEO</span>
 </div>
 <div class="data-card-description">
-<strong>Trigger:</strong> > 100 location queries/second<br/>
-<strong>Sign:</strong> Database CPU > 70% during peak
+<strong>Trigger:</strong>> 100 location queries/second<br/>
+<strong>Sign:</strong> Database CPU> 70% during peak
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">Simple Distance Matching -> ML-based Scoring</span>
 </div>
 <div class="data-card-description">
-<strong>Trigger:</strong> > 500 partners in single city<br/>
-<strong>Sign:</strong> Partner utilization variance > 40%
+<strong>Trigger:</strong>> 500 partners in single city<br/>
+<strong>Sign:</strong> Partner utilization variance> 40%
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">Google Maps API -> Self-hosted OSRM</span>
 </div>
 <div class="data-card-description">
-<strong>Trigger:</strong> > $5000/month in Maps API costs<br/>
-<strong>Sign:</strong> Route API calls > 500K/month
+<strong>Trigger:</strong>> $5000/month in Maps API costs<br/>
+<strong>Sign:</strong> Route API calls> 500K/month
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent purple" style="width: 100%">
+<div class="data-card data-card-accent purple">
 <div class="data-card-content">
 <div class="data-card-header">
 <span class="data-card-title">Monolithic Dispatch -> City-sharded Services</span>
 </div>
 <div class="data-card-description">
-<strong>Trigger:</strong> > 3 cities with different peak patterns<br/>
+<strong>Trigger:</strong>> 3 cities with different peak patterns<br/>
 <strong>Sign:</strong> One city's surge affecting another's performance
 </div>
 </div>
@@ -1662,10 +1662,10 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 <hr />
 <h2 id="when-simpler-solutions-work-simpler-solutions">When Simpler Solutions Work {#simpler-solutions}</h2>
-<div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
-<div style="background: #f8fafc; border-radius: 10px; padding: 24px">
+<div>
+<div>
 <h3 id="reality-check-you-probably-dont-need-this-complexity-reality-check">Reality Check: You Probably Don't Need This Complexity {#reality-check}</h3>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 20px; margin: 16px 0">
+<div>
 <p><strong>For &lt; 50 orders/hour</strong>: Manual assignment by dispatcher works fine</p>
 <ul>
 <li>WhatsApp group with available riders</li>
@@ -1719,8 +1719,8 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </table>
 <h3 id="the-300month-delivery-platform-stack-budget-stack">The &quot;$300/Month Delivery Platform&quot; Stack {#budget-stack}</h3>
 <div class="diagram-container">
-<div style="width: 100%">
-<h4 style="text-align: center; color: #64748b; margin-bottom: 16px">STARTUP STACK (Works up to 500 orders/day)</h4>
+<div>
+<h4>STARTUP STACK (Works up to 500 orders/day)</h4>
 <table>
 <thead>
 <tr>
@@ -1759,7 +1759,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </tr>
 </tbody>
 </table>
-<div style="margin-top: 16px; color: #64748b; font-size: 14px">
+<div>
 <strong>Assignment:</strong> Manual or simple FIFO queue<br/>
 <strong>Routing:</strong> Google Maps Directions API<br/>
 <strong>Tracking:</strong> Store lat/lng in PostgreSQL, poll every 30s<br/>
@@ -1787,44 +1787,44 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 <li>Phone calls for status updates</li>
 </ul>
 <h3 id="questions-to-ask-before-building-complexity-complexity-questions">Questions to Ask Before Building Complexity {#complexity-questions}</h3>
-<div class="flow-row" style="gap: 12px">
-<div class="data-card data-card-accent purple" style="flex: 1">
+<div class="flow-row">
+<div class="data-card data-card-accent purple">
 <div class="data-card-content">
 <div class="data-card-title">Before building ML-based dispatch:</div>
 <div class="data-card-description">
-- Do we have > 500 concurrent active partners?<br/>
-- Is partner utilization variance > 30%?<br/>
+- Do we have> 500 concurrent active partners?<br/>
+- Is partner utilization variance> 30%?<br/>
 - Do we have 3+ months of historical data?
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent info" style="flex: 1">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-title">Before building real-time route optimization:</div>
 <div class="data-card-description">
 - Do partners regularly have 3+ stops?<br/>
-- Are we losing > 5% revenue to inefficient routing?<br/>
+- Are we losing> 5% revenue to inefficient routing?<br/>
 - Do we have traffic data integration?
 </div>
 </div>
 </div>
 </div>
-<div class="flow-row" style="gap: 12px; margin-top: 12px">
-<div class="data-card data-card-accent success" style="flex: 1">
+<div class="flow-row">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-title">Before sharding by city:</div>
 <div class="data-card-description">
-- Do we have > 3 cities?<br/>
+- Do we have> 3 cities?<br/>
 - Are cities in different timezones with different peaks?<br/>
-- Is single database CPU > 60% at peak?
+- Is single database CPU> 60% at peak?
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="flex: 1">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-title">Before building custom routing engine:</div>
 <div class="data-card-description">
-- Are Maps API costs > $5000/month?<br/>
+- Are Maps API costs> $5000/month?<br/>
 - Do we need vehicle-specific routing (bikes vs cars)?<br/>
 - Is Google's routing inadequate for our geography?
 </div>
@@ -1836,7 +1836,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 <hr />
 <h2 id="trade-off-analysis--mitigation-trade-off-analysis">Trade-off Analysis &amp; Mitigation {#trade-off-analysis}</h2>
 <div class="diagram-container">
-<div style="width: 100%; max-width: 800px">
+<div>
 <h3 id="critical-trade-offs-in-logistics-platform-design-critical-tradeoffs">Critical Trade-offs in Logistics Platform Design {#critical-tradeoffs}</h3>
 <table>
 <thead>
@@ -1887,8 +1887,8 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </tbody>
 </table>
 <h3 id="failure-mode-analysis-failure-mode-analysis">Failure Mode Analysis {#failure-mode-analysis}</h3>
-<div class="flow-diagram" style="padding: 0; gap: 12px">
-<div class="data-card data-card-accent error" style="width: 100%">
+<div class="flow-diagram">
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
 <div class="data-card-title">FAILURE: Redis location cache goes down</div>
 <div class="data-card-description">
@@ -1898,7 +1898,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-title">FAILURE: Partner app loses connectivity</div>
 <div class="data-card-description">
@@ -1908,7 +1908,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent orange" style="width: 100%">
+<div class="data-card data-card-accent orange">
 <div class="data-card-content">
 <div class="data-card-title">FAILURE: Kafka consumer lag</div>
 <div class="data-card-description">
@@ -1918,7 +1918,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent purple" style="width: 100%">
+<div class="data-card data-card-accent purple">
 <div class="data-card-content">
 <div class="data-card-title">FAILURE: ML ETA model returns outliers</div>
 <div class="data-card-description">
@@ -1928,7 +1928,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 </div>
 </div>
-<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-title">FAILURE: Payment gateway timeout</div>
 <div class="data-card-description">
@@ -1986,7 +1986,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 <hr />
 <h2 id="interview-tips-interview-tips">Interview Tips {#interview-tips}</h2>
-<div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="key-discussion-points-key-discussion-points">Key Discussion Points {#key-discussion-points}</h3>
 <ol>
 <li><strong>Dispatch algorithm</strong>: Matching partners to orders with scoring</li>
@@ -2009,9 +2009,9 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 <hr />
 <h2 id="red-flags-vs-impressive-statements-red-flags-impressive">Red Flags vs Impressive Statements {#red-flags-impressive}</h2>
 <div class="diagram-container">
-<div style="width: 100%; max-width: 800px">
+<div>
 <h3 id="red-flags-what-not-to-say-red-flags">Red Flags (What NOT to Say) {#red-flags}</h3>
-<div class="data-card data-card-accent error" style="margin-bottom: 24px">
+<div class="data-card data-card-accent error">
 <div class="data-card-content">
 <table>
 <thead>
@@ -2058,7 +2058,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 </div>
 <h3 id="impressive-statements-what-shows-depth-impressive-statements">Impressive Statements (What Shows Depth) {#impressive-statements}</h3>
-<div class="data-card data-card-accent success" style="margin-bottom: 24px">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <table>
 <thead>
@@ -2113,38 +2113,38 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 </div>
 <h3 id="the-10x-engineer-answer-pattern-answer-pattern">The &quot;10x Engineer&quot; Answer Pattern {#answer-pattern}</h3>
-<div class="flow-diagram" style="padding: 0; gap: 12px">
-<div class="data-card data-card-accent info" style="width: 100%">
+<div class="flow-diagram">
+<div class="data-card data-card-accent info">
 <div class="data-card-content">
 <div class="data-card-title">1. ACKNOWLEDGE COMPLEXITY</div>
 <div class="data-card-description">"This is essentially a real-time matching marketplace with geographical constraints..."</div>
 </div>
 </div>
-<div class="data-card data-card-accent success" style="width: 100%">
+<div class="data-card data-card-accent success">
 <div class="data-card-content">
 <div class="data-card-title">2. START SIMPLE</div>
 <div class="data-card-description">"For MVP, FIFO assignment with basic distance filtering handles 80% of cases..."</div>
 </div>
 </div>
-<div class="data-card data-card-accent warning" style="width: 100%">
+<div class="data-card data-card-accent warning">
 <div class="data-card-content">
 <div class="data-card-title">3. IDENTIFY TRIGGERS</div>
 <div class="data-card-description">"When we hit 500+ concurrent partners, simple matching creates utilization variance..."</div>
 </div>
 </div>
-<div class="data-card data-card-accent purple" style="width: 100%">
+<div class="data-card data-card-accent purple">
 <div class="data-card-content">
 <div class="data-card-title">4. PROPOSE EVOLUTION</div>
 <div class="data-card-description">"Then we introduce scored matching, but keep FIFO as fallback during system stress..."</div>
 </div>
 </div>
-<div class="data-card data-card-accent orange" style="width: 100%">
+<div class="data-card data-card-accent orange">
 <div class="data-card-content">
 <div class="data-card-title">5. QUANTIFY TRADE-OFFS</div>
 <div class="data-card-description">"ML routing saves ~15% distance but adds 200ms latency and requires 3 months of training data..."</div>
 </div>
 </div>
-<div class="data-card data-card-accent pink" style="width: 100%">
+<div class="data-card data-card-accent pink">
 <div class="data-card-content">
 <div class="data-card-title">6. SHOW INDUSTRY AWARENESS</div>
 <div class="data-card-description">"This is similar to how Uber evolved from simple dispatch to their Marketplace team's algorithms..."</div>
@@ -2155,7 +2155,7 @@ Order #45231: Customer ordered birthday cake for delivery at 7 PM party</p>
 </div>
 <hr />
 <h2 id="quick-reference-card-quick-reference">Quick Reference Card {#quick-reference}</h2>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<div>
 <h3 id="numbers-to-remember-numbers-to-remember">Numbers to Remember {#numbers-to-remember}</h3>
 <table>
 <thead>

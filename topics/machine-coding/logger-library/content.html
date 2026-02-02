@@ -5,9 +5,9 @@
 <hr />
 <h2 id="core-concepts-deep-dive">Core Concepts Deep Dive</h2>
 <h3 id="1-log-levels-severity-classification-system">1. Log Levels: Severity Classification System</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Log Level Hierarchy</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<div>
+<div>The Log Level Hierarchy</div>
+<div>
 <p>Log levels form a <strong>severity hierarchy</strong> where each level implies all levels above it. This design enables <strong>level-based filtering</strong> at multiple points in the logging pipeline: at the logger, at individual handlers, and through filter chains.</p>
 </div>
 </div>
@@ -23,9 +23,9 @@
     CRITICAL = 50   # System failures requiring intervention
     SILENT = 100    # Suppress all logging
 </code></pre>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Design Decision: Integer Gaps</div>
-<div style="color: #78350f; font-size: 14px">
+<div>
+<div>Design Decision: Integer Gaps</div>
+<div>
 The 10-unit gaps between standard levels allow frameworks to inject domain-specific levels (e.g., SECURITY = 35 between WARNING and ERROR) without breaking existing level comparisons. This is why Python's logging uses 10, 20, 30... rather than 1, 2, 3.
 </div>
 </div>
@@ -39,9 +39,9 @@ The 10-unit gaps between standard levels allow frameworks to inject domain-speci
     # SLOW PATH: Only executed when message will be logged
     self._log(LogLevel.INFO, message, *args, **kwargs)
 </code></pre>
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Assumption: Level Stability</div>
-<div style="color: #14532d; font-size: 14px">
+<div>
+<div>Assumption: Level Stability</div>
+<div>
 We assume log levels are set once at startup and rarely modified at runtime. This allows caching the effective level rather than recomputing it through the logger hierarchy on every log call. If dynamic level changes are frequent, consider using atomic integers and invalidation callbacks.
 </div>
 </div>
@@ -56,55 +56,55 @@ We assume log levels are set once at startup and rarely modified at runtime. Thi
         logger = logger.parent
     return LogLevel.WARNING  # Root default
 </code></pre>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Log Level Flow</div>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #dbeafe; padding: 14px 20px; border-radius: 10px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">logger.info()</div>
+<div>
+<div>Log Level Flow</div>
+<div>
+<div>
+<div>
+<div>logger.info()</div>
 </div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #fef3c7; padding: 14px 20px; border-radius: 10px">
-<div style="color: #92400e; font-weight: bold; font-size: 12px">Level Check</div>
-<div style="color: #a16207; font-size: 10px">INFO >= effective_level?</div>
+<div>&#8594;</div>
+<div>
+<div>Level Check</div>
+<div>INFO>= effective_level?</div>
 </div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #dcfce7; padding: 14px 20px; border-radius: 10px">
-<div style="color: #166534; font-weight: bold; font-size: 12px">Pass</div>
-<div style="color: #15803d; font-size: 10px">Continue processing</div>
+<div>&#8594;</div>
+<div>
+<div>Pass</div>
+<div>Continue processing</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-left: 40px">
-<div style="background: #fee2e2; padding: 14px 20px; border-radius: 10px">
-<div style="color: #991b1b; font-weight: bold; font-size: 12px">Fail</div>
-<div style="color: #b91c1c; font-size: 10px">Return immediately</div>
+<div>
+<div>
+<div>Fail</div>
+<div>Return immediately</div>
 </div>
-<div style="color: #64748b; font-size: 14px; margin-left: 8px">No allocation, no formatting</div>
+<div>No allocation, no formatting</div>
 </div>
 </div>
 </div>
 <h4 id="interview-questions-log-levels-3-levels-deep">Interview Questions: Log Levels (3 Levels Deep)</h4>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 1: Fundamentals</div>
+<div>
 <p><strong>Q1: Why use integers for log levels instead of an enum with sequential values?</strong></p>
 <p>Integer gaps (10, 20, 30...) allow insertion of custom levels without modifying the core library. A user can define <code>SECURITY = 35</code> without breaking existing code that compares <code>level &gt;= WARNING</code>. Sequential enums would require library modifications for custom levels.</p>
 <p><strong>Q2: Where should level filtering occur - at the logger or handler level?</strong></p>
 <p>Both. Logger-level filtering provides <strong>early termination</strong> (avoiding record creation entirely), while handler-level filtering enables <strong>routing</strong> (e.g., only ERROR+ to PagerDuty, all levels to file). The two-tier approach optimizes both performance and flexibility.</p>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
 <p><strong>Q2.1: How does Python's logging module handle the effective level calculation, and what's the performance implication?</strong></p>
 <p>Python caches the effective level but must invalidate it when any ancestor's level changes. The module uses a <code>manager.loggerDict</code> that maintains weak references to loggers. When a level is set, <code>Logger.setLevel()</code> iterates through all loggers to clear cached effective levels. This O(n) invalidation is acceptable because level changes are rare. In high-performance systems, consider thread-local caching with version numbers.</p>
 <p><strong>Q2.2: How would you implement log level inheritance in a concurrent system where levels can change at runtime?</strong></p>
 <p>Use atomic compare-and-swap for level updates with a generation counter. Each logger caches its effective level plus the generation number. On log calls, compare local generation with global; if mismatched, recompute effective level. This bounds the cost of level changes to the first log call per thread post-change rather than eagerly invalidating all caches.</p>
 </div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 3: System Design Implications</div>
+<div>
 <p><strong>Q2.1.1: In a microservices architecture, how would you implement dynamic log level changes across services without restarts?</strong></p>
 <p>Implement a <strong>control plane</strong> for log levels using a configuration service (e.g., etcd, Consul) with watches. Each service subscribes to its log level configuration. On change notification: (1) validate the new level, (2) atomically update the level with a memory barrier, (3) optionally confirm the change back to the control plane. Include rate limiting on level changes to prevent oscillation attacks. Consider implementing &quot;temporary level escalation&quot; that auto-reverts after a TTL for debugging production issues.</p>
 <p><strong>Q2.2.1: What happens if a log level comparison races with a level update? Is this a data race, and does it matter?</strong></p>
@@ -126,9 +126,9 @@ We assume log levels are set once at startup and rarely modified at runtime. Thi
 </div>
 <hr />
 <h3 id="2-asynchronous-logging-decoupling-production-from-io">2. Asynchronous Logging: Decoupling Production from I/O</h3>
-<div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Why Async Logging Matters</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<div>
+<div>Why Async Logging Matters</div>
+<div>
 <p>Synchronous logging blocks the calling thread during I/O operations. A single slow network write to a log aggregator can cascade into request latency spikes. Async logging <strong>decouples</strong> log production (application threads) from log consumption (I/O threads), converting variable I/O latency into bounded queue insertion time.</p>
 </div>
 </div>
@@ -219,32 +219,32 @@ class AsyncHandler(Handler):
 
         self.delegate.close()
 </code></pre>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Trade-off: Queue Sizing</div>
-<div style="color: #78350f; font-size: 14px">
+<div>
+<div>Trade-off: Queue Sizing</div>
+<div>
 A 10,000-entry queue with 1KB average log records consumes ~10MB memory. Too small and you drop logs under burst; too large and you risk OOM under sustained overload. Consider adaptive sizing: start small, grow under pressure, shrink during idle periods. Monitor queue depth as a metric.
 </div>
 </div>
 <h4 id="shutdown-semantics-the-durability-spectrum">Shutdown Semantics: The Durability Spectrum</h4>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Durability vs. Latency Trade-offs</div>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: stretch; gap: 16px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 200px; background: #dcfce7; padding: 16px; border-radius: 10px">
-<div style="color: #166534; font-weight: bold; font-size: 13px; margin-bottom: 8px">Fire-and-Forget</div>
-<div style="color: #15803d; font-size: 11px; line-height: 1.6">
+<div>
+<div>Durability vs. Latency Trade-offs</div>
+<div>
+<div>
+<div>
+<div>Fire-and-Forget</div>
+<div>
 Daemon thread, no shutdown drain. Fastest, loses all queued logs on crash. Use for DEBUG in production.
 </div>
 </div>
-<div style="flex: 1; min-width: 200px; background: #fef3c7; padding: 16px; border-radius: 10px">
-<div style="color: #92400e; font-weight: bold; font-size: 13px; margin-bottom: 8px">Best-Effort Drain</div>
-<div style="color: #a16207; font-size: 11px; line-height: 1.6">
+<div>
+<div>Best-Effort Drain</div>
+<div>
 Timeout-bounded shutdown drain. Balances latency and durability. Standard for most apps.
 </div>
 </div>
-<div style="flex: 1; min-width: 200px; background: #fee2e2; padding: 16px; border-radius: 10px">
-<div style="color: #991b1b; font-weight: bold; font-size: 13px; margin-bottom: 8px">Full Durability</div>
-<div style="color: #b91c1c; font-size: 11px; line-height: 1.6">
+<div>
+<div>Full Durability</div>
+<div>
 Block shutdown until queue empty + fsync. Slowest, guarantees no log loss. Use for audit logs.
 </div>
 </div>
@@ -288,18 +288,18 @@ Block shutdown until queue empty + fsync. Slowest, guarantees no log loss. Use f
 </code></pre>
 <p>See <a href="/topics/concurrency/lock-free">[lock-free-data-structures]</a> for implementation details.</p>
 <h4 id="interview-questions-async-logging-3-levels-deep">Interview Questions: Async Logging (3 Levels Deep)</h4>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 1: Fundamentals</div>
+<div>
 <p><strong>Q1: What's the primary benefit of async logging over sync logging?</strong></p>
 <p>Async logging transforms variable I/O latency into bounded enqueue latency. A 50ms network hiccup that would block the calling thread in sync mode becomes a ~100ns queue insertion in async mode. This prevents logging-induced latency spikes from affecting request processing.</p>
 <p><strong>Q2: What happens to logs in the queue when the application crashes?</strong></p>
 <p>They are lost. The queue exists only in process memory. For critical logs (audit, financial), consider: (1) synchronous flushing for high-severity levels, (2) memory-mapped queues that survive crashes, or (3) write-ahead logging to disk before enqueuing.</p>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
 <p><strong>Q2.1: How do you handle queue overflow in async logging? What are the trade-offs of different policies?</strong></p>
 <p>Three common policies:</p>
 <ul>
@@ -312,9 +312,9 @@ Block shutdown until queue empty + fsync. Slowest, guarantees no log loss. Use f
 <p>Use a <strong>circuit breaker</strong> pattern: when the queue exceeds 80% capacity, start sampling (log 1 in N messages). At 95%, switch to ERROR-only mode. At 100%, drop with counting. The circuit breaker state itself becomes a log event. This degrades gracefully while preserving signal for high-severity issues.</p>
 </div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 3: System Design Implications</div>
+<div>
 <p><strong>Q2.1.1: How do LMAX Disruptor-style ring buffers improve on traditional blocking queues for logging?</strong></p>
 <p>LMAX Disruptor uses a pre-allocated ring buffer with sequence numbers instead of object allocation. Key optimizations:</p>
 <ol>
@@ -338,9 +338,9 @@ Block shutdown until queue empty + fsync. Slowest, guarantees no log loss. Use f
 </div>
 <hr />
 <h3 id="3-structured-logging-from-text-to-data">3. Structured Logging: From Text to Data</h3>
-<div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Evolution from Printf to Structured Data</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<div>
+<div>The Evolution from Printf to Structured Data</div>
+<div>
 <p>Traditional logging treats messages as opaque strings. Structured logging treats them as <strong>queryable data</strong>. The difference is transformative: instead of regex-parsing &quot;User alice logged in from 192.168.1.1&quot;, you query <code>{&quot;user&quot;: &quot;alice&quot;, &quot;ip&quot;: &quot;192.168.1.1&quot;, &quot;event&quot;: &quot;login&quot;}</code>. This enables log aggregation, metric extraction, and anomaly detection at scale.</p>
 </div>
 </div>
@@ -459,9 +459,9 @@ async def handle_request(request):
         result = await process(request)
         logger.info(&quot;Request completed&quot;, duration_ms=result.duration)
 </code></pre>
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Assumption: Context Immutability</div>
-<div style="color: #14532d; font-size: 14px">
+<div>
+<div>Assumption: Context Immutability</div>
+<div>
 We assume context data is immutable once set. Mutating context mid-request would create inconsistent logs. The `context()` context manager creates a new dict rather than modifying in place, ensuring child spans see the parent's context at the time of their creation.
 </div>
 </div>
@@ -531,9 +531,9 @@ We assume context data is immutable once set. Mutating context mid-request would
         return str(obj)
 </code></pre>
 <h4 id="interview-questions-structured-logging-3-levels-deep">Interview Questions: Structured Logging (3 Levels Deep)</h4>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 1: Fundamentals</div>
+<div>
 <p><strong>Q1: What's the difference between structured and unstructured logging?</strong></p>
 <p>Unstructured: <code>&quot;User alice logged in from 192.168.1.1 at 2024-01-15 10:30:00&quot;</code><br />
 Structured: <code>{&quot;event&quot;: &quot;login&quot;, &quot;user&quot;: &quot;alice&quot;, &quot;ip&quot;: &quot;192.168.1.1&quot;, &quot;ts&quot;: 1705315800}</code></p>
@@ -548,9 +548,9 @@ Structured: <code>{&quot;event&quot;: &quot;login&quot;, &quot;user&quot;: &quot
 </ol>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
 <p><strong>Q2.1: How do you handle sensitive data in structured logs?</strong></p>
 <p>Implement <strong>defense in depth</strong>:</p>
 <ol>
@@ -570,9 +570,9 @@ Structured: <code>{&quot;event&quot;: &quot;login&quot;, &quot;user&quot;: &quot
 </ol>
 </div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 3: System Design Implications</div>
+<div>
 <p><strong>Q2.1.1: How would you implement PII detection in structured logs at scale without impacting logging latency?</strong></p>
 <p>Two-phase approach:</p>
 <ol>
@@ -610,38 +610,38 @@ Structured: <code>{&quot;event&quot;: &quot;login&quot;, &quot;user&quot;: &quot
 </div>
 <hr />
 <h3 id="4-log-rotation-managing-unbounded-growth">4. Log Rotation: Managing Unbounded Growth</h3>
-<div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Disk Space Paradox</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<div>
+<div>The Disk Space Paradox</div>
+<div>
 <p>Logs grow without bound. A high-traffic service can generate gigabytes per hour. Without rotation, logs will eventually fill the disk, causing the application (and often the entire system) to fail. Log rotation transforms an unbounded resource consumption problem into a bounded one.</p>
 </div>
 </div>
 <h4 id="rotation-strategies">Rotation Strategies</h4>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Rotation Trigger Comparison</div>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; gap: 16px; flex-wrap: wrap">
-<div style="flex: 1; min-width: 250px; background: #dbeafe; padding: 20px; border-radius: 12px">
-<div style="color: #1e40af; font-weight: bold; font-size: 14px; margin-bottom: 12px">Size-Based</div>
-<div style="color: #1e3a8a; font-size: 12px; line-height: 1.6">
+<div>
+<div>Rotation Trigger Comparison</div>
+<div>
+<div>
+<div>
+<div>Size-Based</div>
+<div>
 <strong>Trigger:</strong> File exceeds max_bytes<br/>
 <strong>Pros:</strong> Predictable disk usage<br/>
 <strong>Cons:</strong> Unpredictable file counts<br/>
 <strong>Use when:</strong> Disk space is primary constraint
 </div>
 </div>
-<div style="flex: 1; min-width: 250px; background: #dcfce7; padding: 20px; border-radius: 12px">
-<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px">Time-Based</div>
-<div style="color: #14532d; font-size: 12px; line-height: 1.6">
+<div>
+<div>Time-Based</div>
+<div>
 <strong>Trigger:</strong> Midnight, hourly, etc.<br/>
 <strong>Pros:</strong> Aligned with human time, easy shipping<br/>
 <strong>Cons:</strong> Variable file sizes<br/>
 <strong>Use when:</strong> Log shipping/archival matters
 </div>
 </div>
-<div style="flex: 1; min-width: 250px; background: #fef3c7; padding: 20px; border-radius: 12px">
-<div style="color: #92400e; font-weight: bold; font-size: 14px; margin-bottom: 12px">Hybrid</div>
-<div style="color: #78350f; font-size: 12px; line-height: 1.6">
+<div>
+<div>Hybrid</div>
+<div>
 <strong>Trigger:</strong> Size OR time, whichever first<br/>
 <strong>Pros:</strong> Best of both worlds<br/>
 <strong>Cons:</strong> More complex implementation<br/>
@@ -794,9 +794,9 @@ class RotatingFileHandler(Handler):
             self._current_file.close()
             self._current_file = None
 </code></pre>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Trade-off: In-Process vs. External Rotation</div>
-<div style="color: #78350f; font-size: 14px">
+<div>
+<div>Trade-off: In-Process vs. External Rotation</div>
+<div>
 In-process rotation (shown above) is simple but couples the application to rotation logic. External rotation (logrotate) is more flexible but requires coordination: the app must respond to SIGHUP to reopen files, and there's a race window during rotation. Docker/Kubernetes environments often prefer external log drivers that handle rotation transparently.
 </div>
 </div>
@@ -847,18 +847,18 @@ In-process rotation (shown above) is simple but couples the application to rotat
         super().emit(formatted, record)
 </code></pre>
 <h4 id="interview-questions-log-rotation-3-levels-deep">Interview Questions: Log Rotation (3 Levels Deep)</h4>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 1: Fundamentals</div>
+<div>
 <p><strong>Q1: Why is log rotation necessary?</strong></p>
 <p>Without rotation, log files grow indefinitely until disk is full. A full disk causes: (1) application crashes when writes fail, (2) system instability when /var fills up, (3) inability to log the actual failure. Rotation bounds disk usage to a predictable maximum: <code>max_size * backup_count</code>.</p>
 <p><strong>Q2: What's the difference between size-based and time-based rotation?</strong></p>
 <p>Size-based rotates when file exceeds a threshold (e.g., 100MB). Time-based rotates at fixed intervals (e.g., midnight). Size-based provides predictable disk usage but variable file counts. Time-based provides predictable file counts aligned with human time but variable sizes. Production systems often use both: &quot;rotate at 100MB OR midnight, whichever comes first.&quot;</p>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
 <p><strong>Q2.1: How do you handle the race condition when rotating while the application is writing?</strong></p>
 <p>Two approaches:</p>
 <ol>
@@ -875,9 +875,9 @@ In-process rotation (shown above) is simple but couples the application to rotat
 <p>The SIGHUP approach is more reliable (no duplicate logs) but requires application cooperation. <code>copytruncate</code> is transparent but can lose logs written between copy and truncate.</p>
 </div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 3: System Design Implications</div>
+<div>
 <p><strong>Q2.1.1: How do you implement zero-loss log rotation under high write rates?</strong></p>
 <p>Implement a <strong>double-buffer strategy</strong>:</p>
 <ol>
@@ -915,9 +915,9 @@ In-process rotation (shown above) is simple but couples the application to rotat
 </div>
 <hr />
 <h3 id="5-sink-abstraction-the-handler-pattern">5. Sink Abstraction: The Handler Pattern</h3>
-<div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #334155; font-weight: bold; font-size: 18px; margin-bottom: 16px">Decoupling Log Production from Log Destination</div>
-<div style="color: #475569; font-size: 14px; line-height: 1.8">
+<div>
+<div>Decoupling Log Production from Log Destination</div>
+<div>
 <p>A <strong>sink</strong> (or handler) is an abstraction over log destinations. By defining a common interface, the logging library can output to console, files, network, databases, or any custom destination without the logger knowing the details. This is the <a href="/topics/design-patterns/strategy">[Strategy Pattern]</a> applied to log output.</p>
 </div>
 </div>
@@ -1187,74 +1187,74 @@ class MemoryHandler(Handler):
         for handler in self.handlers:
             handler.close()
 </code></pre>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Handler Architecture</div>
-<div style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap">
-<div style="background: #dbeafe; padding: 16px 24px; border-radius: 12px">
-<div style="color: #1e40af; font-weight: bold; font-size: 13px">Logger</div>
-<div style="color: #3b82f6; font-size: 11px">log.info(...)</div>
+<div>
+<div>Handler Architecture</div>
+<div>
+<div>
+<div>
+<div>Logger</div>
+<div>log.info(...)</div>
 </div>
-<div style="color: #64748b; font-size: 24px">&#8594;</div>
-<div style="background: #f3e8ff; padding: 16px 24px; border-radius: 12px">
-<div style="color: #7c3aed; font-weight: bold; font-size: 13px">FanOut</div>
-<div style="color: #a855f7; font-size: 11px">dispatch</div>
-</div>
-</div>
-<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap">
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-<div style="color: #64748b; font-size: 20px">&#8595;</div>
-<div style="background: #dcfce7; padding: 14px 20px; border-radius: 10px">
-<div style="color: #166534; font-weight: bold; font-size: 12px">Console</div>
-<div style="color: #22c55e; font-size: 10px">ColorFormatter</div>
+<div>&#8594;</div>
+<div>
+<div>FanOut</div>
+<div>dispatch</div>
 </div>
 </div>
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-<div style="color: #64748b; font-size: 20px">&#8595;</div>
-<div style="background: #fef3c7; padding: 14px 20px; border-radius: 10px">
-<div style="color: #92400e; font-weight: bold; font-size: 12px">Rotating File</div>
-<div style="color: #f59e0b; font-size: 10px">JsonFormatter</div>
+<div>
+<div>
+<div>&#8595;</div>
+<div>
+<div>Console</div>
+<div>ColorFormatter</div>
 </div>
 </div>
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-<div style="color: #64748b; font-size: 20px">&#8595;</div>
-<div style="background: #fee2e2; padding: 14px 20px; border-radius: 10px">
-<div style="color: #991b1b; font-weight: bold; font-size: 12px">HTTP (Datadog)</div>
-<div style="color: #ef4444; font-size: 10px">BatchFormatter</div>
+<div>
+<div>&#8595;</div>
+<div>
+<div>Rotating File</div>
+<div>JsonFormatter</div>
 </div>
 </div>
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-<div style="color: #64748b; font-size: 20px">&#8595;</div>
-<div style="background: #dbeafe; padding: 14px 20px; border-radius: 10px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">Memory</div>
-<div style="color: #3b82f6; font-size: 10px">Test capture</div>
+<div>
+<div>&#8595;</div>
+<div>
+<div>HTTP (Datadog)</div>
+<div>BatchFormatter</div>
+</div>
+</div>
+<div>
+<div>&#8595;</div>
+<div>
+<div>Memory</div>
+<div>Test capture</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 <h4 id="interview-questions-sink-abstraction-3-levels-deep">Interview Questions: Sink Abstraction (3 Levels Deep)</h4>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 1: Fundamentals</div>
+<div>
 <p><strong>Q1: What is the purpose of the Handler abstraction?</strong></p>
 <p>Handlers decouple <strong>what</strong> is logged from <strong>where</strong> it goes. The Logger focuses on record creation and level filtering; Handlers focus on destination-specific I/O. This separation enables: (1) multiple simultaneous outputs, (2) per-destination formatting, (3) destination changes without logger code changes.</p>
 <p><strong>Q2: Why does each handler have its own level and formatter?</strong></p>
 <p>Handler-level settings enable <strong>output routing</strong>: ERROR+ to PagerDuty, DEBUG+ to file, INFO+ to console. Handler-level formatters enable <strong>format specialization</strong>: colored text for console, JSON for aggregators, compact for metrics. Without per-handler settings, you'd need separate logger instances.</p>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
 <p><strong>Q2.1: How do you handle failures in a handler without affecting other handlers or the application?</strong></p>
 <p>Wrap each handler's emit in try/except. On failure: (1) log to stderr (not through the logging system - avoid loops), (2) track failure count, (3) implement circuit breaker for repeated failures. Never let handler failures propagate to the application - logging is best-effort, not critical path.</p>
 <p><strong>Q2.2: How would you implement a handler that buffers logs and only flushes them if an error occurs?</strong></p>
 <p>The MemoryHandler pattern: buffer all logs in a ring buffer, flush to delegate only when a record exceeds <code>flush_level</code>. This provides context for errors (preceding debug logs) without the overhead of always writing debug logs. Set capacity to limit memory usage; oldest logs are dropped when buffer is full.</p>
 </div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 3: System Design Implications</div>
+<div>
 <p><strong>Q2.1.1: How do you design a handler that needs to maintain exactly-once delivery semantics to an external system?</strong></p>
 <p>Exactly-once requires:</p>
 <ol>
@@ -2096,44 +2096,44 @@ def basic_config(level: LogLevel = LogLevel.INFO,
 </code></pre>
 <hr />
 <h2 id="6-distributed-tracing-integration">6. Distributed Tracing Integration</h2>
-<div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Connecting Logs Across Service Boundaries</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
-<p><span style="color: #90EE90; font-weight: bold">Distributed tracing</span> correlates logs, metrics, and traces across microservices by propagating context identifiers through the entire request lifecycle. When a user action triggers calls across 10+ services, tracing lets you reconstruct the full story from a single trace ID.</p>
+<div>
+<div>Connecting Logs Across Service Boundaries</div>
+<div>
+<p><span>Distributed tracing</span> correlates logs, metrics, and traces across microservices by propagating context identifiers through the entire request lifecycle. When a user action triggers calls across 10+ services, tracing lets you reconstruct the full story from a single trace ID.</p>
 </div>
 </div>
 <h3 id="the-three-pillars-integration-model">The Three Pillars Integration Model</h3>
-<p>Logs, metrics, and traces form the <span style="color: #22c55e; font-weight: bold">three pillars of observability</span>. While each serves a different purpose, their power multiplies when unified:</p>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Observability Pillars Unified by Trace Context</div>
-<div style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #dbeafe; padding: 20px 28px; border-radius: 12px;text-align: center">
-<div style="color: #1e40af; font-weight: bold; font-size: 14px">Logs</div>
-<div style="color: #3b82f6; font-size: 11px; margin-top: 4px">What happened</div>
-<div style="color: #64748b; font-size: 10px; margin-top: 2px">Detail & Context</div>
+<p>Logs, metrics, and traces form the <span>three pillars of observability</span>. While each serves a different purpose, their power multiplies when unified:</p>
+<div>
+<div>Observability Pillars Unified by Trace Context</div>
+<div>
+<div>
+<div>
+<div>Logs</div>
+<div>What happened</div>
+<div>Detail & Context</div>
 </div>
-<div style="background: #dcfce7; padding: 20px 28px; border-radius: 12px;text-align: center">
-<div style="color: #166534; font-weight: bold; font-size: 14px">Metrics</div>
-<div style="color: #22c55e; font-size: 11px; margin-top: 4px">How much/often</div>
-<div style="color: #64748b; font-size: 10px; margin-top: 2px">Aggregates & Trends</div>
+<div>
+<div>Metrics</div>
+<div>How much/often</div>
+<div>Aggregates & Trends</div>
 </div>
-<div style="background: #fef3c7; padding: 20px 28px; border-radius: 12px;text-align: center">
-<div style="color: #92400e; font-weight: bold; font-size: 14px">Traces</div>
-<div style="color: #f59e0b; font-size: 11px; margin-top: 4px">Where it flowed</div>
-<div style="color: #64748b; font-size: 10px; margin-top: 2px">Causality & Latency</div>
+<div>
+<div>Traces</div>
+<div>Where it flowed</div>
+<div>Causality & Latency</div>
 </div>
 </div>
-<div style="display: flex; justify-content: center">
-<div style="background: #f3e8ff; padding: 16px 32px; border-radius: 12px">
-<div style="color: #7c3aed; font-weight: bold; font-size: 13px; text-align: center">Unified by Trace Context</div>
-<div style="color: #a855f7; font-size: 11px; text-align: center; margin-top: 4px">trace_id + span_id + baggage</div>
+<div>
+<div>
+<div>Unified by Trace Context</div>
+<div>trace_id + span_id + baggage</div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="w3c-trace-context-implementation">W3C Trace Context Implementation</h3>
-<p>The <span style="color: #22c55e; font-weight: bold">W3C Trace Context</span> standard defines how to propagate tracing information across service boundaries. Our logger integrates with this standard:</p>
+<p>The <span>W3C Trace Context</span> standard defines how to propagate tracing information across service boundaries. Our logger integrates with this standard:</p>
 <pre><code class="language-python">import uuid
 from typing import Optional, Dict
 from dataclasses import dataclass
@@ -2269,14 +2269,14 @@ class TracingLogger:
 
     # ... other level methods
 </code></pre>
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Key Insight: Automatic vs. Manual Injection</div>
-<div style="color: #14532d; font-size: 14px">
-The <span style="color: #22c55e; font-weight: bold">TracingLogger</span> automatically injects trace context into every log. This eliminates the bug-prone pattern of manually passing trace IDs through every function call. When debugging, simply query logs by trace_id to see the complete request journey.
+<div>
+<div>Key Insight: Automatic vs. Manual Injection</div>
+<div>
+The <span>TracingLogger</span> automatically injects trace context into every log. This eliminates the bug-prone pattern of manually passing trace IDs through every function call. When debugging, simply query logs by trace_id to see the complete request journey.
 </div>
 </div>
 <h3 id="opentelemetry-integration">OpenTelemetry Integration</h3>
-<p>For production systems, integrate with <span style="color: #22c55e; font-weight: bold">OpenTelemetry</span> rather than building custom tracing. See <a href="/topics/observability/distributed-tracing">[distributed-tracing]</a> for full integration patterns.</p>
+<p>For production systems, integrate with <span>OpenTelemetry</span> rather than building custom tracing. See <a href="/topics/observability/distributed-tracing">[distributed-tracing]</a> for full integration patterns.</p>
 <pre><code class="language-python">from opentelemetry import trace
 from opentelemetry.trace import Span, StatusCode
 
@@ -2321,49 +2321,49 @@ class OTelAwareHandler(Handler):
         # Delegate actual output
         self.delegate.emit(formatted, record)
 </code></pre>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Request Flow with Trace Context</div>
-<div style="display: flex; flex-direction: column; gap: 16px">
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #dbeafe; padding: 14px 20px; border-radius: 10px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">Client Request</div>
-<div style="color: #3b82f6; font-size: 10px">No trace context</div>
+<div>
+<div>Request Flow with Trace Context</div>
+<div>
+<div>
+<div>
+<div>Client Request</div>
+<div>No trace context</div>
 </div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #dcfce7; padding: 14px 20px; border-radius: 10px">
-<div style="color: #166534; font-weight: bold; font-size: 12px">API Gateway</div>
-<div style="color: #15803d; font-size: 10px">Generate trace_id: abc123</div>
-</div>
-</div>
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-left: 40px">
-<div style="color: #64748b; font-size: 20px">&#8595;</div>
-<div style="color: #64748b; font-size: 11px">traceparent: 00-abc123-span1-01</div>
-</div>
-<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
-<div style="background: #fef3c7; padding: 14px 20px; border-radius: 10px">
-<div style="color: #92400e; font-weight: bold; font-size: 12px">Order Service</div>
-<div style="color: #a16207; font-size: 10px">span_id: span2, parent: span1</div>
-</div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #fee2e2; padding: 14px 20px; border-radius: 10px">
-<div style="color: #991b1b; font-weight: bold; font-size: 12px">Payment Service</div>
-<div style="color: #b91c1c; font-size: 10px">span_id: span3, parent: span2</div>
-</div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #f3e8ff; padding: 14px 20px; border-radius: 10px">
-<div style="color: #7c3aed; font-weight: bold; font-size: 12px">Notification Service</div>
-<div style="color: #a855f7; font-size: 10px">span_id: span4, parent: span2</div>
+<div>&#8594;</div>
+<div>
+<div>API Gateway</div>
+<div>Generate trace_id: abc123</div>
 </div>
 </div>
-<div style="background: #f1f5f9; padding: 12px 16px; border-radius: 8px; margin-top: 8px">
-<div style="color: #475569; font-size: 11px">
+<div>
+<div>&#8595;</div>
+<div>traceparent: 00-abc123-span1-01</div>
+</div>
+<div>
+<div>
+<div>Order Service</div>
+<div>span_id: span2, parent: span1</div>
+</div>
+<div>&#8594;</div>
+<div>
+<div>Payment Service</div>
+<div>span_id: span3, parent: span2</div>
+</div>
+<div>&#8594;</div>
+<div>
+<div>Notification Service</div>
+<div>span_id: span4, parent: span2</div>
+</div>
+</div>
+<div>
+<div>
 All services log with trace_id=abc123 &#8594; Query <code>trace_id:abc123</code> shows complete request journey
 </div>
 </div>
 </div>
 </div>
 <h3 id="baggage-request-scoped-metadata">Baggage: Request-Scoped Metadata</h3>
-<p><span style="color: #22c55e; font-weight: bold">Baggage</span> carries application-specific metadata (user ID, tenant ID, feature flags) across service boundaries alongside trace context:</p>
+<p><span>Baggage</span> carries application-specific metadata (user ID, tenant ID, feature flags) across service boundaries alongside trace context:</p>
 <pre><code class="language-python">@dataclass
 class Baggage:
     &quot;&quot;&quot;
@@ -2424,22 +2424,22 @@ async def tracing_middleware(request, call_next):
     return response
 </code></pre>
 <h3 id="interview-questions-distributed-tracing-3-levels-deep">Interview Questions: Distributed Tracing (3 Levels Deep)</h3>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 1: Fundamentals</div>
+<div>
 <p><strong>Q1: What is the relationship between logging and distributed tracing?</strong></p>
-<p>Logging captures <span style="color: #22c55e; font-weight: bold">what happened</span> in detail at each service. Tracing captures <span style="color: #22c55e; font-weight: bold">where requests flowed</span> and how long each step took. When unified by trace_id, you can click from a slow span in your trace to see the detailed logs from that exact operation. Without trace context, logs from different services are disconnected - you cannot reconstruct the full request journey.</p>
+<p>Logging captures <span>what happened</span> in detail at each service. Tracing captures <span>where requests flowed</span> and how long each step took. When unified by trace_id, you can click from a slow span in your trace to see the detailed logs from that exact operation. Without trace context, logs from different services are disconnected - you cannot reconstruct the full request journey.</p>
 <p><strong>Q2: What is the W3C Trace Context standard and why does it matter?</strong></p>
 <p>W3C Trace Context standardizes how tracing information propagates via HTTP headers (<code>traceparent</code>, <code>tracestate</code>). Before standardization, each vendor (Zipkin, Jaeger, AWS X-Ray) used incompatible formats. The standard enables interoperability: a request starting in a service using Jaeger can flow through services using different tracing backends while maintaining correlation. The <code>traceparent</code> format is: <code>{version}-{trace_id}-{parent_id}-{flags}</code>.</p>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
 <p><strong>Q2.1: How do you implement trace context propagation in an async Python application where requests may jump between threads/coroutines?</strong></p>
-<p>Use <span style="color: #22c55e; font-weight: bold">contextvars</span> (Python 3.7+), which are async-safe and automatically propagate across await boundaries. Unlike <code>threading.local</code>, contextvars correctly handle the case where a single request spawns multiple concurrent database queries - each coroutine sees the same trace context. For thread pool executors, explicitly copy context: <code>asyncio.get_event_loop().run_in_executor(None, contextvars.copy_context().run, func)</code>.</p>
+<p>Use <span>contextvars</span> (Python 3.7+), which are async-safe and automatically propagate across await boundaries. Unlike <code>threading.local</code>, contextvars correctly handle the case where a single request spawns multiple concurrent database queries - each coroutine sees the same trace context. For thread pool executors, explicitly copy context: <code>asyncio.get_event_loop().run_in_executor(None, contextvars.copy_context().run, func)</code>.</p>
 <p><strong>Q2.2: What happens to trace context when a service uses message queues (Kafka, RabbitMQ) instead of synchronous HTTP?</strong></p>
-<p>Trace context must be explicitly serialized into message headers. The consumer extracts and restores the context, creating a <span style="color: #22c55e; font-weight: bold">link</span> (not parent-child) relationship since the consumer span starts after the producer span ends. Key considerations:</p>
+<p>Trace context must be explicitly serialized into message headers. The consumer extracts and restores the context, creating a <span>link</span> (not parent-child) relationship since the consumer span starts after the producer span ends. Key considerations:</p>
 <ol>
 <li>Message may be processed hours after production - timestamps matter</li>
 <li>One message may fan out to multiple consumers - trace branches</li>
@@ -2448,9 +2448,9 @@ async def tracing_middleware(request, call_next):
 <p>See <a href="/topics/microservices/event-strategies">[event-driven-architecture]</a> for patterns.</p>
 </div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 3: System Design Implications</div>
+<div>
 <p><strong>Q2.1.1: How do you implement trace context propagation across language boundaries (e.g., Python service calling a Go service calling a Rust service)?</strong></p>
 <p>This is exactly why W3C Trace Context exists. Each language's tracing library (OpenTelemetry SDK) speaks the same wire protocol:</p>
 <ol>
@@ -2458,7 +2458,7 @@ async def tracing_middleware(request, call_next):
 <li>Go service extracts header, creates child span, logs with same trace_id</li>
 <li>Rust service does the same</li>
 </ol>
-<p>The key is <span style="color: #22c55e; font-weight: bold">standard header names and formats</span>. If using gRPC, trace context propagates via gRPC metadata. For custom protocols, explicitly define where trace context lives in the message format.</p>
+<p>The key is <span>standard header names and formats</span>. If using gRPC, trace context propagates via gRPC metadata. For custom protocols, explicitly define where trace context lives in the message format.</p>
 <p><strong>Q2.2.1: Design a system that maintains trace context through a complex workflow involving: HTTP API -&gt; Kafka -&gt; Worker -&gt; Redis Cache -&gt; External API -&gt; Webhook callback.</strong></p>
 <pre><code>1. HTTP API receives request
    - Generate trace_id if not present
@@ -2484,7 +2484,7 @@ async def tracing_middleware(request, call_next):
    - Include trace_id in webhook payload
    - Webhook handler extracts and continues trace
 </code></pre>
-<p><span style="color: #22c55e; font-weight: bold">Critical insight</span>: The webhook is the hardest part. External APIs don't propagate your trace context automatically. Include trace_id in the payload you send them, and configure them to echo it back in the webhook. This creates a &quot;logical&quot; continuation even if the wire format doesn't support tracing.</p>
+<p><span>Critical insight</span>: The webhook is the hardest part. External APIs don't propagate your trace context automatically. Include trace_id in the payload you send them, and configure them to echo it back in the webhook. This creates a &quot;logical&quot; continuation even if the wire format doesn't support tracing.</p>
 <p><strong>Q2.2.2: How do you handle trace context in a system with both synchronous request-response and fire-and-forget patterns?</strong></p>
 <p>Distinguish between:</p>
 <ol>
@@ -2493,7 +2493,7 @@ async def tracing_middleware(request, call_next):
 </ol>
 <p>For fire-and-forget (e.g., sending an email after order completion):</p>
 <ul>
-<li>Create a new root span with a <span style="color: #22c55e; font-weight: bold">link</span> to the original trace</li>
+<li>Create a new root span with a <span>link</span> to the original trace</li>
 <li>The link says &quot;this work was triggered by trace X&quot; without implying timing</li>
 <li>Log correlation still works - query by either trace_id</li>
 </ul>
@@ -2513,55 +2513,55 @@ async def tracing_middleware(request, call_next):
 </div>
 <hr />
 <h2 id="7-performance-optimization-deep-dive">7. Performance Optimization Deep Dive</h2>
-<div style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Zero-Cost Abstraction Goals</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
-<p>Production logging must be <span style="color: #90EE90; font-weight: bold">effectively free</span> when disabled. A log call at DEBUG level in production (where INFO is the minimum) should cost nanoseconds, not microseconds. This section covers techniques to achieve near-zero overhead.</p>
+<div>
+<div>Zero-Cost Abstraction Goals</div>
+<div>
+<p>Production logging must be <span>effectively free</span> when disabled. A log call at DEBUG level in production (where INFO is the minimum) should cost nanoseconds, not microseconds. This section covers techniques to achieve near-zero overhead.</p>
 </div>
 </div>
 <h3 id="the-cost-hierarchy-of-logging-operations">The Cost Hierarchy of Logging Operations</h3>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Operation Costs (Approximate)</div>
-<div style="display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; min-width: 160px">
-<div style="color: #166534; font-weight: bold; font-size: 12px">Level Check</div>
+<div>
+<div>Operation Costs (Approximate)</div>
+<div>
+<div>
+<div>
+<div>Level Check</div>
 </div>
-<div style="color: #64748b; font-size: 12px; flex: 1">~1-5 ns</div>
-<div style="color: #22c55e; font-size: 11px">Integer comparison</div>
+<div>~1-5 ns</div>
+<div>Integer comparison</div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; min-width: 160px">
-<div style="color: #1e40af; font-weight: bold; font-size: 12px">String Formatting</div>
+<div>
+<div>
+<div>String Formatting</div>
 </div>
-<div style="color: #64748b; font-size: 12px; flex: 1">~100-500 ns</div>
-<div style="color: #3b82f6; font-size: 11px">f-strings, % formatting</div>
+<div>~100-500 ns</div>
+<div>f-strings, % formatting</div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; min-width: 160px">
-<div style="color: #92400e; font-weight: bold; font-size: 12px">LogRecord Creation</div>
+<div>
+<div>
+<div>LogRecord Creation</div>
 </div>
-<div style="color: #64748b; font-size: 12px; flex: 1">~200-1000 ns</div>
-<div style="color: #f59e0b; font-size: 11px">Object allocation + timestamp</div>
+<div>~200-1000 ns</div>
+<div>Object allocation + timestamp</div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #fee2e2; padding: 12px 16px; border-radius: 8px; min-width: 160px">
-<div style="color: #991b1b; font-weight: bold; font-size: 12px">File Write + Flush</div>
+<div>
+<div>
+<div>File Write + Flush</div>
 </div>
-<div style="color: #64748b; font-size: 12px; flex: 1">~1-10 μs</div>
-<div style="color: #ef4444; font-size: 11px">Syscall overhead</div>
+<div>~1-10 μs</div>
+<div>Syscall overhead</div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #f3e8ff; padding: 12px 16px; border-radius: 8px; min-width: 160px">
-<div style="color: #7c3aed; font-weight: bold; font-size: 12px">Network Write</div>
+<div>
+<div>
+<div>Network Write</div>
 </div>
-<div style="color: #64748b; font-size: 12px; flex: 1">~50 μs - 50 ms</div>
-<div style="color: #a855f7; font-size: 11px">Variable, can spike</div>
+<div>~50 μs - 50 ms</div>
+<div>Variable, can spike</div>
 </div>
 </div>
 </div>
 <h3 id="lazy-evaluation-pattern">Lazy Evaluation Pattern</h3>
-<p>The key insight: <span style="color: #22c55e; font-weight: bold">never format a message that won't be logged</span>.</p>
+<p>The key insight: <span>never format a message that won't be logged</span>.</p>
 <pre><code class="language-python">class LazyLogger:
     &quot;&quot;&quot;
     Logger that defers expensive operations until necessary.
@@ -2588,9 +2588,9 @@ async def tracing_middleware(request, call_next):
             return  # Lambda never called
         self._emit(LogLevel.DEBUG, message_func(), kwargs)
 </code></pre>
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Python Gotcha: f-string Evaluation</div>
-<div style="color: #14532d; font-size: 14px">
+<div>
+<div>Python Gotcha: f-string Evaluation</div>
+<div>
 <pre><code class="language-python"># BAD: f-string evaluates BEFORE is_enabled check
 logger.debug(f&quot;Result: {expensive_operation()}&quot;)  # Always runs!
 
@@ -2604,7 +2604,7 @@ logger.debug_lazy(lambda: f&quot;Result: {expensive_operation()}&quot;)
 </div>
 </div>
 <h3 id="lock-free-hot-path">Lock-Free Hot Path</h3>
-<p>For extreme throughput, eliminate locks from the critical path using <span style="color: #22c55e; font-weight: bold">lock-free data structures</span>:</p>
+<p>For extreme throughput, eliminate locks from the critical path using <span>lock-free data structures</span>:</p>
 <pre><code class="language-python">import ctypes
 from typing import Optional
 
@@ -2679,11 +2679,11 @@ class LockFreeLogBuffer:
 </code></pre>
 <p>See <a href="/topics/concurrency/lock-free">[lock-free-data-structures]</a> and <a href="/topics/concurrency/disruptor">[disruptor-pattern]</a> for production implementations.</p>
 <h3 id="interview-questions-performance-3-levels-deep">Interview Questions: Performance (3 Levels Deep)</h3>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #1e40af; font-weight: bold; margin-bottom: 12px">Level 1: Fundamentals</div>
-<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 1: Fundamentals</div>
+<div>
 <p><strong>Q1: Why is early level checking critical for logging performance?</strong></p>
-<p>Level checking is a <span style="color: #22c55e; font-weight: bold">~5ns integer comparison</span>. String formatting is ~100-500ns. Record creation is ~200-1000ns. File I/O is ~1-10μs. By checking level first, we skip ALL subsequent work for disabled log calls. In a tight loop logging at DEBUG with INFO threshold, this is the difference between ~5ns/call and ~1μs/call - a 200x improvement.</p>
+<p>Level checking is a <span>~5ns integer comparison</span>. String formatting is ~100-500ns. Record creation is ~200-1000ns. File I/O is ~1-10μs. By checking level first, we skip ALL subsequent work for disabled log calls. In a tight loop logging at DEBUG with INFO threshold, this is the difference between ~5ns/call and ~1μs/call - a 200x improvement.</p>
 <p><strong>Q2: What is the performance impact of logging in a hot loop?</strong></p>
 <p>Even with async logging and early level checks, logging in a hot loop can devastate performance:</p>
 <ul>
@@ -2694,11 +2694,11 @@ class LockFreeLogBuffer:
 <p>Solutions: (1) Sample logs in loops (<code>if i % 1000 == 0: log...</code>), (2) Aggregate metrics instead of individual logs, (3) Use conditional compilation/feature flags to eliminate logging code entirely in release builds.</p>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 12px">Level 2: Implementation Depth</div>
-<div style="color: #78350f; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 2: Implementation Depth</div>
+<div>
 <p><strong>Q2.1: How does Python's logging module implement lazy message formatting, and what's the catch?</strong></p>
-<p>Python's logging uses <code>%</code> style formatting: <code>logger.info(&quot;User %s logged in&quot;, username)</code>. The <code>username</code> argument is only substituted if the message will be logged. However, <span style="color: #22c55e; font-weight: bold">the arguments are still evaluated</span> before being passed to the function. So <code>logger.debug(&quot;Data: %s&quot;, expensive_serialize(data))</code> ALWAYS calls <code>expensive_serialize</code>. Use lambdas or the <code>isEnabledFor()</code> check for truly lazy evaluation.</p>
+<p>Python's logging uses <code>%</code> style formatting: <code>logger.info(&quot;User %s logged in&quot;, username)</code>. The <code>username</code> argument is only substituted if the message will be logged. However, <span>the arguments are still evaluated</span> before being passed to the function. So <code>logger.debug(&quot;Data: %s&quot;, expensive_serialize(data))</code> ALWAYS calls <code>expensive_serialize</code>. Use lambdas or the <code>isEnabledFor()</code> check for truly lazy evaluation.</p>
 <p><strong>Q2.2: How do you minimize GC pressure in a high-throughput logging system?</strong></p>
 <p>Three strategies:</p>
 <ol>
@@ -2709,9 +2709,9 @@ class LockFreeLogBuffer:
 <p>The LMAX Disruptor pattern combines all three: pre-allocated ring buffer with object reuse. In Python, you can achieve similar effects with <code>__slots__</code> on LogRecord to reduce per-instance memory.</p>
 </div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Level 3: System Design Implications</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Level 3: System Design Implications</div>
+<div>
 <p><strong>Q2.1.1: Design a logging system that can handle 10 million logs/second with &lt;1μs p99 latency impact on the application.</strong></p>
 <p>Architecture for extreme throughput:</p>
 <ol>
@@ -2739,7 +2739,7 @@ class LockFreeLogBuffer:
         if buf.full():
             self._swap_buffer(buf)
 </code></pre>
-<p>The key insight: <span style="color: #22c55e; font-weight: bold">separate the fast path (buffering) from the slow path (I/O)</span> with zero contention between them.</p>
+<p>The key insight: <span>separate the fast path (buffering) from the slow path (I/O)</span> with zero contention between them.</p>
 <p><strong>Q2.2.1: How do you benchmark logging performance accurately without the benchmark itself affecting results?</strong></p>
 <p>Logging benchmarks are notoriously misleading:</p>
 <ol>
@@ -2764,10 +2764,10 @@ class LockFreeLogBuffer:
 </div>
 <hr />
 <h2 id="8-testing-logging-systems">8. Testing Logging Systems</h2>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Verifying Invisible Infrastructure</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
-<p>Logging is <span style="color: #90EE90; font-weight: bold">invisible infrastructure</span> - it doesn't affect business logic but is critical for operations. Testing logging ensures that when you need logs most (during incidents), they're actually there and useful.</p>
+<div>
+<div>Verifying Invisible Infrastructure</div>
+<div>
+<p>Logging is <span>invisible infrastructure</span> - it doesn't affect business logic but is critical for operations. Testing logging ensures that when you need logs most (during incidents), they're actually there and useful.</p>
 </div>
 </div>
 <h3 id="capturing-logs-in-tests">Capturing Logs in Tests</h3>
@@ -2862,10 +2862,10 @@ class TestOrderService:
             order_id=&quot;123&quot;
         )
 </code></pre>
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #166534; font-weight: bold; margin-bottom: 8px">Testing Philosophy: What to Assert</div>
-<div style="color: #14532d; font-size: 14px">
-<p>Test <span style="color: #22c55e; font-weight: bold">semantic content</span>, not exact format:</p>
+<div>
+<div>Testing Philosophy: What to Assert</div>
+<div>
+<p>Test <span>semantic content</span>, not exact format:</p>
 <ul>
 <li>Good: <code>assert_logged(message_contains=&quot;Order created&quot;, order_id=&quot;123&quot;)</code></li>
 <li>Bad: <code>assert logs[0] == &quot;[2024-01-15 10:30:00] INFO order.service - Order created...&quot;</code></li>
@@ -2937,9 +2937,9 @@ class TestRotatingFileHandler:
 </code></pre>
 <hr />
 <h2 id="9-common-pitfalls--interview-gotchas">9. Common Pitfalls &amp; Interview Gotchas</h2>
-<div style="background: #fee2e2; border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #991b1b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Production Pitfalls to Discuss in Interviews</div>
-<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
+<div>
+<div>Production Pitfalls to Discuss in Interviews</div>
+<div>
 <p>These are the &quot;war stories&quot; that demonstrate real-world experience. Interviewers love hearing about these because they show you've operated logging systems at scale.</p>
 </div>
 </div>
@@ -2999,22 +2999,22 @@ def handle_validation_error(e):
     return {&quot;error&quot;: &quot;Invalid request&quot;}
 </code></pre>
 <h3 id="pitfall-4-timestamp-synchronization">Pitfall 4: Timestamp Synchronization</h3>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #92400e; font-weight: bold; margin-bottom: 8px">Clock Skew Causes Correlation Failures</div>
-<div style="color: #78350f; font-size: 14px">
+<div>
+<div>Clock Skew Causes Correlation Failures</div>
+<div>
 When Service A's clock is 5 seconds ahead of Service B, logs appear out of order even with correct trace_id correlation. Solutions:
 1. Use NTP with monitoring for clock drift
-2. Include <span style="color: #22c55e; font-weight: bold">logical timestamps</span> (lamport clocks) alongside wall-clock time
+2. Include <span>logical timestamps</span> (lamport clocks) alongside wall-clock time
 3. In log analysis, sort by trace_id + span_id hierarchy, not timestamp
 <p>See <a href="/topics/distributed-systems/time-synchronization">[distributed-time]</a> for clock synchronization patterns.</p>
 </div>
 </div>
 <h3 id="interview-quick-fire-questions">Interview Quick-Fire Questions</h3>
-<div style="background: #f3e8ff; border-radius: 12px; padding: 20px; margin: 16px 0">
-<div style="color: #7c3aed; font-weight: bold; margin-bottom: 12px">Rapid-Fire Interview Questions</div>
-<div style="color: #581c87; font-size: 14px; line-height: 2.0">
+<div>
+<div>Rapid-Fire Interview Questions</div>
+<div>
 <p><strong>Q: Why use DEBUG, INFO, WARN, ERROR instead of just &quot;log&quot;?</strong><br />
-A: <span style="color: #22c55e; font-weight: bold">Filtering</span>. Production runs at INFO, debugging at DEBUG. Different severity enables routing (ERROR to PagerDuty).</p>
+A: <span>Filtering</span>. Production runs at INFO, debugging at DEBUG. Different severity enables routing (ERROR to PagerDuty).</p>
 <p><strong>Q: Sync vs async logging trade-off in one sentence?</strong><br />
 A: Sync guarantees durability but blocks; async provides throughput but may lose logs on crash.</p>
 <p><strong>Q: Why is <code>logger.debug(f&quot;Data: {expensive()}&quot;)</code> bad?</strong><br />
@@ -3022,7 +3022,7 @@ A: f-string evaluates before the level check - <code>expensive()</code> runs eve
 <p><strong>Q: What's wrong with <code>catch (e) { log(e); throw e; }</code>?</strong><br />
 A: Error logged twice - once here, once at final handler. Creates duplicate alerts.</p>
 <p><strong>Q: How do you correlate logs across microservices?</strong><br />
-A: <span style="color: #22c55e; font-weight: bold">Trace context propagation</span> - inject trace_id into every log, propagate via W3C headers.</p>
+A: <span>Trace context propagation</span> - inject trace_id into every log, propagate via W3C headers.</p>
 <p><strong>Q: What happens to async logs if the app crashes?</strong><br />
 A: Lost. Queued logs exist only in memory. Critical logs need sync handlers or persistent queues.</p>
 <p><strong>Q: Why compress rotated logs?</strong><br />
@@ -3033,39 +3033,39 @@ A: Structured logging (JSON) instead of string templates. Never interpolate user
 </div>
 <hr />
 <h2 id="10-real-world-architecture-patterns">10. Real-World Architecture Patterns</h2>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px">Production Logging Architecture (ELK Stack)</div>
-<div style="display: flex; flex-direction: column; gap: 20px">
-<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
-<div style="background: #dbeafe; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
-<div style="color: #1e40af; font-weight: bold; font-size: 13px">App Pods</div>
-<div style="color: #3b82f6; font-size: 10px; margin-top: 4px">stdout/stderr</div>
+<div>
+<div>Production Logging Architecture (ELK Stack)</div>
+<div>
+<div>
+<div>
+<div>App Pods</div>
+<div>stdout/stderr</div>
 </div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #dcfce7; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
-<div style="color: #166534; font-weight: bold; font-size: 13px">Fluent Bit</div>
-<div style="color: #22c55e; font-size: 10px; margin-top: 4px">DaemonSet</div>
+<div>&#8594;</div>
+<div>
+<div>Fluent Bit</div>
+<div>DaemonSet</div>
 </div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #fef3c7; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
-<div style="color: #92400e; font-weight: bold; font-size: 13px">Kafka</div>
-<div style="color: #f59e0b; font-size: 10px; margin-top: 4px">Buffer</div>
+<div>&#8594;</div>
+<div>
+<div>Kafka</div>
+<div>Buffer</div>
 </div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #fee2e2; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
-<div style="color: #991b1b; font-weight: bold; font-size: 13px">Logstash</div>
-<div style="color: #ef4444; font-size: 10px; margin-top: 4px">Transform</div>
+<div>&#8594;</div>
+<div>
+<div>Logstash</div>
+<div>Transform</div>
 </div>
-<div style="color: #64748b; font-size: 20px">&#8594;</div>
-<div style="background: #f3e8ff; padding: 16px 24px; border-radius: 12px;text-align: center; flex: 1; min-width: 120px">
-<div style="color: #7c3aed; font-weight: bold; font-size: 13px">Elasticsearch</div>
-<div style="color: #a855f7; font-size: 10px; margin-top: 4px">Index & Search</div>
+<div>&#8594;</div>
+<div>
+<div>Elasticsearch</div>
+<div>Index & Search</div>
 </div>
 </div>
-<div style="display: flex; justify-content: flex-end">
-<div style="background: #e0f2fe; padding: 14px 20px; border-radius: 10px">
-<div style="color: #0369a1; font-weight: bold; font-size: 12px">Kibana / Grafana</div>
-<div style="color: #0ea5e9; font-size: 10px">Visualization & Alerting</div>
+<div>
+<div>
+<div>Kibana / Grafana</div>
+<div>Visualization & Alerting</div>
 </div>
 </div>
 </div>
@@ -3146,15 +3146,15 @@ app.add_middleware(CorrelationMiddleware)
 <p>See <a href="/topics/system-design/api-gateway">[api-gateway]</a> for centralized correlation management and <a href="/topics/observability/patterns">[observability-patterns]</a> for comprehensive monitoring strategies.</p>
 <hr />
 <h2 id="summary-key-interview-takeaways">Summary: Key Interview Takeaways</h2>
-<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 20px 0">
-<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">What Interviewers Look For</div>
-<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
+<div>
+<div>What Interviewers Look For</div>
+<div>
 <ol>
-<li><span style="color: #90EE90; font-weight: bold">Performance awareness</span>: Early level checking, lazy evaluation, async I/O</li>
-<li><span style="color: #90EE90; font-weight: bold">Reliability trade-offs</span>: Durability vs. latency, queue overflow policies</li>
-<li><span style="color: #90EE90; font-weight: bold">Observability integration</span>: Trace context propagation, structured data</li>
-<li><span style="color: #90EE90; font-weight: bold">Production readiness</span>: Rotation, sensitive data handling, error isolation</li>
-<li><span style="color: #90EE90; font-weight: bold">Design patterns</span>: Strategy (handlers), Template Method (Handler.handle), Chain of Responsibility (filters)</li>
+<li><span>Performance awareness</span>: Early level checking, lazy evaluation, async I/O</li>
+<li><span>Reliability trade-offs</span>: Durability vs. latency, queue overflow policies</li>
+<li><span>Observability integration</span>: Trace context propagation, structured data</li>
+<li><span>Production readiness</span>: Rotation, sensitive data handling, error isolation</li>
+<li><span>Design patterns</span>: Strategy (handlers), Template Method (Handler.handle), Chain of Responsibility (filters)</li>
 </ol>
 </div>
 </div>

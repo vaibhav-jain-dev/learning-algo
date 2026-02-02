@@ -1,42 +1,42 @@
 <h1 id="client-server-model">Client-Server Model</h1>
 <h2 id="overview">Overview</h2>
-<p>The <span style="color: #22c55e; font-weight: 600">Client-Server Model</span> is the foundational architecture pattern for distributed computing. It divides computing tasks between <span style="color: #22c55e; font-weight: 600">service providers (servers)</span> that host resources and <span style="color: #22c55e; font-weight: 600">service requesters (clients)</span> that consume them. This simple yet powerful paradigm underpins virtually every internet application from web browsing to mobile apps to IoT devices.</p>
-<div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e40af; margin-top: 0">Why This Matters in Interviews</h4>
-<div style="display: flex; flex-wrap: wrap; gap: 24px">
-<div style="flex: 1; min-width: 200px">
-<div style="color: #475569; font-size: 13px; margin-bottom: 8px">Surface-level answer:</div>
-<div style="color: #1e293b; font-size: 14px">"Client sends requests, server responds"</div>
+<p>The <span>Client-Server Model</span> is the foundational architecture pattern for distributed computing. It divides computing tasks between <span>service providers (servers)</span> that host resources and <span>service requesters (clients)</span> that consume them. This simple yet powerful paradigm underpins virtually every internet application from web browsing to mobile apps to IoT devices.</p>
+<div>
+<h4>Why This Matters in Interviews</h4>
+<div>
+<div>
+<div>Surface-level answer:</div>
+<div>"Client sends requests, server responds"</div>
 </div>
-<div style="flex: 1; min-width: 200px">
-<div style="color: #475569; font-size: 13px; margin-bottom: 8px">Interview-winning answer:</div>
-<div style="color: #1e293b; font-size: 14px">"Understanding the trade-offs between REST's statelessness enabling horizontal scaling versus WebSocket's persistent connections for real-time features, and when to use SSE for unidirectional server push"</div>
+<div>
+<div>Interview-winning answer:</div>
+<div>"Understanding the trade-offs between REST's statelessness enabling horizontal scaling versus WebSocket's persistent connections for real-time features, and when to use SSE for unidirectional server push"</div>
 </div>
 </div>
 </div>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 20px; font-weight: 600">CLIENT-SERVER MODEL</h3>
-<div style="display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap">
-<div style="text-align: center">
-<div style="background: #dcfce7;width: 140px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px">
-<span style="color: #166534; font-weight: 700; font-size: 16px">CLIENT</span>
+<div>
+<h3>CLIENT-SERVER MODEL</h3>
+<div>
+<div>
+<div>
+<span>CLIENT</span>
 </div>
-<div style="color: #64748b; font-size: 12px">Initiates requests</div>
-<div style="color: #22c55e; font-size: 11px; margin-top: 4px">Browser, Mobile App</div>
+<div>Initiates requests</div>
+<div>Browser, Mobile App</div>
 </div>
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-<div style="color: #3b82f6; font-size: 14px">Request --></div>
-<div style="background: #f1f5f9; padding: 8px 16px; border-radius: 6px">
-<span style="color: #64748b; font-size: 12px">Network</span>
+<div>
+<div>Request --></div>
+<div>
+<span>Network</span>
 </div>
-<div style="color: #22c55e; font-size: 14px"><-- Response</div>
+<div><-- Response</div>
 </div>
-<div style="text-align: center">
-<div style="background: #dbeafe;width: 140px; height: 90px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px">
-<span style="color: #1e40af; font-weight: 700; font-size: 16px">SERVER</span>
+<div>
+<div>
+<span>SERVER</span>
 </div>
-<div style="color: #64748b; font-size: 12px">Provides services</div>
-<div style="color: #3b82f6; font-size: 11px; margin-top: 4px">API, Database</div>
+<div>Provides services</div>
+<div>API, Database</div>
 </div>
 </div>
 </div>
@@ -44,189 +44,189 @@
 <hr />
 <h2 id="why-it-matters-real-company-examples">Why It Matters: Real Company Examples</h2>
 <p>The client-server model is so fundamental that every tech company uses it:</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">CLIENT-SERVER IN THE REAL WORLD</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
-<div style="background: #ecfdf5; border-radius: 12px; padding: 20px">
-<div style="color: #065f46; font-weight: 700; margin-bottom: 8px">Google Search</div>
-<div style="color: #047857; font-size: 13px">Your browser (client) sends a search query. Google's servers process billions of web pages and return ranked results in milliseconds.</div>
+<div>
+<h3>CLIENT-SERVER IN THE REAL WORLD</h3>
+<div>
+<div>
+<div>Google Search</div>
+<div>Your browser (client) sends a search query. Google's servers process billions of web pages and return ranked results in milliseconds.</div>
 </div>
-<div style="background: #eff6ff; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px">Instagram</div>
-<div style="color: #1d4ed8; font-size: 13px">Mobile app (thick client) stores images locally, communicates with servers for feed, likes, and comments. Servers handle storage and social graph.</div>
+<div>
+<div>Instagram</div>
+<div>Mobile app (thick client) stores images locally, communicates with servers for feed, likes, and comments. Servers handle storage and social graph.</div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 8px">Slack</div>
-<div style="color: #b45309; font-size: 13px">Desktop/mobile clients maintain WebSocket connections for real-time messaging. Servers coordinate message delivery across thousands of organizations.</div>
+<div>
+<div>Slack</div>
+<div>Desktop/mobile clients maintain WebSocket connections for real-time messaging. Servers coordinate message delivery across thousands of organizations.</div>
 </div>
-<div style="background: #f3e8ff; border-radius: 12px; padding: 20px">
-<div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px">Stripe</div>
-<div style="color: #7c3aed; font-size: 13px">Your application (client) calls Stripe's API (server) to process payments. Stripe handles PCI compliance, fraud detection, and bank connections.</div>
+<div>
+<div>Stripe</div>
+<div>Your application (client) calls Stripe's API (server) to process payments. Stripe handles PCI compliance, fraud detection, and bank connections.</div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="request-response-model-deep-dive">Request-Response Model Deep Dive</h2>
-<p>The <span style="color: #22c55e; font-weight: 600">request-response model</span> is the fundamental interaction pattern in client-server architectures. Understanding its mechanics is crucial for designing performant, reliable systems.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 16px; font-weight: 600">REQUEST-RESPONSE LIFECYCLE</h3>
-<div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto">
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #22c55e; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">1</div>
-<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: 600">Client initiates request</div>
-<div style="color: #64748b; font-size: 12px">HTTP GET /api/users/123</div>
+<p>The <span>request-response model</span> is the fundamental interaction pattern in client-server architectures. Understanding its mechanics is crucial for designing performant, reliable systems.</p>
+<div>
+<h3>REQUEST-RESPONSE LIFECYCLE</h3>
+<div>
+<div>
+<div>1</div>
+<div>
+<div>Client initiates request</div>
+<div>HTTP GET /api/users/123</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">2</div>
-<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px">
-<div style="color: #1e40af; font-weight: 600">DNS resolves hostname</div>
-<div style="color: #64748b; font-size: 12px">api.example.com -> 93.184.216.34</div>
+<div>
+<div>2</div>
+<div>
+<div>DNS resolves hostname</div>
+<div>api.example.com -> 93.184.216.34</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #a855f7; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">3</div>
-<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px">
-<div style="color: #6b21a8; font-weight: 600">TCP connection established</div>
-<div style="color: #64748b; font-size: 12px">Three-way handshake (SYN, SYN-ACK, ACK)</div>
+<div>
+<div>3</div>
+<div>
+<div>TCP connection established</div>
+<div>Three-way handshake (SYN, SYN-ACK, ACK)</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #f59e0b; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">4</div>
-<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px">
-<div style="color: #92400e; font-weight: 600">Server processes request</div>
-<div style="color: #64748b; font-size: 12px">Query database, apply business logic</div>
+<div>
+<div>4</div>
+<div>
+<div>Server processes request</div>
+<div>Query database, apply business logic</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #ef4444; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">5</div>
-<div style="flex: 1; background: #f1f5f9; padding: 12px 16px; border-radius: 8px">
-<div style="color: #dc2626; font-weight: 600">Server sends response</div>
-<div style="color: #64748b; font-size: 12px">HTTP 200 OK + JSON payload</div>
+<div>
+<div>5</div>
+<div>
+<div>Server sends response</div>
+<div>HTTP 200 OK + JSON payload</div>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 16px">
-<div style="background: #166534; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0">6</div>
-<div style="flex: 1; background: #dcfce7; padding: 12px 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: 600">Client processes response</div>
-<div style="color: #15803d; font-size: 12px">Display data to user</div>
+<div>
+<div>6</div>
+<div>
+<div>Client processes response</div>
+<div>Display data to user</div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="latency-breakdown">Latency Breakdown</h3>
 <p>Understanding where time is spent in a request helps optimize performance. See <a href="/topics/system-design/latency-throughput">[Latency and Throughput]</a> for deeper analysis.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">Request Latency Components</h4>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500">DNS Lookup</div>
-<div style="background: #dbeafe; height: 24px; border-radius: 4px; width: 60px; display: flex; align-items: center; padding-left: 8px">
-<span style="color: #1e40af; font-size: 11px">~50ms</span>
+<div>
+<h4>Request Latency Components</h4>
+<div>
+<div>
+<div>DNS Lookup</div>
+<div>
+<span>~50ms</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500">TCP Handshake</div>
-<div style="background: #fce7f3; height: 24px; border-radius: 4px; width: 80px; display: flex; align-items: center; padding-left: 8px">
-<span style="color: #be185d; font-size: 11px">~1 RTT</span>
+<div>
+<div>TCP Handshake</div>
+<div>
+<span>~1 RTT</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500">TLS Handshake</div>
-<div style="background: #fef3c7; height: 24px; border-radius: 4px; width: 100px; display: flex; align-items: center; padding-left: 8px">
-<span style="color: #b45309; font-size: 11px">~2 RTT (TLS 1.2)</span>
+<div>
+<div>TLS Handshake</div>
+<div>
+<span>~2 RTT (TLS 1.2)</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500">Request Transfer</div>
-<div style="background: #dcfce7; height: 24px; border-radius: 4px; width: 50px; display: flex; align-items: center; padding-left: 8px">
-<span style="color: #166534; font-size: 11px">~10ms</span>
+<div>
+<div>Request Transfer</div>
+<div>
+<span>~10ms</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500">Server Processing</div>
-<div style="background: #f3e8ff; height: 24px; border-radius: 4px; width: 120px; display: flex; align-items: center; padding-left: 8px">
-<span style="color: #7c3aed; font-size: 11px">Variable (10-500ms)</span>
+<div>
+<div>Server Processing</div>
+<div>
+<span>Variable (10-500ms)</span>
 </div>
 </div>
-<div style="display: flex; align-items: center; gap: 12px">
-<div style="width: 140px; font-size: 13px; color: #475569; font-weight: 500">Response Transfer</div>
-<div style="background: #fee2e2; height: 24px; border-radius: 4px; width: 80px; display: flex; align-items: center; padding-left: 8px">
-<span style="color: #dc2626; font-size: 11px">Size dependent</span>
+<div>
+<div>Response Transfer</div>
+<div>
+<span>Size dependent</span>
 </div>
 </div>
 </div>
-<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; margin-top: 16px">
-<div style="color: #166534; font-size: 13px"><strong>Optimization:</strong> HTTP/2 multiplexing, TLS 1.3 (1 RTT), connection pooling, and CDN caching reduce these costs significantly.</div>
+<div>
+<div><strong>Optimization:</strong> HTTP/2 multiplexing, TLS 1.3 (1 RTT), connection pooling, and CDN caching reduce these costs significantly.</div>
 </div>
 </div>
 <h3 id="request-methods-and-semantics">Request Methods and Semantics</h3>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">HTTP Methods Deep Dive</h4>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
-<div style="background: #dcfce7; border-radius: 8px; padding: 16px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 8px">GET</div>
-<div style="color: #15803d; font-size: 12px; margin-bottom: 8px">Safe, Idempotent, Cacheable</div>
-<div style="color: #166534; font-size: 11px; background: #f0fdf4; padding: 8px; border-radius: 4px">Retrieve resource without side effects. Can be cached by browsers and CDNs.</div>
+<div>
+<h4>HTTP Methods Deep Dive</h4>
+<div>
+<div>
+<div>GET</div>
+<div>Safe, Idempotent, Cacheable</div>
+<div>Retrieve resource without side effects. Can be cached by browsers and CDNs.</div>
 </div>
-<div style="background: #dbeafe; border-radius: 8px; padding: 16px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px">POST</div>
-<div style="color: #1d4ed8; font-size: 12px; margin-bottom: 8px">Not Safe, Not Idempotent</div>
-<div style="color: #1e40af; font-size: 11px; background: #eff6ff; padding: 8px; border-radius: 4px">Create new resources. Multiple calls create multiple resources.</div>
+<div>
+<div>POST</div>
+<div>Not Safe, Not Idempotent</div>
+<div>Create new resources. Multiple calls create multiple resources.</div>
 </div>
-<div style="background: #fef3c7; border-radius: 8px; padding: 16px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 8px">PUT</div>
-<div style="color: #b45309; font-size: 12px; margin-bottom: 8px">Not Safe, Idempotent</div>
-<div style="color: #92400e; font-size: 11px; background: #fefce8; padding: 8px; border-radius: 4px">Replace entire resource. Same request yields same result.</div>
+<div>
+<div>PUT</div>
+<div>Not Safe, Idempotent</div>
+<div>Replace entire resource. Same request yields same result.</div>
 </div>
-<div style="background: #f3e8ff; border-radius: 8px; padding: 16px">
-<div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px">PATCH</div>
-<div style="color: #7c3aed; font-size: 12px; margin-bottom: 8px">Not Safe, Not Idempotent*</div>
-<div style="color: #6b21a8; font-size: 11px; background: #faf5ff; padding: 8px; border-radius: 4px">Partial update. Semantics depend on implementation.</div>
+<div>
+<div>PATCH</div>
+<div>Not Safe, Not Idempotent*</div>
+<div>Partial update. Semantics depend on implementation.</div>
 </div>
-<div style="background: #fee2e2; border-radius: 8px; padding: 16px">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 8px">DELETE</div>
-<div style="color: #b91c1c; font-size: 12px; margin-bottom: 8px">Not Safe, Idempotent</div>
-<div style="color: #dc2626; font-size: 11px; background: #fef2f2; padding: 8px; border-radius: 4px">Remove resource. Deleting twice should not fail.</div>
+<div>
+<div>DELETE</div>
+<div>Not Safe, Idempotent</div>
+<div>Remove resource. Deleting twice should not fail.</div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="client-types">Client Types</h2>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">CLIENT TYPES</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px">
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">Thin Client</div>
-<div style="color: #15803d; font-size: 13px; margin-bottom: 12px">Minimal processing, relies on server for most logic</div>
-<div style="background: #f0fdf4; border-radius: 6px; padding: 12px">
-<div style="color: #166534; font-size: 12px; font-weight: 600">Examples:</div>
-<ul style="color: #15803d; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px">
+<div>
+<h3>CLIENT TYPES</h3>
+<div>
+<div>
+<div>Thin Client</div>
+<div>Minimal processing, relies on server for most logic</div>
+<div>
+<div>Examples:</div>
+<ul>
 <li>Traditional web browsers</li>
 <li>Terminal clients</li>
 <li>Streaming devices</li>
 </ul>
 </div>
 </div>
-<div style="background: #dbeafe; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Thick Client</div>
-<div style="color: #1d4ed8; font-size: 13px; margin-bottom: 12px">Significant local processing and storage capabilities</div>
-<div style="background: #eff6ff; border-radius: 6px; padding: 12px">
-<div style="color: #1e40af; font-size: 12px; font-weight: 600">Examples:</div>
-<ul style="color: #1d4ed8; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px">
+<div>
+<div>Thick Client</div>
+<div>Significant local processing and storage capabilities</div>
+<div>
+<div>Examples:</div>
+<ul>
 <li>Desktop applications</li>
 <li>Mobile apps (offline-capable)</li>
 <li>Gaming clients</li>
 </ul>
 </div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 12px">Hybrid Client (SPA)</div>
-<div style="color: #b45309; font-size: 13px; margin-bottom: 12px">Best of both worlds - rich UI with server data</div>
-<div style="background: #fefce8; border-radius: 6px; padding: 12px">
-<div style="color: #92400e; font-size: 12px; font-weight: 600">Examples:</div>
-<ul style="color: #b45309; font-size: 11px; margin: 4px 0 0 0; padding-left: 16px">
+<div>
+<div>Hybrid Client (SPA)</div>
+<div>Best of both worlds - rich UI with server data</div>
+<div>
+<div>Examples:</div>
+<ul>
 <li>React/Vue applications</li>
 <li>Progressive Web Apps</li>
 <li>Electron apps</li>
@@ -237,25 +237,25 @@
 </div>
 <hr />
 <h2 id="server-types-and-multi-tier-architecture">Server Types and Multi-Tier Architecture</h2>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">THREE-TIER ARCHITECTURE</h3>
-<div style="display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto">
-<div style="background: #dcfce7;border-radius: 12px; padding: 20px; text-align: center">
-<div style="color: #166534; font-weight: 700; font-size: 16px">PRESENTATION TIER</div>
-<div style="color: #15803d; font-size: 12px; margin-top: 8px">Client Interface (Browser, Mobile App)</div>
-<div style="color: #22c55e; font-size: 11px; margin-top: 4px">HTML, CSS, JavaScript, React, Flutter</div>
+<div>
+<h3>THREE-TIER ARCHITECTURE</h3>
+<div>
+<div>
+<div>PRESENTATION TIER</div>
+<div>Client Interface (Browser, Mobile App)</div>
+<div>HTML, CSS, JavaScript, React, Flutter</div>
 </div>
-<div style="text-align: center; color: #64748b; font-size: 14px">HTTP / HTTPS</div>
-<div style="background: #dbeafe;border-radius: 12px; padding: 20px; text-align: center">
-<div style="color: #1e40af; font-weight: 700; font-size: 16px">APPLICATION TIER</div>
-<div style="color: #1d4ed8; font-size: 12px; margin-top: 8px">Business Logic (API Server)</div>
-<div style="color: #3b82f6; font-size: 11px; margin-top: 4px">Node.js, Python, Java, Go</div>
+<div>HTTP / HTTPS</div>
+<div>
+<div>APPLICATION TIER</div>
+<div>Business Logic (API Server)</div>
+<div>Node.js, Python, Java, Go</div>
 </div>
-<div style="text-align: center; color: #64748b; font-size: 14px">SQL / Internal APIs</div>
-<div style="background: #f3e8ff;border-radius: 12px; padding: 20px; text-align: center">
-<div style="color: #6b21a8; font-weight: 700; font-size: 16px">DATA TIER</div>
-<div style="color: #7c3aed; font-size: 12px; margin-top: 8px">Data Storage (Database)</div>
-<div style="color: #a855f7; font-size: 11px; margin-top: 4px">PostgreSQL, MongoDB, Redis</div>
+<div>SQL / Internal APIs</div>
+<div>
+<div>DATA TIER</div>
+<div>Data Storage (Database)</div>
+<div>PostgreSQL, MongoDB, Redis</div>
 </div>
 </div>
 </div>
@@ -292,34 +292,34 @@
 </table>
 <hr />
 <h2 id="stateless-vs-stateful-servers">Stateless vs Stateful Servers</h2>
-<p>Understanding <span style="color: #22c55e; font-weight: 600">stateless</span> vs <span style="color: #22c55e; font-weight: 600">stateful</span> server design is crucial for building scalable systems. This directly impacts your ability to implement <a href="/topics/system-design/load-balancing">[Load Balancing]</a> and horizontal scaling.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">STATELESS vs STATEFUL</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px">
-<div style="background: #dcfce7; border-radius: 12px; padding: 24px">
-<div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 16px">STATELESS SERVER (Recommended)</div>
-<div style="color: #15803d; font-size: 13px; margin-bottom: 16px">Each request contains all information needed. Server does not remember previous requests.</div>
-<div style="background: #f0fdf4; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #166534; margin-bottom: 16px">
+<p>Understanding <span>stateless</span> vs <span>stateful</span> server design is crucial for building scalable systems. This directly impacts your ability to implement <a href="/topics/system-design/load-balancing">[Load Balancing]</a> and horizontal scaling.</p>
+<div>
+<h3>STATELESS vs STATEFUL</h3>
+<div>
+<div>
+<div>STATELESS SERVER (Recommended)</div>
+<div>Each request contains all information needed. Server does not remember previous requests.</div>
+<div>
   GET /api/orders<br>
   Authorization: Bearer eyJhbG...<br>
-<span style="color: #15803d"># Token contains user identity</span>
+<span># Token contains user identity</span>
 </div>
-<div style="color: #166534; font-size: 13px">
+<div>
 <div>+ Easy to scale horizontally</div>
 <div>+ Any server can handle any request</div>
 <div>+ Simple load balancing</div>
 <div>+ Better fault tolerance</div>
 </div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px">
-<div style="color: #dc2626; font-weight: 700; font-size: 16px; margin-bottom: 16px">STATEFUL SERVER (Avoid)</div>
-<div style="color: #b91c1c; font-size: 13px; margin-bottom: 16px">Server maintains session data between requests. Client must connect to same server.</div>
-<div style="background: #fef2f2; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; color: #dc2626; margin-bottom: 16px">
+<div>
+<div>STATEFUL SERVER (Avoid)</div>
+<div>Server maintains session data between requests. Client must connect to same server.</div>
+<div>
   GET /api/orders<br>
   Cookie: session_id=abc123<br>
-<span style="color: #b91c1c"># Server looks up session</span>
+<span># Server looks up session</span>
 </div>
-<div style="color: #dc2626; font-size: 13px">
+<div>
 <div>- Harder to scale</div>
 <div>- Requires sticky sessions</div>
 <div>- Complex load balancing</div>
@@ -329,10 +329,10 @@
 </div>
 </div>
 <h3 id="critical-assumption">Critical Assumption</h3>
-<div style="background: #fffbeb; border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #b45309; margin-top: 0">When Stateful is Acceptable</h4>
-<div style="color: #1e293b">
-Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-weight: 600">Connection state is inherent</span> to the protocol (WebSockets, gaming servers), (2) <span style="color: #22c55e; font-weight: 600">Session affinity</span> provides significant performance benefits (in-memory caching of user data), or (3) <span style="color: #22c55e; font-weight: 600">Coordination overhead</span> of external state stores exceeds the complexity of sticky sessions.
+<div>
+<h4>When Stateful is Acceptable</h4>
+<div>
+Stateful servers are appropriate when: (1) <span>Connection state is inherent</span> to the protocol (WebSockets, gaming servers), (2) <span>Session affinity</span> provides significant performance benefits (in-memory caching of user data), or (3) <span>Coordination overhead</span> of external state stores exceeds the complexity of sticky sessions.
 </div>
 </div>
 <h3 id="externalizing-state">Externalizing State</h3>
@@ -362,89 +362,89 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
     return process_request(user, session, data)
     ```
 </code></pre>
-<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
-<h4 style="color: #166534; margin-top: 0">State Externalization Strategies</h4>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 12px">
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px">Redis/Memcached</div>
-<div style="color: #15803d; font-size: 13px">Session storage, caching</div>
+<h4>State Externalization Strategies</h4>
+<div>
+<div>
+<div>Redis/Memcached</div>
+<div>Session storage, caching</div>
 </div>
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px">JWT Tokens</div>
-<div style="color: #15803d; font-size: 13px">Self-contained auth state</div>
+<div>JWT Tokens</div>
+<div>Self-contained auth state</div>
 </div>
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px">Database</div>
-<div style="color: #15803d; font-size: 13px">Persistent state storage</div>
+<div>Database</div>
+<div>Persistent state storage</div>
 </div>
 <div>
-<div style="color: #166534; font-weight: 600; margin-bottom: 4px">Message Queues</div>
-<div style="color: #15803d; font-size: 13px">Async state coordination</div>
+<div>Message Queues</div>
+<div>Async state coordination</div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="rest-architecture-deep-dive">REST Architecture Deep Dive</h2>
-<p><span style="color: #22c55e; font-weight: 600">REST (Representational State Transfer)</span> is the dominant architectural style for web APIs. Understanding its constraints is essential for <a href="/topics/system-design/api-design">[API Design]</a>.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">REST ARCHITECTURAL CONSTRAINTS</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 8px">1. Client-Server Separation</div>
-<div style="color: #15803d; font-size: 13px">UI concerns separate from data storage. Enables independent evolution and improved scalability.</div>
+<p><span>REST (Representational State Transfer)</span> is the dominant architectural style for web APIs. Understanding its constraints is essential for <a href="/topics/system-design/api-design">[API Design]</a>.</p>
+<div>
+<h3>REST ARCHITECTURAL CONSTRAINTS</h3>
+<div>
+<div>
+<div>1. Client-Server Separation</div>
+<div>UI concerns separate from data storage. Enables independent evolution and improved scalability.</div>
 </div>
-<div style="background: #dbeafe; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 8px">2. Statelessness</div>
-<div style="color: #1d4ed8; font-size: 13px">Each request contains all context needed. No session state on server. Enables horizontal scaling.</div>
+<div>
+<div>2. Statelessness</div>
+<div>Each request contains all context needed. No session state on server. Enables horizontal scaling.</div>
 </div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 8px">3. Cacheability</div>
-<div style="color: #b45309; font-size: 13px">Responses must declare themselves cacheable or not. Enables CDNs and client caching.</div>
+<div>
+<div>3. Cacheability</div>
+<div>Responses must declare themselves cacheable or not. Enables CDNs and client caching.</div>
 </div>
-<div style="background: #f3e8ff; border-radius: 12px; padding: 20px">
-<div style="color: #6b21a8; font-weight: 700; margin-bottom: 8px">4. Uniform Interface</div>
-<div style="color: #7c3aed; font-size: 13px">Standardized resource identification, manipulation through representations, self-descriptive messages.</div>
+<div>
+<div>4. Uniform Interface</div>
+<div>Standardized resource identification, manipulation through representations, self-descriptive messages.</div>
 </div>
-<div style="background: #fee2e2; border-radius: 12px; padding: 20px">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 8px">5. Layered System</div>
-<div style="color: #b91c1c; font-size: 13px">Client cannot tell if connected directly to server or intermediary. Enables load balancers, proxies.</div>
+<div>
+<div>5. Layered System</div>
+<div>Client cannot tell if connected directly to server or intermediary. Enables load balancers, proxies.</div>
 </div>
-<div style="background: #e0e7ff; border-radius: 12px; padding: 20px">
-<div style="color: #4338ca; font-weight: 700; margin-bottom: 8px">6. Code on Demand (Optional)</div>
-<div style="color: #4f46e5; font-size: 13px">Servers can extend client functionality by transferring executable code (JavaScript).</div>
+<div>
+<div>6. Code on Demand (Optional)</div>
+<div>Servers can extend client functionality by transferring executable code (JavaScript).</div>
 </div>
 </div>
 </div>
 <h3 id="rest-maturity-model-richardson">REST Maturity Model (Richardson)</h3>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">REST Maturity Levels</h4>
-<div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto">
-<div style="display: flex; align-items: stretch; gap: 16px">
-<div style="background: #fee2e2; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #dc2626">Level 0</div>
-<div style="flex: 1; background: #fef2f2; padding: 16px; border-radius: 8px">
-<div style="color: #dc2626; font-weight: 600">The Swamp of POX</div>
-<div style="color: #7f1d1d; font-size: 12px">Single endpoint, HTTP as transport only. POST /api with action in body.</div>
+<div>
+<h4>REST Maturity Levels</h4>
+<div>
+<div>
+<div>Level 0</div>
+<div>
+<div>The Swamp of POX</div>
+<div>Single endpoint, HTTP as transport only. POST /api with action in body.</div>
 </div>
 </div>
-<div style="display: flex; align-items: stretch; gap: 16px">
-<div style="background: #fef3c7; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #b45309">Level 1</div>
-<div style="flex: 1; background: #fefce8; padding: 16px; border-radius: 8px">
-<div style="color: #92400e; font-weight: 600">Resources</div>
-<div style="color: #78350f; font-size: 12px">Individual resources with unique URIs. POST /users, POST /orders.</div>
+<div>
+<div>Level 1</div>
+<div>
+<div>Resources</div>
+<div>Individual resources with unique URIs. POST /users, POST /orders.</div>
 </div>
 </div>
-<div style="display: flex; align-items: stretch; gap: 16px">
-<div style="background: #dbeafe; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1e40af">Level 2</div>
-<div style="flex: 1; background: #eff6ff; padding: 16px; border-radius: 8px">
-<div style="color: #1e40af; font-weight: 600">HTTP Verbs</div>
-<div style="color: #1e3a8a; font-size: 12px">Proper use of GET, POST, PUT, DELETE. Status codes for responses.</div>
+<div>
+<div>Level 2</div>
+<div>
+<div>HTTP Verbs</div>
+<div>Proper use of GET, POST, PUT, DELETE. Status codes for responses.</div>
 </div>
 </div>
-<div style="display: flex; align-items: stretch; gap: 16px">
-<div style="background: #dcfce7; width: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #166534">Level 3</div>
-<div style="flex: 1; background: #f0fdf4; padding: 16px; border-radius: 8px">
-<div style="color: #166534; font-weight: 600">Hypermedia Controls (HATEOAS)</div>
-<div style="color: #14532d; font-size: 12px">Responses include links to related actions. Self-documenting API.</div>
+<div>
+<div>Level 3</div>
+<div>
+<div>Hypermedia Controls (HATEOAS)</div>
+<div>Responses include links to related actions. Self-documenting API.</div>
 </div>
 </div>
 </div>
@@ -547,38 +547,38 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </code></pre>
 <hr />
 <h2 id="websockets-deep-dive">WebSockets Deep Dive</h2>
-<p><span style="color: #22c55e; font-weight: 600">WebSockets</span> provide full-duplex communication channels over a single TCP connection. Unlike HTTP's request-response model, WebSockets allow both client and server to send messages independently at any time.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">WEBSOCKET CONNECTION LIFECYCLE</h3>
-<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap">
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-<div style="background: #dcfce7;width: 100px; height: 200px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 12px">
-<span style="color: #166534; font-weight: 700; font-size: 14px">CLIENT</span>
+<p><span>WebSockets</span> provide full-duplex communication channels over a single TCP connection. Unlike HTTP's request-response model, WebSockets allow both client and server to send messages independently at any time.</p>
+<div>
+<h3>WEBSOCKET CONNECTION LIFECYCLE</h3>
+<div>
+<div>
+<div>
+<span>CLIENT</span>
 </div>
 </div>
-<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 50px">
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="color: #3b82f6; font-size: 12px; width: 120px; text-align: center">HTTP Upgrade --></span>
+<div>
+<div>
+<span>HTTP Upgrade --></span>
 </div>
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="color: #22c55e; font-size: 12px; width: 120px; text-align: center"><-- 101 Switching</span>
+<div>
+<span><-- 101 Switching</span>
 </div>
-<div style="background: #f0fdf4; padding: 8px; border-radius: 6px; margin: 8px 0">
-<span style="color: #166534; font-size: 11px; font-weight: 600">Persistent Connection</span>
+<div>
+<span>Persistent Connection</span>
 </div>
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="color: #a855f7; font-size: 12px; width: 120px; text-align: center">Message <--></span>
+<div>
+<span>Message <--></span>
 </div>
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="color: #a855f7; font-size: 12px; width: 120px; text-align: center">Message <--></span>
+<div>
+<span>Message <--></span>
 </div>
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="color: #ef4444; font-size: 12px; width: 120px; text-align: center">Close --></span>
+<div>
+<span>Close --></span>
 </div>
 </div>
-<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-<div style="background: #dbeafe;width: 100px; height: 200px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 12px">
-<span style="color: #1e40af; font-weight: 700; font-size: 14px">SERVER</span>
+<div>
+<div>
+<span>SERVER</span>
 </div>
 </div>
 </div>
@@ -602,12 +602,12 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           ```
 </code></pre>
 <h3 id="websocket-vs-http-comparison">WebSocket vs HTTP Comparison</h3>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">HTTP vs WebSocket</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
-<div style="background: #dbeafe; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; text-align: center; margin-bottom: 16px">HTTP (Request-Response)</div>
-<ul style="color: #1d4ed8; font-size: 13px; margin: 0; padding-left: 20px">
+<div>
+<h4>HTTP vs WebSocket</h4>
+<div>
+<div>
+<div>HTTP (Request-Response)</div>
+<ul>
 <li>Half-duplex communication</li>
 <li>New connection per request*</li>
 <li>Headers sent with each request</li>
@@ -615,13 +615,13 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <li>Easy to cache and scale</li>
 <li>Works with CDNs, proxies</li>
 </ul>
-<div style="background: #eff6ff; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #1e40af">
+<div>
 *HTTP/2 uses multiplexing over single connection
 </div>
 </div>
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; text-align: center; margin-bottom: 16px">WebSocket (Bidirectional)</div>
-<ul style="color: #15803d; font-size: 13px; margin: 0; padding-left: 20px">
+<div>
+<div>WebSocket (Bidirectional)</div>
+<ul>
 <li>Full-duplex communication</li>
 <li>Persistent connection</li>
 <li>Minimal per-message overhead</li>
@@ -629,7 +629,7 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <li>Complex to scale horizontally</li>
 <li>Requires sticky sessions or pub/sub</li>
 </ul>
-<div style="background: #f0fdf4; border-radius: 6px; padding: 12px; margin-top: 12px; font-size: 12px; color: #166534">
+<div>
   Ideal for: chat, gaming, live data, collaborative editing
 </div>
 </div>
@@ -824,139 +824,139 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
           ```
 </code></pre>
 <h3 id="scaling-websockets">Scaling WebSockets</h3>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">WebSocket Scaling Architecture</h4>
-<div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto">
-<div style="display: flex; justify-content: center; gap: 12px">
-<div style="background: #dcfce7;padding: 12px 16px; border-radius: 8px">
-<span style="color: #166534; font-size: 12px">Client 1</span>
+<div>
+<h4>WebSocket Scaling Architecture</h4>
+<div>
+<div>
+<div>
+<span>Client 1</span>
 </div>
-<div style="background: #dcfce7;padding: 12px 16px; border-radius: 8px">
-<span style="color: #166534; font-size: 12px">Client 2</span>
+<div>
+<span>Client 2</span>
 </div>
-<div style="background: #dcfce7;padding: 12px 16px; border-radius: 8px">
-<span style="color: #166534; font-size: 12px">Client 3</span>
+<div>
+<span>Client 3</span>
 </div>
-<div style="background: #dcfce7;padding: 12px 16px; border-radius: 8px">
-<span style="color: #166534; font-size: 12px">Client 4</span>
-</div>
-</div>
-<div style="text-align: center; color: #64748b">Persistent WS Connections</div>
-<div style="background: #fef3c7;border-radius: 12px; padding: 16px; text-align: center">
-<span style="color: #92400e; font-weight: 600">Load Balancer (Sticky Sessions / IP Hash)</span>
-</div>
-<div style="display: flex; justify-content: center; gap: 24px">
-<div style="background: #dbeafe;padding: 16px; border-radius: 8px; text-align: center">
-<div style="color: #1e40af; font-weight: 600; font-size: 13px">WS Server 1</div>
-<div style="color: #3b82f6; font-size: 11px">Clients 1,2</div>
-</div>
-<div style="background: #dbeafe;padding: 16px; border-radius: 8px; text-align: center">
-<div style="color: #1e40af; font-weight: 600; font-size: 13px">WS Server 2</div>
-<div style="color: #3b82f6; font-size: 11px">Clients 3,4</div>
+<div>
+<span>Client 4</span>
 </div>
 </div>
-<div style="text-align: center; color: #64748b">Pub/Sub for Cross-Server Messaging</div>
-<div style="background: #f3e8ff;border-radius: 12px; padding: 16px; text-align: center">
-<span style="color: #6b21a8; font-weight: 600">Redis Pub/Sub</span>
+<div>Persistent WS Connections</div>
+<div>
+<span>Load Balancer (Sticky Sessions / IP Hash)</span>
+</div>
+<div>
+<div>
+<div>WS Server 1</div>
+<div>Clients 1,2</div>
+</div>
+<div>
+<div>WS Server 2</div>
+<div>Clients 3,4</div>
+</div>
+</div>
+<div>Pub/Sub for Cross-Server Messaging</div>
+<div>
+<span>Redis Pub/Sub</span>
 </div>
 </div>
 </div>
 <p>See <a href="/topics/system-design/message-queues">[Message Queues]</a> for more on pub/sub patterns.</p>
 <hr />
 <h2 id="server-sent-events-sse">Server-Sent Events (SSE)</h2>
-<p><span style="color: #22c55e; font-weight: 600">Server-Sent Events (SSE)</span> provide a lightweight mechanism for servers to push data to clients over HTTP. Unlike WebSockets, SSE is unidirectional (server to client only) but simpler to implement and works over standard HTTP.</p>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">COMMUNICATION PATTERNS COMPARISON</h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px">
-<div style="background: #dcfce7; border-radius: 12px; padding: 20px">
-<div style="color: #166534; font-weight: 700; margin-bottom: 12px">HTTP Polling</div>
-<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px">
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">C</span>
-<span style="color: #166534; font-size: 12px">--></span>
-<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">S</span>
+<p><span>Server-Sent Events (SSE)</span> provide a lightweight mechanism for servers to push data to clients over HTTP. Unlike WebSockets, SSE is unidirectional (server to client only) but simpler to implement and works over standard HTTP.</p>
+<div>
+<h3>COMMUNICATION PATTERNS COMPARISON</h3>
+<div>
+<div>
+<div>HTTP Polling</div>
+<div>
+<div>
+<span>C</span>
+<span>--></span>
+<span>S</span>
 </div>
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">C</span>
-<span style="color: #3b82f6; font-size: 12px"><--</span>
-<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">S</span>
-</div>
-</div>
-<div style="color: #15803d; font-size: 11px">Repeated requests at intervals. Simple but inefficient.</div>
-</div>
-<div style="background: #fef3c7; border-radius: 12px; padding: 20px">
-<div style="color: #92400e; font-weight: 700; margin-bottom: 12px">Long Polling</div>
-<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px">
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">C</span>
-<span style="color: #166534; font-size: 12px">--> (hold)</span>
-<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">S</span>
-</div>
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">C</span>
-<span style="color: #3b82f6; font-size: 12px"><-- (when ready)</span>
-<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">S</span>
+<div>
+<span>C</span>
+<span><--</span>
+<span>S</span>
 </div>
 </div>
-<div style="color: #b45309; font-size: 11px">Server holds request until data available. Fallback option.</div>
+<div>Repeated requests at intervals. Simple but inefficient.</div>
 </div>
-<div style="background: #dbeafe; border-radius: 12px; padding: 20px">
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">SSE</div>
-<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px">
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">C</span>
-<span style="color: #166534; font-size: 12px">--> (subscribe)</span>
-<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">S</span>
+<div>
+<div>Long Polling</div>
+<div>
+<div>
+<span>C</span>
+<span>--> (hold)</span>
+<span>S</span>
 </div>
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">C</span>
-<span style="color: #3b82f6; font-size: 12px"><-- stream</span>
-<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">S</span>
-</div>
-</div>
-<div style="color: #1d4ed8; font-size: 11px">Server pushes events. Auto-reconnect. Text-based.</div>
-</div>
-<div style="background: #f3e8ff; border-radius: 12px; padding: 20px">
-<div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px">WebSocket</div>
-<div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px">
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">C</span>
-<span style="color: #a855f7; font-size: 12px"><--></span>
-<span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; color: white; font-size: 10px">S</span>
+<div>
+<span>C</span>
+<span><-- (when ready)</span>
+<span>S</span>
 </div>
 </div>
-<div style="color: #7c3aed; font-size: 11px">Full duplex. Binary/text. Lowest latency.</div>
+<div>Server holds request until data available. Fallback option.</div>
+</div>
+<div>
+<div>SSE</div>
+<div>
+<div>
+<span>C</span>
+<span>--> (subscribe)</span>
+<span>S</span>
+</div>
+<div>
+<span>C</span>
+<span><-- stream</span>
+<span>S</span>
+</div>
+</div>
+<div>Server pushes events. Auto-reconnect. Text-based.</div>
+</div>
+<div>
+<div>WebSocket</div>
+<div>
+<div>
+<span>C</span>
+<span><--></span>
+<span>S</span>
+</div>
+</div>
+<div>Full duplex. Binary/text. Lowest latency.</div>
 </div>
 </div>
 </div>
 <h3 id="when-to-use-sse-vs-websocket">When to Use SSE vs WebSocket</h3>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h4 style="color: #1e293b; text-align: center; margin: 0 0 24px 0">SSE vs WebSocket Decision Guide</h4>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
 <div>
-<div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Use SSE When:</div>
-<ul style="color: #1d4ed8; font-size: 13px; margin: 0; padding-left: 20px">
+<h4>SSE vs WebSocket Decision Guide</h4>
+<div>
+<div>
+<div>Use SSE When:</div>
+<ul>
 <li>Server-to-client only (notifications, feeds)</li>
 <li>Need auto-reconnection with last-event-id</li>
 <li>Want to use standard HTTP infrastructure</li>
 <li>Text/JSON data only is sufficient</li>
 <li>Simplicity is more important than features</li>
 </ul>
-<div style="background: #dbeafe; border-radius: 8px; padding: 12px; margin-top: 12px">
-<div style="color: #1e40af; font-size: 12px"><strong>Examples:</strong> Live stock prices, social media feeds, notifications, live scores</div>
+<div>
+<div><strong>Examples:</strong> Live stock prices, social media feeds, notifications, live scores</div>
 </div>
 </div>
 <div>
-<div style="color: #6b21a8; font-weight: 700; margin-bottom: 12px">Use WebSocket When:</div>
-<ul style="color: #7c3aed; font-size: 13px; margin: 0; padding-left: 20px">
+<div>Use WebSocket When:</div>
+<ul>
 <li>Bidirectional communication needed</li>
 <li>Binary data transfer required</li>
 <li>Lowest possible latency critical</li>
 <li>High message frequency (gaming)</li>
 <li>Need custom protocols</li>
 </ul>
-<div style="background: #f3e8ff; border-radius: 8px; padding: 12px; margin-top: 12px">
-<div style="color: #6b21a8; font-size: 12px"><strong>Examples:</strong> Chat apps, multiplayer games, collaborative editors, trading platforms</div>
+<div>
+<div><strong>Examples:</strong> Chat apps, multiplayer games, collaborative editors, trading platforms</div>
 </div>
 </div>
 </div>
@@ -1108,101 +1108,101 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </code></pre>
 <hr />
 <h2 id="communication-patterns-summary">Communication Patterns Summary</h2>
-<div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
-<h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">CHOOSING THE RIGHT PATTERN</h3>
-<table style="width: 100%; border-collapse: collapse; font-size: 13px">
+<div>
+<h3>CHOOSING THE RIGHT PATTERN</h3>
+<table>
   <thead>
-<tr style="background: #e2e8f0">
-<th style="padding: 12px; text-align: left">Pattern</th>
-<th style="padding: 12px; text-align: left">Direction</th>
-<th style="padding: 12px; text-align: left">Latency</th>
-<th style="padding: 12px; text-align: left">Complexity</th>
-<th style="padding: 12px; text-align: left">Best For</th>
+<tr>
+<th>Pattern</th>
+<th>Direction</th>
+<th>Latency</th>
+<th>Complexity</th>
+<th>Best For</th>
 </tr>
   </thead>
   <tbody>
-<tr style="background: #f8fafc">
-<td style="padding: 12px;font-weight: 600; color: #166534">REST</td>
-<td style="padding: 12px">Request-Response</td>
-<td style="padding: 12px">Medium</td>
-<td style="padding: 12px">Low</td>
-<td style="padding: 12px">CRUD APIs, cacheable resources</td>
+<tr>
+<td>REST</td>
+<td>Request-Response</td>
+<td>Medium</td>
+<td>Low</td>
+<td>CRUD APIs, cacheable resources</td>
 </tr>
 <tr>
-<td style="padding: 12px;font-weight: 600; color: #1e40af">HTTP Polling</td>
-<td style="padding: 12px">Client-initiated</td>
-<td style="padding: 12px">High</td>
-<td style="padding: 12px">Low</td>
-<td style="padding: 12px">Infrequent updates, simplicity</td>
-</tr>
-<tr style="background: #f8fafc">
-<td style="padding: 12px;font-weight: 600; color: #92400e">Long Polling</td>
-<td style="padding: 12px">Server-timed response</td>
-<td style="padding: 12px">Medium</td>
-<td style="padding: 12px">Medium</td>
-<td style="padding: 12px">Fallback when SSE/WS unavailable</td>
+<td>HTTP Polling</td>
+<td>Client-initiated</td>
+<td>High</td>
+<td>Low</td>
+<td>Infrequent updates, simplicity</td>
 </tr>
 <tr>
-<td style="padding: 12px;font-weight: 600; color: #6b21a8">SSE</td>
-<td style="padding: 12px">Server-to-Client</td>
-<td style="padding: 12px">Low</td>
-<td style="padding: 12px">Low</td>
-<td style="padding: 12px">Live feeds, notifications</td>
+<td>Long Polling</td>
+<td>Server-timed response</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Fallback when SSE/WS unavailable</td>
 </tr>
-<tr style="background: #f8fafc">
-<td style="padding: 12px; font-weight: 600; color: #dc2626">WebSocket</td>
-<td style="padding: 12px">Bidirectional</td>
-<td style="padding: 12px">Lowest</td>
-<td style="padding: 12px">High</td>
-<td style="padding: 12px">Chat, gaming, collaboration</td>
+<tr>
+<td>SSE</td>
+<td>Server-to-Client</td>
+<td>Low</td>
+<td>Low</td>
+<td>Live feeds, notifications</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td>Bidirectional</td>
+<td>Lowest</td>
+<td>High</td>
+<td>Chat, gaming, collaboration</td>
 </tr>
   </tbody>
 </table>
 </div>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">1. Storing Session in Server Memory</div>
-<div style="color: #7f1d1d; font-size: 14px">Storing sessions in server memory prevents horizontal scaling. When you add servers, sessions are not shared. Use external stores like Redis. See [[Caching]](/topics/system-design/caching) for session storage patterns.</div>
+<div>
+<div>1. Storing Session in Server Memory</div>
+<div>Storing sessions in server memory prevents horizontal scaling. When you add servers, sessions are not shared. Use external stores like Redis. See [[Caching]](/topics/system-design/caching) for session storage patterns.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">2. Tight Coupling Between Client and Server</div>
-<div style="color: #7f1d1d; font-size: 14px">Changing server response structure breaks clients. Use API versioning (v1, v2) and maintain backward compatibility. Consider GraphQL for flexibility. See [[API Design]](/topics/system-design/api-design) for versioning strategies.</div>
+<div>
+<div>2. Tight Coupling Between Client and Server</div>
+<div>Changing server response structure breaks clients. Use API versioning (v1, v2) and maintain backward compatibility. Consider GraphQL for flexibility. See [[API Design]](/topics/system-design/api-design) for versioning strategies.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">3. No Timeout Handling</div>
-<div style="color: #7f1d1d; font-size: 14px">Clients should always set timeouts. Server may be slow or unresponsive. Without timeouts, clients hang indefinitely, degrading user experience. Implement [[Circuit Breaker]](/topics/system-design/circuit-breaker) patterns for resilience.</div>
+<div>
+<div>3. No Timeout Handling</div>
+<div>Clients should always set timeouts. Server may be slow or unresponsive. Without timeouts, clients hang indefinitely, degrading user experience. Implement [[Circuit Breaker]](/topics/system-design/circuit-breaker) patterns for resilience.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">4. Ignoring Network Failures</div>
-<div style="color: #7f1d1d; font-size: 14px">Network requests can fail. Clients should implement retry logic with exponential backoff. Show meaningful error messages to users.</div>
+<div>
+<div>4. Ignoring Network Failures</div>
+<div>Network requests can fail. Clients should implement retry logic with exponential backoff. Show meaningful error messages to users.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">5. WebSocket Connection Leaks</div>
-<div style="color: #7f1d1d; font-size: 14px">Not properly closing WebSocket connections leads to resource exhaustion. Implement heartbeats to detect dead connections and clean up resources on disconnect.</div>
+<div>
+<div>5. WebSocket Connection Leaks</div>
+<div>Not properly closing WebSocket connections leads to resource exhaustion. Implement heartbeats to detect dead connections and clean up resources on disconnect.</div>
 </div>
-<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
-<div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">6. SSE Without Heartbeats</div>
-<div style="color: #7f1d1d; font-size: 14px">Proxies and load balancers may close idle SSE connections. Send periodic heartbeat events to keep connections alive.</div>
+<div>
+<div>6. SSE Without Heartbeats</div>
+<div>Proxies and load balancers may close idle SSE connections. Send periodic heartbeat events to keep connections alive.</div>
 </div>
 <hr />
 <h2 id="3-level-interview-questions">3-Level Interview Questions</h2>
 <h3 id="level-1-fundamentals">Level 1: Fundamentals</h3>
-<div style="background: #dcfce7; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Q1: What is the difference between stateless and stateful servers?</strong></p>
-<p><span style="color: #22c55e; font-weight: 600">A:</span> A <span style="color: #22c55e; font-weight: 600">stateless server</span> does not store any client session information between requests - each request must contain all information needed to process it (typically via tokens). A <span style="color: #22c55e; font-weight: 600">stateful server</span> maintains session data between requests, requiring clients to connect to the same server (sticky sessions).</p>
+<p><span>A:</span> A <span>stateless server</span> does not store any client session information between requests - each request must contain all information needed to process it (typically via tokens). A <span>stateful server</span> maintains session data between requests, requiring clients to connect to the same server (sticky sessions).</p>
 <p><strong>Why does this matter?</strong> Stateless servers enable horizontal scaling because any server can handle any request. Load balancers can use simple round-robin. Stateful servers require sticky sessions or session replication, making scaling complex.</p>
 <details>
-<summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.1: How do stateless servers handle user authentication?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px">
-<p><strong>A:</strong> Stateless servers use <span style="color: #22c55e; font-weight: 600">self-contained tokens</span> (JWT) that include user identity and claims. The token is signed by the server, so any server can validate it without querying a central session store. Each request includes the token in the Authorization header.</p>
+<summary>Follow-up L1.1: How do stateless servers handle user authentication?</summary>
+<div>
+<p><strong>A:</strong> Stateless servers use <span>self-contained tokens</span> (JWT) that include user identity and claims. The token is signed by the server, so any server can validate it without querying a central session store. Each request includes the token in the Authorization header.</p>
 <pre><code>                ```
                 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 ```
 </code></pre>
 <details>
-<summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.1.1: What are the security trade-offs of JWT vs server-side sessions?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px">
+<summary>Follow-up L1.1.1: What are the security trade-offs of JWT vs server-side sessions?</summary>
+<div>
 <p><strong>A:</strong><br />
 - <strong>JWT Pros</strong>: Stateless, no database lookup, works across services<br />
 - <strong>JWT Cons</strong>: Cannot be revoked until expiry (unless using blocklist), token size larger than session ID, secrets must be managed carefully<br />
@@ -1214,8 +1214,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </details>
 <details>
-<summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.2: When is stateful acceptable?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px">
+<summary>Follow-up L1.2: When is stateful acceptable?</summary>
+<div>
 <p><strong>A:</strong> Stateful is acceptable when:</p>
 <ol>
 <li><strong>Connection state is inherent</strong> - WebSocket connections, game servers, streaming</li>
@@ -1223,9 +1223,9 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <li><strong>Coordination overhead exceeds benefits</strong> - External state stores add latency that matters</li>
 </ol>
 <details>
-<summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.2.1: How do you scale stateful WebSocket servers?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px">
-<p><strong>A:</strong> Use a <span style="color: #22c55e; font-weight: 600">pub/sub layer</span> (Redis Pub/Sub, Kafka) to coordinate between servers:</p>
+<summary>Follow-up L1.2.1: How do you scale stateful WebSocket servers?</summary>
+<div>
+<p><strong>A:</strong> Use a <span>pub/sub layer</span> (Redis Pub/Sub, Kafka) to coordinate between servers:</p>
 <ol>
 <li>Each server maintains connections to its clients</li>
 <li>When a message needs to reach a user on another server, publish to a channel</li>
@@ -1238,9 +1238,9 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </details>
 </div>
-<div style="background: #dcfce7; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Q2: Explain the REST architectural constraints.</strong></p>
-<p><span style="color: #22c55e; font-weight: 600">A:</span> REST (Representational State Transfer) has six constraints:</p>
+<p><span>A:</span> REST (Representational State Transfer) has six constraints:</p>
 <ol>
 <li><strong>Client-Server</strong> - Separation of concerns between UI and data</li>
 <li><strong>Stateless</strong> - Each request contains all context needed</li>
@@ -1250,9 +1250,9 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <li><strong>Code on Demand</strong> (optional) - Server can send executable code</li>
 </ol>
 <details>
-<summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.1: What is HATEOAS and why is it rarely implemented?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px">
-<p><strong>A:</strong> <span style="color: #22c55e; font-weight: 600">HATEOAS</span> (Hypermedia as the Engine of Application State) means responses include links to related actions, making APIs self-documenting and discoverable.</p>
+<summary>Follow-up L1.1: What is HATEOAS and why is it rarely implemented?</summary>
+<div>
+<p><strong>A:</strong> <span>HATEOAS</span> (Hypermedia as the Engine of Application State) means responses include links to related actions, making APIs self-documenting and discoverable.</p>
 <pre><code>                ```json
                 {
                 &quot;order_id&quot;: 123,
@@ -1271,8 +1271,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 - GraphQL provides similar flexibility differently<br />
 - Caching becomes harder with dynamic links</p>
 <details>
-<summary style="color: #166534; cursor: pointer; font-weight: 600">Follow-up L1.1.1: How does GraphQL solve the problems HATEOAS addresses?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #ecfdf5; border-radius: 8px">
+<summary>Follow-up L1.1.1: How does GraphQL solve the problems HATEOAS addresses?</summary>
+<div>
 <p><strong>A:</strong> GraphQL addresses discoverability and flexibility differently:<br />
 - <strong>Schema introspection</strong> replaces HATEOAS links for discoverability<br />
 - <strong>Client-specified queries</strong> let clients request exactly what they need<br />
@@ -1285,21 +1285,21 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </details>
 </div>
 <h3 id="level-2-design--trade-offs">Level 2: Design &amp; Trade-offs</h3>
-<div style="background: #dbeafe; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Q3: When would you choose WebSocket over SSE?</strong></p>
-<p><span style="color: #3b82f6; font-weight: 600">A:</span> Choose <span style="color: #22c55e; font-weight: 600">WebSocket</span> when you need:<br />
+<p><span>A:</span> Choose <span>WebSocket</span> when you need:<br />
 - <strong>Bidirectional communication</strong> (chat, gaming)<br />
 - <strong>Binary data transfer</strong> (file sharing, video)<br />
 - <strong>Lowest possible latency</strong> (trading, gaming)<br />
 - <strong>High message frequency</strong> in both directions</p>
-<p>Choose <span style="color: #22c55e; font-weight: 600">SSE</span> when:<br />
+<p>Choose <span>SSE</span> when:<br />
 - Server-to-client push is sufficient (notifications, feeds)<br />
 - You want built-in reconnection with last-event-id<br />
 - Standard HTTP infrastructure compatibility matters<br />
 - Simplicity is preferred</p>
 <details>
-<summary style="color: #1e40af; cursor: pointer; font-weight: 600">Follow-up L2.1: How does SSE handle reconnection and missed messages?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px">
+<summary>Follow-up L2.1: How does SSE handle reconnection and missed messages?</summary>
+<div>
 <p><strong>A:</strong> SSE has built-in reconnection support:</p>
 <ol>
 <li>
@@ -1325,8 +1325,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </li>
 </ol>
 <details>
-<summary style="color: #1e40af; cursor: pointer; font-weight: 600">Follow-up L2.1.1: What are the challenges of implementing this at scale?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #dbeafe; border-radius: 8px">
+<summary>Follow-up L2.1.1: What are the challenges of implementing this at scale?</summary>
+<div>
 <p><strong>A:</strong> Challenges at scale:</p>
 <ol>
 <li><strong>Event storage</strong>: Must persist events for replay window (Redis with TTL, or dedicated event store)</li>
@@ -1344,8 +1344,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </details>
 <details>
-<summary style="color: #1e40af; cursor: pointer; font-weight: 600">Follow-up L2.2: What infrastructure considerations differ between SSE and WebSocket?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px">
+<summary>Follow-up L2.2: What infrastructure considerations differ between SSE and WebSocket?</summary>
+<div>
 <p><strong>A:</strong> Key infrastructure differences:</p>
 <table>
 <thead>
@@ -1384,8 +1384,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </tbody>
 </table>
 <details>
-<summary style="color: #1e40af; cursor: pointer; font-weight: 600">Follow-up L2.2.1: How do you handle WebSocket connections behind corporate proxies that don't support upgrades?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #dbeafe; border-radius: 8px">
+<summary>Follow-up L2.2.1: How do you handle WebSocket connections behind corporate proxies that don't support upgrades?</summary>
+<div>
 <p><strong>A:</strong> Strategies for WebSocket fallback:</p>
 <ol>
 <li><strong>Long polling fallback</strong>: Libraries like Socket.IO auto-fallback to HTTP long polling</li>
@@ -1400,9 +1400,9 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </div>
 </details>
 </div>
-<div style="background: #dbeafe; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Q4: Design a notification system that delivers messages in real-time but also handles offline users.</strong></p>
-<p><span style="color: #3b82f6; font-weight: 600">A:</span> This requires combining <span style="color: #22c55e; font-weight: 600">real-time delivery</span> with <span style="color: #22c55e; font-weight: 600">persistent storage</span>:</p>
+<p><span>A:</span> This requires combining <span>real-time delivery</span> with <span>persistent storage</span>:</p>
 <ol>
 <li><strong>Dual write</strong>: When notification created, write to database AND publish to real-time channel</li>
 <li><strong>Online users</strong>: Receive via WebSocket/SSE immediately</li>
@@ -1410,9 +1410,9 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 <li><strong>Read receipts</strong>: Mark delivered when user acknowledges</li>
 </ol>
 <details>
-<summary style="color: #1e40af; cursor: pointer; font-weight: 600">Follow-up L2.1: How do you ensure exactly-once delivery?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-radius: 8px">
-<p><strong>A:</strong> True exactly-once is impossible in distributed systems; achieve <span style="color: #22c55e; font-weight: 600">effectively-once</span> through:</p>
+<summary>Follow-up L2.1: How do you ensure exactly-once delivery?</summary>
+<div>
+<p><strong>A:</strong> True exactly-once is impossible in distributed systems; achieve <span>effectively-once</span> through:</p>
 <ol>
 <li>
 <p><strong>Idempotent delivery</strong>: Include notification ID, client deduplicates</p>
@@ -1438,8 +1438,8 @@ Stateful servers are appropriate when: (1) <span style="color: #22c55e; font-wei
 </li>
 </ol>
 <details>
-<summary style="color: #1e40af; cursor: pointer; font-weight: 600">Follow-up L2.1.1: How does the outbox pattern prevent duplicates when the publisher crashes?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #dbeafe; border-radius: 8px">
+<summary>Follow-up L2.1.1: How does the outbox pattern prevent duplicates when the publisher crashes?</summary>
+<div>
 <p><strong>A:</strong> The outbox pattern provides at-least-once semantics:</p>
 <ol>
 <li>Publisher processes outbox entries in order</li>
@@ -1467,9 +1467,9 @@ return  # Already processed</p>
 </details>
 </div>
 <h3 id="level-3-advanced-architecture">Level 3: Advanced Architecture</h3>
-<div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Q5: Design the client-server architecture for a real-time collaborative document editor like Google Docs.</strong></p>
-<p><span style="color: #6b21a8; font-weight: 600">A:</span> This is a complex system requiring:</p>
+<p><span>A:</span> This is a complex system requiring:</p>
 <ol>
 <li><strong>Real-time sync</strong>: WebSockets for bidirectional communication</li>
 <li><strong>Conflict resolution</strong>: Operational Transformation (OT) or CRDTs</li>
@@ -1477,9 +1477,9 @@ return  # Already processed</p>
 <li><strong>Presence</strong>: Show who's viewing/editing where</li>
 </ol>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.1: How would you implement operational transformation at scale?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px">
-<p><strong>A:</strong> <span style="color: #22c55e; font-weight: 600">Operational Transformation (OT)</span> transforms concurrent operations to maintain consistency:</p>
+<summary>Follow-up L3.1: How would you implement operational transformation at scale?</summary>
+<div>
+<p><strong>A:</strong> <span>Operational Transformation (OT)</span> transforms concurrent operations to maintain consistency:</p>
 <ol>
 <li><strong>Client sends operation</strong> with base version</li>
 <li><strong>Server transforms</strong> operation against any concurrent operations</li>
@@ -1491,8 +1491,8 @@ return  # Already processed</p>
 - <strong>Operation log</strong>: Store operation history for transformation and replay<br />
 - <strong>Checkpointing</strong>: Periodically snapshot document state to limit replay</p>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.1.1: What are the trade-offs between OT and CRDTs for this use case?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px">
+<summary>Follow-up L3.1.1: What are the trade-offs between OT and CRDTs for this use case?</summary>
+<div>
 <p><strong>A:</strong></p>
 <table>
 <thead>
@@ -1543,8 +1543,8 @@ return  # Already processed</p>
 </div>
 </details>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.2: How do you handle offline editing?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px">
+<summary>Follow-up L3.2: How do you handle offline editing?</summary>
+<div>
 <p><strong>A:</strong> Offline editing requires:</p>
 <ol>
 <li>
@@ -1582,8 +1582,8 @@ return  # Already processed</p>
 </li>
 </ol>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.2.1: How do you handle the case where two users make conflicting edits to the same paragraph offline?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px">
+<summary>Follow-up L3.2.1: How do you handle the case where two users make conflicting edits to the same paragraph offline?</summary>
+<div>
 <p><strong>A:</strong> This is the hardest case. Options:</p>
 <ol>
 <li><strong>Automatic merge</strong> (OT/CRDT): Both edits preserved, may result in nonsensical text</li>
@@ -1611,9 +1611,9 @@ return  # Already processed</p>
 </div>
 </details>
 </div>
-<div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div>
 <p><strong>Q6: How would you design a system that needs to handle 10 million concurrent WebSocket connections?</strong></p>
-<p><span style="color: #6b21a8; font-weight: 600">A:</span> This requires careful architecture across multiple dimensions:</p>
+<p><span>A:</span> This requires careful architecture across multiple dimensions:</p>
 <ol>
 <li><strong>Connection handling</strong>: ~100K connections per server, need 100+ servers</li>
 <li><strong>Message routing</strong>: Pub/sub layer (Redis Cluster, Kafka)</li>
@@ -1621,8 +1621,8 @@ return  # Already processed</p>
 <li><strong>Load balancing</strong>: Layer 4 (TCP) for WebSocket, sticky sessions</li>
 </ol>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.1: How do you handle the memory requirements for 100K connections per server?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px">
+<summary>Follow-up L3.1: How do you handle the memory requirements for 100K connections per server?</summary>
+<div>
 <p><strong>A:</strong> Memory optimization strategies:</p>
 <ol>
 <li><strong>Event-driven architecture</strong>: Use epoll/kqueue, not thread-per-connection</li>
@@ -1636,8 +1636,8 @@ return  # Already processed</p>
 - Application state: +2KB per connection = +200MB<br />
 - Safety margin: 2x = ~2.5GB per 100K connections</p>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.1.1: How do you handle graceful shutdown without dropping 100K connections?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px">
+<summary>Follow-up L3.1.1: How do you handle graceful shutdown without dropping 100K connections?</summary>
+<div>
 <p><strong>A:</strong> Graceful shutdown strategy:</p>
 <ol>
 <li>
@@ -1684,8 +1684,8 @@ return  # Already processed</p>
 </div>
 </details>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.2: How do you route a message to a specific user when they could be on any of 100 servers?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #faf5ff; border-radius: 8px">
+<summary>Follow-up L3.2: How do you route a message to a specific user when they could be on any of 100 servers?</summary>
+<div>
 <p><strong>A:</strong> Two main approaches:</p>
 <p><strong>1. User-Server Registry (Redis)</strong><br />
 ```python<br />
@@ -1708,8 +1708,8 @@ await redis.subscribe(f&quot;user:{user_id}&quot;)</p>
                 ```
 </code></pre>
 <details>
-<summary style="color: #6b21a8; cursor: pointer; font-weight: 600">Follow-up L3.2.1: What are the trade-offs of Redis Pub/Sub vs Kafka for this use case?</summary>
-<div style="margin-top: 12px; padding: 12px; background: #f3e8ff; border-radius: 8px">
+<summary>Follow-up L3.2.1: What are the trade-offs of Redis Pub/Sub vs Kafka for this use case?</summary>
+<div>
 <p><strong>A:</strong></p>
 <table>
 <thead>
