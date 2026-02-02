@@ -50,8 +50,42 @@
 .topic-content {
     background: var(--color-bg-primary, #ffffff);
     border-radius: var(--radius-lg, 0.75rem);
-    padding: 1rem;
-    line-height: 1.6;
+    padding: 1.5rem;
+    line-height: 1.7;
+}
+
+/* Improved spacing between content sections/boxes */
+.topic-content > * + * {
+    margin-top: 1.5rem;
+}
+
+.topic-content > h2 + *,
+.topic-content > h3 + *,
+.topic-content > h4 + * {
+    margin-top: 1rem;
+}
+
+/* Extra spacing for major content blocks */
+.topic-content > div + div,
+.topic-content > section + section {
+    margin-top: 2rem;
+}
+
+/* Spacing for boxes/cards within content */
+.topic-content .box-blue,
+.topic-content .box-green,
+.topic-content .box-orange,
+.topic-content .box-red,
+.topic-content .box-purple,
+.topic-content .box-gray,
+.topic-content .callout,
+.topic-content .content-card,
+.topic-content .diagram,
+.topic-content .circuit-diagram,
+.topic-content .state-diagram,
+.topic-content .lb-architecture {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .topic-content h1 {
@@ -59,9 +93,9 @@
 }
 
 .topic-content h2 {
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.35rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--color-border, #e2e8f0);
     color: var(--color-text-primary, #0f172a);
     font-size: 1.25rem;
@@ -71,16 +105,23 @@
     margin-top: 0;
 }
 
+/* Scroll margin for anchor links - accounts for sticky header */
+.topic-content h2,
+.topic-content h3,
+.topic-content h4 {
+    scroll-margin-top: calc(var(--header-height, 64px) + 1.5rem);
+}
+
 .topic-content h3 {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
     color: var(--color-text-primary, #0f172a);
     font-size: 1.1rem;
 }
 
 .topic-content h4 {
-    margin-top: 0.75rem;
-    margin-bottom: 0.35rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
     color: var(--color-text-secondary, #475569);
     font-size: 1rem;
 }
@@ -1251,4 +1292,277 @@ h4:has(.heading-anchor) {
 .table-of-contents a:hover {
     border-left-color: var(--color-brand-primary, #3b82f6);
     padding-left: 1rem;
+}
+
+/* ============================================
+   iPHONE 15 SPECIFIC FIXES
+   ============================================ */
+
+/* iPhone 15 Pro Max (430px) */
+@media screen and (max-width: 430px) {
+    .topic-detail-page {
+        padding: 0.5rem;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .breadcrumb {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .topic-header {
+        margin-bottom: 0.75rem;
+    }
+
+    .topic-badge {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.5rem;
+    }
+
+    .topic-header h1 {
+        font-size: 1.375rem;
+        line-height: 1.25;
+    }
+
+    .topic-content {
+        padding: 0.75rem;
+        border-radius: 10px;
+    }
+
+    .topic-content h2 {
+        font-size: 1.1rem;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .topic-content h3 {
+        font-size: 0.95rem;
+    }
+
+    .topic-content h4 {
+        font-size: 0.875rem;
+    }
+
+    .topic-content p,
+    .topic-content li {
+        font-size: 0.875rem;
+        line-height: 1.55;
+    }
+
+    .topic-content ul,
+    .topic-content ol {
+        padding-left: 1rem;
+    }
+
+    .topic-content pre {
+        padding: 0.625rem;
+        border-radius: 8px;
+        font-size: 0.75rem !important;
+    }
+
+    .topic-content code {
+        font-size: 0.8rem;
+    }
+
+    .topic-content :not(pre) > code {
+        padding: 0.15rem 0.35rem;
+        font-size: 0.8rem;
+    }
+
+    .topic-content blockquote {
+        padding: 0.75rem 1rem;
+        margin: 1rem 0;
+    }
+
+    .topic-content blockquote::before {
+        font-size: 2.5rem;
+        top: -5px;
+        left: 10px;
+    }
+
+    .topic-content table {
+        margin: 1rem 0;
+    }
+
+    .topic-content th,
+    .topic-content td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    /* Diagram fixes */
+    .circuit-diagram,
+    .state-diagram,
+    .lb-architecture {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .diagram-details {
+        gap: 1rem;
+    }
+
+    .detail-column {
+        padding: 0.75rem;
+    }
+
+    .detail-column strong {
+        font-size: 0.875rem;
+    }
+
+    .detail-column li {
+        font-size: 0.8rem;
+    }
+
+    /* State transitions */
+    .state-transitions {
+        padding: 1rem;
+    }
+
+    .transition-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .transition-arrow {
+        min-width: 60px;
+        font-size: 0.9rem;
+    }
+
+    .transition-from {
+        font-size: 0.8rem;
+    }
+
+    /* Table of contents */
+    .table-of-contents {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .table-of-contents h4 {
+        font-size: 0.9rem;
+    }
+
+    .table-of-contents a {
+        font-size: 0.8rem;
+        padding: 0.2rem 0;
+    }
+
+    /* Coming soon card */
+    .coming-soon-card {
+        padding: 1.5rem;
+    }
+
+    .coming-soon-icon {
+        font-size: 2.5rem;
+    }
+
+    .coming-soon-card h2 {
+        font-size: 1.25rem;
+    }
+
+    .coming-soon-card p {
+        font-size: 0.875rem;
+    }
+
+    .coming-soon-card ul {
+        max-width: 100%;
+    }
+
+    .coming-soon-card li {
+        font-size: 0.8rem;
+    }
+}
+
+/* iPhone 15 Pro (393px) */
+@media screen and (max-width: 393px) {
+    .topic-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .topic-content {
+        padding: 0.625rem;
+    }
+
+    .topic-content h2 {
+        font-size: 1rem;
+    }
+
+    .topic-content h3 {
+        font-size: 0.9rem;
+    }
+
+    .topic-content p,
+    .topic-content li {
+        font-size: 0.8125rem;
+    }
+
+    .topic-content pre {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Smaller phones (375px) */
+@media screen and (max-width: 375px) {
+    .topic-detail-page {
+        padding: 0.25rem;
+    }
+
+    .topic-header h1 {
+        font-size: 1.125rem;
+    }
+
+    .topic-content {
+        padding: 0.5rem;
+    }
+
+    .topic-content h2 {
+        font-size: 0.95rem;
+    }
+
+    .topic-content h3 {
+        font-size: 0.85rem;
+    }
+
+    .topic-content p,
+    .topic-content li {
+        font-size: 0.75rem;
+        line-height: 1.5;
+    }
+
+    .topic-content pre {
+        font-size: 0.65rem !important;
+        padding: 0.5rem;
+    }
+
+    .topic-content :not(pre) > code {
+        font-size: 0.7rem;
+    }
+
+    .circuit-diagram,
+    .state-diagram,
+    .lb-architecture {
+        padding: 0.75rem;
+    }
+}
+
+/* Extra small (320px) */
+@media screen and (max-width: 320px) {
+    .topic-header h1 {
+        font-size: 1rem;
+    }
+
+    .topic-content h2 {
+        font-size: 0.9rem;
+    }
+
+    .topic-content p,
+    .topic-content li {
+        font-size: 0.7rem;
+    }
+
+    .topic-content pre {
+        font-size: 0.6rem !important;
+    }
 }

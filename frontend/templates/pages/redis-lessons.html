@@ -2296,7 +2296,91 @@ def get_with_swr(key, refresh_fn):
     </aside>
 </div>
 
+<style>
+/* Code block wrapper and buttons */
+.redis-code-wrapper {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.redis-code-wrapper pre {
+    margin: 0;
+    padding-right: 120px;
+}
+
+.redis-run-btn,
+.redis-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.redis-run-btn:hover,
+.redis-copy-btn:hover {
+    opacity: 1;
+}
+
+.redis-run-btn {
+    right: 60px;
+    background: #dc2626;
+    color: white;
+}
+
+.redis-run-btn:hover {
+    background: #b91c1c;
+}
+
+.redis-copy-btn {
+    right: 0.5rem;
+    background: #374151;
+    color: #e5e7eb;
+    border: 1px solid #4b5563;
+}
+
+.redis-copy-btn:hover {
+    background: #4b5563;
+}
+
+.redis-code-wrapper:hover .redis-run-btn,
+.redis-code-wrapper:hover .redis-copy-btn {
+    opacity: 1;
+}
+
+/* Result container styling */
+.redis-inline-result {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #111827;
+    border-radius: 4px;
+    border-left: 3px solid #dc2626;
+    font-family: monospace;
+    font-size: 0.875rem;
+}
+
+.redis-inline-result.success {
+    color: #4ecdc4;
+    border-left-color: #4ecdc4;
+}
+
+.redis-inline-result.error {
+    color: #ff6b6b;
+    border-left-color: #ff6b6b;
+}
+
+.redis-inline-result.loading {
+    color: #9ca3af;
+}
+</style>
+
 <script>
+// Execute Redis command and show result
 async function tryCommand(command, button) {
     // Find or create result container near the button
     let section = button ? (button.closest('section') || button.parentElement) : null;
@@ -2345,4 +2429,118 @@ async function tryCommand(command, button) {
         }
     }
 }
+
+// Execute Redis command from code block
+async function runRedisCode(codeBlock, wrapper) {
+    // Get all commands from the code block (filter out comments and empty lines)
+    const code = codeBlock.textContent;
+    const lines = code.split('\n')
+        .map(line => line.trim())
+        .filter(line => line && !line.startsWith('#') && !line.startsWith('//'));
+
+    if (lines.length === 0) {
+        alert('No Redis commands found in this code block');
+        return;
+    }
+
+    // Create or find result container
+    let resultContainer = wrapper.querySelector('.redis-inline-result');
+    if (!resultContainer) {
+        resultContainer = document.createElement('div');
+        resultContainer.className = 'redis-inline-result loading';
+        wrapper.appendChild(resultContainer);
+    }
+
+    resultContainer.className = 'redis-inline-result loading';
+    resultContainer.textContent = 'Executing...';
+
+    // Execute commands one by one
+    const results = [];
+    for (const command of lines) {
+        // Skip lines that look like responses (e.g., "# Response: PONG")
+        if (command.includes('Response:') || command.startsWith('"') || /^\d+$/.test(command)) {
+            continue;
+        }
+
+        try {
+            const response = await fetch('/api/redis/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: command })
+            });
+
+            const result = await response.json();
+
+            let output = result.success ? result.result : ('Error: ' + result.error);
+            if (typeof output === 'object') {
+                output = JSON.stringify(output, null, 2);
+            }
+            results.push('> ' + command + '\n' + output);
+        } catch (error) {
+            results.push('> ' + command + '\nError: ' + error.message);
+        }
+    }
+
+    // Show results
+    if (results.length > 0) {
+        const hasError = results.some(r => r.includes('Error:'));
+        resultContainer.className = 'redis-inline-result ' + (hasError ? 'error' : 'success');
+        resultContainer.textContent = results.join('\n\n');
+    } else {
+        resultContainer.className = 'redis-inline-result';
+        resultContainer.textContent = 'No executable commands found';
+    }
+}
+
+// Add Run and Copy buttons to all code blocks
+function initializeCodeBlocks() {
+    const mainContent = document.querySelector('.adhd-main-content');
+    if (!mainContent) return;
+
+    const codeBlocks = mainContent.querySelectorAll('pre code');
+
+    codeBlocks.forEach(function(codeBlock) {
+        const pre = codeBlock.parentElement;
+        if (!pre || pre.parentElement.classList.contains('redis-code-wrapper')) return;
+
+        // Create wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'redis-code-wrapper';
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        // Run button
+        const runBtn = document.createElement('button');
+        runBtn.className = 'redis-run-btn';
+        runBtn.innerHTML = '▶ Run';
+        runBtn.title = 'Execute Redis commands';
+        runBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            runRedisCode(codeBlock, wrapper);
+        };
+        wrapper.appendChild(runBtn);
+
+        // Copy button
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'redis-copy-btn';
+        copyBtn.innerHTML = 'Copy';
+        copyBtn.title = 'Copy to clipboard';
+        copyBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            navigator.clipboard.writeText(codeBlock.textContent).then(function() {
+                copyBtn.innerHTML = 'Copied!';
+                setTimeout(function() { copyBtn.innerHTML = 'Copy'; }, 2000);
+            });
+        };
+        wrapper.appendChild(copyBtn);
+    });
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initializeCodeBlocks);
+
+// Also initialize after a short delay (in case content is loaded dynamically)
+setTimeout(initializeCodeBlocks, 500);
 </script>

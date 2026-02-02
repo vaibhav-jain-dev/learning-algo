@@ -49,6 +49,7 @@
     var headings = content.querySelectorAll('h2, h3');
     var tocNav = document.getElementById('toc-nav');
     var quickNav = document.getElementById('quick-nav');
+    var allNavLinks = [];
 
     headings.forEach(function(h, i) {
         // Ensure heading has an ID
@@ -58,14 +59,58 @@
         link.href = '#' + h.id;
         link.className = 'panel-item';
         link.textContent = h.textContent;
+        link.setAttribute('data-target', h.id);
         link.onclick = function(e) {
             e.preventDefault();
             h.scrollIntoView({ behavior: 'smooth' });
         };
 
-        if (tocNav) tocNav.appendChild(link.cloneNode(true));
-        if (quickNav) quickNav.appendChild(link);
+        if (tocNav) {
+            var tocLink = link.cloneNode(true);
+            tocLink.onclick = link.onclick;
+            tocNav.appendChild(tocLink);
+            allNavLinks.push(tocLink);
+        }
+        if (quickNav) {
+            quickNav.appendChild(link);
+            allNavLinks.push(link);
+        }
     });
+
+    // Scroll-spy: highlight active navigation item
+    function updateActiveNavItem() {
+        var scrollPos = window.scrollY + 100; // Offset for header
+        var activeId = null;
+
+        // Find the heading that's currently in view
+        headings.forEach(function(h) {
+            if (h.offsetTop <= scrollPos) {
+                activeId = h.id;
+            }
+        });
+
+        // Update active class on nav links
+        allNavLinks.forEach(function(link) {
+            if (link.getAttribute('data-target') === activeId) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    // Throttle scroll events for performance
+    var scrollTimeout;
+    window.addEventListener('scroll', function() {
+        if (scrollTimeout) return;
+        scrollTimeout = setTimeout(function() {
+            updateActiveNavItem();
+            scrollTimeout = null;
+        }, 50);
+    });
+
+    // Initial check
+    updateActiveNavItem();
 
     // Code highlighting
     if (typeof hljs !== 'undefined') {
