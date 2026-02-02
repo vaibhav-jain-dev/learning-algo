@@ -1385,6 +1385,545 @@ server {
 </div>
 </div>
 <hr />
+<div class="concept-section type-deep-learning">
+<h2 id="deep-learning-qa">Deep Learning Q&A</h2>
+<p style="color: #64748b; margin-bottom: 24px;">Challenge yourself with these open-ended questions. Each answer leads to deeper exploration.</p>
+
+<!-- Question 1: Load Balancing Algorithm Selection -->
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #92400e; margin: 0 0 16px 0;">Q1: You're designing a video streaming platform where some requests are quick metadata lookups (10ms) while others are heavy video transcoding jobs (30+ seconds). All requests go through the same load balancer. Which algorithm would you choose and why?</h3>
+<details style="margin-top: 16px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 8px;">View Answer</summary>
+<div style="padding: 16px; background: white; border-radius: 8px; margin-top: 12px;">
+<p style="color: #334155; line-height: 1.7;"><strong>Weighted Least Connections</strong> is the best choice here. Pure Round Robin would send transcoding jobs evenly, potentially overwhelming servers already processing heavy jobs. Least Connections alone doesn't account for the fact that one transcoding connection is 3000x more expensive than a metadata lookup.</p>
+<p style="color: #334155; line-height: 1.7; margin-top: 12px;">Better yet: <strong>Split the traffic at Layer 7</strong>. Route <code>/api/metadata/*</code> to a lightweight server pool with Round Robin (fast, cheap requests). Route <code>/api/transcode/*</code> to a heavy compute pool with Least Connections. This prevents metadata requests from being blocked behind transcoding queues.</p>
+
+<!-- Nested Q1.1 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 8px 0;">Q1.1: What if you can't split traffic because both request types share the same endpoint?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Use <strong>Least Response Time</strong> algorithm, which considers both active connections AND recent response latency. Servers stuck on transcoding jobs will have high response times, so new requests route elsewhere. Alternatively, implement <strong>adaptive load balancing</strong> that monitors server CPU/memory and adjusts weights dynamically. HAProxy and Envoy support this with agent checks.</p>
+
+<!-- Nested Q1.1.1 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.1.1: How do you prevent a "thundering herd" when a previously overloaded server recovers?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>slow start</strong>: When a server recovers, gradually increase its weight over 30-60 seconds. Start at 10% capacity, increase by 10% every 5 seconds. This prevents the load balancer from immediately sending 100% traffic to a freshly recovered server. HAProxy supports this with <code>slowstart</code> parameter. Also use <strong>connection limits</strong> per backend to cap maximum concurrent connections.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.1.2 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.1.2: What metrics would you use to tune the algorithm weights?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Track: (1) <strong>Request latency percentiles</strong> (p50, p95, p99) per server - high p99 indicates struggling servers. (2) <strong>Active connection count</strong> over time - should be roughly equal across servers. (3) <strong>Error rate</strong> per backend - timeouts indicate overload. (4) <strong>CPU/memory utilization</strong> from agent checks. Set alerts when any server's p99 latency exceeds 2x the pool average, triggering weight reduction.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.1.3 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.1.3: How do you handle the case where all servers are overloaded?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>load shedding</strong> at the load balancer level: (1) Set a <strong>max queue depth</strong> - reject new requests with 503 when queue exceeds threshold. (2) Use <strong>priority queues</strong> - authenticated users get priority over anonymous. (3) Return <strong>Retry-After</strong> headers so clients back off. (4) Trigger <strong>auto-scaling</strong> when queue depth exceeds threshold for 60 seconds. It's better to reject some requests cleanly than to let all requests timeout.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.2 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 8px 0;">Q1.2: Some users complain that their video uploads keep failing. You discover they're being routed to different servers mid-upload. How do you fix this?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Implement <strong>session affinity (sticky sessions)</strong> for upload endpoints. Options: (1) <strong>Cookie-based</strong>: Set a <code>SERVERID</code> cookie on first request, use it for routing. (2) <strong>IP-hash</strong>: Hash client IP to consistent server (but breaks behind NAT). (3) <strong>Consistent hashing</strong> on upload session ID - most reliable. For chunked uploads, include the upload ID in the URL and use it as the hash key.</p>
+
+<!-- Nested Q1.2.1 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.2.1: What happens if the sticky session server goes down mid-upload?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Two approaches: (1) <strong>Client-side retry</strong>: Return an error that triggers client to restart upload. Good for small files. (2) <strong>Shared storage</strong>: Store partial uploads in distributed storage (S3, shared NFS). Any server can resume. This is how large platforms handle it - upload chunks go directly to object storage, server just orchestrates. The load balancer routes to any healthy server since state is external.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.2.2 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.2.2: Cookie-based stickiness exposes your server topology. Is this a security risk?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Yes, exposing <code>SERVERID=backend-web-3</code> leaks internal infrastructure. Mitigate by: (1) <strong>Encrypt the cookie</strong> with a server-side key - client sees random bytes. (2) Use <strong>opaque session IDs</strong> mapped to servers in load balancer memory. (3) <strong>Sign the cookie</strong> with HMAC to prevent tampering. HAProxy's <code>cookie insert indirect nocache httponly secure</code> handles this. Never expose actual hostnames or IPs in cookies.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.2.3 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.2.3: How do you handle sticky sessions during a rolling deployment?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Use <strong>connection draining</strong>: (1) Mark server as "draining" - no new sessions routed. (2) Existing sticky sessions continue until complete or timeout (60s). (3) After drain period, remove server from pool. (4) Deploy new version, add back to pool. For long uploads, extend drain timeout or implement resume capability. Kubernetes does this automatically with <code>terminationGracePeriodSeconds</code>.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.3 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 8px 0;">Q1.3: Your platform now has premium users who pay for faster transcoding. How do you prioritize their requests?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Create <strong>separate backend pools</strong>: Premium pool with dedicated high-performance servers, Standard pool with shared resources. Route at L7 based on user tier (from JWT claims or header). Set <strong>weighted traffic splitting</strong>: if premium pool is overloaded, overflow to standard pool (degraded but available). Never overflow standard to premium - that defeats the purpose.</p>
+
+<!-- Nested Q1.3.1 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.3.1: How do you prevent abuse where users fake premium headers?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Validate at the load balancer</strong>: (1) Use signed JWTs - load balancer verifies signature before routing. (2) Integrate with your auth service - make a lightweight lookup to verify tier. (3) Use a <strong>trusted header</strong> that's only set by your API gateway (strip any client-provided version). HAProxy and Envoy can do JWT validation natively. Never trust client-provided tier information without cryptographic verification.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.3.2 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.3.2: Premium users are only 5% of traffic but you have 50% of servers dedicated to them. How do you optimize?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>elastic pool boundaries</strong>: (1) Set a minimum guaranteed capacity for premium (e.g., 10 servers). (2) Allow premium to "borrow" from standard pool when needed. (3) Standard can use "excess" premium capacity when premium is idle. Use priority queuing - premium jobs preempt standard jobs on shared servers. Monitor and adjust based on actual usage patterns. This maximizes utilization while maintaining SLA guarantees.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.3.3 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.3.3: How do you measure and report that premium users actually get better performance?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Track <strong>SLI/SLO metrics by tier</strong>: (1) <strong>Queue wait time</strong>: Premium should be <5s, Standard <60s. (2) <strong>Transcoding latency percentiles</strong>: Compare p50/p95 between tiers. (3) <strong>Availability</strong>: Premium gets 99.9%, Standard 99.0%. Build a dashboard showing real-time comparison. Alert if premium metrics approach standard levels. Report these metrics to customers in their billing dashboard to justify the premium pricing.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Question 2: Load Balancer Failover -->
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e40af; margin: 0 0 16px 0;">Q2: Your application uses a single load balancer. The CEO asks: "What happens if the load balancer itself fails?" How do you design for high availability of the load balancer layer?</h3>
+<details style="margin-top: 16px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 8px;">View Answer</summary>
+<div style="padding: 16px; background: white; border-radius: 8px; margin-top: 12px;">
+<p style="color: #334155; line-height: 1.7;">Deploy <strong>active-passive or active-active load balancer pairs</strong>. Active-passive: Two LBs share a virtual IP (VIP) via VRRP/keepalived. Primary handles traffic; if it fails, secondary claims the VIP within 1-3 seconds. Active-active: Both LBs are live behind DNS round-robin or an upstream L4 load balancer. Traffic splits across both; either can handle full load if one fails.</p>
+<p style="color: #334155; line-height: 1.7; margin-top: 12px;">In cloud environments, use <strong>managed load balancers</strong> (AWS ALB/NLB, GCP Load Balancer) which are inherently redundant across availability zones. They handle failover automatically - this is the easiest path to HA.</p>
+
+<!-- Nested Q2.1 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #8b5cf6;">
+<h4 style="color: #6d28d9; margin: 0 0 8px 0;">Q2.1: During failover, existing TCP connections are dropped. How do you minimize user impact?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Several strategies: (1) <strong>Connection state synchronization</strong>: Replicate connection tables between active/passive LBs so the standby can resume connections. (2) <strong>Client-side retry logic</strong>: Applications should automatically reconnect on connection reset. (3) <strong>Graceful degradation</strong>: Use shorter keepalive intervals so connections are naturally shorter. (4) <strong>Session externalization</strong>: Don't rely on LB connection state - store session data in Redis so any connection to any backend works.</p>
+
+<!-- Nested Q2.1.1 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.1.1: What's the typical failover time, and how do you reduce it?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">VRRP-based failover is typically 1-3 seconds (3 missed heartbeats at 1s interval). To reduce: (1) <strong>Decrease heartbeat interval</strong> to 200ms (but increases network chatter). (2) <strong>Use BFD</strong> (Bidirectional Forwarding Detection) for sub-second detection. (3) <strong>Active-active eliminates failover entirely</strong> - traffic just flows to the surviving LB. (4) Cloud LBs typically achieve <100ms failover within their infrastructure.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.1.2 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.1.2: How do you detect if a load balancer is "alive but not working" (e.g., routing to dead backends)?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>end-to-end health checks</strong>: (1) External monitors (Pingdom, Datadog) that hit your actual endpoints through the LB. (2) <strong>Synthetic transactions</strong> that test the full request path every 10 seconds. (3) If the LB is up but all backends are marked unhealthy, trigger failover to the secondary LB (maybe it has different health check results). (4) Monitor LB-specific metrics: connection errors, 5xx rates, latency spikes. Alert and failover on anomalies, not just on LB process death.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.1.3 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.1.3: How do you prevent "split-brain" where both LBs think they're primary?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Split-brain occurs when network partition makes each LB think the other is dead. Solutions: (1) <strong>STONITH (Shoot The Other Node In The Head)</strong>: Use a fencing mechanism to power off the old primary before new one activates. (2) <strong>Quorum-based election</strong>: Require witness node to agree on leader (3-node minimum). (3) <strong>Cloud-managed LBs avoid this entirely</strong> - AWS handles leader election for you. (4) If split-brain occurs, having both LBs active is often safer than having none - duplicate traffic is better than no traffic.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.2 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #8b5cf6;">
+<h4 style="color: #6d28d9; margin: 0 0 8px 0;">Q2.2: Your data center has two LBs, but what if the entire data center goes down?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Implement <strong>multi-region/multi-datacenter failover</strong>: (1) <strong>DNS-based failover</strong>: Use Route53, Cloudflare, or NS1 health checks. If primary DC is unhealthy, DNS automatically routes to secondary DC. TTL tradeoff: low TTL (30s) = faster failover but more DNS traffic. (2) <strong>Anycast</strong>: Same IP announced from multiple DCs via BGP. Traffic routes to nearest healthy DC automatically. (3) <strong>Global load balancers</strong> (Cloudflare, AWS Global Accelerator): Provide a single entry point with built-in geo-routing and failover.</p>
+
+<!-- Nested Q2.2.1 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.2.1: DNS TTL is 5 minutes. Users will hit the dead DC for 5 minutes after failover. How do you solve this?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Multiple approaches: (1) <strong>Lower TTL proactively</strong>: Before maintenance, reduce TTL to 30s, wait 5 minutes for propagation, then failover. (2) <strong>Use Global Accelerator/Anycast</strong>: IP routing changes are instant at network layer, no DNS caching issues. (3) <strong>Client-side failover</strong>: Return multiple IPs in DNS (both DCs), client tries next IP on connection failure. (4) <strong>Edge proxy</strong>: Cloudflare/Fastly in front can route around DC failures instantly since they control the edge.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.2.2 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.2.2: Your secondary DC can only handle 60% of normal traffic. What do you do during failover?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>graceful degradation</strong>: (1) <strong>Feature flags</strong>: Disable non-critical features (recommendations, analytics) during failover. (2) <strong>Rate limiting</strong>: Aggressively limit requests per user. (3) <strong>Static fallbacks</strong>: Serve cached/static versions of dynamic pages. (4) <strong>Priority queuing</strong>: Process paid users first, queue others. (5) <strong>Auto-scale secondary DC</strong>: Trigger aggressive scaling on failover event. Design your DR capacity based on minimum viable service, not full parity.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.2.3 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.2.3: How do you test DC failover without actually causing an outage?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Chaos engineering practices</strong>: (1) <strong>GameDay exercises</strong>: Scheduled failover tests during low-traffic windows (Sunday 3 AM). (2) <strong>Synthetic traffic failover</strong>: Route only test traffic to secondary, verify it works. (3) <strong>Gradual traffic shifting</strong>: Move 1%, 5%, 10% of real traffic to secondary, monitor metrics. (4) <strong>Failure injection</strong>: Use Chaos Monkey to kill instances in primary DC, observe failover behavior. Netflix runs these continuously. Document and practice your runbooks quarterly.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.3 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #8b5cf6;">
+<h4 style="color: #6d28d9; margin: 0 0 8px 0;">Q2.3: After a failover event, the primary DC comes back online. Should traffic automatically fail back?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;"><strong>Generally, no automatic failback</strong>. Reasons: (1) The primary may have come back but not be fully healthy. (2) Failback causes another disruption (connection resets, cache cold-start). (3) The root cause may not be fixed - could fail again immediately. Best practice: <strong>Manual failback</strong> after verification. Gradually shift traffic back (10% -> 50% -> 100%) while monitoring. Only automate failback if you have extremely high confidence in your health checks.</p>
+
+<!-- Nested Q2.3.1 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.3.1: What checks should pass before allowing failback?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Failback readiness checklist: (1) <strong>All health checks passing</strong> for at least 5 minutes (not just one success). (2) <strong>Database replication caught up</strong> - no lag between primary and replica. (3) <strong>Cache warmed</strong> - pre-populate critical caches before taking traffic. (4) <strong>Synthetic transactions succeeding</strong> end-to-end. (5) <strong>On-call team ready</strong> - don't failback at 2 AM with skeleton crew. (6) <strong>Root cause identified</strong> or at least mitigated. Create a runbook with these steps.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.3.2 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.3.2: You're running active-active across both DCs. Is failback even a concept?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">In true active-active, <strong>there's no failback - just rebalancing</strong>. When the recovered DC comes online, traffic gradually shifts back to 50/50 (or geo-based) distribution. This is the advantage of active-active: no discrete failover events, just continuous adjustment. However, data synchronization is harder - you need multi-master replication or conflict resolution. Active-active is operationally simpler but architecturally more complex.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.3.3 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.3.3: How do you handle data written to the secondary DC during failover?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">This is the hardest problem. Options: (1) <strong>Read-only secondary</strong>: Writes queue or fail during failover, replay when primary recovers. Simplest but limits functionality. (2) <strong>Write to secondary, replicate back</strong>: Secondary accepts writes, syncs to primary when it recovers. Risk of conflicts. (3) <strong>External write store</strong>: Writes go to a globally-distributed system (DynamoDB Global Tables, CockroachDB) that handles multi-region automatically. (4) <strong>Accept data loss</strong>: For some data (analytics, logs), losing a few minutes is acceptable. Choose based on your consistency requirements.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Question 3: Scaling Load Balancers -->
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #166534; margin: 0 0 16px 0;">Q3: Your e-commerce platform handles 100K requests/second normally but expects 10x traffic during Black Friday. How do you scale your load balancing infrastructure?</h3>
+<details style="margin-top: 16px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 8px;">View Answer</summary>
+<div style="padding: 16px; background: white; border-radius: 8px; margin-top: 12px;">
+<p style="color: #334155; line-height: 1.7;">Layer your load balancing: (1) <strong>Edge layer</strong>: Use a CDN (Cloudflare, Fastly) to absorb static content requests - this can handle 80% of traffic without hitting your LBs. (2) <strong>DNS layer</strong>: Multiple LB IPs via weighted DNS, geo-routing to nearest LB cluster. (3) <strong>L4 tier</strong>: Hardware LBs or cloud NLBs that can handle millions of connections with minimal processing. (4) <strong>L7 tier</strong>: Horizontally scaled software LBs (HAProxy, Envoy) behind the L4 layer. Each tier can scale independently.</p>
+<p style="color: #334155; line-height: 1.7; margin-top: 12px;">For cloud-native: <strong>AWS NLB + ALB combination</strong>. NLB handles TCP distribution to ALB instances. ALBs auto-scale based on load. Pre-warm by contacting AWS support before major events.</p>
+
+<!-- Nested Q3.1 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #22c55e;">
+<h4 style="color: #15803d; margin: 0 0 8px 0;">Q3.1: You've heard that load balancers themselves have connection limits. How do you calculate if you'll hit them?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Calculate <strong>concurrent connections</strong>: Connections = (Requests/sec) x (Average connection duration). For HTTP/1.1 with keepalive: 1M req/s with 5s keepalive = 5M concurrent connections. For HTTP/2 with multiplexing: Far fewer connections needed. Key limits to check: (1) AWS ALB: 25K concurrent connections per target (can be increased). (2) HAProxy: Limited by file descriptors (ulimit), typically 100K-500K. (3) Hardware LBs: Fixed by model, F5 goes up to 10M+. Add 2x headroom for spikes.</p>
+
+<!-- Nested Q3.1.1 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.1.1: How do you monitor connection utilization and predict when you'll hit limits?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Track: (1) <strong>Active connections</strong>: Current count vs maximum. Alert at 70% utilization. (2) <strong>Connection rate</strong>: New connections/sec. (3) <strong>Connection errors</strong>: ECONNREFUSED, ETIMEDOUT indicate limit reached. (4) <strong>Time-in-state</strong>: Connections stuck in CLOSE_WAIT indicate backend issues. Plot historical trends with linear regression to predict when you'll exceed capacity. For Black Friday, use last year's data + expected growth.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.1.2 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.1.2: What kernel tuning is needed for high-connection load balancers?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Key sysctl tunings: (1) <code>net.core.somaxconn</code>: Increase to 65535 (listen backlog). (2) <code>net.ipv4.tcp_max_syn_backlog</code>: 65535 for SYN flood resilience. (3) <code>net.ipv4.ip_local_port_range</code>: "1024 65535" for outbound connections. (4) <code>net.core.netdev_max_backlog</code>: 50000 for high packet rates. (5) <code>fs.file-max</code> and <code>ulimit -n</code>: 1000000+ for file descriptors. (6) Enable <code>tcp_tw_reuse</code> for faster port recycling. Document these in your provisioning automation.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.1.3 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.1.3: HTTP/2 multiplexes requests over single connections. Does this change capacity planning?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Yes, significantly. HTTP/2 reduces connections by 10-100x (one connection per client vs. 6-8 for HTTP/1.1). However, each connection carries more streams, so: (1) <strong>Connection count decreases</strong>, but (2) <strong>Memory per connection increases</strong> (stream state tracking). (3) <strong>CPU increases</strong> for HPACK header compression. Plan for fewer connections but more resources per connection. HTTP/3 (QUIC) changes this again - no head-of-line blocking, even more efficient. Monitor actual behavior, not theoretical limits.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.2 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #22c55e;">
+<h4 style="color: #15803d; margin: 0 0 8px 0;">Q3.2: Adding more load balancers means more IPs to manage. How do you abstract this from clients?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Several abstraction layers: (1) <strong>DNS with multiple A records</strong>: Return all LB IPs, client picks one (usually first). (2) <strong>Virtual IP (VIP)</strong>: Single IP shared by LB cluster via VRRP or ECMP. (3) <strong>Global load balancer</strong>: Cloudflare, AWS Global Accelerator provide single IP that routes to nearest healthy LB. (4) <strong>Service mesh</strong>: Client-side load balancing (Envoy sidecar) discovers backends via service registry, no central LB needed. The trend is toward (4) for microservices.</p>
+
+<!-- Nested Q3.2.1 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.2.1: DNS returns 10 IPs but clients only try the first one. How do you fix uneven distribution?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Enable <strong>DNS round-robin shuffling</strong>: DNS server returns IPs in different order for each query. Also: (1) <strong>Short TTL</strong>: Forces more frequent lookups, more shuffling. (2) <strong>Client-side randomization</strong>: Some clients shuffle locally. (3) <strong>Happy Eyeballs (RFC 6555)</strong>: Modern clients try multiple IPs concurrently. (4) <strong>Just use a global LB</strong>: Single anycast IP solves this completely. DNS load balancing is imprecise - it's a starting point, not a complete solution.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.2.2 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.2.2: You're using a service mesh with client-side load balancing. What happens when the service registry is down?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Client proxies (Envoy) cache the last known good configuration. If registry (Consul, Kubernetes API) is unavailable: (1) <strong>Use cached endpoints</strong>: Continue routing to known-good backends. (2) <strong>Health checks continue</strong>: Sidecar still monitors backend health, removes failed ones. (3) <strong>No new backends discovered</strong>: Can't add capacity during outage. This is why service mesh control planes must be highly available. Run multiple registry replicas across availability zones.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.2.3 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.2.3: Client-side LB means every client needs to be updated for algorithm changes. How do you manage this?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Use <strong>xDS dynamic configuration</strong>: Envoy (and similar proxies) fetch configuration from a control plane (Istio, Consul Connect). To change algorithms: (1) Update the control plane configuration. (2) Push new config to all sidecars dynamically. (3) No client restart needed. This is why service meshes use sidecar proxies instead of SDK-based load balancing - the sidecar can be updated independently of the application. Trade-off: Added complexity and resource overhead of running sidecars.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.3 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #22c55e;">
+<h4 style="color: #15803d; margin: 0 0 8px 0;">Q3.3: Black Friday is in 2 weeks. What's your pre-scaling checklist?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;"><strong>Load Balancer Readiness Checklist</strong>: (1) <strong>Capacity review</strong>: Verify LB connection limits, request AWS/GCP to pre-warm if using cloud LBs. (2) <strong>Load test</strong>: Simulate 10x traffic in staging, identify breaking points. (3) <strong>Scale horizontally</strong>: Add more LB instances, verify they're in rotation. (4) <strong>Cache warming</strong>: Pre-populate CDN caches with sale pages. (5) <strong>Feature flags ready</strong>: Prepare to disable non-essential features. (6) <strong>Runbooks updated</strong>: Document scaling procedures, rollback plans. (7) <strong>Alerts tuned</strong>: Adjust thresholds for expected higher baseline. (8) <strong>War room scheduled</strong>: Staff on-call with escalation paths.</p>
+
+<!-- Nested Q3.3.1 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.3.1: You can't load test production and staging doesn't match. How do you validate?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Options: (1) <strong>Shadow traffic</strong>: Replay production traffic to staging at 10x speed. (2) <strong>Canary production testing</strong>: Route 1% of real traffic to new capacity, monitor closely. (3) <strong>Synthetic load in production</strong>: Generate fake requests during off-peak (2-4 AM) that hit real infrastructure but don't affect data. (4) <strong>Progressive rollout</strong>: Scale up 2 days early, take real traffic gradually. (5) <strong>Component testing</strong>: Test LB in isolation with mock backends that simulate latency profiles. Combine multiple approaches for confidence.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.3.2 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.3.2: Traffic exceeds even your 10x projections. What's your emergency response?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Emergency Traffic Management</strong>: (1) <strong>Enable aggressive caching</strong>: Cache previously dynamic content. (2) <strong>Shed non-critical traffic</strong>: Return 503 for analytics, recommendations. (3) <strong>Queue with estimated wait times</strong>: Better UX than random failures. (4) <strong>Geographic isolation</strong>: Limit to primary markets if needed. (5) <strong>Contact cloud provider</strong>: AWS/GCP can often provision emergency capacity. (6) <strong>Communicate</strong>: Status page update, social media. The goal is controlled degradation, not cascading failure. Have these scripts ready to execute in minutes.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.3.3 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.3.3: After Black Friday, how do you scale back down efficiently?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Gradual cooldown</strong>: (1) <strong>Don't scale down immediately</strong>: Traffic may have a long tail (returns, support). (2) <strong>Use scaling policies</strong>: Auto-scaling naturally reduces capacity as traffic drops. (3) <strong>Drain before removing</strong>: Let connections complete, don't force-terminate. (4) <strong>Keep some headroom</strong>: Maintain 20% extra capacity for a week (Cyber Monday, returns). (5) <strong>Post-mortem</strong>: Document what worked, what didn't, for next year. (6) <strong>Cost analysis</strong>: Compare actual spend to projections, optimize for next event.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+
+<!-- Pros and Cons Section -->
+<hr />
+<div class="concept-section type-analysis">
+<h2 id="pros-cons-analysis">Load Balancing: Pros & Cons Analysis</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin: 24px 0;">
+
+<!-- Pros -->
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 16px; padding: 24px;">
+<h3 style="color: #065f46; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px;">
+<span style="font-size: 24px;">+</span> Pros
+</h3>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #059669; margin: 0 0 8px 0;">Eliminates Single Points of Failure</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">If one server crashes, traffic automatically routes to healthy servers. Users experience zero downtime.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 3px solid #22c55e;">
+<strong style="color: #166534; font-size: 13px;">What to Care About:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>The load balancer itself can be a SPOF - always deploy in HA pairs</li>
+<li>Health check configuration is critical - too aggressive causes flapping, too slow delays failover</li>
+<li>Test failover regularly - don't discover it's broken during an incident</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #059669; margin: 0 0 8px 0;">Enables Horizontal Scaling</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Add more servers to handle increased load without modifying application code. Scale linearly with demand.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 3px solid #22c55e;">
+<strong style="color: #166534; font-size: 13px;">What to Care About:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Application must be stateless or use external session storage</li>
+<li>Database often becomes the bottleneck when app tier scales</li>
+<li>New servers need cache warming to avoid performance dip</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px;">
+<h4 style="color: #059669; margin: 0 0 8px 0;">Simplifies Deployments and Maintenance</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Rolling deployments with zero downtime. Take servers out of rotation for maintenance without affecting users.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 3px solid #22c55e;">
+<strong style="color: #166534; font-size: 13px;">What to Care About:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Connection draining timeout must be long enough for in-flight requests</li>
+<li>Blue/green deployments need 2x resources during transition</li>
+<li>Version compatibility between old and new servers during rollout</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- Cons -->
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 16px; padding: 24px;">
+<h3 style="color: #991b1b; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px;">
+<span style="font-size: 24px;">-</span> Cons
+</h3>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #dc2626; margin: 0 0 8px 0;">Adds Latency and Complexity</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Every request passes through an additional network hop. More moving parts to monitor, configure, and debug.</p>
+<div style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong style="color: #991b1b; font-size: 13px;">How to Manage:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Use L4 balancing for latency-critical paths (adds ~0.1ms vs ~1ms for L7)</li>
+<li>Co-locate load balancers with backends to minimize network hops</li>
+<li>Implement proper observability - distributed tracing through the LB layer</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #dc2626; margin: 0 0 8px 0;">Session Persistence Challenges</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Stateful applications break when requests go to different servers. Sticky sessions limit load distribution effectiveness.</p>
+<div style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong style="color: #991b1b; font-size: 13px;">How to Manage:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Externalize session state to Redis or Memcached</li>
+<li>Use JWTs for stateless authentication</li>
+<li>If sticky sessions required, use consistent hashing to minimize disruption on server changes</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px;">
+<h4 style="color: #dc2626; margin: 0 0 8px 0;">Can Mask Backend Problems</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">A slow backend might not be detected until it severely impacts user experience. Load balancers can hide partial failures.</p>
+<div style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong style="color: #991b1b; font-size: 13px;">How to Manage:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Implement deep health checks that test actual functionality, not just port availability</li>
+<li>Monitor per-backend metrics (latency, error rate) independently</li>
+<li>Use circuit breakers to fail fast when backends degrade</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<hr />
 <h2 id="related-topics">Related Topics</h2>
 <ul>
 <li><a href="/topic/system-design/api-gateway">[API Gateway]</a> - Layer 7 routing with authentication and transformation</li>

@@ -1472,8 +1472,565 @@ manual_sharding()  # Consensus is too slow</p>
 </div>
 </div>
 </div>
-<pre><code>---
-</code></pre>
+
+<hr />
+<div class="concept-section type-deep-learning">
+<h2 id="deep-learning-qa">Deep Learning Q&A</h2>
+<p style="color: #64748b; margin-bottom: 24px;">Challenge yourself with these scenario-based questions. Each answer leads to deeper exploration of sharding strategies.</p>
+
+<!-- Question 1: Sharding Key Selection for E-commerce -->
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #92400e; margin: 0 0 16px 0;">Q1: You're designing the database for a large e-commerce platform processing 100K orders per day. How do you choose the sharding key for the orders table?</h3>
+<details style="margin-top: 16px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 8px;">View Answer</summary>
+<div style="padding: 16px; background: white; border-radius: 8px; margin-top: 12px;">
+<p style="color: #334155; line-height: 1.7;">The choice depends on your primary access patterns. Consider three candidates:</p>
+<ul style="color: #334155; margin: 12px 0;">
+<li><strong>customer_id</strong>: Best if users frequently view their order history. All orders for a customer on one shard - efficient for "My Orders" page.</li>
+<li><strong>order_id</strong>: Best for order lookup/tracking. Even distribution via hash. But customer order history requires scatter-gather across all shards.</li>
+<li><strong>seller_id</strong>: Best for marketplace sellers viewing their sales. Isolates seller data but customer views become expensive.</li>
+</ul>
+<p style="color: #334155; line-height: 1.7; margin-top: 12px;"><strong>Recommendation</strong>: Use <code>customer_id</code> as the primary shard key for B2C platforms (customer experience is primary). Use a <strong>global secondary index</strong> on order_id for tracking lookups. For marketplaces, consider <strong>dual-write</strong> to both customer-sharded and seller-sharded tables.</p>
+
+<!-- Nested Q1.1 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 8px 0;">Q1.1: What happens when a single customer places 50K orders (e.g., a B2B wholesale buyer)? That shard becomes a hotspot.</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">This is the <strong>whale customer problem</strong>. Solutions: (1) Use <strong>composite shard key</strong>: <code>customer_id + order_date_month</code> spreads a customer's orders across multiple shards over time. (2) Implement <strong>customer tier routing</strong>: Detect high-volume customers and assign them dedicated "whale shards" with higher capacity. (3) Use <strong>virtual sharding</strong>: Map logical shards to physical shards, so you can rebalance without data migration.</p>
+
+<!-- Nested Q1.1.1 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.1.1: The composite key spreads data but now "show all my orders" requires querying multiple shards. How do you handle this?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Use <strong>parallel scatter-gather with pagination</strong>: Query all relevant shards simultaneously (by date range), merge and sort results in the application layer. For whale customers, implement <strong>cursor-based pagination</strong> that encodes shard positions. Cache aggregated order counts/summaries in Redis to avoid repeated scatter-gather for dashboard metrics.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.1.2 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.1.2: How do you detect a customer is becoming a "whale" before they cause problems?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>proactive hotspot detection</strong>: (1) Track order counts per customer_id in a rolling window (Redis sorted set). (2) Set thresholds (e.g., >1000 orders/month = whale). (3) When threshold is crossed, trigger automated migration to whale shard or composite key upgrade. (4) Monitor shard-level metrics: if one shard's QPS is 2x average, investigate its top customers.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.1.3 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.1.3: The whale migrates to another platform. Now you have an oversized shard with cold data. What do you do?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>shard compaction and rebalancing</strong>: (1) Archive old orders to cold storage (S3 + Athena for queries). (2) Shrink the oversized shard's replica count to reduce cost. (3) For extreme cases, <strong>merge small shards</strong>: migrate cold shard's data to another shard with capacity. (4) Maintain a "shard health score" considering size, QPS, and growth rate to automate these decisions.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.2 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 8px 0;">Q1.2: Your analytics team needs to run "total orders by product category this month." This requires scanning ALL shards. How do you support analytics without killing production?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Never run analytics on production shards directly. Solutions: (1) <strong>Read replicas</strong>: Each shard has a dedicated analytics replica with different indexes. (2) <strong>Data warehouse ETL</strong>: Continuously stream changes (CDC via Debezium) to a columnar store (BigQuery, Snowflake) optimized for aggregations. (3) <strong>Materialized views</strong>: Pre-compute common aggregations (orders by category, daily totals) and update incrementally.</p>
+
+<!-- Nested Q1.2.1 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.2.1: The CDC pipeline has a 15-minute lag. The CEO wants real-time dashboards. What now?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Implement <strong>lambda architecture</strong>: (1) <strong>Batch layer</strong>: CDC pipeline feeds data warehouse (accurate but delayed). (2) <strong>Speed layer</strong>: Real-time event stream (Kafka) updates counters in Redis (fast but approximate). (3) Dashboard shows: Redis real-time count + last warehouse sync time. Accept that real-time means "within 30 seconds" not "instant" - usually sufficient for executives.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.2.2 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.2.2: An analyst accidentally runs a SELECT * FROM orders without LIMIT. How do you protect the system?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Defense in depth</strong>: (1) <strong>Query gateway</strong>: Intercept queries, inject LIMIT 10000 if missing, reject SELECT *. (2) <strong>Resource quotas</strong>: Set query timeout (30s), memory limit, row limit per user/role. (3) <strong>Separate access</strong>: Analysts only connect to read replicas, never production. (4) <strong>Query review</strong>: Require approval for queries estimated to scan >1M rows. Tools like Apache Ranger or custom middleware can enforce these policies.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.2.3 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.2.3: How do you handle ad-hoc queries that don't fit pre-computed aggregations?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Use a <strong>query-on-demand architecture</strong>: (1) Export raw data to object storage (S3/GCS) in Parquet format daily. (2) Use serverless query engines (Athena, Presto, Trino) for ad-hoc SQL. (3) These engines auto-scale for big queries and cost nothing when idle. (4) For frequent ad-hoc patterns, graduate them to materialized views. This separates "exploratory" workloads from "production" entirely.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.3 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e40af; margin: 0 0 8px 0;">Q1.3: Six months later, you realize customer_id was wrong - 80% of queries are actually by seller_id for the seller dashboard. Can you change the shard key?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Changing shard keys is one of the hardest operations in distributed systems. Options: (1) <strong>Dual-write migration</strong>: Create new seller-sharded tables, write to both during transition, backfill historical data, then cut over. (2) <strong>Add secondary sharding</strong>: Keep customer-sharded as primary, add seller-sharded as a materialized view. (3) <strong>Accept the cost</strong>: If seller queries are 80% but can tolerate 200ms latency, scatter-gather might be acceptable with caching.</p>
+
+<!-- Nested Q1.3.1 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.3.1: During dual-write migration, how do you ensure data consistency between old and new sharding schemes?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Use <strong>write-ahead logging with reconciliation</strong>: (1) All writes go to both systems via a transaction outbox. (2) If secondary write fails, queue for retry with exponential backoff. (3) Run continuous reconciliation jobs comparing row counts and checksums between systems. (4) Flag discrepancies for manual review. (5) Only cut over reads when reconciliation shows 100% consistency for 24+ hours.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.3.2 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.3.2: The backfill of 500M historical orders will take weeks. How do you speed it up without impacting production?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Parallel backfill with throttling</strong>: (1) Read from read replicas, not primary. (2) Partition the backfill by date ranges, run N parallel workers. (3) Implement adaptive throttling: monitor replica lag, slow down if lag exceeds threshold. (4) Use bulk inserts (batch 1000 rows) to reduce write overhead. (5) Schedule heavy backfill during off-peak hours. (6) Consider using a snapshot restore for initial load, then CDC for delta.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q1.3.3 -->
+<div style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #0369a1; margin: 0 0 8px 0;">Q1.3.3: How do you validate that the new sharding scheme actually improves performance before full cutover?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Shadow traffic testing</strong>: (1) Mirror production read traffic to the new system without serving responses. (2) Compare latency distributions (p50, p95, p99) between old and new. (3) Run seller dashboard queries against both, measure improvement. (4) Gradually shift 1%, 5%, 10% of real traffic with feature flags. (5) Monitor error rates, latency, and business metrics at each stage. Only proceed to 100% when confident.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Question 2: Cross-Shard Queries and Joins -->
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #1e40af; margin: 0 0 16px 0;">Q2: Your orders table is sharded by customer_id, but you need to JOIN with the products table (sharded by product_id) to show order details. How do you handle cross-shard joins?</h3>
+<details style="margin-top: 16px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 8px;">View Answer</summary>
+<div style="padding: 16px; background: white; border-radius: 8px; margin-top: 12px;">
+<p style="color: #334155; line-height: 1.7;">Cross-shard joins are the Achilles heel of sharding. Strategies ranked by preference:</p>
+<ol style="color: #334155; margin: 12px 0;">
+<li><strong>Denormalization</strong>: Embed product_name, product_price directly in the orders table. Trades storage for query speed. Update embedded data via async events when products change.</li>
+<li><strong>Reference tables</strong>: Small, slowly-changing tables (products, categories) are replicated to ALL shards. Each shard can join locally.</li>
+<li><strong>Application-level join</strong>: Fetch order IDs from orders shard, then batch-fetch product details from products shard in a second query. Assemble in application.</li>
+<li><strong>Federated query engine</strong>: Tools like Vitess, CockroachDB, or Trino can transparently route and merge cross-shard queries (but with latency cost).</li>
+</ol>
+
+<!-- Nested Q2.1 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #8b5cf6;">
+<h4 style="color: #6d28d9; margin: 0 0 8px 0;">Q2.1: You chose denormalization. Now the product price changes. How do you update millions of order records that embedded the old price?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;"><strong>Don't update historical orders</strong> - that's actually correct behavior! Orders should capture the price <em>at time of purchase</em>. The embedded price is a historical snapshot, not a live reference. For displaying current product info (like images, descriptions), use a <strong>hybrid approach</strong>: embed immutable data (price_at_purchase, product_name_at_purchase), but fetch mutable data (current_image_url) live from product service.</p>
+
+<!-- Nested Q2.1.1 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.1.1: What about non-transactional data like product descriptions that should reflect updates?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Use <strong>eventual consistency with versioning</strong>: (1) Store product_version in the order. (2) When rendering, fetch product if version differs from cached. (3) Use Redis as a product cache with 5-min TTL. (4) For bulk updates, publish product change events to Kafka, consumers update their denormalized copies in background. Accept that some orders may show slightly stale descriptions for up to 5 minutes.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.1.2 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.1.2: Denormalization increased storage by 40%. How do you justify this to management?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Cost-benefit analysis</strong>: (1) Calculate storage cost increase (40% * current_storage * $/GB/month). (2) Calculate latency improvement value: if 100ms faster = 1% more conversions, what's that worth in revenue? (3) Calculate infrastructure savings: fewer cross-shard queries = fewer network hops = smaller network bill + reduced database CPU. Storage is cheap (~$0.02/GB/month on cloud), latency-related revenue impact is usually much larger. Present as ROI, not just cost.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.1.3 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.1.3: A bug caused product names to be duplicated incorrectly during denormalization. How do you fix the corrupted data?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Data repair pipeline</strong>: (1) Identify affected records by querying for the bug pattern. (2) Create a repair job that reads from source-of-truth (products table), updates corrupted orders. (3) Run on read replicas first to validate the fix. (4) Apply to production in batches during low-traffic hours. (5) Add data quality checks to CI/CD: compare random samples of denormalized data against source. (6) Implement reconciliation alerts for future drift detection.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.2 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #8b5cf6;">
+<h4 style="color: #6d28d9; margin: 0 0 8px 0;">Q2.2: The products table has 10 million rows - too large to replicate as a reference table. What now?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;"><strong>Tiered reference strategy</strong>: (1) Replicate only "hot" products (top 100K by order volume) - covers 95% of joins. (2) For cold products, fall back to application-level join with caching. (3) Partition products into "catalog" (replicated) and "long-tail" (sharded by product_id). Most queries hit the catalog; long-tail access is rare enough to tolerate latency.</p>
+
+<!-- Nested Q2.2.1 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.2.1: How do you determine which products are "hot" and keep the hot set updated?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;">Use <strong>sliding window analytics</strong>: (1) Track order counts per product_id in a 30-day rolling window (Redis sorted set or HyperLogLog). (2) Nightly job computes top 100K products, compares to current hot set. (3) New hot products get replicated; demoted products get removed from replicas. (4) Use hysteresis: product must be hot for 3 consecutive days to promote, cold for 7 days to demote. This prevents thrashing on borderline products.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.2.2 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.2.2: A flash sale makes a "cold" product suddenly hot. Users see slow order pages during the sale. How do you prevent this?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Predictive warming</strong>: (1) Marketing team flags sale products 24h in advance via an internal tool. (2) System automatically promotes these to hot set before sale. (3) Implement <strong>real-time promotion</strong>: if a cold product exceeds 100 orders in 10 minutes, trigger immediate replication (takes ~30 seconds). (4) Use aggressive caching: sale products cached for 1 minute locally, reducing cross-shard calls during the burst.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.2.3 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.2.3: Replicating 100K products to 50 shards means 50 copies. How do you keep them all in sync?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Event-driven replication with version vectors</strong>: (1) Product updates publish to Kafka topic partitioned by product_id. (2) Each shard subscribes and applies updates to its local replica. (3) Include version number in events; replicas reject out-of-order updates. (4) Periodic full reconciliation: compare checksums of reference tables across shards nightly. (5) If a shard falls behind (consumer lag > threshold), alert and optionally block writes until caught up.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.3 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #8b5cf6;">
+<h4 style="color: #6d28d9; margin: 0 0 8px 0;">Q2.3: You need to implement "Find all orders containing products from category X" - this requires scanning both sharding dimensions. What's the approach?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">This is a <strong>two-phase scatter-gather</strong>: (1) Query products shard for all product_ids in category X. (2) For each shard in orders, query for orders containing any of those product_ids (with an IN clause). (3) Merge results in application. <strong>Optimization</strong>: Build a <strong>secondary index</strong> mapping category_id -> order_ids, updated asynchronously. This turns O(orders * products) into O(1) lookup + O(results) fetch.</p>
+
+<!-- Nested Q2.3.1 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.3.1: The secondary index for "Electronics" category has 5 million order_ids. How do you query efficiently?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Paginated index with bloom filters</strong>: (1) Don't return 5M IDs - paginate the index itself (return 1000 IDs per page with cursor). (2) Store per-shard bloom filters indicating "this shard might have orders in Electronics". Query only shards where bloom filter returns positive. (3) For counts/aggregations, store pre-computed stats: "Electronics category: 5.2M orders, $48M revenue" updated hourly. Avoid full scans for analytics.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.3.2 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.3.2: A product moves from "Electronics" to "Home & Garden". How do you update the secondary index?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Event-driven index maintenance</strong>: (1) Product category change emits an event. (2) Index updater finds all orders containing that product (using product_id index). (3) Remove order_ids from old category index, add to new category index. (4) For large products (millions of orders), batch the updates over hours to avoid spike. (5) During transition, query BOTH old and new categories, deduplicate. Mark migration complete when event fully processed.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q2.3.3 -->
+<div style="background: #ede9fe; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #5b21b6; margin: 0 0 8px 0;">Q2.3.3: Building secondary indexes for every possible query pattern seems expensive. How do you decide which indexes to build?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Query pattern analysis</strong>: (1) Log all queries with their latency and frequency. (2) Identify cross-shard queries taking >500ms that run >100 times/day. (3) Calculate index ROI: (queries/day * latency_saved) vs (storage_cost + maintenance_complexity). (4) Start with top 5 patterns covering 80% of slow queries. (5) Use query rewriting where possible: "orders in category X" can become "products in X -> order lookup" with existing indexes. Not every pattern needs a dedicated index.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Question 3: Resharding -->
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 16px; padding: 24px; margin: 20px 0;">
+<h3 style="color: #166534; margin: 0 0 16px 0;">Q3: Your 8-shard setup is reaching capacity - each shard is at 80% storage and queries are slowing down. How do you resharding to 16 shards without downtime?</h3>
+<details style="margin-top: 16px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 8px;">View Answer</summary>
+<div style="padding: 16px; background: white; border-radius: 8px; margin-top: 12px;">
+<p style="color: #334155; line-height: 1.7;">Zero-downtime resharding requires careful orchestration. The <strong>double-write + backfill</strong> approach:</p>
+<ol style="color: #334155; margin: 12px 0;">
+<li><strong>Provision new shards</strong>: Set up shards 8-15 with the new hash function (hash % 16).</li>
+<li><strong>Enable double-writes</strong>: All writes go to both old shard (hash % 8) AND new shard (hash % 16). This ensures new data lands correctly.</li>
+<li><strong>Backfill historical data</strong>: Migrate existing data from old shards to new shards based on new hash. Run in parallel, throttled.</li>
+<li><strong>Verify consistency</strong>: Compare row counts and checksums between old and new topology.</li>
+<li><strong>Switch reads</strong>: Gradually route reads to new shard topology (1% -> 10% -> 50% -> 100%).</li>
+<li><strong>Disable old writes</strong>: Once reads are 100% on new topology, stop writing to old shards.</li>
+<li><strong>Decommission</strong>: After retention period, remove old shards.</li>
+</ol>
+
+<!-- Nested Q3.1 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #22c55e;">
+<h4 style="color: #15803d; margin: 0 0 8px 0;">Q3.1: Double-writes mean 2x write load during migration. Your database is already at capacity. How do you handle this?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;"><strong>Staged capacity management</strong>: (1) <strong>Pre-scale before migration</strong>: Add read replicas to old shards to handle increased read load during migration. (2) <strong>Async double-write</strong>: Write to old shard synchronously (for consistency), write to new shard via async queue (eventual consistency during migration). (3) <strong>Traffic shaping</strong>: Temporarily rate-limit non-critical writes. (4) <strong>Off-peak migration</strong>: Run heavy backfill during nights/weekends when write load is lower.</p>
+
+<!-- Nested Q3.1.1 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.1.1: Async double-writes mean new shards might lag behind. What if a read is routed to the new shard before its data arrives?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Read fallback with versioning</strong>: (1) Track "migration watermark" - the timestamp up to which new shard is guaranteed complete. (2) For reads on new shard: if record not found AND record's estimated creation time < watermark, it's truly missing. If > watermark, fall back to old shard. (3) Alternatively, don't route reads to new shards until backfill is complete - use new shards as write-only mirrors initially.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.1.2 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.1.2: A bug in the migration script corrupts data on 3 new shards. How do you recover?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Rollback strategy</strong>: (1) Since old shards still have all data and are receiving writes, simply stop routing to corrupted new shards. (2) Drop and recreate the corrupted shards. (3) Restart backfill from scratch for those shards. (4) This is why you keep old shards running until migration is fully validated! <strong>Lesson</strong>: Always have a rollback plan before starting; never decommission old infrastructure until new is proven for 1+ weeks.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.1.3 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.1.3: The backfill is taking 2 weeks. Business is impatient. How do you speed it up safely?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Parallelization tactics</strong>: (1) Increase worker count (but watch source DB CPU). (2) Use database snapshots: restore a point-in-time backup to new shards, then replay WAL/binlog from snapshot time. Much faster than row-by-row copy. (3) Partition by time: migrate only last 6 months actively, archive older data to cold storage. (4) Use specialized migration tools (gh-ost, pt-online-schema-change) designed for minimal-impact migrations.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.2 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #22c55e;">
+<h4 style="color: #15803d; margin: 0 0 8px 0;">Q3.2: Your hash function is `user_id % num_shards`. Going from 8 to 16 shards means almost every record moves. Is there a better approach?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">Yes! Use <strong>consistent hashing</strong> instead of modulo. With consistent hashing, adding shards only moves ~1/N of data (where N = new shard count). Or use <strong>virtual shards</strong>: create 1024 virtual shards mapped to 8 physical shards. To scale to 16, just remap virtual shards - each physical shard gives up half its virtual shards to a new physical shard. Only 50% of data moves instead of ~87%.</p>
+
+<!-- Nested Q3.2.1 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.2.1: We already have modulo hashing in production with 500M records. Can we migrate to consistent hashing?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Gradual migration path</strong>: (1) Implement consistent hashing for new records only (records created after date X). (2) Old records stay on modulo-based shards. (3) Routing layer checks record creation date: old records use modulo, new use consistent hash. (4) Over time (years), old data ages out or is archived. Eventually, all active data uses consistent hashing. This avoids a big-bang migration.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.2.2 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.2.2: With virtual shards, you need a mapping table. What if that mapping table becomes unavailable?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>High-availability mapping</strong>: (1) The mapping is small (1024 entries) - cache it in every application server's memory. (2) Use a highly-available store (etcd, ZooKeeper, Consul) as source of truth. (3) Apps refresh cache every 30 seconds and on startup. (4) If the mapping store is unavailable, apps continue with stale cache - mappings rarely change. (5) Include mapping version in app health checks; alert if version is stale.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.2.3 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.2.3: During virtual shard remapping, some requests might go to the wrong physical shard. How do you handle this?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Atomic mapping switch with redirect</strong>: (1) Old physical shard knows it's giving up virtual shard V. (2) During transition, requests for V to old shard return a "redirect" response with new shard location. (3) App retries to new shard and updates local cache. (4) Use version numbers: request includes expected mapping version, shard rejects if outdated. (5) Keep redirect capability for 24h after migration, then remove. This handles stragglers with stale caches.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.3 -->
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 16px; border-left: 4px solid #22c55e;">
+<h4 style="color: #15803d; margin: 0 0 8px 0;">Q3.3: You successfully migrated to 16 shards. Six months later, 2 shards are at 90% while others are at 40%. How do you rebalance?</h4>
+<details>
+<summary style="cursor: pointer; color: #475569;">View Answer</summary>
+<div style="padding: 12px; background: white; border-radius: 6px; margin-top: 8px;">
+<p style="color: #334155; font-size: 14px;">This is <strong>hot shard</strong> syndrome - some shard keys are inherently busier. Solutions: (1) <strong>Split the hot shard</strong>: Divide shard 5 into 5a and 5b, update routing. Data on 5 moves to 5a or 5b based on a secondary hash. (2) <strong>Move specific keys</strong>: Identify the whales causing hotness, migrate them to dedicated "whale shards". (3) <strong>Vertical scaling</strong>: Upgrade hot shards to larger instances. Faster than resharding but has limits.</p>
+
+<!-- Nested Q3.3.1 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.3.1: How do you detect hot shards before they become critical?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Proactive monitoring</strong>: (1) Dashboard showing per-shard metrics: storage %, CPU %, QPS, p99 latency. (2) Alert when any shard exceeds 70% on any metric (gives 30% headroom). (3) Track growth rate: "Shard 5 growing 5%/week, will hit 90% in 4 weeks" - alert on projected capacity breach. (4) Weekly capacity review meeting to discuss shard health and plan proactive rebalancing. Prevention is much cheaper than emergency response.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.3.2 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.3.2: The underutilized shards (40%) are wasting money. Can you consolidate them?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Shard consolidation strategy</strong>: (1) Identify shards that can merge (combined size < 60% capacity). (2) Migrate data from shard A to shard B, update routing. (3) Decommission shard A. <strong>Caution</strong>: Consolidation reduces fault isolation - if merged shard fails, more data is affected. Balance cost savings against risk. Consider keeping the shard count but <strong>right-sizing instances</strong> - move underutilized shards to smaller VMs.</p>
+</div>
+</details>
+</div>
+
+<!-- Nested Q3.3.3 -->
+<div style="background: #dcfce7; padding: 12px; border-radius: 6px; margin-top: 12px;">
+<h5 style="color: #166534; margin: 0 0 8px 0;">Q3.3.3: You need to rebalance during Black Friday. How do you minimize risk?</h5>
+<details>
+<summary style="cursor: pointer; color: #475569; font-size: 13px;">View Answer</summary>
+<div style="padding: 8px; background: white; border-radius: 4px; margin-top: 6px;">
+<p style="color: #334155; font-size: 13px;"><strong>Don't.</strong> Freeze all infrastructure changes during peak events. Plan ahead: (1) Forecast Black Friday load 2 months in advance. (2) Complete all rebalancing/scaling 2 weeks before. (3) Over-provision by 50% - it's cheaper than downtime. (4) During the event, only allow emergency hotfixes, no elective changes. (5) Post-event, analyze actual vs predicted load to improve future planning. The best rebalancing is the one you do proactively during calm periods.</p>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+</details>
+</div>
+</div>
+
+<!-- Pros and Cons Section -->
+<hr />
+<div class="concept-section type-analysis">
+<h2 id="pros-cons-analysis">Database Sharding: Pros & Cons Analysis</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin: 24px 0;">
+
+<!-- Pros -->
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-radius: 16px; padding: 24px;">
+<h3 style="color: #065f46; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px;">
+<span style="font-size: 24px;">+</span> Pros
+</h3>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #059669; margin: 0 0 8px 0;">Horizontal Scalability</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Break through single-machine limits. Add shards to scale storage and throughput linearly. Handle billions of rows and millions of QPS.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 3px solid #22c55e;">
+<strong style="color: #166534; font-size: 13px;">What to Care About:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Plan shard count for 3-5 years of growth, not just current needs</li>
+<li>Use consistent hashing or virtual shards to make future scaling easier</li>
+<li>Monitor per-shard metrics to detect uneven growth early</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #059669; margin: 0 0 8px 0;">Improved Query Performance</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Queries targeting a single shard key hit only one shard. Smaller indexes, less data to scan, faster responses.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 3px solid #22c55e;">
+<strong style="color: #166534; font-size: 13px;">What to Care About:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Performance gains only apply to shard-key-aligned queries</li>
+<li>Track what percentage of queries are single-shard vs cross-shard</li>
+<li>Optimize access patterns before sharding - sharding amplifies both good and bad patterns</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px;">
+<h4 style="color: #059669; margin: 0 0 8px 0;">Failure Isolation</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">A shard failure affects only a subset of users/data. 1 shard down in 16 = 6.25% impact instead of 100% outage.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 3px solid #22c55e;">
+<strong style="color: #166534; font-size: 13px;">What to Care About:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Each shard still needs replicas for HA within the shard</li>
+<li>Cross-shard operations can still cause cascading failures</li>
+<li>Ensure your monitoring can identify which shard is affected</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- Cons -->
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border-radius: 16px; padding: 24px;">
+<h3 style="color: #991b1b; margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px;">
+<span style="font-size: 24px;">-</span> Cons
+</h3>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #dc2626; margin: 0 0 8px 0;">Cross-Shard Query Complexity</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Joins, aggregations, and queries not aligned with shard key become expensive scatter-gather operations across all shards.</p>
+<div style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong style="color: #991b1b; font-size: 13px;">How to Manage:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Denormalize aggressively to co-locate related data</li>
+<li>Build secondary indexes for common cross-shard access patterns</li>
+<li>Use data warehouses for analytics workloads, not production shards</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+<h4 style="color: #dc2626; margin: 0 0 8px 0;">Operational Complexity</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">N shards = N times the backups, monitoring, upgrades, and failure scenarios. Schema changes must be coordinated across all shards.</p>
+<div style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong style="color: #991b1b; font-size: 13px;">How to Manage:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Automate everything: provisioning, backups, failover, schema migrations</li>
+<li>Use orchestration tools (Vitess, Citus) to abstract shard management</li>
+<li>Invest in observability - you need per-shard dashboards and alerts</li>
+</ul>
+</div>
+</div>
+
+<div style="background: white; border-radius: 12px; padding: 16px;">
+<h4 style="color: #dc2626; margin: 0 0 8px 0;">Resharding Challenges</h4>
+<p style="color: #334155; font-size: 14px; margin: 0 0 12px 0;">Changing shard count or shard key requires migrating massive amounts of data with zero downtime. One of the hardest operations in distributed systems.</p>
+<div style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 3px solid #ef4444;">
+<strong style="color: #991b1b; font-size: 13px;">How to Manage:</strong>
+<ul style="color: #475569; font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+<li>Start with consistent hashing or virtual shards to minimize future resharding</li>
+<li>Over-provision initially - it's cheaper than emergency resharding</li>
+<li>Practice resharding in staging environments before you need it in production</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<hr />
 <h2 id="related-topics">Related Topics</h2>
 <pre><code>- [[database-replication]](/topic/system-design/database-replication) - Each shard needs replicas for HA
 - [[load-balancing]](/topic/system-design/load-balancing) - Consistent hashing algorithms
