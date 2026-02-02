@@ -4704,9 +4704,199 @@ const circuitBreaker = new CircuitBreaker({
             <p style="color: #64748b; margin-bottom: 24px;">Design a distributed rate limiting service to protect APIs from abuse</p>
 
             <div id="rate-limiter-content">
-                <div style="text-align: center; padding: 60px; color: #64748b;">
-                    <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
-                    <p>Loading Rate Limiter content...</p>
+                <!-- MVP STAGE -->
+                <div class="stage-section" id="rl-mvp">
+                    <div class="stage-header">
+                        <span class="stage-badge mvp">MVP Stage</span>
+                        <h2 style="margin: 0;">Single Server Rate Limiter</h2>
+                    </div>
+
+                    <h3>📊 Algorithm Selection</h3>
+                    <div class="feature-card">
+                        <h4>Why Token Bucket?</h4>
+                        <p>For MVP, we choose the <strong>Token Bucket</strong> algorithm for its simplicity and burst-handling capability.</p>
+
+                        <div class="diagram-container">
+                            <h4>TOKEN BUCKET ALGORITHM</h4>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
+                                <div style="text-align: center;">
+                                    <div style="width: 80px; height: 100px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 8px; display: flex; flex-direction: column; justify-content: flex-end; padding: 8px;">
+                                        <div style="background: #fbbf24; height: 60%; border-radius: 4px;"></div>
+                                    </div>
+                                    <p style="font-size: 12px; color: #64748b; margin-top: 8px;">Token Bucket<br>(6/10 tokens)</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <p style="font-size: 24px;">⬇️</p>
+                                    <p style="font-size: 12px; color: #64748b;">Refill: 10 tokens/sec</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <p style="font-size: 24px;">➡️</p>
+                                    <p style="font-size: 12px; color: #64748b;">Request consumes 1 token</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pros-cons-grid">
+                            <div class="pros-section">
+                                <h4>✅ Pros</h4>
+                                <ul>
+                                    <li><strong>Allows Bursts</strong> - Handles traffic spikes gracefully</li>
+                                    <li><strong>Memory Efficient</strong> - Only 2 values per user</li>
+                                    <li><strong>Simple Implementation</strong> - Easy to understand</li>
+                                </ul>
+                                <div class="care-points">
+                                    <h5>⚠️ What to Care About:</h5>
+                                    <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                                        <li>Set bucket size based on expected burst patterns</li>
+                                        <li>Monitor token consumption rates for tuning</li>
+                                        <li>Consider per-endpoint vs per-user limits</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="cons-section">
+                                <h4>❌ Cons</h4>
+                                <ul>
+                                    <li><strong>No Fixed Window</strong> - Can't guarantee exact rate</li>
+                                    <li><strong>Burst at Boundaries</strong> - 2x rate at window edges</li>
+                                    <li><strong>Memory per User</strong> - Grows with user count</li>
+                                </ul>
+                                <div class="manage-points">
+                                    <h5>🔧 How to Manage:</h5>
+                                    <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                                        <li>Use sliding window for strict rate limiting</li>
+                                        <li>Implement LRU eviction for inactive users</li>
+                                        <li>Add secondary limits for abuse prevention</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>💾 Data Store</h3>
+                    <div class="feature-card">
+                        <h4>Why <span class="term-tooltip" onclick="showTooltip('redis')">Redis<span class="info-icon">i</span></span>?</h4>
+                        <p>In-memory store with atomic operations and TTL support - perfect for rate limiting.</p>
+
+                        <div class="diagram-container">
+                            <h4>REDIS DATA STRUCTURE</h4>
+                            <div class="schema-diagram">
+                                <div class="schema-table">
+                                    <div class="schema-table-header">rate_limit:{user_id}</div>
+                                    <div class="schema-table-body">
+                                        <div class="schema-field"><span class="field-name">tokens</span><span class="field-type">INT (current)</span></div>
+                                        <div class="schema-field"><span class="field-name">last_refill</span><span class="field-type">TIMESTAMP</span></div>
+                                        <div class="schema-field"><span class="field-name">TTL</span><span class="field-type">3600 sec</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>🏗️ Architecture (MVP)</h3>
+                    <div class="diagram-container">
+                        <h4>MVP ARCHITECTURE</h4>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                            <div class="arch-box client">Client</div>
+                            <span class="arch-arrow">→</span>
+                            <div class="arch-box lb">API Gateway</div>
+                            <span class="arch-arrow">→</span>
+                            <div class="arch-box cache">Rate Limiter</div>
+                            <span class="arch-arrow">→</span>
+                            <div class="arch-box server">Backend API</div>
+                        </div>
+                    </div>
+
+                    <!-- Feature Additions -->
+                    <h3>🆕 Feature Addition 1: Sliding Window Counter</h3>
+                    <div class="feature-card" style="border-left-color: #22c55e;">
+                        <h4>Why Add This?</h4>
+                        <p>Token bucket allows bursts at window boundaries. Sliding window provides smoother rate limiting.</p>
+                    </div>
+
+                    <h3>🆕 Feature Addition 2: Tiered Rate Limits</h3>
+                    <div class="feature-card" style="border-left-color: #8b5cf6;">
+                        <h4>Why Add Tiers?</h4>
+                        <p>Different users need different limits: Free (100/hr), Pro (1000/hr), Enterprise (10000/hr)</p>
+                    </div>
+
+                    <h3>🆕 Feature Addition 3: Real-time Analytics</h3>
+                    <div class="feature-card" style="border-left-color: #f59e0b;">
+                        <h4>Why Add Analytics?</h4>
+                        <p>Ops team needs visibility into rate limit hits, top offenders, and attack patterns.</p>
+                    </div>
+                </div>
+
+                <!-- PAN-INDIA SCALE -->
+                <div class="stage-section" id="rl-pan-india">
+                    <div class="stage-header">
+                        <span class="stage-badge pan-india">PAN-India Scale</span>
+                        <h2 style="margin: 0;">Distributed Rate Limiting</h2>
+                    </div>
+
+                    <div class="diagram-container">
+                        <h4>DISTRIBUTED ARCHITECTURE</h4>
+                        <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                            <div class="arch-box client">Clients</div>
+                            <span>↓</span>
+                            <div class="arch-box lb">Load Balancer</div>
+                            <span>↓</span>
+                            <div style="display: flex; gap: 16px;">
+                                <div class="arch-box server">API 1</div>
+                                <div class="arch-box server">API 2</div>
+                                <div class="arch-box server">API N</div>
+                            </div>
+                            <span>↓ All check ↓</span>
+                            <div class="arch-box cache">Redis Cluster</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HIGH TRAFFIC -->
+                <div class="stage-section" id="rl-high-traffic">
+                    <div class="stage-header">
+                        <span class="stage-badge high-traffic">High Traffic</span>
+                        <h2 style="margin: 0;">Handling Attack Traffic</h2>
+                    </div>
+
+                    <h3>⚠️ What Breaks First?</h3>
+                    <div class="feature-card" style="border-left-color: #ef4444;">
+                        <ol>
+                            <li><strong>Redis bottleneck:</strong> 100K+ checks/sec overwhelms single Redis</li>
+                            <li><strong>Network latency:</strong> Cross-datacenter Redis calls add 5-10ms</li>
+                            <li><strong>Memory explosion:</strong> Tracking millions of IPs during DDoS</li>
+                        </ol>
+                    </div>
+
+                    <h3>🛠️ Solution: Local + Global Rate Limiting</h3>
+                    <div class="diagram-container">
+                        <h4>HYBRID APPROACH</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+                            <div class="arch-box client">Request</div>
+                            <span>↓</span>
+                            <div class="arch-box server" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">Local Cache (0.1ms)</div>
+                            <span>↓ if allowed ↓</span>
+                            <div class="arch-box cache">Global Redis (1ms)</div>
+                            <span>↓ if allowed ↓</span>
+                            <div class="arch-box server">Process Request</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GLOBAL SCALE -->
+                <div class="stage-section" id="rl-global">
+                    <div class="stage-header">
+                        <span class="stage-badge global">Global Scale</span>
+                        <h2 style="margin: 0;">Multi-Region Rate Limiting</h2>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>Key Considerations</h4>
+                        <ul>
+                            <li><strong>Regional Autonomy:</strong> Each region enforces limits locally</li>
+                            <li><strong><span class="term-tooltip" onclick="showTooltip('eventual-consistency')">Eventual Consistency<span class="info-icon">i</span></span>:</strong> Global aggregation async (1-5 sec delay)</li>
+                            <li><strong>Split Limits:</strong> 1000/hr global = 400 US + 300 EU + 300 Asia</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
