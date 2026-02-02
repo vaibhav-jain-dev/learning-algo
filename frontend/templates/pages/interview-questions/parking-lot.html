@@ -4,407 +4,1357 @@
     <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
 
     <h1>🅿️ Parking Lot System Design</h1>
-    <p class="topic-description">Design a smart parking management system with real-time availability tracking using IoT sensors</p>
+    <p class="topic-description">Design a smart parking management system with real-time availability, multi-floor support, and dynamic pricing</p>
 
-    <!-- Quick Navigation -->
     <div class="quick-nav">
-        <h4>Quick Navigation</h4>
+        <h4>Navigation</h4>
         <a href="#mvp">MVP Stage</a>
-        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
-        <a href="#global">Global Scale</a>
+        <a href="#global">Global</a>
     </div>
 
+    <!-- ============================================ -->
     <!-- MVP STAGE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="mvp">
         <div class="stage-header">
             <span class="stage-badge mvp">MVP Stage</span>
-            <h2 style="margin: 0;">Single Location Parking Management</h2>
+            <h2 style="margin: 0;">Single Location • 500 spots • 1K users</h2>
         </div>
 
-        <h3>📊 Database Strategy</h3>
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
         <div class="feature-card">
-            <h4>Why PostgreSQL with PostGIS?</h4>
-            <p>For parking systems, we need geospatial queries to find nearby parking. PostGIS extension provides spatial indexing and distance calculations.</p>
-
-            <div class="pros-cons-grid">
-                <div class="pros-section">
-                    <h4>✅ Pros</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
                     <ul>
-                        <li><strong>Geospatial Support</strong> - Native PostGIS for location queries</li>
-                        <li><strong>ACID Compliance</strong> - Critical for reservation transactions</li>
-                        <li><strong>JSON Support</strong> - Store flexible IoT sensor data</li>
+                        <li>Entry gate ticket generation</li>
+                        <li>Exit gate payment & release</li>
+                        <li>Spot types: compact, regular, large, handicapped, EV</li>
+                        <li>Real-time availability display</li>
+                        <li>Advance reservation (optional)</li>
+                        <li>Dynamic pricing (peak hours)</li>
                     </ul>
-                    <div class="care-points">
-                        <h5>⚠️ What to Care About:</h5>
-                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
-                            <li>Create spatial indexes (GIST) for location columns</li>
-                            <li>Partition by parking_lot_id for large datasets</li>
-                            <li>Use connection pooling for IoT sensor updates</li>
-                        </ul>
-                    </div>
                 </div>
-                <div class="cons-section">
-                    <h4>❌ Cons</h4>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
                     <ul>
-                        <li><strong>Write Contention</strong> - High-frequency spot status updates</li>
-                        <li><strong>Complex Queries</strong> - Geospatial + availability joins</li>
-                        <li><strong>Scaling Limits</strong> - Single region initially</li>
+                        <li>Latency: &lt;200ms spot assignment</li>
+                        <li>Availability: 99.9%</li>
+                        <li>Throughput: 100 entries/min</li>
+                        <li>Storage: 500 spots × 1KB = 500KB base</li>
+                        <li>Concurrent entries: 10 gates</li>
                     </ul>
-                    <div class="manage-points">
-                        <h5>🔧 How to Manage:</h5>
-                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
-                            <li>Batch IoT updates (every 5 seconds max)</li>
-                            <li>Cache availability counts in Redis</li>
-                            <li>Use materialized views for search</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <h4 style="margin-top: 24px;">Schema Design</h4>
-            <div class="diagram-container">
-                <h4>DATABASE SCHEMA</h4>
-                <div class="schema-diagram">
-                    <div class="schema-table">
-                        <div class="schema-table-header">parking_lots</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
-                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
-                            <div class="schema-field"><span class="field-name">location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
-                            <div class="schema-field"><span class="field-name">address</span><span class="field-type">TEXT</span></div>
-                            <div class="schema-field"><span class="field-name">total_spots</span><span class="field-type">INT</span></div>
-                            <div class="schema-field"><span class="field-name">hourly_rate</span><span class="field-type">DECIMAL(8,2)</span></div>
-                            <div class="schema-field"><span class="field-name">operating_hours</span><span class="field-type">JSONB</span></div>
-                        </div>
-                    </div>
-                    <div class="relation-arrow">1:N</div>
-                    <div class="schema-table">
-                        <div class="schema-table-header">parking_spots</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">lot_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name">spot_number</span><span class="field-type">VARCHAR(10)</span></div>
-                            <div class="schema-field"><span class="field-name">floor</span><span class="field-type">INT</span></div>
-                            <div class="schema-field"><span class="field-name">spot_type</span><span class="field-type">ENUM</span></div>
-                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
-                            <div class="schema-field"><span class="field-name">sensor_id</span><span class="field-type">VARCHAR(50)</span></div>
-                        </div>
-                    </div>
-                    <div class="relation-arrow">1:N</div>
-                    <div class="schema-table">
-                        <div class="schema-table-header">reservations</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">spot_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name">start_time</span><span class="field-type">TIMESTAMP</span></div>
-                            <div class="schema-field"><span class="field-name">end_time</span><span class="field-type">TIMESTAMP</span></div>
-                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
-                            <div class="schema-field"><span class="field-name">vehicle_number</span><span class="field-type">VARCHAR(20)</span></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <h3>🏗️ Architecture (MVP)</h3>
+        <!-- ARCHITECTURE DIAGRAM -->
+        <h3>🏗️ Architecture</h3>
         <div class="diagram-container">
-            <h4>MVP ARCHITECTURE</h4>
-            <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-                <div style="display: flex; gap: 24px; align-items: center;">
+            <h4>MVP Architecture - Single Location</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <!-- Layer 1: Clients -->
+                <div style="display: flex; gap: 40px;">
+                    <div class="arch-box client">Entry Kiosk</div>
+                    <div class="arch-box client">Exit Kiosk</div>
                     <div class="arch-box client">Mobile App</div>
-                    <div class="arch-box client">IoT Sensors</div>
                 </div>
-                <span>↓</span>
-                <div class="arch-box server">API Server (Go)</div>
-                <span>↓</span>
-                <div style="display: flex; gap: 16px;">
-                    <div class="arch-box db">PostgreSQL + PostGIS</div>
-                    <div class="arch-box cache">Redis</div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 2: Load Balancer -->
+                <div class="arch-box lb">AWS ALB<br><small>Health checks, SSL termination</small></div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 3: API Servers -->
+                <div style="display: flex; gap: 20px;">
+                    <div class="arch-box server">API Server 1<br><small>Go/Fiber</small></div>
+                    <div class="arch-box server">API Server 2<br><small>Go/Fiber</small></div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 4: Data -->
+                <div style="display: flex; gap: 40px; align-items: flex-start;">
+                    <div style="text-align: center;">
+                        <div class="arch-box cache">ElastiCache<br><small>Redis 6.x</small></div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Real-time availability<br>TTL: 30s</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box db">RDS PostgreSQL<br><small>db.t3.medium</small></div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Primary + Read Replica<br>Multi-AZ</div>
+                    </div>
                 </div>
             </div>
-            <p style="text-align: center; color: #64748b; font-size: 13px; margin-top: 16px;">IoT sensors push status updates every 5 seconds. Redis caches real-time availability.</p>
         </div>
 
+        <!-- DATA FLOW - Entry -->
+        <h3>🔄 Data Flow - Vehicle Entry</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Entry Gate</div>
+                    <div class="flow-step-label">POST /entry</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">API</div>
+                    <div class="flow-step-label">Find free spot</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="flow-step-label">INSERT booking</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="flow-step-label">DECR available</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Ticket</div>
+                    <div class="flow-step-label">Spot A-42</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔄 Data Flow - Vehicle Exit</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Exit Gate</div>
+                    <div class="flow-step-label">POST /exit</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">API</div>
+                    <div class="flow-step-label">Calculate fee</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box gateway" style="padding: 10px 16px;">Payment</div>
+                    <div class="flow-step-label">Stripe/Razorpay</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="flow-step-label">UPDATE booking</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="flow-step-label">INCR available</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔄 Data Flow - Payment Processing</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">User</div>
+                    <div class="flow-step-label">Tap card/UPI</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">API</div>
+                    <div class="flow-step-label">Create intent</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box gateway" style="padding: 10px 16px;">Stripe</div>
+                    <div class="flow-step-label">Process payment</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Webhook</div>
+                    <div class="flow-step-label">payment.success</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Gate Open</div>
+                    <div class="flow-step-label">Receipt sent</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATABASE SCHEMA -->
+        <h3>🗄️ Database Schema</h3>
+        <div class="diagram-container">
+            <h4>PostgreSQL Schema with Relationships</h4>
+            <div class="schema-diagram">
+                <div class="schema-table">
+                    <div class="schema-table-header">📦 parking_lots</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+                        <div class="schema-field"><span class="field-name">address</span><span class="field-type">TEXT</span></div>
+                        <div class="schema-field"><span class="field-name">total_floors</span><span class="field-type">INT</span></div>
+                        <div class="schema-field"><span class="field-name">total_spots</span><span class="field-type">INT</span></div>
+                        <div class="schema-field"><span class="field-name">hourly_rate</span><span class="field-type">DECIMAL(8,2)</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span>1</span>
+                    <span>─────</span>
+                    <span>N</span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">🏢 floors</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">lot_id</span><span class="field-type">BIGINT FK → parking_lots.id</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">floor_number</span><span class="field-type">INT</span></div>
+                        <div class="schema-field"><span class="field-name">total_spots</span><span class="field-type">INT</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span>1</span>
+                    <span>─────</span>
+                    <span>N</span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">🚗 spots</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">floor_id</span><span class="field-type">BIGINT FK → floors.id</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">spot_number</span><span class="field-type">VARCHAR(10)</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">spot_type</span><span class="field-type">ENUM(compact,regular,large,handicapped,ev)</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">status</span><span class="field-type">ENUM(available,occupied,reserved,maintenance)</span></div>
+                        <div class="schema-field"><span class="field-name">has_ev_charger</span><span class="field-type">BOOLEAN DEFAULT false</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schema-diagram" style="margin-top: 24px;">
+                <div class="schema-table">
+                    <div class="schema-table-header">🎫 bookings</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">spot_id</span><span class="field-type">BIGINT FK → spots.id</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">vehicle_id</span><span class="field-type">BIGINT FK → vehicles.id</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">ticket_number</span><span class="field-type">VARCHAR(20) UNIQUE</span></div>
+                        <div class="schema-field"><span class="field-name">entry_time</span><span class="field-type">TIMESTAMPTZ</span></div>
+                        <div class="schema-field"><span class="field-name">exit_time</span><span class="field-type">TIMESTAMPTZ</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">status</span><span class="field-type">ENUM(active,completed,cancelled)</span></div>
+                        <div class="schema-field"><span class="field-name">total_amount</span><span class="field-type">DECIMAL(10,2)</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span>1</span>
+                    <span>─────</span>
+                    <span>1</span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">🚙 vehicles</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">license_plate</span><span class="field-type">VARCHAR(20) UNIQUE</span></div>
+                        <div class="schema-field"><span class="field-name">vehicle_type</span><span class="field-type">ENUM(motorcycle,compact,sedan,suv,truck)</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">owner_id</span><span class="field-type">BIGINT FK → users.id</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span>1</span>
+                    <span>─────</span>
+                    <span>N</span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">💳 payments</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">booking_id</span><span class="field-type">BIGINT FK → bookings.id</span></div>
+                        <div class="schema-field"><span class="field-name">amount</span><span class="field-type">DECIMAL(10,2)</span></div>
+                        <div class="schema-field"><span class="field-name">payment_method</span><span class="field-type">ENUM(cash,card,upi,wallet)</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">status</span><span class="field-type">ENUM(pending,completed,failed,refunded)</span></div>
+                        <div class="schema-field"><span class="field-name">transaction_id</span><span class="field-type">VARCHAR(100)</span></div>
+                        <div class="schema-field"><span class="field-name">paid_at</span><span class="field-type">TIMESTAMPTZ</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Index Justification -->
+            <div class="index-justification" style="margin-top: 24px;">
+                <h5>🔍 Index Strategy</h5>
+                <table style="width: 100%; font-size: 14px;">
+                    <tr>
+                        <td><code>idx_spots_floor_status</code></td>
+                        <td>B-tree on <code>(floor_id, status)</code></td>
+                        <td>Find available spots per floor - entry flow</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_spots_type_status</code></td>
+                        <td>B-tree on <code>(spot_type, status)</code></td>
+                        <td>Find spots by vehicle type (EV, handicapped)</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_bookings_ticket</code></td>
+                        <td>B-tree UNIQUE on <code>ticket_number</code></td>
+                        <td>O(log n) ticket lookup at exit gate</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_bookings_active</code></td>
+                        <td>Partial on <code>spot_id WHERE status='active'</code></td>
+                        <td>Check if spot currently occupied</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_vehicles_plate</code></td>
+                        <td>B-tree UNIQUE on <code>license_plate</code></td>
+                        <td>LPR lookup for returning vehicles</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- SQL Queries -->
+        <h3>📝 SQL Queries</h3>
+        <div class="sql-query">
+            <h5>Create Tables</h5>
+<pre>CREATE TABLE parking_lots (
+    id          BIGSERIAL PRIMARY KEY,
+    name        VARCHAR(255) NOT NULL,
+    address     TEXT,
+    total_floors INT DEFAULT 1,
+    total_spots INT NOT NULL,
+    hourly_rate DECIMAL(8,2) NOT NULL,
+    created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE floors (
+    id           BIGSERIAL PRIMARY KEY,
+    lot_id       BIGINT REFERENCES parking_lots(id) ON DELETE CASCADE,
+    floor_number INT NOT NULL,
+    total_spots  INT NOT NULL,
+    UNIQUE(lot_id, floor_number)
+);
+
+CREATE TABLE spots (
+    id            BIGSERIAL PRIMARY KEY,
+    floor_id      BIGINT REFERENCES floors(id) ON DELETE CASCADE,
+    spot_number   VARCHAR(10) NOT NULL,
+    spot_type     VARCHAR(20) DEFAULT 'regular',  -- compact, regular, large, handicapped, ev
+    status        VARCHAR(20) DEFAULT 'available', -- available, occupied, reserved, maintenance
+    has_ev_charger BOOLEAN DEFAULT false,
+    UNIQUE(floor_id, spot_number)
+);
+
+CREATE TABLE vehicles (
+    id            BIGSERIAL PRIMARY KEY,
+    license_plate VARCHAR(20) UNIQUE NOT NULL,
+    vehicle_type  VARCHAR(20) NOT NULL,  -- motorcycle, compact, sedan, suv, truck
+    owner_id      BIGINT,
+    created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE bookings (
+    id            BIGSERIAL PRIMARY KEY,
+    spot_id       BIGINT REFERENCES spots(id),
+    vehicle_id    BIGINT REFERENCES vehicles(id),
+    ticket_number VARCHAR(20) UNIQUE NOT NULL,
+    entry_time    TIMESTAMPTZ DEFAULT NOW(),
+    exit_time     TIMESTAMPTZ,
+    status        VARCHAR(20) DEFAULT 'active',  -- active, completed, cancelled
+    total_amount  DECIMAL(10,2),
+    created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE payments (
+    id             BIGSERIAL PRIMARY KEY,
+    booking_id     BIGINT REFERENCES bookings(id),
+    amount         DECIMAL(10,2) NOT NULL,
+    payment_method VARCHAR(20) NOT NULL,  -- cash, card, upi, wallet
+    status         VARCHAR(20) DEFAULT 'pending',  -- pending, completed, failed, refunded
+    transaction_id VARCHAR(100),
+    paid_at        TIMESTAMPTZ
+);
+
+-- Indexes
+CREATE INDEX idx_spots_floor_status ON spots(floor_id, status);
+CREATE INDEX idx_spots_type_status ON spots(spot_type, status);
+CREATE INDEX idx_bookings_active ON bookings(spot_id) WHERE status = 'active';
+CREATE INDEX idx_payments_status ON payments(status) WHERE status = 'pending';</pre>
+        </div>
+
+        <div class="sql-query">
+            <h5>API Queries</h5>
+<pre>-- Find available spot by type (POST /entry)
+SELECT s.id, s.spot_number, f.floor_number
+FROM spots s
+JOIN floors f ON s.floor_id = f.id
+WHERE f.lot_id = $1
+  AND s.spot_type = $2
+  AND s.status = 'available'
+ORDER BY f.floor_number, s.spot_number
+LIMIT 1
+FOR UPDATE SKIP LOCKED;  -- Prevents race condition
+
+-- Create booking on entry
+INSERT INTO bookings (spot_id, vehicle_id, ticket_number, entry_time)
+VALUES ($1, $2, $3, NOW())
+RETURNING id, ticket_number;
+
+-- Update spot status
+UPDATE spots SET status = 'occupied' WHERE id = $1;
+
+-- Exit: Calculate parking duration and fee
+SELECT b.id, b.entry_time, b.spot_id,
+       EXTRACT(EPOCH FROM (NOW() - b.entry_time))/3600 as hours,
+       pl.hourly_rate
+FROM bookings b
+JOIN spots s ON b.spot_id = s.id
+JOIN floors f ON s.floor_id = f.id
+JOIN parking_lots pl ON f.lot_id = pl.id
+WHERE b.ticket_number = $1 AND b.status = 'active';
+
+-- Complete booking on exit
+UPDATE bookings SET exit_time = NOW(), status = 'completed', total_amount = $2
+WHERE id = $1;
+
+-- Get real-time availability per floor
+SELECT f.floor_number, f.total_spots,
+       COUNT(*) FILTER (WHERE s.status = 'available') as available
+FROM floors f
+JOIN spots s ON s.floor_id = f.id
+WHERE f.lot_id = $1
+GROUP BY f.id ORDER BY f.floor_number;</pre>
+        </div>
+
+        <!-- API Design -->
         <h3>🔌 API Design</h3>
-        <div class="feature-card">
-            <div class="api-endpoint">
-                <span class="api-method get">GET</span> /api/v1/lots/nearby?lat=12.97&lng=77.59&radius=5km
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Response: {
-  "lots": [
-    { "id": "uuid", "name": "City Mall Parking", "distance": "1.2km",
-      "available_spots": 45, "total_spots": 200, "hourly_rate": 50 }
-  ]
+        <div class="api-endpoint">
+            <span class="api-method post">POST</span> <span class="api-path">/api/v1/entry</span>
+<pre>
+Request:
+{
+    "lot_id": 1,
+    "license_plate": "KA-01-AB-1234",
+    "vehicle_type": "sedan",
+    "spot_type": "regular"          // optional: compact, regular, large, handicapped, ev
+}
+
+Response: 201 Created
+{
+    "booking_id": 12345,
+    "ticket_number": "TKT-20240115-001",
+    "spot": {
+        "floor": 2,
+        "spot_number": "A-42",
+        "spot_type": "regular"
+    },
+    "entry_time": "2024-01-15T10:30:00Z",
+    "hourly_rate": 50.00
+}
+
+Errors:
+- 404: Parking lot not found
+- 409: No available spots of requested type
+- 422: Invalid vehicle type</pre>
+        </div>
+
+        <div class="api-endpoint">
+            <span class="api-method post">POST</span> <span class="api-path">/api/v1/exit</span>
+<pre>
+Request:
+{
+    "ticket_number": "TKT-20240115-001",
+    "payment_method": "card"        // cash, card, upi, wallet
+}
+
+Response: 200 OK
+{
+    "booking_id": 12345,
+    "duration_hours": 2.5,
+    "amount": 125.00,
+    "payment": {
+        "status": "completed",
+        "transaction_id": "txn_abc123",
+        "method": "card"
+    },
+    "exit_time": "2024-01-15T13:00:00Z"
+}
+
+Errors:
+- 404: Ticket not found
+- 402: Payment failed
+- 409: Booking already completed</pre>
+        </div>
+
+        <div class="api-endpoint">
+            <span class="api-method get">GET</span> <span class="api-path">/api/v1/lots/:id/availability</span>
+<pre>
+Response: 200 OK
+{
+    "lot_id": 1,
+    "lot_name": "City Mall Parking",
+    "total_spots": 500,
+    "available": 127,
+    "floors": [
+        { "floor": 1, "total": 100, "available": 23 },
+        { "floor": 2, "total": 100, "available": 45 },
+        { "floor": 3, "total": 100, "available": 30 },
+        { "floor": 4, "total": 100, "available": 18 },
+        { "floor": 5, "total": 100, "available": 11 }
+    ],
+    "by_type": {
+        "compact": { "total": 100, "available": 35 },
+        "regular": { "total": 300, "available": 72 },
+        "large": { "total": 50, "available": 12 },
+        "handicapped": { "total": 25, "available": 5 },
+        "ev": { "total": 25, "available": 3 }
+    },
+    "hourly_rate": 50.00,
+    "updated_at": "2024-01-15T10:30:00Z"
+}
+
+Headers:
+    Cache-Control: max-age=30</pre>
+        </div>
+
+        <!-- Database Alternatives -->
+        <h3>🔀 Database Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ PostgreSQL (Selected)</h5>
+                <p>ACID compliance, robust for transactional workloads</p>
+                <div class="pros-cons-grid" style="margin: 12px 0;">
+                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #166534;">Pros:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>ACID for booking transactions</li>
+                            <li>FOR UPDATE SKIP LOCKED for concurrency</li>
+                            <li>PostGIS for multi-location search</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef2f2; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #991b1b;">Cons:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Single primary write bottleneck</li>
+                            <li>Complex sharding setup</li>
+                            <li>Vacuum overhead on high updates</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="background: #fef3c7; padding: 10px; border-radius: 6px; font-size: 13px;">
+                    <strong>⚠️ Care:</strong> Use PgBouncer for connection pooling. Partition bookings by month.
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>MongoDB</h5>
+                <p>Document store, flexible schema</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Embed floors/spots in lot document<br>
+                    <span style="color: #22c55e;">✓</span> Native geospatial indexes<br>
+                    <span style="color: #ef4444;">✗</span> No multi-doc transactions (4.0+)<br>
+                    <span style="color: #ef4444;">✗</span> Race conditions on spot booking
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Read-heavy with infrequent bookings, or with findAndModify atomicity
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>DynamoDB</h5>
+                <p>AWS managed, infinite scale</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Zero ops, auto-scaling<br>
+                    <span style="color: #22c55e;">✓</span> Conditional writes for booking<br>
+                    <span style="color: #ef4444;">✗</span> No joins, denormalization required<br>
+                    <span style="color: #ef4444;">✗</span> GSI limits for complex queries
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Serverless architecture, predictable access patterns
+                </div>
+            </div>
+        </div>
+
+        <!-- Cache Alternatives -->
+        <h3>🔀 Cache Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Redis / ElastiCache (Selected)</h5>
+                <p>Real-time availability counters</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> INCR/DECR atomic counters<br>
+                    <span style="color: #22c55e;">✓</span> Pub/Sub for display updates<br>
+                    <span style="color: #22c55e;">✓</span> Bitmap for spot status<br>
+                    <span style="color: #ef4444;">✗</span> Memory-bound for large lots
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Memcached</h5>
+                <p>Simple key-value, multi-threaded</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Better multi-core performance<br>
+                    <span style="color: #22c55e;">✓</span> Lower memory overhead<br>
+                    <span style="color: #ef4444;">✗</span> No atomic counters<br>
+                    <span style="color: #ef4444;">✗</span> No pub/sub for real-time
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Local Cache + Polling</h5>
+                <p>In-memory with periodic DB sync</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> No external dependency<br>
+                    <span style="color: #22c55e;">✓</span> Lowest latency<br>
+                    <span style="color: #ef4444;">✗</span> Stale data between syncs<br>
+                    <span style="color: #ef4444;">✗</span> Inconsistent across servers
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Patterns -->
+        <h3>🧩 Design Patterns Used</h3>
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <h5>Repository Pattern</h5>
+                <p>Abstract DB access. SpotRepository, BookingRepository interfaces. Easy to mock for testing.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>State Pattern</h5>
+                <p>Spot states: Available → Occupied → Maintenance. Each state has allowed transitions.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Observer Pattern</h5>
+                <p>Spot status changes notify: Display boards, Mobile app, Analytics. Pub/Sub via Redis.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Strategy Pattern</h5>
+                <p>Pricing strategies: FlatRate, HourlyRate, DynamicPricing, EventSurge. Switch via config.</p>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">State Pattern - Spot Status</h5>
+<pre>type SpotState interface {
+    CanTransitionTo(newState SpotStatus) bool
+    OnEnter(spot *Spot) error
+    OnExit(spot *Spot) error
+}
+
+type AvailableState struct{}
+func (s *AvailableState) CanTransitionTo(newState SpotStatus) bool {
+    return newState == Occupied || newState == Reserved || newState == Maintenance
+}
+
+type OccupiedState struct{}
+func (s *OccupiedState) CanTransitionTo(newState SpotStatus) bool {
+    return newState == Available  // Only on exit
+}
+
+// Usage
+func (spot *Spot) SetStatus(newStatus SpotStatus) error {
+    if !spot.state.CanTransitionTo(newStatus) {
+        return ErrInvalidTransition
+    }
+    spot.state.OnExit(spot)
+    spot.Status = newStatus
+    spot.state = getStateHandler(newStatus)
+    return spot.state.OnEnter(spot)
 }</pre>
-            </div>
-
-            <div class="api-endpoint">
-                <span class="api-method post">POST</span> /api/v1/reservations
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Request:  { "lot_id": "uuid", "spot_type": "regular", "start_time": "...", "duration_hours": 2 }
-Response: { "reservation_id": "uuid", "spot_number": "A-42", "qr_code": "base64..." }</pre>
-            </div>
-
-            <div class="api-endpoint">
-                <span class="api-method post">POST</span> /api/v1/sensors/status (Internal - IoT)
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Request:  { "sensor_id": "S-001", "occupied": true, "timestamp": "..." }
-Response: { "ack": true }</pre>
-            </div>
         </div>
 
-        <h3>💾 Caching Strategy</h3>
+        <!-- AWS Cost Estimation -->
+        <h3>💰 AWS Cost Estimation (MVP)</h3>
         <div class="feature-card">
-            <p>Use <span class="term-tooltip" onclick="showTooltip('redis')">Redis<span class="info-icon">i</span></span> for real-time availability counts and recently searched locations.</p>
-
-            <h4>Cache Structure</h4>
-            <div class="code-example">
-<pre>// Real-time availability per lot
-lot:{lot_id}:available → 45 (counter, updated by IoT)
-
-// Spot status bitmap
-lot:{lot_id}:spots → bitmap (1=occupied, 0=free)
-
-// User's recent searches
-user:{user_id}:recent_lots → sorted set by timestamp</pre>
-            </div>
-
-            <h4>Cache Invalidation</h4>
-            <ul>
-                <li><strong>IoT Updates:</strong> Decrement/increment availability counter on sensor events</li>
-                <li><strong>Reservations:</strong> Mark spot as reserved, update counter</li>
-                <li><strong>TTL:</strong> Lot metadata cached for 5 minutes</li>
-            </ul>
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Spec</th>
+                        <th>Monthly Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="cost-tag aws">EC2</span> API Servers (2x)</td>
+                        <td>t3.medium, 2 vCPU, 4GB</td>
+                        <td>$60</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">RDS</span> PostgreSQL</td>
+                        <td>db.t3.medium, Multi-AZ, 50GB</td>
+                        <td>$120</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td>cache.t3.small, 1.5GB</td>
+                        <td>$25</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">ALB</span> Load Balancer</td>
+                        <td>Application LB + 500K requests</td>
+                        <td>$25</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">S3</span> Ticket Images/Receipts</td>
+                        <td>5GB storage + transfer</td>
+                        <td>$5</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2"><strong>Total MVP Monthly</strong></td>
+                        <td><strong>~$235/month</strong></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- Feature Addition 1 -->
-        <h3>🆕 Feature Addition 1: Dynamic Pricing</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Dynamic Pricing?</h4>
-            <p>Increase revenue during peak hours, incentivize off-peak usage.</p>
-
-            <div class="arch-comparison">
-                <div class="arch-before">
-                    <h5>Before</h5>
-                    <p>Fixed hourly rate: ₹50/hour</p>
+        <!-- Deployment -->
+        <h3>🚀 Deployment (K8s)</h3>
+        <div class="deployment-diagram">
+            <h4>Kubernetes Architecture</h4>
+            <div class="k8s-cluster">
+                <h5>EKS Cluster - ap-south-1</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                    <div class="k8s-pod">🔷 api-deployment (replicas: 2)</div>
+                    <div class="k8s-pod">🔷 api-hpa (min:2, max:10)</div>
                 </div>
-                <div class="arch-after">
-                    <h5>After</h5>
-                    <p>Dynamic rate based on:</p>
-                    <ul>
-                        <li>Occupancy % (surge at >80%)</li>
-                        <li>Time of day (peak hours)</li>
-                        <li>Events nearby</li>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-pod" style="background: #7c3aed;">📊 Service: ClusterIP</div>
+                    <div class="k8s-pod" style="background: #0891b2;">🌐 Ingress: ALB</div>
+                    <div class="k8s-pod" style="background: #dc2626;">🔐 Secret: db-creds</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml</h5>
+<pre>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parking-lot-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: parking-lot
+  template:
+    spec:
+      containers:
+      - name: api
+        image: parking-lot:v1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-creds
+              key: url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: redis-creds
+              key: url
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: parking-lot-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: parking-lot-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70</pre>
+        </div>
+
+        <!-- CI/CD -->
+        <h3>🔄 CI/CD Pipeline</h3>
+        <div class="diagram-container">
+            <h4>GitHub Actions → ECR → EKS</h4>
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px;">
+                <div class="arch-box client" style="background: #24292e;">Git Push</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server" style="background: #2088FF;">GitHub Actions</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box storage">ECR</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box gateway">kubectl apply</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server">EKS</div>
+            </div>
+            <div style="margin-top: 20px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <strong>Pipeline Steps:</strong>
+                <ol style="font-size: 14px; margin-top: 8px;">
+                    <li>Run tests (go test ./...)</li>
+                    <li>Build Docker image</li>
+                    <li>Push to ECR with git SHA tag</li>
+                    <li>Update K8s deployment (rolling update)</li>
+                    <li>Run integration tests against staging</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Rollback Strategy -->
+        <h3>⏪ Rollback Strategy</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Instant Rollback</h4>
+                    <div class="code-example" style="margin: 12px 0;">
+<pre>kubectl rollout undo deployment/parking-lot-api</pre>
+                    </div>
+                    <p style="font-size: 14px;">K8s keeps last 10 ReplicaSets. Rollback in &lt;30s.</p>
+                </div>
+                <div>
+                    <h4>Feature Flags</h4>
+                    <ul style="font-size: 14px;">
+                        <li>LaunchDarkly / Unleash for toggles</li>
+                        <li>Disable dynamic pricing instantly</li>
+                        <li>Gradual rollout: 5% → 25% → 100%</li>
                     </ul>
                 </div>
             </div>
-
-            <h4>Implementation</h4>
-            <ul>
-                <li>Add <code>pricing_rules</code> table with time-based multipliers</li>
-                <li>Background job calculates current price every minute</li>
-                <li>Cache current price in Redis for fast lookups</li>
-            </ul>
-        </div>
-
-        <!-- Feature Addition 2 -->
-        <h3>🆕 Feature Addition 2: EV Charging Integration</h3>
-        <div class="feature-card addition">
-            <h4>Why Add EV Charging?</h4>
-            <p>Growing EV market needs charging infrastructure. Premium pricing opportunity.</p>
-
-            <h4>Schema Changes</h4>
-            <div class="code-example">
-<pre>ALTER TABLE parking_spots ADD COLUMN has_ev_charger BOOLEAN DEFAULT false;
-ALTER TABLE parking_spots ADD COLUMN charger_type ENUM('level2', 'dc_fast');
-ALTER TABLE parking_spots ADD COLUMN charger_status ENUM('available', 'in_use', 'fault');
-
-CREATE TABLE charging_sessions (
-    id UUID PRIMARY KEY,
-    spot_id UUID REFERENCES parking_spots(id),
-    reservation_id UUID REFERENCES reservations(id),
-    kwh_delivered DECIMAL(8,2),
-    cost DECIMAL(8,2),
-    started_at TIMESTAMP,
-    ended_at TIMESTAMP
-);</pre>
-            </div>
-        </div>
-
-        <!-- Feature Addition 3 -->
-        <h3>🆕 Feature Addition 3: License Plate Recognition (LPR)</h3>
-        <div class="feature-card addition">
-            <h4>Why Add LPR?</h4>
-            <p>Automated entry/exit without QR scanning. Better user experience.</p>
-
-            <div class="diagram-container">
-                <h4>LPR FLOW</h4>
-                <div class="flow-diagram">
-                    <div class="arch-box client">Camera</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box server">LPR Service</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box server">Validate Reservation</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box client">Open Gate</div>
-                </div>
-            </div>
-
-            <div class="pros-cons-grid">
-                <div class="pros-section">
-                    <h4>✅ Pros</h4>
-                    <ul>
-                        <li>Seamless entry/exit experience</li>
-                        <li>Reduced staffing needs</li>
-                        <li>Fraud prevention</li>
-                    </ul>
-                </div>
-                <div class="cons-section">
-                    <h4>❌ Cons</h4>
-                    <ul>
-                        <li>High camera + ML infrastructure cost</li>
-                        <li>Privacy concerns (GDPR/local laws)</li>
-                        <li>Accuracy issues (dirty plates, low light)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Feature Reversion -->
-        <h3>🔙 Feature Reversion: Rolling Back Dynamic Pricing</h3>
-        <div class="feature-card reversion">
-            <h4>Why Revert?</h4>
-            <p>Customer complaints about unfair surge pricing during emergencies. PR crisis.</p>
-
-            <h4>Reversion Strategy</h4>
-            <ol>
-                <li>Feature flag to disable dynamic pricing instantly</li>
-                <li>Fall back to fixed hourly rate</li>
-                <li>Honor existing reservations at quoted price</li>
-                <li>Refund difference for in-progress sessions</li>
-            </ol>
-
-            <h4>Communication</h4>
-            <ul>
-                <li>Push notification: "We've paused surge pricing"</li>
-                <li>Social media acknowledgment</li>
-                <li>Blog post explaining the decision</li>
-            </ul>
         </div>
     </div>
 
+    <!-- ============================================ -->
     <!-- PAN-INDIA SCALE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="pan-india">
         <div class="stage-header">
             <span class="stage-badge pan-india">PAN-India Scale</span>
-            <h2 style="margin: 0;">Multi-City Expansion</h2>
+            <h2 style="margin: 0;">Multi-City • 100K users • 10K lots</h2>
         </div>
 
-        <h3>🗺️ Architecture Evolution</h3>
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
+        <div class="feature-card">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>Search nearby lots with availability</li>
+                        <li>Advance reservation across cities</li>
+                        <li>Subscription plans (monthly passes)</li>
+                        <li>Partner lot onboarding portal</li>
+                        <li>Analytics dashboard for lot owners</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;100ms search</li>
+                        <li>Availability: 99.95%</li>
+                        <li>Throughput: 10K bookings/min</li>
+                        <li>Search: 100K concurrent queries</li>
+                        <li>Data: 10K lots × 500 spots = 5M spots</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE -->
+        <h3>🏗️ Architecture Evolution</h3>
         <div class="diagram-container">
-            <h4>MULTI-CITY ARCHITECTURE</h4>
-            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+            <h4>Multi-Region Architecture</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
                 <div class="arch-box client">Users (All India)</div>
-                <span>↓</span>
-                <div class="arch-box cdn">API Gateway (Regional)</div>
-                <span>↓</span>
-                <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
-                    <div style="text-align: center;">
-                        <strong>Mumbai Region</strong>
-                        <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
-                        <div class="arch-box db" style="margin-top: 8px;">PostgreSQL</div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box cdn">CloudFront CDN<br><small>Static assets + availability cache</small></div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box lb">Route 53 (Latency-based)</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #3b82f6; border-radius: 12px;">
+                        <strong style="color: #3b82f6;">Mumbai (ap-south-1)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">API (5x)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis</div>
+                        </div>
+                        <div class="arch-box db" style="margin-top: 12px;">RDS Primary</div>
                     </div>
-                    <div style="text-align: center;">
-                        <strong>Delhi Region</strong>
-                        <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
-                        <div class="arch-box db" style="margin-top: 8px;">PostgreSQL</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <strong>Bangalore Region</strong>
-                        <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
-                        <div class="arch-box db" style="margin-top: 8px;">PostgreSQL</div>
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #22c55e; border-radius: 12px;">
+                        <strong style="color: #22c55e;">Hyderabad (ap-south-2)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">API (3x)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis</div>
+                        </div>
+                        <div class="arch-box db" style="margin-top: 12px; opacity: 0.7;">RDS Read Replica</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <h3>Key Changes</h3>
+        <!-- DATA FLOW - Search -->
+        <h3>🔄 Data Flow - Nearby Search</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Mobile App</div>
+                    <div class="flow-step-label">GET /nearby</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="flow-step-label">GeoSearch</div>
+                </div>
+                <div class="arch-arrow" style="color: #22c55e;">HIT →</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">API</div>
+                    <div class="flow-step-label">Enrich data</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Results</div>
+                    <div class="flow-step-label">&lt;100ms</div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div style="color: #ef4444; font-weight: 600;">Cache MISS path:</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box db" style="padding: 10px 16px;">PostGIS Query</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box cache" style="padding: 10px 16px;">Populate GeoSet</div>
+                <div class="arch-arrow">→</div>
+                <div>Results (~200ms)</div>
+            </div>
+        </div>
+
+        <h3>📈 What Changes</h3>
         <div class="feature-card">
-            <ul>
-                <li><strong>Regional Databases:</strong> Each city has its own PostgreSQL instance (data locality)</li>
-                <li><strong>Geo-routing:</strong> Route users to nearest regional API based on location</li>
-                <li><strong>Central Analytics:</strong> Replicate to central data warehouse for reporting</li>
-                <li><strong>Redis Cluster:</strong> Regional Redis for caching, with cross-region user sessions</li>
-            </ul>
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 30%;"><strong>PostGIS + Redis Geo</strong></td>
+                    <td>Store lot locations in PostGIS. Cache in Redis GeoSet. GEOSEARCH within radius.</td>
+                </tr>
+                <tr>
+                    <td><strong>Read Replica</strong></td>
+                    <td>Hyderabad reads from local replica. Replication lag: &lt;100ms. Writes → Mumbai.</td>
+                </tr>
+                <tr>
+                    <td><strong>Availability Cache</strong></td>
+                    <td>Pre-compute per-lot availability every 10s. Serve from Redis. No DB hit for search.</td>
+                </tr>
+                <tr>
+                    <td><strong>Route 53</strong></td>
+                    <td>Latency-based routing. Health checks every 10s. Failover in 30s.</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Database Schema Addition -->
+        <h3>🗄️ Schema Additions</h3>
+        <div class="sql-query">
+<pre>-- PostGIS extension for geospatial
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Add location to parking_lots
+ALTER TABLE parking_lots ADD COLUMN location GEOGRAPHY(POINT, 4326);
+CREATE INDEX idx_lots_location ON parking_lots USING GIST(location);
+
+-- Subscriptions table
+CREATE TABLE subscriptions (
+    id            BIGSERIAL PRIMARY KEY,
+    user_id       BIGINT REFERENCES users(id),
+    lot_id        BIGINT REFERENCES parking_lots(id),
+    plan_type     VARCHAR(20),  -- monthly, quarterly, annual
+    spot_type     VARCHAR(20),
+    valid_from    DATE NOT NULL,
+    valid_until   DATE NOT NULL,
+    amount        DECIMAL(10,2),
+    status        VARCHAR(20) DEFAULT 'active'
+);
+
+-- Nearby lots query with PostGIS
+SELECT id, name, address,
+       ST_Distance(location, ST_MakePoint($1, $2)::geography) as distance_m,
+       (SELECT COUNT(*) FROM spots s
+        JOIN floors f ON s.floor_id = f.id
+        WHERE f.lot_id = pl.id AND s.status = 'available') as available
+FROM parking_lots pl
+WHERE ST_DWithin(location, ST_MakePoint($1, $2)::geography, $3)  -- $3 = radius in meters
+ORDER BY distance_m
+LIMIT 20;</pre>
+        </div>
+
+        <h3>💰 Cost at PAN-India Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr>
+                    <td>EKS (8 nodes)</td>
+                    <td>$500</td>
+                </tr>
+                <tr>
+                    <td>RDS Primary + Replica</td>
+                    <td>$450</td>
+                </tr>
+                <tr>
+                    <td>ElastiCache (2 regions)</td>
+                    <td>$150</td>
+                </tr>
+                <tr>
+                    <td>CloudFront (5TB transfer)</td>
+                    <td>$400</td>
+                </tr>
+                <tr>
+                    <td>Route 53 + Health Checks</td>
+                    <td>$50</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Total</strong></td>
+                    <td><strong>~$1,550/month</strong></td>
+                </tr>
+            </table>
         </div>
     </div>
 
+    <!-- ============================================ -->
     <!-- HIGH TRAFFIC -->
+    <!-- ============================================ -->
     <div class="stage-section" id="high-traffic">
         <div class="stage-header">
             <span class="stage-badge high-traffic">High Traffic</span>
-            <h2 style="margin: 0;">Handling Event Surge</h2>
+            <h2 style="margin: 0;">1M users • 50K lots • 100K bookings/hour</h2>
         </div>
 
-        <h3>⚠️ What Breaks First?</h3>
-        <div class="feature-card" style="border-left-color: #ef4444;">
-            <ol>
-                <li><strong>Reservation Conflicts:</strong> Multiple users booking same spot simultaneously</li>
-                <li><strong>IoT Data Flood:</strong> 100K sensors sending updates every 5 seconds</li>
-                <li><strong>Search Queries:</strong> Everyone searching nearby lots during events</li>
-            </ol>
-        </div>
-
-        <h3>🛠️ Solutions</h3>
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
         <div class="feature-card">
-            <h4>1. Optimistic Locking for Reservations</h4>
-            <p>Use version column to detect concurrent modifications. Retry on conflict.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>Event-based surge pricing</li>
+                        <li>Real-time IoT sensor integration</li>
+                        <li>License Plate Recognition (LPR)</li>
+                        <li>Corporate fleet management</li>
+                        <li>Airport/stadium overflow routing</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;50ms booking</li>
+                        <li>Availability: 99.99%</li>
+                        <li>Throughput: 2K bookings/sec peak</li>
+                        <li>IoT: 500K sensors at 5s interval</li>
+                        <li>Concurrent: 100K active sessions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-            <h4>2. IoT Message Queue</h4>
-            <p>Buffer sensor updates in <span class="term-tooltip" onclick="showTooltip('kafka')">Kafka<span class="info-icon">i</span></span>. Process in batches.</p>
+        <h3>⚠️ What Breaks First</h3>
+        <div class="feature-card warning">
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 25%;"><strong>1. Spot Contention</strong></td>
+                    <td>100 users booking same spot simultaneously</td>
+                    <td style="color: #22c55e;"><strong>→ Distributed locks (Redis SETNX)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>2. IoT Data Flood</strong></td>
+                    <td>500K sensors × 1 update/5s = 100K msg/sec</td>
+                    <td style="color: #22c55e;"><strong>→ Kafka buffering + batch writes</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>3. DB Writes</strong></td>
+                    <td>Single primary maxes at ~5K TPS</td>
+                    <td style="color: #22c55e;"><strong>→ Shard by city/region</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>4. Search Latency</strong></td>
+                    <td>PostGIS under load degrades to 500ms+</td>
+                    <td style="color: #22c55e;"><strong>→ Elasticsearch for search, PG for writes</strong></td>
+                </tr>
+            </table>
+        </div>
 
-            <h4>3. Pre-computed Search Results</h4>
-            <p>Materialize "nearby lots with availability" every 10 seconds. Serve from cache.</p>
+        <h3>🏗️ Architecture at Scale</h3>
+        <div class="diagram-container">
+            <h4>High-Traffic Architecture</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                <div style="display: flex; gap: 20px;">
+                    <div class="arch-box client">Mobile/Web</div>
+                    <div class="arch-box client">IoT Sensors</div>
+                    <div class="arch-box client">LPR Cameras</div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box lb">NLB (Layer 4, millions req/sec)</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 12px;">
+                    <div class="arch-box server">API Pod 1</div>
+                    <div class="arch-box server">API Pod 2</div>
+                    <div class="arch-box server">...</div>
+                    <div class="arch-box server">API Pod 20</div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 40px;">
+                    <div style="text-align: center;">
+                        <div class="arch-box cache">Redis Cluster<br><small>12 shards</small></div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box queue">Kafka<br><small>IoT events</small></div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box storage">Elasticsearch<br><small>Search</small></div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 20px;">
+                    <div class="arch-box db">Shard 1<br><small>North</small></div>
+                    <div class="arch-box db">Shard 2<br><small>South</small></div>
+                    <div class="arch-box db">Shard 3<br><small>East</small></div>
+                    <div class="arch-box db">Shard 4<br><small>West</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Flow - IoT -->
+        <h3>🔄 Data Flow - IoT Sensor Updates</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Sensor</div>
+                    <div class="flow-step-label">Status change</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;">Kafka</div>
+                    <div class="flow-step-label">Buffer events</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box worker" style="padding: 10px 16px;">Consumer</div>
+                    <div class="flow-step-label">Batch process</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="flow-step-label">Update bitmap</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="flow-step-label">Async persist</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔀 Message Queue Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Amazon MSK (Kafka)</h5>
+                <p>High throughput for IoT streams</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> 100K+ msg/sec per partition<br>
+                    <span style="color: #22c55e;">✓</span> Replay capability for reprocessing<br>
+                    <span style="color: #ef4444;">✗</span> Complex ops (ZooKeeper)<br>
+                    <span style="color: #ef4444;">✗</span> Higher latency (batching)
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>AWS IoT Core</h5>
+                <p>Managed MQTT broker for sensors</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Native IoT protocol support<br>
+                    <span style="color: #22c55e;">✓</span> Device shadows for offline<br>
+                    <span style="color: #ef4444;">✗</span> Vendor lock-in<br>
+                    <span style="color: #ef4444;">✗</span> Cost at scale (per msg)
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Amazon Kinesis</h5>
+                <p>AWS-native streaming</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Easy AWS integration<br>
+                    <span style="color: #22c55e;">✓</span> Kinesis Analytics for real-time<br>
+                    <span style="color: #ef4444;">✗</span> 1MB record limit<br>
+                    <span style="color: #ef4444;">✗</span> Shard management overhead
+                </div>
+            </div>
+        </div>
+
+        <h3>💰 Cost at High Traffic</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>EKS (20 nodes, c5.xlarge)</td><td>$2,500</td></tr>
+                <tr><td>RDS (4 shards, db.r5.xlarge)</td><td>$3,000</td></tr>
+                <tr><td>ElastiCache Cluster (12 nodes)</td><td>$1,800</td></tr>
+                <tr><td>MSK (Kafka, 6 brokers)</td><td>$1,200</td></tr>
+                <tr><td>Elasticsearch (3 nodes)</td><td>$900</td></tr>
+                <tr><td>Data Transfer</td><td>$800</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$10,200/month</strong></td></tr>
+            </table>
         </div>
     </div>
 
+    <!-- ============================================ -->
     <!-- GLOBAL SCALE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="global">
         <div class="stage-header">
             <span class="stage-badge global">Global Scale</span>
-            <h2 style="margin: 0;">International Expansion</h2>
+            <h2 style="margin: 0;">10M users • 500K lots • Multi-continent</h2>
         </div>
 
-        <h3>🌍 Key Considerations</h3>
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
         <div class="feature-card">
-            <ul>
-                <li><strong>Multi-currency:</strong> Store prices in local currency, convert at checkout</li>
-                <li><strong>Localization:</strong> Multi-language support for mobile app</li>
-                <li><strong>Compliance:</strong> GDPR for EU, local data residency requirements</li>
-                <li><strong>Payment Gateways:</strong> Regional payment providers (Stripe, local alternatives)</li>
-            </ul>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>Multi-currency pricing</li>
+                        <li>Localized mobile apps (i18n)</li>
+                        <li>Cross-border subscription transfer</li>
+                        <li>Global fleet management (Uber, Lyft)</li>
+                        <li>Real-time global analytics</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;100ms any region</li>
+                        <li>Availability: 99.99%</li>
+                        <li>Throughput: 50K bookings/sec</li>
+                        <li>GDPR/CCPA compliance</li>
+                        <li>Data residency per region</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h3>🌍 Global Architecture</h3>
+        <div class="diagram-container">
+            <h4>Multi-Region Active-Active</h4>
+            <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center; padding: 20px; background: rgba(59,130,246,0.1); border-radius: 12px;">
+                    <strong>US-East (Virginia)</strong>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(34,197,94,0.1); border-radius: 12px;">
+                    <strong>EU-West (Frankfurt)</strong>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(249,115,22,0.1); border-radius: 12px;">
+                    <strong>Asia-Pacific (Singapore)</strong>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+            </div>
+            <p style="margin-top: 16px;"><strong>CockroachDB:</strong> Distributed SQL, automatic sharding, cross-region replication. SERIALIZABLE isolation for booking consistency.</p>
         </div>
 
         <h3>📊 Scale Metrics</h3>
         <div class="metrics-card">
             <div class="metric">
-                <div class="value">10M+</div>
+                <div class="value">25M+</div>
                 <div class="label">Parking Spots</div>
             </div>
             <div class="metric">
-                <div class="value">1M</div>
-                <div class="label">Daily Reservations</div>
+                <div class="value">5M</div>
+                <div class="label">Transactions/day</div>
             </div>
             <div class="metric">
                 <div class="value">&lt;100ms</div>
-                <div class="label">Search Latency</div>
+                <div class="label">P99 Latency</div>
             </div>
             <div class="metric">
-                <div class="value">99.9%</div>
+                <div class="value">99.99%</div>
                 <div class="label">Availability</div>
             </div>
+        </div>
+
+        <h3>🌐 Key Considerations</h3>
+        <div class="feature-card">
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 30%;"><strong>Data Residency</strong></td>
+                    <td>EU data stays in EU. CockroachDB locality constraints. Separate tenant DBs if needed.</td>
+                </tr>
+                <tr>
+                    <td><strong>Multi-Currency</strong></td>
+                    <td>Store in local currency. Convert at checkout with real-time FX rates (cached 15 min).</td>
+                </tr>
+                <tr>
+                    <td><strong>Payment Gateways</strong></td>
+                    <td>Stripe (US/EU), Razorpay (India), Alipay (China). Adapter pattern for payment service.</td>
+                </tr>
+                <tr>
+                    <td><strong>Conflict Resolution</strong></td>
+                    <td>CockroachDB uses serializable isolation. Last-write-wins for availability counters.</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>💰 Cost at Global Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>EKS (3 regions, 60 nodes total)</td><td>$15,000</td></tr>
+                <tr><td>CockroachDB Cloud (3 regions)</td><td>$20,000</td></tr>
+                <tr><td>ElastiCache Global</td><td>$6,000</td></tr>
+                <tr><td>CloudFront (500TB)</td><td>$20,000</td></tr>
+                <tr><td>Kafka/Kinesis (3 regions)</td><td>$4,000</td></tr>
+                <tr><td>Elasticsearch (global)</td><td>$3,000</td></tr>
+                <tr><td>Monitoring (Datadog)</td><td>$5,000</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$73,000/month</strong></td></tr>
+            </table>
         </div>
     </div>
 </div>
@@ -414,21 +1364,61 @@ CREATE TABLE charging_sessions (
 <div class="tooltip-popup" id="tooltipPopup">
     <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
     <h4 id="tooltipTitle"></h4>
-    <p id="tooltipContent"></p>
+    <div id="tooltipContent"></div>
 </div>
 
 <script>
 const termDefinitions = {
-    'redis': { title: 'Redis', content: 'An in-memory data structure store used as a database, cache, and message broker. Ideal for real-time availability tracking.' },
-    'kafka': { title: 'Apache Kafka', content: 'A distributed event streaming platform. Perfect for handling high-volume IoT sensor data.' },
-    'postgis': { title: 'PostGIS', content: 'A spatial database extension for PostgreSQL. Enables efficient geospatial queries like "find parking lots within 5km".' }
+    'redis': {
+        title: 'Redis / Amazon ElastiCache',
+        content: `<p>In-memory data store with sub-millisecond latency.</p>
+        <div style="margin-top: 16px;">
+            <strong>Parking Lot Usage:</strong>
+            <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px;">// Real-time availability counter
+DECR lot:123:available    # On entry
+INCR lot:123:available    # On exit
+
+// Spot status bitmap (1=occupied)
+SETBIT lot:123:spots 42 1
+
+// Geo search for nearby lots
+GEOSEARCH lots FROMLONLAT 77.59 12.97 BYRADIUS 5 km</pre>
+        </div>`
+    },
+    'kafka': {
+        title: 'Apache Kafka / Amazon MSK',
+        content: `<p>Distributed event streaming for high-throughput IoT data.</p>
+        <div style="margin-top: 16px;">
+            <strong>Topics:</strong>
+            <ul style="margin: 8px 0; font-size: 14px;">
+                <li><code>iot.sensor.status</code> - Spot occupancy changes</li>
+                <li><code>booking.events</code> - Entry/exit events</li>
+                <li><code>payment.completed</code> - Payment confirmations</li>
+            </ul>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Consumer Groups:</strong> IoT processor, Analytics pipeline, Notification service
+        </div>`
+    },
+    'cockroachdb': {
+        title: 'CockroachDB',
+        content: `<p>Distributed SQL database with global consistency.</p>
+        <div style="margin-top: 12px;">
+            <strong>Why for Global Parking:</strong>
+            <ul style="margin: 8px 0; font-size: 14px;">
+                <li>SERIALIZABLE isolation prevents double-booking</li>
+                <li>Automatic sharding by region</li>
+                <li>Locality constraints for GDPR compliance</li>
+            </ul>
+        </div>`
+    }
 };
 
 function showTooltip(term) {
     const def = termDefinitions[term];
     if (def) {
         document.getElementById('tooltipTitle').textContent = def.title;
-        document.getElementById('tooltipContent').textContent = def.content;
+        document.getElementById('tooltipContent').innerHTML = def.content;
         document.getElementById('tooltipOverlay').classList.add('show');
         document.getElementById('tooltipPopup').classList.add('show');
     }
@@ -439,7 +1429,18 @@ function closeTooltip() {
     document.getElementById('tooltipPopup').classList.remove('show');
 }
 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeTooltip();
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTooltip(); });
+
+// Scroll spy
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('.stage-section');
+    const navLinks = document.querySelectorAll('.quick-nav a');
+    let current = '';
+    sections.forEach(section => {
+        if (scrollY >= section.offsetTop - 200) current = section.id;
+    });
+    navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
 });
 </script>

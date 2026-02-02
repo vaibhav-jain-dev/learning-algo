@@ -4,509 +4,1671 @@
     <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
 
     <h1>🔗 URL Shortener System Design</h1>
-    <p class="topic-description">Design a URL shortening service like bit.ly or TinyURL that handles billions of redirects</p>
+    <p class="topic-description">Design a URL shortening service like bit.ly handling billions of redirects</p>
 
-    <!-- Quick Navigation -->
     <div class="quick-nav">
-        <h4>Quick Navigation</h4>
+        <h4>Navigation</h4>
         <a href="#mvp">MVP Stage</a>
-        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
-        <a href="#global">Global Scale</a>
+        <a href="#global">Global</a>
     </div>
 
+    <!-- ============================================ -->
     <!-- MVP STAGE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="mvp">
         <div class="stage-header">
             <span class="stage-badge mvp">MVP Stage</span>
-            <h2 style="margin: 0;">Minimum Viable Product</h2>
+            <h2 style="margin: 0;">Single Region • 10K users • 1M URLs</h2>
         </div>
 
-        <h3>📊 Database Strategy</h3>
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
         <div class="feature-card">
-            <h4>Why PostgreSQL?</h4>
-            <p>For MVP, we choose <span class="term-tooltip" onclick="showTooltip('database-index')">PostgreSQL<span class="info-icon">i</span></span> for its ACID compliance, robust indexing, and proven reliability.</p>
-
-            <div class="pros-cons-grid">
-                <div class="pros-section">
-                    <h4>✅ Pros</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
                     <ul>
-                        <li><strong>ACID Compliance</strong> - Guaranteed data consistency</li>
-                        <li><strong>Rich Indexing</strong> - B-tree indexes for fast lookups</li>
-                        <li><strong>Mature Ecosystem</strong> - Extensive tooling and community</li>
+                        <li>Shorten URL → 7-char code</li>
+                        <li>Redirect short → original (301)</li>
+                        <li>Custom aliases (optional)</li>
+                        <li>Expiration date support</li>
+                        <li>Basic click analytics</li>
                     </ul>
-                    <div class="care-points">
-                        <h5>⚠️ What to Care About:</h5>
-                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
-                            <li>Set up connection pooling (PgBouncer) from day 1</li>
-                            <li>Configure proper vacuum settings for high-write tables</li>
-                            <li>Monitor slow queries with pg_stat_statements</li>
-                        </ul>
-                    </div>
                 </div>
-                <div class="cons-section">
-                    <h4>❌ Cons</h4>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
                     <ul>
-                        <li><strong>Vertical Scaling</strong> - Single node limits</li>
-                        <li><strong>Write Bottleneck</strong> - Single primary for writes</li>
-                        <li><strong>Complex Sharding</strong> - Not native support</li>
+                        <li>Latency: &lt;100ms redirect</li>
+                        <li>Availability: 99.9%</li>
+                        <li>Throughput: 1000 reads/sec</li>
+                        <li>Storage: 1M URLs × 500B = 500MB</li>
+                        <li>Read:Write ratio = 100:1</li>
                     </ul>
-                    <div class="manage-points">
-                        <h5>🔧 How to Manage:</h5>
-                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
-                            <li>Plan for read replicas early in design</li>
-                            <li>Use Citus extension for future sharding</li>
-                            <li>Implement caching layer to reduce DB load</li>
-                        </ul>
-                    </div>
                 </div>
-            </div>
-
-            <h4 style="margin-top: 24px;">Schema Design</h4>
-            <div class="diagram-container">
-                <h4>DATABASE SCHEMA</h4>
-                <div class="schema-diagram">
-                    <div class="schema-table">
-                        <div class="schema-table-header">urls</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
-                            <div class="schema-field"><span class="field-name">short_code</span><span class="field-type">VARCHAR(8) UNIQUE</span></div>
-                            <div class="schema-field"><span class="field-name">original_url</span><span class="field-type">TEXT NOT NULL</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">BIGINT FK</span></div>
-                            <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
-                            <div class="schema-field"><span class="field-name">expires_at</span><span class="field-type">TIMESTAMP</span></div>
-                            <div class="schema-field"><span class="field-name">click_count</span><span class="field-type">BIGINT DEFAULT 0</span></div>
-                        </div>
-                    </div>
-                    <div class="relation-arrow">1:N ←</div>
-                    <div class="schema-table">
-                        <div class="schema-table-header">users</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
-                            <div class="schema-field"><span class="field-name">email</span><span class="field-type">VARCHAR(255)</span></div>
-                            <div class="schema-field"><span class="field-name">api_key</span><span class="field-type">VARCHAR(64)</span></div>
-                            <div class="schema-field"><span class="field-name">tier</span><span class="field-type">ENUM</span></div>
-                            <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
-                        </div>
-                    </div>
-                </div>
-                <p style="text-align: center; color: #64748b; font-size: 12px; margin-top: 16px;">Index on short_code (B-tree) for O(log n) lookups</p>
             </div>
         </div>
 
-        <h3>🏗️ Architecture (MVP)</h3>
+        <!-- FRAMEWORK CHOICE -->
+        <h3>⚙️ Framework & Tech Stack Choice</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Go + Fiber (Selected)</h5>
+                <p>High performance, low memory, compiled binary</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> 100K+ req/sec single instance<br>
+                    <span style="color: #22c55e;">✓</span> 10MB memory per instance<br>
+                    <span style="color: #22c55e;">✓</span> Static binary, simple deploy<br>
+                    <span style="color: #ef4444;">✗</span> Smaller ecosystem than Node<br>
+                    <span style="color: #ef4444;">✗</span> Steeper learning curve
+                </div>
+                <div style="background: #f0fdf4; padding: 8px; border-radius: 6px; margin-top: 8px; font-size: 12px;">
+                    <strong>Best for:</strong> High-throughput, low-latency APIs
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Node.js + Express</h5>
+                <p>Fast development, huge ecosystem</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Rapid prototyping<br>
+                    <span style="color: #22c55e;">✓</span> Same language frontend/backend<br>
+                    <span style="color: #ef4444;">✗</span> Single-threaded (event loop)<br>
+                    <span style="color: #ef4444;">✗</span> Higher memory (100MB+)<br>
+                    <span style="color: #ef4444;">✗</span> Callback hell / async complexity
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Java + Spring Boot</h5>
+                <p>Enterprise-grade, battle-tested</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Mature ecosystem<br>
+                    <span style="color: #22c55e;">✓</span> Strong typing<br>
+                    <span style="color: #ef4444;">✗</span> JVM startup time (cold start)<br>
+                    <span style="color: #ef4444;">✗</span> High memory (500MB+)<br>
+                    <span style="color: #ef4444;">✗</span> Verbose boilerplate
+                </div>
+            </div>
+        </div>
+
+        <!-- MONOLITH vs MICROSERVICES -->
+        <h3>🏛️ Monolith vs Microservices Decision</h3>
         <div class="diagram-container">
-            <h4>MVP ARCHITECTURE</h4>
-            <div class="flow-diagram">
-                <div class="arch-box client">Browser/Client</div>
-                <span class="arch-arrow">→</span>
-                <div class="arch-box server">API Server (Go/Node)</div>
-                <span class="arch-arrow">→</span>
-                <div class="arch-box db">PostgreSQL</div>
+            <h4>MVP: Modular Monolith (Recommended)</h4>
+            <div style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center; padding: 20px; border: 3px solid #22c55e; border-radius: 16px; background: rgba(34,197,94,0.1);">
+                    <strong style="color: #166534; font-size: 18px;">✅ MVP Choice: Modular Monolith</strong>
+                    <div style="margin-top: 16px; text-align: left; font-size: 14px;">
+                        <div>✓ Single deployment unit</div>
+                        <div>✓ Simple debugging (single process)</div>
+                        <div>✓ No network latency between modules</div>
+                        <div>✓ Easy refactoring boundaries</div>
+                        <div>✓ YAGNI - don't over-engineer</div>
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 20px; border: 2px dashed #94a3b8; border-radius: 16px; opacity: 0.7;">
+                    <strong style="color: #64748b; font-size: 18px;">❌ Microservices (Later)</strong>
+                    <div style="margin-top: 16px; text-align: left; font-size: 14px;">
+                        <div>• Split when team > 10 engineers</div>
+                        <div>• Split when > 10M URLs</div>
+                        <div>• Split analytics to separate service</div>
+                        <div>• Split when independent scaling needed</div>
+                    </div>
+                </div>
             </div>
-            <p style="text-align: center; color: #64748b; font-size: 13px; margin-top: 16px;">Simple 3-tier architecture for MVP. Single server handles ~1000 req/sec</p>
         </div>
 
+        <div class="feature-card">
+            <h4>Modular Monolith Structure</h4>
+            <div class="code-example" style="margin: 16px 0;">
+<pre>url-shortener/
+├── cmd/
+│   └── server/main.go          # Entry point
+├── internal/
+│   ├── url/                    # URL domain module
+│   │   ├── handler.go          # HTTP handlers
+│   │   ├── service.go          # Business logic
+│   │   ├── repository.go       # Data access interface
+│   │   └── postgres_repo.go    # PostgreSQL implementation
+│   ├── analytics/              # Analytics module (future microservice)
+│   │   ├── handler.go
+│   │   ├── service.go
+│   │   └── clickhouse_repo.go
+│   ├── auth/                   # Auth module
+│   │   ├── middleware.go
+│   │   └── api_key_service.go
+│   └── ratelimit/              # Rate limiting module
+│       └── redis_limiter.go
+├── pkg/
+│   ├── cache/                  # Redis wrapper
+│   └── shortcode/              # Base62 encoding
+└── config/</pre>
+            </div>
+            <p style="font-size: 14px; color: #64748b;">Each module has clear boundaries. When ready to split, extract analytics/ as separate service with Kafka events.</p>
+        </div>
+
+        <!-- DOMAIN MODEL -->
+        <h3>📊 Domain Model / Entity Diagram</h3>
+        <div class="diagram-container">
+            <h4>Entity Relationships</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; align-items: flex-start;">
+                <!-- User Entity -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 220px;">
+                    <div style="background: #8b5cf6; color: white; padding: 12px; font-weight: 700; text-align: center;">
+                        👤 User (Aggregate Root)
+                    </div>
+                    <div style="padding: 16px; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span style="color: #f59e0b; font-weight: 600;">🔑 id</span><span>UUID</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>email</span><span>String</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>apiKey</span><span>String</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>tier</span><span>Enum</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>createdAt</span><span>DateTime</span></div>
+                    </div>
+                </div>
+
+                <!-- Relationship Arrow -->
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 0;">
+                    <div style="font-size: 12px; color: #64748b;">1</div>
+                    <div style="width: 80px; height: 2px; background: #3b82f6;"></div>
+                    <div style="width: 0; height: 0; border-left: 8px solid #3b82f6; border-top: 6px solid transparent; border-bottom: 6px solid transparent;"></div>
+                    <div style="font-size: 12px; color: #64748b;">N</div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">owns</div>
+                </div>
+
+                <!-- URL Entity -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 220px;">
+                    <div style="background: #3b82f6; color: white; padding: 12px; font-weight: 700; text-align: center;">
+                        🔗 ShortURL (Entity)
+                    </div>
+                    <div style="padding: 16px; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span style="color: #f59e0b; font-weight: 600;">🔑 id</span><span>UUID</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span style="color: #06b6d4; font-weight: 600;">shortCode</span><span>String (unique)</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>originalUrl</span><span>URL</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span style="color: #8b5cf6;">userId</span><span>FK → User</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>expiresAt</span><span>DateTime?</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>clickCount</span><span>Long</span></div>
+                    </div>
+                </div>
+
+                <!-- Relationship Arrow -->
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px 0;">
+                    <div style="font-size: 12px; color: #64748b;">1</div>
+                    <div style="width: 80px; height: 2px; background: #22c55e;"></div>
+                    <div style="width: 0; height: 0; border-left: 8px solid #22c55e; border-top: 6px solid transparent; border-bottom: 6px solid transparent;"></div>
+                    <div style="font-size: 12px; color: #64748b;">N</div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">has</div>
+                </div>
+
+                <!-- Click Event -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px;">
+                    <div style="background: #f59e0b; color: white; padding: 12px; font-weight: 700; text-align: center;">
+                        📊 ClickEvent (Value Object)
+                    </div>
+                    <div style="padding: 16px; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span style="color: #8b5cf6;">shortCode</span><span>FK</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>timestamp</span><span>DateTime</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>ip</span><span>String</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>userAgent</span><span>String</span></div>
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0;"><span>referer</span><span>String?</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERVICE COMMUNICATION (for future microservices) -->
+        <h3>🔗 Service Communication Patterns</h3>
+        <div class="feature-card">
+            <h4>When We Split to Microservices</h4>
+            <p>At scale, analytics will be separated. Here's how services will communicate:</p>
+        </div>
+
+        <div class="diagram-container">
+            <h4>Sync vs Async Communication</h4>
+            <div style="display: flex; flex-direction: column; gap: 32px;">
+                <!-- Sync Path -->
+                <div style="border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+                    <h5 style="color: #3b82f6; margin: 0 0 16px 0;">🔄 Synchronous (REST/gRPC) - Read Path</h5>
+                    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                        <div class="arch-box client" style="padding: 10px;">Client</div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box gateway" style="padding: 10px;">API Gateway</div>
+                        <div class="arch-arrow">REST</div>
+                        <div class="arch-box server" style="padding: 10px;">URL Service</div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box cache" style="padding: 10px;">Redis</div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box client" style="padding: 10px;">301 Redirect</div>
+                    </div>
+                    <p style="font-size: 13px; color: #64748b; margin: 12px 0 0 0;">Latency-critical path. Direct service-to-cache. P99 &lt; 50ms.</p>
+                </div>
+
+                <!-- Async Path -->
+                <div style="border: 2px solid #ec4899; border-radius: 12px; padding: 20px;">
+                    <h5 style="color: #ec4899; margin: 0 0 16px 0;">📬 Asynchronous (Kafka) - Analytics Path</h5>
+                    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                        <div class="arch-box server" style="padding: 10px;">URL Service</div>
+                        <div class="arch-arrow">publish</div>
+                        <div class="arch-box queue" style="padding: 10px;">Kafka<br><small>click-events</small></div>
+                        <div class="arch-arrow">consume</div>
+                        <div class="arch-box analytics" style="padding: 10px;">Analytics Service</div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-box storage" style="padding: 10px;">ClickHouse</div>
+                    </div>
+                    <p style="font-size: 13px; color: #64748b; margin: 12px 0 0 0;">Fire-and-forget. No impact on redirect latency. Eventual consistency OK.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Kafka Event Schema (Avro/JSON)</h5>
+<pre>{
+    "event_type": "url.clicked",
+    "event_id": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "data": {
+        "short_code": "abc123",
+        "user_id": "user-uuid",
+        "client_ip": "203.0.113.50",
+        "user_agent": "Mozilla/5.0...",
+        "referer": "https://twitter.com/...",
+        "country": "IN",
+        "device_type": "mobile"
+    }
+}
+
+// Producer (URL Service)
+producer.Send("click-events", event)  // Non-blocking, returns immediately
+
+// Consumer (Analytics Service)
+consumer.Subscribe("click-events", func(event ClickEvent) {
+    analyticsRepo.IncrementCounter(event.ShortCode)
+    clickhouseRepo.Insert(event)  // Batch insert every 1000 events
+})</pre>
+        </div>
+
+        <!-- ARCHITECTURE DIAGRAM -->
+        <h3>🏗️ Architecture</h3>
+        <div class="diagram-container">
+            <h4>MVP Architecture - Single Region</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <!-- Layer 1: Clients -->
+                <div style="display: flex; gap: 40px;">
+                    <div class="arch-box client">Web Client</div>
+                    <div class="arch-box client">Mobile App</div>
+                    <div class="arch-box client">API Consumer</div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 2: Load Balancer -->
+                <div class="arch-box lb">AWS ALB<br><small>Health checks, SSL termination</small></div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 3: API Servers -->
+                <div style="display: flex; gap: 20px;">
+                    <div class="arch-box server">API Server 1<br><small>Go/Fiber</small></div>
+                    <div class="arch-box server">API Server 2<br><small>Go/Fiber</small></div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 4: Data -->
+                <div style="display: flex; gap: 40px; align-items: flex-start;">
+                    <div style="text-align: center;">
+                        <div class="arch-box cache">ElastiCache<br><small>Redis 6.x</small></div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Cache-aside pattern<br>TTL: 24h</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box db">RDS PostgreSQL<br><small>db.t3.medium</small></div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Primary + Read Replica<br>Multi-AZ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA FLOW -->
+        <h3>🔄 Data Flow - Create Short URL</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Client</div>
+                    <div class="flow-step-label">POST /shorten</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">API</div>
+                    <div class="flow-step-label">Generate Base62</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="flow-step-label">INSERT url</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="flow-step-label">SET with TTL</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Response</div>
+                    <div class="flow-step-label">short.ly/abc123</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔄 Data Flow - Redirect</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Client</div>
+                    <div class="flow-step-label">GET /abc123</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="flow-step-label">GET abc123</div>
+                </div>
+                <div class="arch-arrow" style="color: #22c55e;">HIT →</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">301 Redirect</div>
+                    <div class="flow-step-label">&lt;5ms</div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div style="color: #ef4444; font-weight: 600;">Cache MISS path:</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box cache" style="padding: 10px 16px;">Populate Cache</div>
+                <div class="arch-arrow">→</div>
+                <div>301 (~50ms)</div>
+            </div>
+        </div>
+
+        <!-- DATABASE SCHEMA -->
+        <h3>🗄️ Database Schema</h3>
+        <div class="diagram-container">
+            <h4>PostgreSQL Schema with Relationships</h4>
+            <div class="schema-diagram">
+                <div class="schema-table">
+                    <div class="schema-table-header">📦 users</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name">email</span><span class="field-type">VARCHAR(255) UNIQUE</span></div>
+                        <div class="schema-field"><span class="field-name">api_key</span><span class="field-type">VARCHAR(64) UNIQUE</span></div>
+                        <div class="schema-field"><span class="field-name">tier</span><span class="field-type">VARCHAR(20)</span></div>
+                        <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMPTZ</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span>1</span>
+                    <span>─────</span>
+                    <span>N</span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">🔗 urls</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">short_code</span><span class="field-type">VARCHAR(10) UNIQUE</span></div>
+                        <div class="schema-field"><span class="field-name">original_url</span><span class="field-type">TEXT NOT NULL</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">BIGINT FK → users.id</span></div>
+                        <div class="schema-field"><span class="field-name">click_count</span><span class="field-type">BIGINT DEFAULT 0</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">expires_at</span><span class="field-type">TIMESTAMPTZ</span></div>
+                        <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMPTZ</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Index Justification -->
+            <div class="index-justification" style="margin-top: 24px;">
+                <h5>🔍 Index Strategy</h5>
+                <table style="width: 100%; font-size: 14px;">
+                    <tr>
+                        <td><code>idx_urls_short_code</code></td>
+                        <td>B-tree UNIQUE on <code>short_code</code></td>
+                        <td>O(log n) redirect lookup - called on every redirect</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_urls_user_id</code></td>
+                        <td>B-tree on <code>user_id</code></td>
+                        <td>User's URL listing - "My URLs" dashboard</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_urls_expires</code></td>
+                        <td>B-tree on <code>expires_at</code></td>
+                        <td>Cleanup job: DELETE WHERE expires_at < NOW()</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- SQL Queries -->
+        <h3>📝 SQL Queries</h3>
+        <div class="sql-query">
+            <h5>Create Tables</h5>
+<pre>CREATE TABLE users (
+    id          BIGSERIAL PRIMARY KEY,
+    email       VARCHAR(255) UNIQUE NOT NULL,
+    api_key     VARCHAR(64) UNIQUE NOT NULL,
+    tier        VARCHAR(20) DEFAULT 'free',
+    created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE urls (
+    id           BIGSERIAL PRIMARY KEY,
+    short_code   VARCHAR(10) UNIQUE NOT NULL,
+    original_url TEXT NOT NULL,
+    user_id      BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    click_count  BIGINT DEFAULT 0,
+    expires_at   TIMESTAMPTZ,
+    created_at   TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_urls_short_code ON urls(short_code);
+CREATE INDEX idx_urls_user_id ON urls(user_id);
+CREATE INDEX idx_urls_expires ON urls(expires_at) WHERE expires_at IS NOT NULL;</pre>
+        </div>
+
+        <div class="sql-query">
+            <h5>API Queries</h5>
+<pre>-- Create short URL (POST /shorten)
+INSERT INTO urls (short_code, original_url, user_id, expires_at)
+VALUES ($1, $2, $3, $4)
+RETURNING id, short_code, created_at;
+
+-- Redirect lookup (GET /:code) - Index scan O(log n)
+SELECT original_url FROM urls
+WHERE short_code = $1 AND (expires_at IS NULL OR expires_at > NOW());
+
+-- Increment click (async, non-blocking)
+UPDATE urls SET click_count = click_count + 1 WHERE short_code = $1;
+
+-- User's URLs (GET /api/my-urls)
+SELECT short_code, original_url, click_count, created_at
+FROM urls WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50;</pre>
+        </div>
+
+        <!-- API Design -->
         <h3>🔌 API Design</h3>
-        <div class="feature-card">
-            <div class="api-endpoint">
-                <span class="api-method post">POST</span> /api/v1/shorten
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Request:  { "url": "https://example.com/very/long/path", "custom_alias": "mylink" }
-Response: { "short_url": "https://short.ly/abc123", "expires_at": "2024-12-31" }</pre>
-            </div>
-            <p><strong>DB Impact:</strong> 1 INSERT to urls table</p>
-            <p><strong>Concurrency:</strong> Use <span class="term-tooltip" onclick="showTooltip('idempotency')">idempotency key<span class="info-icon">i</span></span> to prevent duplicate URLs</p>
+        <div class="api-endpoint">
+            <span class="api-method post">POST</span> <span class="api-path">/api/v1/shorten</span>
+<pre>
+Request:
+{
+    "url": "https://example.com/very/long/path?with=params",
+    "custom_alias": "mylink",        // optional
+    "expires_in_days": 30            // optional
+}
 
-            <div class="api-endpoint">
-                <span class="api-method get">GET</span> /:shortCode
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Response: 301 Redirect to original_url
-Headers:  Location: https://example.com/very/long/path</pre>
-            </div>
-            <p><strong>DB Impact:</strong> 1 SELECT + 1 UPDATE (increment click_count)</p>
-            <p><strong>Optimization:</strong> Use async click tracking to not block redirect</p>
+Response: 201 Created
+{
+    "short_url": "https://short.ly/abc123",
+    "short_code": "abc123",
+    "expires_at": "2024-02-15T00:00:00Z",
+    "created_at": "2024-01-15T10:30:00Z"
+}
+
+Errors:
+- 400: Invalid URL format
+- 409: Custom alias already taken
+- 429: Rate limit exceeded</pre>
         </div>
 
-        <h3>💾 Caching Strategy</h3>
-        <div class="feature-card">
-            <p>Use <span class="term-tooltip" onclick="showTooltip('redis')">Redis<span class="info-icon">i</span></span> for caching URL mappings with TTL-based invalidation.</p>
+        <div class="api-endpoint">
+            <span class="api-method get">GET</span> <span class="api-path">/:shortCode</span>
+<pre>
+Response: 301 Moved Permanently
+Headers:
+    Location: https://example.com/very/long/path?with=params
+    Cache-Control: private, max-age=86400
 
-            <div class="diagram-container">
-                <h4>CACHE FLOW</h4>
-                <div class="flow-diagram">
-                    <div class="arch-box client">Request</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box cache">Redis (Check)</div>
-                    <span class="arch-arrow">→ miss →</span>
-                    <div class="arch-box db">PostgreSQL</div>
-                    <span class="arch-arrow">→ populate →</span>
-                    <div class="arch-box cache">Redis</div>
-                </div>
-            </div>
-
-            <h4>Cache Invalidation Strategy</h4>
-            <ul>
-                <li><strong>TTL-based:</strong> Cache entries expire after 24 hours</li>
-                <li><strong>Event-driven:</strong> On URL delete, publish to Redis pub/sub</li>
-                <li><strong>Write-through:</strong> Update cache on every URL creation</li>
-            </ul>
-
-            <div class="pros-cons-grid">
-                <div class="pros-section">
-                    <h4>✅ Cache Benefits</h4>
-                    <ul>
-                        <li>99% cache hit rate for popular URLs</li>
-                        <li>Sub-millisecond redirect latency</li>
-                        <li>Reduces DB load by 95%</li>
-                    </ul>
-                </div>
-                <div class="cons-section">
-                    <h4>❌ Cache Risks</h4>
-                    <ul>
-                        <li>Stale data if invalidation fails</li>
-                        <li>Cache stampede on cold start</li>
-                        <li>Memory costs for large datasets</li>
-                    </ul>
-                </div>
-            </div>
+Errors:
+- 404: Short code not found
+- 410: URL expired</pre>
         </div>
 
-        <!-- Feature Addition 1 -->
-        <h3>🆕 Feature Addition 1: Analytics Dashboard</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Analytics?</h4>
-            <p>Users want to track click counts, geographic distribution, and referrers.</p>
-
-            <div class="arch-comparison">
-                <div class="arch-before">
-                    <h5>Before</h5>
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                        <div class="arch-box server">API Server</div>
-                        <span>↓</span>
-                        <div class="arch-box db">PostgreSQL</div>
+        <!-- Database Alternatives -->
+        <h3>🔀 Database Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ PostgreSQL (Selected)</h5>
+                <p>ACID compliance, robust indexing, proven at scale</p>
+                <div class="pros-cons-grid" style="margin: 12px 0;">
+                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #166534;">Pros:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>ACID for consistency</li>
+                            <li>Excellent B-tree indexes</li>
+                            <li>Rich ecosystem (pg_stat, pgBouncer)</li>
+                        </ul>
                     </div>
-                </div>
-                <div class="arch-after">
-                    <h5>After</h5>
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                        <div class="arch-box server">API Server</div>
-                        <span>↓</span>
-                        <div class="arch-box queue">Kafka</div>
-                        <span>↓</span>
-                        <div style="display: flex; gap: 12px;">
-                            <div class="arch-box db">PostgreSQL</div>
-                            <div class="arch-box analytics">ClickHouse</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <h4>New Components</h4>
-            <ul>
-                <li><strong><span class="term-tooltip" onclick="showTooltip('kafka')">Kafka<span class="info-icon">i</span></span>:</strong> Async event streaming for click events</li>
-                <li><strong>ClickHouse:</strong> Columnar DB for analytics queries</li>
-                <li><strong>Analytics API:</strong> New endpoints for dashboard data</li>
-            </ul>
-
-            <h4>Deployment Strategy</h4>
-            <p>Blue-green deployment with feature flag. Roll out to 5% users, monitor error rates, then full rollout.</p>
-
-            <h4>Rollback Strategy</h4>
-            <p>Disable feature flag instantly. Kafka consumer pauses. Analytics data preserved for retry.</p>
-        </div>
-
-        <!-- Feature Addition 2 -->
-        <h3>🆕 Feature Addition 2: Custom Domains</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Custom Domains?</h4>
-            <p>Enterprise users want branded short URLs (e.g., go.company.com/sale)</p>
-
-            <h4>Architecture Changes</h4>
-            <ul>
-                <li>Add <code>domains</code> table with SSL cert storage</li>
-                <li>Integrate Let's Encrypt for auto SSL provisioning</li>
-                <li>Add DNS verification workflow</li>
-                <li>Update routing to match domain + short_code</li>
-            </ul>
-
-            <div class="pros-cons-grid">
-                <div class="pros-section">
-                    <h4>✅ Pros</h4>
-                    <ul>
-                        <li>Higher trust with branded domains</li>
-                        <li>Premium feature for monetization</li>
-                        <li>Better click-through rates</li>
-                    </ul>
-                    <div class="care-points">
-                        <h5>⚠️ What to Care About:</h5>
-                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
-                            <li>SSL certificate renewal automation</li>
-                            <li>DNS propagation delays (up to 48h)</li>
-                            <li>Domain verification security</li>
+                    <div style="background: #fef2f2; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #991b1b;">Cons:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Single-node write bottleneck</li>
+                            <li>Sharding requires Citus</li>
+                            <li>Vacuum overhead on high writes</li>
                         </ul>
                     </div>
                 </div>
-                <div class="cons-section">
-                    <h4>❌ Cons</h4>
-                    <ul>
-                        <li>Complex SSL management</li>
-                        <li>Support burden for DNS issues</li>
-                        <li>Increased infrastructure cost</li>
+                <div style="background: #fef3c7; padding: 10px; border-radius: 6px; font-size: 13px;">
+                    <strong>⚠️ Care:</strong> Configure PgBouncer from day 1. Set autovacuum_vacuum_scale_factor = 0.1
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>MongoDB</h5>
+                <p>Document store, easy sharding</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Native sharding on short_code<br>
+                    <span style="color: #22c55e;">✓</span> Flexible schema<br>
+                    <span style="color: #ef4444;">✗</span> No ACID across docs<br>
+                    <span style="color: #ef4444;">✗</span> Higher storage (BSON overhead)
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> If expecting 100M+ URLs and need horizontal scaling from start
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>DynamoDB</h5>
+                <p>AWS managed, infinite scale</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Zero ops, auto-scaling<br>
+                    <span style="color: #22c55e;">✓</span> Single-digit ms latency<br>
+                    <span style="color: #ef4444;">✗</span> No joins, limited queries<br>
+                    <span style="color: #ef4444;">✗</span> Cost at scale (RCU/WCU)
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> AWS-native stack, want zero DB ops
+                </div>
+            </div>
+        </div>
+
+        <!-- Cache Alternatives -->
+        <h3>🔀 Cache Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Redis / ElastiCache (Selected)</h5>
+                <p>In-memory, sub-ms latency</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> O(1) GET/SET operations<br>
+                    <span style="color: #22c55e;">✓</span> TTL support built-in<br>
+                    <span style="color: #22c55e;">✓</span> Cluster mode for scaling<br>
+                    <span style="color: #ef4444;">✗</span> Memory-bound ($$$ at scale)
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Memcached</h5>
+                <p>Simple key-value, multi-threaded</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Better multi-core utilization<br>
+                    <span style="color: #22c55e;">✓</span> Lower memory overhead<br>
+                    <span style="color: #ef4444;">✗</span> No persistence<br>
+                    <span style="color: #ef4444;">✗</span> No pub/sub for invalidation
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Local Cache + CDN</h5>
+                <p>Edge caching with CloudFront</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Lowest latency (edge)</li>
+                    <span style="color: #22c55e;">✓</span> Offloads origin 95%+<br>
+                    <span style="color: #ef4444;">✗</span> Stale data on URL update<br>
+                    <span style="color: #ef4444;">✗</span> Complex invalidation
+                </div>
+            </div>
+        </div>
+
+        <!-- Machine Coding / Design Patterns -->
+        <h3>🧩 Design Patterns Used</h3>
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <h5>Repository Pattern</h5>
+                <p>Abstract DB access. URLRepository interface with PostgresURLRepo implementation. Easy to swap DB.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Strategy Pattern</h5>
+                <p>Short code generation. Base62Strategy, MD5Strategy, NanoIDStrategy. Switch via config.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Cache-Aside Pattern</h5>
+                <p>Check cache → miss → query DB → populate cache. Never write-through for URL data.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Circuit Breaker</h5>
+                <p>Wrap DB calls. If 5 failures in 10s → open circuit → return cached/error. Prevents cascade.</p>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Short Code Generation - Base62</h5>
+<pre>const ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+func GenerateShortCode(id int64) string {
+    var code strings.Builder
+    for id > 0 {
+        code.WriteByte(ALPHABET[id % 62])
+        id /= 62
+    }
+    // Pad to 7 chars, reverse
+    for code.Len() < 7 {
+        code.WriteByte('0')
+    }
+    return reverse(code.String())
+}
+
+// 62^7 = 3.5 trillion unique codes</pre>
+        </div>
+
+        <!-- AWS Cost Estimation -->
+        <h3>💰 AWS Cost Estimation (MVP)</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Spec</th>
+                        <th>Monthly Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="cost-tag aws">EC2</span> API Servers (2x)</td>
+                        <td>t3.medium, 2 vCPU, 4GB</td>
+                        <td>$60</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">RDS</span> PostgreSQL</td>
+                        <td>db.t3.medium, Multi-AZ, 100GB</td>
+                        <td>$140</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td>cache.t3.small, 1.5GB</td>
+                        <td>$25</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">ALB</span> Load Balancer</td>
+                        <td>Application LB + 1M requests</td>
+                        <td>$30</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">S3</span> Backups</td>
+                        <td>10GB storage</td>
+                        <td>$5</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2"><strong>Total MVP Monthly</strong></td>
+                        <td><strong>~$260/month</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Deployment -->
+        <h3>🚀 Deployment (K8s)</h3>
+        <div class="deployment-diagram">
+            <h4>Kubernetes Architecture</h4>
+            <div class="k8s-cluster">
+                <h5>EKS Cluster - ap-south-1</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                    <div class="k8s-pod">🔷 api-deployment (replicas: 2)</div>
+                    <div class="k8s-pod">🔷 api-hpa (min:2, max:10)</div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-pod" style="background: #7c3aed;">📊 Service: ClusterIP</div>
+                    <div class="k8s-pod" style="background: #0891b2;">🌐 Ingress: ALB</div>
+                    <div class="k8s-pod" style="background: #dc2626;">🔐 Secret: db-creds</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml</h5>
+<pre>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shortener-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: url-shortener
+  template:
+    spec:
+      containers:
+      - name: api
+        image: url-shortener:v1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-creds
+              key: url
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: url-shortener-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: url-shortener-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70</pre>
+        </div>
+
+        <!-- CI/CD -->
+        <h3>🔄 CI/CD Pipeline</h3>
+        <div class="diagram-container">
+            <h4>GitHub Actions → ECR → EKS</h4>
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px;">
+                <div class="arch-box client" style="background: #24292e;">Git Push</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server" style="background: #2088FF;">GitHub Actions</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box storage">ECR</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box gateway">kubectl apply</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server">EKS</div>
+            </div>
+            <div style="margin-top: 20px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <strong>Pipeline Steps:</strong>
+                <ol style="font-size: 14px; margin-top: 8px;">
+                    <li>Run tests (go test ./...)</li>
+                    <li>Build Docker image</li>
+                    <li>Push to ECR with git SHA tag</li>
+                    <li>Update K8s deployment (rolling update)</li>
+                    <li>Run smoke tests</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Rollback Strategy -->
+        <h3>⏪ Rollback Strategy</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Instant Rollback</h4>
+                    <div class="code-example" style="margin: 12px 0;">
+<pre>kubectl rollout undo deployment/url-shortener-api</pre>
+                    </div>
+                    <p style="font-size: 14px;">K8s keeps last 10 ReplicaSets. Rollback in &lt;30s.</p>
+                </div>
+                <div>
+                    <h4>Feature Flags</h4>
+                    <ul style="font-size: 14px;">
+                        <li>LaunchDarkly / Unleash for feature toggles</li>
+                        <li>Disable new feature without deploy</li>
+                        <li>Gradual rollout: 5% → 25% → 100%</li>
                     </ul>
-                    <div class="manage-points">
-                        <h5>🔧 How to Manage:</h5>
-                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
-                            <li>Use Caddy or cert-manager for auto SSL</li>
-                            <li>Build self-service DNS troubleshooter</li>
-                            <li>Tier pricing to offset costs</li>
-                        </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECURITY -->
+        <h3>🔐 Security Concerns</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Input Validation</h4>
+                    <ul style="font-size: 14px; margin: 0;">
+                        <li><strong>URL Validation:</strong> Regex + parse. Block javascript:, data:, file:// schemes</li>
+                        <li><strong>Custom Alias:</strong> Alphanumeric only, 3-20 chars, blocklist reserved words</li>
+                        <li><strong>Rate limit by IP:</strong> 10 creates/min for anonymous users</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Abuse Prevention</h4>
+                    <ul style="font-size: 14px; margin: 0;">
+                        <li><strong>Phishing Detection:</strong> Check URL against Google Safe Browsing API</li>
+                        <li><strong>Spam URLs:</strong> Block known spam domains via blocklist</li>
+                        <li><strong>Redirect Loops:</strong> Prevent short.ly/abc → short.ly/xyz chains</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="diagram-container">
+            <h4>Security Flow</h4>
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Request</div>
+                    <div class="flow-step-label">POST /shorten</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box gateway" style="padding: 10px 16px;">WAF</div>
+                    <div class="flow-step-label">SQL/XSS filter</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Rate Limiter</div>
+                    <div class="flow-step-label">Token bucket</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Validate URL</div>
+                    <div class="flow-step-label">Safe Browsing</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box db" style="padding: 10px 16px;">Store</div>
+                    <div class="flow-step-label">Parameterized</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">URL Validation & Sanitization</h5>
+<pre>func ValidateURL(rawURL string) error {
+    parsed, err := url.Parse(rawURL)
+    if err != nil {
+        return ErrInvalidURL
+    }
+
+    // Block dangerous schemes
+    blockedSchemes := []string{"javascript", "data", "file", "vbscript"}
+    for _, scheme := range blockedSchemes {
+        if strings.EqualFold(parsed.Scheme, scheme) {
+            return ErrBlockedScheme
+        }
+    }
+
+    // Must have valid host
+    if parsed.Host == "" {
+        return ErrNoHost
+    }
+
+    // Block internal IPs (SSRF prevention)
+    ip := net.ParseIP(parsed.Hostname())
+    if ip != nil && (ip.IsLoopback() || ip.IsPrivate()) {
+        return ErrPrivateIP
+    }
+
+    // Check Safe Browsing API (async, non-blocking)
+    go checkSafeBrowsing(rawURL)
+
+    return nil
+}</pre>
+        </div>
+
+        <!-- RATE LIMITING -->
+        <h3>🚦 Rate Limiting</h3>
+        <div class="feature-card">
+            <h4>Rate Limit Strategy</h4>
+            <table style="width: 100%; font-size: 15px; margin-top: 12px;">
+                <tr style="background: #f1f5f9;">
+                    <th style="padding: 12px; text-align: left;">Endpoint</th>
+                    <th style="padding: 12px; text-align: left;">Anonymous</th>
+                    <th style="padding: 12px; text-align: left;">Authenticated</th>
+                    <th style="padding: 12px; text-align: left;">Premium</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px;">POST /shorten</td>
+                    <td style="padding: 12px;">10/min per IP</td>
+                    <td style="padding: 12px;">100/min per user</td>
+                    <td style="padding: 12px;">1000/min per API key</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px;">GET /:code (redirect)</td>
+                    <td style="padding: 12px;">1000/min per IP</td>
+                    <td style="padding: 12px;">No limit</td>
+                    <td style="padding: 12px;">No limit</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px;">GET /api/stats</td>
+                    <td style="padding: 12px;">Blocked</td>
+                    <td style="padding: 12px;">60/min</td>
+                    <td style="padding: 12px;">600/min</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Redis Token Bucket Implementation</h5>
+<pre>-- Lua script for atomic token bucket
+local key = KEYS[1]
+local capacity = tonumber(ARGV[1])      -- Max tokens (burst)
+local refill_rate = tonumber(ARGV[2])   -- Tokens per second
+local now = tonumber(ARGV[3])           -- Current timestamp
+local requested = tonumber(ARGV[4])     -- Tokens requested (usually 1)
+
+-- Get current state
+local state = redis.call('HMGET', key, 'tokens', 'last_refill')
+local tokens = tonumber(state[1]) or capacity
+local last_refill = tonumber(state[2]) or now
+
+-- Calculate refill
+local elapsed = now - last_refill
+local refill = math.floor(elapsed * refill_rate)
+tokens = math.min(capacity, tokens + refill)
+
+-- Check if allowed
+if tokens >= requested then
+    tokens = tokens - requested
+    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+    redis.call('EXPIRE', key, math.ceil(capacity / refill_rate) * 2)
+    return {1, tokens}  -- Allowed, remaining tokens
+else
+    return {0, tokens}  -- Denied, remaining tokens
+end</pre>
+        </div>
+
+        <div class="api-endpoint">
+            <span class="api-method post">429</span> <span class="api-path">Rate Limited Response</span>
+<pre>
+HTTP/1.1 429 Too Many Requests
+Content-Type: application/json
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1704067260
+Retry-After: 45
+
+{
+    "error": "rate_limit_exceeded",
+    "message": "Too many requests. Please retry after 45 seconds.",
+    "retry_after": 45
+}</pre>
+        </div>
+
+        <!-- TRAFFIC MANAGEMENT -->
+        <h3>🚧 Traffic Management</h3>
+        <div class="feature-card">
+            <h4>Circuit Breaker Pattern</h4>
+            <p>Prevent cascade failures when downstream services (DB, Redis) are degraded.</p>
+            <div class="diagram-container" style="margin: 16px 0; background: white;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <div style="text-align: center; padding: 16px; border: 2px solid #22c55e; border-radius: 12px;">
+                        <strong style="color: #22c55e;">CLOSED</strong>
+                        <p style="font-size: 12px; margin: 8px 0 0 0;">Normal operation<br>Requests flow through</p>
+                    </div>
+                    <div style="font-size: 24px;">→<br><small style="font-size: 10px;">5 failures</small></div>
+                    <div style="text-align: center; padding: 16px; border: 2px solid #ef4444; border-radius: 12px;">
+                        <strong style="color: #ef4444;">OPEN</strong>
+                        <p style="font-size: 12px; margin: 8px 0 0 0;">Fail fast<br>Return cached/error</p>
+                    </div>
+                    <div style="font-size: 24px;">→<br><small style="font-size: 10px;">30s timeout</small></div>
+                    <div style="text-align: center; padding: 16px; border: 2px solid #f59e0b; border-radius: 12px;">
+                        <strong style="color: #f59e0b;">HALF-OPEN</strong>
+                        <p style="font-size: 12px; margin: 8px 0 0 0;">Test requests<br>Success → Close</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Feature Addition 3 -->
-        <h3>🆕 Feature Addition 3: Link Expiration & Password Protection</h3>
-        <div class="feature-card addition">
-            <h4>Why Add This?</h4>
-            <p>Security-conscious users need time-limited and password-protected links.</p>
-
-            <h4>Data Flow Changes</h4>
-            <div class="diagram-container">
-                <h4>PROTECTED LINK FLOW</h4>
-                <div class="flow-diagram">
-                    <div class="arch-box client">User</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box server">Check Expiry</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box server">Check Password</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box client">Redirect</div>
-                </div>
+        <div class="alternatives-grid">
+            <div class="alternative-card">
+                <h5>Load Shedding</h5>
+                <p>When at capacity, reject low-priority requests first:</p>
+                <ol style="font-size: 14px; margin-top: 8px;">
+                    <li>🔴 Reject: Anonymous POST /shorten</li>
+                    <li>🟡 Queue: Authenticated creates</li>
+                    <li>🟢 Allow: GET redirects (read path)</li>
+                </ol>
             </div>
-
-            <h4>Schema Changes</h4>
-            <div class="code-example">
-<pre>ALTER TABLE urls ADD COLUMN password_hash VARCHAR(255);
-ALTER TABLE urls ADD COLUMN max_clicks INT;
-ALTER TABLE urls ADD COLUMN is_active BOOLEAN DEFAULT true;
-CREATE INDEX idx_urls_active ON urls(is_active, expires_at);</pre>
+            <div class="alternative-card">
+                <h5>Graceful Degradation</h5>
+                <p>When Redis is down:</p>
+                <ol style="font-size: 14px; margin-top: 8px;">
+                    <li>Fallback to PostgreSQL directly</li>
+                    <li>Accept higher latency (50ms → 200ms)</li>
+                    <li>Disable click counting temporarily</li>
+                </ol>
+            </div>
+            <div class="alternative-card">
+                <h5>Backpressure</h5>
+                <p>Slow down producers when overwhelmed:</p>
+                <ol style="font-size: 14px; margin-top: 8px;">
+                    <li>Queue depth > 1000 → 503 to new requests</li>
+                    <li>Connection pool exhausted → wait with timeout</li>
+                    <li>Kafka lag > 10k → pause consumers</li>
+                </ol>
             </div>
         </div>
 
-        <!-- Feature Reversion -->
-        <h3>🔙 Feature Reversion: Rolling Back Analytics</h3>
-        <div class="feature-card reversion">
-            <h4>Why Revert?</h4>
-            <p>Kafka cluster instability causing 5% of clicks to be lost. Need to stabilize before re-enabling.</p>
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Circuit Breaker Implementation (Go)</h5>
+<pre>type CircuitBreaker struct {
+    failures    int
+    state       State  // CLOSED, OPEN, HALF_OPEN
+    lastFailure time.Time
+    mutex       sync.RWMutex
+}
 
-            <h4>Reversion Strategy</h4>
-            <ol>
-                <li>Disable analytics feature flag (instant)</li>
-                <li>Switch click tracking back to sync PostgreSQL writes</li>
-                <li>Keep Kafka running to not lose queued events</li>
-                <li>Historical analytics remain accessible (read-only)</li>
-            </ol>
+func (cb *CircuitBreaker) Execute(fn func() error) error {
+    cb.mutex.RLock()
+    if cb.state == OPEN {
+        if time.Since(cb.lastFailure) > 30*time.Second {
+            cb.mutex.RUnlock()
+            cb.mutex.Lock()
+            cb.state = HALF_OPEN
+            cb.mutex.Unlock()
+        } else {
+            cb.mutex.RUnlock()
+            return ErrCircuitOpen  // Fail fast
+        }
+    } else {
+        cb.mutex.RUnlock()
+    }
 
-            <h4>User Impact</h4>
-            <ul>
-                <li>Dashboard shows "Analytics temporarily unavailable"</li>
-                <li>Click counts still increment (via PostgreSQL)</li>
-                <li>Enterprise users notified via email</li>
-            </ul>
+    err := fn()
 
-            <h4>Backward Compatibility</h4>
-            <p>API endpoints return cached data with <code>stale: true</code> flag. Clients can show "Data may be outdated" warning.</p>
+    cb.mutex.Lock()
+    defer cb.mutex.Unlock()
+
+    if err != nil {
+        cb.failures++
+        cb.lastFailure = time.Now()
+        if cb.failures >= 5 {
+            cb.state = OPEN
+        }
+        return err
+    }
+
+    cb.failures = 0
+    cb.state = CLOSED
+    return nil
+}</pre>
+        </div>
+
+        <!-- MONITORING & ALERTING -->
+        <h3>📊 Monitoring & Alerting</h3>
+        <div class="feature-card">
+            <h4>Key Metrics to Track</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 12px;">
+                <div style="background: #f0fdf4; padding: 16px; border-radius: 8px;">
+                    <strong style="color: #166534;">Latency</strong>
+                    <ul style="font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+                        <li>P50: &lt;10ms</li>
+                        <li>P95: &lt;50ms</li>
+                        <li>P99: &lt;100ms</li>
+                    </ul>
+                </div>
+                <div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
+                    <strong style="color: #1e40af;">Throughput</strong>
+                    <ul style="font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+                        <li>Creates/sec</li>
+                        <li>Redirects/sec</li>
+                        <li>Cache hit ratio</li>
+                    </ul>
+                </div>
+                <div style="background: #fef2f2; padding: 16px; border-radius: 8px;">
+                    <strong style="color: #991b1b;">Errors</strong>
+                    <ul style="font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+                        <li>4xx rate &lt;1%</li>
+                        <li>5xx rate &lt;0.1%</li>
+                        <li>Circuit breaker trips</li>
+                    </ul>
+                </div>
+                <div style="background: #fef3c7; padding: 16px; border-radius: 8px;">
+                    <strong style="color: #92400e;">Saturation</strong>
+                    <ul style="font-size: 13px; margin: 8px 0 0 0; padding-left: 16px;">
+                        <li>DB connection pool</li>
+                        <li>Redis memory %</li>
+                        <li>Disk usage</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Prometheus Metrics</h5>
+<pre># HELP http_requests_total Total HTTP requests
+# TYPE http_requests_total counter
+http_requests_total{method="GET",endpoint="/redirect",status="301"} 1234567
+
+# HELP http_request_duration_seconds Request latency
+# TYPE http_request_duration_seconds histogram
+http_request_duration_seconds_bucket{le="0.01"} 890000
+http_request_duration_seconds_bucket{le="0.05"} 1200000
+http_request_duration_seconds_bucket{le="0.1"} 1230000
+
+# HELP cache_hit_ratio Redis cache hit ratio
+# TYPE cache_hit_ratio gauge
+cache_hit_ratio 0.95
+
+# Alert Rules (Prometheus)
+- alert: HighErrorRate
+  expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.01
+  for: 5m
+  labels:
+    severity: critical
+  annotations:
+    summary: "High 5xx error rate detected"</pre>
         </div>
     </div>
 
+    <!-- ============================================ -->
     <!-- PAN-INDIA SCALE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="pan-india">
         <div class="stage-header">
             <span class="stage-badge pan-india">PAN-India Scale</span>
-            <h2 style="margin: 0;">Regional Expansion</h2>
+            <h2 style="margin: 0;">Multi-Region • 1M users • 100M URLs</h2>
         </div>
 
-        <h3>🗺️ Architecture Evolution</h3>
+        <h3>🏗️ Architecture Evolution</h3>
         <div class="diagram-container">
-            <h4>PAN-INDIA ARCHITECTURE</h4>
-            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+            <h4>Multi-Region Architecture</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
                 <div class="arch-box client">Users (All India)</div>
-                <span>↓</span>
-                <div class="arch-box cdn">CDN (Cloudflare Edge)</div>
-                <span>↓</span>
-                <div class="arch-box lb">Load Balancer (Regional)</div>
-                <span>↓</span>
-                <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
-                    <div style="text-align: center;">
-                        <div class="arch-box server">API (Mumbai)</div>
-                        <span style="display: block;">↓</span>
-                        <div class="arch-box db">DB Primary</div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box cdn">CloudFront CDN<br><small>Edge caching for redirects</small></div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box lb">Route 53 (Latency-based)</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #3b82f6; border-radius: 12px;">
+                        <strong style="color: #3b82f6;">Mumbai (ap-south-1)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">API (3x)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis</div>
+                        </div>
+                        <div class="arch-box db" style="margin-top: 12px;">RDS Primary</div>
                     </div>
-                    <div style="text-align: center;">
-                        <div class="arch-box server">API (Delhi)</div>
-                        <span style="display: block;">↓</span>
-                        <div class="arch-box db" style="opacity: 0.7;">DB Replica</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div class="arch-box server">API (Bangalore)</div>
-                        <span style="display: block;">↓</span>
-                        <div class="arch-box db" style="opacity: 0.7;">DB Replica</div>
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #22c55e; border-radius: 12px;">
+                        <strong style="color: #22c55e;">Hyderabad (ap-south-2)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">API (2x)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis</div>
+                        </div>
+                        <div class="arch-box db" style="margin-top: 12px; opacity: 0.7;">RDS Read Replica</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <h3>Key Changes</h3>
+        <h3>📈 What Changes</h3>
         <div class="feature-card">
-            <ul>
-                <li><strong><span class="term-tooltip" onclick="showTooltip('cdn')">CDN<span class="info-icon">i</span></span> at Edge:</strong> Cache redirects at edge locations. 95% of redirects served without hitting origin.</li>
-                <li><strong><span class="term-tooltip" onclick="showTooltip('replica')">Read Replicas<span class="info-icon">i</span></span>:</strong> PostgreSQL replicas in each region for read queries.</li>
-                <li><strong>Regional <span class="term-tooltip" onclick="showTooltip('load-balancer')">Load Balancers<span class="info-icon">i</span></span>:</strong> Route to nearest healthy server.</li>
-                <li><strong>Redis Cluster:</strong> Distributed cache with consistent hashing.</li>
-            </ul>
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 30%;"><strong>CDN Caching</strong></td>
+                    <td>Cache 301 redirects at edge. TTL: 1 hour. Cache key: short_code. Hit rate: 95%</td>
+                </tr>
+                <tr>
+                    <td><strong>Read Replica</strong></td>
+                    <td>Hyderabad reads from local replica. Replication lag: &lt;100ms. Writes → Mumbai Primary</td>
+                </tr>
+                <tr>
+                    <td><strong>Redis Cluster</strong></td>
+                    <td>ElastiCache Global Datastore. Cross-region replication. &lt;1s sync</td>
+                </tr>
+                <tr>
+                    <td><strong>Route 53</strong></td>
+                    <td>Latency-based routing. Health checks every 10s. Failover in 30s</td>
+                </tr>
+            </table>
         </div>
 
-        <h3>🆕 Feature: QR Code Generation</h3>
-        <div class="feature-card addition">
-            <h4>Why Add QR Codes?</h4>
-            <p>Indian market heavily uses QR codes for payments (UPI). Adding QR generation increases adoption.</p>
-
-            <h4>Implementation</h4>
-            <ul>
-                <li>Generate QR on-demand (not pre-computed)</li>
-                <li>Cache generated QR images in CDN</li>
-                <li>Support custom colors and logo embedding</li>
-            </ul>
-
-            <div class="api-endpoint">
-                <span class="api-method get">GET</span> /api/v1/qr/:shortCode?size=300&color=000000
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Response: image/png (QR code image)
-Cache: CDN caches for 7 days</pre>
-            </div>
+        <h3>💰 Cost at PAN-India Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr>
+                    <td>EC2/EKS (5 nodes)</td>
+                    <td>$300</td>
+                </tr>
+                <tr>
+                    <td>RDS Primary + Replica</td>
+                    <td>$400</td>
+                </tr>
+                <tr>
+                    <td>ElastiCache (2 regions)</td>
+                    <td>$100</td>
+                </tr>
+                <tr>
+                    <td>CloudFront (10TB transfer)</td>
+                    <td>$850</td>
+                </tr>
+                <tr>
+                    <td>Route 53 + Health Checks</td>
+                    <td>$50</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Total</strong></td>
+                    <td><strong>~$1,700/month</strong></td>
+                </tr>
+            </table>
         </div>
     </div>
 
+    <!-- ============================================ -->
     <!-- HIGH TRAFFIC -->
+    <!-- ============================================ -->
     <div class="stage-section" id="high-traffic">
         <div class="stage-header">
             <span class="stage-badge high-traffic">High Traffic</span>
-            <h2 style="margin: 0;">Handling Massive Scale</h2>
+            <h2 style="margin: 0;">10M users • 1B URLs • 100K req/sec</h2>
         </div>
 
-        <h3>⚠️ What Breaks First?</h3>
-        <div class="feature-card" style="border-left-color: #ef4444;">
-            <ol>
-                <li><strong>Database Writes:</strong> Single primary can't handle 100K writes/sec</li>
-                <li><strong>Short Code Generation:</strong> Counter becomes bottleneck</li>
-                <li><strong>Cache Memory:</strong> 1 billion URLs × 100 bytes = 100GB RAM needed</li>
-                <li><strong>Click Tracking:</strong> Kafka partitions max out</li>
-            </ol>
+        <h3>⚠️ What Breaks First</h3>
+        <div class="feature-card warning">
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 25%;"><strong>1. DB Writes</strong></td>
+                    <td>Single primary maxes at ~10K writes/sec</td>
+                    <td style="color: #22c55e;"><strong>→ Sharding by short_code prefix</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>2. Counter Updates</strong></td>
+                    <td>click_count UPDATE on every request</td>
+                    <td style="color: #22c55e;"><strong>→ Async via Kafka + batch writes</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>3. Short Code Gen</strong></td>
+                    <td>Sequential counter becomes bottleneck</td>
+                    <td style="color: #22c55e;"><strong>→ Pre-generated pool (background worker)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>4. Cache Memory</strong></td>
+                    <td>1B URLs × 200B = 200GB RAM</td>
+                    <td style="color: #22c55e;"><strong>→ Redis Cluster (16 shards) + LRU eviction</strong></td>
+                </tr>
+            </table>
         </div>
 
-        <h3>🛠️ Solutions</h3>
-        <div class="feature-card">
-            <h4>1. Database <span class="term-tooltip" onclick="showTooltip('sharding')">Sharding<span class="info-icon">i</span></span></h4>
-            <p>Shard by first 2 characters of short_code. 36² = 1296 logical shards across 16 physical nodes.</p>
-
-            <div class="diagram-container">
-                <h4>SHARDING STRATEGY</h4>
-                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                    <div class="schema-table">
-                        <div class="schema-table-header">Shard 0 (aa-az)</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name">aaBc4x</span><span class="field-type">→ https://...</span></div>
-                            <div class="schema-field"><span class="field-name">azKm9p</span><span class="field-type">→ https://...</span></div>
-                        </div>
+        <h3>🏗️ Architecture at Scale</h3>
+        <div class="diagram-container">
+            <h4>High-Traffic Architecture</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                <div class="arch-box cdn">CloudFront (95% hit rate)</div>
+                <div class="arch-arrow">↓ 5% to origin</div>
+                <div class="arch-box lb">NLB (Layer 4, millions req/sec)</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 12px;">
+                    <div class="arch-box server">API Pod 1</div>
+                    <div class="arch-box server">API Pod 2</div>
+                    <div class="arch-box server">...</div>
+                    <div class="arch-box server">API Pod 20</div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 40px;">
+                    <div style="text-align: center;">
+                        <div class="arch-box cache">Redis Cluster<br><small>16 shards</small></div>
                     </div>
-                    <div class="schema-table">
-                        <div class="schema-table-header">Shard 1 (ba-bz)</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name">baXy2m</span><span class="field-type">→ https://...</span></div>
-                            <div class="schema-field"><span class="field-name">bzPq7n</span><span class="field-type">→ https://...</span></div>
+                    <div style="text-align: center;">
+                        <div class="arch-box queue">Kafka<br><small>Click events</small></div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 20px;">
+                    <div class="arch-box db">Shard 0<br><small>a-f</small></div>
+                    <div class="arch-box db">Shard 1<br><small>g-m</small></div>
+                    <div class="arch-box db">Shard 2<br><small>n-t</small></div>
+                    <div class="arch-box db">Shard 3<br><small>u-z, 0-9</small></div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔀 Message Queue Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Amazon MSK (Kafka)</h5>
+                <p>High throughput, ordering guarantees</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Millions msg/sec<br>
+                    <span style="color: #22c55e;">✓</span> Partition-level ordering<br>
+                    <span style="color: #ef4444;">✗</span> Complex ops (ZooKeeper)<br>
+                    <span style="color: #ef4444;">✗</span> Higher latency (batching)
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Amazon SQS</h5>
+                <p>Simple, serverless, no ops</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Zero ops<br>
+                    <span style="color: #22c55e;">✓</span> Pay per message<br>
+                    <span style="color: #ef4444;">✗</span> No ordering (FIFO limited)<br>
+                    <span style="color: #ef4444;">✗</span> 120K msg/sec limit
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Redis Streams</h5>
+                <p>Already using Redis, add Streams</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> No new infra<br>
+                    <span style="color: #22c55e;">✓</span> Consumer groups<br>
+                    <span style="color: #ef4444;">✗</span> Memory-bound<br>
+                    <span style="color: #ef4444;">✗</span> Less durable
+                </div>
+            </div>
+        </div>
+
+        <!-- MICROSERVICES DEPLOYMENT STRATEGIES -->
+        <h3>🚀 Microservices Deployment & Rollback Strategies</h3>
+        <div class="feature-card">
+            <h4>When to Split into Microservices</h4>
+            <p>At high-traffic, analytics is split into a separate service. Here's how to deploy and rollback safely:</p>
+        </div>
+
+        <div class="diagram-container">
+            <h4>Microservices Architecture at Scale</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <div class="arch-box lb">API Gateway / Ingress</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px;">
+                        <strong style="color: #3b82f6;">URL Service</strong>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <div class="arch-box server" style="padding: 8px; font-size: 12px;">v2.1.0</div>
+                            <div class="arch-box server" style="padding: 8px; font-size: 12px;">v2.1.0</div>
+                            <div class="arch-box server" style="padding: 8px; font-size: 12px; opacity: 0.5;">v2.0.9</div>
                         </div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 8px;">Rolling update in progress</div>
+                    </div>
+                    <div style="text-align: center; border: 2px solid #22c55e; border-radius: 12px; padding: 16px;">
+                        <strong style="color: #22c55e;">Analytics Service</strong>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <div class="arch-box analytics" style="padding: 8px; font-size: 12px;">v1.5.0</div>
+                            <div class="arch-box analytics" style="padding: 8px; font-size: 12px;">v1.5.0</div>
+                        </div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 8px;">Stable</div>
+                    </div>
+                    <div style="text-align: center; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px;">
+                        <strong style="color: #f59e0b;">Auth Service</strong>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <div class="arch-box gateway" style="padding: 8px; font-size: 12px;">v1.2.0</div>
+                        </div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 8px;">Single instance OK</div>
                     </div>
                 </div>
             </div>
-
-            <h4>2. <span class="term-tooltip" onclick="showTooltip('consistent-hashing')">Consistent Hashing<span class="info-icon">i</span></span> for Cache</h4>
-            <p>Distribute cache keys across Redis cluster. Adding/removing nodes only redistributes K/n keys.</p>
-
-            <h4>3. Pre-generated Short Codes</h4>
-            <p>Background worker pre-generates 1M short codes. API picks from pool instead of computing.</p>
         </div>
 
-        <h3>📉 Degradation Strategies</h3>
-        <div class="pros-cons-grid">
-            <div class="pros-section">
-                <h4>🟢 Graceful Degradation</h4>
-                <ul>
-                    <li>Disable analytics during peak (writes only)</li>
-                    <li>Return cached QR even if stale</li>
-                    <li>Queue non-critical operations</li>
-                </ul>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Canary Deployment (Recommended)</h5>
+                <p>Gradually shift traffic to new version</p>
+                <div style="margin: 12px 0;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <div style="width: 10%; background: #22c55e; height: 20px; border-radius: 4px;"></div>
+                        <div style="width: 90%; background: #3b82f6; height: 20px; border-radius: 4px;"></div>
+                        <span style="font-size: 12px;">5% → v2.1</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <div style="width: 25%; background: #22c55e; height: 20px; border-radius: 4px;"></div>
+                        <div style="width: 75%; background: #3b82f6; height: 20px; border-radius: 4px;"></div>
+                        <span style="font-size: 12px;">25% → v2.1</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 100%; background: #22c55e; height: 20px; border-radius: 4px;"></div>
+                        <span style="font-size: 12px;">100% → v2.1</span>
+                    </div>
+                </div>
+                <div style="font-size: 13px;">
+                    <span style="color: #22c55e;">✓</span> Detect issues with 5% traffic<br>
+                    <span style="color: #22c55e;">✓</span> Instant rollback (shift to 0%)<br>
+                    <span style="color: #22c55e;">✓</span> Compare metrics between versions
+                </div>
             </div>
-            <div class="cons-section">
-                <h4>🔴 Hard Limits</h4>
-                <ul>
-                    <li><span class="term-tooltip" onclick="showTooltip('rate-limiting')">Rate limit<span class="info-icon">i</span></span> to 1000 req/sec per user</li>
-                    <li>Reject new URLs if queue > 10K</li>
-                    <li><span class="term-tooltip" onclick="showTooltip('circuit-breaker')">Circuit breaker<span class="info-icon">i</span></span> for DB connections</li>
-                </ul>
+            <div class="alternative-card">
+                <h5>Blue-Green Deployment</h5>
+                <p>Two identical environments, switch at once</p>
+                <div style="display: flex; gap: 12px; margin: 12px 0;">
+                    <div style="flex: 1; padding: 12px; background: #dbeafe; border-radius: 8px; text-align: center;">
+                        <strong style="color: #1e40af;">Blue (Live)</strong><br>
+                        <span style="font-size: 12px;">v2.0.9</span>
+                    </div>
+                    <div style="flex: 1; padding: 12px; background: #dcfce7; border-radius: 8px; text-align: center;">
+                        <strong style="color: #166534;">Green (Standby)</strong><br>
+                        <span style="font-size: 12px;">v2.1.0</span>
+                    </div>
+                </div>
+                <div style="font-size: 13px;">
+                    <span style="color: #22c55e;">✓</span> Instant switch (DNS/LB change)<br>
+                    <span style="color: #ef4444;">✗</span> 2x infrastructure cost<br>
+                    <span style="color: #ef4444;">✗</span> DB schema changes are tricky
+                </div>
             </div>
+            <div class="alternative-card">
+                <h5>Rolling Update</h5>
+                <p>Replace pods one by one (K8s default)</p>
+                <div style="font-size: 13px; margin-top: 12px;">
+                    <span style="color: #22c55e;">✓</span> Zero downtime<br>
+                    <span style="color: #22c55e;">✓</span> No extra infrastructure<br>
+                    <span style="color: #ef4444;">✗</span> Mixed versions during rollout<br>
+                    <span style="color: #ef4444;">✗</span> Slower rollback
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Canary Deployment with Istio Service Mesh</h5>
+<pre>apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: url-service
+spec:
+  hosts:
+  - url-service
+  http:
+  - match:
+    - headers:
+        x-canary:
+          exact: "true"
+    route:
+    - destination:
+        host: url-service
+        subset: canary  # v2.1.0
+  - route:
+    - destination:
+        host: url-service
+        subset: stable  # v2.0.9
+      weight: 95
+    - destination:
+        host: url-service
+        subset: canary  # v2.1.0
+      weight: 5
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: url-service
+spec:
+  host: url-service
+  subsets:
+  - name: stable
+    labels:
+      version: v2.0.9
+  - name: canary
+    labels:
+      version: v2.1.0</pre>
+        </div>
+
+        <h3>⏪ Rollback Strategies per Service</h3>
+        <div class="feature-card warning">
+            <h4>Rollback Decision Matrix</h4>
+            <table style="width: 100%; font-size: 14px; margin-top: 12px;">
+                <tr style="background: #f1f5f9;">
+                    <th style="padding: 12px;">Scenario</th>
+                    <th style="padding: 12px;">Action</th>
+                    <th style="padding: 12px;">Time</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px;"><strong>5xx spike during canary</strong></td>
+                    <td style="padding: 12px;">Set canary weight to 0% via Istio</td>
+                    <td style="padding: 12px; color: #22c55e;">&lt;10s</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px;"><strong>Bug found after 100% rollout</strong></td>
+                    <td style="padding: 12px;">kubectl rollout undo deployment/url-service</td>
+                    <td style="padding: 12px; color: #f59e0b;">30-60s</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px;"><strong>DB migration issue</strong></td>
+                    <td style="padding: 12px;">Run reverse migration script + rollback deploy</td>
+                    <td style="padding: 12px; color: #ef4444;">5-15min</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px;"><strong>Feature flag issue</strong></td>
+                    <td style="padding: 12px;">Toggle flag off in LaunchDarkly/Unleash</td>
+                    <td style="padding: 12px; color: #22c55e;">&lt;5s</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-container">
+            <h4>Feature Flag Rollout Strategy</h4>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 120px; font-weight: 600;">Day 1:</div>
+                    <div style="flex: 1; display: flex; gap: 8px;">
+                        <div style="padding: 8px 16px; background: #22c55e; color: white; border-radius: 6px;">Internal (5%)</div>
+                        <div style="padding: 8px 16px; background: #e2e8f0; border-radius: 6px;">Beta Users (OFF)</div>
+                        <div style="padding: 8px 16px; background: #e2e8f0; border-radius: 6px;">All Users (OFF)</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 120px; font-weight: 600;">Day 3:</div>
+                    <div style="flex: 1; display: flex; gap: 8px;">
+                        <div style="padding: 8px 16px; background: #22c55e; color: white; border-radius: 6px;">Internal (100%)</div>
+                        <div style="padding: 8px 16px; background: #3b82f6; color: white; border-radius: 6px;">Beta Users (ON)</div>
+                        <div style="padding: 8px 16px; background: #e2e8f0; border-radius: 6px;">All Users (OFF)</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 120px; font-weight: 600;">Day 7:</div>
+                    <div style="flex: 1; display: flex; gap: 8px;">
+                        <div style="padding: 8px 16px; background: #22c55e; color: white; border-radius: 6px;">Internal (100%)</div>
+                        <div style="padding: 8px 16px; background: #22c55e; color: white; border-radius: 6px;">Beta Users (100%)</div>
+                        <div style="padding: 8px 16px; background: #f59e0b; color: white; border-radius: 6px;">All Users (25%)</div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 120px; font-weight: 600;">Day 14:</div>
+                    <div style="flex: 1; display: flex; gap: 8px;">
+                        <div style="padding: 8px 16px; background: #22c55e; color: white; border-radius: 6px;">All Users (100%)</div>
+                        <div style="font-size: 13px; color: #64748b;">→ Remove flag, clean up code</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Feature Flag in Code</h5>
+<pre>// Check feature flag before using new logic
+func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*URL, error) {
+    // Feature flag check - instant toggle without redeploy
+    if s.featureFlags.IsEnabled("new-shortcode-algo", req.UserID) {
+        // New algorithm - being tested
+        shortCode = s.generateV2ShortCode(req.URL)
+    } else {
+        // Old algorithm - stable
+        shortCode = s.generateV1ShortCode(req.URL)
+    }
+
+    // If issues detected, just turn off the flag
+    // No redeploy needed, takes effect in &lt;5 seconds
+    return s.repo.Create(ctx, shortCode, req.URL, req.UserID)
+}
+
+// LaunchDarkly / Unleash configuration
+{
+    "flag": "new-shortcode-algo",
+    "rules": [
+        { "segment": "internal", "percentage": 100 },
+        { "segment": "beta", "percentage": 100 },
+        { "segment": "all", "percentage": 25 }
+    ],
+    "killSwitch": false  // Set to true for instant disable
+}</pre>
+        </div>
+
+        <h3>💰 Cost at High Traffic</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>EKS (20 nodes, c5.xlarge)</td><td>$2,500</td></tr>
+                <tr><td>RDS (4 shards, db.r5.xlarge)</td><td>$3,200</td></tr>
+                <tr><td>ElastiCache Cluster (16 nodes)</td><td>$2,000</td></tr>
+                <tr><td>MSK (Kafka, 6 brokers)</td><td>$1,500</td></tr>
+                <tr><td>CloudFront (100TB)</td><td>$8,500</td></tr>
+                <tr><td>Data Transfer</td><td>$1,000</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$18,700/month</strong></td></tr>
+            </table>
         </div>
     </div>
 
+    <!-- ============================================ -->
     <!-- GLOBAL SCALE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="global">
         <div class="stage-header">
             <span class="stage-badge global">Global Scale</span>
-            <h2 style="margin: 0;">Worldwide Operations</h2>
+            <h2 style="margin: 0;">100M users • 10B URLs • 1M req/sec</h2>
         </div>
 
         <h3>🌍 Global Architecture</h3>
         <div class="diagram-container">
-            <h4>MULTI-REGION ACTIVE-ACTIVE</h4>
-            <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;">
-                <div style="text-align: center; padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 12px;">
+            <h4>Multi-Region Active-Active</h4>
+            <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center; padding: 20px; background: rgba(59,130,246,0.1); border-radius: 12px;">
                     <strong>US-East</strong>
-                    <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
                     <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
                 </div>
-                <div style="text-align: center; padding: 16px; background: rgba(34, 197, 94, 0.1); border-radius: 12px;">
+                <div style="text-align: center; padding: 20px; background: rgba(34,197,94,0.1); border-radius: 12px;">
                     <strong>EU-West</strong>
-                    <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
                     <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
                 </div>
-                <div style="text-align: center; padding: 16px; background: rgba(249, 115, 22, 0.1); border-radius: 12px;">
+                <div style="text-align: center; padding: 20px; background: rgba(249,115,22,0.1); border-radius: 12px;">
                     <strong>Asia-Pacific</strong>
-                    <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
                     <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
                 </div>
             </div>
-        </div>
-
-        <h3>Key Decisions</h3>
-        <div class="feature-card">
-            <ul>
-                <li><strong>CockroachDB:</strong> Globally distributed SQL with automatic sharding and replication</li>
-                <li><strong>Anycast DNS:</strong> Route users to nearest healthy region</li>
-                <li><strong>GDPR Compliance:</strong> EU user data stays in EU region</li>
-                <li><strong><span class="term-tooltip" onclick="showTooltip('eventual-consistency')">Eventual Consistency<span class="info-icon">i</span></span>:</strong> Accept ~100ms cross-region replication lag</li>
-            </ul>
+            <p style="margin-top: 16px;"><strong>CockroachDB:</strong> Distributed SQL, automatic sharding, cross-region replication. SERIALIZABLE isolation.</p>
         </div>
 
         <h3>📊 Scale Metrics</h3>
         <div class="metrics-card">
             <div class="metric">
-                <div class="value">100B+</div>
+                <div class="value">10B+</div>
                 <div class="label">URLs Stored</div>
             </div>
             <div class="metric">
                 <div class="value">1M</div>
-                <div class="label">Redirects/sec</div>
+                <div class="label">Requests/sec</div>
             </div>
             <div class="metric">
                 <div class="value">&lt;50ms</div>
@@ -517,6 +1679,19 @@ Cache: CDN caches for 7 days</pre>
                 <div class="label">Availability</div>
             </div>
         </div>
+
+        <h3>💰 Cost at Global Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>EKS (3 regions, 60 nodes total)</td><td>$15,000</td></tr>
+                <tr><td>CockroachDB Cloud (3 regions)</td><td>$25,000</td></tr>
+                <tr><td>ElastiCache Global</td><td>$8,000</td></tr>
+                <tr><td>CloudFront (1PB)</td><td>$40,000</td></tr>
+                <tr><td>Kafka/Kinesis</td><td>$5,000</td></tr>
+                <tr><td>Monitoring (Datadog)</td><td>$3,000</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$96,000/month</strong></td></tr>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -525,30 +1700,56 @@ Cache: CDN caches for 7 days</pre>
 <div class="tooltip-popup" id="tooltipPopup">
     <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
     <h4 id="tooltipTitle"></h4>
-    <p id="tooltipContent"></p>
+    <div id="tooltipContent"></div>
 </div>
 
 <script>
 const termDefinitions = {
-    'cdn': { title: 'CDN (Content Delivery Network)', content: 'A geographically distributed network of proxy servers that cache and deliver content closer to users. CDNs reduce latency by serving static assets from edge locations nearest to the user.' },
-    'load-balancer': { title: 'Load Balancer', content: 'A device or software that distributes incoming network traffic across multiple servers to ensure no single server becomes overwhelmed. Common algorithms include Round Robin, Least Connections, and IP Hash.' },
-    'redis': { title: 'Redis', content: 'An in-memory data structure store used as a database, cache, and message broker. Redis supports various data structures like strings, hashes, lists, sets, and sorted sets with O(1) operations.' },
-    'kafka': { title: 'Apache Kafka', content: 'A distributed event streaming platform capable of handling trillions of events per day. Used for real-time data pipelines, event sourcing, and as a commit log for distributed systems.' },
-    'sharding': { title: 'Database Sharding', content: 'A horizontal scaling technique where data is partitioned across multiple database instances. Each shard contains a subset of the total data, determined by a sharding key.' },
-    'consistent-hashing': { title: 'Consistent Hashing', content: 'A distributed hashing technique where only K/n keys need to be remapped when a node is added or removed. Used in distributed caches and databases to minimize rebalancing.' },
-    'rate-limiting': { title: 'Rate Limiting', content: 'A technique to control the rate of requests a user or client can make to an API. Common algorithms include Token Bucket, Leaky Bucket, and Sliding Window.' },
-    'circuit-breaker': { title: 'Circuit Breaker Pattern', content: 'A design pattern that prevents cascading failures in distributed systems. When failures exceed a threshold, the circuit "opens" and fails fast.' },
-    'eventual-consistency': { title: 'Eventual Consistency', content: 'A consistency model where the system guarantees that if no new updates are made, eventually all reads will return the last updated value.' },
-    'idempotency': { title: 'Idempotency', content: 'A property where making the same request multiple times produces the same result as making it once. Critical for payment systems and APIs to handle retries safely.' },
-    'database-index': { title: 'Database Index', content: 'A data structure that improves the speed of data retrieval operations on a database table. B-tree indexes are common for range queries.' },
-    'replica': { title: 'Database Replica', content: 'A copy of the primary database that stays synchronized. Read replicas handle read traffic to scale horizontally.' }
+    'redis': {
+        title: 'Redis / Amazon ElastiCache',
+        content: `<p>In-memory data store with sub-millisecond latency.</p>
+        <div style="margin-top: 16px;">
+            <strong>Architecture:</strong>
+            <div style="display: flex; gap: 8px; margin: 8px 0;">
+                <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 4px;">Primary</span>
+                <span>→</span>
+                <span style="background: #64748b; color: white; padding: 4px 8px; border-radius: 4px;">Replica 1</span>
+                <span style="background: #64748b; color: white; padding: 4px 8px; border-radius: 4px;">Replica 2</span>
+            </div>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Key Commands:</strong>
+            <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px;">GET short:abc123    → "https://example.com/..."
+SET short:abc123 "url" EX 86400
+INCR clicks:abc123</pre>
+        </div>`
+    },
+    'kafka': {
+        title: 'Apache Kafka / Amazon MSK',
+        content: `<p>Distributed event streaming platform for high-throughput messaging.</p>
+        <div style="margin-top: 16px;">
+            <strong>Architecture:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;">
+                <span style="background: #ec4899; color: white; padding: 4px 8px; border-radius: 4px;">Producer</span>
+                <span>→</span>
+                <span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px;">Broker 1</span>
+                <span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px;">Broker 2</span>
+                <span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px;">Broker 3</span>
+                <span>→</span>
+                <span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px;">Consumer Group</span>
+            </div>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Use Case:</strong> Click tracking events. Async processing. Decouple API from analytics writes.
+        </div>`
+    }
 };
 
 function showTooltip(term) {
     const def = termDefinitions[term];
     if (def) {
         document.getElementById('tooltipTitle').textContent = def.title;
-        document.getElementById('tooltipContent').textContent = def.content;
+        document.getElementById('tooltipContent').innerHTML = def.content;
         document.getElementById('tooltipOverlay').classList.add('show');
         document.getElementById('tooltipPopup').classList.add('show');
     }
@@ -559,28 +1760,18 @@ function closeTooltip() {
     document.getElementById('tooltipPopup').classList.remove('show');
 }
 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeTooltip();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTooltip(); });
 
-// Scroll spy for quick nav
+// Scroll spy
 window.addEventListener('scroll', function() {
     const sections = document.querySelectorAll('.stage-section');
     const navLinks = document.querySelectorAll('.quick-nav a');
-
     let current = '';
     sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (scrollY >= sectionTop - 200) {
-            current = section.getAttribute('id');
-        }
+        if (scrollY >= section.offsetTop - 200) current = section.id;
     });
-
     navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === '#' + current) {
-            link.classList.add('active');
-        }
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
     });
 });
 </script>

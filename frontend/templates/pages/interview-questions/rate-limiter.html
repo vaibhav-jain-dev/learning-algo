@@ -4,269 +4,1815 @@
     <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
 
     <h1>⏱️ Rate Limiter System Design</h1>
-    <p class="topic-description">Design a distributed rate limiting system with multiple algorithms (Token Bucket, Sliding Window)</p>
+    <p class="topic-description">Design a distributed rate limiting system protecting APIs from abuse with Token Bucket, Sliding Window algorithms</p>
 
     <div class="quick-nav">
-        <h4>Quick Navigation</h4>
+        <h4>Navigation</h4>
         <a href="#mvp">MVP Stage</a>
-        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
-        <a href="#global">Global Scale</a>
+        <a href="#global">Global</a>
     </div>
 
+    <!-- ============================================ -->
     <!-- MVP STAGE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="mvp">
         <div class="stage-header">
             <span class="stage-badge mvp">MVP Stage</span>
-            <h2 style="margin: 0;">Single Service Rate Limiter</h2>
+            <h2 style="margin: 0;">Single Service • 10K users • 1K req/sec</h2>
         </div>
 
-        <h3>📊 Algorithm Selection</h3>
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
         <div class="feature-card">
-            <h4>Token Bucket Algorithm</h4>
-            <p>Allows burst traffic while maintaining average rate. Tokens added at fixed rate, consumed per request.</p>
-
-            <div class="pros-cons-grid">
-                <div class="pros-section">
-                    <h4>✅ Pros</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
                     <ul>
-                        <li><strong>Burst Friendly</strong> - Allows short traffic bursts</li>
-                        <li><strong>Memory Efficient</strong> - Only stores token count + last refill time</li>
-                        <li><strong>Simple Implementation</strong> - Easy to understand and debug</li>
+                        <li>Limit by IP address</li>
+                        <li>Limit by user ID / API key</li>
+                        <li>Limit by endpoint (per-route)</li>
+                        <li>Different limits per tier (free/pro)</li>
+                        <li>Burst allowance (temporary spikes)</li>
+                        <li>Return 429 with Retry-After</li>
                     </ul>
                 </div>
-                <div class="cons-section">
-                    <h4>❌ Cons</h4>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
                     <ul>
-                        <li><strong>No Smoothing</strong> - Can cause traffic spikes</li>
-                        <li><strong>Clock Sync Required</strong> - Distributed systems need synchronized clocks</li>
-                        <li><strong>Parameter Tuning</strong> - Bucket size and refill rate need careful tuning</li>
+                        <li>Latency overhead: &lt;1ms p99</li>
+                        <li>Availability: 99.9%</li>
+                        <li>Accuracy: &lt;1% false positives</li>
+                        <li>Throughput: 10K checks/sec</li>
+                        <li>Memory: ~50B per rate limit key</li>
+                        <li>Graceful degradation on failure</li>
                     </ul>
                 </div>
-            </div>
-
-            <h4 style="margin-top: 24px;">Token Bucket Pseudocode</h4>
-            <div class="code-example">
-<pre>class TokenBucket {
-    constructor(capacity, refillRate) {
-        this.tokens = capacity;
-        this.capacity = capacity;
-        this.refillRate = refillRate; // tokens per second
-        this.lastRefill = Date.now();
-    }
-
-    tryConsume(tokens = 1) {
-        this.refill();
-        if (this.tokens >= tokens) {
-            this.tokens -= tokens;
-            return true; // Request allowed
-        }
-        return false; // Rate limited
-    }
-
-    refill() {
-        const now = Date.now();
-        const elapsed = (now - this.lastRefill) / 1000;
-        this.tokens = Math.min(
-            this.capacity,
-            this.tokens + elapsed * this.refillRate
-        );
-        this.lastRefill = now;
-    }
-}</pre>
             </div>
         </div>
 
-        <h3>🏗️ Architecture (MVP)</h3>
+        <!-- ARCHITECTURE DIAGRAM -->
+        <h3>🏗️ Architecture</h3>
         <div class="diagram-container">
-            <h4>MVP ARCHITECTURE</h4>
-            <div class="flow-diagram">
-                <div class="arch-box client">API Request</div>
-                <span class="arch-arrow">→</span>
-                <div class="arch-box lb">Rate Limiter Middleware</div>
-                <span class="arch-arrow">→</span>
-                <div class="arch-box cache">Redis</div>
-                <span class="arch-arrow">→</span>
-                <div class="arch-box server">Allow/Deny</div>
+            <h4>MVP Architecture - Middleware Pattern</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <!-- Layer 1: Clients -->
+                <div style="display: flex; gap: 40px;">
+                    <div class="arch-box client">Web Client</div>
+                    <div class="arch-box client">Mobile App</div>
+                    <div class="arch-box client">API Consumer</div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 2: Load Balancer -->
+                <div class="arch-box lb">AWS ALB<br><small>Health checks, SSL termination</small></div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 3: API Servers with Rate Limiter -->
+                <div style="display: flex; gap: 20px;">
+                    <div style="text-align: center;">
+                        <div class="arch-box server" style="border: 3px solid #f59e0b;">
+                            API Server 1<br>
+                            <small style="color: #f59e0b;">Rate Limiter Middleware</small>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box server" style="border: 3px solid #f59e0b;">
+                            API Server 2<br>
+                            <small style="color: #f59e0b;">Rate Limiter Middleware</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 4: Redis -->
+                <div style="text-align: center;">
+                    <div class="arch-box cache">ElastiCache Redis<br><small>Rate Limit State</small></div>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Centralized counter storage<br>Lua scripts for atomicity</div>
+                </div>
             </div>
-            <p style="text-align: center; color: #64748b; font-size: 13px; margin-top: 16px;">Centralized Redis stores rate limit state. All API servers check against same Redis.</p>
         </div>
 
-        <h3>💾 Redis Implementation</h3>
-        <div class="feature-card">
-            <h4>Lua Script for Atomic Operations</h4>
-            <div class="code-example">
-<pre>-- Token Bucket in Redis (Lua script for atomicity)
+        <!-- DATA FLOW - Check Rate Limit -->
+        <h3>🔄 Data Flow - Rate Limit Check</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Request</div>
+                    <div class="flow-step-label">POST /api/data</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Extract Key</div>
+                    <div class="flow-step-label">user:123 or ip:1.2.3.4</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis Check</div>
+                    <div class="flow-step-label">EVALSHA lua_script</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box db" style="padding: 10px 16px; background: #22c55e;">Allow</div>
+                    <div class="flow-step-label">→ Backend</div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div style="color: #ef4444; font-weight: 600;">Rate Limited path:</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box client" style="padding: 10px 16px; background: #ef4444;">429 Denied</div>
+                <div class="arch-arrow">→</div>
+                <div style="font-size: 14px;">Retry-After: 30s</div>
+            </div>
+        </div>
+
+        <!-- ALGORITHM DIAGRAMS -->
+        <h3>📊 Rate Limiting Algorithms</h3>
+
+        <!-- Token Bucket -->
+        <div class="diagram-container">
+            <h4>Token Bucket Algorithm (Most Flexible)</h4>
+            <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="background: #1e293b; border: 3px solid #f59e0b; border-radius: 12px; padding: 20px; min-width: 150px;">
+                        <div style="font-size: 12px; color: #94a3b8;">Bucket (capacity: 10)</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin: 12px 0;">
+                            <span style="background: #f59e0b; width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></span>
+                            <span style="background: #f59e0b; width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></span>
+                            <span style="background: #f59e0b; width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></span>
+                            <span style="background: #f59e0b; width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></span>
+                            <span style="background: #f59e0b; width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></span>
+                            <span style="background: #334155; width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></span>
+                            <span style="background: #334155; width: 20px; height: 20px; border-radius: 50%; display: inline-block;"></span>
+                        </div>
+                        <div style="font-size: 14px; color: #f59e0b;">5 tokens remaining</div>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 13px; color: #64748b;">
+                        Refill: 1 token/sec<br>
+                        Burst: up to 10 requests
+                    </div>
+                </div>
+                <div style="text-align: left; max-width: 300px;">
+                    <p style="font-size: 14px;"><strong>How it works:</strong></p>
+                    <ol style="font-size: 13px; padding-left: 20px;">
+                        <li>Bucket holds tokens (max = capacity)</li>
+                        <li>Tokens added at fixed rate (refill)</li>
+                        <li>Each request consumes 1 token</li>
+                        <li>No tokens = request denied</li>
+                        <li>Allows burst up to bucket size</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sliding Window Log -->
+        <div class="diagram-container">
+            <h4>Sliding Window Log (Most Accurate)</h4>
+            <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px; min-width: 300px;">
+                        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Sorted Set: timestamps of requests</div>
+                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">10:00:01</span>
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">10:00:15</span>
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">10:00:23</span>
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">10:00:45</span>
+                            <span style="background: #22c55e; padding: 4px 8px; border-radius: 4px; font-size: 11px;">10:00:58</span>
+                        </div>
+                        <div style="margin-top: 12px; font-size: 12px;">
+                            <span style="color: #64748b;">Window: 60s | Limit: 10 | Current: </span>
+                            <span style="color: #22c55e;">5 requests</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left; max-width: 280px;">
+                    <p style="font-size: 14px;"><strong>Pros:</strong> 100% accurate</p>
+                    <p style="font-size: 14px;"><strong>Cons:</strong> High memory (stores all timestamps)</p>
+                    <p style="font-size: 13px; color: #64748b;">Memory: O(requests in window)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sliding Window Counter -->
+        <div class="diagram-container">
+            <h4>Sliding Window Counter (Balanced)</h4>
+            <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px;">
+                        <div style="display: flex; gap: 4px; align-items: end;">
+                            <div style="text-align: center;">
+                                <div style="background: #64748b; width: 80px; height: 60px; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
+                                    <span style="font-size: 18px; font-weight: bold;">45</span>
+                                </div>
+                                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Prev Window<br>(weight: 0.3)</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="background: #3b82f6; width: 80px; height: 40px; border-radius: 4px 4px 0 0; display: flex; align-items: center; justify-content: center;">
+                                    <span style="font-size: 18px; font-weight: bold;">28</span>
+                                </div>
+                                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Curr Window<br>(weight: 0.7)</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px; padding: 8px; background: #334155; border-radius: 6px; font-size: 13px;">
+                            Weighted: 45×0.3 + 28×0.7 = <strong style="color: #22c55e;">33.1</strong> (limit: 100)
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left; max-width: 280px;">
+                    <p style="font-size: 14px;"><strong>Best balance</strong> of accuracy and memory</p>
+                    <p style="font-size: 13px; color: #64748b;">Memory: O(1) - just 2 counters</p>
+                    <p style="font-size: 13px; color: #64748b;">Accuracy: ~99.7% (slight approximation)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Window Counter -->
+        <div class="diagram-container">
+            <h4>Fixed Window Counter (Simplest)</h4>
+            <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px;">
+                        <div style="display: flex; gap: 4px; align-items: end;">
+                            <div style="background: #64748b; width: 80px; height: 80px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <span style="font-size: 24px; font-weight: bold;">100</span>
+                                <span style="font-size: 10px; color: #94a3b8;">10:00-10:01</span>
+                            </div>
+                            <div style="background: #ef4444; width: 80px; height: 100px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <span style="font-size: 24px; font-weight: bold;">100</span>
+                                <span style="font-size: 10px;">10:01-10:02</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 12px; font-size: 12px; color: #ef4444;">
+                            ⚠️ Edge case: 200 requests in 2s at window boundary
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left; max-width: 280px;">
+                    <p style="font-size: 14px;"><strong>Simplest</strong> to implement</p>
+                    <p style="font-size: 13px; color: #ef4444;">Problem: Burst at window edges</p>
+                    <p style="font-size: 13px; color: #64748b;">Use when: Exact limits not critical</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaky Bucket -->
+        <div class="diagram-container">
+            <h4>Leaky Bucket (Smoothest Output)</h4>
+            <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px; min-width: 180px;">
+                        <div style="font-size: 12px; color: #94a3b8;">Queue (FIFO)</div>
+                        <div style="background: #334155; border-radius: 8px; padding: 12px; margin: 12px 0;">
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <span style="background: #8b5cf6; padding: 4px 12px; border-radius: 4px; font-size: 12px;">Request 1</span>
+                                <span style="background: #8b5cf6; padding: 4px 12px; border-radius: 4px; font-size: 12px;">Request 2</span>
+                                <span style="background: #8b5cf6; padding: 4px 12px; border-radius: 4px; font-size: 12px;">Request 3</span>
+                            </div>
+                        </div>
+                        <div class="arch-arrow" style="font-size: 20px;">↓</div>
+                        <div style="font-size: 12px; color: #22c55e;">Processed at fixed rate</div>
+                        <div style="font-size: 11px; color: #64748b;">(1 req/100ms)</div>
+                    </div>
+                </div>
+                <div style="text-align: left; max-width: 280px;">
+                    <p style="font-size: 14px;"><strong>Smoothest</strong> output rate</p>
+                    <p style="font-size: 13px; color: #64748b;">Requests queued, not rejected</p>
+                    <p style="font-size: 13px; color: #64748b;">Use for: API gateways, traffic shaping</p>
+                    <p style="font-size: 13px; color: #ef4444;">Con: Adds latency (queuing)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATABASE/STORE SCHEMA -->
+        <h3>🗄️ Redis Data Structures</h3>
+        <div class="diagram-container">
+            <h4>Storage Schema by Algorithm</h4>
+            <div class="schema-diagram" style="flex-direction: column; gap: 16px;">
+                <div class="schema-table" style="width: 100%;">
+                    <div class="schema-table-header">🪣 Token Bucket - Hash</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">Key</span><span class="field-type">ratelimit:token:{user_id}</span></div>
+                        <div class="schema-field"><span class="field-name">tokens</span><span class="field-type">FLOAT (remaining tokens)</span></div>
+                        <div class="schema-field"><span class="field-name">last_refill</span><span class="field-type">TIMESTAMP (Unix ms)</span></div>
+                        <div class="schema-field"><span class="field-name">TTL</span><span class="field-type">EXPIRE 3600s</span></div>
+                    </div>
+                </div>
+
+                <div class="schema-table" style="width: 100%;">
+                    <div class="schema-table-header">📊 Sliding Window Log - Sorted Set</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">Key</span><span class="field-type">ratelimit:sliding:{user_id}</span></div>
+                        <div class="schema-field"><span class="field-name">Member</span><span class="field-type">UUID (request ID)</span></div>
+                        <div class="schema-field"><span class="field-name">Score</span><span class="field-type">TIMESTAMP (Unix ms)</span></div>
+                        <div class="schema-field"><span class="field-name">TTL</span><span class="field-type">EXPIRE = window_size</span></div>
+                    </div>
+                </div>
+
+                <div class="schema-table" style="width: 100%;">
+                    <div class="schema-table-header">🔢 Fixed/Sliding Window Counter - String</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">Key</span><span class="field-type">ratelimit:counter:{user_id}:{window_id}</span></div>
+                        <div class="schema-field"><span class="field-name">Value</span><span class="field-type">INTEGER (request count)</span></div>
+                        <div class="schema-field"><span class="field-name">TTL</span><span class="field-type">EXPIRE = 2 × window_size</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REDIS COMMANDS / LUA SCRIPTS -->
+        <h3>📝 Redis Lua Scripts (Atomic Operations)</h3>
+        <div class="sql-query">
+            <h5>Token Bucket - Atomic Check & Consume</h5>
+<pre>-- Token Bucket Lua Script
+-- KEYS[1] = rate limit key
+-- ARGV[1] = capacity, ARGV[2] = refill_rate, ARGV[3] = now_ms, ARGV[4] = requested
+
 local key = KEYS[1]
 local capacity = tonumber(ARGV[1])
-local refill_rate = tonumber(ARGV[2])
+local refill_rate = tonumber(ARGV[2])  -- tokens per second
 local now = tonumber(ARGV[3])
-local requested = tonumber(ARGV[4])
+local requested = tonumber(ARGV[4]) or 1
 
+-- Get current state
 local bucket = redis.call('HMGET', key, 'tokens', 'last_refill')
 local tokens = tonumber(bucket[1]) or capacity
 local last_refill = tonumber(bucket[2]) or now
 
--- Refill tokens
-local elapsed = now - last_refill
-tokens = math.min(capacity, tokens + elapsed * refill_rate)
+-- Calculate token refill
+local elapsed = (now - last_refill) / 1000  -- convert to seconds
+local new_tokens = math.min(capacity, tokens + (elapsed * refill_rate))
 
--- Try to consume
-if tokens >= requested then
-    tokens = tokens - requested
-    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
-    redis.call('EXPIRE', key, 3600)
-    return 1 -- Allowed
+-- Try to consume tokens
+local allowed = 0
+local remaining = new_tokens
+if new_tokens >= requested then
+    remaining = new_tokens - requested
+    allowed = 1
+end
+
+-- Update state
+redis.call('HMSET', key, 'tokens', remaining, 'last_refill', now)
+redis.call('EXPIRE', key, math.ceil(capacity / refill_rate) * 2)
+
+-- Return: allowed (0/1), remaining tokens, reset time
+local reset_time = math.ceil((capacity - remaining) / refill_rate)
+return {allowed, math.floor(remaining), reset_time}</pre>
+        </div>
+
+        <div class="sql-query">
+            <h5>Sliding Window Log - Accurate Count</h5>
+<pre>-- Sliding Window Log Lua Script
+-- KEYS[1] = rate limit key
+-- ARGV[1] = window_ms, ARGV[2] = limit, ARGV[3] = now_ms, ARGV[4] = request_id
+
+local key = KEYS[1]
+local window = tonumber(ARGV[1])
+local limit = tonumber(ARGV[2])
+local now = tonumber(ARGV[3])
+local request_id = ARGV[4]
+
+-- Remove old entries outside window
+local window_start = now - window
+redis.call('ZREMRANGEBYSCORE', key, '-inf', window_start)
+
+-- Count requests in current window
+local current_count = redis.call('ZCARD', key)
+
+if current_count < limit then
+    -- Add new request
+    redis.call('ZADD', key, now, request_id)
+    redis.call('EXPIRE', key, math.ceil(window / 1000) + 1)
+    return {1, limit - current_count - 1, 0}  -- allowed, remaining, retry_after
 else
-    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
-    return 0 -- Denied
+    -- Get oldest entry to calculate retry time
+    local oldest = redis.call('ZRANGE', key, 0, 0, 'WITHSCORES')
+    local retry_after = oldest[2] and (oldest[2] + window - now) / 1000 or 0
+    return {0, 0, math.ceil(retry_after)}  -- denied, remaining, retry_after
 end</pre>
-            </div>
         </div>
 
-        <!-- Feature Addition 1 -->
-        <h3>🆕 Feature Addition 1: Sliding Window Counter</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Sliding Window?</h4>
-            <p>More accurate rate limiting without burst allowance. Better for strict compliance scenarios.</p>
+        <div class="sql-query">
+            <h5>Sliding Window Counter - Balanced Approach</h5>
+<pre>-- Sliding Window Counter Lua Script
+-- KEYS[1] = current window key, KEYS[2] = previous window key
+-- ARGV[1] = limit, ARGV[2] = window_ms, ARGV[3] = now_ms
 
-            <h4>Algorithm</h4>
-            <div class="code-example">
-<pre>// Sliding Window Counter
-// Combines fixed window counter with weighted previous window
+local curr_key = KEYS[1]
+local prev_key = KEYS[2]
+local limit = tonumber(ARGV[1])
+local window = tonumber(ARGV[2])
+local now = tonumber(ARGV[3])
 
-function slidingWindowCount(userId, windowSize, limit) {
-    const now = Date.now();
-    const currentWindow = Math.floor(now / windowSize);
-    const previousWindow = currentWindow - 1;
+-- Get counts
+local curr_count = tonumber(redis.call('GET', curr_key)) or 0
+local prev_count = tonumber(redis.call('GET', prev_key)) or 0
 
-    const currentCount = redis.get(`rate:${userId}:${currentWindow}`) || 0;
-    const previousCount = redis.get(`rate:${userId}:${previousWindow}`) || 0;
+-- Calculate weighted count
+local elapsed_in_window = now % window
+local weight = elapsed_in_window / window
+local weighted_count = (prev_count * (1 - weight)) + curr_count
 
-    // Weight previous window based on time elapsed in current window
-    const elapsedInWindow = now % windowSize;
-    const weightedCount = previousCount * (1 - elapsedInWindow / windowSize) + currentCount;
+if weighted_count < limit then
+    -- Increment current window
+    redis.call('INCR', curr_key)
+    redis.call('EXPIRE', curr_key, math.ceil(window / 1000) * 2)
+    local remaining = math.floor(limit - weighted_count - 1)
+    return {1, remaining, 0}  -- allowed
+else
+    local retry_after = math.ceil((window - elapsed_in_window) / 1000)
+    return {0, 0, retry_after}  -- denied
+end</pre>
+        </div>
 
-    if (weightedCount < limit) {
-        redis.incr(`rate:${userId}:${currentWindow}`);
-        return true;
+        <!-- API DESIGN -->
+        <h3>🔌 API Design</h3>
+        <div class="api-endpoint">
+            <span class="api-method get">ANY</span> <span class="api-path">/api/*</span>
+<pre>
+Rate Limit Response Headers (Always Included):
+
+X-RateLimit-Limit: 100              // Max requests in window
+X-RateLimit-Remaining: 45           // Requests remaining
+X-RateLimit-Reset: 1704067200       // Unix timestamp when window resets
+X-RateLimit-Policy: "100;w=60"      // Policy: 100 per 60 seconds
+
+Success Response: 200 OK
+{
+    "data": { ... },
+    "meta": {
+        "rateLimit": {
+            "limit": 100,
+            "remaining": 45,
+            "reset": 1704067200
+        }
     }
-    return false;
 }</pre>
+        </div>
+
+        <div class="api-endpoint">
+            <span class="api-method post" style="background: #ef4444;">429</span> <span class="api-path">Rate Limited Response</span>
+<pre>
+HTTP/1.1 429 Too Many Requests
+
+Headers:
+    Retry-After: 30                 // Seconds until retry allowed
+    X-RateLimit-Limit: 100
+    X-RateLimit-Remaining: 0
+    X-RateLimit-Reset: 1704067200
+
+Response Body:
+{
+    "error": {
+        "code": "RATE_LIMIT_EXCEEDED",
+        "message": "Too many requests. Please retry after 30 seconds.",
+        "retryAfter": 30,
+        "limit": 100,
+        "window": "60s"
+    }
+}</pre>
+        </div>
+
+        <div class="api-endpoint">
+            <span class="api-method get">GET</span> <span class="api-path">/api/v1/rate-limit/status</span>
+<pre>
+// Check current rate limit status (for dashboards)
+
+Response: 200 OK
+{
+    "userId": "user_123",
+    "tier": "pro",
+    "limits": {
+        "requests": {
+            "limit": 1000,
+            "remaining": 847,
+            "reset": 1704067200,
+            "window": "60s"
+        },
+        "daily": {
+            "limit": 50000,
+            "remaining": 42156,
+            "reset": 1704153600,
+            "window": "24h"
+        }
+    }
+}</pre>
+        </div>
+
+        <!-- STORAGE ALTERNATIVES -->
+        <h3>🔀 Storage Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Redis / ElastiCache (Selected)</h5>
+                <p>In-memory, atomic Lua scripts, sub-ms latency</p>
+                <div class="pros-cons-grid" style="margin: 12px 0;">
+                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #166534;">Pros:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Lua scripts for atomicity</li>
+                            <li>O(1) operations</li>
+                            <li>Built-in TTL/expiry</li>
+                            <li>Cluster mode for scaling</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef2f2; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #991b1b;">Cons:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Memory cost at scale</li>
+                            <li>Single point of failure (mitigate w/ cluster)</li>
+                            <li>Network latency added</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="background: #fef3c7; padding: 10px; border-radius: 6px; font-size: 13px;">
+                    <strong>⚠️ Care:</strong> Set maxmemory-policy to volatile-lru. Monitor evictions.
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Memcached</h5>
+                <p>Simpler key-value, multi-threaded</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Better multi-core performance<br>
+                    <span style="color: #22c55e;">✓</span> Lower memory overhead<br>
+                    <span style="color: #22c55e;">✓</span> INCR/DECR atomic<br>
+                    <span style="color: #ef4444;">✗</span> No Lua scripts (race conditions)<br>
+                    <span style="color: #ef4444;">✗</span> No persistence
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Simple fixed window counter only. No complex algorithms needed.
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Local Memory + Sync</h5>
+                <p>In-process rate limiting with periodic sync</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Zero network latency<br>
+                    <span style="color: #22c55e;">✓</span> Works if Redis down<br>
+                    <span style="color: #ef4444;">✗</span> Inconsistent across servers<br>
+                    <span style="color: #ef4444;">✗</span> User can exceed by Nx (N servers)
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Hybrid approach - local first pass, Redis for accuracy.
+                </div>
             </div>
         </div>
 
-        <!-- Feature Addition 2 -->
-        <h3>🆕 Feature Addition 2: Tiered Rate Limits</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Tiers?</h4>
-            <p>Different limits for free vs paid users. Monetization opportunity.</p>
+        <!-- ALGORITHM ALTERNATIVES -->
+        <h3>🔀 Algorithm Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Token Bucket (Selected)</h5>
+                <p>Best for APIs with burst tolerance</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Allows controlled bursts<br>
+                    <span style="color: #22c55e;">✓</span> Memory efficient O(1)<br>
+                    <span style="color: #22c55e;">✓</span> Intuitive parameters<br>
+                    <span style="color: #ef4444;">✗</span> Can cause traffic spikes
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>Best for:</strong> General API rate limiting, user-facing APIs
+                </div>
+            </div>
 
-            <h4>Configuration</h4>
-            <div class="code-example">
-<pre>rate_limits:
-  free:
-    requests_per_minute: 60
-    requests_per_day: 1000
-    burst_size: 10
+            <div class="alternative-card">
+                <h5>Sliding Window Counter</h5>
+                <p>Balanced accuracy and memory</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> No burst at boundaries<br>
+                    <span style="color: #22c55e;">✓</span> Memory efficient O(1)<br>
+                    <span style="color: #22c55e;">✓</span> Smooth rate limiting<br>
+                    <span style="color: #ef4444;">✗</span> Approximate (~99.7% accurate)
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>Best for:</strong> Strict rate limits, billing/quota systems
+                </div>
+            </div>
 
-  pro:
-    requests_per_minute: 600
-    requests_per_day: 50000
-    burst_size: 100
-
-  enterprise:
-    requests_per_minute: 6000
-    requests_per_day: unlimited
-    burst_size: 1000</pre>
+            <div class="alternative-card">
+                <h5>Leaky Bucket</h5>
+                <p>Smoothest output, queues requests</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Constant output rate<br>
+                    <span style="color: #22c55e;">✓</span> Protects downstream<br>
+                    <span style="color: #ef4444;">✗</span> Adds latency (queuing)<br>
+                    <span style="color: #ef4444;">✗</span> Complex to implement
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>Best for:</strong> Traffic shaping, protecting fragile backends
+                </div>
             </div>
         </div>
 
-        <!-- Feature Addition 3 -->
-        <h3>🆕 Feature Addition 3: Response Headers</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Headers?</h4>
-            <p>Help clients understand their rate limit status. Industry standard.</p>
-
-            <h4>Standard Headers</h4>
-            <div class="code-example">
-<pre>X-RateLimit-Limit: 100          // Max requests allowed
-X-RateLimit-Remaining: 45       // Requests remaining
-X-RateLimit-Reset: 1640000000   // Unix timestamp when limit resets
-Retry-After: 30                 // Seconds until retry (on 429)</pre>
+        <!-- DESIGN PATTERNS -->
+        <h3>🧩 Design Patterns Used</h3>
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <h5>Decorator Pattern (Middleware)</h5>
+                <p>Wrap request handlers with rate limiting. Transparent to business logic. Easy to add/remove.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Strategy Pattern</h5>
+                <p>Switch algorithms at runtime. TokenBucketStrategy, SlidingWindowStrategy, LeakyBucketStrategy. Configure per endpoint.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Singleton Pattern</h5>
+                <p>Single RateLimiter instance per service. Manages connection pool to Redis. Thread-safe operations.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Chain of Responsibility</h5>
+                <p>Multiple rate limit checks: IP → User → API Key → Endpoint. First failure rejects request.</p>
             </div>
         </div>
 
-        <!-- Feature Reversion -->
-        <h3>🔙 Feature Reversion: Disabling Rate Limiting</h3>
-        <div class="feature-card reversion">
-            <h4>Why Revert?</h4>
-            <p>Redis cluster failure causing false rate limit hits. Emergency bypass needed.</p>
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Middleware Implementation (Go)</h5>
+<pre>type RateLimiter struct {
+    redis    *redis.Client
+    script   *redis.Script
+    capacity int
+    rate     float64
+}
 
-            <h4>Reversion Strategy</h4>
-            <ol>
-                <li>Feature flag to bypass rate limiter</li>
-                <li>Log all requests for post-incident analysis</li>
-                <li>Alert on traffic anomalies</li>
-                <li>Prepare for traffic surge to backend</li>
-            </ol>
+func NewRateLimiter(redis *redis.Client, capacity int, rate float64) *RateLimiter {
+    return &RateLimiter{
+        redis:    redis,
+        script:   redis.NewScript(tokenBucketLua),
+        capacity: capacity,
+        rate:     rate,
+    }
+}
+
+func (rl *RateLimiter) Middleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        key := rl.extractKey(c)  // IP, user ID, or API key
+
+        result, err := rl.script.Run(c, rl.redis, []string{key},
+            rl.capacity, rl.rate, time.Now().UnixMilli(), 1,
+        ).Result()
+
+        if err != nil {
+            // Fail open on Redis error (graceful degradation)
+            c.Next()
+            return
+        }
+
+        res := result.([]interface{})
+        allowed := res[0].(int64)
+        remaining := res[1].(int64)
+        resetTime := res[2].(int64)
+
+        // Always set rate limit headers
+        c.Header("X-RateLimit-Limit", strconv.Itoa(rl.capacity))
+        c.Header("X-RateLimit-Remaining", strconv.FormatInt(remaining, 10))
+        c.Header("X-RateLimit-Reset", strconv.FormatInt(time.Now().Unix()+resetTime, 10))
+
+        if allowed == 0 {
+            c.Header("Retry-After", strconv.FormatInt(resetTime, 10))
+            c.JSON(429, gin.H{"error": "Rate limit exceeded"})
+            c.Abort()
+            return
+        }
+
+        c.Next()
+    }
+}</pre>
         </div>
-    </div>
 
-    <!-- PAN-INDIA SCALE -->
-    <div class="stage-section" id="pan-india">
-        <div class="stage-header">
-            <span class="stage-badge pan-india">PAN-India Scale</span>
-            <h2 style="margin: 0;">Regional Rate Limiting</h2>
-        </div>
-
-        <h3>Architecture Evolution</h3>
+        <!-- AWS COST ESTIMATION -->
+        <h3>💰 AWS Cost Estimation (MVP)</h3>
         <div class="feature-card">
-            <ul>
-                <li><strong>Regional Redis Clusters:</strong> Rate limit state per region</li>
-                <li><strong>Global Rate Aggregation:</strong> Periodic sync for global limits</li>
-                <li><strong>Eventual Consistency:</strong> Accept slight over-limit during sync delays</li>
-            </ul>
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Spec</th>
+                        <th>Monthly Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td>cache.t3.micro, 0.5GB, single node</td>
+                        <td>$15</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">EC2</span> API Servers (2x)</td>
+                        <td>t3.small (rate limiter overhead minimal)</td>
+                        <td>$30</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">CloudWatch</span> Monitoring</td>
+                        <td>Rate limit metrics, alarms</td>
+                        <td>$10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">Lambda@Edge</span> (Optional)</td>
+                        <td>Edge rate limiting, 1M requests</td>
+                        <td>$5</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2"><strong>Total MVP Monthly</strong></td>
+                        <td><strong>~$60/month</strong></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
 
-    <!-- HIGH TRAFFIC -->
-    <div class="stage-section" id="high-traffic">
-        <div class="stage-header">
-            <span class="stage-badge high-traffic">High Traffic</span>
-            <h2 style="margin: 0;">Handling DDoS-level Traffic</h2>
+        <!-- K8s DEPLOYMENT -->
+        <h3>🚀 Deployment (K8s)</h3>
+        <div class="deployment-diagram">
+            <h4>Kubernetes Architecture - Sidecar vs Centralized</h4>
+            <div class="k8s-cluster">
+                <h5>Option 1: Middleware (Recommended for MVP)</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                    <div class="k8s-pod">🔷 api-pod (rate limiter built-in)</div>
+                    <div class="k8s-pod">🔷 api-pod (rate limiter built-in)</div>
+                </div>
+                <h5>Option 2: Sidecar (For complex policies)</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                    <div class="k8s-pod" style="background: #7c3aed;">🔷 api-container + envoy-sidecar</div>
+                </div>
+                <h5>Option 3: Centralized Service</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-pod" style="background: #0891b2;">🌐 rate-limiter-service (replicas: 3)</div>
+                    <div class="k8s-pod" style="background: #dc2626;">🔐 ConfigMap: rate-limit-rules</div>
+                </div>
+            </div>
         </div>
 
-        <h3>Solutions</h3>
-        <div class="feature-card">
-            <ul>
-                <li><strong>Local Rate Limiting:</strong> First pass in API server memory (no Redis call)</li>
-                <li><strong>IP-based Limits:</strong> Block suspicious IPs at edge (Cloudflare)</li>
-                <li><strong>Circuit Breaker:</strong> Stop accepting new requests if Redis is down</li>
-            </ul>
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml</h5>
+<pre>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-with-rate-limiter
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    spec:
+      containers:
+      - name: api
+        image: api:v1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: redis-creds
+              key: url
+        - name: RATE_LIMIT_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: rate-limit-config
+              key: enabled
+        - name: RATE_LIMIT_CAPACITY
+          value: "100"
+        - name: RATE_LIMIT_RATE
+          value: "10"  # 10 tokens/sec
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rate-limit-config
+data:
+  enabled: "true"
+  rules: |
+    default:
+      capacity: 100
+      rate: 10
+    /api/v1/expensive:
+      capacity: 10
+      rate: 1
+    /api/v1/health:
+      enabled: false</pre>
         </div>
-    </div>
 
-    <!-- GLOBAL SCALE -->
-    <div class="stage-section" id="global">
-        <div class="stage-header">
-            <span class="stage-badge global">Global Scale</span>
-            <h2 style="margin: 0;">Worldwide Rate Limiting</h2>
+        <!-- ROLLBACK STRATEGY -->
+        <h3>⏪ Rollback Strategy</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Quick Disable via Config</h4>
+                    <div class="code-example" style="margin: 12px 0;">
+<pre># Instant disable without deploy
+kubectl patch configmap rate-limit-config \
+  -p '{"data":{"enabled":"false"}}'
+
+# Or via feature flag service
+curl -X POST https://flags.internal/rate-limiter \
+  -d '{"enabled": false}'</pre>
+                    </div>
+                    <p style="font-size: 14px;">Config change propagates in &lt;10s</p>
+                </div>
+                <div>
+                    <h4>Fallback Modes</h4>
+                    <ul style="font-size: 14px;">
+                        <li><strong>Fail Open:</strong> Allow all if Redis down (default)</li>
+                        <li><strong>Fail Closed:</strong> Deny all if Redis down (strict)</li>
+                        <li><strong>Local Fallback:</strong> Use in-memory limits (degraded accuracy)</li>
+                        <li><strong>Log Only:</strong> Check limits but don't enforce</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <h3>📊 Scale Metrics</h3>
+        <!-- SCALE METRICS -->
+        <h3>📊 Scale Metrics (MVP)</h3>
         <div class="metrics-card">
             <div class="metric">
-                <div class="value">1B+</div>
-                <div class="label">Requests/day</div>
+                <div class="value">10K</div>
+                <div class="label">Checks/sec</div>
             </div>
             <div class="metric">
                 <div class="value">&lt;1ms</div>
-                <div class="label">Latency Added</div>
+                <div class="label">Latency Overhead</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;0.1%</div>
+                <div class="label">False Positive Rate</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.9%</div>
+                <div class="label">Availability</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PAN-INDIA SCALE -->
+    <!-- ============================================ -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Multi-Region • 100K users • 10K req/sec</h2>
+        </div>
+
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
+        <div class="feature-card">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>All MVP features</li>
+                        <li>Global rate limits (across regions)</li>
+                        <li>Regional rate limits (per-region)</li>
+                        <li>Tiered limits (free/pro/enterprise)</li>
+                        <li>Dynamic limit adjustment via API</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;2ms p99 (cross-region)</li>
+                        <li>Availability: 99.95%</li>
+                        <li>Eventual consistency: &lt;1s sync</li>
+                        <li>Throughput: 100K checks/sec</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE -->
+        <h3>🏗️ Architecture Evolution</h3>
+        <div class="diagram-container">
+            <h4>Multi-Region Rate Limiting</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <div class="arch-box client">Users (All India)</div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box lb">Route 53 (Latency-based)</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #3b82f6; border-radius: 12px;">
+                        <strong style="color: #3b82f6;">Mumbai (ap-south-1)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">API (5x)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis Primary</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #22c55e; border-radius: 12px;">
+                        <strong style="color: #22c55e;">Hyderabad (ap-south-2)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">API (3x)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis Replica</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div style="text-align: center;">
+                    <div class="arch-box queue" style="background: #8b5cf6;">ElastiCache Global Datastore<br><small>Cross-region replication &lt;1s</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA FLOW - DISTRIBUTED -->
+        <h3>🔄 Distributed Rate Limiting</h3>
+        <div class="diagram-container">
+            <h4>Handling Rate Limits Across Multiple Servers</h4>
+            <div style="margin: 20px 0;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div style="background: #1e293b; padding: 16px; border-radius: 8px; text-align: center;">
+                        <h5 style="color: #f59e0b;">Option 1: Centralized Redis</h5>
+                        <p style="font-size: 13px; color: #94a3b8;">All servers check single Redis cluster</p>
+                        <div style="margin-top: 8px; font-size: 12px;">
+                            <span style="color: #22c55e;">✓ Accurate</span><br>
+                            <span style="color: #ef4444;">✗ Higher latency</span>
+                        </div>
+                    </div>
+                    <div style="background: #1e293b; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #22c55e;">
+                        <h5 style="color: #22c55e;">Option 2: Eventual Consistency ✓</h5>
+                        <p style="font-size: 13px; color: #94a3b8;">Local Redis + async sync</p>
+                        <div style="margin-top: 8px; font-size: 12px;">
+                            <span style="color: #22c55e;">✓ Low latency</span><br>
+                            <span style="color: #f59e0b;">~ Slight over-limit OK</span>
+                        </div>
+                    </div>
+                    <div style="background: #1e293b; padding: 16px; border-radius: 8px; text-align: center;">
+                        <h5 style="color: #3b82f6;">Option 3: Sticky Sessions</h5>
+                        <p style="font-size: 13px; color: #94a3b8;">Route user to same server</p>
+                        <div style="margin-top: 8px; font-size: 12px;">
+                            <span style="color: #22c55e;">✓ Simple</span><br>
+                            <span style="color: #ef4444;">✗ Uneven load</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REDIS DATA STRUCTURES - DISTRIBUTED -->
+        <h3>🗄️ Distributed Redis Schema</h3>
+        <div class="sql-query">
+            <h5>Global vs Regional Rate Limits</h5>
+<pre>-- Global rate limit (synced across regions)
+-- Key format: global:ratelimit:{user_id}
+SET global:ratelimit:user123 "45" EX 60
+
+-- Regional rate limit (local to region)
+-- Key format: regional:{region}:ratelimit:{user_id}
+SET regional:ap-south-1:ratelimit:user123 "23" EX 60
+
+-- Tiered configuration (replicated via config)
+HSET ratelimit:config:pro capacity 1000 rate 100 burst 200
+HSET ratelimit:config:free capacity 100 rate 10 burst 20
+
+-- Sync counter for eventual consistency
+-- Periodically aggregate regional counters to global
+INCRBY global:ratelimit:user123 {regional_delta}</pre>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Cross-Region Sync Logic</h5>
+<pre>// Sync regional counts to global every 500ms
+func (rl *DistributedRateLimiter) syncToGlobal(ctx context.Context) {
+    ticker := time.NewTicker(500 * time.Millisecond)
+    for range ticker.C {
+        // Get local delta since last sync
+        delta := rl.localRedis.GetAndReset("local:delta:" + rl.region)
+
+        // Update global counter
+        if delta > 0 {
+            rl.globalRedis.IncrBy(ctx, "global:ratelimit:"+key, delta)
+        }
+
+        // Fetch global count for accuracy check
+        globalCount := rl.globalRedis.Get(ctx, "global:ratelimit:"+key)
+        rl.localRedis.Set(ctx, "global:snapshot:"+key, globalCount, time.Second)
+    }
+}
+
+// Rate limit check with global awareness
+func (rl *DistributedRateLimiter) Allow(ctx context.Context, key string) bool {
+    // Fast path: check local first
+    localAllowed := rl.checkLocal(ctx, key)
+    if !localAllowed {
+        return false
+    }
+
+    // Check against global snapshot (may be slightly stale)
+    globalSnapshot := rl.localRedis.Get(ctx, "global:snapshot:"+key)
+    return globalSnapshot < rl.globalLimit
+}</pre>
+        </div>
+
+        <!-- ALGORITHM ALTERNATIVES FOR DISTRIBUTED -->
+        <h3>🔀 Distributed Algorithm Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Token Bucket + Sync (Selected)</h5>
+                <p>Local bucket with periodic global sync</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Tolerates network partitions<br>
+                    <span style="color: #22c55e;">✓</span> Allows local bursts<br>
+                    <span style="color: #ef4444;">✗</span> Slight over-limit during sync delay
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Sliding Window + CRDT</h5>
+                <p>Conflict-free replicated counters</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Mathematically consistent<br>
+                    <span style="color: #22c55e;">✓</span> No sync needed<br>
+                    <span style="color: #ef4444;">✗</span> Complex implementation
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Gossip Protocol</h5>
+                <p>P2P sync between servers</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> No central point<br>
+                    <span style="color: #ef4444;">✗</span> Convergence time varies<br>
+                    <span style="color: #ef4444;">✗</span> Overkill for most cases
+                </div>
+            </div>
+        </div>
+
+        <!-- DESIGN PATTERNS -->
+        <h3>🧩 Design Patterns Used</h3>
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <h5>Ambassador Pattern</h5>
+                <p>Sidecar handles rate limit checks. Main app unaware of distributed complexity. Envoy proxy integration.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Circuit Breaker</h5>
+                <p>If global Redis unreachable, fall back to local-only limiting. Prevent cascade failures.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Bulkhead Pattern</h5>
+                <p>Separate rate limit pools per tenant/service. Noisy neighbor isolation.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Event Sourcing</h5>
+                <p>Log all rate limit events. Replay to reconstruct state. Audit trail for disputes.</p>
+            </div>
+        </div>
+
+        <!-- AWS COST -->
+        <h3>💰 Cost at PAN-India Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr>
+                    <td><span class="cost-tag aws">ElastiCache</span> Global Datastore</td>
+                    <td>cache.r6g.large × 2 regions</td>
+                    <td>$400</td>
+                </tr>
+                <tr>
+                    <td><span class="cost-tag aws">EC2/EKS</span> API Servers</td>
+                    <td>8 nodes across regions</td>
+                    <td>$500</td>
+                </tr>
+                <tr>
+                    <td><span class="cost-tag aws">Route 53</span></td>
+                    <td>Latency routing + health checks</td>
+                    <td>$50</td>
+                </tr>
+                <tr>
+                    <td><span class="cost-tag aws">CloudWatch</span></td>
+                    <td>Cross-region metrics, dashboards</td>
+                    <td>$50</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2"><strong>Total</strong></td>
+                    <td><strong>~$1,000/month</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- SCALE METRICS -->
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">100K</div>
+                <div class="label">Checks/sec</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;2ms</div>
+                <div class="label">P99 Latency</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;1s</div>
+                <div class="label">Cross-region Sync</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.95%</div>
+                <div class="label">Availability</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HIGH TRAFFIC -->
+    <!-- ============================================ -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">1M users • 100K req/sec • DDoS Protection</h2>
+        </div>
+
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
+        <div class="feature-card">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>All PAN-India features</li>
+                        <li>DDoS-level traffic handling</li>
+                        <li>IP reputation scoring</li>
+                        <li>Adaptive rate limits (auto-adjust)</li>
+                        <li>Per-endpoint granular limits</li>
+                        <li>Allowlist/Blocklist management</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;0.5ms p99 (edge)</li>
+                        <li>Availability: 99.99%</li>
+                        <li>Handle 10x traffic spikes</li>
+                        <li>Zero false positives for VIPs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHAT BREAKS FIRST -->
+        <h3>⚠️ What Breaks First</h3>
+        <div class="feature-card warning">
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 25%;"><strong>1. Redis Single Shard</strong></td>
+                    <td>Hot keys overwhelm single Redis node</td>
+                    <td style="color: #22c55e;"><strong>→ Redis Cluster (16+ shards)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>2. Network Latency</strong></td>
+                    <td>Redis round-trip adds latency at scale</td>
+                    <td style="color: #22c55e;"><strong>→ Local cache + edge rate limiting</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>3. Lua Script CPU</strong></td>
+                    <td>Complex Lua scripts block Redis</td>
+                    <td style="color: #22c55e;"><strong>→ Simplify scripts, batch operations</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>4. Connection Pool</strong></td>
+                    <td>Too many connections to Redis</td>
+                    <td style="color: #22c55e;"><strong>→ Connection pooling, Twemproxy</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ARCHITECTURE -->
+        <h3>🏗️ Architecture at Scale</h3>
+        <div class="diagram-container">
+            <h4>Multi-Layer Rate Limiting</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                <div class="arch-box client">Incoming Traffic (100K+ req/sec)</div>
+                <div class="arch-arrow">↓</div>
+
+                <div style="background: rgba(239,68,68,0.1); padding: 16px; border-radius: 12px; border: 2px solid #ef4444;">
+                    <div style="text-align: center; margin-bottom: 8px; color: #ef4444; font-weight: bold;">Layer 1: Edge (CloudFront/WAF)</div>
+                    <div style="display: flex; gap: 12px; justify-content: center;">
+                        <div class="arch-box cdn" style="padding: 10px;">IP Blocklist</div>
+                        <div class="arch-box cdn" style="padding: 10px;">Geo Blocking</div>
+                        <div class="arch-box cdn" style="padding: 10px;">Basic Rate Limit</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓ 70% blocked</div>
+
+                <div style="background: rgba(249,115,22,0.1); padding: 16px; border-radius: 12px; border: 2px solid #f97316;">
+                    <div style="text-align: center; margin-bottom: 8px; color: #f97316; font-weight: bold;">Layer 2: API Gateway</div>
+                    <div style="display: flex; gap: 12px; justify-content: center;">
+                        <div class="arch-box gateway" style="padding: 10px;">Auth Check</div>
+                        <div class="arch-box gateway" style="padding: 10px;">User Tier Limits</div>
+                        <div class="arch-box gateway" style="padding: 10px;">Burst Control</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓ 20% to backend</div>
+
+                <div style="background: rgba(34,197,94,0.1); padding: 16px; border-radius: 12px; border: 2px solid #22c55e;">
+                    <div style="text-align: center; margin-bottom: 8px; color: #22c55e; font-weight: bold;">Layer 3: Service Level</div>
+                    <div style="display: flex; gap: 12px; justify-content: center;">
+                        <div class="arch-box server" style="padding: 10px;">Per-Endpoint</div>
+                        <div class="arch-box server" style="padding: 10px;">Resource Limits</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <div style="display: flex; gap: 20px;">
+                    <div class="arch-box cache">Redis Cluster<br><small>16 shards</small></div>
+                    <div class="arch-box db">Hot Key Cache<br><small>Local LRU</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA FLOW - HIGH TRAFFIC -->
+        <h3>🔄 High-Traffic Data Flow</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box cdn" style="padding: 10px 16px;">Edge Check</div>
+                    <div class="flow-step-label">IP blocklist (0.1ms)</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Local Cache</div>
+                    <div class="flow-step-label">Hot key check (0.01ms)</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis Cluster</div>
+                    <div class="flow-step-label">Only on cache miss (0.5ms)</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Backend</div>
+                    <div class="flow-step-label">Allowed requests</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REDIS CLUSTER SCHEMA -->
+        <h3>🗄️ Redis Cluster Configuration</h3>
+        <div class="sql-query">
+            <h5>Cluster Sharding Strategy</h5>
+<pre>-- Redis Cluster: 16 shards, hash slots 0-16383
+-- Key hashing ensures even distribution
+
+-- Use hash tags for related keys on same shard
+-- {user:123} ensures all user:123:* keys on same node
+SET {user:123}:tokens 100
+SET {user:123}:last_refill 1704067200
+
+-- Hot key mitigation: add random suffix
+-- Spread famous user across shards
+SET ratelimit:famous_user:{rand(1,100)} 50
+
+-- Pipeline commands for efficiency
+MULTI
+EVALSHA token_bucket {user:123}:rate 100 10 1704067200 1
+EXPIRE {user:123}:rate 3600
+EXEC</pre>
+        </div>
+
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Local Cache + Redis Hybrid</h5>
+<pre>type HybridRateLimiter struct {
+    localCache  *lru.Cache       // In-memory LRU cache
+    redisClient *redis.ClusterClient
+    localTTL    time.Duration
+}
+
+func (rl *HybridRateLimiter) Allow(ctx context.Context, key string) (bool, error) {
+    // Step 1: Check local cache first (0.01ms)
+    if cached, ok := rl.localCache.Get(key); ok {
+        entry := cached.(*RateLimitEntry)
+        if entry.Remaining > 0 && time.Now().Before(entry.ExpiresAt) {
+            entry.Remaining--
+            return true, nil
+        }
+        if entry.Remaining <= 0 {
+            return false, nil  // Locally known to be rate limited
+        }
+    }
+
+    // Step 2: Check Redis cluster (0.5ms) - only on cache miss
+    result, err := rl.redisClient.EvalSha(ctx, tokenBucketSHA, []string{key},
+        capacity, rate, time.Now().UnixMilli(), 1).Result()
+    if err != nil {
+        // Fail open: allow on Redis error
+        return true, err
+    }
+
+    // Step 3: Update local cache
+    res := result.([]interface{})
+    allowed := res[0].(int64) == 1
+    remaining := res[1].(int64)
+
+    rl.localCache.Add(key, &RateLimitEntry{
+        Remaining: int(remaining),
+        ExpiresAt: time.Now().Add(rl.localTTL),
+    })
+
+    return allowed, nil
+}</pre>
+        </div>
+
+        <!-- STORAGE ALTERNATIVES -->
+        <h3>🔀 Storage Alternatives at Scale</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Redis Cluster (Selected)</h5>
+                <p>Horizontally scaled, automatic sharding</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> 16+ shards for throughput<br>
+                    <span style="color: #22c55e;">✓</span> Automatic failover<br>
+                    <span style="color: #ef4444;">✗</span> Cross-slot transactions limited
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>AWS DynamoDB + DAX</h5>
+                <p>Serverless, auto-scaling</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Zero ops scaling<br>
+                    <span style="color: #22c55e;">✓</span> DAX for sub-ms reads<br>
+                    <span style="color: #ef4444;">✗</span> Cost at high throughput<br>
+                    <span style="color: #ef4444;">✗</span> No Lua scripts
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>ScyllaDB</h5>
+                <p>C++ Cassandra, extreme throughput</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> 1M+ ops/sec per node<br>
+                    <span style="color: #22c55e;">✓</span> Linear scalability<br>
+                    <span style="color: #ef4444;">✗</span> Higher latency than Redis<br>
+                    <span style="color: #ef4444;">✗</span> Operational complexity
+                </div>
+            </div>
+        </div>
+
+        <!-- K8s DEPLOYMENT -->
+        <h3>🚀 K8s Deployment at Scale</h3>
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Envoy Sidecar Rate Limiting</h5>
+<pre>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-with-envoy-ratelimit
+spec:
+  replicas: 20
+  template:
+    spec:
+      containers:
+      - name: api
+        image: api:v2.0.0
+        ports:
+        - containerPort: 8080
+
+      - name: envoy-proxy
+        image: envoyproxy/envoy:v1.28
+        ports:
+        - containerPort: 8443
+        volumeMounts:
+        - name: envoy-config
+          mountPath: /etc/envoy
+
+      volumes:
+      - name: envoy-config
+        configMap:
+          name: envoy-ratelimit-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: envoy-ratelimit-config
+data:
+  envoy.yaml: |
+    static_resources:
+      listeners:
+      - address:
+          socket_address: { address: 0.0.0.0, port_value: 8443 }
+        filter_chains:
+        - filters:
+          - name: envoy.filters.network.http_connection_manager
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+              http_filters:
+              - name: envoy.filters.http.ratelimit
+                typed_config:
+                  "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
+                  domain: api_ratelimit
+                  rate_limit_service:
+                    grpc_service:
+                      envoy_grpc:
+                        cluster_name: ratelimit_cluster</pre>
+        </div>
+
+        <!-- ROLLBACK STRATEGY -->
+        <h3>⏪ Rollback Strategy</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Emergency Bypass</h4>
+                    <div class="code-example" style="margin: 12px 0;">
+<pre># Kill switch at edge (CloudFront)
+aws cloudfront update-distribution \
+  --id E123 \
+  --default-cache-behavior '{"LambdaFunctionAssociations":[]}'
+
+# Disable Envoy rate limiting
+kubectl set env deployment/api \
+  ENVOY_RATELIMIT_ENABLED=false</pre>
+                    </div>
+                </div>
+                <div>
+                    <h4>Gradual Rollback</h4>
+                    <ul style="font-size: 14px;">
+                        <li>Increase limits by 10x temporarily</li>
+                        <li>Switch to log-only mode</li>
+                        <li>Enable bypass for VIP users</li>
+                        <li>Canary: rollback 10% of traffic first</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- AWS COST -->
+        <h3>💰 Cost at High Traffic</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>ElastiCache Cluster (16 shards, r6g.xlarge)</td><td>$4,000</td></tr>
+                <tr><td>EKS (20 nodes, c5.2xlarge)</td><td>$5,000</td></tr>
+                <tr><td>CloudFront + WAF</td><td>$3,000</td></tr>
+                <tr><td>Lambda@Edge (1B invocations)</td><td>$600</td></tr>
+                <tr><td>Data Transfer</td><td>$2,000</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$14,600/month</strong></td></tr>
+            </table>
+        </div>
+
+        <!-- SCALE METRICS -->
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">1M</div>
+                <div class="label">Checks/sec</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;0.5ms</div>
+                <div class="label">P99 Latency</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;0.01%</div>
+                <div class="label">False Positive</div>
             </div>
             <div class="metric">
                 <div class="value">99.99%</div>
-                <div class="label">Accuracy</div>
+                <div class="label">Availability</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- GLOBAL SCALE -->
+    <!-- ============================================ -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">10M users • 1M req/sec • Multi-Region Active-Active</h2>
+        </div>
+
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
+        <div class="feature-card">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>All High-Traffic features</li>
+                        <li>Global rate limits (strict)</li>
+                        <li>Regional autonomy (continue if region isolated)</li>
+                        <li>Multi-tenant isolation</li>
+                        <li>Real-time limit adjustments</li>
+                        <li>Compliance (GDPR data locality)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;1ms globally</li>
+                        <li>Availability: 99.999% (5 nines)</li>
+                        <li>Handle 100x traffic spikes</li>
+                        <li>Zero downtime deployments</li>
+                        <li>Sub-second global sync</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLOBAL ARCHITECTURE -->
+        <h3>🌍 Global Architecture</h3>
+        <div class="diagram-container">
+            <h4>Multi-Region Active-Active</h4>
+            <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center; padding: 20px; background: rgba(59,130,246,0.1); border-radius: 12px;">
+                    <strong>US-East (Virginia)</strong>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS + Envoy</div>
+                    <div class="arch-box cache" style="margin-top: 8px;">Redis Global</div>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Primary for Americas</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(34,197,94,0.1); border-radius: 12px;">
+                    <strong>EU-West (Ireland)</strong>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS + Envoy</div>
+                    <div class="arch-box cache" style="margin-top: 8px;">Redis Global</div>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Primary for EMEA</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(249,115,22,0.1); border-radius: 12px;">
+                    <strong>Asia-Pacific (Singapore)</strong>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS + Envoy</div>
+                    <div class="arch-box cache" style="margin-top: 8px;">Redis Global</div>
+                    <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Primary for APAC</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <div class="arch-box queue" style="display: inline-block; background: #8b5cf6;">
+                    Kafka / Kinesis<br><small>Global event stream for sync</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISTRIBUTED RATE LIMITING DEEP DIVE -->
+        <h3>🔄 Global Rate Limiting Strategies</h3>
+        <div class="diagram-container">
+            <h4>Consistency vs Availability Trade-offs</h4>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
+                <div style="background: #1e293b; padding: 16px; border-radius: 8px;">
+                    <h5 style="color: #22c55e;">Strategy 1: Quota Allocation</h5>
+                    <p style="font-size: 13px; color: #94a3b8;">Pre-allocate quotas to each region</p>
+                    <div class="code-example" style="margin-top: 8px;">
+<pre>Global limit: 10,000/min
+US-East:   4,000 (40%)
+EU-West:   3,500 (35%)
+APAC:      2,500 (25%)</pre>
+                    </div>
+                    <div style="font-size: 12px; margin-top: 8px;">
+                        <span style="color: #22c55e;">✓</span> No cross-region calls needed<br>
+                        <span style="color: #ef4444;">✗</span> Underutilization if traffic shifts
+                    </div>
+                </div>
+
+                <div style="background: #1e293b; padding: 16px; border-radius: 8px; border: 2px solid #22c55e;">
+                    <h5 style="color: #22c55e;">Strategy 2: Token Bucket + Rebalancing ✓</h5>
+                    <p style="font-size: 13px; color: #94a3b8;">Dynamic quota based on demand</p>
+                    <div class="code-example" style="margin-top: 8px;">
+<pre>// Rebalance every 5 seconds
+if region.usage > region.quota * 0.9 {
+    borrow(from: underutilized_region)
+}</pre>
+                    </div>
+                    <div style="font-size: 12px; margin-top: 8px;">
+                        <span style="color: #22c55e;">✓</span> Efficient utilization<br>
+                        <span style="color: #22c55e;">✓</span> Handles traffic shifts
+                    </div>
+                </div>
+
+                <div style="background: #1e293b; padding: 16px; border-radius: 8px;">
+                    <h5 style="color: #3b82f6;">Strategy 3: Probabilistic</h5>
+                    <p style="font-size: 13px; color: #94a3b8;">Bloom filters for approximate dedup</p>
+                    <div style="font-size: 12px; margin-top: 8px;">
+                        <span style="color: #22c55e;">✓</span> Very low memory<br>
+                        <span style="color: #ef4444;">✗</span> False positives possible
+                    </div>
+                </div>
+
+                <div style="background: #1e293b; padding: 16px; border-radius: 8px;">
+                    <h5 style="color: #f59e0b;">Strategy 4: CRDT Counters</h5>
+                    <p style="font-size: 13px; color: #94a3b8;">Conflict-free merge across regions</p>
+                    <div style="font-size: 12px; margin-top: 8px;">
+                        <span style="color: #22c55e;">✓</span> Eventually consistent guarantee<br>
+                        <span style="color: #ef4444;">✗</span> Complex implementation
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALGORITHM FOR GLOBAL -->
+        <h3>📝 Global Rate Limiter Implementation</h3>
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Multi-Region Token Bucket with Rebalancing</h5>
+<pre>type GlobalRateLimiter struct {
+    regions       map[string]*RegionLimiter
+    globalLimit   int64
+    rebalanceCh   chan RebalanceRequest
+    kafkaProducer *kafka.Producer
+}
+
+type RegionLimiter struct {
+    region       string
+    localQuota   int64
+    used         int64
+    redisCluster *redis.ClusterClient
+}
+
+func (gl *GlobalRateLimiter) Allow(ctx context.Context, key string, region string) bool {
+    rl := gl.regions[region]
+
+    // Step 1: Check local quota
+    if rl.used >= rl.localQuota {
+        // Try to borrow from global pool
+        if !gl.tryBorrow(ctx, region, 100) {
+            return false
+        }
+    }
+
+    // Step 2: Local rate limit check
+    allowed := rl.localCheck(ctx, key)
+    if allowed {
+        atomic.AddInt64(&rl.used, 1)
+    }
+
+    // Step 3: Async publish to global stream (for sync)
+    go gl.publishEvent(key, region, allowed)
+
+    return allowed
+}
+
+func (gl *GlobalRateLimiter) rebalanceLoop() {
+    ticker := time.NewTicker(5 * time.Second)
+    for range ticker.C {
+        totalUsed := int64(0)
+        for _, rl := range gl.regions {
+            totalUsed += atomic.LoadInt64(&rl.used)
+        }
+
+        // Rebalance quotas based on usage patterns
+        for _, rl := range gl.regions {
+            usage := float64(rl.used) / float64(rl.localQuota)
+            if usage > 0.9 {
+                // High usage: try to increase quota
+                gl.increaseQuota(rl.region)
+            } else if usage < 0.3 {
+                // Low usage: donate quota to global pool
+                gl.decreaseQuota(rl.region)
+            }
+        }
+
+        // Reset counters for next window
+        for _, rl := range gl.regions {
+            atomic.StoreInt64(&rl.used, 0)
+        }
+    }
+}</pre>
+        </div>
+
+        <!-- DESIGN PATTERNS -->
+        <h3>🧩 Design Patterns Used</h3>
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <h5>CQRS Pattern</h5>
+                <p>Separate read (check limit) and write (update counter) paths. Reads from local, writes to event stream.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Saga Pattern</h5>
+                <p>For global limit enforcement with compensation. If over-limit detected, compensate by blocking next N requests.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Sidecar Pattern</h5>
+                <p>Envoy handles rate limiting, app stays simple. Consistent across languages (Go, Java, Python services).</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Leader Election</h5>
+                <p>One region is leader for global quota decisions. Leader elected via ZooKeeper/etcd. Failover in &lt;30s.</p>
+            </div>
+        </div>
+
+        <!-- API DESIGN - ADMIN -->
+        <h3>🔌 Admin API Design</h3>
+        <div class="api-endpoint">
+            <span class="api-method post">POST</span> <span class="api-path">/admin/v1/rate-limits</span>
+<pre>
+// Create or update rate limit rules (propagates globally)
+
+Request:
+{
+    "scope": "user",           // user | ip | api_key | endpoint
+    "identifier": "user_123",  // specific ID or "*" for default
+    "limits": {
+        "requests_per_minute": 1000,
+        "requests_per_day": 100000,
+        "burst_size": 200
+    },
+    "tier": "enterprise",
+    "regions": ["us-east-1", "eu-west-1", "ap-southeast-1"],
+    "effective_at": "2024-01-15T00:00:00Z",
+    "expires_at": null
+}
+
+Response: 201 Created
+{
+    "id": "rl_abc123",
+    "status": "propagating",
+    "propagation": {
+        "us-east-1": "applied",
+        "eu-west-1": "pending",
+        "ap-southeast-1": "pending"
+    }
+}</pre>
+        </div>
+
+        <div class="api-endpoint">
+            <span class="api-method get">GET</span> <span class="api-path">/admin/v1/rate-limits/analytics</span>
+<pre>
+// Global rate limiting analytics
+
+Response: 200 OK
+{
+    "period": "last_hour",
+    "global": {
+        "total_requests": 45678901,
+        "allowed": 45123456,
+        "denied": 555445,
+        "denial_rate": "1.22%"
+    },
+    "by_region": {
+        "us-east-1": { "requests": 18234567, "denied": 198234 },
+        "eu-west-1": { "requests": 15678901, "denied": 187654 },
+        "ap-southeast-1": { "requests": 11765433, "denied": 169557 }
+    },
+    "top_limited_users": [
+        { "user_id": "user_456", "denied": 12345, "tier": "free" },
+        { "user_id": "user_789", "denied": 8901, "tier": "pro" }
+    ]
+}</pre>
+        </div>
+
+        <!-- ROLLBACK STRATEGY -->
+        <h3>⏪ Rollback Strategy</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Global Kill Switch</h4>
+                    <div class="code-example" style="margin: 12px 0;">
+<pre># Emergency: disable globally via feature flag
+curl -X POST https://flags.global/rate-limiter \
+  -d '{"enabled": false, "regions": "all"}'
+
+# Per-region disable
+curl -X POST https://flags.global/rate-limiter \
+  -d '{"enabled": false, "regions": ["us-east-1"]}'</pre>
+                    </div>
+                </div>
+                <div>
+                    <h4>Graceful Degradation Levels</h4>
+                    <ol style="font-size: 14px;">
+                        <li><strong>Level 1:</strong> Increase all limits by 10x</li>
+                        <li><strong>Level 2:</strong> Log-only mode (no enforcement)</li>
+                        <li><strong>Level 3:</strong> Bypass for authenticated users</li>
+                        <li><strong>Level 4:</strong> Complete bypass (DDoS risk!)</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- AWS COST -->
+        <h3>💰 Cost at Global Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>ElastiCache Global Datastore (3 regions)</td><td>$15,000</td></tr>
+                <tr><td>EKS (60 nodes total, 3 regions)</td><td>$20,000</td></tr>
+                <tr><td>CloudFront Global + WAF</td><td>$10,000</td></tr>
+                <tr><td>MSK/Kinesis (event streaming)</td><td>$5,000</td></tr>
+                <tr><td>Lambda@Edge (10B invocations)</td><td>$4,000</td></tr>
+                <tr><td>Data Transfer (cross-region)</td><td>$8,000</td></tr>
+                <tr><td>Monitoring (Datadog/New Relic)</td><td>$5,000</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$67,000/month</strong></td></tr>
+            </table>
+        </div>
+
+        <!-- SCALE METRICS -->
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">10M+</div>
+                <div class="label">Checks/sec Global</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;1ms</div>
+                <div class="label">P99 Latency</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;0.001%</div>
+                <div class="label">False Positive</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.999%</div>
+                <div class="label">Availability</div>
             </div>
         </div>
     </div>
@@ -277,20 +1823,72 @@ Retry-After: 30                 // Seconds until retry (on 429)</pre>
 <div class="tooltip-popup" id="tooltipPopup">
     <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
     <h4 id="tooltipTitle"></h4>
-    <p id="tooltipContent"></p>
+    <div id="tooltipContent"></div>
 </div>
 
 <script>
 const termDefinitions = {
-    'token-bucket': { title: 'Token Bucket', content: 'A rate limiting algorithm that allows burst traffic. Tokens are added at a fixed rate and consumed per request.' },
-    'sliding-window': { title: 'Sliding Window', content: 'A rate limiting algorithm that provides smooth rate limiting without allowing bursts.' }
+    'token-bucket': {
+        title: 'Token Bucket Algorithm',
+        content: `<p>Rate limiting algorithm that allows controlled bursts.</p>
+        <div style="margin-top: 16px;">
+            <strong>How it works:</strong>
+            <ol style="font-size: 13px; margin-top: 8px;">
+                <li>Bucket holds tokens (max = capacity)</li>
+                <li>Tokens added at fixed rate (refill rate)</li>
+                <li>Each request consumes 1+ tokens</li>
+                <li>No tokens available = request denied</li>
+            </ol>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Redis Implementation:</strong>
+            <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px;">HMSET ratelimit:user123 tokens 10 last_refill 1704067200</pre>
+        </div>`
+    },
+    'sliding-window': {
+        title: 'Sliding Window Counter',
+        content: `<p>Balanced rate limiting with smooth distribution.</p>
+        <div style="margin-top: 16px;">
+            <strong>Formula:</strong>
+            <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px;">weighted = prev_count × (1 - elapsed/window) + curr_count</pre>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Advantages:</strong>
+            <ul style="font-size: 13px;">
+                <li>No burst at window boundaries</li>
+                <li>Memory efficient (2 counters)</li>
+                <li>~99.7% accurate</li>
+            </ul>
+        </div>`
+    },
+    'redis-cluster': {
+        title: 'Redis Cluster',
+        content: `<p>Horizontally scaled Redis with automatic sharding.</p>
+        <div style="margin-top: 16px;">
+            <strong>Architecture:</strong>
+            <div style="display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap;">
+                <span style="background: #ef4444; color: white; padding: 4px 8px; border-radius: 4px;">Shard 0</span>
+                <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 4px;">Shard 1</span>
+                <span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px;">Shard 2</span>
+                <span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;">...</span>
+            </div>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Key features:</strong>
+            <ul style="font-size: 13px;">
+                <li>16384 hash slots distributed across shards</li>
+                <li>Automatic failover</li>
+                <li>Linear scalability</li>
+            </ul>
+        </div>`
+    }
 };
 
 function showTooltip(term) {
     const def = termDefinitions[term];
     if (def) {
         document.getElementById('tooltipTitle').textContent = def.title;
-        document.getElementById('tooltipContent').textContent = def.content;
+        document.getElementById('tooltipContent').innerHTML = def.content;
         document.getElementById('tooltipOverlay').classList.add('show');
         document.getElementById('tooltipPopup').classList.add('show');
     }
@@ -301,7 +1899,18 @@ function closeTooltip() {
     document.getElementById('tooltipPopup').classList.remove('show');
 }
 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeTooltip();
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTooltip(); });
+
+// Scroll spy
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('.stage-section');
+    const navLinks = document.querySelectorAll('.quick-nav a');
+    let current = '';
+    sections.forEach(section => {
+        if (scrollY >= section.offsetTop - 200) current = section.id;
+    });
+    navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
 });
 </script>

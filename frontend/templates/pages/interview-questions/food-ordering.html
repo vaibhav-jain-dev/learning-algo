@@ -4,275 +4,1638 @@
     <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
 
     <h1>🍔 Food Ordering System Design</h1>
-    <p class="topic-description">Design an online food delivery platform like Swiggy/Zomato with real-time tracking</p>
+    <p class="topic-description">Design an online food delivery platform like Swiggy/Zomato handling millions of orders with real-time tracking</p>
 
     <div class="quick-nav">
-        <h4>Quick Navigation</h4>
+        <h4>Navigation</h4>
         <a href="#mvp">MVP Stage</a>
-        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
-        <a href="#global">Global Scale</a>
+        <a href="#global">Global</a>
     </div>
 
+    <!-- ============================================ -->
     <!-- MVP STAGE -->
+    <!-- ============================================ -->
     <div class="stage-section" id="mvp">
         <div class="stage-header">
             <span class="stage-badge mvp">MVP Stage</span>
-            <h2 style="margin: 0;">Single City Food Delivery</h2>
+            <h2 style="margin: 0;">Single City • 10K users • 500 Restaurants</h2>
         </div>
 
-        <h3>📊 Database Strategy</h3>
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
         <div class="feature-card">
-            <div class="diagram-container">
-                <h4>DATABASE SCHEMA</h4>
-                <div class="schema-diagram">
-                    <div class="schema-table">
-                        <div class="schema-table-header">restaurants</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
-                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
-                            <div class="schema-field"><span class="field-name">location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
-                            <div class="schema-field"><span class="field-name">cuisine_type</span><span class="field-type">VARCHAR[]</span></div>
-                            <div class="schema-field"><span class="field-name">rating</span><span class="field-type">DECIMAL(3,2)</span></div>
-                            <div class="schema-field"><span class="field-name">avg_delivery_time</span><span class="field-type">INT</span></div>
-                            <div class="schema-field"><span class="field-name">is_open</span><span class="field-type">BOOLEAN</span></div>
-                        </div>
-                    </div>
-                    <div class="relation-arrow">1:N</div>
-                    <div class="schema-table">
-                        <div class="schema-table-header">menu_items</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">restaurant_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
-                            <div class="schema-field"><span class="field-name">description</span><span class="field-type">TEXT</span></div>
-                            <div class="schema-field"><span class="field-name">price</span><span class="field-type">DECIMAL(10,2)</span></div>
-                            <div class="schema-field"><span class="field-name">is_veg</span><span class="field-type">BOOLEAN</span></div>
-                            <div class="schema-field"><span class="field-name">is_available</span><span class="field-type">BOOLEAN</span></div>
-                        </div>
-                    </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>Browse restaurants by location</li>
+                        <li>Search by cuisine/dish name</li>
+                        <li>View menu and add to cart</li>
+                        <li>Place order with payment</li>
+                        <li>Real-time order tracking</li>
+                        <li>Rate and review restaurants</li>
+                        <li>Restaurant order management</li>
+                        <li>Delivery partner assignment</li>
+                    </ul>
                 </div>
-                <div class="schema-diagram" style="margin-top: 24px;">
-                    <div class="schema-table">
-                        <div class="schema-table-header">orders</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">restaurant_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">delivery_partner_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
-                            <div class="schema-field"><span class="field-name">total_amount</span><span class="field-type">DECIMAL(10,2)</span></div>
-                            <div class="schema-field"><span class="field-name">delivery_address</span><span class="field-type">JSONB</span></div>
-                            <div class="schema-field"><span class="field-name">estimated_delivery</span><span class="field-type">TIMESTAMP</span></div>
-                        </div>
-                    </div>
-                    <div class="relation-arrow">1:N</div>
-                    <div class="schema-table">
-                        <div class="schema-table-header">order_items</div>
-                        <div class="schema-table-body">
-                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">order_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name field-fk">item_id</span><span class="field-type">UUID FK</span></div>
-                            <div class="schema-field"><span class="field-name">quantity</span><span class="field-type">INT</span></div>
-                            <div class="schema-field"><span class="field-name">unit_price</span><span class="field-type">DECIMAL(10,2)</span></div>
-                            <div class="schema-field"><span class="field-name">customizations</span><span class="field-type">JSONB</span></div>
-                        </div>
-                    </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;200ms API response</li>
+                        <li>Order Success Rate: 99.5%</li>
+                        <li>Availability: 99.9%</li>
+                        <li>Real-time tracking: &lt;3s updates</li>
+                        <li>Search results: &lt;100ms</li>
+                        <li>Payment processing: &lt;5s</li>
+                        <li>Read:Write ratio = 10:1</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <h3>🏗️ Architecture (MVP)</h3>
+        <!-- ARCHITECTURE DIAGRAM -->
+        <h3>🏗️ Architecture</h3>
         <div class="diagram-container">
-            <h4>MVP ARCHITECTURE</h4>
-            <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-                <div style="display: flex; gap: 24px;">
-                    <div class="arch-box client">Customer App</div>
-                    <div class="arch-box client">Restaurant App</div>
-                    <div class="arch-box client">Delivery App</div>
+            <h4>MVP Architecture - Single City</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <!-- Layer 1: Clients -->
+                <div style="display: flex; gap: 40px;">
+                    <div class="arch-box client">Customer App<br><small>iOS/Android/Web</small></div>
+                    <div class="arch-box client">Restaurant App<br><small>Order Management</small></div>
+                    <div class="arch-box client">Delivery App<br><small>Partner Tracking</small></div>
                 </div>
-                <span>↓</span>
-                <div class="arch-box lb">API Gateway</div>
-                <span>↓</span>
-                <div style="display: flex; gap: 16px;">
-                    <div class="arch-box server">Order Service</div>
-                    <div class="arch-box server">Restaurant Service</div>
-                    <div class="arch-box server">Delivery Service</div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 2: API Gateway -->
+                <div class="arch-box lb">AWS ALB + API Gateway<br><small>Auth, Rate Limiting, SSL</small></div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 3: Microservices -->
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+                    <div class="arch-box server">Order Service<br><small>Node.js</small></div>
+                    <div class="arch-box server">Restaurant Service<br><small>Node.js</small></div>
+                    <div class="arch-box server">Delivery Service<br><small>Go</small></div>
+                    <div class="arch-box server">Payment Service<br><small>Node.js</small></div>
                 </div>
-                <span>↓</span>
-                <div style="display: flex; gap: 16px;">
-                    <div class="arch-box db">PostgreSQL</div>
-                    <div class="arch-box cache">Redis</div>
-                    <div class="arch-box queue">Kafka</div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Layer 4: Data -->
+                <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div class="arch-box db">PostgreSQL + PostGIS<br><small>db.t3.medium</small></div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Geospatial queries<br>Multi-AZ</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box cache">ElastiCache Redis<br><small>Session + Cache</small></div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Menu cache<br>Rate limiting</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box queue">Amazon MSK<br><small>Kafka</small></div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Order events<br>Location updates</div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- DATA FLOW - Place Order -->
+        <h3>🔄 Data Flow - Place Order</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Customer</div>
+                    <div class="flow-step-label">POST /orders</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Order Svc</div>
+                    <div class="flow-step-label">Validate cart</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Payment</div>
+                    <div class="flow-step-label">Process payment</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="flow-step-label">INSERT order</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;">Kafka</div>
+                    <div class="flow-step-label">order.placed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA FLOW - Restaurant Accept -->
+        <h3>🔄 Data Flow - Restaurant Accept Order</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Restaurant</div>
+                    <div class="flow-step-label">Accept order</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Order Svc</div>
+                    <div class="flow-step-label">Update status</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;">Kafka</div>
+                    <div class="flow-step-label">order.confirmed</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Delivery Svc</div>
+                    <div class="flow-step-label">Find partner</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Customer</div>
+                    <div class="flow-step-label">Push notification</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA FLOW - Delivery Assignment -->
+        <h3>🔄 Data Flow - Delivery Partner Assignment</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Delivery Svc</div>
+                    <div class="flow-step-label">Query nearby</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box db" style="padding: 10px 16px;">PostGIS</div>
+                    <div class="flow-step-label">ST_DWithin 3km</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">Ranking</div>
+                    <div class="flow-step-label">Score partners</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Partner App</div>
+                    <div class="flow-step-label">Accept request</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATA FLOW - Real-time Tracking -->
+        <h3>🔄 Data Flow - Real-time Tracking</h3>
+        <div class="diagram-container">
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="arch-box client" style="padding: 10px 16px;">Partner App</div>
+                    <div class="flow-step-label">GPS every 5s</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;">Kafka</div>
+                    <div class="flow-step-label">location.update</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="flow-step-label">GEOADD partner</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="arch-box server" style="padding: 10px 16px;">WebSocket</div>
+                    <div class="flow-step-label">Push to customer</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATABASE SCHEMA -->
+        <h3>🗄️ Database Schema</h3>
+        <div class="diagram-container">
+            <h4>PostgreSQL + PostGIS Schema with Relationships</h4>
+            <div class="schema-diagram">
+                <div class="schema-table">
+                    <div class="schema-table-header">📦 restaurants</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                        <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255) NOT NULL</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">location</span><span class="field-type">GEOGRAPHY(POINT, 4326)</span></div>
+                        <div class="schema-field"><span class="field-name">address</span><span class="field-type">TEXT</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">cuisine_types</span><span class="field-type">VARCHAR[] </span></div>
+                        <div class="schema-field"><span class="field-name">rating</span><span class="field-type">DECIMAL(3,2)</span></div>
+                        <div class="schema-field"><span class="field-name">avg_delivery_time</span><span class="field-type">INT</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">is_open</span><span class="field-type">BOOLEAN DEFAULT true</span></div>
+                        <div class="schema-field"><span class="field-name">opening_hours</span><span class="field-type">JSONB</span></div>
+                        <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMPTZ</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span>1</span>
+                    <span>─────</span>
+                    <span>N</span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">🍽️ menu_items</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">restaurant_id</span><span class="field-type">UUID FK → restaurants.id</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">name</span><span class="field-type">VARCHAR(255)</span></div>
+                        <div class="schema-field"><span class="field-name">description</span><span class="field-type">TEXT</span></div>
+                        <div class="schema-field"><span class="field-name">price</span><span class="field-type">DECIMAL(10,2)</span></div>
+                        <div class="schema-field"><span class="field-name">category</span><span class="field-type">VARCHAR(100)</span></div>
+                        <div class="schema-field"><span class="field-name">is_veg</span><span class="field-type">BOOLEAN</span></div>
+                        <div class="schema-field"><span class="field-name">is_available</span><span class="field-type">BOOLEAN DEFAULT true</span></div>
+                        <div class="schema-field"><span class="field-name">image_url</span><span class="field-type">TEXT</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schema-diagram" style="margin-top: 24px;">
+                <div class="schema-table">
+                    <div class="schema-table-header">📋 orders</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK → users.id</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">restaurant_id</span><span class="field-type">UUID FK → restaurants.id</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">delivery_partner_id</span><span class="field-type">UUID FK → delivery_partners.id</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">status</span><span class="field-type">VARCHAR(50)</span></div>
+                        <div class="schema-field"><span class="field-name">total_amount</span><span class="field-type">DECIMAL(10,2)</span></div>
+                        <div class="schema-field"><span class="field-name">delivery_fee</span><span class="field-type">DECIMAL(10,2)</span></div>
+                        <div class="schema-field"><span class="field-name">delivery_address</span><span class="field-type">JSONB</span></div>
+                        <div class="schema-field"><span class="field-name">delivery_location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
+                        <div class="schema-field"><span class="field-name">estimated_delivery</span><span class="field-type">TIMESTAMPTZ</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">created_at</span><span class="field-type">TIMESTAMPTZ</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span>1</span>
+                    <span>─────</span>
+                    <span>N</span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">🛒 order_items</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">order_id</span><span class="field-type">UUID FK → orders.id</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">menu_item_id</span><span class="field-type">UUID FK → menu_items.id</span></div>
+                        <div class="schema-field"><span class="field-name">quantity</span><span class="field-type">INT NOT NULL</span></div>
+                        <div class="schema-field"><span class="field-name">unit_price</span><span class="field-type">DECIMAL(10,2)</span></div>
+                        <div class="schema-field"><span class="field-name">customizations</span><span class="field-type">JSONB</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schema-diagram" style="margin-top: 24px;">
+                <div class="schema-table">
+                    <div class="schema-table-header">🚴 delivery_partners</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                        <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+                        <div class="schema-field"><span class="field-name">phone</span><span class="field-type">VARCHAR(15) UNIQUE</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">current_location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">is_available</span><span class="field-type">BOOLEAN</span></div>
+                        <div class="schema-field"><span class="field-name">rating</span><span class="field-type">DECIMAL(3,2)</span></div>
+                        <div class="schema-field"><span class="field-name">vehicle_type</span><span class="field-type">VARCHAR(50)</span></div>
+                        <div class="schema-field"><span class="field-name">total_deliveries</span><span class="field-type">INT DEFAULT 0</span></div>
+                    </div>
+                </div>
+
+                <div class="relation-arrow">
+                    <span></span>
+                    <span>─────</span>
+                    <span></span>
+                </div>
+
+                <div class="schema-table">
+                    <div class="schema-table-header">💳 payments</div>
+                    <div class="schema-table-body">
+                        <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                        <div class="schema-field"><span class="field-name field-fk">order_id</span><span class="field-type">UUID FK → orders.id UNIQUE</span></div>
+                        <div class="schema-field"><span class="field-name">amount</span><span class="field-type">DECIMAL(10,2)</span></div>
+                        <div class="schema-field"><span class="field-name">method</span><span class="field-type">VARCHAR(50)</span></div>
+                        <div class="schema-field"><span class="field-name field-idx">status</span><span class="field-type">VARCHAR(50)</span></div>
+                        <div class="schema-field"><span class="field-name">gateway_txn_id</span><span class="field-type">VARCHAR(255)</span></div>
+                        <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMPTZ</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Index Justification -->
+            <div class="index-justification" style="margin-top: 24px;">
+                <h5>🔍 Index Strategy</h5>
+                <table style="width: 100%; font-size: 14px;">
+                    <tr>
+                        <td><code>idx_restaurants_location</code></td>
+                        <td>GIST on <code>location</code></td>
+                        <td>Geospatial queries - find nearby restaurants O(log n)</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_restaurants_cuisine</code></td>
+                        <td>GIN on <code>cuisine_types</code></td>
+                        <td>Array containment - filter by cuisine</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_orders_user_status</code></td>
+                        <td>B-tree on <code>(user_id, status)</code></td>
+                        <td>User's active orders - "My Orders" screen</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_orders_restaurant</code></td>
+                        <td>B-tree on <code>(restaurant_id, created_at)</code></td>
+                        <td>Restaurant order dashboard</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_partners_location</code></td>
+                        <td>GIST on <code>current_location</code></td>
+                        <td>Find available partners within radius</td>
+                    </tr>
+                    <tr>
+                        <td><code>idx_partners_available</code></td>
+                        <td>B-tree on <code>is_available</code> WHERE true</td>
+                        <td>Partial index - only available partners</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- SQL Queries -->
+        <h3>📝 SQL Queries</h3>
+        <div class="sql-query">
+            <h5>Create Tables with PostGIS</h5>
+<pre>-- Enable PostGIS extension
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+CREATE TABLE restaurants (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name            VARCHAR(255) NOT NULL,
+    location        GEOGRAPHY(POINT, 4326) NOT NULL,
+    address         TEXT,
+    cuisine_types   VARCHAR[] DEFAULT '{}',
+    rating          DECIMAL(3,2) DEFAULT 0,
+    avg_delivery_time INT DEFAULT 30,
+    is_open         BOOLEAN DEFAULT true,
+    opening_hours   JSONB,
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE menu_items (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    restaurant_id   UUID REFERENCES restaurants(id) ON DELETE CASCADE,
+    name            VARCHAR(255) NOT NULL,
+    description     TEXT,
+    price           DECIMAL(10,2) NOT NULL,
+    category        VARCHAR(100),
+    is_veg          BOOLEAN DEFAULT false,
+    is_available    BOOLEAN DEFAULT true,
+    image_url       TEXT
+);
+
+CREATE TABLE orders (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id             UUID NOT NULL REFERENCES users(id),
+    restaurant_id       UUID NOT NULL REFERENCES restaurants(id),
+    delivery_partner_id UUID REFERENCES delivery_partners(id),
+    status              VARCHAR(50) DEFAULT 'placed',
+    total_amount        DECIMAL(10,2) NOT NULL,
+    delivery_fee        DECIMAL(10,2) DEFAULT 0,
+    delivery_address    JSONB NOT NULL,
+    delivery_location   GEOGRAPHY(POINT, 4326),
+    estimated_delivery  TIMESTAMPTZ,
+    created_at          TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE delivery_partners (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name             VARCHAR(255) NOT NULL,
+    phone            VARCHAR(15) UNIQUE NOT NULL,
+    current_location GEOGRAPHY(POINT, 4326),
+    is_available     BOOLEAN DEFAULT false,
+    rating           DECIMAL(3,2) DEFAULT 5.0,
+    vehicle_type     VARCHAR(50),
+    total_deliveries INT DEFAULT 0
+);
+
+-- Geospatial Indexes
+CREATE INDEX idx_restaurants_location ON restaurants USING GIST(location);
+CREATE INDEX idx_restaurants_cuisine ON restaurants USING GIN(cuisine_types);
+CREATE INDEX idx_partners_location ON delivery_partners USING GIST(current_location);
+CREATE INDEX idx_partners_available ON delivery_partners(is_available) WHERE is_available = true;
+CREATE INDEX idx_orders_user_status ON orders(user_id, status);
+CREATE INDEX idx_orders_restaurant ON orders(restaurant_id, created_at DESC);</pre>
+        </div>
+
+        <div class="sql-query">
+            <h5>Restaurant Search Query (Geospatial)</h5>
+<pre>-- Find restaurants within 5km, sorted by distance
+SELECT
+    r.id, r.name, r.cuisine_types, r.rating, r.avg_delivery_time,
+    ST_Distance(r.location, ST_MakePoint($1, $2)::geography) AS distance_meters
+FROM restaurants r
+WHERE
+    r.is_open = true
+    AND ST_DWithin(r.location, ST_MakePoint($1, $2)::geography, 5000)  -- 5km radius
+    AND ($3 = '' OR $3 = ANY(r.cuisine_types))  -- optional cuisine filter
+ORDER BY distance_meters ASC
+LIMIT 50;
+
+-- Find available delivery partners within 3km of restaurant
+SELECT
+    dp.id, dp.name, dp.rating,
+    ST_Distance(dp.current_location, r.location) AS distance_meters
+FROM delivery_partners dp
+CROSS JOIN restaurants r
+WHERE
+    r.id = $1  -- restaurant_id
+    AND dp.is_available = true
+    AND ST_DWithin(dp.current_location, r.location, 3000)
+ORDER BY dp.rating DESC, distance_meters ASC
+LIMIT 10;</pre>
+        </div>
+
+        <div class="sql-query">
+            <h5>Order Queries</h5>
+<pre>-- Create order (POST /orders)
+INSERT INTO orders (user_id, restaurant_id, total_amount, delivery_fee, delivery_address, delivery_location, estimated_delivery)
+VALUES ($1, $2, $3, $4, $5, ST_MakePoint($6, $7)::geography, NOW() + INTERVAL '35 minutes')
+RETURNING id, status, estimated_delivery, created_at;
+
+-- Update order status (State Machine transition)
+UPDATE orders
+SET status = $2,
+    delivery_partner_id = COALESCE($3, delivery_partner_id)
+WHERE id = $1 AND status = $4  -- Ensure valid state transition
+RETURNING id, status;
+
+-- Get user's active orders
+SELECT o.*, r.name as restaurant_name, dp.name as partner_name, dp.phone as partner_phone
+FROM orders o
+JOIN restaurants r ON o.restaurant_id = r.id
+LEFT JOIN delivery_partners dp ON o.delivery_partner_id = dp.id
+WHERE o.user_id = $1 AND o.status NOT IN ('delivered', 'cancelled')
+ORDER BY o.created_at DESC;</pre>
+        </div>
+
+        <!-- API Design -->
         <h3>🔌 API Design</h3>
-        <div class="feature-card">
-            <div class="api-endpoint">
-                <span class="api-method get">GET</span> /api/v1/restaurants?lat=12.97&lng=77.59&cuisine=indian
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Response: {
-  "restaurants": [
-    { "id": "uuid", "name": "Meghana Foods", "distance": "1.2km",
-      "rating": 4.5, "avg_delivery_time": 35, "cuisines": ["biryani", "indian"] }
-  ]
-}</pre>
-            </div>
+        <div class="api-endpoint">
+            <span class="api-method get">GET</span> <span class="api-path">/api/v1/restaurants</span>
+<pre>
+Request:
+GET /api/v1/restaurants?lat=12.9716&lng=77.5946&cuisine=indian&radius=5000
 
-            <div class="api-endpoint">
-                <span class="api-method post">POST</span> /api/v1/orders
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-Request: {
-  "restaurant_id": "uuid",
-  "items": [{ "item_id": "uuid", "quantity": 2, "customizations": {"spice": "medium"} }],
-  "delivery_address": { "lat": 12.98, "lng": 77.60, "address": "..." },
-  "payment_method": "upi"
+Response: 200 OK
+{
+    "restaurants": [
+        {
+            "id": "uuid",
+            "name": "Meghana Foods",
+            "cuisine_types": ["biryani", "indian"],
+            "rating": 4.5,
+            "avg_delivery_time": 35,
+            "distance_km": 1.2,
+            "is_open": true,
+            "delivery_fee": 30
+        }
+    ],
+    "total": 45,
+    "page": 1
 }
-Response: { "order_id": "uuid", "estimated_delivery": "35 mins", "total": 599 }</pre>
-            </div>
 
-            <div class="api-endpoint">
-                <span class="api-method ws">WS</span> /api/v1/orders/:orderId/track
-                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
-// Real-time order status and delivery partner location
-{ "status": "out_for_delivery", "partner_location": {...}, "eta": "5 mins" }</pre>
-            </div>
+Errors:
+- 400: Invalid coordinates
+- 429: Rate limit exceeded</pre>
         </div>
 
-        <h3>📦 Order State Machine</h3>
-        <div class="feature-card">
-            <div class="diagram-container">
-                <h4>ORDER LIFECYCLE</h4>
-                <div class="flow-diagram">
-                    <div class="arch-box client">Placed</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box server">Confirmed</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box server">Preparing</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box server">Ready</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box worker">Picked Up</div>
-                    <span class="arch-arrow">→</span>
-                    <div class="arch-box client">Delivered</div>
+        <div class="api-endpoint">
+            <span class="api-method post">POST</span> <span class="api-path">/api/v1/orders</span>
+<pre>
+Request:
+{
+    "restaurant_id": "uuid",
+    "items": [
+        {
+            "menu_item_id": "uuid",
+            "quantity": 2,
+            "customizations": {"spice_level": "medium", "extras": ["cheese"]}
+        }
+    ],
+    "delivery_address": {
+        "lat": 12.9800,
+        "lng": 77.6000,
+        "address_line": "123 Main St, Bangalore",
+        "landmark": "Near Metro Station"
+    },
+    "payment_method": "upi",
+    "coupon_code": "FIRST50"
+}
+
+Response: 201 Created
+{
+    "order_id": "uuid",
+    "status": "placed",
+    "total_amount": 599,
+    "delivery_fee": 30,
+    "discount": 50,
+    "estimated_delivery": "2024-01-15T13:30:00Z",
+    "payment_status": "pending"
+}
+
+Errors:
+- 400: Invalid items / Restaurant closed
+- 402: Payment failed
+- 409: Item no longer available</pre>
+        </div>
+
+        <div class="api-endpoint">
+            <span class="api-method ws">WS</span> <span class="api-path">/api/v1/orders/:orderId/track</span>
+<pre>
+// WebSocket connection for real-time order tracking
+// Client connects after order is placed
+
+// Server pushes updates:
+{
+    "type": "status_update",
+    "order_id": "uuid",
+    "status": "out_for_delivery",
+    "partner": {
+        "name": "Rahul",
+        "phone": "+91-9876543210",
+        "photo_url": "https://..."
+    },
+    "location": {
+        "lat": 12.9750,
+        "lng": 77.5980
+    },
+    "eta_minutes": 8,
+    "timestamp": "2024-01-15T13:22:00Z"
+}
+
+// Status transitions pushed:
+// placed → confirmed → preparing → ready → picked_up → delivered</pre>
+        </div>
+
+        <!-- Database Alternatives -->
+        <h3>🔀 Database Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ PostgreSQL + PostGIS (Selected)</h5>
+                <p>ACID compliance, geospatial support, proven at scale</p>
+                <div class="pros-cons-grid" style="margin: 12px 0;">
+                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #166534;">Pros:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Native geospatial with PostGIS</li>
+                            <li>ACID for order consistency</li>
+                            <li>JSONB for flexible schemas</li>
+                            <li>Rich ecosystem</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef2f2; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #991b1b;">Cons:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Single-node write bottleneck</li>
+                            <li>Sharding complexity (Citus)</li>
+                            <li>Real-time location updates load</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="background: #fef3c7; padding: 10px; border-radius: 6px; font-size: 13px;">
+                    <strong>⚠️ Care:</strong> Use Redis for high-frequency location updates. Batch DB writes every 30s.
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>MongoDB</h5>
+                <p>Document store with geospatial indexes</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Native 2dsphere indexes<br>
+                    <span style="color: #22c55e;">✓</span> Flexible menu schemas<br>
+                    <span style="color: #22c55e;">✓</span> Easy horizontal scaling<br>
+                    <span style="color: #ef4444;">✗</span> No ACID across documents<br>
+                    <span style="color: #ef4444;">✗</span> Order consistency concerns
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> If menu schemas vary wildly across restaurants
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Cassandra</h5>
+                <p>Wide-column store for order history</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Excellent write throughput<br>
+                    <span style="color: #22c55e;">✓</span> Linear scalability<br>
+                    <span style="color: #22c55e;">✓</span> Time-series order data<br>
+                    <span style="color: #ef4444;">✗</span> No geospatial support<br>
+                    <span style="color: #ef4444;">✗</span> Limited query flexibility
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Order history archive (completed orders, analytics)
                 </div>
             </div>
         </div>
 
-        <!-- Feature Additions -->
-        <h3>🆕 Feature Addition 1: Restaurant Search with Elasticsearch</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Elasticsearch?</h4>
-            <p>Better search relevance, typo tolerance, and fuzzy matching for dish/restaurant names.</p>
+        <!-- Search Alternatives -->
+        <h3>🔀 Search Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Elasticsearch (Selected)</h5>
+                <p>Full-text search with geo queries</p>
+                <div class="pros-cons-grid" style="margin: 12px 0;">
+                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #166534;">Pros:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Typo tolerance (fuzzy search)</li>
+                            <li>Relevance scoring</li>
+                            <li>Geo_distance queries</li>
+                            <li>Aggregations for filters</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef2f2; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #991b1b;">Cons:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Operational complexity</li>
+                            <li>Memory hungry</li>
+                            <li>Sync lag with primary DB</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-            <h4>Index Structure</h4>
-            <div class="code-example">
-<pre>{
-  "restaurant_name": "Meghana Foods",
-  "dishes": ["biryani", "kebab", "naan"],
-  "cuisines": ["indian", "hyderabadi"],
-  "location": { "lat": 12.97, "lon": 77.59 },
-  "rating": 4.5,
-  "is_open": true
-}</pre>
+            <div class="alternative-card">
+                <h5>PostgreSQL Full-Text Search</h5>
+                <p>Built-in tsvector/tsquery</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> No extra infrastructure<br>
+                    <span style="color: #22c55e;">✓</span> Always in sync<br>
+                    <span style="color: #ef4444;">✗</span> Limited relevance tuning<br>
+                    <span style="color: #ef4444;">✗</span> No fuzzy matching
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> MVP with &lt;10K restaurants, simple search needs
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Algolia</h5>
+                <p>Managed search-as-a-service</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> &lt;10ms latency globally<br>
+                    <span style="color: #22c55e;">✓</span> Zero ops<br>
+                    <span style="color: #22c55e;">✓</span> Typo tolerance built-in<br>
+                    <span style="color: #ef4444;">✗</span> Cost at scale ($$$)<br>
+                    <span style="color: #ef4444;">✗</span> Vendor lock-in
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Fast time-to-market, budget available
+                </div>
             </div>
         </div>
 
-        <h3>🆕 Feature Addition 2: Dynamic Pricing (Surge)</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Surge?</h4>
-            <p>Higher delivery fees during peak hours (lunch/dinner rush, rain, events).</p>
+        <!-- Real-time Alternatives -->
+        <h3>🔀 Real-time Communication Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ WebSocket (Selected)</h5>
+                <p>Full-duplex real-time communication</p>
+                <div class="pros-cons-grid" style="margin: 12px 0;">
+                    <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #166534;">Pros:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Bi-directional communication</li>
+                            <li>Low latency updates</li>
+                            <li>Efficient for frequent updates</li>
+                            <li>Wide browser support</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef2f2; padding: 12px; border-radius: 8px;">
+                        <strong style="color: #991b1b;">Cons:</strong>
+                        <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
+                            <li>Connection management overhead</li>
+                            <li>Scaling requires sticky sessions</li>
+                            <li>Reconnection logic needed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Server-Sent Events (SSE)</h5>
+                <p>Unidirectional server-to-client</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Simpler than WebSocket<br>
+                    <span style="color: #22c55e;">✓</span> Auto-reconnection built-in<br>
+                    <span style="color: #22c55e;">✓</span> Works over HTTP/2<br>
+                    <span style="color: #ef4444;">✗</span> One-way only<br>
+                    <span style="color: #ef4444;">✗</span> Limited browser connections
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Status updates only (no location from client)
+                </div>
+            </div>
+
+            <div class="alternative-card">
+                <h5>Long Polling</h5>
+                <p>HTTP request held open</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Works everywhere<br>
+                    <span style="color: #22c55e;">✓</span> No special infrastructure<br>
+                    <span style="color: #22c55e;">✓</span> Firewall friendly<br>
+                    <span style="color: #ef4444;">✗</span> Higher latency<br>
+                    <span style="color: #ef4444;">✗</span> More server resources
+                </div>
+                <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
+                    <strong>When to use:</strong> Fallback for WebSocket failures
+                </div>
+            </div>
         </div>
 
-        <h3>🆕 Feature Addition 3: Subscription (Pro Membership)</h3>
-        <div class="feature-card addition">
-            <h4>Why Add Subscriptions?</h4>
-            <p>Free delivery for members, increased order frequency, better retention.</p>
+        <!-- Design Patterns -->
+        <h3>🧩 Design Patterns Used</h3>
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <h5>State Machine Pattern</h5>
+                <p>Order status transitions: placed → confirmed → preparing → ready → picked_up → delivered. Each transition validates allowed states, triggers events.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Saga Pattern</h5>
+                <p>Distributed transaction for order: Reserve inventory → Process payment → Confirm order. Compensating actions on failure (refund, release inventory).</p>
+            </div>
+            <div class="pattern-card">
+                <h5>CQRS Pattern</h5>
+                <p>Separate read/write models. Writes to PostgreSQL (orders), reads from Elasticsearch (search) and Redis (tracking). Optimized for each use case.</p>
+            </div>
+            <div class="pattern-card">
+                <h5>Event Sourcing</h5>
+                <p>Store order events (OrderPlaced, OrderConfirmed, etc.) in Kafka. Rebuild state from events. Full audit trail for disputes.</p>
+            </div>
         </div>
 
-        <h3>🔙 Feature Reversion: Disabling Surge Pricing</h3>
-        <div class="feature-card reversion">
-            <h4>Why Revert?</h4>
-            <p>Customer backlash during festival/emergency. PR damage control.</p>
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Order State Machine Implementation</h5>
+<pre>const ORDER_TRANSITIONS = {
+    'placed':     ['confirmed', 'cancelled'],
+    'confirmed':  ['preparing', 'cancelled'],
+    'preparing':  ['ready', 'cancelled'],
+    'ready':      ['picked_up'],
+    'picked_up':  ['delivered'],
+    'delivered':  [],  // Terminal state
+    'cancelled':  []   // Terminal state
+};
 
-            <h4>Strategy</h4>
-            <ol>
-                <li>Feature flag to set surge multiplier to 1.0x</li>
-                <li>Honor existing orders at quoted price</li>
-                <li>Communication: "Free delivery during [event]"</li>
-            </ol>
+class OrderStateMachine {
+    constructor(order) {
+        this.order = order;
+    }
+
+    canTransition(newStatus) {
+        const allowed = ORDER_TRANSITIONS[this.order.status] || [];
+        return allowed.includes(newStatus);
+    }
+
+    async transition(newStatus, metadata = {}) {
+        if (!this.canTransition(newStatus)) {
+            throw new Error(`Invalid transition: ${this.order.status} → ${newStatus}`);
+        }
+
+        // Update order
+        this.order.status = newStatus;
+        await this.order.save();
+
+        // Publish event
+        await kafka.publish('order.status.changed', {
+            orderId: this.order.id,
+            fromStatus: this.order.status,
+            toStatus: newStatus,
+            timestamp: new Date(),
+            ...metadata
+        });
+
+        return this.order;
+    }
+}</pre>
         </div>
-    </div>
 
-    <!-- PAN-INDIA SCALE -->
-    <div class="stage-section" id="pan-india">
-        <div class="stage-header">
-            <span class="stage-badge pan-india">PAN-India Scale</span>
-            <h2 style="margin: 0;">Multi-City Operations</h2>
-        </div>
-
+        <!-- AWS Cost Estimation -->
+        <h3>💰 AWS Cost Estimation (MVP)</h3>
         <div class="feature-card">
-            <ul>
-                <li><strong>City-based Sharding:</strong> Restaurants and orders partitioned by city</li>
-                <li><strong>Regional Elasticsearch:</strong> Separate indices per city for faster search</li>
-                <li><strong>Local Payment Gateways:</strong> UPI, wallets, cash on delivery</li>
-                <li><strong>Multi-language Support:</strong> Regional languages for customer support</li>
-            </ul>
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Spec</th>
+                        <th>Monthly Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="cost-tag aws">EC2</span> API Servers (4x)</td>
+                        <td>t3.medium, 2 vCPU, 4GB</td>
+                        <td>$120</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">RDS</span> PostgreSQL + PostGIS</td>
+                        <td>db.t3.large, Multi-AZ, 200GB</td>
+                        <td>$250</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td>cache.t3.medium, 3GB</td>
+                        <td>$50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">OpenSearch</span> Elasticsearch</td>
+                        <td>t3.small.search, 2 nodes</td>
+                        <td>$80</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">MSK</span> Kafka</td>
+                        <td>kafka.t3.small, 3 brokers</td>
+                        <td>$200</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">ALB</span> Load Balancer</td>
+                        <td>Application LB + 5M requests</td>
+                        <td>$50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag maps">Maps API</span> Google Maps</td>
+                        <td>50K distance/directions calls</td>
+                        <td>$250</td>
+                    </tr>
+                    <tr>
+                        <td><span class="cost-tag aws">S3</span> Images + Backups</td>
+                        <td>100GB storage + CDN</td>
+                        <td>$30</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2"><strong>Total MVP Monthly</strong></td>
+                        <td><strong>~$1,030/month</strong></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
 
-    <!-- HIGH TRAFFIC -->
-    <div class="stage-section" id="high-traffic">
-        <div class="stage-header">
-            <span class="stage-badge high-traffic">High Traffic</span>
-            <h2 style="margin: 0;">Handling Lunch/Dinner Rush</h2>
+        <!-- Deployment -->
+        <h3>🚀 Deployment (K8s)</h3>
+        <div class="deployment-diagram">
+            <h4>Kubernetes Architecture - Microservices</h4>
+            <div class="k8s-cluster">
+                <h5>EKS Cluster - ap-south-1</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                    <div class="k8s-pod">🔷 order-service (replicas: 3)</div>
+                    <div class="k8s-pod">🔷 restaurant-service (replicas: 2)</div>
+                    <div class="k8s-pod">🔷 delivery-service (replicas: 3)</div>
+                    <div class="k8s-pod">🔷 payment-service (replicas: 2)</div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-pod" style="background: #7c3aed;">📊 Service Mesh: Istio</div>
+                    <div class="k8s-pod" style="background: #0891b2;">🌐 Ingress: ALB</div>
+                    <div class="k8s-pod" style="background: #dc2626;">🔐 Secrets: Vault</div>
+                    <div class="k8s-pod" style="background: #ea580c;">📈 HPA: CPU/Memory</div>
+                </div>
+            </div>
         </div>
 
-        <h3>⚠️ What Breaks First?</h3>
-        <div class="feature-card" style="border-left-color: #ef4444;">
-            <ol>
-                <li><strong>Order Service:</strong> 100K orders/minute during IPL match</li>
-                <li><strong>Restaurant Overload:</strong> Popular restaurants can't accept more orders</li>
-                <li><strong>Delivery Partner Shortage:</strong> Not enough drivers during peak</li>
-            </ol>
+        <div class="code-example">
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">order-service-deployment.yaml</h5>
+<pre>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  labels:
+    app: order-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - name: order-service
+        image: food-ordering/order-service:v1.2.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: url
+        - name: KAFKA_BROKERS
+          value: "kafka-0.kafka:9092,kafka-1.kafka:9092"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: order-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: order-service
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80</pre>
         </div>
 
-        <h3>🛠️ Solutions</h3>
-        <div class="feature-card">
-            <ul>
-                <li><strong>Order Queue:</strong> Accept orders into queue, process async</li>
-                <li><strong>Restaurant Throttling:</strong> Cap active orders per restaurant</li>
-                <li><strong>Delivery Batching:</strong> Combine nearby deliveries for same partner</li>
-            </ul>
+        <!-- CI/CD -->
+        <h3>🔄 CI/CD Pipeline</h3>
+        <div class="diagram-container">
+            <h4>GitHub Actions → ECR → EKS (Per-Service)</h4>
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px;">
+                <div class="arch-box client" style="background: #24292e;">Git Push</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server" style="background: #2088FF;">GitHub Actions</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box storage">ECR</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box gateway">ArgoCD</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server">EKS</div>
+            </div>
+            <div style="margin-top: 20px; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <strong>Pipeline Steps (Per Microservice):</strong>
+                <ol style="font-size: 14px; margin-top: 8px;">
+                    <li>Run unit tests (jest/mocha)</li>
+                    <li>Run integration tests with testcontainers</li>
+                    <li>Build Docker image</li>
+                    <li>Push to ECR with git SHA tag</li>
+                    <li>Update Kubernetes manifests (GitOps)</li>
+                    <li>ArgoCD syncs to cluster (rolling update)</li>
+                    <li>Run E2E smoke tests</li>
+                    <li>Notify Slack on success/failure</li>
+                </ol>
+            </div>
         </div>
-    </div>
 
-    <!-- GLOBAL SCALE -->
-    <div class="stage-section" id="global">
-        <div class="stage-header">
-            <span class="stage-badge global">Global Scale</span>
-            <h2 style="margin: 0;">International Expansion</h2>
+        <!-- Rollback Strategy -->
+        <h3>⏪ Rollback Strategy</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Instant Rollback</h4>
+                    <div class="code-example" style="margin: 12px 0;">
+<pre># Rollback specific service
+kubectl rollout undo deployment/order-service
+
+# Or via ArgoCD
+argocd app rollback food-ordering --revision 42</pre>
+                    </div>
+                    <p style="font-size: 14px;">K8s keeps last 10 ReplicaSets. Rollback in &lt;30s.</p>
+                </div>
+                <div>
+                    <h4>Feature Flags (LaunchDarkly)</h4>
+                    <ul style="font-size: 14px;">
+                        <li><code>new_payment_flow</code> - Toggle new UPI integration</li>
+                        <li><code>surge_pricing</code> - Disable during PR issues</li>
+                        <li><code>batch_delivery</code> - Gradual rollout 5% → 100%</li>
+                        <li>Instant disable without deployment</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <h3>📊 Scale Metrics</h3>
+        <!-- Scale Metrics -->
+        <h3>📊 Scale Metrics (MVP)</h3>
         <div class="metrics-card">
             <div class="metric">
-                <div class="value">5M+</div>
-                <div class="label">Daily Orders</div>
+                <div class="value">5K</div>
+                <div class="label">Orders/Day</div>
             </div>
             <div class="metric">
-                <div class="value">500K+</div>
+                <div class="value">35min</div>
+                <div class="label">Avg Delivery</div>
+            </div>
+            <div class="metric">
+                <div class="value">500</div>
                 <div class="label">Restaurants</div>
             </div>
             <div class="metric">
-                <div class="value">&lt;30min</div>
+                <div class="value">99.5%</div>
+                <div class="label">Order Success</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PAN-INDIA SCALE -->
+    <!-- ============================================ -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Multi-City • 1M users • 50K Restaurants</h2>
+        </div>
+
+        <!-- REQUIREMENTS -->
+        <h3>📋 Requirements</h3>
+        <div class="feature-card">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional Additions</h4>
+                    <ul>
+                        <li>Multi-city operations (50+ cities)</li>
+                        <li>Regional language support</li>
+                        <li>Multiple payment gateways (UPI, wallets)</li>
+                        <li>Subscription plans (Pro membership)</li>
+                        <li>Dynamic pricing (surge)</li>
+                        <li>Restaurant self-onboarding</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;150ms (regional)</li>
+                        <li>Order Success Rate: 99.9%</li>
+                        <li>Availability: 99.95%</li>
+                        <li>50K concurrent users</li>
+                        <li>100K orders/hour peak</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture Evolution</h3>
+        <div class="diagram-container">
+            <h4>Multi-Region Architecture</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <div class="arch-box client">Users (All India)</div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box cdn">CloudFront CDN<br><small>Static assets, menu images</small></div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box lb">Route 53 (Latency-based)</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #3b82f6; border-radius: 12px;">
+                        <strong style="color: #3b82f6;">Mumbai (ap-south-1)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">EKS (8 nodes)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis Cluster</div>
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 8px;">
+                            <div class="arch-box db" style="padding: 10px;">RDS Primary</div>
+                            <div class="arch-box storage" style="padding: 10px;">OpenSearch</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; border: 2px dashed #22c55e; border-radius: 12px;">
+                        <strong style="color: #22c55e;">Hyderabad (ap-south-2)</strong>
+                        <div style="display: flex; gap: 12px; margin-top: 12px;">
+                            <div class="arch-box server" style="padding: 10px;">EKS (4 nodes)</div>
+                            <div class="arch-box cache" style="padding: 10px;">Redis Replica</div>
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 8px;">
+                            <div class="arch-box db" style="padding: 10px; opacity: 0.7;">RDS Read Replica</div>
+                            <div class="arch-box storage" style="padding: 10px;">OpenSearch</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>📈 What Changes</h3>
+        <div class="feature-card">
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 30%;"><strong>City-based Sharding</strong></td>
+                    <td>Restaurants and orders partitioned by city_id. Each city's data localized.</td>
+                </tr>
+                <tr>
+                    <td><strong>Regional Elasticsearch</strong></td>
+                    <td>Separate indices per region. Mumbai cluster handles West/South, Hyderabad handles East/North.</td>
+                </tr>
+                <tr>
+                    <td><strong>Redis Global Datastore</strong></td>
+                    <td>ElastiCache Global for session/cache. Cross-region replication &lt;1s.</td>
+                </tr>
+                <tr>
+                    <td><strong>Payment Gateway Routing</strong></td>
+                    <td>Razorpay primary, PayU fallback. Route based on success rates per region.</td>
+                </tr>
+                <tr>
+                    <td><strong>Surge Pricing Engine</strong></td>
+                    <td>Real-time demand/supply calculation per zone. Kafka streams for partner availability.</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Database Schema Changes -->
+        <h3>🗄️ Database Schema - City Partitioning</h3>
+        <div class="sql-query">
+            <h5>Partitioned Tables for Multi-City</h5>
+<pre>-- Partition orders by city for query performance
+CREATE TABLE orders (
+    id UUID NOT NULL,
+    city_id INT NOT NULL,
+    user_id UUID NOT NULL,
+    restaurant_id UUID NOT NULL,
+    status VARCHAR(50),
+    total_amount DECIMAL(10,2),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (city_id, id)
+) PARTITION BY LIST (city_id);
+
+-- Create partitions for major cities
+CREATE TABLE orders_mumbai PARTITION OF orders FOR VALUES IN (1);
+CREATE TABLE orders_delhi PARTITION OF orders FOR VALUES IN (2);
+CREATE TABLE orders_bangalore PARTITION OF orders FOR VALUES IN (3);
+CREATE TABLE orders_hyderabad PARTITION OF orders FOR VALUES IN (4);
+CREATE TABLE orders_other PARTITION OF orders DEFAULT;
+
+-- City-based restaurant search
+CREATE INDEX idx_restaurants_city_location ON restaurants
+    USING GIST(location) WHERE city_id = ANY(ARRAY[1,2,3,4]);</pre>
+        </div>
+
+        <h3>💰 Cost at PAN-India Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr>
+                    <td>EKS (12 nodes across 2 regions)</td>
+                    <td>$2,000</td>
+                </tr>
+                <tr>
+                    <td>RDS Primary + Read Replica</td>
+                    <td>$800</td>
+                </tr>
+                <tr>
+                    <td>ElastiCache Global (2 regions)</td>
+                    <td>$300</td>
+                </tr>
+                <tr>
+                    <td>OpenSearch (2 clusters)</td>
+                    <td>$500</td>
+                </tr>
+                <tr>
+                    <td>MSK Kafka (6 brokers)</td>
+                    <td>$600</td>
+                </tr>
+                <tr>
+                    <td>CloudFront (50TB transfer)</td>
+                    <td>$4,000</td>
+                </tr>
+                <tr>
+                    <td>Google Maps API (500K calls)</td>
+                    <td>$2,500</td>
+                </tr>
+                <tr>
+                    <td>Route 53 + Health Checks</td>
+                    <td>$100</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Total</strong></td>
+                    <td><strong>~$10,800/month</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Scale Metrics -->
+        <h3>📊 Scale Metrics (PAN-India)</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">500K</div>
+                <div class="label">Orders/Day</div>
+            </div>
+            <div class="metric">
+                <div class="value">28min</div>
                 <div class="label">Avg Delivery</div>
+            </div>
+            <div class="metric">
+                <div class="value">50K</div>
+                <div class="label">Restaurants</div>
+            </div>
+            <div class="metric">
+                <div class="value">15/day</div>
+                <div class="label">New Restaurants</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HIGH TRAFFIC -->
+    <!-- ============================================ -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">10M users • 200K Restaurants • 500K orders/hour</h2>
+        </div>
+
+        <h3>⚠️ What Breaks First</h3>
+        <div class="feature-card warning">
+            <table style="width: 100%; font-size: 15px;">
+                <tr>
+                    <td style="width: 25%;"><strong>1. Order Service</strong></td>
+                    <td>100K orders/minute during IPL match + dinner</td>
+                    <td style="color: #22c55e;"><strong>→ Queue-based order acceptance</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>2. Restaurant Overload</strong></td>
+                    <td>Popular restaurants can't accept more orders</td>
+                    <td style="color: #22c55e;"><strong>→ Active order cap per restaurant</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>3. Partner Shortage</strong></td>
+                    <td>Not enough drivers during peak hours</td>
+                    <td style="color: #22c55e;"><strong>→ Surge pricing + batch deliveries</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>4. Location Updates</strong></td>
+                    <td>100K partners × 1 update/5s = 20K writes/sec</td>
+                    <td style="color: #22c55e;"><strong>→ Redis Streams + batch to DB</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>5. Search Spikes</strong></td>
+                    <td>Everyone searching "biryani" at 8pm</td>
+                    <td style="color: #22c55e;"><strong>→ Search result caching + CDN</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>🏗️ Architecture at Scale</h3>
+        <div class="diagram-container">
+            <h4>High-Traffic Architecture</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                <div class="arch-box cdn">CloudFront (95% static hit rate)</div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box lb">NLB (Layer 4) + API Gateway</div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                    <div class="arch-box server">Order Pods (x20)</div>
+                    <div class="arch-box server">Restaurant Pods (x10)</div>
+                    <div class="arch-box server">Delivery Pods (x15)</div>
+                    <div class="arch-box server">Search Pods (x8)</div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div class="arch-box cache">Redis Cluster<br><small>32 shards</small></div>
+                        <div style="font-size: 11px; color: #64748b;">Location + Session</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box queue">Kafka<br><small>Order events</small></div>
+                        <div style="font-size: 11px; color: #64748b;">100K msg/sec</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box storage">OpenSearch<br><small>5 node cluster</small></div>
+                        <div style="font-size: 11px; color: #64748b;">Search + Analytics</div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div style="display: flex; gap: 20px;">
+                    <div class="arch-box db">Shard 0<br><small>Mumbai</small></div>
+                    <div class="arch-box db">Shard 1<br><small>Delhi</small></div>
+                    <div class="arch-box db">Shard 2<br><small>Bangalore</small></div>
+                    <div class="arch-box db">Shard 3<br><small>Others</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- High Traffic Solutions -->
+        <h3>🛠️ Solutions for Peak Traffic</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card">
+                <h5>Order Queue System</h5>
+                <p>Accept orders into Kafka queue, process async</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Never reject during peak<br>
+                    <span style="color: #22c55e;">✓</span> Back-pressure handling<br>
+                    <span style="color: #22c55e;">✓</span> Retry failed orders<br>
+                    <span style="color: #ef4444;">✗</span> Slightly higher latency
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Restaurant Throttling</h5>
+                <p>Cap active orders per restaurant</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Prevents kitchen overload<br>
+                    <span style="color: #22c55e;">✓</span> Better delivery times<br>
+                    <span style="color: #22c55e;">✓</span> Dynamic cap based on history<br>
+                    <span style="color: #ef4444;">✗</span> Lost revenue during peak
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Delivery Batching</h5>
+                <p>Combine nearby deliveries for same partner</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Better partner utilization<br>
+                    <span style="color: #22c55e;">✓</span> Reduced delivery cost<br>
+                    <span style="color: #ef4444;">✗</span> Complex routing algorithm<br>
+                    <span style="color: #ef4444;">✗</span> Customer communication
+                </div>
+            </div>
+        </div>
+
+        <h3>🔀 Message Queue Alternatives</h3>
+        <div class="alternatives-grid">
+            <div class="alternative-card selected">
+                <h5>✅ Amazon MSK (Kafka)</h5>
+                <p>High throughput, ordering guarantees</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Millions msg/sec<br>
+                    <span style="color: #22c55e;">✓</span> Partition by order_id for ordering<br>
+                    <span style="color: #22c55e;">✓</span> Replay capability<br>
+                    <span style="color: #ef4444;">✗</span> Operational complexity
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Amazon SQS + SNS</h5>
+                <p>Serverless pub/sub</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Zero ops<br>
+                    <span style="color: #22c55e;">✓</span> Pay per message<br>
+                    <span style="color: #ef4444;">✗</span> FIFO limited to 300 msg/sec<br>
+                    <span style="color: #ef4444;">✗</span> No replay
+                </div>
+            </div>
+            <div class="alternative-card">
+                <h5>Redis Streams</h5>
+                <p>Lightweight event streaming</p>
+                <div style="font-size: 13px; margin-top: 8px;">
+                    <span style="color: #22c55e;">✓</span> Already using Redis<br>
+                    <span style="color: #22c55e;">✓</span> Consumer groups<br>
+                    <span style="color: #ef4444;">✗</span> Memory-bound<br>
+                    <span style="color: #ef4444;">✗</span> Less durable
+                </div>
+            </div>
+        </div>
+
+        <h3>💰 Cost at High Traffic</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>EKS (50 nodes, c5.2xlarge)</td><td>$12,000</td></tr>
+                <tr><td>RDS Aurora (4 shards, db.r5.2xlarge)</td><td>$8,000</td></tr>
+                <tr><td>ElastiCache Cluster (32 nodes)</td><td>$4,000</td></tr>
+                <tr><td>MSK Kafka (12 brokers)</td><td>$3,000</td></tr>
+                <tr><td>OpenSearch (5 nodes, r5.2xlarge)</td><td>$2,500</td></tr>
+                <tr><td>CloudFront (200TB)</td><td>$16,000</td></tr>
+                <tr><td>Google Maps API (2M calls)</td><td>$10,000</td></tr>
+                <tr><td>Data Transfer</td><td>$3,000</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$58,500/month</strong></td></tr>
+            </table>
+        </div>
+
+        <!-- Scale Metrics -->
+        <h3>📊 Scale Metrics (High Traffic)</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">2M+</div>
+                <div class="label">Orders/Day</div>
+            </div>
+            <div class="metric">
+                <div class="value">25min</div>
+                <div class="label">Avg Delivery</div>
+            </div>
+            <div class="metric">
+                <div class="value">200K</div>
+                <div class="label">Restaurants</div>
             </div>
             <div class="metric">
                 <div class="value">99.9%</div>
                 <div class="label">Order Success</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- GLOBAL SCALE -->
+    <!-- ============================================ -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">100M users • 1M Restaurants • 10M orders/day</h2>
+        </div>
+
+        <h3>🌍 Global Architecture</h3>
+        <div class="diagram-container">
+            <h4>Multi-Region Active-Active</h4>
+            <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center; padding: 20px; background: rgba(59,130,246,0.1); border-radius: 12px;">
+                    <strong>Asia-Pacific</strong>
+                    <div style="font-size: 12px; color: #64748b;">India, SEA, ANZ</div>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(34,197,94,0.1); border-radius: 12px;">
+                    <strong>Middle East</strong>
+                    <div style="font-size: 12px; color: #64748b;">UAE, Saudi, Egypt</div>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(249,115,22,0.1); border-radius: 12px;">
+                    <strong>Europe</strong>
+                    <div style="font-size: 12px; color: #64748b;">UK, Germany, France</div>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: rgba(168,85,247,0.1); border-radius: 12px;">
+                    <strong>Americas</strong>
+                    <div style="font-size: 12px; color: #64748b;">US, Brazil, Mexico</div>
+                    <div class="arch-box server" style="margin-top: 12px;">EKS Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+            </div>
+            <p style="margin-top: 16px;"><strong>CockroachDB:</strong> Distributed SQL with automatic geo-partitioning. Data stays in region for compliance (GDPR). Cross-region replication for disaster recovery.</p>
+        </div>
+
+        <h3>📋 Requirements at Global Scale</h3>
+        <div class="feature-card">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="color: #22c55e;">Functional</h4>
+                    <ul>
+                        <li>Multi-currency support</li>
+                        <li>Regional payment methods</li>
+                        <li>Multi-language (20+ languages)</li>
+                        <li>Local compliance (GDPR, etc.)</li>
+                        <li>Regional cuisines and preferences</li>
+                        <li>Cloud kitchen support</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #3b82f6;">Non-Functional</h4>
+                    <ul>
+                        <li>Latency: &lt;100ms (regional)</li>
+                        <li>Availability: 99.99%</li>
+                        <li>RPO: &lt;1 minute</li>
+                        <li>RTO: &lt;5 minutes</li>
+                        <li>Data residency compliance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- K8s at Global Scale -->
+        <h3>🚀 K8s Deployment at Global Scale</h3>
+        <div class="deployment-diagram">
+            <h4>Multi-Cluster Kubernetes with Service Mesh</h4>
+            <div class="k8s-cluster">
+                <h5>Global Service Mesh (Istio Multi-Cluster)</h5>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                    <div class="k8s-pod">🌏 ap-south-1 (100 pods)</div>
+                    <div class="k8s-pod">🌍 eu-west-1 (80 pods)</div>
+                    <div class="k8s-pod">🌎 us-east-1 (60 pods)</div>
+                    <div class="k8s-pod">🏜️ me-south-1 (40 pods)</div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-pod" style="background: #7c3aed;">🔀 Global Load Balancer</div>
+                    <div class="k8s-pod" style="background: #0891b2;">📊 Prometheus Federation</div>
+                    <div class="k8s-pod" style="background: #dc2626;">🔐 Vault (Multi-DC)</div>
+                    <div class="k8s-pod" style="background: #ea580c;">📈 Cluster Autoscaler</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CI/CD at Global Scale -->
+        <h3>🔄 CI/CD Pipeline (Global)</h3>
+        <div class="diagram-container">
+            <h4>Canary Deployment by Region</h4>
+            <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px;">
+                <div class="arch-box client" style="background: #24292e;">Merge to main</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server" style="background: #2088FF;">Build + Test</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box storage">Canary (5%)</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box gateway">Region by Region</div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box server">Global (100%)</div>
+            </div>
+            <div style="margin-top: 20px; text-align: left; max-width: 700px; margin-left: auto; margin-right: auto;">
+                <strong>Rollout Strategy:</strong>
+                <ol style="font-size: 14px; margin-top: 8px;">
+                    <li>Deploy to canary cluster (5% traffic in ap-south-1)</li>
+                    <li>Monitor error rates, latency for 30 minutes</li>
+                    <li>Automated rollback if error rate &gt; 0.1%</li>
+                    <li>Gradual rollout: ap-south-1 → me-south-1 → eu-west-1 → us-east-1</li>
+                    <li>Each region: 25% → 50% → 100% over 2 hours</li>
+                    <li>Full global deployment in ~8 hours</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Rollback Strategy -->
+        <h3>⏪ Rollback Strategy (Global)</h3>
+        <div class="feature-card warning">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4>Canary by Region</h4>
+                    <div class="code-example" style="margin: 12px 0;">
+<pre># Rollback specific region
+kubectl --context=ap-south-1 rollout undo deployment/order-service
+
+# Progressive rollback (Argo Rollouts)
+kubectl argo rollouts abort order-service</pre>
+                    </div>
+                    <p style="font-size: 14px;">Each region independent. One region failure doesn't affect others.</p>
+                </div>
+                <div>
+                    <h4>Feature Flags for New Flows</h4>
+                    <ul style="font-size: 14px;">
+                        <li><code>new_checkout_flow</code> - By region/country</li>
+                        <li><code>ml_eta_prediction</code> - Gradual by city</li>
+                        <li><code>group_ordering</code> - By user cohort</li>
+                        <li>Kill switch: Disable feature globally in &lt;1 min</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h3>💰 Cost at Global Scale</h3>
+        <div class="feature-card">
+            <table class="cost-table">
+                <tr><td>EKS (4 regions, 300 nodes total)</td><td>$80,000</td></tr>
+                <tr><td>CockroachDB Cloud (4 regions)</td><td>$50,000</td></tr>
+                <tr><td>ElastiCache Global (4 regions)</td><td>$15,000</td></tr>
+                <tr><td>OpenSearch (4 clusters)</td><td>$12,000</td></tr>
+                <tr><td>Kafka/MSK (4 regions)</td><td>$15,000</td></tr>
+                <tr><td>CloudFront (1PB)</td><td>$50,000</td></tr>
+                <tr><td>Google Maps API (10M calls)</td><td>$50,000</td></tr>
+                <tr><td>Monitoring (Datadog)</td><td>$10,000</td></tr>
+                <tr><td>Data Transfer (cross-region)</td><td>$20,000</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$302,000/month</strong></td></tr>
+            </table>
+        </div>
+
+        <!-- Scale Metrics -->
+        <h3>📊 Scale Metrics (Global)</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">10M+</div>
+                <div class="label">Orders/Day</div>
+            </div>
+            <div class="metric">
+                <div class="value">22min</div>
+                <div class="label">Avg Delivery</div>
+            </div>
+            <div class="metric">
+                <div class="value">1M+</div>
+                <div class="label">Restaurants</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.99%</div>
+                <div class="label">Availability</div>
             </div>
         </div>
     </div>
@@ -283,14 +1646,81 @@ Response: { "order_id": "uuid", "estimated_delivery": "35 mins", "total": 599 }<
 <div class="tooltip-popup" id="tooltipPopup">
     <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
     <h4 id="tooltipTitle"></h4>
-    <p id="tooltipContent"></p>
+    <div id="tooltipContent"></div>
 </div>
 
 <script>
-function showTooltip(term) {}
+const termDefinitions = {
+    'postgis': {
+        title: 'PostGIS - Geospatial Extension',
+        content: `<p>PostgreSQL extension for geographic objects and spatial queries.</p>
+        <div style="margin-top: 16px;">
+            <strong>Key Functions:</strong>
+            <pre style="background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-size: 13px;">-- Find restaurants within 5km
+ST_DWithin(location, point, 5000)
+
+-- Calculate distance
+ST_Distance(a.location, b.location)
+
+-- Create point from coordinates
+ST_MakePoint(longitude, latitude)</pre>
+        </div>`
+    },
+    'kafka': {
+        title: 'Apache Kafka / Amazon MSK',
+        content: `<p>Distributed event streaming platform for high-throughput messaging.</p>
+        <div style="margin-top: 16px;">
+            <strong>Order Events:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;">
+                <span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px;">order.placed</span>
+                <span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;">order.confirmed</span>
+                <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 4px;">order.preparing</span>
+                <span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px;">order.delivered</span>
+            </div>
+        </div>`
+    },
+    'saga': {
+        title: 'Saga Pattern',
+        content: `<p>Manage distributed transactions across microservices with compensating actions.</p>
+        <div style="margin-top: 16px;">
+            <strong>Order Saga:</strong>
+            <ol style="font-size: 13px;">
+                <li>Reserve inventory → (compensate: release inventory)</li>
+                <li>Process payment → (compensate: refund)</li>
+                <li>Confirm order → (compensate: cancel order)</li>
+                <li>Assign delivery → (compensate: unassign)</li>
+            </ol>
+        </div>`
+    }
+};
+
+function showTooltip(term) {
+    const def = termDefinitions[term];
+    if (def) {
+        document.getElementById('tooltipTitle').textContent = def.title;
+        document.getElementById('tooltipContent').innerHTML = def.content;
+        document.getElementById('tooltipOverlay').classList.add('show');
+        document.getElementById('tooltipPopup').classList.add('show');
+    }
+}
+
 function closeTooltip() {
     document.getElementById('tooltipOverlay').classList.remove('show');
     document.getElementById('tooltipPopup').classList.remove('show');
 }
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeTooltip(); });
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTooltip(); });
+
+// Scroll spy
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('.stage-section');
+    const navLinks = document.querySelectorAll('.quick-nav a');
+    let current = '';
+    sections.forEach(section => {
+        if (scrollY >= section.offsetTop - 200) current = section.id;
+    });
+    navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+});
 </script>
