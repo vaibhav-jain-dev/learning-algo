@@ -204,54 +204,51 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase1-assumptions">Assumptions {#phase1-assumptions}</h3>
-<pre><code>                      - **Users**: 1,000 - 50,000
-                      - **Storage**: 100GB - 10TB total
-                      - **Files**: Mostly small files (&lt; 100MB)
-                      - **Budget**: $500 - $3,000/month
+<pre><code>- **Users**: 1,000 - 50,000
+- **Storage**: 100GB - 10TB total
+- **Files**: Mostly small files (&lt; 100MB)
+- **Budget**: $500 - $3,000/month
 </code></pre>
 <h3 id="monolithic-architecture-monolithic-architecture">Monolithic Architecture {#monolithic-architecture}</h3>
-<pre><code>                      ```python
-                      # Simple file storage service
-                      class FileService:
-                      def __init__(self, s3_client, db):
-                      self.s3 = s3_client
-                      self.db = db
+<pre><code class="language-python"># Simple file storage service
+class FileService:
+def __init__(self, s3_client, db):
+self.s3 = s3_client
+self.db = db
 
-                      def upload_file(self, user_id, file_path, content):
-                      # Generate unique file ID
-                      file_id = str(uuid4())
+def upload_file(self, user_id, file_path, content):
+# Generate unique file ID
+file_id = str(uuid4())
 
-                      # Upload to S3 (single file, no chunking yet)
-                      s3_key = f&quot;{user_id}/{file_id}&quot;
-                      self.s3.put_object(
-                      Bucket='files',
-                      Key=s3_key,
-                      Body=content
-                      )
+# Upload to S3 (single file, no chunking yet)
+s3_key = f&quot;{user_id}/{file_id}&quot;
+self.s3.put_object(
+Bucket='files',
+Key=s3_key,
+Body=content
+)
 
-                      # Store metadata
-                      self.db.execute(&quot;&quot;&quot;
-                      INSERT INTO files (id, user_id, path, s3_key, size, created_at)
-                      VALUES (%s, %s, %s, %s, %s, NOW())
-                      &quot;&quot;&quot;, file_id, user_id, file_path, s3_key, len(content))
+# Store metadata
+self.db.execute(&quot;&quot;&quot;
+INSERT INTO files (id, user_id, path, s3_key, size, created_at)
+VALUES (%s, %s, %s, %s, %s, NOW())
+&quot;&quot;&quot;, file_id, user_id, file_path, s3_key, len(content))
 
-                      return file_id
+return file_id
 
-                      def download_file(self, user_id, file_id):
-                      # Check permission
-                      file = self.db.query_one(
-                      &quot;SELECT * FROM files WHERE id = %s AND user_id = %s&quot;,
-                      file_id, user_id
-                      )
+def download_file(self, user_id, file_id):
+# Check permission
+file = self.db.query_one(
+&quot;SELECT * FROM files WHERE id = %s AND user_id = %s&quot;,
+file_id, user_id
+)
 
-                      if not file:
-                      raise PermissionError()
+if not file:
+raise PermissionError()
 
-                      # Get from S3
-                      response = self.s3.get_object(Bucket='files', Key=file.s3_key)
-                      return response['Body'].read()
-                      ```
-</code></pre>
+# Get from S3
+response = self.s3.get_object(Bucket='files', Key=file.s3_key)
+return response['Body'].read()</code></pre>
 <h4 id="simple-sync-protocol-simple-sync-protocol">Simple Sync Protocol {#simple-sync-protocol}</h4>
 <div style="background: #f1f5f9;border-radius: 16px; padding: 24px; margin: 16px 0">
 <div style="text-align: center; font-weight: bold; color: #1d4ed8; margin-bottom: 20px; font-size: 16px">POLLING-BASED SYNC</div>
@@ -278,10 +275,10 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase2-assumptions">Assumptions {#phase2-assumptions}</h3>
-<pre><code>                                  - **Users**: 1M - 10M
-                                  - **Storage**: 100PB+
-                                  - **Uploads**: 10K files/second
-                                  - **Budget**: $200K - $1M/month
+<pre><code>- **Users**: 1M - 10M
+- **Storage**: 100PB+
+- **Uploads**: 10K files/second
+- **Budget**: $200K - $1M/month
 </code></pre>
 <h3 id="microservices-with-chunking-microservices-with-chunking">Microservices with Chunking {#microservices-with-chunking}</h3>
 <div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0">
@@ -346,59 +343,56 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 </div>
 </div>
 <h3 id="delta-sync-algorithm-delta-sync-algorithm">Delta Sync Algorithm {#delta-sync-algorithm}</h3>
-<pre><code>                                  ```python
-                                  class DeltaSyncService:
-                                  &quot;&quot;&quot;
-                                  Only sync changed bytes, not entire files.
-                                  Uses rolling checksum (rsync algorithm).
-                                  &quot;&quot;&quot;
+<pre><code class="language-python">class DeltaSyncService:
+&quot;&quot;&quot;
+Only sync changed bytes, not entire files.
+Uses rolling checksum (rsync algorithm).
+&quot;&quot;&quot;
 
-                                  def calculate_delta(self, old_chunks, new_content):
-                                  &quot;&quot;&quot;
-                                  Compare new content against old chunks.
-                                  Return only the differences.
-                                  &quot;&quot;&quot;
-                                  CHUNK_SIZE = 4 * 1024 * 1024  # 4MB
+def calculate_delta(self, old_chunks, new_content):
+&quot;&quot;&quot;
+Compare new content against old chunks.
+Return only the differences.
+&quot;&quot;&quot;
+CHUNK_SIZE = 4 * 1024 * 1024  # 4MB
 
-                                  old_hashes = {chunk.hash: chunk for chunk in old_chunks}
-                                  new_chunks = []
-                                  delta = []
+old_hashes = {chunk.hash: chunk for chunk in old_chunks}
+new_chunks = []
+delta = []
 
-                                  # Rolling hash to find matching blocks
-                                  for i in range(0, len(new_content), CHUNK_SIZE):
-                                  chunk_data = new_content[i:i + CHUNK_SIZE]
-                                  chunk_hash = sha256(chunk_data)
+# Rolling hash to find matching blocks
+for i in range(0, len(new_content), CHUNK_SIZE):
+chunk_data = new_content[i:i + CHUNK_SIZE]
+chunk_hash = sha256(chunk_data)
 
-                                  if chunk_hash in old_hashes:
-                                  # Reuse existing chunk
-                                  new_chunks.append(old_hashes[chunk_hash])
-                                  else:
-                                  # New chunk, need to upload
-                                  new_chunks.append(Chunk(hash=chunk_hash, data=chunk_data))
-                                  delta.append({
-                                  'offset': i,
-                                  'hash': chunk_hash,
-                                  'data': chunk_data
-                                  })
+if chunk_hash in old_hashes:
+# Reuse existing chunk
+new_chunks.append(old_hashes[chunk_hash])
+else:
+# New chunk, need to upload
+new_chunks.append(Chunk(hash=chunk_hash, data=chunk_data))
+delta.append({
+'offset': i,
+'hash': chunk_hash,
+'data': chunk_data
+})
 
-                                  return new_chunks, delta
+return new_chunks, delta
 
-                                  def apply_delta(self, file_id, delta):
-                                  &quot;&quot;&quot;
-                                  Apply delta to reconstruct file on client.
-                                  &quot;&quot;&quot;
-                                  for change in delta:
-                                  # Upload new chunk to S3
-                                  self.s3.put_object(
-                                  Bucket='chunks',
-                                  Key=change['hash'],
-                                  Body=change['data']
-                                  )
+def apply_delta(self, file_id, delta):
+&quot;&quot;&quot;
+Apply delta to reconstruct file on client.
+&quot;&quot;&quot;
+for change in delta:
+# Upload new chunk to S3
+self.s3.put_object(
+Bucket='chunks',
+Key=change['hash'],
+Body=change['data']
+)
 
-                                  # Update file manifest
-                                  self.update_manifest(file_id, delta)
-                                  ```
-</code></pre>
+# Update file manifest
+self.update_manifest(file_id, delta)</code></pre>
 <h3 id="conflict-resolution-conflict-resolution">Conflict Resolution {#conflict-resolution}</h3>
 <div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 16px 0">
   <!-- Three-way diagram -->
@@ -463,10 +457,10 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 <div style="background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%); border-radius: 12px; padding: 4px; margin: 20px 0">
 <div style="background: #f8fafc; border-radius: 10px; padding: 24px">
 <h3 id="assumptions-phase3-assumptions">Assumptions {#phase3-assumptions}</h3>
-<pre><code>                                          - **Users**: 1B+
-                                          - **Storage**: Exabytes
-                                          - **Uploads**: 1M files/second
-                                          - **Team**: 500+ engineers
+<pre><code>- **Users**: 1B+
+- **Storage**: Exabytes
+- **Uploads**: 1M files/second
+- **Team**: 500+ engineers
 </code></pre>
 <h3 id="global-architecture-global-architecture">Global Architecture {#global-architecture}</h3>
 <div class="flow-diagram" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 16px 0">
@@ -666,44 +660,41 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 </div>
 </div>
 <h3 id="2-deduplication-at-scale-deduplication-at-scale">2. Deduplication at Scale {#deduplication-at-scale}</h3>
-<pre><code>                                        ```python
-                                        class GlobalDeduplicationService:
-                                        &quot;&quot;&quot;
-                                        Cross-user deduplication saves 40%+ storage.
-                                        Uses content-addressable storage.
-                                        &quot;&quot;&quot;
+<pre><code class="language-python">class GlobalDeduplicationService:
+&quot;&quot;&quot;
+Cross-user deduplication saves 40%+ storage.
+Uses content-addressable storage.
+&quot;&quot;&quot;
 
-                                        def store_chunk(self, chunk_hash, chunk_data, uploader_id):
-                                        # Check if chunk already exists
-                                        existing = self.chunk_index.get(chunk_hash)
+def store_chunk(self, chunk_hash, chunk_data, uploader_id):
+# Check if chunk already exists
+existing = self.chunk_index.get(chunk_hash)
 
-                                        if existing:
-                                        # Increment reference count
-                                        self.chunk_index.increment_refs(chunk_hash)
-                                        return existing.s3_key
-                                        else:
-                                        # Store new chunk
-                                        s3_key = f&quot;chunks/{chunk_hash[:2]}/{chunk_hash}&quot;
-                                        self.s3.put_object(Bucket='chunks', Key=s3_key, Body=chunk_data)
+if existing:
+# Increment reference count
+self.chunk_index.increment_refs(chunk_hash)
+return existing.s3_key
+else:
+# Store new chunk
+s3_key = f&quot;chunks/{chunk_hash[:2]}/{chunk_hash}&quot;
+self.s3.put_object(Bucket='chunks', Key=s3_key, Body=chunk_data)
 
-                                        # Index the chunk
-                                        self.chunk_index.set(chunk_hash, {
-                                        's3_key': s3_key,
-                                        'ref_count': 1,
-                                        'size': len(chunk_data)
-                                        })
+# Index the chunk
+self.chunk_index.set(chunk_hash, {
+'s3_key': s3_key,
+'ref_count': 1,
+'size': len(chunk_data)
+})
 
-                                        return s3_key
+return s3_key
 
-                                        def delete_chunk_reference(self, chunk_hash):
-                                        # Decrement reference count
-                                        refs = self.chunk_index.decrement_refs(chunk_hash)
+def delete_chunk_reference(self, chunk_hash):
+# Decrement reference count
+refs = self.chunk_index.decrement_refs(chunk_hash)
 
-                                        if refs == 0:
-                                        # No more references, schedule deletion
-                                        self.deletion_queue.add(chunk_hash)
-                                        ```
-</code></pre>
+if refs == 0:
+# No more references, schedule deletion
+self.deletion_queue.add(chunk_hash)</code></pre>
 <h3 id="3-quota-management-quota-management">3. Quota Management {#quota-management}</h3>
 <div style="background: #f1f5f9;border-radius: 16px; padding: 24px; margin: 16px 0">
 <div style="text-align: center; font-weight: bold; color: #f0883e; margin-bottom: 20px; font-size: 16px">QUOTA SERVICE</div>
@@ -835,26 +826,23 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 - When Bob syncs, server says &quot;file abc123 moved to /Projects/2024-Q1/&quot;<br />
 - Bob's edit applies to new path automatically</p>
 <p><strong>Conflict Resolution Code Example</strong>:</p>
-<pre><code>                                                    ```python
-                                                    def resolve_conflict(base_version, version_a, version_b, file_type):
-                                                    if file_type in ['jpg', 'png', 'mp4', 'pdf']:
-                                                    # Binary: create conflict copy
-                                                    return ConflictCopy(version_a, version_b)
+<pre><code class="language-python">def resolve_conflict(base_version, version_a, version_b, file_type):
+if file_type in ['jpg', 'png', 'mp4', 'pdf']:
+# Binary: create conflict copy
+return ConflictCopy(version_a, version_b)
 
-                                                    if file_type in ['txt', 'md', 'json']:
-                                                    # Text: attempt three-way merge
-                                                    merged, conflicts = three_way_merge(base_version, version_a, version_b)
-                                                    if conflicts:
-                                                    return MergeWithConflictMarkers(merged, conflicts)
-                                                    return merged
+if file_type in ['txt', 'md', 'json']:
+# Text: attempt three-way merge
+merged, conflicts = three_way_merge(base_version, version_a, version_b)
+if conflicts:
+return MergeWithConflictMarkers(merged, conflicts)
+return merged
 
-                                                    # Default: last-write-wins with notification
-                                                    winner = version_a if version_a.timestamp &gt; version_b.timestamp else version_b
-                                                    loser = version_b if winner == version_a else version_a
-                                                    notify_user(loser.author, f&quot;Your changes were superseded by {winner.author}&quot;)
-                                                    return winner
-                                                    ```
-</code></pre>
+# Default: last-write-wins with notification
+winner = version_a if version_a.timestamp &gt; version_b.timestamp else version_b
+loser = version_b if winner == version_a else version_a
+notify_user(loser.author, f&quot;Your changes were superseded by {winner.author}&quot;)
+return winner</code></pre>
 <p><strong>Key Insight</strong>: &quot;Google Docs uses Operational Transform because users expect real-time character-by-character sync. Dropbox uses conflict copies because file-level sync is simpler and users don't expect real-time binary file collaboration. The choice depends on user expectations, not technical elegance.&quot;</p>
 <p><strong>When Simpler Works</strong>:</p>
 <blockquote>
@@ -956,97 +944,88 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 </div>
 </div>
 <p><strong>Step 1: Local SQLite Database Schema</strong></p>
-<pre><code>                                                    ```sql
-                                                    CREATE TABLE local_files (
-                                                    file_path TEXT PRIMARY KEY,
-                                                    local_hash TEXT,           -- Hash of local file
-                                                    server_hash TEXT,          -- Last known server hash
-                                                    server_version INTEGER,    -- Server version number
-                                                    sync_status TEXT,          -- 'synced', 'pending_upload', 'pending_download', 'conflict'
-                                                    last_modified TIMESTAMP,
-                                                    last_sync TIMESTAMP
-                                                    );
+<pre><code class="language-sql">CREATE TABLE local_files (
+file_path TEXT PRIMARY KEY,
+local_hash TEXT,           -- Hash of local file
+server_hash TEXT,          -- Last known server hash
+server_version INTEGER,    -- Server version number
+sync_status TEXT,          -- 'synced', 'pending_upload', 'pending_download', 'conflict'
+last_modified TIMESTAMP,
+last_sync TIMESTAMP
+);
 
-                                                    CREATE TABLE pending_changes (
-                                                    id INTEGER PRIMARY KEY,
-                                                    file_path TEXT,
-                                                    change_type TEXT,          -- 'create', 'modify', 'delete', 'move'
-                                                    old_path TEXT,             -- For moves/renames
-                                                    queued_at TIMESTAMP,
-                                                    retry_count INTEGER DEFAULT 0
-                                                    );
-                                                    ```
-</code></pre>
+CREATE TABLE pending_changes (
+id INTEGER PRIMARY KEY,
+file_path TEXT,
+change_type TEXT,          -- 'create', 'modify', 'delete', 'move'
+old_path TEXT,             -- For moves/renames
+queued_at TIMESTAMP,
+retry_count INTEGER DEFAULT 0
+);</code></pre>
 <p><strong>Step 2: File System Watcher Implementation</strong></p>
-<pre><code>                                                    ```python
-                                                    # Using FSEvents (Mac), inotify (Linux), or ReadDirectoryChangesW (Windows)
+<pre><code class="language-python"># Using FSEvents (Mac), inotify (Linux), or ReadDirectoryChangesW (Windows)
 
-                                                    class FileWatcher:
-                                                    def __init__(self, sync_folder, db):
-                                                    self.sync_folder = sync_folder
-                                                    self.db = db
+class FileWatcher:
+def __init__(self, sync_folder, db):
+self.sync_folder = sync_folder
+self.db = db
 
-                                                    def on_file_changed(self, event_path, event_type):
-                                                    # Debounce: wait 500ms for file to stop changing
-                                                    time.sleep(0.5)
+def on_file_changed(self, event_path, event_type):
+# Debounce: wait 500ms for file to stop changing
+time.sleep(0.5)
 
-                                                    local_hash = calculate_hash(event_path)
-                                                    server_hash = self.db.get_server_hash(event_path)
+local_hash = calculate_hash(event_path)
+server_hash = self.db.get_server_hash(event_path)
 
-                                                    if local_hash != server_hash:
-                                                    # File has local changes not on server
-                                                    self.db.execute(&quot;&quot;&quot;
-                                                    INSERT INTO pending_changes (file_path, change_type, queued_at)
-                                                    VALUES (?, 'modify', datetime('now'))
-                                                    &quot;&quot;&quot;, event_path)
+if local_hash != server_hash:
+# File has local changes not on server
+self.db.execute(&quot;&quot;&quot;
+INSERT INTO pending_changes (file_path, change_type, queued_at)
+VALUES (?, 'modify', datetime('now'))
+&quot;&quot;&quot;, event_path)
 
-                                                    self.db.execute(&quot;&quot;&quot;
-                                                    UPDATE local_files SET sync_status = 'pending_upload'
-                                                    WHERE file_path = ?
-                                                    &quot;&quot;&quot;, event_path)
-                                                    ```
-</code></pre>
+self.db.execute(&quot;&quot;&quot;
+UPDATE local_files SET sync_status = 'pending_upload'
+WHERE file_path = ?
+&quot;&quot;&quot;, event_path)</code></pre>
 <p><strong>Step 3: Sync Engine on Reconnect</strong></p>
 <p>When network comes back, the sync engine runs this algorithm:</p>
-<pre><code>                                                    ```python
-                                                    def sync_on_reconnect(self):
-                                                    # Step 1: Get server changes since last sync
-                                                    last_sync = self.db.get_last_sync_timestamp()
-                                                    server_changes = self.api.get_changes(since=last_sync)
+<pre><code class="language-python">def sync_on_reconnect(self):
+# Step 1: Get server changes since last sync
+last_sync = self.db.get_last_sync_timestamp()
+server_changes = self.api.get_changes(since=last_sync)
 
-                                                    # Step 2: Get local pending changes
-                                                    local_changes = self.db.query(&quot;SELECT * FROM pending_changes ORDER BY queued_at&quot;)
+# Step 2: Get local pending changes
+local_changes = self.db.query(&quot;SELECT * FROM pending_changes ORDER BY queued_at&quot;)
 
-                                                    # Step 3: Detect conflicts
-                                                    for server_change in server_changes:
-                                                    local_change = find_matching_local_change(server_change.path, local_changes)
+# Step 3: Detect conflicts
+for server_change in server_changes:
+local_change = find_matching_local_change(server_change.path, local_changes)
 
-                                                    if local_change:
-                                                    # CONFLICT: Both server and local changed same file
-                                                    if server_change.type == 'delete' and local_change.type == 'modify':
-                                                    # Server deleted, user edited -&gt; User probably wants to keep their edit
-                                                    # Re-upload as new file
-                                                    self.upload_as_new(local_change.path)
-                                                    elif server_change.type == 'modify' and local_change.type == 'modify':
-                                                    # Both modified -&gt; Create conflict copy
-                                                    self.create_conflict_copy(local_change.path, server_change.version)
-                                                    elif server_change.type == 'modify' and local_change.type == 'delete':
-                                                    # Server modified, user deleted -&gt; Restore server version
-                                                    self.download_server_version(server_change)
+if local_change:
+# CONFLICT: Both server and local changed same file
+if server_change.type == 'delete' and local_change.type == 'modify':
+# Server deleted, user edited -&gt; User probably wants to keep their edit
+# Re-upload as new file
+self.upload_as_new(local_change.path)
+elif server_change.type == 'modify' and local_change.type == 'modify':
+# Both modified -&gt; Create conflict copy
+self.create_conflict_copy(local_change.path, server_change.version)
+elif server_change.type == 'modify' and local_change.type == 'delete':
+# Server modified, user deleted -&gt; Restore server version
+self.download_server_version(server_change)
 
-                                                    # Step 4: Apply non-conflicting changes
-                                                    for server_change in server_changes:
-                                                    if not has_conflict(server_change):
-                                                    if server_change.type == 'modify':
-                                                    self.download_file(server_change)
-                                                    elif server_change.type == 'delete':
-                                                    self.delete_local_file(server_change.path)
+# Step 4: Apply non-conflicting changes
+for server_change in server_changes:
+if not has_conflict(server_change):
+if server_change.type == 'modify':
+self.download_file(server_change)
+elif server_change.type == 'delete':
+self.delete_local_file(server_change.path)
 
-                                                    for local_change in local_changes:
-                                                    if not has_conflict(local_change):
-                                                    self.upload_file(local_change)
-                                                    ```
-</code></pre>
+for local_change in local_changes:
+if not has_conflict(local_change):
+self.upload_file(local_change)</code></pre>
 <p><strong>Real-World Scenario: 2 Hours Offline on a Flight</strong></p>
 <ol>
 <li>User boards plane with laptop, internet disconnects</li>
@@ -1085,36 +1064,33 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 - Checksums on every read/write operation<br />
 - Automatic corruption detection and healing</p>
 <p><strong>Layer 2: Application-Level Protection</strong></p>
-<pre><code>                                                    ```python
-                                                    class DurableUploadService:
-                                                    def upload_chunk(self, chunk_hash, chunk_data):
-                                                    # Step 1: Calculate checksum before upload
-                                                    expected_checksum = md5(chunk_data)
+<pre><code class="language-python">class DurableUploadService:
+def upload_chunk(self, chunk_hash, chunk_data):
+# Step 1: Calculate checksum before upload
+expected_checksum = md5(chunk_data)
 
-                                                    # Step 2: Upload with checksum verification
-                                                    response = self.s3.put_object(
-                                                    Bucket='chunks',
-                                                    Key=chunk_hash,
-                                                    Body=chunk_data,
-                                                    ContentMD5=base64.b64encode(expected_checksum)
-                                                    # S3 rejects if checksum doesn't match!
-                                                    )
+# Step 2: Upload with checksum verification
+response = self.s3.put_object(
+Bucket='chunks',
+Key=chunk_hash,
+Body=chunk_data,
+ContentMD5=base64.b64encode(expected_checksum)
+# S3 rejects if checksum doesn't match!
+)
 
-                                                    # Step 3: Verify upload succeeded
-                                                    if response['ResponseMetadata']['HTTPStatusCode'] != 200:
-                                                    raise UploadFailedException()
+# Step 3: Verify upload succeeded
+if response['ResponseMetadata']['HTTPStatusCode'] != 200:
+raise UploadFailedException()
 
-                                                    # Step 4: Only NOW update metadata
-                                                    # This ensures we never have metadata pointing to non-existent chunk
-                                                    self.db.execute(&quot;&quot;&quot;
-                                                    UPDATE file_manifests
-                                                    SET chunks = array_append(chunks, %s)
-                                                    WHERE file_id = %s
-                                                    &quot;&quot;&quot;, chunk_hash, file_id)
+# Step 4: Only NOW update metadata
+# This ensures we never have metadata pointing to non-existent chunk
+self.db.execute(&quot;&quot;&quot;
+UPDATE file_manifests
+SET chunks = array_append(chunks, %s)
+WHERE file_id = %s
+&quot;&quot;&quot;, chunk_hash, file_id)
 
-                                                    return True
-                                                    ```
-</code></pre>
+return True</code></pre>
 <p><strong>Layer 3: Write-Ahead Logging for Metadata</strong></p>
 <p>PostgreSQL already does this, but here's the concept:</p>
 <ol>
@@ -1126,33 +1102,27 @@ Hash(C2) = <span style="color: #16a34a">def456</span><br>
 If crash between steps 2 and 3: log entry replayed (idempotent operation)</p>
 <p><strong>Layer 4: Cross-Region Replication</strong></p>
 <p>For critical data (enterprise tier):</p>
-<pre><code>                                                    ```
-                                                    Primary Region (us-east-1)          Backup Region (eu-west-1)
-                                                    ┌──────────────────────┐            ┌──────────────────────┐
-                                                    │  S3 Bucket           │───sync───&gt; │  S3 Bucket (replica) │
-                                                    │  Aurora PostgreSQL   │───sync───&gt; │  Aurora Read Replica │
-                                                    └──────────────────────┘            └──────────────────────┘
-                                                    │                                    │
-                                                    │         If us-east-1 fails         │
-                                                    └──────── Failover to eu-west-1 ─────┘
-                                                    ```
-</code></pre>
+<pre><code>Primary Region (us-east-1)          Backup Region (eu-west-1)
+┌──────────────────────┐            ┌──────────────────────┐
+│  S3 Bucket           │───sync───&gt; │  S3 Bucket (replica) │
+│  Aurora PostgreSQL   │───sync───&gt; │  Aurora Read Replica │
+└──────────────────────┘            └──────────────────────┘
+│                                    │
+│         If us-east-1 fails         │
+└──────── Failover to eu-west-1 ─────┘</code></pre>
 <p><strong>Cost consideration</strong>: Cross-region replication doubles storage cost. Only enable for:<br />
 - Enterprise customers paying premium<br />
 - Compliance requirements (GDPR, HIPAA)<br />
 - Data that cannot be recreated (user uploads, not cached thumbnails)</p>
 <p><strong>Layer 5: Soft Deletes (Most Important!)</strong></p>
-<pre><code>                                                    ```sql
-                                                    -- Don't do this:
-                                                    DELETE FROM files WHERE id = 'abc123';
+<pre><code class="language-sql">-- Don't do this:
+DELETE FROM files WHERE id = 'abc123';
 
-                                                    -- Do this instead:
-                                                    UPDATE files SET
-                                                    deleted_at = NOW(),
-                                                    scheduled_purge = NOW() + INTERVAL '30 days'
-                                                    WHERE id = 'abc123';
-                                                    ```
-</code></pre>
+-- Do this instead:
+UPDATE files SET
+deleted_at = NOW(),
+scheduled_purge = NOW() + INTERVAL '30 days'
+WHERE id = 'abc123';</code></pre>
 <p><strong>Why soft deletes prevent more data loss than replication</strong>:<br />
 - Most data loss is user error (accidental delete) or application bugs<br />
 - Cross-region replication faithfully replicates your mistake<br />
@@ -1161,17 +1131,14 @@ If crash between steps 2 and 3: log entry replayed (idempotent operation)</p>
 - With hard deletes + replication: Data is gone from both regions immediately<br />
 - With soft deletes: IT admin restores folder in 5 minutes</p>
 <p><strong>Layer 6: Version History</strong></p>
-<pre><code>                                                    ```sql
-                                                    CREATE TABLE file_versions (
-                                                    file_id UUID,
-                                                    version_number INTEGER,
-                                                    chunk_manifest JSONB,      -- Which chunks make up this version
-                                                    created_at TIMESTAMP,
-                                                    created_by UUID,
-                                                    change_description TEXT    -- &quot;Edited by John at 3:45 PM&quot;
-                                                    );
-                                                    ```
-</code></pre>
+<pre><code class="language-sql">CREATE TABLE file_versions (
+file_id UUID,
+version_number INTEGER,
+chunk_manifest JSONB,      -- Which chunks make up this version
+created_at TIMESTAMP,
+created_by UUID,
+change_description TEXT    -- &quot;Edited by John at 3:45 PM&quot;
+);</code></pre>
 <p>User can browse version history and restore any previous version. This catches:<br />
 - Accidental overwrites (&quot;I pasted the wrong data&quot;)<br />
 - Ransomware (restore pre-encryption versions)<br />
@@ -2466,12 +2433,12 @@ Plan for <strong>3x peak traffic</strong> over average. File storage services se
 </div>
 <h3 id="common-follow-up-questions-common-follow-up">Common Follow-up Questions {#common-follow-up}</h3>
 <div style="background: #f8fafc; border-radius: 10px; padding: 20px; margin: 16px 0">
-<pre><code>                                                                                                  - **How do you handle large files (10GB+)?** Chunking with parallel upload, resumability
-                                                                                                  - **How do you ensure 11 nines durability?** S3's built-in replication, cross-region for critical data
-                                                                                                  - **How do you implement real-time collaboration?** Operational Transform or CRDT, separate problem from file sync
-                                                                                                  - **How do you handle offline editing?** Local SQLite + file watcher, queue changes, reconcile on reconnect
-                                                                                                  - **How do you prevent malware uploads?** Async virus scanning, quarantine until scanned, signed URLs expire
-                                                                                                  - **How do you handle quota?** Pre-check before upload, atomic increment, background recalculation for dedup credits
+<pre><code>- **How do you handle large files (10GB+)?** Chunking with parallel upload, resumability
+- **How do you ensure 11 nines durability?** S3's built-in replication, cross-region for critical data
+- **How do you implement real-time collaboration?** Operational Transform or CRDT, separate problem from file sync
+- **How do you handle offline editing?** Local SQLite + file watcher, queue changes, reconcile on reconnect
+- **How do you prevent malware uploads?** Async virus scanning, quarantine until scanned, signed URLs expire
+- **How do you handle quota?** Pre-check before upload, atomic increment, background recalculation for dedup credits
 </code></pre>
 </div>
 </div>

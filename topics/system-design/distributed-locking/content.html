@@ -414,8 +414,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 <hr />
 <h2 id="implementation">Implementation</h2>
 <h3 id="redis-based-distributed-lock-with-fencing">Redis-Based Distributed Lock with Fencing</h3>
-<pre><code>    ```python
-    import redis
+<pre><code class="language-python">    import redis
     import uuid
     import time
     from typing import Optional
@@ -584,12 +583,9 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
 
     class StaleFenceTokenError(Exception):
     &quot;&quot;&quot;Raised when a write is attempted with a stale fencing token.&quot;&quot;&quot;
-    pass
-    ```
-</code></pre>
+    pass</code></pre>
 <h3 id="redlock-implementation">Redlock Implementation</h3>
-<pre><code>    ```python
-    import redis
+<pre><code class="language-python">    import redis
     import uuid
     import time
     from typing import List, Optional
@@ -689,12 +685,9 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
     if not self.acquired_at:
     return 0
     elapsed = (time.time() - self.acquired_at) * 1000
-    return max(0, self.ttl_ms - elapsed)
-    ```
-</code></pre>
+    return max(0, self.ttl_ms - elapsed)</code></pre>
 <h3 id="zookeeper-lock-implementation">ZooKeeper Lock Implementation</h3>
-<pre><code>    ```python
-    from kazoo.client import KazooClient
+<pre><code class="language-python">    from kazoo.client import KazooClient
     from kazoo.recipe.lock import Lock
     from typing import Optional
     import threading
@@ -787,12 +780,9 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
     result = operation(resource_id, fence_token)
     return result
     finally:
-    lock.close()
-    ```
-</code></pre>
+    lock.close()</code></pre>
 <h3 id="etcd-lock-with-lease-management">etcd Lock with Lease Management</h3>
-<pre><code>    ```python
-    import etcd3
+<pre><code class="language-python">    import etcd3
     from typing import Optional
     import threading
     import time
@@ -918,9 +908,7 @@ This creates a fair queue and avoids <span style="color: #10b981; font-weight: 6
     return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-    self.release()
-    ```
-</code></pre>
+    self.release()</code></pre>
 <hr />
 <h2 id="real-life-failure-story">Real-Life Failure Story</h2>
 <h3 id="the-github-outage-2012">The GitHub Outage (2012)</h3>

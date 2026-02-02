@@ -1014,8 +1014,7 @@ class ReplicationCoordinator:
 </div>
 </div>
 <h3 id="replication-lag-implementation">Replication Lag Implementation</h3>
-<pre><code>        ```python
-        from dataclasses import dataclass
+<pre><code class="language-python">        from dataclasses import dataclass
         from typing import Dict, List, Optional
         import time
         import asyncio
@@ -1245,9 +1244,7 @@ class ReplicationCoordinator:
         )
         return result == 0
         except Exception:
-        return False
-        ```
-</code></pre>
+        return False</code></pre>
 <h3 id="replication-lag-interview-questions-3-levels-deep">Replication Lag Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What is replication lag and why is it problematic?</h4>
@@ -1357,8 +1354,7 @@ class ReplicationCoordinator:
 </div>
 </div>
 <h3 id="failover-implementation">Failover Implementation</h3>
-<pre><code>        ```python
-        from enum import Enum
+<pre><code class="language-python">        from enum import Enum
         from typing import List, Optional
         import asyncio
 
@@ -1653,9 +1649,7 @@ class ReplicationCoordinator:
         await replica.execute(
         f&quot;INSERT INTO replication_epoch (epoch, promoted_at) &quot;
         f&quot;VALUES ({self.current_epoch}, NOW())&quot;
-        )
-        ```
-</code></pre>
+        )</code></pre>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">

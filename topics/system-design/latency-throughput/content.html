@@ -960,8 +960,7 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
 - Client-side P99 is what users actually experience</p>
 <h2 id="code-implementation">Code Implementation</h2>
 <h3 id="python---production-latency-tracking-with-t-digest">Python - Production Latency Tracking with T-Digest</h3>
-<pre><code>    ```python
-    import time
+<pre><code class="language-python">    import time
     import threading
     from dataclasses import dataclass
     from typing import Optional, Dict, Any
@@ -1267,12 +1266,9 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
     print(f&quot;  Required concurrency: {required:.0f}&quot;)
 
     pool_size = calc.connection_pool_size(target_rps, expected_latency_ms)
-    print(f&quot;  Recommended DB pool size: {pool_size}&quot;)
-    ```
-</code></pre>
+    print(f&quot;  Recommended DB pool size: {pool_size}&quot;)</code></pre>
 <h3 id="go---high-performance-latency-tracking">Go - High-Performance Latency Tracking</h3>
-<pre><code>    ```go
-    package main
+<pre><code class="language-go">    package main
 
     import (
     &quot;fmt&quot;
@@ -1598,9 +1594,7 @@ A single regular expression in Cloudflare's WAF caused catastrophic CPU exhausti
 
     poolSize := ll.ConnectionPoolSize(targetRPS, expectedP99, 1.5)
     fmt.Printf(&quot;  Recommended DB pool size: %d\n&quot;, poolSize)
-    }
-    ```
-</code></pre>
+    }</code></pre>
 <h2 id="quick-reference-card">Quick Reference Card</h2>
 <h3 id="key-formulas">Key Formulas</h3>
 <table>

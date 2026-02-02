@@ -278,8 +278,7 @@
 <p>Cache invalidation is one of the two hard problems in computer science. Understanding invalidation mechanisms deeply is essential for maintaining cache coherence without sacrificing performance.</p>
 <h3 id="time-based-expiration-ttl">Time-Based Expiration (TTL)</h3>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Trade-off: Short TTLs ensure freshness but reduce hit rates; long TTLs improve performance but serve stale content.</span></p>
-<pre><code>                ```python
-                class TTLStrategy:
+<pre><code class="language-python">                class TTLStrategy:
                 &quot;&quot;&quot;
                 TTL-based invalidation - the simplest approach.
                 Content automatically expires after specified duration.
@@ -338,12 +337,9 @@
                 return {
                 'Cache-Control': f'public, max-age={ttl}, stale-while-revalidate={swr}',
                 's-maxage': str(ttl * 2)  # CDN can cache longer than browser
-                }
-                ```
-</code></pre>
+                }</code></pre>
 <h3 id="purge-based-invalidation">Purge-Based Invalidation</h3>
-<pre><code>                ```python
-                class PurgeOrchestrator:
+<pre><code class="language-python">                class PurgeOrchestrator:
                 &quot;&quot;&quot;
                 Coordinates cache purges across global CDN infrastructure.
                 Critical for instant updates when content changes.
@@ -443,13 +439,10 @@
                 'prefix': path_prefix,
                 'objects_purged': sum(r.get('count', 0) for r in results
                 if isinstance(r, dict))
-                }
-                ```
-</code></pre>
+                }</code></pre>
 <h3 id="versioned-urls-cache-busting">Versioned URLs (Cache Busting)</h3>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Design choice: Versioned URLs eliminate invalidation complexity but require updating all references when content changes.</span></p>
-<pre><code>                ```python
-                class ContentVersioning:
+<pre><code class="language-python">                class ContentVersioning:
                 &quot;&quot;&quot;
                 Version content by embedding content hash in URL.
                 Eliminates need for explicit invalidation.
@@ -526,12 +519,9 @@
 
                 return match.group(0)
 
-                return re.sub(r'url\(([^)]+)\)', replace_url, css_content)
-                ```
-</code></pre>
+                return re.sub(r'url\(([^)]+)\)', replace_url, css_content)</code></pre>
 <h3 id="stale-while-revalidate-pattern">Stale-While-Revalidate Pattern</h3>
-<pre><code>                ```python
-                class StaleWhileRevalidateCache:
+<pre><code class="language-python">                class StaleWhileRevalidateCache:
                 &quot;&quot;&quot;
                 Implements stale-while-revalidate pattern.
 
@@ -595,9 +585,7 @@
                 # Could implement exponential backoff here
                 logger.warning(f&quot;Background revalidation failed: {cache_key}: {e}&quot;)
                 finally:
-                self.revalidation_in_progress.discard(cache_key)
-                ```
-</code></pre>
+                self.revalidation_in_progress.discard(cache_key)</code></pre>
 <h3 id="interview-questions-cache-invalidation-3-levels-deep">Interview Questions: Cache Invalidation (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "What are the main cache invalidation strategies?"</div>
@@ -687,216 +675,210 @@
 </div>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Trade-off: Origin shield adds one network hop latency (~20-50ms) but can reduce origin traffic by 70-90% during cache misses.</span></p>
 <h3 id="origin-shield-implementation">Origin Shield Implementation</h3>
-<pre><code>                                                            ```python
-                                                            class OriginShield:
-                                                            &quot;&quot;&quot;
-                                                            Mid-tier cache that sits between edge servers and origin.
+<pre><code class="language-python">class OriginShield:
+&quot;&quot;&quot;
+Mid-tier cache that sits between edge servers and origin.
 
-                                                            Key responsibilities:
-                                                            1. Request coalescing (collapse concurrent requests for same resource)
-                                                            2. Connection pooling to origin (reduce TLS handshakes)
-                                                            3. Additional cache layer (catch requests that miss at edge)
-                                                            4. Bandwidth reduction (single fetch serves all edges)
-                                                            &quot;&quot;&quot;
+Key responsibilities:
+1. Request coalescing (collapse concurrent requests for same resource)
+2. Connection pooling to origin (reduce TLS handshakes)
+3. Additional cache layer (catch requests that miss at edge)
+4. Bandwidth reduction (single fetch serves all edges)
+&quot;&quot;&quot;
 
-                                                            def __init__(self, origin_client, cache_size_gb: int = 500):
-                                                            self.origin = origin_client
-                                                            self.cache = LRUCache(max_size_bytes=cache_size_gb * 1024**3)
+def __init__(self, origin_client, cache_size_gb: int = 500):
+self.origin = origin_client
+self.cache = LRUCache(max_size_bytes=cache_size_gb * 1024**3)
 
-                                                            # Request coalescing state
-                                                            self.pending_requests = {}  # cache_key -&gt; Future
-                                                            self.pending_locks = {}     # cache_key -&gt; Lock
+# Request coalescing state
+self.pending_requests = {}  # cache_key -&gt; Future
+self.pending_locks = {}     # cache_key -&gt; Lock
 
-                                                            # Connection pooling
-                                                            self.connection_pool = ConnectionPool(
-                                                            origin_host=origin_client.host,
-                                                            max_connections=100,
-                                                            keepalive_timeout=30
-                                                            )
+# Connection pooling
+self.connection_pool = ConnectionPool(
+origin_host=origin_client.host,
+max_connections=100,
+keepalive_timeout=30
+)
 
-                                                            # Metrics
-                                                            self.metrics = ShieldMetrics()
+# Metrics
+self.metrics = ShieldMetrics()
 
-                                                            async def fetch(self, cache_key: str, request) -&gt; Response:
-                                                            &quot;&quot;&quot;
-                                                            Fetch with request coalescing.
+async def fetch(self, cache_key: str, request) -&gt; Response:
+&quot;&quot;&quot;
+Fetch with request coalescing.
 
-                                                            If multiple edge servers request the same uncached content
-                                                            simultaneously, only one request goes to origin.
-                                                            &quot;&quot;&quot;
-                                                            # Check local cache first
-                                                            cached = self.cache.get(cache_key)
-                                                            if cached and not cached.is_expired():
-                                                            self.metrics.record_hit()
-                                                            return cached.response
+If multiple edge servers request the same uncached content
+simultaneously, only one request goes to origin.
+&quot;&quot;&quot;
+# Check local cache first
+cached = self.cache.get(cache_key)
+if cached and not cached.is_expired():
+self.metrics.record_hit()
+return cached.response
 
-                                                            # Implement request coalescing
-                                                            # Only first request actually fetches; others wait for result
+# Implement request coalescing
+# Only first request actually fetches; others wait for result
 
-                                                            if cache_key not in self.pending_locks:
-                                                            self.pending_locks[cache_key] = asyncio.Lock()
+if cache_key not in self.pending_locks:
+self.pending_locks[cache_key] = asyncio.Lock()
 
-                                                            async with self.pending_locks[cache_key]:
-                                                            # Double-check cache (another request may have populated it)
-                                                            cached = self.cache.get(cache_key)
-                                                            if cached and not cached.is_expired():
-                                                            self.metrics.record_hit()
-                                                            return cached.response
+async with self.pending_locks[cache_key]:
+# Double-check cache (another request may have populated it)
+cached = self.cache.get(cache_key)
+if cached and not cached.is_expired():
+self.metrics.record_hit()
+return cached.response
 
-                                                            # Check if another coroutine is already fetching
-                                                            if cache_key in self.pending_requests:
-                                                            # Wait for existing fetch to complete
-                                                            self.metrics.record_coalesced()
-                                                            return await self.pending_requests[cache_key]
+# Check if another coroutine is already fetching
+if cache_key in self.pending_requests:
+# Wait for existing fetch to complete
+self.metrics.record_coalesced()
+return await self.pending_requests[cache_key]
 
-                                                            # We're the first - initiate fetch
-                                                            future = asyncio.Future()
-                                                            self.pending_requests[cache_key] = future
+# We're the first - initiate fetch
+future = asyncio.Future()
+self.pending_requests[cache_key] = future
 
-                                                            try:
-                                                            # Fetch from origin
-                                                            self.metrics.record_miss()
-                                                            response = await self._fetch_from_origin(request)
+try:
+# Fetch from origin
+self.metrics.record_miss()
+response = await self._fetch_from_origin(request)
 
-                                                            # Cache the response
-                                                            if self._is_cacheable(response):
-                                                            ttl = self._extract_ttl(response)
-                                                            self.cache.set(cache_key, CacheEntry(response, ttl))
+# Cache the response
+if self._is_cacheable(response):
+ttl = self._extract_ttl(response)
+self.cache.set(cache_key, CacheEntry(response, ttl))
 
-                                                            # Notify waiting requests
-                                                            future.set_result(response)
-                                                            return response
+# Notify waiting requests
+future.set_result(response)
+return response
 
-                                                            except Exception as e:
-                                                            future.set_exception(e)
-                                                            raise
-                                                            finally:
-                                                            # Cleanup
-                                                            self.pending_requests.pop(cache_key, None)
+except Exception as e:
+future.set_exception(e)
+raise
+finally:
+# Cleanup
+self.pending_requests.pop(cache_key, None)
 
-                                                            async def _fetch_from_origin(self, request) -&gt; Response:
-                                                            &quot;&quot;&quot;
-                                                            Fetch from origin with connection pooling and retry.
-                                                            &quot;&quot;&quot;
-                                                            # Get pooled connection (reuses existing TCP/TLS)
-                                                            conn = await self.connection_pool.get_connection()
+async def _fetch_from_origin(self, request) -&gt; Response:
+&quot;&quot;&quot;
+Fetch from origin with connection pooling and retry.
+&quot;&quot;&quot;
+# Get pooled connection (reuses existing TCP/TLS)
+conn = await self.connection_pool.get_connection()
 
-                                                            try:
-                                                            # Forward request to origin
-                                                            response = await conn.request(
-                                                            method=request.method,
-                                                            path=request.path,
-                                                            headers=self._filter_headers(request.headers),
-                                                            body=request.body
-                                                            )
+try:
+# Forward request to origin
+response = await conn.request(
+method=request.method,
+path=request.path,
+headers=self._filter_headers(request.headers),
+body=request.body
+)
 
-                                                            return response
+return response
 
-                                                            finally:
-                                                            # Return connection to pool
-                                                            await self.connection_pool.release(conn)
+finally:
+# Return connection to pool
+await self.connection_pool.release(conn)
 
-                                                            def _filter_headers(self, headers: dict) -&gt; dict:
-                                                            &quot;&quot;&quot;
-                                                            Filter headers before forwarding to origin.
-                                                            Remove hop-by-hop headers, add shield identification.
-                                                            &quot;&quot;&quot;
-                                                            filtered = {}
+def _filter_headers(self, headers: dict) -&gt; dict:
+&quot;&quot;&quot;
+Filter headers before forwarding to origin.
+Remove hop-by-hop headers, add shield identification.
+&quot;&quot;&quot;
+filtered = {}
 
-                                                            hop_by_hop = {'connection', 'keep-alive', 'proxy-authenticate',
-                                                            'proxy-authorization', 'te', 'trailer',
-                                                            'transfer-encoding', 'upgrade'}
+hop_by_hop = {'connection', 'keep-alive', 'proxy-authenticate',
+'proxy-authorization', 'te', 'trailer',
+'transfer-encoding', 'upgrade'}
 
-                                                            for key, value in headers.items():
-                                                            if key.lower() not in hop_by_hop:
-                                                            filtered[key] = value
+for key, value in headers.items():
+if key.lower() not in hop_by_hop:
+filtered[key] = value
 
-                                                            # Add shield identification
-                                                            filtered['X-Origin-Shield'] = 'true'
-                                                            filtered['X-Shield-Region'] = self.region
+# Add shield identification
+filtered['X-Origin-Shield'] = 'true'
+filtered['X-Shield-Region'] = self.region
 
-                                                            # Preserve client IP for origin logging
-                                                            client_ip = headers.get('X-Forwarded-For', '')
-                                                            if client_ip:
-                                                            filtered['X-Original-Client-IP'] = client_ip.split(',')[0].strip()
+# Preserve client IP for origin logging
+client_ip = headers.get('X-Forwarded-For', '')
+if client_ip:
+filtered['X-Original-Client-IP'] = client_ip.split(',')[0].strip()
 
-                                                            return filtered
-                                                            ```
-</code></pre>
+return filtered</code></pre>
 <h3 id="multi-region-shield-architecture">Multi-Region Shield Architecture</h3>
-<pre><code>                                                            ```python
-                                                            class MultiRegionShieldRouter:
-                                                            &quot;&quot;&quot;
-                                                            Routes edge requests to optimal origin shield.
+<pre><code class="language-python">class MultiRegionShieldRouter:
+&quot;&quot;&quot;
+Routes edge requests to optimal origin shield.
 
-                                                            Architecture:
-                                                            - Multiple origin shields in different regions
-                                                            - Edge servers route to nearest shield
-                                                            - Shields coordinate to avoid redundant origin fetches
-                                                            &quot;&quot;&quot;
+Architecture:
+- Multiple origin shields in different regions
+- Edge servers route to nearest shield
+- Shields coordinate to avoid redundant origin fetches
+&quot;&quot;&quot;
 
-                                                            SHIELD_REGIONS = {
-                                                            'us-east': {
-                                                            'location': 'Virginia',
-                                                            'serves': ['us-east', 'us-central', 'sa-east'],
-                                                            'origin_latency_ms': 5
-                                                            },
-                                                            'eu-west': {
-                                                            'location': 'Ireland',
-                                                            'serves': ['eu-west', 'eu-central', 'af-south'],
-                                                            'origin_latency_ms': 80
-                                                            },
-                                                            'ap-northeast': {
-                                                            'location': 'Tokyo',
-                                                            'serves': ['ap-northeast', 'ap-southeast', 'oc-australia'],
-                                                            'origin_latency_ms': 150
-                                                            }
-                                                            }
+SHIELD_REGIONS = {
+'us-east': {
+'location': 'Virginia',
+'serves': ['us-east', 'us-central', 'sa-east'],
+'origin_latency_ms': 5
+},
+'eu-west': {
+'location': 'Ireland',
+'serves': ['eu-west', 'eu-central', 'af-south'],
+'origin_latency_ms': 80
+},
+'ap-northeast': {
+'location': 'Tokyo',
+'serves': ['ap-northeast', 'ap-southeast', 'oc-australia'],
+'origin_latency_ms': 150
+}
+}
 
-                                                            def __init__(self, edge_region: str):
-                                                            self.edge_region = edge_region
-                                                            self.primary_shield = self._determine_primary_shield()
-                                                            self.fallback_shields = self._determine_fallbacks()
+def __init__(self, edge_region: str):
+self.edge_region = edge_region
+self.primary_shield = self._determine_primary_shield()
+self.fallback_shields = self._determine_fallbacks()
 
-                                                            def _determine_primary_shield(self) -&gt; str:
-                                                            &quot;&quot;&quot;Find the shield region that serves this edge.&quot;&quot;&quot;
-                                                            for shield, config in self.SHIELD_REGIONS.items():
-                                                            if self.edge_region in config['serves']:
-                                                            return shield
+def _determine_primary_shield(self) -&gt; str:
+&quot;&quot;&quot;Find the shield region that serves this edge.&quot;&quot;&quot;
+for shield, config in self.SHIELD_REGIONS.items():
+if self.edge_region in config['serves']:
+return shield
 
-                                                            # Default to us-east (closest to most origins)
-                                                            return 'us-east'
+# Default to us-east (closest to most origins)
+return 'us-east'
 
-                                                            async def fetch_through_shield(self, request) -&gt; Response:
-                                                            &quot;&quot;&quot;
-                                                            Fetch through origin shield with failover.
-                                                            &quot;&quot;&quot;
-                                                            # Try primary shield
-                                                            try:
-                                                            shield = self.shields[self.primary_shield]
-                                                            return await asyncio.wait_for(
-                                                            shield.fetch(request),
-                                                            timeout=5.0  # 5 second timeout
-                                                            )
-                                                            except (asyncio.TimeoutError, ConnectionError) as e:
-                                                            logger.warning(f&quot;Primary shield {self.primary_shield} failed: {e}&quot;)
+async def fetch_through_shield(self, request) -&gt; Response:
+&quot;&quot;&quot;
+Fetch through origin shield with failover.
+&quot;&quot;&quot;
+# Try primary shield
+try:
+shield = self.shields[self.primary_shield]
+return await asyncio.wait_for(
+shield.fetch(request),
+timeout=5.0  # 5 second timeout
+)
+except (asyncio.TimeoutError, ConnectionError) as e:
+logger.warning(f&quot;Primary shield {self.primary_shield} failed: {e}&quot;)
 
-                                                            # Try fallback shields
-                                                            for fallback_region in self.fallback_shields:
-                                                            try:
-                                                            shield = self.shields[fallback_region]
-                                                            return await asyncio.wait_for(
-                                                            shield.fetch(request),
-                                                            timeout=5.0
-                                                            )
-                                                            except (asyncio.TimeoutError, ConnectionError):
-                                                            continue
+# Try fallback shields
+for fallback_region in self.fallback_shields:
+try:
+shield = self.shields[fallback_region]
+return await asyncio.wait_for(
+shield.fetch(request),
+timeout=5.0
+)
+except (asyncio.TimeoutError, ConnectionError):
+continue
 
-                                                            # All shields failed - go direct to origin
-                                                            logger.error(&quot;All shields failed, falling back to direct origin&quot;)
-                                                            return await self.direct_origin_fetch(request)
-                                                            ```
-</code></pre>
+# All shields failed - go direct to origin
+logger.error(&quot;All shields failed, falling back to direct origin&quot;)
+return await self.direct_origin_fetch(request)</code></pre>
 <h3 id="interview-questions-origin-shield-3-levels-deep">Interview Questions: Origin Shield (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "What is an origin shield and why use one?"</div>
@@ -941,106 +923,103 @@
 <p>Geographic routing directs users to the nearest or best-performing edge server. This involves <a href="/topic/system-design/dns">[DNS]</a>-based routing, Anycast networking, and performance-based selection.</p>
 <h3 id="dns-based-geographic-routing">DNS-Based Geographic Routing</h3>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Assumption: DNS resolution happens at the user's configured resolver, which may not be geographically close to the user (e.g., Google DNS 8.8.8.8).</span></p>
-<pre><code>                                                                                                    ```python
-                                                                                                    class GeoDNSResolver:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    DNS-based geographic routing for CDN.
+<pre><code class="language-python">class GeoDNSResolver:
+&quot;&quot;&quot;
+DNS-based geographic routing for CDN.
 
-                                                                                                    Returns different IP addresses based on:
-                                                                                                    1. Client IP geolocation (via EDNS Client Subnet)
-                                                                                                    2. DNS resolver location (fallback)
-                                                                                                    3. Real-time server health and capacity
-                                                                                                    &quot;&quot;&quot;
+Returns different IP addresses based on:
+1. Client IP geolocation (via EDNS Client Subnet)
+2. DNS resolver location (fallback)
+3. Real-time server health and capacity
+&quot;&quot;&quot;
 
-                                                                                                    def __init__(self):
-                                                                                                    self.edge_servers = self._load_edge_servers()
-                                                                                                    self.geoip_db = GeoIPDatabase()
-                                                                                                    self.health_checker = HealthChecker()
+def __init__(self):
+self.edge_servers = self._load_edge_servers()
+self.geoip_db = GeoIPDatabase()
+self.health_checker = HealthChecker()
 
-                                                                                                    def resolve(self, hostname: str, client_ip: str = None,
-                                                                                                    ecs_subnet: str = None) -&gt; List[str]:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Resolve hostname to optimal edge server IPs.
+def resolve(self, hostname: str, client_ip: str = None,
+ecs_subnet: str = None) -&gt; List[str]:
+&quot;&quot;&quot;
+Resolve hostname to optimal edge server IPs.
 
-                                                                                                    Priority:
-                                                                                                    1. EDNS Client Subnet (actual client location)
-                                                                                                    2. Client IP (DNS resolver location)
-                                                                                                    3. Default to largest/closest PoP
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    # Determine client location
-                                                                                                    if ecs_subnet:
-                                                                                                    # EDNS Client Subnet provides actual user subnet
-                                                                                                    location = self.geoip_db.lookup(ecs_subnet)
-                                                                                                    elif client_ip:
-                                                                                                    # Fall back to resolver location
-                                                                                                    location = self.geoip_db.lookup(client_ip)
-                                                                                                    else:
-                                                                                                    # Default location (usually US)
-                                                                                                    location = GeoLocation(lat=37.7749, lon=-122.4194)
+Priority:
+1. EDNS Client Subnet (actual client location)
+2. Client IP (DNS resolver location)
+3. Default to largest/closest PoP
+&quot;&quot;&quot;
+# Determine client location
+if ecs_subnet:
+# EDNS Client Subnet provides actual user subnet
+location = self.geoip_db.lookup(ecs_subnet)
+elif client_ip:
+# Fall back to resolver location
+location = self.geoip_db.lookup(client_ip)
+else:
+# Default location (usually US)
+location = GeoLocation(lat=37.7749, lon=-122.4194)
 
-                                                                                                    # Find optimal edge servers
-                                                                                                    candidates = self._find_candidates(location)
+# Find optimal edge servers
+candidates = self._find_candidates(location)
 
-                                                                                                    # Filter by health
-                                                                                                    healthy = [c for c in candidates
-                                                                                                    if self.health_checker.is_healthy(c['id'])]
+# Filter by health
+healthy = [c for c in candidates
+if self.health_checker.is_healthy(c['id'])]
 
-                                                                                                    if not healthy:
-                                                                                                    # All nearby servers unhealthy - fallback to any healthy server
-                                                                                                    healthy = self._get_global_fallbacks()
+if not healthy:
+# All nearby servers unhealthy - fallback to any healthy server
+healthy = self._get_global_fallbacks()
 
-                                                                                                    # Sort by score (distance, load, performance)
-                                                                                                    scored = self._score_candidates(healthy, location)
+# Sort by score (distance, load, performance)
+scored = self._score_candidates(healthy, location)
 
-                                                                                                    # Return top 4 IPs (standard DNS response)
-                                                                                                    return [c['ip'] for c in scored[:4]]
+# Return top 4 IPs (standard DNS response)
+return [c['ip'] for c in scored[:4]]
 
-                                                                                                    def _find_candidates(self, location: GeoLocation) -&gt; List[dict]:
-                                                                                                    &quot;&quot;&quot;Find edge servers within reasonable distance.&quot;&quot;&quot;
-                                                                                                    candidates = []
+def _find_candidates(self, location: GeoLocation) -&gt; List[dict]:
+&quot;&quot;&quot;Find edge servers within reasonable distance.&quot;&quot;&quot;
+candidates = []
 
-                                                                                                    for server in self.edge_servers:
-                                                                                                    distance = self._haversine_distance(
-                                                                                                    location, server['location']
-                                                                                                    )
+for server in self.edge_servers:
+distance = self._haversine_distance(
+location, server['location']
+)
 
-                                                                                                    # Include servers within 5000km
-                                                                                                    if distance &lt; 5000:
-                                                                                                    server['distance'] = distance
-                                                                                                    candidates.append(server)
+# Include servers within 5000km
+if distance &lt; 5000:
+server['distance'] = distance
+candidates.append(server)
 
-                                                                                                    return candidates
+return candidates
 
-                                                                                                    def _score_candidates(self, candidates: List[dict],
-                                                                                                    location: GeoLocation) -&gt; List[dict]:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Score candidates based on multiple factors.
+def _score_candidates(self, candidates: List[dict],
+location: GeoLocation) -&gt; List[dict]:
+&quot;&quot;&quot;
+Score candidates based on multiple factors.
 
-                                                                                                    Factors:
-                                                                                                    - Distance (lower is better)
-                                                                                                    - Current load (lower is better)
-                                                                                                    - Historical performance (RTT, error rate)
-                                                                                                    - Server capacity
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    for candidate in candidates:
-                                                                                                    distance_score = 100 - (candidate['distance'] / 50)  # 0-100
+Factors:
+- Distance (lower is better)
+- Current load (lower is better)
+- Historical performance (RTT, error rate)
+- Server capacity
+&quot;&quot;&quot;
+for candidate in candidates:
+distance_score = 100 - (candidate['distance'] / 50)  # 0-100
 
-                                                                                                    load = self.health_checker.get_load(candidate['id'])
-                                                                                                    load_score = 100 - load  # 0-100 (0% load = 100 score)
+load = self.health_checker.get_load(candidate['id'])
+load_score = 100 - load  # 0-100 (0% load = 100 score)
 
-                                                                                                    perf = self.health_checker.get_performance(candidate['id'])
-                                                                                                    perf_score = 100 - (perf['p50_latency_ms'] / 5)  # Lower latency = higher score
+perf = self.health_checker.get_performance(candidate['id'])
+perf_score = 100 - (perf['p50_latency_ms'] / 5)  # Lower latency = higher score
 
-                                                                                                    # Weighted combination
-                                                                                                    candidate['score'] = (
-                                                                                                    distance_score * 0.4 +
-                                                                                                    load_score * 0.3 +
-                                                                                                    perf_score * 0.3
-                                                                                                    )
+# Weighted combination
+candidate['score'] = (
+distance_score * 0.4 +
+load_score * 0.3 +
+perf_score * 0.3
+)
 
-                                                                                                    return sorted(candidates, key=lambda x: x['score'], reverse=True)
-                                                                                                    ```
-</code></pre>
+return sorted(candidates, key=lambda x: x['score'], reverse=True)</code></pre>
 <h3 id="anycast-routing">Anycast Routing</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">ANYCAST vs UNICAST ROUTING</h3>
@@ -1055,208 +1034,202 @@
 </div>
 </div>
 </div>
-<pre><code>                                                                                                    ```python
-                                                                                                    class AnycastRoutingSimulator:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Simulates Anycast BGP routing behavior.
+<pre><code class="language-python">class AnycastRoutingSimulator:
+&quot;&quot;&quot;
+Simulates Anycast BGP routing behavior.
 
-                                                                                                    In reality, Anycast is implemented at network layer via BGP.
-                                                                                                    This simulates the routing decisions for understanding.
-                                                                                                    &quot;&quot;&quot;
+In reality, Anycast is implemented at network layer via BGP.
+This simulates the routing decisions for understanding.
+&quot;&quot;&quot;
 
-                                                                                                    def __init__(self):
-                                                                                                    # Each PoP announces same IP prefix
-                                                                                                    self.anycast_ip = &quot;198.41.128.0/24&quot;
+def __init__(self):
+# Each PoP announces same IP prefix
+self.anycast_ip = &quot;198.41.128.0/24&quot;
 
-                                                                                                    self.pops = {
-                                                                                                    'nyc': {
-                                                                                                    'location': 'New York',
-                                                                                                    'bgp_asn': 13335,
-                                                                                                    'peering_partners': ['Cogent', 'Level3', 'Hurricane'],
-                                                                                                    'capacity_gbps': 100
-                                                                                                    },
-                                                                                                    'lax': {
-                                                                                                    'location': 'Los Angeles',
-                                                                                                    'bgp_asn': 13335,
-                                                                                                    'peering_partners': ['Cogent', 'NTT', 'Telia'],
-                                                                                                    'capacity_gbps': 80
-                                                                                                    },
-                                                                                                    'ams': {
-                                                                                                    'location': 'Amsterdam',
-                                                                                                    'bgp_asn': 13335,
-                                                                                                    'peering_partners': ['AMS-IX', 'LINX', 'DE-CIX'],
-                                                                                                    'capacity_gbps': 120
-                                                                                                    },
-                                                                                                    'sin': {
-                                                                                                    'location': 'Singapore',
-                                                                                                    'bgp_asn': 13335,
-                                                                                                    'peering_partners': ['SGIX', 'Equinix', 'Telia'],
-                                                                                                    'capacity_gbps': 60
-                                                                                                    }
-                                                                                                    }
+self.pops = {
+'nyc': {
+'location': 'New York',
+'bgp_asn': 13335,
+'peering_partners': ['Cogent', 'Level3', 'Hurricane'],
+'capacity_gbps': 100
+},
+'lax': {
+'location': 'Los Angeles',
+'bgp_asn': 13335,
+'peering_partners': ['Cogent', 'NTT', 'Telia'],
+'capacity_gbps': 80
+},
+'ams': {
+'location': 'Amsterdam',
+'bgp_asn': 13335,
+'peering_partners': ['AMS-IX', 'LINX', 'DE-CIX'],
+'capacity_gbps': 120
+},
+'sin': {
+'location': 'Singapore',
+'bgp_asn': 13335,
+'peering_partners': ['SGIX', 'Equinix', 'Telia'],
+'capacity_gbps': 60
+}
+}
 
-                                                                                                    def simulate_routing(self, client_asn: int,
-                                                                                                    client_location: str) -&gt; str:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Simulate which PoP a client would be routed to.
+def simulate_routing(self, client_asn: int,
+client_location: str) -&gt; str:
+&quot;&quot;&quot;
+Simulate which PoP a client would be routed to.
 
-                                                                                                    BGP routing is based on:
-                                                                                                    1. AS path length (fewer hops preferred)
-                                                                                                    2. Direct peering relationships
-                                                                                                    3. Network policies
-                                                                                                    4. Geographic proximity (often correlated with above)
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    best_pop = None
-                                                                                                    best_score = float('inf')
+BGP routing is based on:
+1. AS path length (fewer hops preferred)
+2. Direct peering relationships
+3. Network policies
+4. Geographic proximity (often correlated with above)
+&quot;&quot;&quot;
+best_pop = None
+best_score = float('inf')
 
-                                                                                                    for pop_id, pop in self.pops.items():
-                                                                                                    # Simulate AS path calculation
-                                                                                                    path_length = self._calculate_as_path(client_asn, pop['bgp_asn'])
+for pop_id, pop in self.pops.items():
+# Simulate AS path calculation
+path_length = self._calculate_as_path(client_asn, pop['bgp_asn'])
 
-                                                                                                    # Bonus for direct peering
-                                                                                                    peering_bonus = -2 if self._has_direct_peering(
-                                                                                                    client_asn, pop['peering_partners']
-                                                                                                    ) else 0
+# Bonus for direct peering
+peering_bonus = -2 if self._has_direct_peering(
+client_asn, pop['peering_partners']
+) else 0
 
-                                                                                                    # Geographic component
-                                                                                                    geo_distance = self._estimate_network_distance(
-                                                                                                    client_location, pop['location']
-                                                                                                    )
+# Geographic component
+geo_distance = self._estimate_network_distance(
+client_location, pop['location']
+)
 
-                                                                                                    score = path_length + peering_bonus + (geo_distance / 1000)
+score = path_length + peering_bonus + (geo_distance / 1000)
 
-                                                                                                    if score &lt; best_score:
-                                                                                                    best_score = score
-                                                                                                    best_pop = pop_id
+if score &lt; best_score:
+best_score = score
+best_pop = pop_id
 
-                                                                                                    return best_pop
+return best_pop
 
-                                                                                                    def simulate_failover(self, failed_pop: str,
-                                                                                                    client_asn: int) -&gt; tuple:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Simulate Anycast failover when a PoP goes down.
+def simulate_failover(self, failed_pop: str,
+client_asn: int) -&gt; tuple:
+&quot;&quot;&quot;
+Simulate Anycast failover when a PoP goes down.
 
-                                                                                                    When a PoP stops announcing routes:
-                                                                                                    1. BGP withdraws the route
-                                                                                                    2. Network reconverges (~30-90 seconds)
-                                                                                                    3. Traffic automatically shifts to next-best PoP
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    # Remove failed PoP from consideration
-                                                                                                    available_pops = {k: v for k, v in self.pops.items()
-                                                                                                    if k != failed_pop}
+When a PoP stops announcing routes:
+1. BGP withdraws the route
+2. Network reconverges (~30-90 seconds)
+3. Traffic automatically shifts to next-best PoP
+&quot;&quot;&quot;
+# Remove failed PoP from consideration
+available_pops = {k: v for k, v in self.pops.items()
+if k != failed_pop}
 
-                                                                                                    # Find new best route
-                                                                                                    new_pop = self._find_best_route(available_pops, client_asn)
+# Find new best route
+new_pop = self._find_best_route(available_pops, client_asn)
 
-                                                                                                    # Estimate convergence time based on network distance
-                                                                                                    convergence_time_s = random.uniform(30, 90)
+# Estimate convergence time based on network distance
+convergence_time_s = random.uniform(30, 90)
 
-                                                                                                    return new_pop, convergence_time_s
-                                                                                                    ```
-</code></pre>
+return new_pop, convergence_time_s</code></pre>
 <h3 id="performance-based-routing">Performance-Based Routing</h3>
-<pre><code>                                                                                                    ```python
-                                                                                                    class PerformanceBasedRouter:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Route based on real-time performance measurements.
+<pre><code class="language-python">class PerformanceBasedRouter:
+&quot;&quot;&quot;
+Route based on real-time performance measurements.
 
-                                                                                                    Goes beyond geographic proximity to consider:
-                                                                                                    - Actual latency (which varies with network conditions)
-                                                                                                    - Server load and capacity
-                                                                                                    - Error rates
-                                                                                                    - Network congestion
-                                                                                                    &quot;&quot;&quot;
+Goes beyond geographic proximity to consider:
+- Actual latency (which varies with network conditions)
+- Server load and capacity
+- Error rates
+- Network congestion
+&quot;&quot;&quot;
 
-                                                                                                    def __init__(self):
-                                                                                                    self.latency_history = defaultdict(lambda: deque(maxlen=100))
-                                                                                                    self.error_rates = defaultdict(float)
-                                                                                                    self.rum_data = RealUserMonitoring()
+def __init__(self):
+self.latency_history = defaultdict(lambda: deque(maxlen=100))
+self.error_rates = defaultdict(float)
+self.rum_data = RealUserMonitoring()
 
-                                                                                                    def select_edge_server(self, client_region: str,
-                                                                                                    content_type: str) -&gt; str:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Select optimal edge server based on performance data.
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    candidates = self._get_candidates_for_region(client_region)
+def select_edge_server(self, client_region: str,
+content_type: str) -&gt; str:
+&quot;&quot;&quot;
+Select optimal edge server based on performance data.
+&quot;&quot;&quot;
+candidates = self._get_candidates_for_region(client_region)
 
-                                                                                                    scores = {}
-                                                                                                    for server_id in candidates:
-                                                                                                    scores[server_id] = self._calculate_performance_score(
-                                                                                                    server_id, client_region, content_type
-                                                                                                    )
+scores = {}
+for server_id in candidates:
+scores[server_id] = self._calculate_performance_score(
+server_id, client_region, content_type
+)
 
-                                                                                                    # Weighted random selection (not always best)
-                                                                                                    # Allows exploration and prevents thundering herd
-                                                                                                    return self._weighted_random_select(scores)
+# Weighted random selection (not always best)
+# Allows exploration and prevents thundering herd
+return self._weighted_random_select(scores)
 
-                                                                                                    def _calculate_performance_score(self, server_id: str,
-                                                                                                    client_region: str,
-                                                                                                    content_type: str) -&gt; float:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Calculate composite performance score.
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    # Real User Monitoring data (most accurate)
-                                                                                                    rum_latency = self.rum_data.get_p50_latency(
-                                                                                                    server_id, client_region
-                                                                                                    )
+def _calculate_performance_score(self, server_id: str,
+client_region: str,
+content_type: str) -&gt; float:
+&quot;&quot;&quot;
+Calculate composite performance score.
+&quot;&quot;&quot;
+# Real User Monitoring data (most accurate)
+rum_latency = self.rum_data.get_p50_latency(
+server_id, client_region
+)
 
-                                                                                                    # Synthetic monitoring (always available)
-                                                                                                    synthetic_latency = self._get_synthetic_latency(
-                                                                                                    server_id, client_region
-                                                                                                    )
+# Synthetic monitoring (always available)
+synthetic_latency = self._get_synthetic_latency(
+server_id, client_region
+)
 
-                                                                                                    # Blend RUM and synthetic (prefer RUM when available)
-                                                                                                    if rum_latency:
-                                                                                                    latency = rum_latency * 0.8 + synthetic_latency * 0.2
-                                                                                                    else:
-                                                                                                    latency = synthetic_latency
+# Blend RUM and synthetic (prefer RUM when available)
+if rum_latency:
+latency = rum_latency * 0.8 + synthetic_latency * 0.2
+else:
+latency = synthetic_latency
 
-                                                                                                    # Error rate penalty
-                                                                                                    error_rate = self.error_rates[server_id]
-                                                                                                    error_penalty = error_rate * 100  # 1% error = 100ms penalty
+# Error rate penalty
+error_rate = self.error_rates[server_id]
+error_penalty = error_rate * 100  # 1% error = 100ms penalty
 
-                                                                                                    # Load penalty
-                                                                                                    load = self._get_server_load(server_id)
-                                                                                                    load_penalty = 0 if load &lt; 0.7 else (load - 0.7) * 200
+# Load penalty
+load = self._get_server_load(server_id)
+load_penalty = 0 if load &lt; 0.7 else (load - 0.7) * 200
 
-                                                                                                    # Content-type specific adjustments
-                                                                                                    if content_type == 'video' and self._has_video_cache(server_id):
-                                                                                                    content_bonus = -20  # Prefer servers with video cache
-                                                                                                    else:
-                                                                                                    content_bonus = 0
+# Content-type specific adjustments
+if content_type == 'video' and self._has_video_cache(server_id):
+content_bonus = -20  # Prefer servers with video cache
+else:
+content_bonus = 0
 
-                                                                                                    # Lower score is better
-                                                                                                    return latency + error_penalty + load_penalty + content_bonus
+# Lower score is better
+return latency + error_penalty + load_penalty + content_bonus
 
-                                                                                                    def _weighted_random_select(self, scores: Dict[str, float]) -&gt; str:
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    Select server with probability inversely proportional to score.
+def _weighted_random_select(self, scores: Dict[str, float]) -&gt; str:
+&quot;&quot;&quot;
+Select server with probability inversely proportional to score.
 
-                                                                                                    Why not always pick the best?
-                                                                                                    1. Prevents thundering herd to &quot;best&quot; server
-                                                                                                    2. Allows discovery of improving servers
-                                                                                                    3. Distributes load more evenly
-                                                                                                    4. Handles measurement noise
-                                                                                                    &quot;&quot;&quot;
-                                                                                                    # Convert scores to weights (inverse)
-                                                                                                    max_score = max(scores.values())
-                                                                                                    weights = {k: max_score - v + 1 for k, v in scores.items()}
+Why not always pick the best?
+1. Prevents thundering herd to &quot;best&quot; server
+2. Allows discovery of improving servers
+3. Distributes load more evenly
+4. Handles measurement noise
+&quot;&quot;&quot;
+# Convert scores to weights (inverse)
+max_score = max(scores.values())
+weights = {k: max_score - v + 1 for k, v in scores.items()}
 
-                                                                                                    # Normalize
-                                                                                                    total = sum(weights.values())
-                                                                                                    probabilities = {k: v/total for k, v in weights.items()}
+# Normalize
+total = sum(weights.values())
+probabilities = {k: v/total for k, v in weights.items()}
 
-                                                                                                    # Random selection
-                                                                                                    r = random.random()
-                                                                                                    cumulative = 0
-                                                                                                    for server_id, prob in probabilities.items():
-                                                                                                    cumulative += prob
-                                                                                                    if r &lt;= cumulative:
-                                                                                                    return server_id
+# Random selection
+r = random.random()
+cumulative = 0
+for server_id, prob in probabilities.items():
+cumulative += prob
+if r &lt;= cumulative:
+return server_id
 
-                                                                                                    return list(scores.keys())[0]  # Fallback
-                                                                                                    ```
-</code></pre>
+return list(scores.keys())[0]  # Fallback</code></pre>
 <h3 id="interview-questions-geographic-routing-3-levels-deep">Interview Questions: Geographic Routing (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "How do CDNs route users to the nearest edge server?"</div>
@@ -1303,150 +1276,147 @@
 <p>Cache warming is the proactive population of caches before user requests arrive. This eliminates cold-cache latency penalties and ensures consistent performance from the first request.</p>
 <p><span style="background: linear-gradient(90deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 8px; border-radius: 4px; font-weight: 500">Trade-off: Warming consumes bandwidth and origin resources. Over-warming wastes resources on content that's never requested; under-warming causes cold-cache latency spikes.</span></p>
 <h3 id="cache-warming-strategies">Cache Warming Strategies</h3>
-<pre><code>                                                                                                                                                ```python
-                                                                                                                                                class CacheWarmingOrchestrator:
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                Orchestrates cache warming across CDN edge servers.
+<pre><code class="language-python">class CacheWarmingOrchestrator:
+&quot;&quot;&quot;
+Orchestrates cache warming across CDN edge servers.
 
-                                                                                                                                                Strategies:
-                                                                                                                                                1. Deployment warming: Pre-warm after code/content deploys
-                                                                                                                                                2. Predictive warming: Warm content likely to be requested
-                                                                                                                                                3. Time-based warming: Warm before traffic peaks
-                                                                                                                                                4. Event-driven warming: Warm when related events occur
-                                                                                                                                                &quot;&quot;&quot;
+Strategies:
+1. Deployment warming: Pre-warm after code/content deploys
+2. Predictive warming: Warm content likely to be requested
+3. Time-based warming: Warm before traffic peaks
+4. Event-driven warming: Warm when related events occur
+&quot;&quot;&quot;
 
-                                                                                                                                                def __init__(self, cdn_client, analytics_client):
-                                                                                                                                                self.cdn = cdn_client
-                                                                                                                                                self.analytics = analytics_client
-                                                                                                                                                self.warming_queue = asyncio.PriorityQueue()
+def __init__(self, cdn_client, analytics_client):
+self.cdn = cdn_client
+self.analytics = analytics_client
+self.warming_queue = asyncio.PriorityQueue()
 
-                                                                                                                                                async def warm_after_deployment(self, deployed_paths: List[str],
-                                                                                                                                                priority_regions: List[str] = None):
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                Warm caches after deployment.
+async def warm_after_deployment(self, deployed_paths: List[str],
+priority_regions: List[str] = None):
+&quot;&quot;&quot;
+Warm caches after deployment.
 
-                                                                                                                                                Order of warming:
-                                                                                                                                                1. Priority regions (highest traffic)
-                                                                                                                                                2. Origin shield (benefits all edges)
-                                                                                                                                                3. Remaining edge PoPs
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                # Get historical traffic data to prioritize URLs
-                                                                                                                                                url_traffic = await self.analytics.get_url_traffic(
-                                                                                                                                                paths=deployed_paths,
-                                                                                                                                                lookback_hours=24
-                                                                                                                                                )
+Order of warming:
+1. Priority regions (highest traffic)
+2. Origin shield (benefits all edges)
+3. Remaining edge PoPs
+&quot;&quot;&quot;
+# Get historical traffic data to prioritize URLs
+url_traffic = await self.analytics.get_url_traffic(
+paths=deployed_paths,
+lookback_hours=24
+)
 
-                                                                                                                                                # Sort by traffic (warm popular content first)
-                                                                                                                                                sorted_urls = sorted(
-                                                                                                                                                url_traffic.items(),
-                                                                                                                                                key=lambda x: x[1],
-                                                                                                                                                reverse=True
-                                                                                                                                                )
+# Sort by traffic (warm popular content first)
+sorted_urls = sorted(
+url_traffic.items(),
+key=lambda x: x[1],
+reverse=True
+)
 
-                                                                                                                                                # Warm origin shields first
-                                                                                                                                                await self._warm_origin_shields(
-                                                                                                                                                [url for url, _ in sorted_urls[:100]]  # Top 100 URLs
-                                                                                                                                                )
+# Warm origin shields first
+await self._warm_origin_shields(
+[url for url, _ in sorted_urls[:100]]  # Top 100 URLs
+)
 
-                                                                                                                                                # Warm priority regions
-                                                                                                                                                if priority_regions:
-                                                                                                                                                for region in priority_regions:
-                                                                                                                                                await self._warm_region(region, sorted_urls[:500])
+# Warm priority regions
+if priority_regions:
+for region in priority_regions:
+await self._warm_region(region, sorted_urls[:500])
 
-                                                                                                                                                # Warm remaining regions with lower priority
-                                                                                                                                                remaining_regions = set(self.cdn.regions) - set(priority_regions or [])
-                                                                                                                                                await asyncio.gather(*[
-                                                                                                                                                self._warm_region(region, sorted_urls[:100])
-                                                                                                                                                for region in remaining_regions
-                                                                                                                                                ])
+# Warm remaining regions with lower priority
+remaining_regions = set(self.cdn.regions) - set(priority_regions or [])
+await asyncio.gather(*[
+self._warm_region(region, sorted_urls[:100])
+for region in remaining_regions
+])
 
-                                                                                                                                                async def warm_predictively(self):
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                Predict and warm content before it's needed.
+async def warm_predictively(self):
+&quot;&quot;&quot;
+Predict and warm content before it's needed.
 
-                                                                                                                                                Signals for prediction:
-                                                                                                                                                - Time patterns (warm morning content at 5 AM)
-                                                                                                                                                - Navigation patterns (warm page B when page A is viewed)
-                                                                                                                                                - External events (warm product pages before marketing email)
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                # Time-based predictions
-                                                                                                                                                current_hour = datetime.now().hour
-                                                                                                                                                predicted_urls = await self.analytics.predict_popular_urls(
-                                                                                                                                                hour=current_hour + 1,  # Predict for next hour
-                                                                                                                                                lookback_days=7
-                                                                                                                                                )
+Signals for prediction:
+- Time patterns (warm morning content at 5 AM)
+- Navigation patterns (warm page B when page A is viewed)
+- External events (warm product pages before marketing email)
+&quot;&quot;&quot;
+# Time-based predictions
+current_hour = datetime.now().hour
+predicted_urls = await self.analytics.predict_popular_urls(
+hour=current_hour + 1,  # Predict for next hour
+lookback_days=7
+)
 
-                                                                                                                                                for url, confidence in predicted_urls:
-                                                                                                                                                if confidence &gt; 0.7:  # Only warm high-confidence predictions
-                                                                                                                                                priority = int((1 - confidence) * 100)  # Higher confidence = lower priority number
-                                                                                                                                                await self.warming_queue.put((priority, url))
+for url, confidence in predicted_urls:
+if confidence &gt; 0.7:  # Only warm high-confidence predictions
+priority = int((1 - confidence) * 100)  # Higher confidence = lower priority number
+await self.warming_queue.put((priority, url))
 
-                                                                                                                                                # Process warming queue
-                                                                                                                                                await self._process_warming_queue()
+# Process warming queue
+await self._process_warming_queue()
 
-                                                                                                                                                async def warm_for_event(self, event_type: str,
-                                                                                                                                                event_data: dict):
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                Event-driven cache warming.
+async def warm_for_event(self, event_type: str,
+event_data: dict):
+&quot;&quot;&quot;
+Event-driven cache warming.
 
-                                                                                                                                                Events:
-                                                                                                                                                - Marketing email send -&gt; warm linked product pages
-                                                                                                                                                - Flash sale start -&gt; warm sale category pages
-                                                                                                                                                - Breaking news -&gt; warm news article and related content
-                                                                                                                                                - New content publish -&gt; warm content and related pages
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                if event_type == 'email_campaign':
-                                                                                                                                                # Extract URLs from email content
-                                                                                                                                                urls = self._extract_urls_from_email(event_data['template'])
+Events:
+- Marketing email send -&gt; warm linked product pages
+- Flash sale start -&gt; warm sale category pages
+- Breaking news -&gt; warm news article and related content
+- New content publish -&gt; warm content and related pages
+&quot;&quot;&quot;
+if event_type == 'email_campaign':
+# Extract URLs from email content
+urls = self._extract_urls_from_email(event_data['template'])
 
-                                                                                                                                                # Warm before email delivery starts
-                                                                                                                                                send_time = event_data['scheduled_time']
-                                                                                                                                                warm_at = send_time - timedelta(minutes=15)
+# Warm before email delivery starts
+send_time = event_data['scheduled_time']
+warm_at = send_time - timedelta(minutes=15)
 
-                                                                                                                                                await self._schedule_warming(urls, warm_at)
+await self._schedule_warming(urls, warm_at)
 
-                                                                                                                                                elif event_type == 'flash_sale':
-                                                                                                                                                # Warm all products in sale category
-                                                                                                                                                category_id = event_data['category_id']
-                                                                                                                                                product_urls = await self.analytics.get_category_urls(category_id)
+elif event_type == 'flash_sale':
+# Warm all products in sale category
+category_id = event_data['category_id']
+product_urls = await self.analytics.get_category_urls(category_id)
 
-                                                                                                                                                sale_start = event_data['start_time']
-                                                                                                                                                warm_at = sale_start - timedelta(minutes=30)
+sale_start = event_data['start_time']
+warm_at = sale_start - timedelta(minutes=30)
 
-                                                                                                                                                await self._schedule_warming(product_urls, warm_at)
+await self._schedule_warming(product_urls, warm_at)
 
-                                                                                                                                                elif event_type == 'content_publish':
-                                                                                                                                                # Warm the content and related navigation pages
-                                                                                                                                                content_url = event_data['url']
-                                                                                                                                                related_urls = await self._get_related_urls(content_url)
+elif event_type == 'content_publish':
+# Warm the content and related navigation pages
+content_url = event_data['url']
+related_urls = await self._get_related_urls(content_url)
 
-                                                                                                                                                # Warm immediately
-                                                                                                                                                await self._warm_urls([content_url] + related_urls)
+# Warm immediately
+await self._warm_urls([content_url] + related_urls)
 
-                                                                                                                                                async def _warm_region(self, region: str,
-                                                                                                                                                urls: List[tuple]):
-                                                                                                                                                &quot;&quot;&quot;Warm specific region's edge caches.&quot;&quot;&quot;
-                                                                                                                                                edge_servers = self.cdn.get_edge_servers(region)
+async def _warm_region(self, region: str,
+urls: List[tuple]):
+&quot;&quot;&quot;Warm specific region's edge caches.&quot;&quot;&quot;
+edge_servers = self.cdn.get_edge_servers(region)
 
-                                                                                                                                                for url, _ in urls:
-                                                                                                                                                # Send warming request through region's edge
-                                                                                                                                                for server in edge_servers[:2]:  # Warm at least 2 servers
-                                                                                                                                                try:
-                                                                                                                                                await self.cdn.send_warming_request(
-                                                                                                                                                server_id=server['id'],
-                                                                                                                                                url=url,
-                                                                                                                                                headers={
-                                                                                                                                                'X-Cache-Warm': 'true',
-                                                                                                                                                'X-Priority': 'background'
-                                                                                                                                                }
-                                                                                                                                                )
-                                                                                                                                                except Exception as e:
-                                                                                                                                                logger.warning(f&quot;Warming failed for {url} at {server['id']}: {e}&quot;)
+for url, _ in urls:
+# Send warming request through region's edge
+for server in edge_servers[:2]:  # Warm at least 2 servers
+try:
+await self.cdn.send_warming_request(
+server_id=server['id'],
+url=url,
+headers={
+'X-Cache-Warm': 'true',
+'X-Priority': 'background'
+}
+)
+except Exception as e:
+logger.warning(f&quot;Warming failed for {url} at {server['id']}: {e}&quot;)
 
-                                                                                                                                                # Rate limit to avoid overwhelming origin
-                                                                                                                                                await asyncio.sleep(0.05)  # 20 requests/second
-                                                                                                                                                ```
-</code></pre>
+# Rate limit to avoid overwhelming origin
+await asyncio.sleep(0.05)  # 20 requests/second</code></pre>
 <h3 id="tiered-warming-architecture">Tiered Warming Architecture</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">TIERED CACHE WARMING</h3>
@@ -1480,96 +1450,93 @@
 </div>
 </div>
 </div>
-<pre><code>                                                                                                                                                ```python
-                                                                                                                                                class TieredWarmingStrategy:
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                Implements tiered warming to balance coverage vs resource usage.
-                                                                                                                                                &quot;&quot;&quot;
+<pre><code class="language-python">class TieredWarmingStrategy:
+&quot;&quot;&quot;
+Implements tiered warming to balance coverage vs resource usage.
+&quot;&quot;&quot;
 
-                                                                                                                                                TIER_CONFIG = {
-                                                                                                                                                'origin_shield': {
-                                                                                                                                                'warm_percentage': 100,  # Warm all popular content
-                                                                                                                                                'content_threshold': 10,  # &gt;10 requests/day
-                                                                                                                                                'priority': 1
-                                                                                                                                                },
-                                                                                                                                                'high_traffic_pops': {
-                                                                                                                                                'warm_percentage': 50,   # Top 50% of content
-                                                                                                                                                'content_threshold': 100, # &gt;100 requests/day at this PoP
-                                                                                                                                                'priority': 2,
-                                                                                                                                                'pops': ['nyc', 'lax', 'lon', 'ams', 'tyo', 'sin']
-                                                                                                                                                },
-                                                                                                                                                'medium_traffic_pops': {
-                                                                                                                                                'warm_percentage': 20,   # Top 20% only
-                                                                                                                                                'content_threshold': 50,
-                                                                                                                                                'priority': 3,
-                                                                                                                                                'pops': ['dfw', 'ord', 'fra', 'syd', 'hkg']
-                                                                                                                                                },
-                                                                                                                                                'low_traffic_pops': {
-                                                                                                                                                'warm_percentage': 0,    # On-demand only
-                                                                                                                                                'priority': 4
-                                                                                                                                                }
-                                                                                                                                                }
+TIER_CONFIG = {
+'origin_shield': {
+'warm_percentage': 100,  # Warm all popular content
+'content_threshold': 10,  # &gt;10 requests/day
+'priority': 1
+},
+'high_traffic_pops': {
+'warm_percentage': 50,   # Top 50% of content
+'content_threshold': 100, # &gt;100 requests/day at this PoP
+'priority': 2,
+'pops': ['nyc', 'lax', 'lon', 'ams', 'tyo', 'sin']
+},
+'medium_traffic_pops': {
+'warm_percentage': 20,   # Top 20% only
+'content_threshold': 50,
+'priority': 3,
+'pops': ['dfw', 'ord', 'fra', 'syd', 'hkg']
+},
+'low_traffic_pops': {
+'warm_percentage': 0,    # On-demand only
+'priority': 4
+}
+}
 
-                                                                                                                                                async def execute_tiered_warming(self, content_manifest: List[dict]):
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                Execute warming in tier order.
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                # Sort content by popularity
-                                                                                                                                                sorted_content = sorted(
-                                                                                                                                                content_manifest,
-                                                                                                                                                key=lambda x: x['daily_requests'],
-                                                                                                                                                reverse=True
-                                                                                                                                                )
+async def execute_tiered_warming(self, content_manifest: List[dict]):
+&quot;&quot;&quot;
+Execute warming in tier order.
+&quot;&quot;&quot;
+# Sort content by popularity
+sorted_content = sorted(
+content_manifest,
+key=lambda x: x['daily_requests'],
+reverse=True
+)
 
-                                                                                                                                                # Tier 1: Origin shield
-                                                                                                                                                tier1_content = [
-                                                                                                                                                c for c in sorted_content
-                                                                                                                                                if c['daily_requests'] &gt;= self.TIER_CONFIG['origin_shield']['content_threshold']
-                                                                                                                                                ]
-                                                                                                                                                await self._warm_tier('origin_shield', tier1_content)
+# Tier 1: Origin shield
+tier1_content = [
+c for c in sorted_content
+if c['daily_requests'] &gt;= self.TIER_CONFIG['origin_shield']['content_threshold']
+]
+await self._warm_tier('origin_shield', tier1_content)
 
-                                                                                                                                                # Tier 2: High-traffic PoPs
-                                                                                                                                                tier2_content = sorted_content[:int(len(sorted_content) * 0.5)]
-                                                                                                                                                for pop in self.TIER_CONFIG['high_traffic_pops']['pops']:
-                                                                                                                                                await self._warm_pop(pop, tier2_content)
+# Tier 2: High-traffic PoPs
+tier2_content = sorted_content[:int(len(sorted_content) * 0.5)]
+for pop in self.TIER_CONFIG['high_traffic_pops']['pops']:
+await self._warm_pop(pop, tier2_content)
 
-                                                                                                                                                # Tier 3: Medium-traffic PoPs
-                                                                                                                                                tier3_content = sorted_content[:int(len(sorted_content) * 0.2)]
-                                                                                                                                                for pop in self.TIER_CONFIG['medium_traffic_pops']['pops']:
-                                                                                                                                                await self._warm_pop(pop, tier3_content)
+# Tier 3: Medium-traffic PoPs
+tier3_content = sorted_content[:int(len(sorted_content) * 0.2)]
+for pop in self.TIER_CONFIG['medium_traffic_pops']['pops']:
+await self._warm_pop(pop, tier3_content)
 
-                                                                                                                                                # Tier 4: Low-traffic PoPs - skip (on-demand)
-                                                                                                                                                logger.info(&quot;Low-traffic PoPs will warm on-demand via origin shield&quot;)
+# Tier 4: Low-traffic PoPs - skip (on-demand)
+logger.info(&quot;Low-traffic PoPs will warm on-demand via origin shield&quot;)
 
-                                                                                                                                                def calculate_warming_cost(self, content_manifest: List[dict]) -&gt; dict:
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                Calculate bandwidth and origin load for warming strategy.
-                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                total_size = sum(c['size_bytes'] for c in content_manifest)
+def calculate_warming_cost(self, content_manifest: List[dict]) -&gt; dict:
+&quot;&quot;&quot;
+Calculate bandwidth and origin load for warming strategy.
+&quot;&quot;&quot;
+total_size = sum(c['size_bytes'] for c in content_manifest)
 
-                                                                                                                                                costs = {
-                                                                                                                                                'full_warming': {
-                                                                                                                                                'bandwidth_gb': (total_size * len(self.cdn.pops)) / 1e9,
-                                                                                                                                                'origin_requests': len(content_manifest) * len(self.cdn.pops),
-                                                                                                                                                'estimated_time_minutes': len(content_manifest) * len(self.cdn.pops) / 1000
-                                                                                                                                                },
-                                                                                                                                                'tiered_warming': {
-                                                                                                                                                'bandwidth_gb': self._calculate_tiered_bandwidth(content_manifest),
-                                                                                                                                                'origin_requests': self._calculate_tiered_requests(content_manifest),
-                                                                                                                                                'estimated_time_minutes': self._calculate_tiered_time(content_manifest)
-                                                                                                                                                }
-                                                                                                                                                }
+costs = {
+'full_warming': {
+'bandwidth_gb': (total_size * len(self.cdn.pops)) / 1e9,
+'origin_requests': len(content_manifest) * len(self.cdn.pops),
+'estimated_time_minutes': len(content_manifest) * len(self.cdn.pops) / 1000
+},
+'tiered_warming': {
+'bandwidth_gb': self._calculate_tiered_bandwidth(content_manifest),
+'origin_requests': self._calculate_tiered_requests(content_manifest),
+'estimated_time_minutes': self._calculate_tiered_time(content_manifest)
+}
+}
 
-                                                                                                                                                costs['savings'] = {
-                                                                                                                                                'bandwidth_reduction': 1 - (costs['tiered_warming']['bandwidth_gb'] /
-                                                                                                                                                costs['full_warming']['bandwidth_gb']),
-                                                                                                                                                'request_reduction': 1 - (costs['tiered_warming']['origin_requests'] /
-                                                                                                                                                costs['full_warming']['origin_requests'])
-                                                                                                                                                }
+costs['savings'] = {
+'bandwidth_reduction': 1 - (costs['tiered_warming']['bandwidth_gb'] /
+costs['full_warming']['bandwidth_gb']),
+'request_reduction': 1 - (costs['tiered_warming']['origin_requests'] /
+costs['full_warming']['origin_requests'])
+}
 
-                                                                                                                                                return costs
-                                                                                                                                                ```
-</code></pre>
+return costs</code></pre>
 <h3 id="interview-questions-cache-warming-3-levels-deep">Interview Questions: Cache Warming (3 Levels Deep)</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 16px; font-size: 16px">Level 1: "What is cache warming and when should you use it?"</div>
@@ -1641,307 +1608,298 @@
 </div>
 </div>
 <h3 id="edge-side-includes-esi">Edge-Side Includes (ESI)</h3>
-<pre><code>                                                                                                                                                                                                ```python
-                                                                                                                                                                                                class ESIProcessor:
-                                                                                                                                                                                                &quot;&quot;&quot;
-                                                                                                                                                                                                Edge-Side Includes: Compose pages from cached fragments at the edge.
+<pre><code class="language-python">class ESIProcessor:
+&quot;&quot;&quot;
+Edge-Side Includes: Compose pages from cached fragments at the edge.
 
-                                                                                                                                                                                                Use case: Page with static shell + dynamic components
-                                                                                                                                                                                                - Header/footer: Cache 1 day
-                                                                                                                                                                                                - Product info: Cache 1 hour
-                                                                                                                                                                                                - User cart widget: Cache 0 (always fresh)
-                                                                                                                                                                                                - Recommendations: Cache 5 minutes
-                                                                                                                                                                                                &quot;&quot;&quot;
+Use case: Page with static shell + dynamic components
+- Header/footer: Cache 1 day
+- Product info: Cache 1 hour
+- User cart widget: Cache 0 (always fresh)
+- Recommendations: Cache 5 minutes
+&quot;&quot;&quot;
 
-                                                                                                                                                                                                ESI_PATTERN = re.compile(
-                                                                                                                                                                                                r'&lt;esi:include\s+src=&quot;([^&quot;]+)&quot;(?:\s+ttl=&quot;(\d+)&quot;)?(?:\s+onerror=&quot;([^&quot;]+)&quot;)?\s*/?&gt;',
-                                                                                                                                                                                                  re.IGNORECASE
-                                                                                                                                                                                                  )
+ESI_PATTERN = re.compile(
+r'&lt;esi:include\s+src=&quot;([^&quot;]+)&quot;(?:\s+ttl=&quot;(\d+)&quot;)?(?:\s+onerror=&quot;([^&quot;]+)&quot;)?\s*/?&gt;',
+  re.IGNORECASE
+  )
 
-                                                                                                                                                                                                  async def process_response(self, response: Response,
-                                                                                                                                                                                                  request: Request) -&gt; Response:
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  Process ESI tags in response, replacing with fragment content.
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  if 'text/html' not in response.headers.get('Content-Type', ''):
-                                                                                                                                                                                                  return response
+  async def process_response(self, response: Response,
+  request: Request) -&gt; Response:
+  &quot;&quot;&quot;
+  Process ESI tags in response, replacing with fragment content.
+  &quot;&quot;&quot;
+  if 'text/html' not in response.headers.get('Content-Type', ''):
+  return response
 
-                                                                                                                                                                                                  content = response.content.decode('utf-8')
+  content = response.content.decode('utf-8')
 
-                                                                                                                                                                                                  if '&lt;esi:' not in content:
-                                                                                                                                                                                                  return response
+  if '&lt;esi:' not in content:
+  return response
 
-                                                                                                                                                                                                  # Find all ESI includes
-                                                                                                                                                                                                  includes = self.ESI_PATTERN.findall(content)
+  # Find all ESI includes
+  includes = self.ESI_PATTERN.findall(content)
 
-                                                                                                                                                                                                  if not includes:
-                                                                                                                                                                                                  return response
+  if not includes:
+  return response
 
-                                                                                                                                                                                                  # Fetch all fragments in parallel
-                                                                                                                                                                                                  fragments = await self._fetch_fragments(includes, request)
+  # Fetch all fragments in parallel
+  fragments = await self._fetch_fragments(includes, request)
 
-                                                                                                                                                                                                  # Replace ESI tags with fragment content
-                                                                                                                                                                                                  for (src, ttl, onerror), fragment_content in fragments.items():
-                                                                                                                                                                                                  tag = f'&lt;esi:include src=&quot;{src}&quot;'
-                                                                                                                                                                                                  if ttl:
-                                                                                                                                                                                                  tag += f' ttl=&quot;{ttl}&quot;'
-                                                                                                                                                                                                  if onerror:
-                                                                                                                                                                                                  tag += f' onerror=&quot;{onerror}&quot;'
-                                                                                                                                                                                                  tag += '/&gt;'
+  # Replace ESI tags with fragment content
+  for (src, ttl, onerror), fragment_content in fragments.items():
+  tag = f'&lt;esi:include src=&quot;{src}&quot;'
+  if ttl:
+  tag += f' ttl=&quot;{ttl}&quot;'
+  if onerror:
+  tag += f' onerror=&quot;{onerror}&quot;'
+  tag += '/&gt;'
 
-                                                                                                                                                                                                  content = content.replace(tag, fragment_content)
+  content = content.replace(tag, fragment_content)
 
-                                                                                                                                                                                                  # Recalculate cache TTL (minimum of all fragments)
-                                                                                                                                                                                                  min_ttl = self._calculate_composite_ttl(fragments)
+  # Recalculate cache TTL (minimum of all fragments)
+  min_ttl = self._calculate_composite_ttl(fragments)
 
-                                                                                                                                                                                                  new_response = Response(
-                                                                                                                                                                                                  content=content.encode('utf-8'),
-                                                                                                                                                                                                  headers={
-                                                                                                                                                                                                  **response.headers,
-                                                                                                                                                                                                  'Cache-Control': f'public, max-age={min_ttl}',
-                                                                                                                                                                                                  'X-ESI-Fragments': str(len(fragments))
-                                                                                                                                                                                                  }
-                                                                                                                                                                                                  )
+  new_response = Response(
+  content=content.encode('utf-8'),
+  headers={
+  **response.headers,
+  'Cache-Control': f'public, max-age={min_ttl}',
+  'X-ESI-Fragments': str(len(fragments))
+  }
+  )
 
-                                                                                                                                                                                                  return new_response
+  return new_response
 
-                                                                                                                                                                                                  async def _fetch_fragments(self, includes: List[tuple],
-                                                                                                                                                                                                  original_request: Request) -&gt; dict:
-                                                                                                                                                                                                  &quot;&quot;&quot;Fetch all ESI fragments in parallel.&quot;&quot;&quot;
-                                                                                                                                                                                                  async def fetch_one(src: str, ttl: str, onerror: str):
-                                                                                                                                                                                                  try:
-                                                                                                                                                                                                  # Check fragment cache
-                                                                                                                                                                                                  cached = await self.fragment_cache.get(src)
-                                                                                                                                                                                                  if cached:
-                                                                                                                                                                                                  return (src, ttl, onerror), cached
+  async def _fetch_fragments(self, includes: List[tuple],
+  original_request: Request) -&gt; dict:
+  &quot;&quot;&quot;Fetch all ESI fragments in parallel.&quot;&quot;&quot;
+  async def fetch_one(src: str, ttl: str, onerror: str):
+  try:
+  # Check fragment cache
+  cached = await self.fragment_cache.get(src)
+  if cached:
+  return (src, ttl, onerror), cached
 
-                                                                                                                                                                                                  # Fetch fragment
-                                                                                                                                                                                                  fragment_response = await self.http_client.get(
-                                                                                                                                                                                                  src,
-                                                                                                                                                                                                  headers={
-                                                                                                                                                                                                  'Cookie': original_request.headers.get('Cookie', ''),
-                                                                                                                                                                                                  'X-ESI-Fragment': 'true'
-                                                                                                                                                                                                  }
-                                                                                                                                                                                                  )
+  # Fetch fragment
+  fragment_response = await self.http_client.get(
+  src,
+  headers={
+  'Cookie': original_request.headers.get('Cookie', ''),
+  'X-ESI-Fragment': 'true'
+  }
+  )
 
-                                                                                                                                                                                                  content = fragment_response.content.decode('utf-8')
+  content = fragment_response.content.decode('utf-8')
 
-                                                                                                                                                                                                  # Cache fragment if cacheable
-                                                                                                                                                                                                  if int(ttl or 0) &gt; 0:
-                                                                                                                                                                                                  await self.fragment_cache.set(src, content, ttl=int(ttl))
+  # Cache fragment if cacheable
+  if int(ttl or 0) &gt; 0:
+  await self.fragment_cache.set(src, content, ttl=int(ttl))
 
-                                                                                                                                                                                                  return (src, ttl, onerror), content
+  return (src, ttl, onerror), content
 
-                                                                                                                                                                                                  except Exception as e:
-                                                                                                                                                                                                  if onerror == 'continue':
-                                                                                                                                                                                                  return (src, ttl, onerror), ''  # Silent failure
-                                                                                                                                                                                                  raise
+  except Exception as e:
+  if onerror == 'continue':
+  return (src, ttl, onerror), ''  # Silent failure
+  raise
 
-                                                                                                                                                                                                  tasks = [fetch_one(src, ttl, onerror) for src, ttl, onerror in includes]
-                                                                                                                                                                                                  results = await asyncio.gather(*tasks, return_exceptions=True)
+  tasks = [fetch_one(src, ttl, onerror) for src, ttl, onerror in includes]
+  results = await asyncio.gather(*tasks, return_exceptions=True)
 
-                                                                                                                                                                                                  return dict(r for r in results if not isinstance(r, Exception))
-                                                                                                                                                                                                  ```
-</code></pre>
+  return dict(r for r in results if not isinstance(r, Exception))</code></pre>
 <h3 id="ab-testing-at-the-edge">A/B Testing at the Edge</h3>
-<pre><code>                                                                                                                                                                                                  ```python
-                                                                                                                                                                                                  class EdgeABTesting:
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  Perform A/B testing at the edge for instant personalization.
+<pre><code class="language-python">class EdgeABTesting:
+&quot;&quot;&quot;
+Perform A/B testing at the edge for instant personalization.
 
-                                                                                                                                                                                                  Benefits:
-                                                                                                                                                                                                  - No round-trip to origin for variant selection
-                                                                                                                                                                                                  - Consistent variant assignment (sticky sessions)
-                                                                                                                                                                                                  - Cacheable variants (separate cache keys per variant)
-                                                                                                                                                                                                  &quot;&quot;&quot;
+Benefits:
+- No round-trip to origin for variant selection
+- Consistent variant assignment (sticky sessions)
+- Cacheable variants (separate cache keys per variant)
+&quot;&quot;&quot;
 
-                                                                                                                                                                                                  def __init__(self, experiments_config: dict):
-                                                                                                                                                                                                  self.experiments = experiments_config
-                                                                                                                                                                                                  self.kv_store = EdgeKVStore()  # Distributed KV at edge
+def __init__(self, experiments_config: dict):
+self.experiments = experiments_config
+self.kv_store = EdgeKVStore()  # Distributed KV at edge
 
-                                                                                                                                                                                                  async def assign_variant(self, request: Request,
-                                                                                                                                                                                                  experiment_id: str) -&gt; str:
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  Assign user to experiment variant.
+async def assign_variant(self, request: Request,
+experiment_id: str) -&gt; str:
+&quot;&quot;&quot;
+Assign user to experiment variant.
 
-                                                                                                                                                                                                  Assignment strategy:
-                                                                                                                                                                                                  1. Check for existing assignment (sticky)
-                                                                                                                                                                                                  2. Hash user ID for deterministic assignment
-                                                                                                                                                                                                  3. Fall back to random assignment
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  experiment = self.experiments.get(experiment_id)
-                                                                                                                                                                                                  if not experiment:
-                                                                                                                                                                                                  return 'control'
+Assignment strategy:
+1. Check for existing assignment (sticky)
+2. Hash user ID for deterministic assignment
+3. Fall back to random assignment
+&quot;&quot;&quot;
+experiment = self.experiments.get(experiment_id)
+if not experiment:
+return 'control'
 
-                                                                                                                                                                                                  # Get user identifier
-                                                                                                                                                                                                  user_id = self._get_user_id(request)
+# Get user identifier
+user_id = self._get_user_id(request)
 
-                                                                                                                                                                                                  # Check for existing assignment
-                                                                                                                                                                                                  cache_key = f&quot;ab:{experiment_id}:{user_id}&quot;
-                                                                                                                                                                                                  existing = await self.kv_store.get(cache_key)
-                                                                                                                                                                                                  if existing:
-                                                                                                                                                                                                  return existing
+# Check for existing assignment
+cache_key = f&quot;ab:{experiment_id}:{user_id}&quot;
+existing = await self.kv_store.get(cache_key)
+if existing:
+return existing
 
-                                                                                                                                                                                                  # Deterministic assignment based on user ID hash
-                                                                                                                                                                                                  hash_value = int(hashlib.md5(
-                                                                                                                                                                                                  f&quot;{experiment_id}:{user_id}&quot;.encode()
-                                                                                                                                                                                                  ).hexdigest(), 16)
+# Deterministic assignment based on user ID hash
+hash_value = int(hashlib.md5(
+f&quot;{experiment_id}:{user_id}&quot;.encode()
+).hexdigest(), 16)
 
-                                                                                                                                                                                                  # Assign based on traffic allocation
-                                                                                                                                                                                                  position = hash_value % 100
-                                                                                                                                                                                                  cumulative = 0
+# Assign based on traffic allocation
+position = hash_value % 100
+cumulative = 0
 
-                                                                                                                                                                                                  for variant, allocation in experiment['variants'].items():
-                                                                                                                                                                                                  cumulative += allocation
-                                                                                                                                                                                                  if position &lt; cumulative:
-                                                                                                                                                                                                  # Store assignment for consistency
-                                                                                                                                                                                                  await self.kv_store.set(
-                                                                                                                                                                                                  cache_key,
-                                                                                                                                                                                                  variant,
-                                                                                                                                                                                                  ttl=experiment.get('duration_days', 30) * 86400
-                                                                                                                                                                                                  )
-                                                                                                                                                                                                  return variant
+for variant, allocation in experiment['variants'].items():
+cumulative += allocation
+if position &lt; cumulative:
+# Store assignment for consistency
+await self.kv_store.set(
+cache_key,
+variant,
+ttl=experiment.get('duration_days', 30) * 86400
+)
+return variant
 
-                                                                                                                                                                                                  return 'control'
+return 'control'
 
-                                                                                                                                                                                                  async def modify_request(self, request: Request,
-                                                                                                                                                                                                  experiment_id: str) -&gt; Request:
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  Modify request based on variant assignment.
+async def modify_request(self, request: Request,
+experiment_id: str) -&gt; Request:
+&quot;&quot;&quot;
+Modify request based on variant assignment.
 
-                                                                                                                                                                                                  Common modifications:
-                                                                                                                                                                                                  - Add variant header for origin
-                                                                                                                                                                                                  - Rewrite URL to variant-specific path
-                                                                                                                                                                                                  - Add cookie for client-side tracking
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  variant = await self.assign_variant(request, experiment_id)
+Common modifications:
+- Add variant header for origin
+- Rewrite URL to variant-specific path
+- Add cookie for client-side tracking
+&quot;&quot;&quot;
+variant = await self.assign_variant(request, experiment_id)
 
-                                                                                                                                                                                                  # Add variant to cache key (prevents serving wrong variant)
-                                                                                                                                                                                                  request.headers['X-AB-Variant'] = variant
+# Add variant to cache key (prevents serving wrong variant)
+request.headers['X-AB-Variant'] = variant
 
-                                                                                                                                                                                                  # Option 1: Header-based (origin handles variant)
-                                                                                                                                                                                                  request.headers['X-Experiment-Variant'] = f&quot;{experiment_id}:{variant}&quot;
+# Option 1: Header-based (origin handles variant)
+request.headers['X-Experiment-Variant'] = f&quot;{experiment_id}:{variant}&quot;
 
-                                                                                                                                                                                                  # Option 2: URL rewrite (separate cached versions)
-                                                                                                                                                                                                  if self.experiments[experiment_id].get('url_rewrite'):
-                                                                                                                                                                                                  original_path = request.path
-                                                                                                                                                                                                  request.path = f&quot;/{variant}{original_path}&quot;
+# Option 2: URL rewrite (separate cached versions)
+if self.experiments[experiment_id].get('url_rewrite'):
+original_path = request.path
+request.path = f&quot;/{variant}{original_path}&quot;
 
-                                                                                                                                                                                                  return request
+return request
 
-                                                                                                                                                                                                  def _get_user_id(self, request: Request) -&gt; str:
-                                                                                                                                                                                                  &quot;&quot;&quot;Extract or generate user identifier.&quot;&quot;&quot;
-                                                                                                                                                                                                  # Priority: Logged-in user ID &gt; Cookie &gt; IP + UA hash
+def _get_user_id(self, request: Request) -&gt; str:
+&quot;&quot;&quot;Extract or generate user identifier.&quot;&quot;&quot;
+# Priority: Logged-in user ID &gt; Cookie &gt; IP + UA hash
 
-                                                                                                                                                                                                  if auth_header := request.headers.get('Authorization'):
-                                                                                                                                                                                                  # Extract user ID from JWT
-                                                                                                                                                                                                  return self._extract_user_from_jwt(auth_header)
+if auth_header := request.headers.get('Authorization'):
+# Extract user ID from JWT
+return self._extract_user_from_jwt(auth_header)
 
-                                                                                                                                                                                                  if visitor_cookie := request.cookies.get('visitor_id'):
-                                                                                                                                                                                                  return visitor_cookie
+if visitor_cookie := request.cookies.get('visitor_id'):
+return visitor_cookie
 
-                                                                                                                                                                                                  # Generate deterministic ID from request properties
-                                                                                                                                                                                                  fingerprint = f&quot;{request.client_ip}:{request.headers.get('User-Agent', '')}&quot;
-                                                                                                                                                                                                  return hashlib.sha256(fingerprint.encode()).hexdigest()[:16]
-                                                                                                                                                                                                  ```
-</code></pre>
+# Generate deterministic ID from request properties
+fingerprint = f&quot;{request.client_ip}:{request.headers.get('User-Agent', '')}&quot;
+return hashlib.sha256(fingerprint.encode()).hexdigest()[:16]</code></pre>
 <hr />
 <h2 id="production-considerations">Production Considerations</h2>
 <h3 id="monitoring-and-observability">Monitoring and Observability</h3>
-<pre><code>                                                                                                                                                                                                  ```python
-                                                                                                                                                                                                  class CDNMetrics:
-                                                                                                                                                                                                  &quot;&quot;&quot;
-                                                                                                                                                                                                  Key metrics for CDN monitoring.
-                                                                                                                                                                                                  &quot;&quot;&quot;
+<pre><code class="language-python">class CDNMetrics:
+&quot;&quot;&quot;
+Key metrics for CDN monitoring.
+&quot;&quot;&quot;
 
-                                                                                                                                                                                                  CRITICAL_METRICS = {
-                                                                                                                                                                                                  'cache_hit_rate': {
-                                                                                                                                                                                                  'description': 'Percentage of requests served from cache',
-                                                                                                                                                                                                  'healthy_threshold': 0.85,
-                                                                                                                                                                                                  'critical_threshold': 0.70,
-                                                                                                                                                                                                  'aggregation': 'avg'
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  'origin_latency_p99': {
-                                                                                                                                                                                                  'description': '99th percentile origin response time',
-                                                                                                                                                                                                  'healthy_threshold': 500,  # ms
-                                                                                                                                                                                                  'critical_threshold': 2000,
-                                                                                                                                                                                                  'aggregation': 'percentile_99'
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  'edge_latency_p50': {
-                                                                                                                                                                                                  'description': 'Median edge response time',
-                                                                                                                                                                                                  'healthy_threshold': 50,  # ms
-                                                                                                                                                                                                  'critical_threshold': 200,
-                                                                                                                                                                                                  'aggregation': 'percentile_50'
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  'error_rate': {
-                                                                                                                                                                                                  'description': '5xx error percentage',
-                                                                                                                                                                                                  'healthy_threshold': 0.001,  # 0.1%
-                                                                                                                                                                                                  'critical_threshold': 0.01,   # 1%
-                                                                                                                                                                                                  'aggregation': 'avg'
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  'bandwidth_utilization': {
-                                                                                                                                                                                                  'description': 'Edge server bandwidth usage',
-                                                                                                                                                                                                  'healthy_threshold': 0.70,
-                                                                                                                                                                                                  'critical_threshold': 0.90,
-                                                                                                                                                                                                  'aggregation': 'max'
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  'purge_latency_p95': {
-                                                                                                                                                                                                  'description': '95th percentile purge propagation time',
-                                                                                                                                                                                                  'healthy_threshold': 5000,  # ms
-                                                                                                                                                                                                  'critical_threshold': 30000,
-                                                                                                                                                                                                  'aggregation': 'percentile_95'
-                                                                                                                                                                                                  }
-                                                                                                                                                                                                  }
+CRITICAL_METRICS = {
+'cache_hit_rate': {
+'description': 'Percentage of requests served from cache',
+'healthy_threshold': 0.85,
+'critical_threshold': 0.70,
+'aggregation': 'avg'
+},
+'origin_latency_p99': {
+'description': '99th percentile origin response time',
+'healthy_threshold': 500,  # ms
+'critical_threshold': 2000,
+'aggregation': 'percentile_99'
+},
+'edge_latency_p50': {
+'description': 'Median edge response time',
+'healthy_threshold': 50,  # ms
+'critical_threshold': 200,
+'aggregation': 'percentile_50'
+},
+'error_rate': {
+'description': '5xx error percentage',
+'healthy_threshold': 0.001,  # 0.1%
+'critical_threshold': 0.01,   # 1%
+'aggregation': 'avg'
+},
+'bandwidth_utilization': {
+'description': 'Edge server bandwidth usage',
+'healthy_threshold': 0.70,
+'critical_threshold': 0.90,
+'aggregation': 'max'
+},
+'purge_latency_p95': {
+'description': '95th percentile purge propagation time',
+'healthy_threshold': 5000,  # ms
+'critical_threshold': 30000,
+'aggregation': 'percentile_95'
+}
+}
 
-                                                                                                                                                                                                  def create_dashboard(self) -&gt; dict:
-                                                                                                                                                                                                  &quot;&quot;&quot;Generate dashboard configuration.&quot;&quot;&quot;
-                                                                                                                                                                                                  return {
-                                                                                                                                                                                                  'panels': [
-                                                                                                                                                                                                  {
-                                                                                                                                                                                                  'title': 'Cache Hit Rate by PoP',
-                                                                                                                                                                                                  'type': 'heatmap',
-                                                                                                                                                                                                  'metric': 'cache_hit_rate',
-                                                                                                                                                                                                  'dimensions': ['pop', 'content_type']
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  {
-                                                                                                                                                                                                  'title': 'Latency Distribution',
-                                                                                                                                                                                                  'type': 'histogram',
-                                                                                                                                                                                                  'metrics': ['edge_latency', 'origin_latency'],
-                                                                                                                                                                                                  'buckets': [10, 25, 50, 100, 250, 500, 1000, 2500]
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  {
-                                                                                                                                                                                                  'title': 'Error Rate Timeline',
-                                                                                                                                                                                                  'type': 'timeseries',
-                                                                                                                                                                                                  'metric': 'error_rate',
-                                                                                                                                                                                                  'dimensions': ['pop', 'status_code']
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  {
-                                                                                                                                                                                                  'title': 'Origin Load',
-                                                                                                                                                                                                  'type': 'gauge',
-                                                                                                                                                                                                  'metrics': ['origin_rps', 'origin_bandwidth'],
-                                                                                                                                                                                                  'thresholds': ['healthy', 'warning', 'critical']
-                                                                                                                                                                                                  }
-                                                                                                                                                                                                  ],
-                                                                                                                                                                                                  'alerts': [
-                                                                                                                                                                                                  {
-                                                                                                                                                                                                  'name': 'Low Cache Hit Rate',
-                                                                                                                                                                                                  'condition': 'cache_hit_rate &lt; 0.70 for 5m',
-                                                                                                                                                                                                  'severity': 'critical'
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  {
-                                                                                                                                                                                                  'name': 'High Origin Latency',
-                                                                                                                                                                                                  'condition': 'origin_latency_p99 &gt; 2000 for 3m',
-                                                                                                                                                                                                  'severity': 'warning'
-                                                                                                                                                                                                  },
-                                                                                                                                                                                                  {
-                                                                                                                                                                                                  'name': 'Purge Propagation Slow',
-                                                                                                                                                                                                  'condition': 'purge_latency_p95 &gt; 30000',
-                                                                                                                                                                                                  'severity': 'warning'
-                                                                                                                                                                                                  }
-                                                                                                                                                                                                  ]
-                                                                                                                                                                                                  }
-                                                                                                                                                                                                  ```
-</code></pre>
+def create_dashboard(self) -&gt; dict:
+&quot;&quot;&quot;Generate dashboard configuration.&quot;&quot;&quot;
+return {
+'panels': [
+{
+'title': 'Cache Hit Rate by PoP',
+'type': 'heatmap',
+'metric': 'cache_hit_rate',
+'dimensions': ['pop', 'content_type']
+},
+{
+'title': 'Latency Distribution',
+'type': 'histogram',
+'metrics': ['edge_latency', 'origin_latency'],
+'buckets': [10, 25, 50, 100, 250, 500, 1000, 2500]
+},
+{
+'title': 'Error Rate Timeline',
+'type': 'timeseries',
+'metric': 'error_rate',
+'dimensions': ['pop', 'status_code']
+},
+{
+'title': 'Origin Load',
+'type': 'gauge',
+'metrics': ['origin_rps', 'origin_bandwidth'],
+'thresholds': ['healthy', 'warning', 'critical']
+}
+],
+'alerts': [
+{
+'name': 'Low Cache Hit Rate',
+'condition': 'cache_hit_rate &lt; 0.70 for 5m',
+'severity': 'critical'
+},
+{
+'name': 'High Origin Latency',
+'condition': 'origin_latency_p99 &gt; 2000 for 3m',
+'severity': 'warning'
+},
+{
+'name': 'Purge Propagation Slow',
+'condition': 'purge_latency_p95 &gt; 30000',
+'severity': 'warning'
+}
+]
+}</code></pre>
 <h3 id="security-considerations">Security Considerations</h3>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #dc2626; font-weight: 700; margin-bottom: 16px">Security Checklist for CDN Configuration</div>
@@ -1968,11 +1926,11 @@
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>                                                                                                                                                                                                                                      - [[Caching Strategies]](/topic/system-design/caching) - Detailed caching patterns and eviction policies
-                                                                                                                                                                                                                                      - [[Load Balancing]](/topic/system-design/load-balancing) - Traffic distribution and health checking
-                                                                                                                                                                                                                                      - [[DNS]](/topic/system-design/dns) - Domain resolution and geographic routing
-                                                                                                                                                                                                                                      - [[Distributed Systems]](/topic/system-design/distributed-systems) - Consistency and partition tolerance
-                                                                                                                                                                                                                                      - [[Rate Limiting]](/topic/system-design/rate-limiting) - Traffic control at the edge
+<pre><code>- [[Caching Strategies]](/topic/system-design/caching) - Detailed caching patterns and eviction policies
+- [[Load Balancing]](/topic/system-design/load-balancing) - Traffic distribution and health checking
+- [[DNS]](/topic/system-design/dns) - Domain resolution and geographic routing
+- [[Distributed Systems]](/topic/system-design/distributed-systems) - Consistency and partition tolerance
+- [[Rate Limiting]](/topic/system-design/rate-limiting) - Traffic control at the edge
 </code></pre>
 <hr />
 <h2 id="summary">Summary</h2>

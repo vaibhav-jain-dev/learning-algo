@@ -1491,8 +1491,7 @@ print(&quot;First 5 even Fibonacci:&quot;, result)  # [0, 2, 8, 34, 144]
     1. Pre-compute the traversal order and store in a list
     2. Maintain current index that can move forward or backward
     3. Add previous() method alongside next()
-<pre><code>```python
-class BidirectionalTreeIterator:
+<pre><code class="language-python">class BidirectionalTreeIterator:
 def __init__(self, root):
 self.elements = []
 self._build_inorder(root)
@@ -1513,9 +1512,7 @@ return self.elements[self.index]
 
 def previous(self):
 self.index -= 1
-return self.elements[self.index]
-```
-</code></pre>
+return self.elements[self.index]</code></pre>
 </div>
 </details>
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px">
@@ -1537,8 +1534,7 @@ return self.elements[self.index]
 <summary style="font-weight: 600; color: #1e293b; cursor: pointer">Q3: How would you implement a lazy iterator for database query results?</summary>
 <div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> Use cursor-based pagination with buffering:
-<pre><code>```python
-class DatabaseIterator:
+<pre><code class="language-python">class DatabaseIterator:
 def __init__(self, query, batch_size=100):
 self.query = query
 self.batch_size = batch_size
@@ -1561,9 +1557,7 @@ def _fetch_batch(self):
 results = db.execute(self.query, cursor=self.cursor, limit=self.batch_size)
 self.buffer = results.rows
 self.cursor = results.next_cursor
-self.exhausted = not self.cursor
-```
-</code></pre>
+self.exhausted = not self.cursor</code></pre>
 </div>
 </details>
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px">
@@ -1572,8 +1566,7 @@ self.exhausted = not self.cursor
 <strong>Answer:</strong>
     - **External Iterator:** Client controls iteration (next/hasNext). More flexible but client must manage loop.
     - **Internal Iterator:** Collection controls iteration (forEach/map). Simpler but less control.
-<pre><code>```python
-# External (client controls)
+<pre><code class="language-python"># External (client controls)
 it = collection.iterator()
 while it.has_next():
 process(it.next())
@@ -1598,8 +1591,7 @@ Internal is better when: simple processing, parallel execution, cleaner code
     5. Lazy loading for performance
 <p><strong>Implementation approach:</strong><br />
 Use a merge iterator with priority queue, where each source is an iterator. Pop from highest-priority source, refill as needed. Use seen-set for deduplication. Consider time-decay scoring for ranking.</p>
-<pre><code>```python
-class FeedMergeIterator:
+<pre><code class="language-python">class FeedMergeIterator:
 def __init__(self, sources, scorer):
 self.heap = []  # (score, source_idx, item)
 self.sources = sources
@@ -1624,9 +1616,7 @@ self._add_from_source(idx)
 if item.id not in self.seen:
 self.seen.add(item.id)
 return item
-raise StopIteration()
-```
-</code></pre>
+raise StopIteration()</code></pre>
 </div>
 </details>
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px">

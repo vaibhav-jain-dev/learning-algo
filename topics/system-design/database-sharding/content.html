@@ -470,8 +470,7 @@ Walk clockwise → first node is <span style="color: #16a34a; font-weight: 600">
 </div>
 </div>
 </div>
-<pre><code>```python
-import hashlib
+<pre><code class="language-python">import hashlib
 from bisect import bisect_right
 from typing import Optional, List
 
@@ -647,8 +646,7 @@ replicas = ring.get_nodes_for_key(&quot;user:12345&quot;, replicas=3)  # -&gt; [
 - Use for: Complex joins that can't be avoided<br />
 - Cost: Application complexity, memory usage</p>
 </div>
-<pre><code>```python
-from concurrent.futures import ThreadPoolExecutor, as_completed
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any
 
 class CrossShardQueryExecutor:
@@ -810,8 +808,7 @@ order_count = executor.aggregate_count(&quot;orders&quot;, &quot;created_at &gt;
 </div>
 </div>
 <h3 id="resharding-without-downtime">Resharding Without Downtime</h3>
-<pre><code>```python
-from enum import Enum
+<pre><code class="language-python">from enum import Enum
 from typing import Dict, List, Optional
 import threading
 import time

@@ -702,8 +702,7 @@
 <hr />
 <h2 id="code-examples">Code Examples</h2>
 <h3 id="python---cp-system-with-quorum">Python - CP System with Quorum</h3>
-<pre><code>                ```python
-                from typing import List, Optional, Any
+<pre><code class="language-python">                from typing import List, Optional, Any
                 from dataclasses import dataclass
                 import time
                 import threading
@@ -791,12 +790,9 @@
                 except NetworkError:
                 pass  # Best effort repair
 
-                return latest[1].value
-                ```
-</code></pre>
+                return latest[1].value</code></pre>
 <h3 id="python---ap-system-with-vector-clocks">Python - AP System with Vector Clocks</h3>
-<pre><code>                ```python
-                from dataclasses import dataclass, field
+<pre><code class="language-python">                from dataclasses import dataclass, field
                 from typing import Dict, List, Any, Optional
                 import time
                 import copy
@@ -939,12 +935,9 @@
                 if not is_dominated:
                 new_versions.append((value, remote_clock))
 
-                self.data[key] = new_versions
-                ```
-</code></pre>
+                self.data[key] = new_versions</code></pre>
 <h3 id="go---crdt-counter-for-ap-systems">Go - CRDT Counter for AP Systems</h3>
-<pre><code>                ```go
-                package cap
+<pre><code class="language-go">                package cap
 
                 import (
                 &quot;sync&quot;
@@ -1032,9 +1025,7 @@
                 func (pn *PNCounter) Merge(other *PNCounter) {
                 pn.pos.Merge(other.pos)
                 pn.neg.Merge(other.neg)
-                }
-                ```
-</code></pre>
+                }</code></pre>
 <hr />
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">

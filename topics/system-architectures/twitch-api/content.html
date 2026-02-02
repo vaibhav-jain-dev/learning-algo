@@ -341,198 +341,192 @@
 </div>
 </div>
 <h3 id="chat-implementation">Chat Implementation</h3>
-<pre><code>                                                      ```python
-                                                      class ChatService:
-                                                      &quot;&quot;&quot;
-                                                      Production chat service with rate limiting and moderation.
+<pre><code class="language-python">class ChatService:
+&quot;&quot;&quot;
+Production chat service with rate limiting and moderation.
 
-                                                      Key Design Decisions:
-                                                      - Messages are ephemeral (not persisted long-term)
-                                                      - Eventually consistent delivery is acceptable
-                                                      - Fan-out happens at edge, not origin
-                                                      &quot;&quot;&quot;
+Key Design Decisions:
+- Messages are ephemeral (not persisted long-term)
+- Eventually consistent delivery is acceptable
+- Fan-out happens at edge, not origin
+&quot;&quot;&quot;
 
-                                                      def __init__(self, kafka_producer, redis_client):
-                                                      self.kafka = kafka_producer
-                                                      self.redis = redis_client
+def __init__(self, kafka_producer, redis_client):
+self.kafka = kafka_producer
+self.redis = redis_client
 
-                                                      async def send_message(
-                                                      self,
-                                                      channel_id: str,
-                                                      user_id: str,
-                                                      message: str,
-                                                      context: ChatContext
-                                                      ) -&gt; ChatMessage:
-                                                      # Step 1: Rate limit check (1 message/second/user)
-                                                      rate_key = f&quot;chat:rate:{channel_id}:{user_id}&quot;
-                                                      if not await self.check_rate_limit(rate_key, limit=1, window=1):
-                                                      raise RateLimitExceeded(&quot;Slow down! 1 message per second.&quot;)
+async def send_message(
+self,
+channel_id: str,
+user_id: str,
+message: str,
+context: ChatContext
+) -&gt; ChatMessage:
+# Step 1: Rate limit check (1 message/second/user)
+rate_key = f&quot;chat:rate:{channel_id}:{user_id}&quot;
+if not await self.check_rate_limit(rate_key, limit=1, window=1):
+raise RateLimitExceeded(&quot;Slow down! 1 message per second.&quot;)
 
-                                                      # Step 2: Check restrictions (banned, timed out)
-                                                      restrictions = await self.get_restrictions(channel_id, user_id)
-                                                      if restrictions.is_banned:
-                                                      raise UserBanned(restrictions.ban_reason)
-                                                      if restrictions.is_timed_out:
-                                                      raise UserTimedOut(restrictions.timeout_remaining)
+# Step 2: Check restrictions (banned, timed out)
+restrictions = await self.get_restrictions(channel_id, user_id)
+if restrictions.is_banned:
+raise UserBanned(restrictions.ban_reason)
+if restrictions.is_timed_out:
+raise UserTimedOut(restrictions.timeout_remaining)
 
-                                                      # Step 3: Moderation pipeline
-                                                      moderation_result = await self.moderate_message(
-                                                      channel_id, message, context
-                                                      )
-                                                      if moderation_result.blocked:
-                                                      raise MessageBlocked(moderation_result.reason)
+# Step 3: Moderation pipeline
+moderation_result = await self.moderate_message(
+channel_id, message, context
+)
+if moderation_result.blocked:
+raise MessageBlocked(moderation_result.reason)
 
-                                                      # Step 4: Enrich with badges, emotes
-                                                      enriched = ChatMessage(
-                                                      id=str(uuid4()),
-                                                      channel_id=channel_id,
-                                                      user_id=user_id,
-                                                      username=context.username,
-                                                      message=moderation_result.filtered_message,
-                                                      badges=await self.get_user_badges(user_id, channel_id),
-                                                      emotes=self.parse_emotes(message),
-                                                      timestamp=time.time(),
-                                                      color=context.chat_color,
-                                                      )
+# Step 4: Enrich with badges, emotes
+enriched = ChatMessage(
+id=str(uuid4()),
+channel_id=channel_id,
+user_id=user_id,
+username=context.username,
+message=moderation_result.filtered_message,
+badges=await self.get_user_badges(user_id, channel_id),
+emotes=self.parse_emotes(message),
+timestamp=time.time(),
+color=context.chat_color,
+)
 
-                                                      # Step 5: Publish to Kafka for distribution
-                                                      await self.kafka.send(
-                                                      topic=f&quot;chat.{channel_id}&quot;,
-                                                      key=user_id.encode(),  # Partition by user for ordering
-                                                      value=enriched.to_json().encode(),
-                                                      )
+# Step 5: Publish to Kafka for distribution
+await self.kafka.send(
+topic=f&quot;chat.{channel_id}&quot;,
+key=user_id.encode(),  # Partition by user for ordering
+value=enriched.to_json().encode(),
+)
 
-                                                      return enriched
+return enriched
 
-                                                      async def moderate_message(
-                                                      self,
-                                                      channel_id: str,
-                                                      message: str,
-                                                      context: ChatContext
-                                                      ) -&gt; ModerationResult:
-                                                      &quot;&quot;&quot;
-                                                      Multi-layer moderation pipeline:
-                                                      1. Channel-specific blocked terms
-                                                      2. Global blocked terms
-                                                      3. AutoMod ML model
-                                                      4. Spam detection
-                                                      &quot;&quot;&quot;
-                                                      # Check channel-specific filters
-                                                      channel_filters = await self.redis.smembers(f&quot;filters:{channel_id}&quot;)
-                                                      for term in channel_filters:
-                                                      if term.lower() in message.lower():
-                                                      return ModerationResult(blocked=True, reason=&quot;blocked_term&quot;)
+async def moderate_message(
+self,
+channel_id: str,
+message: str,
+context: ChatContext
+) -&gt; ModerationResult:
+&quot;&quot;&quot;
+Multi-layer moderation pipeline:
+1. Channel-specific blocked terms
+2. Global blocked terms
+3. AutoMod ML model
+4. Spam detection
+&quot;&quot;&quot;
+# Check channel-specific filters
+channel_filters = await self.redis.smembers(f&quot;filters:{channel_id}&quot;)
+for term in channel_filters:
+if term.lower() in message.lower():
+return ModerationResult(blocked=True, reason=&quot;blocked_term&quot;)
 
-                                                      # AutoMod check (ML-based content moderation)
-                                                      automod_result = await self.automod.check(message, context)
-                                                      if automod_result.score &gt; context.automod_threshold:
-                                                      # Hold for mod review instead of blocking
-                                                      await self.queue_for_review(channel_id, message, automod_result)
-                                                      return ModerationResult(blocked=True, reason=&quot;automod_held&quot;)
+# AutoMod check (ML-based content moderation)
+automod_result = await self.automod.check(message, context)
+if automod_result.score &gt; context.automod_threshold:
+# Hold for mod review instead of blocking
+await self.queue_for_review(channel_id, message, automod_result)
+return ModerationResult(blocked=True, reason=&quot;automod_held&quot;)
 
-                                                      # R9K duplicate check (prevents spam)
-                                                      if context.r9k_enabled:
-                                                      message_hash = hashlib.md5(message.lower().encode()).hexdigest()
-                                                      if await self.redis.sismember(f&quot;r9k:{channel_id}&quot;, message_hash):
-                                                      return ModerationResult(blocked=True, reason=&quot;duplicate_message&quot;)
-                                                      await self.redis.sadd(f&quot;r9k:{channel_id}&quot;, message_hash)
-                                                      await self.redis.expire(f&quot;r9k:{channel_id}&quot;, 3600)
+# R9K duplicate check (prevents spam)
+if context.r9k_enabled:
+message_hash = hashlib.md5(message.lower().encode()).hexdigest()
+if await self.redis.sismember(f&quot;r9k:{channel_id}&quot;, message_hash):
+return ModerationResult(blocked=True, reason=&quot;duplicate_message&quot;)
+await self.redis.sadd(f&quot;r9k:{channel_id}&quot;, message_hash)
+await self.redis.expire(f&quot;r9k:{channel_id}&quot;, 3600)
 
-                                                      return ModerationResult(blocked=False, filtered_message=message)
-                                                      ```
-</code></pre>
+return ModerationResult(blocked=False, filtered_message=message)</code></pre>
 <h3 id="edge-websocket-server">Edge WebSocket Server</h3>
-<pre><code>                                                      ```python
-                                                      class EdgeChatServer:
-                                                      &quot;&quot;&quot;
-                                                      Edge server holding 10K+ WebSocket connections.
-                                                      Consumes from Kafka and broadcasts to connected clients.
-                                                      &quot;&quot;&quot;
+<pre><code class="language-python">class EdgeChatServer:
+&quot;&quot;&quot;
+Edge server holding 10K+ WebSocket connections.
+Consumes from Kafka and broadcasts to connected clients.
+&quot;&quot;&quot;
 
-                                                      def __init__(self, kafka_consumer, max_connections: int = 10000):
-                                                      self.kafka = kafka_consumer
-                                                      self.max_connections = max_connections
+def __init__(self, kafka_consumer, max_connections: int = 10000):
+self.kafka = kafka_consumer
+self.max_connections = max_connections
 
-                                                      # channel_id -&gt; set of WebSocket connections
-                                                      self.subscriptions: Dict[str, Set[WebSocket]] = defaultdict(set)
+# channel_id -&gt; set of WebSocket connections
+self.subscriptions: Dict[str, Set[WebSocket]] = defaultdict(set)
 
-                                                      # Connection tracking
-                                                      self.connections: Dict[str, WebSocket] = {}
+# Connection tracking
+self.connections: Dict[str, WebSocket] = {}
 
-                                                      async def handle_connection(self, websocket: WebSocket, user_id: str):
-                                                      &quot;&quot;&quot;Handle new WebSocket connection.&quot;&quot;&quot;
-                                                      if len(self.connections) &gt;= self.max_connections:
-                                                      await websocket.close(code=1013, reason=&quot;Server at capacity&quot;)
-                                                      return
+async def handle_connection(self, websocket: WebSocket, user_id: str):
+&quot;&quot;&quot;Handle new WebSocket connection.&quot;&quot;&quot;
+if len(self.connections) &gt;= self.max_connections:
+await websocket.close(code=1013, reason=&quot;Server at capacity&quot;)
+return
 
-                                                      self.connections[user_id] = websocket
+self.connections[user_id] = websocket
 
-                                                      try:
-                                                      async for message in websocket:
-                                                      await self.handle_client_message(websocket, user_id, message)
-                                                      finally:
-                                                      self.cleanup_connection(user_id)
+try:
+async for message in websocket:
+await self.handle_client_message(websocket, user_id, message)
+finally:
+self.cleanup_connection(user_id)
 
-                                                      async def handle_client_message(
-                                                      self,
-                                                      websocket: WebSocket,
-                                                      user_id: str,
-                                                      message: str
-                                                      ):
-                                                      &quot;&quot;&quot;Handle JOIN/PART commands from client.&quot;&quot;&quot;
-                                                      data = json.loads(message)
+async def handle_client_message(
+self,
+websocket: WebSocket,
+user_id: str,
+message: str
+):
+&quot;&quot;&quot;Handle JOIN/PART commands from client.&quot;&quot;&quot;
+data = json.loads(message)
 
-                                                      if data[&quot;type&quot;] == &quot;JOIN&quot;:
-                                                      channel_id = data[&quot;channel_id&quot;]
-                                                      self.subscriptions[channel_id].add(websocket)
+if data[&quot;type&quot;] == &quot;JOIN&quot;:
+channel_id = data[&quot;channel_id&quot;]
+self.subscriptions[channel_id].add(websocket)
 
-                                                      # Send recent messages (last 50)
-                                                      recent = await self.get_recent_messages(channel_id, limit=50)
-                                                      await websocket.send(json.dumps({
-                                                      &quot;type&quot;: &quot;RECENT_MESSAGES&quot;,
-                                                      &quot;messages&quot;: recent
-                                                      }))
+# Send recent messages (last 50)
+recent = await self.get_recent_messages(channel_id, limit=50)
+await websocket.send(json.dumps({
+&quot;type&quot;: &quot;RECENT_MESSAGES&quot;,
+&quot;messages&quot;: recent
+}))
 
-                                                      elif data[&quot;type&quot;] == &quot;PART&quot;:
-                                                      channel_id = data[&quot;channel_id&quot;]
-                                                      self.subscriptions[channel_id].discard(websocket)
+elif data[&quot;type&quot;] == &quot;PART&quot;:
+channel_id = data[&quot;channel_id&quot;]
+self.subscriptions[channel_id].discard(websocket)
 
-                                                      async def consume_messages(self):
-                                                      &quot;&quot;&quot;
-                                                      Consume from Kafka and broadcast to subscribed connections.
-                                                      This is the core fan-out loop.
-                                                      &quot;&quot;&quot;
-                                                      async for record in self.kafka:
-                                                      channel_id = record.topic.split(&quot;.&quot;)[-1]  # chat.{channel_id}
-                                                      message = json.loads(record.value)
+async def consume_messages(self):
+&quot;&quot;&quot;
+Consume from Kafka and broadcast to subscribed connections.
+This is the core fan-out loop.
+&quot;&quot;&quot;
+async for record in self.kafka:
+channel_id = record.topic.split(&quot;.&quot;)[-1]  # chat.{channel_id}
+message = json.loads(record.value)
 
-                                                      # Get all WebSocket connections subscribed to this channel
-                                                      subscribers = self.subscriptions.get(channel_id, set())
+# Get all WebSocket connections subscribed to this channel
+subscribers = self.subscriptions.get(channel_id, set())
 
-                                                      if not subscribers:
-                                                      continue
+if not subscribers:
+continue
 
-                                                      # Broadcast to all subscribers concurrently
-                                                      payload = json.dumps({
-                                                      &quot;type&quot;: &quot;MESSAGE&quot;,
-                                                      &quot;data&quot;: message
-                                                      })
+# Broadcast to all subscribers concurrently
+payload = json.dumps({
+&quot;type&quot;: &quot;MESSAGE&quot;,
+&quot;data&quot;: message
+})
 
-                                                      # Use gather for concurrent sends, handle failures gracefully
-                                                      await asyncio.gather(
-                                                      *[self.safe_send(ws, payload) for ws in subscribers],
-                                                      return_exceptions=True
-                                                      )
+# Use gather for concurrent sends, handle failures gracefully
+await asyncio.gather(
+*[self.safe_send(ws, payload) for ws in subscribers],
+return_exceptions=True
+)
 
-                                                      async def safe_send(self, websocket: WebSocket, payload: str):
-                                                      &quot;&quot;&quot;Send with error handling - remove dead connections.&quot;&quot;&quot;
-                                                      try:
-                                                      await asyncio.wait_for(websocket.send(payload), timeout=5.0)
-                                                      except (ConnectionClosed, asyncio.TimeoutError):
-                                                      # Connection dead - will be cleaned up
-                                                      pass
-                                                      ```
-</code></pre>
+async def safe_send(self, websocket: WebSocket, payload: str):
+&quot;&quot;&quot;Send with error handling - remove dead connections.&quot;&quot;&quot;
+try:
+await asyncio.wait_for(websocket.send(payload), timeout=5.0)
+except (ConnectionClosed, asyncio.TimeoutError):
+# Connection dead - will be cleaned up
+pass</code></pre>
 <h3 id="chat-interview-questions-3-levels-deep">Chat Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How do you scale chat for 100K+ concurrent viewers in a single channel?</h4>
@@ -620,111 +614,108 @@
 </div>
 </div>
 <h3 id="clip-creation-system">Clip Creation System</h3>
-<pre><code>                                                                                      ```go
-                                                                                      // Real-time clip extraction from live stream or VOD
-                                                                                      type ClipService struct {
-                                                                                      segmentStore  SegmentStore     // In-memory/SSD cache of recent segments
-                                                                                      vodStore      VODStore         // S3 for archived content
-                                                                                      processQueue  *WorkQueue       // Async clip processing
-                                                                                      metadata      MetadataStore    // PostgreSQL for clip metadata
-                                                                                      }
+<pre><code class="language-go">// Real-time clip extraction from live stream or VOD
+type ClipService struct {
+segmentStore  SegmentStore     // In-memory/SSD cache of recent segments
+vodStore      VODStore         // S3 for archived content
+processQueue  *WorkQueue       // Async clip processing
+metadata      MetadataStore    // PostgreSQL for clip metadata
+}
 
-                                                                                      func (c *ClipService) CreateClip(req ClipRequest) (*Clip, error) {
-                                                                                      // Validate: clips are 5-60 seconds
-                                                                                      if req.Duration &lt; 5 || req.Duration &gt; 60 {
-                                                                                      return nil, ErrInvalidDuration
-                                                                                      }
+func (c *ClipService) CreateClip(req ClipRequest) (*Clip, error) {
+// Validate: clips are 5-60 seconds
+if req.Duration &lt; 5 || req.Duration &gt; 60 {
+return nil, ErrInvalidDuration
+}
 
-                                                                                      // Calculate time range
-                                                                                      // If from live stream, use current time - offset
-                                                                                      // If from VOD, use VOD timestamp
-                                                                                      var startTime, endTime time.Time
-                                                                                      if req.Source == SourceLive {
-                                                                                      endTime = time.Now().Add(-time.Duration(req.Delay) * time.Second)
-                                                                                      startTime = endTime.Add(-time.Duration(req.Duration) * time.Second)
-                                                                                      } else {
-                                                                                      startTime = req.VODTimestamp
-                                                                                      endTime = startTime.Add(time.Duration(req.Duration) * time.Second)
-                                                                                      }
+// Calculate time range
+// If from live stream, use current time - offset
+// If from VOD, use VOD timestamp
+var startTime, endTime time.Time
+if req.Source == SourceLive {
+endTime = time.Now().Add(-time.Duration(req.Delay) * time.Second)
+startTime = endTime.Add(-time.Duration(req.Duration) * time.Second)
+} else {
+startTime = req.VODTimestamp
+endTime = startTime.Add(time.Duration(req.Duration) * time.Second)
+}
 
-                                                                                      // Get segments from appropriate store
-                                                                                      var segments []*Segment
-                                                                                      var err error
+// Get segments from appropriate store
+var segments []*Segment
+var err error
 
-                                                                                      if req.Source == SourceLive {
-                                                                                      // Recent segments in memory/SSD (kept for ~2 hours)
-                                                                                      segments, err = c.segmentStore.GetRange(req.ChannelID, startTime, endTime)
-                                                                                      } else {
-                                                                                      // Fetch from S3
-                                                                                      segments, err = c.vodStore.GetSegments(req.VODID, startTime, endTime)
-                                                                                      }
+if req.Source == SourceLive {
+// Recent segments in memory/SSD (kept for ~2 hours)
+segments, err = c.segmentStore.GetRange(req.ChannelID, startTime, endTime)
+} else {
+// Fetch from S3
+segments, err = c.vodStore.GetSegments(req.VODID, startTime, endTime)
+}
 
-                                                                                      if err != nil {
-                                                                                      return nil, fmt.Errorf(&quot;failed to get segments: %w&quot;, err)
-                                                                                      }
+if err != nil {
+return nil, fmt.Errorf(&quot;failed to get segments: %w&quot;, err)
+}
 
-                                                                                      // Create clip record
-                                                                                      clip := &amp;Clip{
-                                                                                      ID:           uuid.New().String(),
-                                                                                      ChannelID:    req.ChannelID,
-                                                                                      CreatorID:    req.UserID,
-                                                                                      Title:        req.Title,
-                                                                                      Duration:     req.Duration,
-                                                                                      SourceType:   req.Source,
-                                                                                      Status:       ClipStatusProcessing,
-                                                                                      CreatedAt:    time.Now(),
-                                                                                      }
+// Create clip record
+clip := &amp;Clip{
+ID:           uuid.New().String(),
+ChannelID:    req.ChannelID,
+CreatorID:    req.UserID,
+Title:        req.Title,
+Duration:     req.Duration,
+SourceType:   req.Source,
+Status:       ClipStatusProcessing,
+CreatedAt:    time.Now(),
+}
 
-                                                                                      // Save metadata immediately (clip is &quot;created&quot; but processing)
-                                                                                      if err := c.metadata.SaveClip(clip); err != nil {
-                                                                                      return nil, err
-                                                                                      }
+// Save metadata immediately (clip is &quot;created&quot; but processing)
+if err := c.metadata.SaveClip(clip); err != nil {
+return nil, err
+}
 
-                                                                                      // Queue async processing (combine segments, generate thumbnail)
-                                                                                      c.processQueue.Push(&amp;ClipJob{
-                                                                                      Clip:     clip,
-                                                                                      Segments: segments,
-                                                                                      })
+// Queue async processing (combine segments, generate thumbnail)
+c.processQueue.Push(&amp;ClipJob{
+Clip:     clip,
+Segments: segments,
+})
 
-                                                                                      // Return immediately - client polls for completion
-                                                                                      return clip, nil
-                                                                                      }
+// Return immediately - client polls for completion
+return clip, nil
+}
 
-                                                                                      func (c *ClipService) ProcessClip(job *ClipJob) error {
-                                                                                      // Step 1: Combine segments into single video file
-                                                                                      // Uses FFmpeg to concatenate and trim to exact timestamps
-                                                                                      combinedPath, err := c.combineSegments(job.Segments, job.Clip.Duration)
-                                                                                      if err != nil {
-                                                                                      return c.markFailed(job.Clip.ID, err)
-                                                                                      }
+func (c *ClipService) ProcessClip(job *ClipJob) error {
+// Step 1: Combine segments into single video file
+// Uses FFmpeg to concatenate and trim to exact timestamps
+combinedPath, err := c.combineSegments(job.Segments, job.Clip.Duration)
+if err != nil {
+return c.markFailed(job.Clip.ID, err)
+}
 
-                                                                                      // Step 2: Generate thumbnail at middle of clip
-                                                                                      thumbnailPath, err := c.generateThumbnail(combinedPath)
-                                                                                      if err != nil {
-                                                                                      return c.markFailed(job.Clip.ID, err)
-                                                                                      }
+// Step 2: Generate thumbnail at middle of clip
+thumbnailPath, err := c.generateThumbnail(combinedPath)
+if err != nil {
+return c.markFailed(job.Clip.ID, err)
+}
 
-                                                                                      // Step 3: Upload to permanent storage
-                                                                                      videoURL, err := c.vodStore.Upload(combinedPath, fmt.Sprintf(&quot;clips/%s/video.mp4&quot;, job.Clip.ID))
-                                                                                      if err != nil {
-                                                                                      return c.markFailed(job.Clip.ID, err)
-                                                                                      }
+// Step 3: Upload to permanent storage
+videoURL, err := c.vodStore.Upload(combinedPath, fmt.Sprintf(&quot;clips/%s/video.mp4&quot;, job.Clip.ID))
+if err != nil {
+return c.markFailed(job.Clip.ID, err)
+}
 
-                                                                                      thumbURL, err := c.vodStore.Upload(thumbnailPath, fmt.Sprintf(&quot;clips/%s/thumb.jpg&quot;, job.Clip.ID))
-                                                                                      if err != nil {
-                                                                                      return c.markFailed(job.Clip.ID, err)
-                                                                                      }
+thumbURL, err := c.vodStore.Upload(thumbnailPath, fmt.Sprintf(&quot;clips/%s/thumb.jpg&quot;, job.Clip.ID))
+if err != nil {
+return c.markFailed(job.Clip.ID, err)
+}
 
-                                                                                      // Step 4: Update metadata
-                                                                                      return c.metadata.UpdateClip(job.Clip.ID, map[string]interface{}{
-                                                                                      &quot;status&quot;:        ClipStatusReady,
-                                                                                      &quot;video_url&quot;:     videoURL,
-                                                                                      &quot;thumbnail_url&quot;: thumbURL,
-                                                                                      &quot;processed_at&quot;:  time.Now(),
-                                                                                      })
-                                                                                      }
-                                                                                      ```
-</code></pre>
+// Step 4: Update metadata
+return c.metadata.UpdateClip(job.Clip.ID, map[string]interface{}{
+&quot;status&quot;:        ClipStatusReady,
+&quot;video_url&quot;:     videoURL,
+&quot;thumbnail_url&quot;: thumbURL,
+&quot;processed_at&quot;:  time.Now(),
+})
+}</code></pre>
 <h3 id="vod-interview-questions-3-levels-deep">VOD Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How do you efficiently store VODs when a popular streamer broadcasts 8 hours daily?</h4>
@@ -847,147 +838,144 @@
 </div>
 </div>
 <h3 id="transcoding-implementation">Transcoding Implementation</h3>
-<pre><code>                                                                                                              ```python
-                                                                                                              class TranscodingPipeline:
-                                                                                                              &quot;&quot;&quot;
-                                                                                                              Real-time transcoding pipeline using GPU acceleration.
+<pre><code class="language-python">class TranscodingPipeline:
+&quot;&quot;&quot;
+Real-time transcoding pipeline using GPU acceleration.
 
-                                                                                                              Performance Requirements:
-                                                                                                              - Must encode faster than real-time (1 second of video in &lt; 1 second)
-                                                                                                              - Target: 0.3-0.5 seconds processing per second of content
-                                                                                                              - GPU memory: ~500MB per stream per output quality
-                                                                                                              &quot;&quot;&quot;
+Performance Requirements:
+- Must encode faster than real-time (1 second of video in &lt; 1 second)
+- Target: 0.3-0.5 seconds processing per second of content
+- GPU memory: ~500MB per stream per output quality
+&quot;&quot;&quot;
 
-                                                                                                              def __init__(self, gpu_cluster: GPUCluster, config: TranscodeConfig):
-                                                                                                              self.gpu_cluster = gpu_cluster
-                                                                                                              self.config = config
-                                                                                                              self.active_streams: Dict[str, TranscodeSession] = {}
+def __init__(self, gpu_cluster: GPUCluster, config: TranscodeConfig):
+self.gpu_cluster = gpu_cluster
+self.config = config
+self.active_streams: Dict[str, TranscodeSession] = {}
 
-                                                                                                              async def start_stream(
-                                                                                                              self,
-                                                                                                              channel_id: str,
-                                                                                                              input_stream: RTMPStream,
-                                                                                                              tier: StreamerTier
-                                                                                                              ) -&gt; TranscodeSession:
-                                                                                                              # Determine quality ladder based on tier
-                                                                                                              qualities = self.get_quality_ladder(tier)
+async def start_stream(
+self,
+channel_id: str,
+input_stream: RTMPStream,
+tier: StreamerTier
+) -&gt; TranscodeSession:
+# Determine quality ladder based on tier
+qualities = self.get_quality_ladder(tier)
 
-                                                                                                              # Allocate GPU resources
-                                                                                                              gpu_allocation = await self.gpu_cluster.allocate(
-                                                                                                              stream_id=channel_id,
-                                                                                                              outputs=len(qualities),
-                                                                                                              priority=tier.priority,
-                                                                                                              )
+# Allocate GPU resources
+gpu_allocation = await self.gpu_cluster.allocate(
+stream_id=channel_id,
+outputs=len(qualities),
+priority=tier.priority,
+)
 
-                                                                                                              if not gpu_allocation:
-                                                                                                              if tier == StreamerTier.PARTNER:
-                                                                                                              # Partners are guaranteed - wait for resources
-                                                                                                              gpu_allocation = await self.gpu_cluster.allocate_with_preemption(
-                                                                                                              stream_id=channel_id,
-                                                                                                              outputs=len(qualities),
-                                                                                                              )
-                                                                                                              else:
-                                                                                                              # Non-partners get source-only when capacity constrained
-                                                                                                              return self.create_passthrough_session(channel_id, input_stream)
+if not gpu_allocation:
+if tier == StreamerTier.PARTNER:
+# Partners are guaranteed - wait for resources
+gpu_allocation = await self.gpu_cluster.allocate_with_preemption(
+stream_id=channel_id,
+outputs=len(qualities),
+)
+else:
+# Non-partners get source-only when capacity constrained
+return self.create_passthrough_session(channel_id, input_stream)
 
-                                                                                                              # Create FFmpeg pipeline
-                                                                                                              session = TranscodeSession(
-                                                                                                              channel_id=channel_id,
-                                                                                                              input_stream=input_stream,
-                                                                                                              outputs=qualities,
-                                                                                                              gpu_id=gpu_allocation.gpu_id,
-                                                                                                              )
+# Create FFmpeg pipeline
+session = TranscodeSession(
+channel_id=channel_id,
+input_stream=input_stream,
+outputs=qualities,
+gpu_id=gpu_allocation.gpu_id,
+)
 
-                                                                                                              # Start encoding pipeline
-                                                                                                              await session.start()
-                                                                                                              self.active_streams[channel_id] = session
+# Start encoding pipeline
+await session.start()
+self.active_streams[channel_id] = session
 
-                                                                                                              return session
+return session
 
-                                                                                                              def get_quality_ladder(self, tier: StreamerTier) -&gt; List[QualityProfile]:
-                                                                                                              &quot;&quot;&quot;Get ABR ladder based on streamer tier.&quot;&quot;&quot;
-                                                                                                              if tier == StreamerTier.PARTNER:
-                                                                                                              return [
-                                                                                                              QualityProfile(&quot;1080p60&quot;, 1920, 1080, 60, 6000),
-                                                                                                              QualityProfile(&quot;720p60&quot;, 1280, 720, 60, 3000),
-                                                                                                              QualityProfile(&quot;480p30&quot;, 852, 480, 30, 1500),
-                                                                                                              QualityProfile(&quot;360p30&quot;, 640, 360, 30, 800),
-                                                                                                              QualityProfile(&quot;160p30&quot;, 284, 160, 30, 400),
-                                                                                                              ]
-                                                                                                              elif tier == StreamerTier.AFFILIATE:
-                                                                                                              return [
-                                                                                                              QualityProfile(&quot;source&quot;, 1920, 1080, 60, 6000),
-                                                                                                              QualityProfile(&quot;720p60&quot;, 1280, 720, 60, 3000),
-                                                                                                              QualityProfile(&quot;480p30&quot;, 852, 480, 30, 1500),
-                                                                                                              ]
-                                                                                                              else:
-                                                                                                              # Regular streamers - source only (no transcoding)
-                                                                                                              return [QualityProfile(&quot;source&quot;, 1920, 1080, 60, 6000)]
+def get_quality_ladder(self, tier: StreamerTier) -&gt; List[QualityProfile]:
+&quot;&quot;&quot;Get ABR ladder based on streamer tier.&quot;&quot;&quot;
+if tier == StreamerTier.PARTNER:
+return [
+QualityProfile(&quot;1080p60&quot;, 1920, 1080, 60, 6000),
+QualityProfile(&quot;720p60&quot;, 1280, 720, 60, 3000),
+QualityProfile(&quot;480p30&quot;, 852, 480, 30, 1500),
+QualityProfile(&quot;360p30&quot;, 640, 360, 30, 800),
+QualityProfile(&quot;160p30&quot;, 284, 160, 30, 400),
+]
+elif tier == StreamerTier.AFFILIATE:
+return [
+QualityProfile(&quot;source&quot;, 1920, 1080, 60, 6000),
+QualityProfile(&quot;720p60&quot;, 1280, 720, 60, 3000),
+QualityProfile(&quot;480p30&quot;, 852, 480, 30, 1500),
+]
+else:
+# Regular streamers - source only (no transcoding)
+return [QualityProfile(&quot;source&quot;, 1920, 1080, 60, 6000)]
 
 
-                                                                                                              class TranscodeSession:
-                                                                                                              &quot;&quot;&quot;
-                                                                                                              Active transcoding session using FFmpeg with NVENC.
-                                                                                                              &quot;&quot;&quot;
+class TranscodeSession:
+&quot;&quot;&quot;
+Active transcoding session using FFmpeg with NVENC.
+&quot;&quot;&quot;
 
-                                                                                                              async def start(self):
-                                                                                                              &quot;&quot;&quot;Start FFmpeg transcoding pipeline.&quot;&quot;&quot;
-                                                                                                              # Build FFmpeg command for multi-output encoding
-                                                                                                              cmd = self.build_ffmpeg_command()
+async def start(self):
+&quot;&quot;&quot;Start FFmpeg transcoding pipeline.&quot;&quot;&quot;
+# Build FFmpeg command for multi-output encoding
+cmd = self.build_ffmpeg_command()
 
-                                                                                                              # Start process
-                                                                                                              self.process = await asyncio.create_subprocess_exec(
-                                                                                                              *cmd,
-                                                                                                              stdin=asyncio.subprocess.PIPE,
-                                                                                                              stdout=asyncio.subprocess.PIPE,
-                                                                                                              stderr=asyncio.subprocess.PIPE,
-                                                                                                              )
+# Start process
+self.process = await asyncio.create_subprocess_exec(
+*cmd,
+stdin=asyncio.subprocess.PIPE,
+stdout=asyncio.subprocess.PIPE,
+stderr=asyncio.subprocess.PIPE,
+)
 
-                                                                                                              # Start monitoring task
-                                                                                                              asyncio.create_task(self.monitor_health())
+# Start monitoring task
+asyncio.create_task(self.monitor_health())
 
-                                                                                                              def build_ffmpeg_command(self) -&gt; List[str]:
-                                                                                                              &quot;&quot;&quot;
-                                                                                                              Build FFmpeg command for GPU-accelerated multi-output encoding.
+def build_ffmpeg_command(self) -&gt; List[str]:
+&quot;&quot;&quot;
+Build FFmpeg command for GPU-accelerated multi-output encoding.
 
-                                                                                                              Key flags:
-                                                                                                              - -hwaccel cuda: Use GPU for decoding
-                                                                                                              - -c:v h264_nvenc: Use NVIDIA hardware encoder
-                                                                                                              - -preset p4: Balance quality/speed (p1=fastest, p7=slowest)
-                                                                                                              - -g 120: Keyframe every 2 seconds at 60fps
-                                                                                                              - -sc_threshold 0: Disable scene change detection for consistent segments
-                                                                                                              &quot;&quot;&quot;
-                                                                                                              cmd = [
-                                                                                                              &quot;ffmpeg&quot;,
-                                                                                                              &quot;-hwaccel&quot;, &quot;cuda&quot;,
-                                                                                                              &quot;-hwaccel_device&quot;, str(self.gpu_id),
-                                                                                                              &quot;-i&quot;, self.input_url,
-                                                                                                              ]
+Key flags:
+- -hwaccel cuda: Use GPU for decoding
+- -c:v h264_nvenc: Use NVIDIA hardware encoder
+- -preset p4: Balance quality/speed (p1=fastest, p7=slowest)
+- -g 120: Keyframe every 2 seconds at 60fps
+- -sc_threshold 0: Disable scene change detection for consistent segments
+&quot;&quot;&quot;
+cmd = [
+&quot;ffmpeg&quot;,
+&quot;-hwaccel&quot;, &quot;cuda&quot;,
+&quot;-hwaccel_device&quot;, str(self.gpu_id),
+&quot;-i&quot;, self.input_url,
+]
 
-                                                                                                              for output in self.outputs:
-                                                                                                              cmd.extend([
-                                                                                                              &quot;-map&quot;, &quot;0:v&quot;, &quot;-map&quot;, &quot;0:a&quot;,
-                                                                                                              &quot;-c:v&quot;, &quot;h264_nvenc&quot;,
-                                                                                                              &quot;-preset&quot;, &quot;p4&quot;,
-                                                                                                              &quot;-b:v&quot;, f&quot;{output.bitrate}k&quot;,
-                                                                                                              &quot;-maxrate&quot;, f&quot;{int(output.bitrate * 1.5)}k&quot;,
-                                                                                                              &quot;-bufsize&quot;, f&quot;{output.bitrate * 2}k&quot;,
-                                                                                                              &quot;-vf&quot;, f&quot;scale={output.width}:{output.height}&quot;,
-                                                                                                              &quot;-r&quot;, str(output.fps),
-                                                                                                              &quot;-g&quot;, str(output.fps * 2),  # Keyframe interval
-                                                                                                              &quot;-sc_threshold&quot;, &quot;0&quot;,
-                                                                                                              &quot;-c:a&quot;, &quot;aac&quot;,
-                                                                                                              &quot;-b:a&quot;, &quot;128k&quot;,
-                                                                                                              &quot;-f&quot;, &quot;hls&quot;,
-                                                                                                              &quot;-hls_time&quot;, &quot;4&quot;,
-                                                                                                              &quot;-hls_list_size&quot;, &quot;5&quot;,
-                                                                                                              &quot;-hls_flags&quot;, &quot;delete_segments&quot;,
-                                                                                                              f&quot;{self.output_path}/{output.name}/playlist.m3u8&quot;
-                                                                                                              ])
+for output in self.outputs:
+cmd.extend([
+&quot;-map&quot;, &quot;0:v&quot;, &quot;-map&quot;, &quot;0:a&quot;,
+&quot;-c:v&quot;, &quot;h264_nvenc&quot;,
+&quot;-preset&quot;, &quot;p4&quot;,
+&quot;-b:v&quot;, f&quot;{output.bitrate}k&quot;,
+&quot;-maxrate&quot;, f&quot;{int(output.bitrate * 1.5)}k&quot;,
+&quot;-bufsize&quot;, f&quot;{output.bitrate * 2}k&quot;,
+&quot;-vf&quot;, f&quot;scale={output.width}:{output.height}&quot;,
+&quot;-r&quot;, str(output.fps),
+&quot;-g&quot;, str(output.fps * 2),  # Keyframe interval
+&quot;-sc_threshold&quot;, &quot;0&quot;,
+&quot;-c:a&quot;, &quot;aac&quot;,
+&quot;-b:a&quot;, &quot;128k&quot;,
+&quot;-f&quot;, &quot;hls&quot;,
+&quot;-hls_time&quot;, &quot;4&quot;,
+&quot;-hls_list_size&quot;, &quot;5&quot;,
+&quot;-hls_flags&quot;, &quot;delete_segments&quot;,
+f&quot;{self.output_path}/{output.name}/playlist.m3u8&quot;
+])
 
-                                                                                                              return cmd
-                                                                                                              ```
-</code></pre>
+return cmd</code></pre>
 <h3 id="transcoding-interview-questions-3-levels-deep">Transcoding Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: Why does Twitch need to transcode streams? Can't viewers just watch the source quality?</h4>
@@ -1090,257 +1078,251 @@
 </div>
 </div>
 <h3 id="recommendation-implementation">Recommendation Implementation</h3>
-<pre><code>                                                                                                                      ```python
-                                                                                                                      class RecommendationEngine:
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      Two-stage recommendation pipeline: Candidate Generation + Ranking.
+<pre><code class="language-python">class RecommendationEngine:
+&quot;&quot;&quot;
+Two-stage recommendation pipeline: Candidate Generation + Ranking.
 
-                                                                                                                      Architecture follows YouTube's deep learning recommendations paper
-                                                                                                                      adapted for live streaming constraints.
-                                                                                                                      &quot;&quot;&quot;
+Architecture follows YouTube's deep learning recommendations paper
+adapted for live streaming constraints.
+&quot;&quot;&quot;
 
-                                                                                                                      def __init__(
-                                                                                                                      self,
-                                                                                                                      embedding_store: EmbeddingStore,
-                                                                                                                      ranking_model: RankingModel,
-                                                                                                                      feature_store: FeatureStore,
-                                                                                                                      ):
-                                                                                                                      self.embeddings = embedding_store
-                                                                                                                      self.ranker = ranking_model
-                                                                                                                      self.features = feature_store
+def __init__(
+self,
+embedding_store: EmbeddingStore,
+ranking_model: RankingModel,
+feature_store: FeatureStore,
+):
+self.embeddings = embedding_store
+self.ranker = ranking_model
+self.features = feature_store
 
-                                                                                                                      async def get_recommendations(
-                                                                                                                      self,
-                                                                                                                      user_id: str,
-                                                                                                                      context: RecommendationContext,
-                                                                                                                      limit: int = 20,
-                                                                                                                      ) -&gt; List[RecommendedStream]:
-                                                                                                                      # Stage 1: Candidate Generation (fast, retrieves 1000s)
-                                                                                                                      candidates = await self.generate_candidates(user_id, context)
+async def get_recommendations(
+self,
+user_id: str,
+context: RecommendationContext,
+limit: int = 20,
+) -&gt; List[RecommendedStream]:
+# Stage 1: Candidate Generation (fast, retrieves 1000s)
+candidates = await self.generate_candidates(user_id, context)
 
-                                                                                                                      # Stage 2: Ranking (slower, scores 100s)
-                                                                                                                      ranked = await self.rank_candidates(user_id, candidates, context)
+# Stage 2: Ranking (slower, scores 100s)
+ranked = await self.rank_candidates(user_id, candidates, context)
 
-                                                                                                                      # Stage 3: Post-processing
-                                                                                                                      final = self.apply_business_rules(ranked, context)
-                                                                                                                      final = self.ensure_diversity(final)
+# Stage 3: Post-processing
+final = self.apply_business_rules(ranked, context)
+final = self.ensure_diversity(final)
 
-                                                                                                                      return final[:limit]
+return final[:limit]
 
-                                                                                                                      async def generate_candidates(
-                                                                                                                      self,
-                                                                                                                      user_id: str,
-                                                                                                                      context: RecommendationContext,
-                                                                                                                      ) -&gt; List[CandidateStream]:
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      Retrieve candidate streams using multiple strategies.
-                                                                                                                      Goal: High recall (don't miss good streams), speed (&lt; 50ms).
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      candidates = set()
+async def generate_candidates(
+self,
+user_id: str,
+context: RecommendationContext,
+) -&gt; List[CandidateStream]:
+&quot;&quot;&quot;
+Retrieve candidate streams using multiple strategies.
+Goal: High recall (don't miss good streams), speed (&lt; 50ms).
+&quot;&quot;&quot;
+candidates = set()
 
-                                                                                                                      # Strategy 1: Followed channels that are live
-                                                                                                                      followed_live = await self.get_followed_live(user_id)
-                                                                                                                      candidates.update(followed_live)
+# Strategy 1: Followed channels that are live
+followed_live = await self.get_followed_live(user_id)
+candidates.update(followed_live)
 
-                                                                                                                      # Strategy 2: Similar to recently watched (embedding similarity)
-                                                                                                                      user_embedding = await self.embeddings.get_user(user_id)
-                                                                                                                      similar_streams = await self.embeddings.nearest_neighbors(
-                                                                                                                      user_embedding,
-                                                                                                                      k=500,
-                                                                                                                      filter=&quot;is_live=true&quot;
-                                                                                                                      )
-                                                                                                                      candidates.update(similar_streams)
+# Strategy 2: Similar to recently watched (embedding similarity)
+user_embedding = await self.embeddings.get_user(user_id)
+similar_streams = await self.embeddings.nearest_neighbors(
+user_embedding,
+k=500,
+filter=&quot;is_live=true&quot;
+)
+candidates.update(similar_streams)
 
-                                                                                                                      # Strategy 3: Popular in user's preferred categories
-                                                                                                                      preferred_categories = await self.features.get_user_categories(user_id)
-                                                                                                                      for category in preferred_categories[:5]:
-                                                                                                                      popular_in_cat = await self.get_popular_in_category(category, limit=100)
-                                                                                                                      candidates.update(popular_in_cat)
+# Strategy 3: Popular in user's preferred categories
+preferred_categories = await self.features.get_user_categories(user_id)
+for category in preferred_categories[:5]:
+popular_in_cat = await self.get_popular_in_category(category, limit=100)
+candidates.update(popular_in_cat)
 
-                                                                                                                      # Strategy 4: Collaborative filtering (viewers like you also watched)
-                                                                                                                      cf_candidates = await self.collaborative_filter(user_id, limit=200)
-                                                                                                                      candidates.update(cf_candidates)
+# Strategy 4: Collaborative filtering (viewers like you also watched)
+cf_candidates = await self.collaborative_filter(user_id, limit=200)
+candidates.update(cf_candidates)
 
-                                                                                                                      # Strategy 5: Global trending (ensures fresh content)
-                                                                                                                      trending = await self.get_trending(limit=100)
-                                                                                                                      candidates.update(trending)
+# Strategy 5: Global trending (ensures fresh content)
+trending = await self.get_trending(limit=100)
+candidates.update(trending)
 
-                                                                                                                      return list(candidates)
+return list(candidates)
 
-                                                                                                                      async def rank_candidates(
-                                                                                                                      self,
-                                                                                                                      user_id: str,
-                                                                                                                      candidates: List[CandidateStream],
-                                                                                                                      context: RecommendationContext,
-                                                                                                                      ) -&gt; List[ScoredStream]:
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      Score candidates using deep ranking model.
-                                                                                                                      Model predicts: P(user watches for 5+ minutes | stream, context)
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      # Fetch features for all candidates (batch for efficiency)
-                                                                                                                      user_features = await self.features.get_user_features(user_id)
-                                                                                                                      stream_features = await self.features.get_batch_stream_features(
-                                                                                                                      [c.stream_id for c in candidates]
-                                                                                                                      )
+async def rank_candidates(
+self,
+user_id: str,
+candidates: List[CandidateStream],
+context: RecommendationContext,
+) -&gt; List[ScoredStream]:
+&quot;&quot;&quot;
+Score candidates using deep ranking model.
+Model predicts: P(user watches for 5+ minutes | stream, context)
+&quot;&quot;&quot;
+# Fetch features for all candidates (batch for efficiency)
+user_features = await self.features.get_user_features(user_id)
+stream_features = await self.features.get_batch_stream_features(
+[c.stream_id for c in candidates]
+)
 
-                                                                                                                      # Build feature vectors
-                                                                                                                      feature_vectors = []
-                                                                                                                      for candidate in candidates:
-                                                                                                                      sf = stream_features[candidate.stream_id]
+# Build feature vectors
+feature_vectors = []
+for candidate in candidates:
+sf = stream_features[candidate.stream_id]
 
-                                                                                                                      features = {
-                                                                                                                      # User-stream affinity
-                                                                                                                      &quot;embedding_similarity&quot;: self.cosine_sim(
-                                                                                                                      user_features[&quot;embedding&quot;], sf[&quot;embedding&quot;]
-                                                                                                                      ),
-                                                                                                                      &quot;shared_viewers_count&quot;: sf[&quot;shared_viewers&quot;].get(user_id, 0),
-                                                                                                                      &quot;category_match&quot;: int(sf[&quot;category&quot;] in user_features[&quot;preferred_categories&quot;]),
-                                                                                                                      &quot;language_match&quot;: int(sf[&quot;language&quot;] == user_features[&quot;language&quot;]),
+features = {
+# User-stream affinity
+&quot;embedding_similarity&quot;: self.cosine_sim(
+user_features[&quot;embedding&quot;], sf[&quot;embedding&quot;]
+),
+&quot;shared_viewers_count&quot;: sf[&quot;shared_viewers&quot;].get(user_id, 0),
+&quot;category_match&quot;: int(sf[&quot;category&quot;] in user_features[&quot;preferred_categories&quot;]),
+&quot;language_match&quot;: int(sf[&quot;language&quot;] == user_features[&quot;language&quot;]),
 
-                                                                                                                      # Stream quality
-                                                                                                                      &quot;viewer_count&quot;: sf[&quot;viewer_count&quot;],
-                                                                                                                      &quot;viewer_count_log&quot;: math.log1p(sf[&quot;viewer_count&quot;]),
-                                                                                                                      &quot;viewer_trend&quot;: sf[&quot;viewer_5min_delta&quot;],
-                                                                                                                      &quot;chat_messages_per_minute&quot;: sf[&quot;chat_rate&quot;],
-                                                                                                                      &quot;stream_duration_minutes&quot;: sf[&quot;duration_minutes&quot;],
+# Stream quality
+&quot;viewer_count&quot;: sf[&quot;viewer_count&quot;],
+&quot;viewer_count_log&quot;: math.log1p(sf[&quot;viewer_count&quot;]),
+&quot;viewer_trend&quot;: sf[&quot;viewer_5min_delta&quot;],
+&quot;chat_messages_per_minute&quot;: sf[&quot;chat_rate&quot;],
+&quot;stream_duration_minutes&quot;: sf[&quot;duration_minutes&quot;],
 
-                                                                                                                      # Historical interaction
-                                                                                                                      &quot;times_watched_channel&quot;: user_features[&quot;channel_watches&quot;].get(
-                                                                                                                      sf[&quot;channel_id&quot;], 0
-                                                                                                                      ),
-                                                                                                                      &quot;days_since_last_watch&quot;: user_features[&quot;channel_recency&quot;].get(
-                                                                                                                      sf[&quot;channel_id&quot;], 999
-                                                                                                                      ),
-                                                                                                                      &quot;is_following&quot;: int(sf[&quot;channel_id&quot;] in user_features[&quot;follows&quot;]),
-                                                                                                                      &quot;is_subscribed&quot;: int(sf[&quot;channel_id&quot;] in user_features[&quot;subs&quot;]),
+# Historical interaction
+&quot;times_watched_channel&quot;: user_features[&quot;channel_watches&quot;].get(
+sf[&quot;channel_id&quot;], 0
+),
+&quot;days_since_last_watch&quot;: user_features[&quot;channel_recency&quot;].get(
+sf[&quot;channel_id&quot;], 999
+),
+&quot;is_following&quot;: int(sf[&quot;channel_id&quot;] in user_features[&quot;follows&quot;]),
+&quot;is_subscribed&quot;: int(sf[&quot;channel_id&quot;] in user_features[&quot;subs&quot;]),
 
-                                                                                                                      # Context
-                                                                                                                      &quot;hour_of_day&quot;: context.hour,
-                                                                                                                      &quot;day_of_week&quot;: context.day_of_week,
-                                                                                                                      &quot;session_watch_count&quot;: context.streams_watched_this_session,
-                                                                                                                      &quot;is_mobile&quot;: int(context.device_type == &quot;mobile&quot;),
-                                                                                                                      }
+# Context
+&quot;hour_of_day&quot;: context.hour,
+&quot;day_of_week&quot;: context.day_of_week,
+&quot;session_watch_count&quot;: context.streams_watched_this_session,
+&quot;is_mobile&quot;: int(context.device_type == &quot;mobile&quot;),
+}
 
-                                                                                                                      feature_vectors.append(features)
+feature_vectors.append(features)
 
-                                                                                                                      # Batch prediction
-                                                                                                                      scores = await self.ranker.predict_batch(feature_vectors)
+# Batch prediction
+scores = await self.ranker.predict_batch(feature_vectors)
 
-                                                                                                                      # Combine candidates with scores
-                                                                                                                      scored = [
-                                                                                                                      ScoredStream(stream=c, score=s)
-                                                                                                                      for c, s in zip(candidates, scores)
-                                                                                                                      ]
+# Combine candidates with scores
+scored = [
+ScoredStream(stream=c, score=s)
+for c, s in zip(candidates, scores)
+]
 
-                                                                                                                      return sorted(scored, key=lambda x: x.score, reverse=True)
+return sorted(scored, key=lambda x: x.score, reverse=True)
 
-                                                                                                                      def ensure_diversity(
-                                                                                                                      self,
-                                                                                                                      streams: List[ScoredStream],
-                                                                                                                      max_same_category: int = 3,
-                                                                                                                      max_same_game: int = 2,
-                                                                                                                      ) -&gt; List[ScoredStream]:
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      Ensure recommendation diversity using MMR-like approach.
-                                                                                                                      Prevent &quot;filter bubble&quot; of same category/game.
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      result = []
-                                                                                                                      category_counts = defaultdict(int)
-                                                                                                                      game_counts = defaultdict(int)
+def ensure_diversity(
+self,
+streams: List[ScoredStream],
+max_same_category: int = 3,
+max_same_game: int = 2,
+) -&gt; List[ScoredStream]:
+&quot;&quot;&quot;
+Ensure recommendation diversity using MMR-like approach.
+Prevent &quot;filter bubble&quot; of same category/game.
+&quot;&quot;&quot;
+result = []
+category_counts = defaultdict(int)
+game_counts = defaultdict(int)
 
-                                                                                                                      for stream in streams:
-                                                                                                                      cat = stream.category
-                                                                                                                      game = stream.game_id
+for stream in streams:
+cat = stream.category
+game = stream.game_id
 
-                                                                                                                      # Skip if category/game over-represented
-                                                                                                                      if category_counts[cat] &gt;= max_same_category:
-                                                                                                                      continue
-                                                                                                                      if game and game_counts[game] &gt;= max_same_game:
-                                                                                                                      continue
+# Skip if category/game over-represented
+if category_counts[cat] &gt;= max_same_category:
+continue
+if game and game_counts[game] &gt;= max_same_game:
+continue
 
-                                                                                                                      result.append(stream)
-                                                                                                                      category_counts[cat] += 1
-                                                                                                                      if game:
-                                                                                                                      game_counts[game] += 1
+result.append(stream)
+category_counts[cat] += 1
+if game:
+game_counts[game] += 1
 
-                                                                                                                      return result
-                                                                                                                      ```
-</code></pre>
+return result</code></pre>
 <h3 id="real-time-features-pipeline">Real-Time Features Pipeline</h3>
-<pre><code>                                                                                                                      ```python
-                                                                                                                      class RealTimeFeatureService:
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      Computes and serves real-time features for recommendations.
+<pre><code class="language-python">class RealTimeFeatureService:
+&quot;&quot;&quot;
+Computes and serves real-time features for recommendations.
 
-                                                                                                                      Challenge: Features like &quot;viewer count&quot; change every second.
-                                                                                                                      Solution: Streaming computation with windowed aggregations.
-                                                                                                                      &quot;&quot;&quot;
+Challenge: Features like &quot;viewer count&quot; change every second.
+Solution: Streaming computation with windowed aggregations.
+&quot;&quot;&quot;
 
-                                                                                                                      def __init__(self, kafka_consumer, redis_client, flink_cluster):
-                                                                                                                      self.kafka = kafka_consumer
-                                                                                                                      self.redis = redis_client
-                                                                                                                      self.flink = flink_cluster
+def __init__(self, kafka_consumer, redis_client, flink_cluster):
+self.kafka = kafka_consumer
+self.redis = redis_client
+self.flink = flink_cluster
 
-                                                                                                                      async def start_feature_computation(self):
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      Flink job for streaming feature computation.
+async def start_feature_computation(self):
+&quot;&quot;&quot;
+Flink job for streaming feature computation.
 
-                                                                                                                      Input events:
-                                                                                                                      - stream_start, stream_end
-                                                                                                                      - viewer_join, viewer_leave
-                                                                                                                      - chat_message
-                                                                                                                      - follow, subscribe, raid
-                                                                                                                      &quot;&quot;&quot;
-                                                                                                                      job = self.flink.create_job(&quot;recommendation_features&quot;)
+Input events:
+- stream_start, stream_end
+- viewer_join, viewer_leave
+- chat_message
+- follow, subscribe, raid
+&quot;&quot;&quot;
+job = self.flink.create_job(&quot;recommendation_features&quot;)
 
-                                                                                                                      # Viewer count: count distinct viewers per stream
-                                                                                                                      job.add_operator(
-                                                                                                                      name=&quot;viewer_count&quot;,
-                                                                                                                      input=&quot;viewer_events&quot;,
-                                                                                                                      operation=CountDistinct(
-                                                                                                                      key=&quot;stream_id&quot;,
-                                                                                                                      value=&quot;user_id&quot;,
-                                                                                                                      window=TumblingWindow(seconds=10),
-                                                                                                                      ),
-                                                                                                                      output=&quot;stream_viewer_counts&quot;
-                                                                                                                      )
+# Viewer count: count distinct viewers per stream
+job.add_operator(
+name=&quot;viewer_count&quot;,
+input=&quot;viewer_events&quot;,
+operation=CountDistinct(
+key=&quot;stream_id&quot;,
+value=&quot;user_id&quot;,
+window=TumblingWindow(seconds=10),
+),
+output=&quot;stream_viewer_counts&quot;
+)
 
-                                                                                                                      # Viewer trend: compare current count to 5 minutes ago
-                                                                                                                      job.add_operator(
-                                                                                                                      name=&quot;viewer_trend&quot;,
-                                                                                                                      input=&quot;stream_viewer_counts&quot;,
-                                                                                                                      operation=WindowDelta(
-                                                                                                                      key=&quot;stream_id&quot;,
-                                                                                                                      current_window=10,
-                                                                                                                      compare_window=300,  # 5 minutes
-                                                                                                                      ),
-                                                                                                                      output=&quot;stream_viewer_trends&quot;
-                                                                                                                      )
+# Viewer trend: compare current count to 5 minutes ago
+job.add_operator(
+name=&quot;viewer_trend&quot;,
+input=&quot;stream_viewer_counts&quot;,
+operation=WindowDelta(
+key=&quot;stream_id&quot;,
+current_window=10,
+compare_window=300,  # 5 minutes
+),
+output=&quot;stream_viewer_trends&quot;
+)
 
-                                                                                                                      # Chat rate: messages per minute
-                                                                                                                      job.add_operator(
-                                                                                                                      name=&quot;chat_rate&quot;,
-                                                                                                                      input=&quot;chat_events&quot;,
-                                                                                                                      operation=Rate(
-                                                                                                                      key=&quot;channel_id&quot;,
-                                                                                                                      window=SlidingWindow(minutes=1),
-                                                                                                                      ),
-                                                                                                                      output=&quot;channel_chat_rates&quot;
-                                                                                                                      )
+# Chat rate: messages per minute
+job.add_operator(
+name=&quot;chat_rate&quot;,
+input=&quot;chat_events&quot;,
+operation=Rate(
+key=&quot;channel_id&quot;,
+window=SlidingWindow(minutes=1),
+),
+output=&quot;channel_chat_rates&quot;
+)
 
-                                                                                                                      # Write to Redis for serving
-                                                                                                                      job.add_sink(
-                                                                                                                      inputs=[&quot;stream_viewer_counts&quot;, &quot;stream_viewer_trends&quot;, &quot;channel_chat_rates&quot;],
-                                                                                                                      sink=RedisSink(
-                                                                                                                      self.redis,
-                                                                                                                      key_pattern=&quot;features:{stream_id}&quot;,
-                                                                                                                      ttl_seconds=30,
-                                                                                                                      )
-                                                                                                                      )
+# Write to Redis for serving
+job.add_sink(
+inputs=[&quot;stream_viewer_counts&quot;, &quot;stream_viewer_trends&quot;, &quot;channel_chat_rates&quot;],
+sink=RedisSink(
+self.redis,
+key_pattern=&quot;features:{stream_id}&quot;,
+ttl_seconds=30,
+)
+)
 
-                                                                                                                      await job.start()
-                                                                                                                      ```
-</code></pre>
+await job.start()</code></pre>
 <h3 id="recommendation-interview-questions-3-levels-deep">Recommendation Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: How does Twitch's recommendation system differ from Netflix's?</h4>
@@ -1403,41 +1385,38 @@
 </tbody>
 </table>
 </div>
-<pre><code>                                                                                                                          ```python
-                                                                                                                          # Phase 1: Simple architecture using managed services
-                                                                                                                          class StreamService:
-                                                                                                                          def __init__(self, ivs_client, chat_service):
-                                                                                                                          self.ivs = ivs_client  # AWS IVS handles ingest + transcode + CDN
-                                                                                                                          self.chat = chat_service  # Ably handles WebSocket scale
+<pre><code class="language-python"># Phase 1: Simple architecture using managed services
+class StreamService:
+def __init__(self, ivs_client, chat_service):
+self.ivs = ivs_client  # AWS IVS handles ingest + transcode + CDN
+self.chat = chat_service  # Ably handles WebSocket scale
 
-                                                                                                                          def create_stream(self, channel_id: str):
-                                                                                                                          # AWS IVS creates everything - ingest, transcode, CDN
-                                                                                                                          channel = self.ivs.create_channel(
-                                                                                                                          name=channel_id,
-                                                                                                                          type=&quot;STANDARD&quot;,  # Includes transcoding
-                                                                                                                          latency_mode=&quot;LOW&quot;,  # 3-5 second latency
-                                                                                                                          )
+def create_stream(self, channel_id: str):
+# AWS IVS creates everything - ingest, transcode, CDN
+channel = self.ivs.create_channel(
+name=channel_id,
+type=&quot;STANDARD&quot;,  # Includes transcoding
+latency_mode=&quot;LOW&quot;,  # 3-5 second latency
+)
 
-                                                                                                                          return {
-                                                                                                                          &quot;ingest_endpoint&quot;: channel.ingest_endpoint,
-                                                                                                                          &quot;stream_key&quot;: channel.stream_key,
-                                                                                                                          &quot;playback_url&quot;: channel.playback_url,
-                                                                                                                          }
+return {
+&quot;ingest_endpoint&quot;: channel.ingest_endpoint,
+&quot;stream_key&quot;: channel.stream_key,
+&quot;playback_url&quot;: channel.playback_url,
+}
 
-                                                                                                                          class ChatService:
-                                                                                                                          def __init__(self, ably_client):
-                                                                                                                          self.ably = ably_client
+class ChatService:
+def __init__(self, ably_client):
+self.ably = ably_client
 
-                                                                                                                          def send_message(self, channel_id: str, user_id: str, message: str):
-                                                                                                                          # Ably handles fan-out, no need to manage WebSocket servers
-                                                                                                                          channel = self.ably.channels.get(f&quot;chat:{channel_id}&quot;)
-                                                                                                                          channel.publish(&quot;message&quot;, {
-                                                                                                                          &quot;user_id&quot;: user_id,
-                                                                                                                          &quot;message&quot;: message,
-                                                                                                                          &quot;timestamp&quot;: time.time(),
-                                                                                                                          })
-                                                                                                                          ```
-</code></pre>
+def send_message(self, channel_id: str, user_id: str, message: str):
+# Ably handles fan-out, no need to manage WebSocket servers
+channel = self.ably.channels.get(f&quot;chat:{channel_id}&quot;)
+channel.publish(&quot;message&quot;, {
+&quot;user_id&quot;: user_id,
+&quot;message&quot;: message,
+&quot;timestamp&quot;: time.time(),
+})</code></pre>
 </div>
 </div>
 <h3 id="phase-2-growth-phase">Phase 2: Growth Phase</h3>
@@ -1588,22 +1567,22 @@
 <div style="background: linear-gradient(135deg, #2d1f3d 0%, #4a3a5d 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="red-flags-in-your-answer">Red Flags in Your Answer</h3>
 <div style="background: #3d1f1f; border-radius: 8px; padding: 16px; margin: 16px 0">
-<pre><code>                                                                                                                          - **&quot;Use WebRTC for the main broadcast stream&quot;** - Shows lack of understanding of scale requirements
-                                                                                                                          - **&quot;Store chat messages in SQL database&quot;** - Missed the real-time/ephemeral nature of chat
-                                                                                                                          - **&quot;Build custom CDN from scratch&quot;** - Unless you're at Twitch scale, this is over-engineering
-                                                                                                                          - **&quot;Single WebSocket server for all users&quot;** - Doesn't understand connection limits (~65K per server)
-                                                                                                                          - **&quot;Transcode to all qualities for every streamer&quot;** - Ignores cost constraints
-                                                                                                                          - **&quot;Same architecture for 100 viewers and 100K viewers&quot;** - Missing scale awareness
+<pre><code>- **&quot;Use WebRTC for the main broadcast stream&quot;** - Shows lack of understanding of scale requirements
+- **&quot;Store chat messages in SQL database&quot;** - Missed the real-time/ephemeral nature of chat
+- **&quot;Build custom CDN from scratch&quot;** - Unless you're at Twitch scale, this is over-engineering
+- **&quot;Single WebSocket server for all users&quot;** - Doesn't understand connection limits (~65K per server)
+- **&quot;Transcode to all qualities for every streamer&quot;** - Ignores cost constraints
+- **&quot;Same architecture for 100 viewers and 100K viewers&quot;** - Missing scale awareness
 </code></pre>
 </div>
 <h3 id="impressive-statements">Impressive Statements</h3>
 <div style="background: #1f3d1f; border-radius: 8px; padding: 16px; margin: 16px 0">
-<pre><code>                                                                                                                          - **&quot;For &lt; 100 concurrent streamers, I'd use AWS IVS rather than building transcoding infrastructure&quot;** - Shows pragmatism
-                                                                                                                          - **&quot;The median stream has very few viewers, so optimize for the common case while handling viral moments&quot;** - Demonstrates workload understanding
-                                                                                                                          - **&quot;Chat can be eventually consistent because viewers don't notice 100ms delay between edge servers&quot;** - Shows consistency trade-off awareness
-                                                                                                                          - **&quot;HLS latency comes from segment duration + encoding + CDN + buffer - each can be optimized independently&quot;** - Shows deep latency stack knowledge
-                                                                                                                          - **&quot;CDN caching converts O(n) bandwidth into O(1) for popular content&quot;** - Demonstrates CDN value understanding
-                                                                                                                          - **&quot;Transcoding is where Twitch differentiates - partners get priority access to limited GPU resources&quot;** - Shows business/technical connection
+<pre><code>- **&quot;For &lt; 100 concurrent streamers, I'd use AWS IVS rather than building transcoding infrastructure&quot;** - Shows pragmatism
+- **&quot;The median stream has very few viewers, so optimize for the common case while handling viral moments&quot;** - Demonstrates workload understanding
+- **&quot;Chat can be eventually consistent because viewers don't notice 100ms delay between edge servers&quot;** - Shows consistency trade-off awareness
+- **&quot;HLS latency comes from segment duration + encoding + CDN + buffer - each can be optimized independently&quot;** - Shows deep latency stack knowledge
+- **&quot;CDN caching converts O(n) bandwidth into O(1) for popular content&quot;** - Demonstrates CDN value understanding
+- **&quot;Transcoding is where Twitch differentiates - partners get priority access to limited GPU resources&quot;** - Shows business/technical connection
 </code></pre>
 </div>
 <h3 id="30-second-summary-for-interviews">30-Second Summary for Interviews</h3>
@@ -1613,12 +1592,12 @@
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>                                                                                                                      - [[cdn]](/topic/system-design/cdn) - Edge caching and delivery networks
-                                                                                                                      - [[message-queues]](/topic/system-design/message-queues) - Kafka for chat distribution
-                                                                                                                      - [[rate-limiting]](/topic/system-design/rate-limiting) - Chat flood protection
-                                                                                                                      - [[caching]](/topic/system-design/caching) - Segment and metadata caching
-                                                                                                                      - [[load-balancing]](/topic/system-design/load-balancing) - Ingest server selection
-                                                                                                                      - [[storage]](/topic/system-design/storage) - VOD tiered storage patterns
-                                                                                                                      - [[concurrency-patterns]](/topic/system-design/concurrency-patterns) - WebSocket server design
-                                                                                                                      - [[latency-throughput]](/topic/system-design/latency-throughput) - Streaming latency optimization
+<pre><code>- [[cdn]](/topic/system-design/cdn) - Edge caching and delivery networks
+- [[message-queues]](/topic/system-design/message-queues) - Kafka for chat distribution
+- [[rate-limiting]](/topic/system-design/rate-limiting) - Chat flood protection
+- [[caching]](/topic/system-design/caching) - Segment and metadata caching
+- [[load-balancing]](/topic/system-design/load-balancing) - Ingest server selection
+- [[storage]](/topic/system-design/storage) - VOD tiered storage patterns
+- [[concurrency-patterns]](/topic/system-design/concurrency-patterns) - WebSocket server design
+- [[latency-throughput]](/topic/system-design/latency-throughput) - Streaming latency optimization
 </code></pre>

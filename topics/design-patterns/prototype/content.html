@@ -74,8 +74,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </div>
 <h3 id="handling-circular-references">Handling Circular References</h3>
 <p>Circular references create infinite recursion in naive deep copy implementations. The solution is <strong>memo-based copying</strong>: maintain a dictionary mapping original objects to their clones. Before copying any object, check if it already exists in the memo.</p>
-<pre><code>    ```python
-    def deep_copy_with_memo(obj, memo=None):
+<pre><code class="language-python">    def deep_copy_with_memo(obj, memo=None):
     if memo is None:
     memo = {}
 
@@ -92,9 +91,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
     for key, value in obj.__dict__.items():
     setattr(clone, key, deep_copy_with_memo(value, memo))
 
-    return clone
-    ```
-</code></pre>
+    return clone</code></pre>
 <p>Python's <code>copy.deepcopy()</code> implements this pattern internally. The critical insight is that the clone must be registered in the memo <strong>before</strong> recursively copying its fields - otherwise circular references will still cause infinite recursion.</p>
 <h3 id="interview-questions-shallow-vs-deep-copy">Interview Questions: Shallow vs Deep Copy</h3>
 <p><strong>Level 1: When is shallow copy sufficient, and when must you use deep copy?</strong></p>
@@ -128,8 +125,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </div>
 </div>
 <h3 id="the-correct-way-to-implement-cloneable-if-you-must">The &quot;Correct&quot; Way to Implement Cloneable (If You Must)</h3>
-<pre><code>    ```java
-    public class Document implements Cloneable {
+<pre><code class="language-java">    public class Document implements Cloneable {
     private String title;                    // Immutable - shallow copy OK
     private Date createdAt;                  // Mutable - must deep copy
     private List&lt;Section&gt; sections;          // Mutable collection - must deep copy
@@ -155,9 +151,7 @@ The choice between shallow and deep copy is not binary. Production implementatio
       throw new AssertionError();  // Can't happen if we implement Cloneable
       }
       }
-      }
-      ```
-</code></pre>
+      }</code></pre>
 <h3 id="preferred-alternatives-to-cloneable">Preferred Alternatives to Cloneable</h3>
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);border-radius: 12px; padding: 20px; margin: 20px 0">
 <h4 style="color: #065f46; margin-top: 0">Better Approaches in Java</h4>
@@ -245,42 +239,39 @@ The choice between shallow and deep copy is not binary. Production implementatio
 - Copy-on-write for rarely-modified registries</p>
 <p><strong>Hierarchical Registries</strong>: Large systems may use registry hierarchies - local registries that fall back to parent registries, enabling context-specific prototypes with shared defaults.</p>
 <p><strong>Lazy vs Eager Initialization</strong>: Prototypes can be created eagerly at startup (faster clone requests, longer startup) or lazily on first request (faster startup, first-request latency).</p>
-<pre><code>                      ```python
-                      class PrototypeRegistry:
-                      def __init__(self, parent: 'PrototypeRegistry' = None):
-                      self._prototypes: Dict[str, Prototype] = {}
-                      self._factories: Dict[str, Callable[[], Prototype]] = {}  # Lazy init
-                      self._parent = parent
-                      self._lock = threading.RLock()
+<pre><code class="language-python">class PrototypeRegistry:
+def __init__(self, parent: 'PrototypeRegistry' = None):
+self._prototypes: Dict[str, Prototype] = {}
+self._factories: Dict[str, Callable[[], Prototype]] = {}  # Lazy init
+self._parent = parent
+self._lock = threading.RLock()
 
-                      def register(self, name: str, prototype: Prototype) -&gt; None:
-                      with self._lock:
-                      self._prototypes[name] = prototype
+def register(self, name: str, prototype: Prototype) -&gt; None:
+with self._lock:
+self._prototypes[name] = prototype
 
-                      def register_factory(self, name: str, factory: Callable[[], Prototype]) -&gt; None:
-                      &quot;&quot;&quot;Register a factory for lazy prototype initialization.&quot;&quot;&quot;
-                      with self._lock:
-                      self._factories[name] = factory
+def register_factory(self, name: str, factory: Callable[[], Prototype]) -&gt; None:
+&quot;&quot;&quot;Register a factory for lazy prototype initialization.&quot;&quot;&quot;
+with self._lock:
+self._factories[name] = factory
 
-                      def clone(self, name: str) -&gt; Prototype:
-                      with self._lock:
-                      # Check local prototypes
-                      if name in self._prototypes:
-                      return self._prototypes[name].clone()
+def clone(self, name: str) -&gt; Prototype:
+with self._lock:
+# Check local prototypes
+if name in self._prototypes:
+return self._prototypes[name].clone()
 
-                      # Check lazy factories
-                      if name in self._factories:
-                      self._prototypes[name] = self._factories[name]()
-                      del self._factories[name]
-                      return self._prototypes[name].clone()
+# Check lazy factories
+if name in self._factories:
+self._prototypes[name] = self._factories[name]()
+del self._factories[name]
+return self._prototypes[name].clone()
 
-                      # Fall back to parent registry
-                      if self._parent:
-                      return self._parent.clone(name)
+# Fall back to parent registry
+if self._parent:
+return self._parent.clone(name)
 
-                      raise KeyError(f&quot;Unknown prototype: {name}&quot;)
-                      ```
-</code></pre>
+raise KeyError(f&quot;Unknown prototype: {name}&quot;)</code></pre>
 <h3 id="interview-questions-prototype-registry">Interview Questions: Prototype Registry</h3>
 <p><strong>Level 1: What are the benefits of using a Prototype Registry versus having clients manage prototypes directly?</strong></p>
 <p>The registry centralizes prototype lifecycle management, enabling: (1) Named access without clients knowing concrete types; (2) Runtime registration/modification of prototypes; (3) Centralized policies for caching, initialization, and access control; (4) Easier testing through registry mocking; (5) Decoupling between prototype creation and usage locations.</p>
@@ -334,66 +325,60 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </div>
 <h3 id="clone-contract-documentation">Clone Contract Documentation</h3>
 <p>Complex objects need explicit documentation of cloning behavior:</p>
-<pre><code>                      ```python
-                      class Order(Prototype):
-                      &quot;&quot;&quot;
-                      Clone Contract:
+<pre><code class="language-python">class Order(Prototype):
+&quot;&quot;&quot;
+Clone Contract:
 
-                      DEEP COPIED (independent after clone):
-                      - line_items: List[LineItem] - each item cloned
-                      - shipping_address: Address - full copy
-                      - custom_fields: Dict - deep copied
+DEEP COPIED (independent after clone):
+- line_items: List[LineItem] - each item cloned
+- shipping_address: Address - full copy
+- custom_fields: Dict - deep copied
 
-                      SHALLOW COPIED (shared reference):
-                      - customer: Customer - references same customer
-                      - product_catalog: Catalog - shared, immutable
+SHALLOW COPIED (shared reference):
+- customer: Customer - references same customer
+- product_catalog: Catalog - shared, immutable
 
-                      RESET (new value for clone):
-                      - id: regenerated UUID
-                      - created_at: current timestamp
-                      - status: reset to DRAFT
-                      - observers: empty list (re-register if needed)
+RESET (new value for clone):
+- id: regenerated UUID
+- created_at: current timestamp
+- status: reset to DRAFT
+- observers: empty list (re-register if needed)
 
-                      NOT COPIED (null in clone):
-                      - payment_info: security-sensitive, must be re-entered
-                      - audit_log: clone starts fresh audit trail
-                      &quot;&quot;&quot;
-                      ```
-</code></pre>
+NOT COPIED (null in clone):
+- payment_info: security-sensitive, must be re-entered
+- audit_log: clone starts fresh audit trail
+&quot;&quot;&quot;</code></pre>
 <h3 id="implementing-cloneable-with-external-resources">Implementing Cloneable with External Resources</h3>
-<pre><code>                      ```python
-                      class DatabaseBackedDocument(Prototype):
-                      def __init__(self, doc_id: str, connection_pool: ConnectionPool):
-                      self.doc_id = doc_id
-                      self._connection_pool = connection_pool  # External resource
-                      self._content = None  # Lazy loaded
-                      self._observers: List[Observer] = []
-                      self._cache: Dict[str, Any] = {}
+<pre><code class="language-python">class DatabaseBackedDocument(Prototype):
+def __init__(self, doc_id: str, connection_pool: ConnectionPool):
+self.doc_id = doc_id
+self._connection_pool = connection_pool  # External resource
+self._content = None  # Lazy loaded
+self._observers: List[Observer] = []
+self._cache: Dict[str, Any] = {}
 
-                      def clone(self) -&gt; 'DatabaseBackedDocument':
-                      &quot;&quot;&quot;
-                      Creates a new document that shares the connection pool
-                      but has independent state.
-                      &quot;&quot;&quot;
-                      # Use new ID for the clone
-                      new_id = str(uuid.uuid4())
+def clone(self) -&gt; 'DatabaseBackedDocument':
+&quot;&quot;&quot;
+Creates a new document that shares the connection pool
+but has independent state.
+&quot;&quot;&quot;
+# Use new ID for the clone
+new_id = str(uuid.uuid4())
 
-                      # Create new instance - DON'T deepcopy the whole thing
-                      clone = DatabaseBackedDocument(new_id, self._connection_pool)
+# Create new instance - DON'T deepcopy the whole thing
+clone = DatabaseBackedDocument(new_id, self._connection_pool)
 
-                      # Deep copy the content if loaded
-                      if self._content is not None:
-                      clone._content = copy.deepcopy(self._content)
+# Deep copy the content if loaded
+if self._content is not None:
+clone._content = copy.deepcopy(self._content)
 
-                      # Don't copy observers - clone starts with none
-                      clone._observers = []
+# Don't copy observers - clone starts with none
+clone._observers = []
 
-                      # Invalidate cache - clone computes fresh
-                      clone._cache = {}
+# Invalidate cache - clone computes fresh
+clone._cache = {}
 
-                      return clone
-                      ```
-</code></pre>
+return clone</code></pre>
 <h3 id="interview-questions-cloning-complex-objects">Interview Questions: Cloning Complex Objects</h3>
 <p><strong>Level 1: What special handling is needed when cloning objects that contain database connections or file handles?</strong></p>
 <p>These resources cannot be duplicated at the OS/network level. Options: (1) Share the reference if thread-safe and semantically appropriate; (2) Create a new connection for the clone from a connection pool; (3) Set to null in clone and lazy-initialize on first access; (4) Throw an exception if cloning resource-holding objects is prohibited by design. Document the chosen behavior clearly.</p>
@@ -405,964 +390,949 @@ The choice between shallow and deep copy is not binary. Production implementatio
 <h2 id="real-world-implementation-patterns">Real-World Implementation Patterns</h2>
 <h3 id="pattern-1-prototype-with-copy-on-write">Pattern 1: Prototype with Copy-on-Write</h3>
 <p>For memory efficiency when clones rarely diverge:</p>
-<pre><code>                      ```python
-                      class CopyOnWriteDocument:
-                      &quot;&quot;&quot;Shares state until modification, then copies.&quot;&quot;&quot;
+<pre><code class="language-python">class CopyOnWriteDocument:
+&quot;&quot;&quot;Shares state until modification, then copies.&quot;&quot;&quot;
 
-                      def __init__(self, data=None, shared_data=None):
-                      if shared_data is not None:
-                      self._shared_data = shared_data
-                      self._local_modifications = {}
-                      self._is_copy = True
-                      else:
-                      self._shared_data = data or {}
-                      self._local_modifications = {}
-                      self._is_copy = False
+def __init__(self, data=None, shared_data=None):
+if shared_data is not None:
+self._shared_data = shared_data
+self._local_modifications = {}
+self._is_copy = True
+else:
+self._shared_data = data or {}
+self._local_modifications = {}
+self._is_copy = False
 
-                      def clone(self) -&gt; 'CopyOnWriteDocument':
-                      # Clone shares original data, tracks own modifications
-                      return CopyOnWriteDocument(shared_data=self._shared_data)
+def clone(self) -&gt; 'CopyOnWriteDocument':
+# Clone shares original data, tracks own modifications
+return CopyOnWriteDocument(shared_data=self._shared_data)
 
-                      def __getitem__(self, key):
-                      if key in self._local_modifications:
-                      return self._local_modifications[key]
-                      return self._shared_data[key]
+def __getitem__(self, key):
+if key in self._local_modifications:
+return self._local_modifications[key]
+return self._shared_data[key]
 
-                      def __setitem__(self, key, value):
-                      # Modifications go to local storage only
-                      self._local_modifications[key] = value
+def __setitem__(self, key, value):
+# Modifications go to local storage only
+self._local_modifications[key] = value
 
-                      def materialize(self) -&gt; Dict:
-                      &quot;&quot;&quot;Create fully independent copy of current state.&quot;&quot;&quot;
-                      result = dict(self._shared_data)
-                      result.update(self._local_modifications)
-                      return result
-                      ```
-</code></pre>
+def materialize(self) -&gt; Dict:
+&quot;&quot;&quot;Create fully independent copy of current state.&quot;&quot;&quot;
+result = dict(self._shared_data)
+result.update(self._local_modifications)
+return result</code></pre>
 <h3 id="pattern-2-versioned-prototype-registry">Pattern 2: Versioned Prototype Registry</h3>
-<pre><code>                      ```python
-                      class VersionedPrototypeRegistry:
-                      &quot;&quot;&quot;Registry supporting multiple prototype versions.&quot;&quot;&quot;
+<pre><code class="language-python">class VersionedPrototypeRegistry:
+&quot;&quot;&quot;Registry supporting multiple prototype versions.&quot;&quot;&quot;
 
-                      def __init__(self):
-                      self._versions: Dict[str, Dict[str, Prototype]] = defaultdict(dict)
-                      self._latest: Dict[str, str] = {}  # name -&gt; latest version
+def __init__(self):
+self._versions: Dict[str, Dict[str, Prototype]] = defaultdict(dict)
+self._latest: Dict[str, str] = {}  # name -&gt; latest version
 
-                      def register(self, name: str, version: str, prototype: Prototype) -&gt; None:
-                      self._versions[name][version] = prototype
-                      # Update latest if this is newer
-                      if name not in self._latest or version &gt; self._latest[name]:
-                      self._latest[name] = version
+def register(self, name: str, version: str, prototype: Prototype) -&gt; None:
+self._versions[name][version] = prototype
+# Update latest if this is newer
+if name not in self._latest or version &gt; self._latest[name]:
+self._latest[name] = version
 
-                      def clone(self, name: str, version: str = None) -&gt; Prototype:
-                      if version is None:
-                      version = self._latest.get(name)
-                      if version is None:
-                      raise KeyError(f&quot;No versions registered for '{name}'&quot;)
+def clone(self, name: str, version: str = None) -&gt; Prototype:
+if version is None:
+version = self._latest.get(name)
+if version is None:
+raise KeyError(f&quot;No versions registered for '{name}'&quot;)
 
-                      prototype = self._versions[name].get(version)
-                      if prototype is None:
-                      raise KeyError(f&quot;Version '{version}' not found for '{name}'&quot;)
+prototype = self._versions[name].get(version)
+if prototype is None:
+raise KeyError(f&quot;Version '{version}' not found for '{name}'&quot;)
 
-                      clone = prototype.clone()
-                      # Embed source version metadata
-                      if hasattr(clone, 'metadata'):
-                      clone.metadata['_cloned_from_version'] = version
-                      return clone
-                      ```
-</code></pre>
+clone = prototype.clone()
+# Embed source version metadata
+if hasattr(clone, 'metadata'):
+clone.metadata['_cloned_from_version'] = version
+return clone</code></pre>
 <h3 id="pattern-3-prototype-factory-integration">Pattern 3: Prototype Factory Integration</h3>
 <p>Combining Prototype with <a href="/topic/design-patterns/factory-method">[Factory Method]</a> for flexible object creation:</p>
-<pre><code>                      ```python
-                      class DocumentFactory:
-                      &quot;&quot;&quot;Factory that uses prototypes for common cases, construction for custom.&quot;&quot;&quot;
+<pre><code class="language-python">class DocumentFactory:
+&quot;&quot;&quot;Factory that uses prototypes for common cases, construction for custom.&quot;&quot;&quot;
 
-                      def __init__(self, registry: PrototypeRegistry):
-                      self._registry = registry
+def __init__(self, registry: PrototypeRegistry):
+self._registry = registry
 
-                      def create(self, doc_type: str, **customizations) -&gt; Document:
-                      try:
-                      # Try to clone from registry first
-                      doc = self._registry.clone(doc_type)
-                      except KeyError:
-                      # Fall back to construction for unknown types
-                      doc = self._construct_custom(doc_type)
+def create(self, doc_type: str, **customizations) -&gt; Document:
+try:
+# Try to clone from registry first
+doc = self._registry.clone(doc_type)
+except KeyError:
+# Fall back to construction for unknown types
+doc = self._construct_custom(doc_type)
 
-                      # Apply customizations
-                      for key, value in customizations.items():
-                      setattr(doc, key, value)
+# Apply customizations
+for key, value in customizations.items():
+setattr(doc, key, value)
 
-                      return doc
+return doc
 
-                      def _construct_custom(self, doc_type: str) -&gt; Document:
-                      # Factory method for types without prototypes
-                      return Document(title=f&quot;New {doc_type}&quot;, content=&quot;&quot;)
-                      ```
-</code></pre>
+def _construct_custom(self, doc_type: str) -&gt; Document:
+# Factory method for types without prototypes
+return Document(title=f&quot;New {doc_type}&quot;, content=&quot;&quot;)</code></pre>
 <hr />
 <h2 id="code-implementation">Code Implementation</h2>
 <h3 id="python-implementation">Python Implementation</h3>
-<pre><code>                      ```python
-                      &quot;&quot;&quot;
-                      Prototype Pattern - Complete Implementation
-
-                      Demonstrates:
-                      - Deep vs shallow cloning
-                      - Prototype registry with versioning
-                      - Complex object cloning with external resources
-                      - Copy-on-write optimization
-                      - Thread-safe registry operations
-                      &quot;&quot;&quot;
-
-                      import copy
-                      import uuid
-                      import threading
-                      from abc import ABC, abstractmethod
-                      from typing import Dict, Any, Optional, Callable, List
-                      from datetime import datetime
-                      from collections import defaultdict
-
-
-                      class Prototype(ABC):
-                      &quot;&quot;&quot;
-                      Abstract prototype interface.
-
-                      Subclasses must implement clone() to create copies of themselves.
-                      The implementation should document its clone contract explicitly.
-                      &quot;&quot;&quot;
-
-                      @abstractmethod
-                      def clone(self) -&gt; 'Prototype':
-                      &quot;&quot;&quot;
-                      Create a copy of this object.
-
-                      Returns:
-                      A new instance that is a copy of this object.
-                      The copy semantics (shallow vs deep) are implementation-specific.
-                      &quot;&quot;&quot;
-                      pass
-
-
-                      class Document(Prototype):
-                      &quot;&quot;&quot;
-                      A document with complex nested structure demonstrating proper cloning.
-
-                      Clone Contract:
-                      - title, content: deep copied (new strings)
-                      - metadata: deep copied (independent dict)
-                      - sections: deep copied (independent list with copied sections)
-                      - formatting: deep copied (independent nested structure)
-                      - id: RESET to new UUID
-                      - created_at: RESET to current time
-                      - observers: RESET to empty list
-                      &quot;&quot;&quot;
-
-                      def __init__(self, title: str, content: str = &quot;&quot;):
-                      self.id = str(uuid.uuid4())
-                      self.title = title
-                      self.content = content
-                      self.metadata: Dict[str, Any] = {}
-                      self.sections: List[Dict[str, str]] = []
-                      self.formatting = {
-                      'font': 'Arial',
-                      'size': 12,
-                      'margins': {'top': 1, 'bottom': 1, 'left': 1, 'right': 1}
-                      }
-                      self.created_at = datetime.now()
-                      self._observers: List[Callable] = []  # Not cloned
-
-                      def add_section(self, name: str, content: str) -&gt; None:
-                      self.sections.append({'name': name, 'content': content})
-
-                      def add_observer(self, callback: Callable) -&gt; None:
-                      self._observers.append(callback)
-
-                      def clone(self) -&gt; 'Document':
-                      &quot;&quot;&quot;Create a deep copy with reset identity fields.&quot;&quot;&quot;
-                      # Deep copy entire object graph
-                      cloned = copy.deepcopy(self)
-
-                      # Reset identity fields
-                      cloned.id = str(uuid.uuid4())
-                      cloned.created_at = datetime.now()
-
-                      # Clear observers - clone starts fresh
-                      cloned._observers = []
-
-                      return cloned
-
-                      def __repr__(self) -&gt; str:
-                      return (f&quot;Document(id={self.id[:8]}..., title='{self.title}', &quot;
-                      f&quot;sections={len(self.sections)}, created={self.created_at.isoformat()})&quot;)
-
-
-                      class GameCharacter(Prototype):
-                      &quot;&quot;&quot;
-                      Game character demonstrating cloning with shared immutable resources.
-
-                      Clone Contract:
-                      - name, character_class, stats: deep copied
-                      - skills, inventory, equipment: deep copied
-                      - _loaded_assets: SHALLOW copied (immutable, expensive to load)
-                      - position: RESET to spawn point
-                      - entity_id: RESET to new UUID
-                      &quot;&quot;&quot;
-
-                      def __init__(self, name: str, character_class: str):
-                      self.entity_id = str(uuid.uuid4())
-                      self.name = name
-                      self.character_class = character_class
-                      self.level = 1
-                      self.health = 100
-                      self.mana = 50
-                      self.skills: Dict[str, int] = {}
-                      self.inventory: List[str] = []
-                      self.equipment = {'weapon': None, 'armor': None, 'accessory': None}
-                      self.position = {'x': 0.0, 'y': 0.0, 'z': 0.0}
-
-                      # Expensive to load, immutable - will be shared
-                      self._loaded_assets = self._load_assets()
-
-                      def _load_assets(self) -&gt; Dict[str, str]:
-                      &quot;&quot;&quot;Simulate expensive asset loading.&quot;&quot;&quot;
-                      # In production: load 3D models, textures, animations
-                      return {
-                      'model': f'{self.character_class.lower()}_model.fbx',
-                      'texture': f'{self.character_class.lower()}_texture.png',
-                      'animations': f'{self.character_class.lower()}_anims.dat'
-                      }
-
-                      def clone(self) -&gt; 'GameCharacter':
-                      &quot;&quot;&quot;
-                      Clone character with deep copy of mutable state,
-                      shallow copy of immutable assets.
-                      &quot;&quot;&quot;
-                      # Create new instance without expensive asset loading
-                      clone = object.__new__(GameCharacter)
-
-                      # Copy primitive fields
-                      clone.name = self.name
-                      clone.character_class = self.character_class
-                      clone.level = self.level
-                      clone.health = self.health
-                      clone.mana = self.mana
-
-                      # Deep copy mutable collections
-                      clone.skills = dict(self.skills)
-                      clone.inventory = list(self.inventory)
-                      clone.equipment = dict(self.equipment)
-
-                      # Reset position to spawn point
-                      clone.position = {'x': 0.0, 'y': 0.0, 'z': 0.0}
-
-                      # New entity ID
-                      clone.entity_id = str(uuid.uuid4())
-
-                      # SHALLOW copy - share immutable assets
-                      clone._loaded_assets = self._loaded_assets
-
-                      return clone
-
-                      def __repr__(self) -&gt; str:
-                      return (f&quot;GameCharacter(id={self.entity_id[:8]}..., name='{self.name}', &quot;
-                      f&quot;class={self.character_class}, level={self.level})&quot;)
-
-
-                      class PrototypeRegistry:
-                      &quot;&quot;&quot;
-                      Thread-safe registry for managing named prototypes.
-
-                      Supports:
-                      - Immediate registration with prototype instances
-                      - Lazy registration with factory functions
-                      - Hierarchical registries (parent fallback)
-                      - Thread-safe operations
-                      &quot;&quot;&quot;
-
-                      def __init__(self, parent: 'PrototypeRegistry' = None):
-                      self._prototypes: Dict[str, Prototype] = {}
-                      self._factories: Dict[str, Callable[[], Prototype]] = {}
-                      self._parent = parent
-                      self._lock = threading.RLock()
-
-                      def register(self, name: str, prototype: Prototype) -&gt; None:
-                      &quot;&quot;&quot;Register a prototype instance.&quot;&quot;&quot;
-                      with self._lock:
-                      self._prototypes[name] = prototype
-                      # Clear any factory for this name
-                      self._factories.pop(name, None)
-
-                      def register_lazy(self, name: str, factory: Callable[[], Prototype]) -&gt; None:
-                      &quot;&quot;&quot;Register a factory for lazy prototype initialization.&quot;&quot;&quot;
-                      with self._lock:
-                      self._factories[name] = factory
-
-                      def unregister(self, name: str) -&gt; bool:
-                      &quot;&quot;&quot;Remove a prototype. Returns True if found and removed.&quot;&quot;&quot;
-                      with self._lock:
-                      removed = name in self._prototypes or name in self._factories
-                      self._prototypes.pop(name, None)
-                      self._factories.pop(name, None)
-                      return removed
-
-                      def clone(self, name: str) -&gt; Prototype:
-                      &quot;&quot;&quot;
-                      Clone a prototype by name.
-
-                      Resolution order:
-                      1. Local prototypes
-                      2. Local factories (lazily initialized)
-                      3. Parent registry (if exists)
-
-                      Raises:
-                      KeyError: If prototype not found in any registry
-                      &quot;&quot;&quot;
-                      with self._lock:
-                      # Check local prototypes
-                      if name in self._prototypes:
-                      return self._prototypes[name].clone()
-
-                      # Check lazy factories
-                      if name in self._factories:
-                      # Initialize and cache
-                      self._prototypes[name] = self._factories[name]()
-                      del self._factories[name]
-                      return self._prototypes[name].clone()
-
-                      # Try parent
-                      if self._parent is not None:
-                      return self._parent.clone(name)
-
-                      raise KeyError(f&quot;Prototype '{name}' not found in registry&quot;)
-
-                      def list_prototypes(self) -&gt; List[str]:
-                      &quot;&quot;&quot;List all available prototype names including lazy ones.&quot;&quot;&quot;
-                      with self._lock:
-                      names = set(self._prototypes.keys()) | set(self._factories.keys())
-                      if self._parent:
-                      names |= set(self._parent.list_prototypes())
-                      return sorted(names)
-
-                      def __contains__(self, name: str) -&gt; bool:
-                      &quot;&quot;&quot;Check if a prototype is registered.&quot;&quot;&quot;
-                      with self._lock:
-                      if name in self._prototypes or name in self._factories:
-                      return True
-                      if self._parent:
-                      return name in self._parent
-                      return False
-
-
-                      class VersionedPrototypeRegistry:
-                      &quot;&quot;&quot;
-                      Registry supporting multiple versions of prototypes.
-
-                      Supports:
-                      - Multiple versions per prototype name
-                      - &quot;Latest&quot; version tracking
-                      - Version metadata embedding in clones
-                      &quot;&quot;&quot;
-
-                      def __init__(self):
-                      self._versions: Dict[str, Dict[str, Prototype]] = defaultdict(dict)
-                      self._latest: Dict[str, str] = {}
-                      self._lock = threading.RLock()
-
-                      def register(self, name: str, version: str, prototype: Prototype,
-                      is_latest: bool = True) -&gt; None:
-                      &quot;&quot;&quot;Register a prototype version.&quot;&quot;&quot;
-                      with self._lock:
-                      self._versions[name][version] = prototype
-                      if is_latest or name not in self._latest:
-                      self._latest[name] = version
-
-                      def clone(self, name: str, version: str = None) -&gt; Prototype:
-                      &quot;&quot;&quot;
-                      Clone a prototype, optionally specifying version.
-
-                      Args:
-                      name: Prototype name
-                      version: Specific version, or None for latest
-
-                      Returns:
-                      Cloned prototype with version metadata if supported
-                      &quot;&quot;&quot;
-                      with self._lock:
-                      if version is None:
-                      version = self._latest.get(name)
-                      if version is None:
-                      raise KeyError(f&quot;No versions registered for '{name}'&quot;)
-
-                      versions = self._versions.get(name, {})
-                      prototype = versions.get(version)
-                      if prototype is None:
-                      raise KeyError(f&quot;Version '{version}' not found for '{name}'&quot;)
-
-                      clone = prototype.clone()
-
-                      # Embed version metadata if possible
-                      if hasattr(clone, 'metadata') and isinstance(clone.metadata, dict):
-                      clone.metadata['_source_version'] = version
-                      clone.metadata['_source_name'] = name
-
-                      return clone
-
-                      def list_versions(self, name: str) -&gt; List[str]:
-                      &quot;&quot;&quot;List all versions for a prototype name.&quot;&quot;&quot;
-                      with self._lock:
-                      return sorted(self._versions.get(name, {}).keys())
-
-                      def get_latest_version(self, name: str) -&gt; Optional[str]:
-                      &quot;&quot;&quot;Get the latest version string for a name.&quot;&quot;&quot;
-                      return self._latest.get(name)
-
-
-                      # Usage demonstration
-                      if __name__ == &quot;__main__&quot;:
-                      print(&quot;=&quot; * 60)
-                      print(&quot;PROTOTYPE PATTERN DEMONSTRATION&quot;)
-                      print(&quot;=&quot; * 60)
-
-                      # === Document Cloning ===
-                      print(&quot;\n--- Document Cloning ---&quot;)
-
-                      original_doc = Document(&quot;Quarterly Report Template&quot;)
-                      original_doc.metadata = {'department': 'Engineering', 'confidential': True}
-                      original_doc.add_section(&quot;Executive Summary&quot;, &quot;[Summary placeholder]&quot;)
-                      original_doc.add_section(&quot;Metrics&quot;, &quot;[Metrics placeholder]&quot;)
-                      original_doc.formatting['font'] = 'Times New Roman'
-
-                      print(f&quot;Original: {original_doc}&quot;)
-
-                      # Clone and customize
-                      q4_report = original_doc.clone()
-                      q4_report.title = &quot;Q4 2024 Engineering Report&quot;
-                      q4_report.sections[0]['content'] = &quot;Q4 saw 15% improvement in deployment frequency...&quot;
-
-                      print(f&quot;Clone: {q4_report}&quot;)
-                      print(f&quot;Independent sections: {original_doc.sections[0]['content'] != q4_report.sections[0]['content']}&quot;)
-                      print(f&quot;Different IDs: {original_doc.id != q4_report.id}&quot;)
-
-                      # === Game Character Cloning ===
-                      print(&quot;\n--- Game Character Cloning ---&quot;)
-
-                      warrior_template = GameCharacter(&quot;Warrior Template&quot;, &quot;Warrior&quot;)
-                      warrior_template.skills = {'slash': 10, 'block': 8, 'charge': 5}
-                      warrior_template.inventory = ['iron_sword', 'leather_armor', 'health_potion']
-                      warrior_template.equipment['weapon'] = 'Iron Sword'
-                      warrior_template.equipment['armor'] = 'Chain Mail'
-
-                      print(f&quot;Template: {warrior_template}&quot;)
-
-                      # Spawn multiple warriors
-                      player1 = warrior_template.clone()
-                      player1.name = &quot;Thorin&quot;
-                      player1.position = {'x': 10.0, 'y': 0.0, 'z': 5.0}
-
-                      player2 = warrior_template.clone()
-                      player2.name = &quot;Gimli&quot;
-                      player2.skills['slash'] = 15  # Customize skills
-                      player2.inventory.append('throwing_axe')
-
-                      print(f&quot;Player 1: {player1}&quot;)
-                      print(f&quot;Player 2: {player2}&quot;)
-                      print(f&quot;Template skills unchanged: {warrior_template.skills['slash'] == 10}&quot;)
-                      print(f&quot;Template inventory unchanged: {len(warrior_template.inventory) == 3}&quot;)
-                      print(f&quot;Shared assets (memory optimization): {player1._loaded_assets is player2._loaded_assets}&quot;)
-
-                      # === Prototype Registry ===
-                      print(&quot;\n--- Prototype Registry ---&quot;)
-
-                      registry = PrototypeRegistry()
-
-                      # Register templates
-                      registry.register(&quot;report&quot;, original_doc)
-                      registry.register(&quot;warrior&quot;, warrior_template)
-
-                      # Lazy registration
-                      registry.register_lazy(&quot;mage&quot;, lambda: GameCharacter(&quot;Mage Template&quot;, &quot;Mage&quot;))
-
-                      print(f&quot;Available prototypes: {registry.list_prototypes()}&quot;)
-
-                      # Clone from registry
-                      new_report = registry.clone(&quot;report&quot;)
-                      new_warrior = registry.clone(&quot;warrior&quot;)
-                      new_mage = registry.clone(&quot;mage&quot;)  # Triggers lazy initialization
-
-                      print(f&quot;Cloned report: {new_report}&quot;)
-                      print(f&quot;Cloned warrior: {new_warrior}&quot;)
-                      print(f&quot;Cloned mage: {new_mage}&quot;)
-
-                      # === Versioned Registry ===
-                      print(&quot;\n--- Versioned Prototype Registry ---&quot;)
-
-                      versioned = VersionedPrototypeRegistry()
-
-                      # Register multiple versions
-                      v1_doc = Document(&quot;Report v1&quot;)
-                      v1_doc.metadata = {'version': '1.0', 'features': ['basic']}
-                      versioned.register(&quot;report&quot;, &quot;1.0&quot;, v1_doc, is_latest=False)
-
-                      v2_doc = Document(&quot;Report v2&quot;)
-                      v2_doc.metadata = {'version': '2.0', 'features': ['basic', 'charts', 'export']}
-                      v2_doc.add_section(&quot;Charts&quot;, &quot;[Chart section]&quot;)
-                      versioned.register(&quot;report&quot;, &quot;2.0&quot;, v2_doc, is_latest=True)
-
-                      print(f&quot;Report versions: {versioned.list_versions('report')}&quot;)
-                      print(f&quot;Latest version: {versioned.get_latest_version('report')}&quot;)
-
-                      # Clone specific version
-                      v1_clone = versioned.clone(&quot;report&quot;, &quot;1.0&quot;)
-                      latest_clone = versioned.clone(&quot;report&quot;)  # Gets 2.0
-
-                      print(f&quot;v1 clone sections: {len(v1_clone.sections)}&quot;)
-                      print(f&quot;Latest clone sections: {len(latest_clone.sections)}&quot;)
-                      print(f&quot;Version metadata: {latest_clone.metadata.get('_source_version')}&quot;)
-
-                      print(&quot;\n&quot; + &quot;=&quot; * 60)
-                      print(&quot;DEMONSTRATION COMPLETE&quot;)
-                      print(&quot;=&quot; * 60)
-                      ```
-</code></pre>
+<pre><code class="language-python">&quot;&quot;&quot;
+Prototype Pattern - Complete Implementation
+
+Demonstrates:
+- Deep vs shallow cloning
+- Prototype registry with versioning
+- Complex object cloning with external resources
+- Copy-on-write optimization
+- Thread-safe registry operations
+&quot;&quot;&quot;
+
+import copy
+import uuid
+import threading
+from abc import ABC, abstractmethod
+from typing import Dict, Any, Optional, Callable, List
+from datetime import datetime
+from collections import defaultdict
+
+
+class Prototype(ABC):
+&quot;&quot;&quot;
+Abstract prototype interface.
+
+Subclasses must implement clone() to create copies of themselves.
+The implementation should document its clone contract explicitly.
+&quot;&quot;&quot;
+
+@abstractmethod
+def clone(self) -&gt; 'Prototype':
+&quot;&quot;&quot;
+Create a copy of this object.
+
+Returns:
+A new instance that is a copy of this object.
+The copy semantics (shallow vs deep) are implementation-specific.
+&quot;&quot;&quot;
+pass
+
+
+class Document(Prototype):
+&quot;&quot;&quot;
+A document with complex nested structure demonstrating proper cloning.
+
+Clone Contract:
+- title, content: deep copied (new strings)
+- metadata: deep copied (independent dict)
+- sections: deep copied (independent list with copied sections)
+- formatting: deep copied (independent nested structure)
+- id: RESET to new UUID
+- created_at: RESET to current time
+- observers: RESET to empty list
+&quot;&quot;&quot;
+
+def __init__(self, title: str, content: str = &quot;&quot;):
+self.id = str(uuid.uuid4())
+self.title = title
+self.content = content
+self.metadata: Dict[str, Any] = {}
+self.sections: List[Dict[str, str]] = []
+self.formatting = {
+'font': 'Arial',
+'size': 12,
+'margins': {'top': 1, 'bottom': 1, 'left': 1, 'right': 1}
+}
+self.created_at = datetime.now()
+self._observers: List[Callable] = []  # Not cloned
+
+def add_section(self, name: str, content: str) -&gt; None:
+self.sections.append({'name': name, 'content': content})
+
+def add_observer(self, callback: Callable) -&gt; None:
+self._observers.append(callback)
+
+def clone(self) -&gt; 'Document':
+&quot;&quot;&quot;Create a deep copy with reset identity fields.&quot;&quot;&quot;
+# Deep copy entire object graph
+cloned = copy.deepcopy(self)
+
+# Reset identity fields
+cloned.id = str(uuid.uuid4())
+cloned.created_at = datetime.now()
+
+# Clear observers - clone starts fresh
+cloned._observers = []
+
+return cloned
+
+def __repr__(self) -&gt; str:
+return (f&quot;Document(id={self.id[:8]}..., title='{self.title}', &quot;
+f&quot;sections={len(self.sections)}, created={self.created_at.isoformat()})&quot;)
+
+
+class GameCharacter(Prototype):
+&quot;&quot;&quot;
+Game character demonstrating cloning with shared immutable resources.
+
+Clone Contract:
+- name, character_class, stats: deep copied
+- skills, inventory, equipment: deep copied
+- _loaded_assets: SHALLOW copied (immutable, expensive to load)
+- position: RESET to spawn point
+- entity_id: RESET to new UUID
+&quot;&quot;&quot;
+
+def __init__(self, name: str, character_class: str):
+self.entity_id = str(uuid.uuid4())
+self.name = name
+self.character_class = character_class
+self.level = 1
+self.health = 100
+self.mana = 50
+self.skills: Dict[str, int] = {}
+self.inventory: List[str] = []
+self.equipment = {'weapon': None, 'armor': None, 'accessory': None}
+self.position = {'x': 0.0, 'y': 0.0, 'z': 0.0}
+
+# Expensive to load, immutable - will be shared
+self._loaded_assets = self._load_assets()
+
+def _load_assets(self) -&gt; Dict[str, str]:
+&quot;&quot;&quot;Simulate expensive asset loading.&quot;&quot;&quot;
+# In production: load 3D models, textures, animations
+return {
+'model': f'{self.character_class.lower()}_model.fbx',
+'texture': f'{self.character_class.lower()}_texture.png',
+'animations': f'{self.character_class.lower()}_anims.dat'
+}
+
+def clone(self) -&gt; 'GameCharacter':
+&quot;&quot;&quot;
+Clone character with deep copy of mutable state,
+shallow copy of immutable assets.
+&quot;&quot;&quot;
+# Create new instance without expensive asset loading
+clone = object.__new__(GameCharacter)
+
+# Copy primitive fields
+clone.name = self.name
+clone.character_class = self.character_class
+clone.level = self.level
+clone.health = self.health
+clone.mana = self.mana
+
+# Deep copy mutable collections
+clone.skills = dict(self.skills)
+clone.inventory = list(self.inventory)
+clone.equipment = dict(self.equipment)
+
+# Reset position to spawn point
+clone.position = {'x': 0.0, 'y': 0.0, 'z': 0.0}
+
+# New entity ID
+clone.entity_id = str(uuid.uuid4())
+
+# SHALLOW copy - share immutable assets
+clone._loaded_assets = self._loaded_assets
+
+return clone
+
+def __repr__(self) -&gt; str:
+return (f&quot;GameCharacter(id={self.entity_id[:8]}..., name='{self.name}', &quot;
+f&quot;class={self.character_class}, level={self.level})&quot;)
+
+
+class PrototypeRegistry:
+&quot;&quot;&quot;
+Thread-safe registry for managing named prototypes.
+
+Supports:
+- Immediate registration with prototype instances
+- Lazy registration with factory functions
+- Hierarchical registries (parent fallback)
+- Thread-safe operations
+&quot;&quot;&quot;
+
+def __init__(self, parent: 'PrototypeRegistry' = None):
+self._prototypes: Dict[str, Prototype] = {}
+self._factories: Dict[str, Callable[[], Prototype]] = {}
+self._parent = parent
+self._lock = threading.RLock()
+
+def register(self, name: str, prototype: Prototype) -&gt; None:
+&quot;&quot;&quot;Register a prototype instance.&quot;&quot;&quot;
+with self._lock:
+self._prototypes[name] = prototype
+# Clear any factory for this name
+self._factories.pop(name, None)
+
+def register_lazy(self, name: str, factory: Callable[[], Prototype]) -&gt; None:
+&quot;&quot;&quot;Register a factory for lazy prototype initialization.&quot;&quot;&quot;
+with self._lock:
+self._factories[name] = factory
+
+def unregister(self, name: str) -&gt; bool:
+&quot;&quot;&quot;Remove a prototype. Returns True if found and removed.&quot;&quot;&quot;
+with self._lock:
+removed = name in self._prototypes or name in self._factories
+self._prototypes.pop(name, None)
+self._factories.pop(name, None)
+return removed
+
+def clone(self, name: str) -&gt; Prototype:
+&quot;&quot;&quot;
+Clone a prototype by name.
+
+Resolution order:
+1. Local prototypes
+2. Local factories (lazily initialized)
+3. Parent registry (if exists)
+
+Raises:
+KeyError: If prototype not found in any registry
+&quot;&quot;&quot;
+with self._lock:
+# Check local prototypes
+if name in self._prototypes:
+return self._prototypes[name].clone()
+
+# Check lazy factories
+if name in self._factories:
+# Initialize and cache
+self._prototypes[name] = self._factories[name]()
+del self._factories[name]
+return self._prototypes[name].clone()
+
+# Try parent
+if self._parent is not None:
+return self._parent.clone(name)
+
+raise KeyError(f&quot;Prototype '{name}' not found in registry&quot;)
+
+def list_prototypes(self) -&gt; List[str]:
+&quot;&quot;&quot;List all available prototype names including lazy ones.&quot;&quot;&quot;
+with self._lock:
+names = set(self._prototypes.keys()) | set(self._factories.keys())
+if self._parent:
+names |= set(self._parent.list_prototypes())
+return sorted(names)
+
+def __contains__(self, name: str) -&gt; bool:
+&quot;&quot;&quot;Check if a prototype is registered.&quot;&quot;&quot;
+with self._lock:
+if name in self._prototypes or name in self._factories:
+return True
+if self._parent:
+return name in self._parent
+return False
+
+
+class VersionedPrototypeRegistry:
+&quot;&quot;&quot;
+Registry supporting multiple versions of prototypes.
+
+Supports:
+- Multiple versions per prototype name
+- &quot;Latest&quot; version tracking
+- Version metadata embedding in clones
+&quot;&quot;&quot;
+
+def __init__(self):
+self._versions: Dict[str, Dict[str, Prototype]] = defaultdict(dict)
+self._latest: Dict[str, str] = {}
+self._lock = threading.RLock()
+
+def register(self, name: str, version: str, prototype: Prototype,
+is_latest: bool = True) -&gt; None:
+&quot;&quot;&quot;Register a prototype version.&quot;&quot;&quot;
+with self._lock:
+self._versions[name][version] = prototype
+if is_latest or name not in self._latest:
+self._latest[name] = version
+
+def clone(self, name: str, version: str = None) -&gt; Prototype:
+&quot;&quot;&quot;
+Clone a prototype, optionally specifying version.
+
+Args:
+name: Prototype name
+version: Specific version, or None for latest
+
+Returns:
+Cloned prototype with version metadata if supported
+&quot;&quot;&quot;
+with self._lock:
+if version is None:
+version = self._latest.get(name)
+if version is None:
+raise KeyError(f&quot;No versions registered for '{name}'&quot;)
+
+versions = self._versions.get(name, {})
+prototype = versions.get(version)
+if prototype is None:
+raise KeyError(f&quot;Version '{version}' not found for '{name}'&quot;)
+
+clone = prototype.clone()
+
+# Embed version metadata if possible
+if hasattr(clone, 'metadata') and isinstance(clone.metadata, dict):
+clone.metadata['_source_version'] = version
+clone.metadata['_source_name'] = name
+
+return clone
+
+def list_versions(self, name: str) -&gt; List[str]:
+&quot;&quot;&quot;List all versions for a prototype name.&quot;&quot;&quot;
+with self._lock:
+return sorted(self._versions.get(name, {}).keys())
+
+def get_latest_version(self, name: str) -&gt; Optional[str]:
+&quot;&quot;&quot;Get the latest version string for a name.&quot;&quot;&quot;
+return self._latest.get(name)
+
+
+# Usage demonstration
+if __name__ == &quot;__main__&quot;:
+print(&quot;=&quot; * 60)
+print(&quot;PROTOTYPE PATTERN DEMONSTRATION&quot;)
+print(&quot;=&quot; * 60)
+
+# === Document Cloning ===
+print(&quot;\n--- Document Cloning ---&quot;)
+
+original_doc = Document(&quot;Quarterly Report Template&quot;)
+original_doc.metadata = {'department': 'Engineering', 'confidential': True}
+original_doc.add_section(&quot;Executive Summary&quot;, &quot;[Summary placeholder]&quot;)
+original_doc.add_section(&quot;Metrics&quot;, &quot;[Metrics placeholder]&quot;)
+original_doc.formatting['font'] = 'Times New Roman'
+
+print(f&quot;Original: {original_doc}&quot;)
+
+# Clone and customize
+q4_report = original_doc.clone()
+q4_report.title = &quot;Q4 2024 Engineering Report&quot;
+q4_report.sections[0]['content'] = &quot;Q4 saw 15% improvement in deployment frequency...&quot;
+
+print(f&quot;Clone: {q4_report}&quot;)
+print(f&quot;Independent sections: {original_doc.sections[0]['content'] != q4_report.sections[0]['content']}&quot;)
+print(f&quot;Different IDs: {original_doc.id != q4_report.id}&quot;)
+
+# === Game Character Cloning ===
+print(&quot;\n--- Game Character Cloning ---&quot;)
+
+warrior_template = GameCharacter(&quot;Warrior Template&quot;, &quot;Warrior&quot;)
+warrior_template.skills = {'slash': 10, 'block': 8, 'charge': 5}
+warrior_template.inventory = ['iron_sword', 'leather_armor', 'health_potion']
+warrior_template.equipment['weapon'] = 'Iron Sword'
+warrior_template.equipment['armor'] = 'Chain Mail'
+
+print(f&quot;Template: {warrior_template}&quot;)
+
+# Spawn multiple warriors
+player1 = warrior_template.clone()
+player1.name = &quot;Thorin&quot;
+player1.position = {'x': 10.0, 'y': 0.0, 'z': 5.0}
+
+player2 = warrior_template.clone()
+player2.name = &quot;Gimli&quot;
+player2.skills['slash'] = 15  # Customize skills
+player2.inventory.append('throwing_axe')
+
+print(f&quot;Player 1: {player1}&quot;)
+print(f&quot;Player 2: {player2}&quot;)
+print(f&quot;Template skills unchanged: {warrior_template.skills['slash'] == 10}&quot;)
+print(f&quot;Template inventory unchanged: {len(warrior_template.inventory) == 3}&quot;)
+print(f&quot;Shared assets (memory optimization): {player1._loaded_assets is player2._loaded_assets}&quot;)
+
+# === Prototype Registry ===
+print(&quot;\n--- Prototype Registry ---&quot;)
+
+registry = PrototypeRegistry()
+
+# Register templates
+registry.register(&quot;report&quot;, original_doc)
+registry.register(&quot;warrior&quot;, warrior_template)
+
+# Lazy registration
+registry.register_lazy(&quot;mage&quot;, lambda: GameCharacter(&quot;Mage Template&quot;, &quot;Mage&quot;))
+
+print(f&quot;Available prototypes: {registry.list_prototypes()}&quot;)
+
+# Clone from registry
+new_report = registry.clone(&quot;report&quot;)
+new_warrior = registry.clone(&quot;warrior&quot;)
+new_mage = registry.clone(&quot;mage&quot;)  # Triggers lazy initialization
+
+print(f&quot;Cloned report: {new_report}&quot;)
+print(f&quot;Cloned warrior: {new_warrior}&quot;)
+print(f&quot;Cloned mage: {new_mage}&quot;)
+
+# === Versioned Registry ===
+print(&quot;\n--- Versioned Prototype Registry ---&quot;)
+
+versioned = VersionedPrototypeRegistry()
+
+# Register multiple versions
+v1_doc = Document(&quot;Report v1&quot;)
+v1_doc.metadata = {'version': '1.0', 'features': ['basic']}
+versioned.register(&quot;report&quot;, &quot;1.0&quot;, v1_doc, is_latest=False)
+
+v2_doc = Document(&quot;Report v2&quot;)
+v2_doc.metadata = {'version': '2.0', 'features': ['basic', 'charts', 'export']}
+v2_doc.add_section(&quot;Charts&quot;, &quot;[Chart section]&quot;)
+versioned.register(&quot;report&quot;, &quot;2.0&quot;, v2_doc, is_latest=True)
+
+print(f&quot;Report versions: {versioned.list_versions('report')}&quot;)
+print(f&quot;Latest version: {versioned.get_latest_version('report')}&quot;)
+
+# Clone specific version
+v1_clone = versioned.clone(&quot;report&quot;, &quot;1.0&quot;)
+latest_clone = versioned.clone(&quot;report&quot;)  # Gets 2.0
+
+print(f&quot;v1 clone sections: {len(v1_clone.sections)}&quot;)
+print(f&quot;Latest clone sections: {len(latest_clone.sections)}&quot;)
+print(f&quot;Version metadata: {latest_clone.metadata.get('_source_version')}&quot;)
+
+print(&quot;\n&quot; + &quot;=&quot; * 60)
+print(&quot;DEMONSTRATION COMPLETE&quot;)
+print(&quot;=&quot; * 60)</code></pre>
 <h3 id="go-implementation">Go Implementation</h3>
-<pre><code>                      ```go
-                      package main
-
-                      import (
-                      &quot;fmt&quot;
-                      &quot;sync&quot;
-                      &quot;time&quot;
-
-                      &quot;github.com/google/uuid&quot;
-                      )
-
-                      // Prototype defines the cloning interface.
-                      // All cloneable types must implement this interface.
-                      type Prototype interface {
-                      Clone() Prototype
-                      }
-
-                      // Document represents a complex document with nested structures.
-                      // Clone Contract:
-                      // - Title, Content: copied (Go strings are immutable)
-                      // - Metadata: deep copied (new map)
-                      // - Sections: deep copied (new slice with copied structs)
-                      // - Formatting: deep copied (new nested struct)
-                      // - ID: RESET to new UUID
-                      // - CreatedAt: RESET to current time
-                      type Document struct {
-                      ID         string
-                      Title      string
-                      Content    string
-                      Metadata   map[string]string
-                      Sections   []Section
-                      Formatting Formatting
-                      CreatedAt  time.Time
-                      }
-
-                      type Section struct {
-                      Name    string
-                      Content string
-                      }
-
-                      type Formatting struct {
-                      Font    string
-                      Size    int
-                      Margins Margins
-                      }
-
-                      type Margins struct {
-                      Top, Bottom, Left, Right int
-                      }
-
-                      // NewDocument creates a new document with default formatting.
-                      func NewDocument(title string) *Document {
-                      return &amp;Document{
-                      ID:       uuid.New().String(),
-                      Title:    title,
-                      Metadata: make(map[string]string),
-                      Sections: make([]Section, 0),
-                      Formatting: Formatting{
-                      Font: &quot;Arial&quot;,
-                      Size: 12,
-                      Margins: Margins{
-                      Top: 1, Bottom: 1, Left: 1, Right: 1,
-                      },
-                      },
-                      CreatedAt: time.Now(),
-                      }
-                      }
-
-                      // Clone creates a deep copy of the document with reset identity fields.
-                      func (d *Document) Clone() Prototype {
-                      clone := &amp;Document{
-                      ID:        uuid.New().String(), // New ID
-                      Title:     d.Title,
-                      Content:   d.Content,
-                      CreatedAt: time.Now(), // Reset timestamp
-                      Formatting: Formatting{
-                      Font: d.Formatting.Font,
-                      Size: d.Formatting.Size,
-                      Margins: Margins{
-                      Top:    d.Formatting.Margins.Top,
-                      Bottom: d.Formatting.Margins.Bottom,
-                      Left:   d.Formatting.Margins.Left,
-                      Right:  d.Formatting.Margins.Right,
-                      },
-                      },
-                      }
-
-                      // Deep copy metadata map
-                      clone.Metadata = make(map[string]string, len(d.Metadata))
-                      for k, v := range d.Metadata {
-                      clone.Metadata[k] = v
-                      }
-
-                      // Deep copy sections slice
-                      clone.Sections = make([]Section, len(d.Sections))
-                      copy(clone.Sections, d.Sections)
-
-                      return clone
-                      }
-
-                      // AddSection adds a new section to the document.
-                      func (d *Document) AddSection(name, content string) {
-                      d.Sections = append(d.Sections, Section{Name: name, Content: content})
-                      }
-
-                      // GameCharacter represents a game entity with expensive-to-load assets.
-                      // Clone Contract:
-                      // - Name, CharacterClass, stats: copied
-                      // - Skills: deep copied (new map)
-                      // - Inventory: deep copied (new slice)
-                      // - Equipment: deep copied (new struct)
-                      // - LoadedAssets: SHALLOW copied (immutable, expensive)
-                      // - Position: RESET to spawn point
-                      // - EntityID: RESET to new UUID
-                      type GameCharacter struct {
-                      EntityID       string
-                      Name           string
-                      CharacterClass string
-                      Level          int
-                      Health         int
-                      Mana           int
-                      Skills         map[string]int
-                      Inventory      []string
-                      Equipment      Equipment
-                      Position       Position
-                      loadedAssets   *Assets // Shared between clones (immutable)
-                      }
-
-                      type Equipment struct {
-                      Weapon    string
-                      Armor     string
-                      Accessory string
-                      }
-
-                      type Position struct {
-                      X, Y, Z float64
-                      }
-
-                      type Assets struct {
-                      Model      string
-                      Texture    string
-                      Animations string
-                      }
-
-                      // NewGameCharacter creates a new character with loaded assets.
-                      func NewGameCharacter(name, class string) *GameCharacter {
-                      c := &amp;GameCharacter{
-                      EntityID:       uuid.New().String(),
-                      Name:           name,
-                      CharacterClass: class,
-                      Level:          1,
-                      Health:         100,
-                      Mana:           50,
-                      Skills:         make(map[string]int),
-                      Inventory:      make([]string, 0),
-                      Position:       Position{X: 0, Y: 0, Z: 0},
-                      }
-                      // Simulate expensive asset loading
-                      c.loadedAssets = c.loadAssets()
-                      return c
-                      }
-
-                      func (c *GameCharacter) loadAssets() *Assets {
-                      // In production: load 3D models, textures, animations
-                      return &amp;Assets{
-                      Model:      fmt.Sprintf(&quot;%s_model.fbx&quot;, c.CharacterClass),
-                      Texture:    fmt.Sprintf(&quot;%s_texture.png&quot;, c.CharacterClass),
-                      Animations: fmt.Sprintf(&quot;%s_anims.dat&quot;, c.CharacterClass),
-                      }
-                      }
-
-                      // Clone creates a copy with deep-copied mutable state and shared assets.
-                      func (c *GameCharacter) Clone() Prototype {
-                      clone := &amp;GameCharacter{
-                      EntityID:       uuid.New().String(), // New ID
-                      Name:           c.Name,
-                      CharacterClass: c.CharacterClass,
-                      Level:          c.Level,
-                      Health:         c.Health,
-                      Mana:           c.Mana,
-                      Equipment:      c.Equipment, // Struct copied by value
-                      Position:       Position{X: 0, Y: 0, Z: 0}, // Reset spawn
-                      loadedAssets:   c.loadedAssets, // SHARED - immutable
-                      }
-
-                      // Deep copy skills map
-                      clone.Skills = make(map[string]int, len(c.Skills))
-                      for k, v := range c.Skills {
-                      clone.Skills[k] = v
-                      }
-
-                      // Deep copy inventory slice
-                      clone.Inventory = make([]string, len(c.Inventory))
-                      copy(clone.Inventory, c.Inventory)
-
-                      return clone
-                      }
-
-                      // PrototypeRegistry manages named prototypes with thread-safe operations.
-                      type PrototypeRegistry struct {
-                      prototypes map[string]Prototype
-                      factories  map[string]func() Prototype
-                      parent     *PrototypeRegistry
-                      mu         sync.RWMutex
-                      }
-
-                      // NewPrototypeRegistry creates a new registry, optionally with a parent.
-                      func NewPrototypeRegistry(parent *PrototypeRegistry) *PrototypeRegistry {
-                      return &amp;PrototypeRegistry{
-                      prototypes: make(map[string]Prototype),
-                      factories:  make(map[string]func() Prototype),
-                      parent:     parent,
-                      }
-                      }
-
-                      // Register adds a prototype instance to the registry.
-                      func (r *PrototypeRegistry) Register(name string, prototype Prototype) {
-                      r.mu.Lock()
-                      defer r.mu.Unlock()
-                      r.prototypes[name] = prototype
-                      delete(r.factories, name)
-                      }
-
-                      // RegisterLazy adds a factory for lazy prototype initialization.
-                      func (r *PrototypeRegistry) RegisterLazy(name string, factory func() Prototype) {
-                      r.mu.Lock()
-                      defer r.mu.Unlock()
-                      r.factories[name] = factory
-                      }
-
-                      // Clone creates a copy of a named prototype.
-                      func (r *PrototypeRegistry) Clone(name string) (Prototype, error) {
-                      r.mu.Lock()
-                      defer r.mu.Unlock()
-
-                      // Check local prototypes
-                      if proto, ok := r.prototypes[name]; ok {
-                      return proto.Clone(), nil
-                      }
-
-                      // Check lazy factories
-                      if factory, ok := r.factories[name]; ok {
-                      r.prototypes[name] = factory()
-                      delete(r.factories, name)
-                      return r.prototypes[name].Clone(), nil
-                      }
-
-                      // Try parent
-                      if r.parent != nil {
-                      return r.parent.Clone(name)
-                      }
-
-                      return nil, fmt.Errorf(&quot;prototype '%s' not found&quot;, name)
-                      }
-
-                      // List returns all available prototype names.
-                      func (r *PrototypeRegistry) List() []string {
-                      r.mu.RLock()
-                      defer r.mu.RUnlock()
-
-                      names := make(map[string]bool)
-                      for name := range r.prototypes {
-                      names[name] = true
-                      }
-                      for name := range r.factories {
-                      names[name] = true
-                      }
-                      if r.parent != nil {
-                      for _, name := range r.parent.List() {
-                      names[name] = true
-                      }
-                      }
-
-                      result := make([]string, 0, len(names))
-                      for name := range names {
-                      result = append(result, name)
-                      }
-                      return result
-                      }
-
-                      // VersionedPrototypeRegistry supports multiple versions of prototypes.
-                      type VersionedPrototypeRegistry struct {
-                      versions map[string]map[string]Prototype
-                      latest   map[string]string
-                      mu       sync.RWMutex
-                      }
-
-                      // NewVersionedPrototypeRegistry creates a versioned registry.
-                      func NewVersionedPrototypeRegistry() *VersionedPrototypeRegistry {
-                      return &amp;VersionedPrototypeRegistry{
-                      versions: make(map[string]map[string]Prototype),
-                      latest:   make(map[string]string),
-                      }
-                      }
-
-                      // Register adds a versioned prototype.
-                      func (r *VersionedPrototypeRegistry) Register(name, version string, proto Prototype, isLatest bool) {
-                      r.mu.Lock()
-                      defer r.mu.Unlock()
-
-                      if _, ok := r.versions[name]; !ok {
-                      r.versions[name] = make(map[string]Prototype)
-                      }
-                      r.versions[name][version] = proto
-
-                      if isLatest || r.latest[name] == &quot;&quot; {
-                      r.latest[name] = version
-                      }
-                      }
-
-                      // Clone creates a copy, optionally from a specific version.
-                      func (r *VersionedPrototypeRegistry) Clone(name string, version string) (Prototype, error) {
-                      r.mu.RLock()
-                      defer r.mu.RUnlock()
-
-                      if version == &quot;&quot; {
-                      version = r.latest[name]
-                      if version == &quot;&quot; {
-                      return nil, fmt.Errorf(&quot;no versions for '%s'&quot;, name)
-                      }
-                      }
-
-                      versions, ok := r.versions[name]
-                      if !ok {
-                      return nil, fmt.Errorf(&quot;prototype '%s' not found&quot;, name)
-                      }
-
-                      proto, ok := versions[version]
-                      if !ok {
-                      return nil, fmt.Errorf(&quot;version '%s' not found for '%s'&quot;, version, name)
-                      }
-
-                      return proto.Clone(), nil
-                      }
-
-                      func main() {
-                      fmt.Println(&quot;============================================================&quot;)
-                      fmt.Println(&quot;PROTOTYPE PATTERN - GO IMPLEMENTATION&quot;)
-                      fmt.Println(&quot;============================================================&quot;)
-
-                      // === Document Cloning ===
-                      fmt.Println(&quot;\n--- Document Cloning ---&quot;)
-
-                      original := NewDocument(&quot;Quarterly Report Template&quot;)
-                      original.Metadata[&quot;department&quot;] = &quot;Engineering&quot;
-                      original.Metadata[&quot;confidential&quot;] = &quot;true&quot;
-                      original.AddSection(&quot;Executive Summary&quot;, &quot;[Summary placeholder]&quot;)
-                      original.AddSection(&quot;Metrics&quot;, &quot;[Metrics placeholder]&quot;)
-                      original.Formatting.Font = &quot;Times New Roman&quot;
-
-                      fmt.Printf(&quot;Original: ID=%s..., Title=%s, Sections=%d\n&quot;,
-                      original.ID[:8], original.Title, len(original.Sections))
-
-                      // Clone and customize
-                      cloned := original.Clone().(*Document)
-                      cloned.Title = &quot;Q4 2024 Engineering Report&quot;
-                      cloned.Sections[0].Content = &quot;Q4 results exceeded expectations...&quot;
-
-                      fmt.Printf(&quot;Clone: ID=%s..., Title=%s, Sections=%d\n&quot;,
-                      cloned.ID[:8], cloned.Title, len(cloned.Sections))
-                      fmt.Printf(&quot;Independent IDs: %v\n&quot;, original.ID != cloned.ID)
-                      fmt.Printf(&quot;Independent sections: %v\n&quot;,
-                      original.Sections[0].Content != cloned.Sections[0].Content)
-
-                      // === Game Character Cloning ===
-                      fmt.Println(&quot;\n--- Game Character Cloning ---&quot;)
-
-                      warriorTemplate := NewGameCharacter(&quot;Warrior Template&quot;, &quot;Warrior&quot;)
-                      warriorTemplate.Skills[&quot;slash&quot;] = 10
-                      warriorTemplate.Skills[&quot;block&quot;] = 8
-                      warriorTemplate.Inventory = []string{&quot;iron_sword&quot;, &quot;leather_armor&quot;}
-                      warriorTemplate.Equipment.Weapon = &quot;Iron Sword&quot;
-
-                      fmt.Printf(&quot;Template: %s (%s), Skills: %v\n&quot;,
-                      warriorTemplate.Name, warriorTemplate.CharacterClass, warriorTemplate.Skills)
-
-                      player1 := warriorTemplate.Clone().(*GameCharacter)
-                      player1.Name = &quot;Thorin&quot;
-                      player1.Position = Position{X: 10, Y: 0, Z: 5}
-
-                      player2 := warriorTemplate.Clone().(*GameCharacter)
-                      player2.Name = &quot;Gimli&quot;
-                      player2.Skills[&quot;slash&quot;] = 15
-                      player2.Inventory = append(player2.Inventory, &quot;throwing_axe&quot;)
-
-                      fmt.Printf(&quot;Player1: %s, Skills: %v, Pos: %v\n&quot;, player1.Name, player1.Skills, player1.Position)
-                      fmt.Printf(&quot;Player2: %s, Skills: %v, Inventory: %v\n&quot;, player2.Name, player2.Skills, player2.Inventory)
-                      fmt.Printf(&quot;Template unchanged: skills[slash]=%d, inventory=%v\n&quot;,
-                      warriorTemplate.Skills[&quot;slash&quot;], warriorTemplate.Inventory)
-                      fmt.Printf(&quot;Shared assets (memory opt): %v\n&quot;,
-                      player1.loadedAssets == player2.loadedAssets)
-
-                      // === Prototype Registry ===
-                      fmt.Println(&quot;\n--- Prototype Registry ---&quot;)
-
-                      registry := NewPrototypeRegistry(nil)
-                      registry.Register(&quot;report&quot;, original)
-                      registry.Register(&quot;warrior&quot;, warriorTemplate)
-                      registry.RegisterLazy(&quot;mage&quot;, func() Prototype {
-                      return NewGameCharacter(&quot;Mage Template&quot;, &quot;Mage&quot;)
-                      })
-
-                      fmt.Printf(&quot;Available: %v\n&quot;, registry.List())
-
-                      newReport, _ := registry.Clone(&quot;report&quot;)
-                      newWarrior, _ := registry.Clone(&quot;warrior&quot;)
-                      newMage, _ := registry.Clone(&quot;mage&quot;)
-
-                      fmt.Printf(&quot;Cloned report: %s\n&quot;, newReport.(*Document).Title)
-                      fmt.Printf(&quot;Cloned warrior: %s\n&quot;, newWarrior.(*GameCharacter).Name)
-                      fmt.Printf(&quot;Cloned mage: %s\n&quot;, newMage.(*GameCharacter).Name)
-
-                      // === Versioned Registry ===
-                      fmt.Println(&quot;\n--- Versioned Prototype Registry ---&quot;)
-
-                      versioned := NewVersionedPrototypeRegistry()
-
-                      v1Doc := NewDocument(&quot;Report v1&quot;)
-                      v1Doc.Metadata[&quot;version&quot;] = &quot;1.0&quot;
-                      versioned.Register(&quot;report&quot;, &quot;1.0&quot;, v1Doc, false)
-
-                      v2Doc := NewDocument(&quot;Report v2&quot;)
-                      v2Doc.Metadata[&quot;version&quot;] = &quot;2.0&quot;
-                      v2Doc.AddSection(&quot;Charts&quot;, &quot;[Charts section]&quot;)
-                      versioned.Register(&quot;report&quot;, &quot;2.0&quot;, v2Doc, true)
-
-                      v1Clone, _ := versioned.Clone(&quot;report&quot;, &quot;1.0&quot;)
-                      latestClone, _ := versioned.Clone(&quot;report&quot;, &quot;&quot;)
-
-                      fmt.Printf(&quot;v1 clone sections: %d\n&quot;, len(v1Clone.(*Document).Sections))
-                      fmt.Printf(&quot;Latest clone sections: %d\n&quot;, len(latestClone.(*Document).Sections))
-
-                      fmt.Println(&quot;\n============================================================&quot;)
-                      fmt.Println(&quot;DEMONSTRATION COMPLETE&quot;)
-                      fmt.Println(&quot;============================================================&quot;)
-                      }
-                      ```
-</code></pre>
+<pre><code class="language-go">package main
+
+import (
+&quot;fmt&quot;
+&quot;sync&quot;
+&quot;time&quot;
+
+&quot;github.com/google/uuid&quot;
+)
+
+// Prototype defines the cloning interface.
+// All cloneable types must implement this interface.
+type Prototype interface {
+Clone() Prototype
+}
+
+// Document represents a complex document with nested structures.
+// Clone Contract:
+// - Title, Content: copied (Go strings are immutable)
+// - Metadata: deep copied (new map)
+// - Sections: deep copied (new slice with copied structs)
+// - Formatting: deep copied (new nested struct)
+// - ID: RESET to new UUID
+// - CreatedAt: RESET to current time
+type Document struct {
+ID         string
+Title      string
+Content    string
+Metadata   map[string]string
+Sections   []Section
+Formatting Formatting
+CreatedAt  time.Time
+}
+
+type Section struct {
+Name    string
+Content string
+}
+
+type Formatting struct {
+Font    string
+Size    int
+Margins Margins
+}
+
+type Margins struct {
+Top, Bottom, Left, Right int
+}
+
+// NewDocument creates a new document with default formatting.
+func NewDocument(title string) *Document {
+return &amp;Document{
+ID:       uuid.New().String(),
+Title:    title,
+Metadata: make(map[string]string),
+Sections: make([]Section, 0),
+Formatting: Formatting{
+Font: &quot;Arial&quot;,
+Size: 12,
+Margins: Margins{
+Top: 1, Bottom: 1, Left: 1, Right: 1,
+},
+},
+CreatedAt: time.Now(),
+}
+}
+
+// Clone creates a deep copy of the document with reset identity fields.
+func (d *Document) Clone() Prototype {
+clone := &amp;Document{
+ID:        uuid.New().String(), // New ID
+Title:     d.Title,
+Content:   d.Content,
+CreatedAt: time.Now(), // Reset timestamp
+Formatting: Formatting{
+Font: d.Formatting.Font,
+Size: d.Formatting.Size,
+Margins: Margins{
+Top:    d.Formatting.Margins.Top,
+Bottom: d.Formatting.Margins.Bottom,
+Left:   d.Formatting.Margins.Left,
+Right:  d.Formatting.Margins.Right,
+},
+},
+}
+
+// Deep copy metadata map
+clone.Metadata = make(map[string]string, len(d.Metadata))
+for k, v := range d.Metadata {
+clone.Metadata[k] = v
+}
+
+// Deep copy sections slice
+clone.Sections = make([]Section, len(d.Sections))
+copy(clone.Sections, d.Sections)
+
+return clone
+}
+
+// AddSection adds a new section to the document.
+func (d *Document) AddSection(name, content string) {
+d.Sections = append(d.Sections, Section{Name: name, Content: content})
+}
+
+// GameCharacter represents a game entity with expensive-to-load assets.
+// Clone Contract:
+// - Name, CharacterClass, stats: copied
+// - Skills: deep copied (new map)
+// - Inventory: deep copied (new slice)
+// - Equipment: deep copied (new struct)
+// - LoadedAssets: SHALLOW copied (immutable, expensive)
+// - Position: RESET to spawn point
+// - EntityID: RESET to new UUID
+type GameCharacter struct {
+EntityID       string
+Name           string
+CharacterClass string
+Level          int
+Health         int
+Mana           int
+Skills         map[string]int
+Inventory      []string
+Equipment      Equipment
+Position       Position
+loadedAssets   *Assets // Shared between clones (immutable)
+}
+
+type Equipment struct {
+Weapon    string
+Armor     string
+Accessory string
+}
+
+type Position struct {
+X, Y, Z float64
+}
+
+type Assets struct {
+Model      string
+Texture    string
+Animations string
+}
+
+// NewGameCharacter creates a new character with loaded assets.
+func NewGameCharacter(name, class string) *GameCharacter {
+c := &amp;GameCharacter{
+EntityID:       uuid.New().String(),
+Name:           name,
+CharacterClass: class,
+Level:          1,
+Health:         100,
+Mana:           50,
+Skills:         make(map[string]int),
+Inventory:      make([]string, 0),
+Position:       Position{X: 0, Y: 0, Z: 0},
+}
+// Simulate expensive asset loading
+c.loadedAssets = c.loadAssets()
+return c
+}
+
+func (c *GameCharacter) loadAssets() *Assets {
+// In production: load 3D models, textures, animations
+return &amp;Assets{
+Model:      fmt.Sprintf(&quot;%s_model.fbx&quot;, c.CharacterClass),
+Texture:    fmt.Sprintf(&quot;%s_texture.png&quot;, c.CharacterClass),
+Animations: fmt.Sprintf(&quot;%s_anims.dat&quot;, c.CharacterClass),
+}
+}
+
+// Clone creates a copy with deep-copied mutable state and shared assets.
+func (c *GameCharacter) Clone() Prototype {
+clone := &amp;GameCharacter{
+EntityID:       uuid.New().String(), // New ID
+Name:           c.Name,
+CharacterClass: c.CharacterClass,
+Level:          c.Level,
+Health:         c.Health,
+Mana:           c.Mana,
+Equipment:      c.Equipment, // Struct copied by value
+Position:       Position{X: 0, Y: 0, Z: 0}, // Reset spawn
+loadedAssets:   c.loadedAssets, // SHARED - immutable
+}
+
+// Deep copy skills map
+clone.Skills = make(map[string]int, len(c.Skills))
+for k, v := range c.Skills {
+clone.Skills[k] = v
+}
+
+// Deep copy inventory slice
+clone.Inventory = make([]string, len(c.Inventory))
+copy(clone.Inventory, c.Inventory)
+
+return clone
+}
+
+// PrototypeRegistry manages named prototypes with thread-safe operations.
+type PrototypeRegistry struct {
+prototypes map[string]Prototype
+factories  map[string]func() Prototype
+parent     *PrototypeRegistry
+mu         sync.RWMutex
+}
+
+// NewPrototypeRegistry creates a new registry, optionally with a parent.
+func NewPrototypeRegistry(parent *PrototypeRegistry) *PrototypeRegistry {
+return &amp;PrototypeRegistry{
+prototypes: make(map[string]Prototype),
+factories:  make(map[string]func() Prototype),
+parent:     parent,
+}
+}
+
+// Register adds a prototype instance to the registry.
+func (r *PrototypeRegistry) Register(name string, prototype Prototype) {
+r.mu.Lock()
+defer r.mu.Unlock()
+r.prototypes[name] = prototype
+delete(r.factories, name)
+}
+
+// RegisterLazy adds a factory for lazy prototype initialization.
+func (r *PrototypeRegistry) RegisterLazy(name string, factory func() Prototype) {
+r.mu.Lock()
+defer r.mu.Unlock()
+r.factories[name] = factory
+}
+
+// Clone creates a copy of a named prototype.
+func (r *PrototypeRegistry) Clone(name string) (Prototype, error) {
+r.mu.Lock()
+defer r.mu.Unlock()
+
+// Check local prototypes
+if proto, ok := r.prototypes[name]; ok {
+return proto.Clone(), nil
+}
+
+// Check lazy factories
+if factory, ok := r.factories[name]; ok {
+r.prototypes[name] = factory()
+delete(r.factories, name)
+return r.prototypes[name].Clone(), nil
+}
+
+// Try parent
+if r.parent != nil {
+return r.parent.Clone(name)
+}
+
+return nil, fmt.Errorf(&quot;prototype '%s' not found&quot;, name)
+}
+
+// List returns all available prototype names.
+func (r *PrototypeRegistry) List() []string {
+r.mu.RLock()
+defer r.mu.RUnlock()
+
+names := make(map[string]bool)
+for name := range r.prototypes {
+names[name] = true
+}
+for name := range r.factories {
+names[name] = true
+}
+if r.parent != nil {
+for _, name := range r.parent.List() {
+names[name] = true
+}
+}
+
+result := make([]string, 0, len(names))
+for name := range names {
+result = append(result, name)
+}
+return result
+}
+
+// VersionedPrototypeRegistry supports multiple versions of prototypes.
+type VersionedPrototypeRegistry struct {
+versions map[string]map[string]Prototype
+latest   map[string]string
+mu       sync.RWMutex
+}
+
+// NewVersionedPrototypeRegistry creates a versioned registry.
+func NewVersionedPrototypeRegistry() *VersionedPrototypeRegistry {
+return &amp;VersionedPrototypeRegistry{
+versions: make(map[string]map[string]Prototype),
+latest:   make(map[string]string),
+}
+}
+
+// Register adds a versioned prototype.
+func (r *VersionedPrototypeRegistry) Register(name, version string, proto Prototype, isLatest bool) {
+r.mu.Lock()
+defer r.mu.Unlock()
+
+if _, ok := r.versions[name]; !ok {
+r.versions[name] = make(map[string]Prototype)
+}
+r.versions[name][version] = proto
+
+if isLatest || r.latest[name] == &quot;&quot; {
+r.latest[name] = version
+}
+}
+
+// Clone creates a copy, optionally from a specific version.
+func (r *VersionedPrototypeRegistry) Clone(name string, version string) (Prototype, error) {
+r.mu.RLock()
+defer r.mu.RUnlock()
+
+if version == &quot;&quot; {
+version = r.latest[name]
+if version == &quot;&quot; {
+return nil, fmt.Errorf(&quot;no versions for '%s'&quot;, name)
+}
+}
+
+versions, ok := r.versions[name]
+if !ok {
+return nil, fmt.Errorf(&quot;prototype '%s' not found&quot;, name)
+}
+
+proto, ok := versions[version]
+if !ok {
+return nil, fmt.Errorf(&quot;version '%s' not found for '%s'&quot;, version, name)
+}
+
+return proto.Clone(), nil
+}
+
+func main() {
+fmt.Println(&quot;============================================================&quot;)
+fmt.Println(&quot;PROTOTYPE PATTERN - GO IMPLEMENTATION&quot;)
+fmt.Println(&quot;============================================================&quot;)
+
+// === Document Cloning ===
+fmt.Println(&quot;\n--- Document Cloning ---&quot;)
+
+original := NewDocument(&quot;Quarterly Report Template&quot;)
+original.Metadata[&quot;department&quot;] = &quot;Engineering&quot;
+original.Metadata[&quot;confidential&quot;] = &quot;true&quot;
+original.AddSection(&quot;Executive Summary&quot;, &quot;[Summary placeholder]&quot;)
+original.AddSection(&quot;Metrics&quot;, &quot;[Metrics placeholder]&quot;)
+original.Formatting.Font = &quot;Times New Roman&quot;
+
+fmt.Printf(&quot;Original: ID=%s..., Title=%s, Sections=%d\n&quot;,
+original.ID[:8], original.Title, len(original.Sections))
+
+// Clone and customize
+cloned := original.Clone().(*Document)
+cloned.Title = &quot;Q4 2024 Engineering Report&quot;
+cloned.Sections[0].Content = &quot;Q4 results exceeded expectations...&quot;
+
+fmt.Printf(&quot;Clone: ID=%s..., Title=%s, Sections=%d\n&quot;,
+cloned.ID[:8], cloned.Title, len(cloned.Sections))
+fmt.Printf(&quot;Independent IDs: %v\n&quot;, original.ID != cloned.ID)
+fmt.Printf(&quot;Independent sections: %v\n&quot;,
+original.Sections[0].Content != cloned.Sections[0].Content)
+
+// === Game Character Cloning ===
+fmt.Println(&quot;\n--- Game Character Cloning ---&quot;)
+
+warriorTemplate := NewGameCharacter(&quot;Warrior Template&quot;, &quot;Warrior&quot;)
+warriorTemplate.Skills[&quot;slash&quot;] = 10
+warriorTemplate.Skills[&quot;block&quot;] = 8
+warriorTemplate.Inventory = []string{&quot;iron_sword&quot;, &quot;leather_armor&quot;}
+warriorTemplate.Equipment.Weapon = &quot;Iron Sword&quot;
+
+fmt.Printf(&quot;Template: %s (%s), Skills: %v\n&quot;,
+warriorTemplate.Name, warriorTemplate.CharacterClass, warriorTemplate.Skills)
+
+player1 := warriorTemplate.Clone().(*GameCharacter)
+player1.Name = &quot;Thorin&quot;
+player1.Position = Position{X: 10, Y: 0, Z: 5}
+
+player2 := warriorTemplate.Clone().(*GameCharacter)
+player2.Name = &quot;Gimli&quot;
+player2.Skills[&quot;slash&quot;] = 15
+player2.Inventory = append(player2.Inventory, &quot;throwing_axe&quot;)
+
+fmt.Printf(&quot;Player1: %s, Skills: %v, Pos: %v\n&quot;, player1.Name, player1.Skills, player1.Position)
+fmt.Printf(&quot;Player2: %s, Skills: %v, Inventory: %v\n&quot;, player2.Name, player2.Skills, player2.Inventory)
+fmt.Printf(&quot;Template unchanged: skills[slash]=%d, inventory=%v\n&quot;,
+warriorTemplate.Skills[&quot;slash&quot;], warriorTemplate.Inventory)
+fmt.Printf(&quot;Shared assets (memory opt): %v\n&quot;,
+player1.loadedAssets == player2.loadedAssets)
+
+// === Prototype Registry ===
+fmt.Println(&quot;\n--- Prototype Registry ---&quot;)
+
+registry := NewPrototypeRegistry(nil)
+registry.Register(&quot;report&quot;, original)
+registry.Register(&quot;warrior&quot;, warriorTemplate)
+registry.RegisterLazy(&quot;mage&quot;, func() Prototype {
+return NewGameCharacter(&quot;Mage Template&quot;, &quot;Mage&quot;)
+})
+
+fmt.Printf(&quot;Available: %v\n&quot;, registry.List())
+
+newReport, _ := registry.Clone(&quot;report&quot;)
+newWarrior, _ := registry.Clone(&quot;warrior&quot;)
+newMage, _ := registry.Clone(&quot;mage&quot;)
+
+fmt.Printf(&quot;Cloned report: %s\n&quot;, newReport.(*Document).Title)
+fmt.Printf(&quot;Cloned warrior: %s\n&quot;, newWarrior.(*GameCharacter).Name)
+fmt.Printf(&quot;Cloned mage: %s\n&quot;, newMage.(*GameCharacter).Name)
+
+// === Versioned Registry ===
+fmt.Println(&quot;\n--- Versioned Prototype Registry ---&quot;)
+
+versioned := NewVersionedPrototypeRegistry()
+
+v1Doc := NewDocument(&quot;Report v1&quot;)
+v1Doc.Metadata[&quot;version&quot;] = &quot;1.0&quot;
+versioned.Register(&quot;report&quot;, &quot;1.0&quot;, v1Doc, false)
+
+v2Doc := NewDocument(&quot;Report v2&quot;)
+v2Doc.Metadata[&quot;version&quot;] = &quot;2.0&quot;
+v2Doc.AddSection(&quot;Charts&quot;, &quot;[Charts section]&quot;)
+versioned.Register(&quot;report&quot;, &quot;2.0&quot;, v2Doc, true)
+
+v1Clone, _ := versioned.Clone(&quot;report&quot;, &quot;1.0&quot;)
+latestClone, _ := versioned.Clone(&quot;report&quot;, &quot;&quot;)
+
+fmt.Printf(&quot;v1 clone sections: %d\n&quot;, len(v1Clone.(*Document).Sections))
+fmt.Printf(&quot;Latest clone sections: %d\n&quot;, len(latestClone.(*Document).Sections))
+
+fmt.Println(&quot;\n============================================================&quot;)
+fmt.Println(&quot;DEMONSTRATION COMPLETE&quot;)
+fmt.Println(&quot;============================================================&quot;)
+}</code></pre>
 <hr />
 <h2 id="quick-reference">Quick Reference</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -1434,24 +1404,24 @@ The choice between shallow and deep copy is not binary. Production implementatio
 </tbody>
 </table>
 <h3 id="implementation-checklist">Implementation Checklist</h3>
-<pre><code>                      - [ ] Define clone interface with clear contract documentation
-                      - [ ] Decide shallow vs deep copy per field and document
-                      - [ ] Handle circular references with memo-based copying
-                      - [ ] Reset identity fields (UUIDs, timestamps)
-                      - [ ] Clear transient state (observers, caches)
-                      - [ ] Handle non-cloneable resources explicitly
-                      - [ ] Consider thread safety for registry operations
-                      - [ ] Test clone independence (mutations don't affect original)
-                      - [ ] Consider copy-on-write for memory optimization
-                      - [ ] Avoid Java Cloneable; use copy constructors instead
+<pre><code>- [ ] Define clone interface with clear contract documentation
+- [ ] Decide shallow vs deep copy per field and document
+- [ ] Handle circular references with memo-based copying
+- [ ] Reset identity fields (UUIDs, timestamps)
+- [ ] Clear transient state (observers, caches)
+- [ ] Handle non-cloneable resources explicitly
+- [ ] Consider thread safety for registry operations
+- [ ] Test clone independence (mutations don't affect original)
+- [ ] Consider copy-on-write for memory optimization
+- [ ] Avoid Java Cloneable; use copy constructors instead
 </code></pre>
 <hr />
 <h2 id="related-patterns">Related Patterns</h2>
-<pre><code>                      - [[Factory Method]](/topic/design-patterns/factory-method) - Alternative creation approach; use Factory when construction logic is complex, Prototype when configuration is complex
-                      - [[Abstract Factory]](/topic/design-patterns/abstract-factory) - Can use prototypes internally to create product families
-                      - [[Builder]](/topic/design-patterns/builder) - Use toBuilder() pattern for immutable objects that need &quot;modified copies&quot;
-                      - [[Singleton]](/topic/design-patterns/singleton) - Opposite intent: single instance vs multiple copies
-                      - [[Memento]](/topic/design-patterns/memento) - Uses similar cloning mechanism for state snapshots
-                      - [[Flyweight]](/topic/design-patterns/flyweight) - Alternative for memory optimization through sharing intrinsic state
-                      - [[Object Pool]](/topic/design-patterns/object-pool) - Alternative when recycling is better than cloning
+<pre><code>- [[Factory Method]](/topic/design-patterns/factory-method) - Alternative creation approach; use Factory when construction logic is complex, Prototype when configuration is complex
+- [[Abstract Factory]](/topic/design-patterns/abstract-factory) - Can use prototypes internally to create product families
+- [[Builder]](/topic/design-patterns/builder) - Use toBuilder() pattern for immutable objects that need &quot;modified copies&quot;
+- [[Singleton]](/topic/design-patterns/singleton) - Opposite intent: single instance vs multiple copies
+- [[Memento]](/topic/design-patterns/memento) - Uses similar cloning mechanism for state snapshots
+- [[Flyweight]](/topic/design-patterns/flyweight) - Alternative for memory optimization through sharing intrinsic state
+- [[Object Pool]](/topic/design-patterns/object-pool) - Alternative when recycling is better than cloning
 </code></pre>

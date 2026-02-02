@@ -1390,8 +1390,7 @@ return True
 <summary style="cursor: pointer; color: #60a5fa; font-weight: 500">View Answer</summary>
 <div style="margin-top: 12px; padding: 16px; background: #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 14px; line-height: 1.7">
 <p><strong>Dual-storage approach:</strong></p>
-<pre><code>  ```sql
-  CREATE TABLE custom_aliases (
+<pre><code class="language-sql">  CREATE TABLE custom_aliases (
   normalized_alias VARCHAR(50) PRIMARY KEY,  -- lowercase, for lookups
   display_alias VARCHAR(50) NOT NULL,        -- original case, for display
   original_url TEXT NOT NULL,
@@ -1418,9 +1417,7 @@ return True
   SELECT display_alias, original_url
   FROM custom_aliases
   WHERE normalized_alias = $1
-  &quot;&quot;&quot;, alias.lower())
-  ```
-</code></pre>
+  &quot;&quot;&quot;, alias.lower())</code></pre>
 <p>Cache key uses normalized form; cache value includes display form for analytics.</p>
 </div>
 </details>
@@ -1452,8 +1449,7 @@ return True
 </li>
 </ol>
 <p><strong>Technical Implementation:</strong></p>
-<pre><code>  ```python
-  @dataclass
+<pre><code class="language-python">  @dataclass
   class AliasOwnership:
   normalized_alias: str
   owner_id: str
@@ -1529,9 +1525,7 @@ return True
   elif decision == 'COEXIST':
   # Both parties can use, but neither owns exclusively
   # Typically used for generic terms
-  await self.mark_generic_term(claim.alias)
-  ```
-</code></pre>
+  await self.mark_generic_term(claim.alias)</code></pre>
 <p><strong>ML-Assisted Review Queue:</strong><br />
 - Auto-approve: Exact match to registered trademark + claimant is trademark registrant<br />
 - Auto-reject: No trademark registration + alias existed 30+ days<br />

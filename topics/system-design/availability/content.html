@@ -213,8 +213,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a">9
 </div>
 </div>
 <h3 id="mtbf-and-mttr-calculations">MTBF and MTTR Calculations</h3>
-<pre><code>      ```python
-      from dataclasses import dataclass
+<pre><code class="language-python">      from dataclasses import dataclass
       from typing import List
       from datetime import datetime, timedelta
       import statistics
@@ -399,9 +398,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a">9
 
       This shows why microservices architectures need careful design.
       &quot;&quot;&quot;
-      return target_availability ** (1 / num_components_in_series)
-      ```
-</code></pre>
+      return target_availability ** (1 / num_components_in_series)</code></pre>
 <h3 id="interview-questions-mtbf-and-mttr-3-levels-deep">Interview Questions: MTBF and MTTR (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What's the relationship between MTBF, MTTR, and availability?</h4>
@@ -540,8 +537,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a">9
 </div>
 </div>
 <h3 id="failover-implementation">Failover Implementation</h3>
-<pre><code>      ```python
-      from enum import Enum
+<pre><code class="language-python">      from enum import Enum
       from dataclasses import dataclass
       from typing import Optional, Callable, List
       import threading
@@ -797,9 +793,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a">9
       with self._lock:
       if self.state == FailoverState.SECONDARY_ACTIVE:
       logger.info(&quot;Manual failback initiated&quot;)
-      self._initiate_failback()
-      ```
-</code></pre>
+      self._initiate_failback()</code></pre>
 <h3 id="interview-questions-failover-strategies-3-levels-deep">Interview Questions: Failover Strategies (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What's the difference between cold, warm, and hot failover?</h4>
@@ -928,8 +922,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a">9
 </div>
 </div>
 <h3 id="redundancy-implementation-patterns">Redundancy Implementation Patterns</h3>
-<pre><code>      ```python
-      from enum import Enum
+<pre><code class="language-python">      from enum import Enum
       from typing import List, Optional, Dict, Callable
       from dataclasses import dataclass
       import threading
@@ -1244,9 +1237,7 @@ Total = 1 - (1-0.99) × (1-0.99) = 1 - 0.0001 = <strong style="color: #16a34a">9
       for region in self.regions:
       if region != failed_region:
       self.write_region = region
-      break
-      ```
-</code></pre>
+      break</code></pre>
 <h3 id="interview-questions-redundancy-patterns-3-levels-deep">Interview Questions: Redundancy Patterns (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: When would you choose active-passive over active-active redundancy?</h4>

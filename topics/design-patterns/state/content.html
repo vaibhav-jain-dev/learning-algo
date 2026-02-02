@@ -108,8 +108,7 @@
 </div>
 </div>
 <h3 id="the-litmus-test">The Litmus Test</h3>
-<pre><code>    ```python
-    # STATE PATTERN - Transitions happen internally
+<pre><code class="language-python">    # STATE PATTERN - Transitions happen internally
     order.pay()  # Order decides: Pending -&gt; Paid
     order.ship() # Order decides: Paid -&gt; Shipped
     # Client doesn't choose the next state
@@ -119,9 +118,7 @@
     payment_processor.process(amount)  # Uses credit card
     payment_processor.set_strategy(PayPalStrategy())
     payment_processor.process(amount)  # Now uses PayPal
-    # Client explicitly chooses the algorithm
-    ```
-</code></pre>
+    # Client explicitly chooses the algorithm</code></pre>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 1.25rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #166534; margin-bottom: 0.75rem">Key Insight for Interviews</div>
 <div style="color: #14532d; font-size: 0.9rem; line-height: 1.6">
@@ -187,8 +184,7 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
 </div>
 <h3 id="implementing-transition-guards">Implementing Transition Guards</h3>
 <p>Transitions often have preconditions. Here's how to implement guards:</p>
-<pre><code>                ```python
-                from abc import ABC, abstractmethod
+<pre><code class="language-python">                from abc import ABC, abstractmethod
                 from typing import Optional, Callable, List
                 from dataclasses import dataclass
                 from datetime import datetime
@@ -292,13 +288,10 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
 
                 def process(self, context: 'Order') -&gt; None:
                 # Send payment reminder if pending &gt; 24 hours
-                pass
-                ```
-</code></pre>
+                pass</code></pre>
 <h3 id="entry-and-exit-actions">Entry and Exit Actions</h3>
 <p>Robust state machines execute actions when entering or leaving states:</p>
-<pre><code>                ```python
-                class OrderState(ABC):
+<pre><code class="language-python">                class OrderState(ABC):
                 &quot;&quot;&quot;State with entry/exit hooks.&quot;&quot;&quot;
 
                 def on_enter(self, context: 'Order', previous_state: Optional['OrderState']) -&gt; None:
@@ -334,9 +327,7 @@ State objects call <code>context.setState(newState)</code>. States encapsulate t
                 context.delivery_confirmed_at = datetime.now()
                 elif next_state.name == &quot;returned&quot;:
                 # Initiate return shipping label generation
-                context.return_label_requested = True
-                ```
-</code></pre>
+                context.return_label_requested = True</code></pre>
 <div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #991b1b; margin-bottom: 0.5rem">Edge Case: Failed Entry Actions</div>
 <div style="color: #7f1d1d; font-size: 0.9rem; line-height: 1.6">
@@ -411,217 +402,214 @@ What if <code>on_enter</code> throws an exception? You have two choices:
 </div>
 <h3 id="table-driven-state-machine-implementation">Table-Driven State Machine Implementation</h3>
 <p>For complex state machines, a table-driven approach is more maintainable:</p>
-<pre><code>                          ```python
-                          from dataclasses import dataclass, field
-                          from typing import Dict, Set, Callable, Optional, Any
-                          from enum import Enum, auto
+<pre><code class="language-python">from dataclasses import dataclass, field
+from typing import Dict, Set, Callable, Optional, Any
+from enum import Enum, auto
 
 
-                          class OrderEvent(Enum):
-                          &quot;&quot;&quot;Events that trigger state transitions.&quot;&quot;&quot;
-                          PAYMENT_RECEIVED = auto()
-                          PAYMENT_FAILED = auto()
-                          INVENTORY_RESERVED = auto()
-                          INVENTORY_UNAVAILABLE = auto()
-                          SHIPPED = auto()
-                          DELIVERED = auto()
-                          RETURN_REQUESTED = auto()
-                          RETURN_RECEIVED = auto()
-                          CANCELLED = auto()
-                          REFUND_ISSUED = auto()
+class OrderEvent(Enum):
+&quot;&quot;&quot;Events that trigger state transitions.&quot;&quot;&quot;
+PAYMENT_RECEIVED = auto()
+PAYMENT_FAILED = auto()
+INVENTORY_RESERVED = auto()
+INVENTORY_UNAVAILABLE = auto()
+SHIPPED = auto()
+DELIVERED = auto()
+RETURN_REQUESTED = auto()
+RETURN_RECEIVED = auto()
+CANCELLED = auto()
+REFUND_ISSUED = auto()
 
 
-                          class OrderStatus(Enum):
-                          &quot;&quot;&quot;Possible order states.&quot;&quot;&quot;
-                          PENDING_PAYMENT = auto()
-                          PAYMENT_PROCESSING = auto()
-                          PAYMENT_FAILED = auto()
-                          PAID = auto()
-                          AWAITING_INVENTORY = auto()
-                          INVENTORY_ALLOCATED = auto()
-                          SHIPPED = auto()
-                          DELIVERED = auto()
-                          RETURN_PENDING = auto()
-                          RETURNED = auto()
-                          CANCELLED = auto()
-                          REFUNDED = auto()
+class OrderStatus(Enum):
+&quot;&quot;&quot;Possible order states.&quot;&quot;&quot;
+PENDING_PAYMENT = auto()
+PAYMENT_PROCESSING = auto()
+PAYMENT_FAILED = auto()
+PAID = auto()
+AWAITING_INVENTORY = auto()
+INVENTORY_ALLOCATED = auto()
+SHIPPED = auto()
+DELIVERED = auto()
+RETURN_PENDING = auto()
+RETURNED = auto()
+CANCELLED = auto()
+REFUNDED = auto()
 
 
-                          @dataclass
-                          class Transition:
-                          &quot;&quot;&quot;Represents a valid state transition.&quot;&quot;&quot;
-                          target: OrderStatus
-                          guard: Optional[Callable[['Order'], bool]] = None
-                          action: Optional[Callable[['Order'], None]] = None
+@dataclass
+class Transition:
+&quot;&quot;&quot;Represents a valid state transition.&quot;&quot;&quot;
+target: OrderStatus
+guard: Optional[Callable[['Order'], bool]] = None
+action: Optional[Callable[['Order'], None]] = None
 
 
-                          @dataclass
-                          class StateMachineConfig:
-                          &quot;&quot;&quot;Configuration for a table-driven state machine.&quot;&quot;&quot;
-                          initial_state: OrderStatus
-                          final_states: Set[OrderStatus]
-                          transitions: Dict[OrderStatus, Dict[OrderEvent, Transition]]
+@dataclass
+class StateMachineConfig:
+&quot;&quot;&quot;Configuration for a table-driven state machine.&quot;&quot;&quot;
+initial_state: OrderStatus
+final_states: Set[OrderStatus]
+transitions: Dict[OrderStatus, Dict[OrderEvent, Transition]]
 
-                          def validate(self) -&gt; None:
-                          &quot;&quot;&quot;Validate state machine configuration at startup.&quot;&quot;&quot;
-                          # Check all states are reachable from initial
-                          reachable = {self.initial_state}
-                          changed = True
-                          while changed:
-                          changed = False
-                          for state in list(reachable):
-                          if state in self.transitions:
-                          for event, transition in self.transitions[state].items():
-                          if transition.target not in reachable:
-                          reachable.add(transition.target)
-                          changed = True
+def validate(self) -&gt; None:
+&quot;&quot;&quot;Validate state machine configuration at startup.&quot;&quot;&quot;
+# Check all states are reachable from initial
+reachable = {self.initial_state}
+changed = True
+while changed:
+changed = False
+for state in list(reachable):
+if state in self.transitions:
+for event, transition in self.transitions[state].items():
+if transition.target not in reachable:
+reachable.add(transition.target)
+changed = True
 
-                          # Check final states are reachable
-                          for final in self.final_states:
-                          if final not in reachable:
-                          raise ValueError(f&quot;Final state {final} is not reachable&quot;)
+# Check final states are reachable
+for final in self.final_states:
+if final not in reachable:
+raise ValueError(f&quot;Final state {final} is not reachable&quot;)
 
-                          # Check for dead ends (non-final states with no outgoing transitions)
-                          all_states = set(self.transitions.keys())
-                          for state in all_states:
-                          if state not in self.final_states:
-                          if not self.transitions.get(state):
-                          raise ValueError(f&quot;Non-final state {state} has no transitions&quot;)
-
-
-                          # Define the order state machine configuration
-                          ORDER_STATE_MACHINE = StateMachineConfig(
-                          initial_state=OrderStatus.PENDING_PAYMENT,
-                          final_states={
-                          OrderStatus.DELIVERED,
-                          OrderStatus.RETURNED,
-                          OrderStatus.CANCELLED,
-                          OrderStatus.REFUNDED,
-                          },
-                          transitions={
-                          OrderStatus.PENDING_PAYMENT: {
-                          OrderEvent.PAYMENT_RECEIVED: Transition(
-                          target=OrderStatus.PAYMENT_PROCESSING,
-                          action=lambda o: o.initiate_payment_processing()
-                          ),
-                          OrderEvent.CANCELLED: Transition(
-                          target=OrderStatus.CANCELLED,
-                          guard=lambda o: not o.has_reserved_inventory,
-                          action=lambda o: o.notify_cancellation()
-                          ),
-                          },
-                          OrderStatus.PAYMENT_PROCESSING: {
-                          OrderEvent.PAYMENT_RECEIVED: Transition(
-                          target=OrderStatus.PAID,
-                          action=lambda o: o.record_payment()
-                          ),
-                          OrderEvent.PAYMENT_FAILED: Transition(
-                          target=OrderStatus.PAYMENT_FAILED,
-                          action=lambda o: o.notify_payment_failure()
-                          ),
-                          },
-                          OrderStatus.PAYMENT_FAILED: {
-                          OrderEvent.PAYMENT_RECEIVED: Transition(
-                          target=OrderStatus.PAYMENT_PROCESSING
-                          ),
-                          OrderEvent.CANCELLED: Transition(
-                          target=OrderStatus.CANCELLED
-                          ),
-                          },
-                          OrderStatus.PAID: {
-                          OrderEvent.INVENTORY_RESERVED: Transition(
-                          target=OrderStatus.INVENTORY_ALLOCATED,
-                          action=lambda o: o.confirm_inventory()
-                          ),
-                          OrderEvent.INVENTORY_UNAVAILABLE: Transition(
-                          target=OrderStatus.AWAITING_INVENTORY,
-                          action=lambda o: o.backorder_items()
-                          ),
-                          OrderEvent.CANCELLED: Transition(
-                          target=OrderStatus.REFUNDED,
-                          action=lambda o: o.process_refund()
-                          ),
-                          },
-                          OrderStatus.AWAITING_INVENTORY: {
-                          OrderEvent.INVENTORY_RESERVED: Transition(
-                          target=OrderStatus.INVENTORY_ALLOCATED
-                          ),
-                          OrderEvent.CANCELLED: Transition(
-                          target=OrderStatus.REFUNDED,
-                          action=lambda o: o.process_refund()
-                          ),
-                          },
-                          OrderStatus.INVENTORY_ALLOCATED: {
-                          OrderEvent.SHIPPED: Transition(
-                          target=OrderStatus.SHIPPED,
-                          action=lambda o: o.generate_tracking()
-                          ),
-                          },
-                          OrderStatus.SHIPPED: {
-                          OrderEvent.DELIVERED: Transition(
-                          target=OrderStatus.DELIVERED,
-                          action=lambda o: o.confirm_delivery()
-                          ),
-                          OrderEvent.RETURN_REQUESTED: Transition(
-                          target=OrderStatus.RETURN_PENDING,
-                          guard=lambda o: o.is_within_return_window,
-                          action=lambda o: o.initiate_return()
-                          ),
-                          },
-                          OrderStatus.DELIVERED: {
-                          OrderEvent.RETURN_REQUESTED: Transition(
-                          target=OrderStatus.RETURN_PENDING,
-                          guard=lambda o: o.is_within_return_window,
-                          action=lambda o: o.initiate_return()
-                          ),
-                          },
-                          OrderStatus.RETURN_PENDING: {
-                          OrderEvent.RETURN_RECEIVED: Transition(
-                          target=OrderStatus.RETURNED,
-                          action=lambda o: o.process_return_refund()
-                          ),
-                          },
-                          }
-                          )
+# Check for dead ends (non-final states with no outgoing transitions)
+all_states = set(self.transitions.keys())
+for state in all_states:
+if state not in self.final_states:
+if not self.transitions.get(state):
+raise ValueError(f&quot;Non-final state {state} has no transitions&quot;)
 
 
-                          class StateMachine:
-                          &quot;&quot;&quot;Generic table-driven state machine executor.&quot;&quot;&quot;
+# Define the order state machine configuration
+ORDER_STATE_MACHINE = StateMachineConfig(
+initial_state=OrderStatus.PENDING_PAYMENT,
+final_states={
+OrderStatus.DELIVERED,
+OrderStatus.RETURNED,
+OrderStatus.CANCELLED,
+OrderStatus.REFUNDED,
+},
+transitions={
+OrderStatus.PENDING_PAYMENT: {
+OrderEvent.PAYMENT_RECEIVED: Transition(
+target=OrderStatus.PAYMENT_PROCESSING,
+action=lambda o: o.initiate_payment_processing()
+),
+OrderEvent.CANCELLED: Transition(
+target=OrderStatus.CANCELLED,
+guard=lambda o: not o.has_reserved_inventory,
+action=lambda o: o.notify_cancellation()
+),
+},
+OrderStatus.PAYMENT_PROCESSING: {
+OrderEvent.PAYMENT_RECEIVED: Transition(
+target=OrderStatus.PAID,
+action=lambda o: o.record_payment()
+),
+OrderEvent.PAYMENT_FAILED: Transition(
+target=OrderStatus.PAYMENT_FAILED,
+action=lambda o: o.notify_payment_failure()
+),
+},
+OrderStatus.PAYMENT_FAILED: {
+OrderEvent.PAYMENT_RECEIVED: Transition(
+target=OrderStatus.PAYMENT_PROCESSING
+),
+OrderEvent.CANCELLED: Transition(
+target=OrderStatus.CANCELLED
+),
+},
+OrderStatus.PAID: {
+OrderEvent.INVENTORY_RESERVED: Transition(
+target=OrderStatus.INVENTORY_ALLOCATED,
+action=lambda o: o.confirm_inventory()
+),
+OrderEvent.INVENTORY_UNAVAILABLE: Transition(
+target=OrderStatus.AWAITING_INVENTORY,
+action=lambda o: o.backorder_items()
+),
+OrderEvent.CANCELLED: Transition(
+target=OrderStatus.REFUNDED,
+action=lambda o: o.process_refund()
+),
+},
+OrderStatus.AWAITING_INVENTORY: {
+OrderEvent.INVENTORY_RESERVED: Transition(
+target=OrderStatus.INVENTORY_ALLOCATED
+),
+OrderEvent.CANCELLED: Transition(
+target=OrderStatus.REFUNDED,
+action=lambda o: o.process_refund()
+),
+},
+OrderStatus.INVENTORY_ALLOCATED: {
+OrderEvent.SHIPPED: Transition(
+target=OrderStatus.SHIPPED,
+action=lambda o: o.generate_tracking()
+),
+},
+OrderStatus.SHIPPED: {
+OrderEvent.DELIVERED: Transition(
+target=OrderStatus.DELIVERED,
+action=lambda o: o.confirm_delivery()
+),
+OrderEvent.RETURN_REQUESTED: Transition(
+target=OrderStatus.RETURN_PENDING,
+guard=lambda o: o.is_within_return_window,
+action=lambda o: o.initiate_return()
+),
+},
+OrderStatus.DELIVERED: {
+OrderEvent.RETURN_REQUESTED: Transition(
+target=OrderStatus.RETURN_PENDING,
+guard=lambda o: o.is_within_return_window,
+action=lambda o: o.initiate_return()
+),
+},
+OrderStatus.RETURN_PENDING: {
+OrderEvent.RETURN_RECEIVED: Transition(
+target=OrderStatus.RETURNED,
+action=lambda o: o.process_return_refund()
+),
+},
+}
+)
 
-                          def __init__(self, config: StateMachineConfig):
-                          self.config = config
-                          config.validate()
 
-                          def process_event(
-                          self,
-                          context: Any,
-                          current_state: Enum,
-                          event: Enum
-                          ) -&gt; tuple[Enum, bool]:
-                          &quot;&quot;&quot;
-                          Process an event and return (new_state, transition_occurred).
+class StateMachine:
+&quot;&quot;&quot;Generic table-driven state machine executor.&quot;&quot;&quot;
 
-                          Raises ValueError for invalid transitions.
-                          &quot;&quot;&quot;
-                          state_transitions = self.config.transitions.get(current_state, {})
-                          transition = state_transitions.get(event)
+def __init__(self, config: StateMachineConfig):
+self.config = config
+config.validate()
 
-                          if transition is None:
-                          raise ValueError(
-                          f&quot;No transition defined for event {event} in state {current_state}&quot;
-                          )
+def process_event(
+self,
+context: Any,
+current_state: Enum,
+event: Enum
+) -&gt; tuple[Enum, bool]:
+&quot;&quot;&quot;
+Process an event and return (new_state, transition_occurred).
 
-                          # Check guard condition
-                          if transition.guard and not transition.guard(context):
-                          return current_state, False
+Raises ValueError for invalid transitions.
+&quot;&quot;&quot;
+state_transitions = self.config.transitions.get(current_state, {})
+transition = state_transitions.get(event)
 
-                          # Execute action
-                          if transition.action:
-                          transition.action(context)
+if transition is None:
+raise ValueError(
+f&quot;No transition defined for event {event} in state {current_state}&quot;
+)
 
-                          return transition.target, True
-                          ```
-</code></pre>
+# Check guard condition
+if transition.guard and not transition.guard(context):
+return current_state, False
+
+# Execute action
+if transition.action:
+transition.action(context)
+
+return transition.target, True</code></pre>
 <h3 id="3-level-recursive-interview-questions-state-machines">3-Level Recursive Interview Questions: State Machines</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem">Level 1: What are the advantages of a table-driven state machine over the classic State pattern implementation?</div>
@@ -695,205 +683,199 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 </ul>
 </div>
 <h3 id="implementation-with-nested-states">Implementation with Nested States</h3>
-<pre><code>                                              ```python
-                                              from abc import ABC, abstractmethod
-                                              from typing import Optional, Dict, Type
-                                              from dataclasses import dataclass, field
-                                              from enum import Enum, auto
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from typing import Optional, Dict, Type
+from dataclasses import dataclass, field
+from enum import Enum, auto
 
 
-                                              class StateEventResult(Enum):
-                                              &quot;&quot;&quot;Result of processing an event in a state.&quot;&quot;&quot;
-                                              HANDLED = auto()      # Event was handled, no transition
-                                              TRANSITION = auto()   # Transition to another state
-                                              NOT_HANDLED = auto()  # Delegate to parent state
+class StateEventResult(Enum):
+&quot;&quot;&quot;Result of processing an event in a state.&quot;&quot;&quot;
+HANDLED = auto()      # Event was handled, no transition
+TRANSITION = auto()   # Transition to another state
+NOT_HANDLED = auto()  # Delegate to parent state
 
 
-                                              @dataclass
-                                              class HierarchicalState(ABC):
-                                              &quot;&quot;&quot;Base class for hierarchical states.&quot;&quot;&quot;
+@dataclass
+class HierarchicalState(ABC):
+&quot;&quot;&quot;Base class for hierarchical states.&quot;&quot;&quot;
 
-                                              parent: Optional['HierarchicalState'] = None
-                                              _active_substate: Optional['HierarchicalState'] = None
+parent: Optional['HierarchicalState'] = None
+_active_substate: Optional['HierarchicalState'] = None
 
-                                              @property
-                                              @abstractmethod
-                                              def name(self) -&gt; str:
-                                              pass
+@property
+@abstractmethod
+def name(self) -&gt; str:
+pass
 
-                                              def get_substates(self) -&gt; Dict[str, Type['HierarchicalState']]:
-                                              &quot;&quot;&quot;Override to define nested states.&quot;&quot;&quot;
-                                              return {}
+def get_substates(self) -&gt; Dict[str, Type['HierarchicalState']]:
+&quot;&quot;&quot;Override to define nested states.&quot;&quot;&quot;
+return {}
 
-                                              def get_initial_substate(self) -&gt; Optional[str]:
-                                              &quot;&quot;&quot;Override to specify which substate to enter by default.&quot;&quot;&quot;
-                                              return None
+def get_initial_substate(self) -&gt; Optional[str]:
+&quot;&quot;&quot;Override to specify which substate to enter by default.&quot;&quot;&quot;
+return None
 
-                                              def handle_event(self, context: 'Order', event: str) -&gt; tuple[StateEventResult, Optional['HierarchicalState']]:
-                                              &quot;&quot;&quot;
-                                              Process event. Returns (result, new_state_or_none).
-                                              Default implementation delegates to active substate, then to self.
-                                              &quot;&quot;&quot;
-                                              # First, let active substate handle it
-                                              if self._active_substate:
-                                              result, new_state = self._active_substate.handle_event(context, event)
-                                              if result == StateEventResult.HANDLED:
-                                              return result, None
-                                              elif result == StateEventResult.TRANSITION:
-                                              return result, new_state
+def handle_event(self, context: 'Order', event: str) -&gt; tuple[StateEventResult, Optional['HierarchicalState']]:
+&quot;&quot;&quot;
+Process event. Returns (result, new_state_or_none).
+Default implementation delegates to active substate, then to self.
+&quot;&quot;&quot;
+# First, let active substate handle it
+if self._active_substate:
+result, new_state = self._active_substate.handle_event(context, event)
+if result == StateEventResult.HANDLED:
+return result, None
+elif result == StateEventResult.TRANSITION:
+return result, new_state
 
-                                              # Substate didn't handle it (or no substate), try handling here
-                                              handler = getattr(self, f'on_{event}', None)
-                                              if handler:
-                                              return handler(context)
+# Substate didn't handle it (or no substate), try handling here
+handler = getattr(self, f'on_{event}', None)
+if handler:
+return handler(context)
 
-                                              # Event not handled at this level, bubble up
-                                              return StateEventResult.NOT_HANDLED, None
+# Event not handled at this level, bubble up
+return StateEventResult.NOT_HANDLED, None
 
-                                              def enter(self, context: 'Order', history: bool = False) -&gt; None:
-                                              &quot;&quot;&quot;Called when entering this state.&quot;&quot;&quot;
-                                              self.on_enter(context)
+def enter(self, context: 'Order', history: bool = False) -&gt; None:
+&quot;&quot;&quot;Called when entering this state.&quot;&quot;&quot;
+self.on_enter(context)
 
-                                              # Enter initial substate if this is a composite state
-                                              initial = self.get_initial_substate()
-                                              if initial and not history:
-                                              substates = self.get_substates()
-                                              if initial in substates:
-                                              self._active_substate = substates[initial](parent=self)
-                                              self._active_substate.enter(context)
+# Enter initial substate if this is a composite state
+initial = self.get_initial_substate()
+if initial and not history:
+substates = self.get_substates()
+if initial in substates:
+self._active_substate = substates[initial](parent=self)
+self._active_substate.enter(context)
 
-                                              def exit(self, context: 'Order') -&gt; None:
-                                              &quot;&quot;&quot;Called when exiting this state.&quot;&quot;&quot;
-                                              # Exit active substate first (innermost to outermost)
-                                              if self._active_substate:
-                                              self._active_substate.exit(context)
-                                              self._active_substate = None
-                                              self.on_exit(context)
+def exit(self, context: 'Order') -&gt; None:
+&quot;&quot;&quot;Called when exiting this state.&quot;&quot;&quot;
+# Exit active substate first (innermost to outermost)
+if self._active_substate:
+self._active_substate.exit(context)
+self._active_substate = None
+self.on_exit(context)
 
-                                              def on_enter(self, context: 'Order') -&gt; None:
-                                              &quot;&quot;&quot;Override for entry actions.&quot;&quot;&quot;
-                                              pass
+def on_enter(self, context: 'Order') -&gt; None:
+&quot;&quot;&quot;Override for entry actions.&quot;&quot;&quot;
+pass
 
-                                              def on_exit(self, context: 'Order') -&gt; None:
-                                              &quot;&quot;&quot;Override for exit actions.&quot;&quot;&quot;
-                                              pass
-
-
-                                              # Concrete implementation
-                                              class ProcessingState(HierarchicalState):
-                                              &quot;&quot;&quot;Composite state containing payment, inventory, and fulfillment substates.&quot;&quot;&quot;
-
-                                              @property
-                                              def name(self) -&gt; str:
-                                              return &quot;processing&quot;
-
-                                              def get_substates(self) -&gt; Dict[str, Type[HierarchicalState]]:
-                                              return {
-                                              &quot;payment&quot;: PaymentProcessingSubstate,
-                                              &quot;inventory&quot;: InventoryAllocationSubstate,
-                                              &quot;fulfillment&quot;: FulfillmentSubstate,
-                                              }
-
-                                              def get_initial_substate(self) -&gt; str:
-                                              return &quot;payment&quot;
-
-                                              def on_cancel(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
-                                              &quot;&quot;&quot;
-                                              Cancel transition defined at superstate level.
-                                              This handles 'cancel' for ALL substates automatically.
-                                              &quot;&quot;&quot;
-                                              context.cancel_reason = &quot;Customer requested cancellation&quot;
-                                              return StateEventResult.TRANSITION, CancelledState()
-
-                                              def on_enter(self, context: 'Order') -&gt; None:
-                                              context.processing_started_at = datetime.now()
-                                              print(f&quot;Order {context.id} entering processing&quot;)
+def on_exit(self, context: 'Order') -&gt; None:
+&quot;&quot;&quot;Override for exit actions.&quot;&quot;&quot;
+pass
 
 
-                                              class PaymentProcessingSubstate(HierarchicalState):
-                                              &quot;&quot;&quot;Substate handling payment processing.&quot;&quot;&quot;
+# Concrete implementation
+class ProcessingState(HierarchicalState):
+&quot;&quot;&quot;Composite state containing payment, inventory, and fulfillment substates.&quot;&quot;&quot;
 
-                                              @property
-                                              def name(self) -&gt; str:
-                                              return &quot;processing.payment&quot;
+@property
+def name(self) -&gt; str:
+return &quot;processing&quot;
 
-                                              def on_payment_confirmed(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
-                                              context.paid_at = datetime.now()
-                                              # Transition to sibling substate
-                                              return StateEventResult.TRANSITION, InventoryAllocationSubstate(parent=self.parent)
+def get_substates(self) -&gt; Dict[str, Type[HierarchicalState]]:
+return {
+&quot;payment&quot;: PaymentProcessingSubstate,
+&quot;inventory&quot;: InventoryAllocationSubstate,
+&quot;fulfillment&quot;: FulfillmentSubstate,
+}
 
-                                              def on_payment_failed(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
-                                              return StateEventResult.TRANSITION, PaymentFailedState()
+def get_initial_substate(self) -&gt; str:
+return &quot;payment&quot;
+
+def on_cancel(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
+&quot;&quot;&quot;
+Cancel transition defined at superstate level.
+This handles 'cancel' for ALL substates automatically.
+&quot;&quot;&quot;
+context.cancel_reason = &quot;Customer requested cancellation&quot;
+return StateEventResult.TRANSITION, CancelledState()
+
+def on_enter(self, context: 'Order') -&gt; None:
+context.processing_started_at = datetime.now()
+print(f&quot;Order {context.id} entering processing&quot;)
 
 
-                                              class InventoryAllocationSubstate(HierarchicalState):
-                                              &quot;&quot;&quot;Substate handling inventory allocation.&quot;&quot;&quot;
+class PaymentProcessingSubstate(HierarchicalState):
+&quot;&quot;&quot;Substate handling payment processing.&quot;&quot;&quot;
 
-                                              @property
-                                              def name(self) -&gt; str:
-                                              return &quot;processing.inventory&quot;
+@property
+def name(self) -&gt; str:
+return &quot;processing.payment&quot;
 
-                                              def on_inventory_allocated(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
-                                              context.inventory_reserved = True
-                                              return StateEventResult.TRANSITION, FulfillmentSubstate(parent=self.parent)
+def on_payment_confirmed(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
+context.paid_at = datetime.now()
+# Transition to sibling substate
+return StateEventResult.TRANSITION, InventoryAllocationSubstate(parent=self.parent)
+
+def on_payment_failed(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
+return StateEventResult.TRANSITION, PaymentFailedState()
 
 
-                                              class FulfillmentSubstate(HierarchicalState):
-                                              &quot;&quot;&quot;Substate handling order fulfillment.&quot;&quot;&quot;
+class InventoryAllocationSubstate(HierarchicalState):
+&quot;&quot;&quot;Substate handling inventory allocation.&quot;&quot;&quot;
 
-                                              @property
-                                              def name(self) -&gt; str:
-                                              return &quot;processing.fulfillment&quot;
+@property
+def name(self) -&gt; str:
+return &quot;processing.inventory&quot;
 
-                                              def on_shipped(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
-                                              # Transition out of the entire Processing superstate
-                                              return StateEventResult.TRANSITION, ShippedState()
-                                              ```
-</code></pre>
+def on_inventory_allocated(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
+context.inventory_reserved = True
+return StateEventResult.TRANSITION, FulfillmentSubstate(parent=self.parent)
+
+
+class FulfillmentSubstate(HierarchicalState):
+&quot;&quot;&quot;Substate handling order fulfillment.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;processing.fulfillment&quot;
+
+def on_shipped(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
+# Transition out of the entire Processing superstate
+return StateEventResult.TRANSITION, ShippedState()</code></pre>
 <h3 id="history-states">History States</h3>
 <p>History states remember which substate was active when exiting a composite state:</p>
-<pre><code>                                              ```python
-                                              @dataclass
-                                              class CompositeStateWithHistory(HierarchicalState):
-                                              &quot;&quot;&quot;Composite state that remembers its last active substate.&quot;&quot;&quot;
+<pre><code class="language-python">@dataclass
+class CompositeStateWithHistory(HierarchicalState):
+&quot;&quot;&quot;Composite state that remembers its last active substate.&quot;&quot;&quot;
 
-                                              _history: Optional[str] = None  # Name of last active substate
+_history: Optional[str] = None  # Name of last active substate
 
-                                              def exit(self, context: 'Order') -&gt; None:
-                                              # Remember which substate was active
-                                              if self._active_substate:
-                                              self._history = self._active_substate.name.split('.')[-1]
-                                              self._active_substate.exit(context)
-                                              self._active_substate = None
-                                              self.on_exit(context)
+def exit(self, context: 'Order') -&gt; None:
+# Remember which substate was active
+if self._active_substate:
+self._history = self._active_substate.name.split('.')[-1]
+self._active_substate.exit(context)
+self._active_substate = None
+self.on_exit(context)
 
-                                              def enter_with_history(self, context: 'Order') -&gt; None:
-                                              &quot;&quot;&quot;Enter the composite state, resuming at the last active substate.&quot;&quot;&quot;
-                                              self.on_enter(context)
+def enter_with_history(self, context: 'Order') -&gt; None:
+&quot;&quot;&quot;Enter the composite state, resuming at the last active substate.&quot;&quot;&quot;
+self.on_enter(context)
 
-                                              target = self._history or self.get_initial_substate()
-                                              if target:
-                                              substates = self.get_substates()
-                                              if target in substates:
-                                              self._active_substate = substates[target](parent=self)
-                                              self._active_substate.enter(context)
+target = self._history or self.get_initial_substate()
+if target:
+substates = self.get_substates()
+if target in substates:
+self._active_substate = substates[target](parent=self)
+self._active_substate.enter(context)
 
 
-                                              # Usage: Order returns from &quot;On Hold&quot; state
-                                              class OnHoldState(HierarchicalState):
-                                              &quot;&quot;&quot;Order is temporarily on hold.&quot;&quot;&quot;
+# Usage: Order returns from &quot;On Hold&quot; state
+class OnHoldState(HierarchicalState):
+&quot;&quot;&quot;Order is temporarily on hold.&quot;&quot;&quot;
 
-                                              @property
-                                              def name(self) -&gt; str:
-                                              return &quot;on_hold&quot;
+@property
+def name(self) -&gt; str:
+return &quot;on_hold&quot;
 
-                                              def on_resume(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
-                                              # Create processing state and enter with history
-                                              processing = ProcessingStateWithHistory()
-                                              processing._history = context.last_processing_substate
-                                              return StateEventResult.TRANSITION, processing
-                                              ```
-</code></pre>
+def on_resume(self, context: 'Order') -&gt; tuple[StateEventResult, HierarchicalState]:
+# Create processing state and enter with history
+processing = ProcessingStateWithHistory()
+processing._history = context.last_processing_substate
+return StateEventResult.TRANSITION, processing</code></pre>
 <h3 id="3-level-recursive-interview-questions-hierarchical-states">3-Level Recursive Interview Questions: Hierarchical States</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem">Level 1: When should you use hierarchical states instead of a flat state machine?</div>
@@ -920,872 +902,869 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 <hr />
 <h2 id="complete-order-workflow-implementation">Complete Order Workflow Implementation</h2>
 <p>Here's a production-quality order state machine demonstrating all concepts:</p>
-<pre><code>                                                              ```python
-                                                              from abc import ABC, abstractmethod
-                                                              from dataclasses import dataclass, field
-                                                              from datetime import datetime, timedelta
-                                                              from typing import Optional, List, Dict, Any, Callable
-                                                              from enum import Enum, auto
-                                                              import logging
-
-                                                              logger = logging.getLogger(__name__)
-
-
-                                                              class OrderEvent(Enum):
-                                                              &quot;&quot;&quot;All possible order events.&quot;&quot;&quot;
-                                                              # Payment events
-                                                              PAYMENT_INITIATED = auto()
-                                                              PAYMENT_AUTHORIZED = auto()
-                                                              PAYMENT_CAPTURED = auto()
-                                                              PAYMENT_FAILED = auto()
-                                                              PAYMENT_REFUNDED = auto()
-
-                                                              # Inventory events
-                                                              ITEMS_RESERVED = auto()
-                                                              ITEMS_UNAVAILABLE = auto()
-                                                              ITEMS_BACKORDERED = auto()
-
-                                                              # Fulfillment events
-                                                              PICKING_STARTED = auto()
-                                                              PICKING_COMPLETED = auto()
-                                                              PACKED = auto()
-                                                              SHIPPED = auto()
-                                                              OUT_FOR_DELIVERY = auto()
-                                                              DELIVERED = auto()
-                                                              DELIVERY_FAILED = auto()
-
-                                                              # Customer events
-                                                              CANCELLED_BY_CUSTOMER = auto()
-                                                              RETURN_REQUESTED = auto()
-                                                              RETURN_RECEIVED = auto()
-
-                                                              # System events
-                                                              FRAUD_DETECTED = auto()
-                                                              EXPIRED = auto()
-
-
-                                                              @dataclass
-                                                              class TransitionContext:
-                                                              &quot;&quot;&quot;Context passed to transition handlers.&quot;&quot;&quot;
-                                                              order: 'Order'
-                                                              event: OrderEvent
-                                                              timestamp: datetime
-                                                              metadata: Dict[str, Any] = field(default_factory=dict)
-
-
-                                                              @dataclass
-                                                              class OrderState(ABC):
-                                                              &quot;&quot;&quot;
-                                                              Abstract base for order states.
-
-                                                              Design choices:
-                                                              - States are stateless (no instance variables) to allow sharing
-                                                              - All order data lives in the Order context
-                                                              - States define allowed transitions and guard conditions
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              @abstractmethod
-                                                              def name(self) -&gt; str:
-                                                              &quot;&quot;&quot;Canonical state name for persistence and logging.&quot;&quot;&quot;
-                                                              pass
-
-                                                              @property
-                                                              def is_terminal(self) -&gt; bool:
-                                                              &quot;&quot;&quot;Terminal states cannot transition further.&quot;&quot;&quot;
-                                                              return False
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              &quot;&quot;&quot;Events that can be processed in this state.&quot;&quot;&quot;
-                                                              return []
-
-                                                              def can_process(self, event: OrderEvent) -&gt; bool:
-                                                              &quot;&quot;&quot;Check if this state can process the given event.&quot;&quot;&quot;
-                                                              return event in self.allowed_events
-
-                                                              @abstractmethod
-                                                              def process_event(
-                                                              self,
-                                                              ctx: TransitionContext
-                                                              ) -&gt; tuple[Optional['OrderState'], List[Dict]]:
-                                                              &quot;&quot;&quot;
-                                                              Process an event and return (new_state, side_effects).
-
-                                                              Returns:
-                                                              - (new_state, effects) if transition occurs
-                                                              - (None, []) if event is handled but no transition
-
-                                                              Side effects are returned as data, not executed, enabling:
-                                                              - Transaction safety (effects executed after DB commit)
-                                                              - Testing (verify effects without executing)
-                                                              - Event sourcing (effects become events)
-                                                              &quot;&quot;&quot;
-                                                              pass
-
-                                                              def on_enter(self, ctx: TransitionContext) -&gt; List[Dict]:
-                                                              &quot;&quot;&quot;
-                                                              Entry actions when transitioning INTO this state.
-                                                              Returns side effects to execute.
-                                                              &quot;&quot;&quot;
-                                                              return []
-
-                                                              def on_exit(self, ctx: TransitionContext, target: 'OrderState') -&gt; List[Dict]:
-                                                              &quot;&quot;&quot;
-                                                              Exit actions when transitioning OUT of this state.
-                                                              Returns side effects to execute.
-                                                              &quot;&quot;&quot;
-                                                              return []
-
-
-                                                              # === Concrete States ===
-
-                                                              class PendingPaymentState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Initial state: awaiting payment.
-
-                                                              Edge cases handled:
-                                                              - Customer cancellation before payment
-                                                              - Payment timeout (order expiration)
-                                                              - Fraud detection during payment
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;pending_payment&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.PAYMENT_INITIATED,
-                                                              OrderEvent.CANCELLED_BY_CUSTOMER,
-                                                              OrderEvent.EXPIRED,
-                                                              OrderEvent.FRAUD_DETECTED,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.PAYMENT_INITIATED:
-                                                              return PaymentProcessingState(), [
-                                                              {&quot;type&quot;: &quot;initiate_payment&quot;, &quot;amount&quot;: ctx.order.total}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
-                                                              ctx.order.cancelled_at = ctx.timestamp
-                                                              ctx.order.cancel_reason = &quot;Customer cancelled before payment&quot;
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.EXPIRED:
-                                                              ctx.order.expired_at = ctx.timestamp
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_expired&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.FRAUD_DETECTED:
-                                                              ctx.order.fraud_flag = True
-                                                              return FraudReviewState(), [
-                                                              {&quot;type&quot;: &quot;alert_fraud_team&quot;, &quot;order_id&quot;: ctx.order.id}
-                                                              ]
-
-                                                              return None, []
-
-                                                              def on_enter(self, ctx: TransitionContext) -&gt; List[Dict]:
-                                                              # Schedule expiration check
-                                                              expiry_time = ctx.timestamp + timedelta(hours=24)
-                                                              return [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_confirmation&quot;, &quot;to&quot;: ctx.order.customer_email},
-                                                              {&quot;type&quot;: &quot;schedule_event&quot;, &quot;event&quot;: &quot;EXPIRED&quot;, &quot;at&quot;: expiry_time}
-                                                              ]
-
-
-                                                              class PaymentProcessingState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Payment is being processed by payment gateway.
-
-                                                              This is typically a transient state - we're waiting for
-                                                              an async callback from the payment processor.
-
-                                                              Edge cases:
-                                                              - Payment processor timeout
-                                                              - Partial authorization (auth for less than order total)
-                                                              - 3D Secure / SCA challenges
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;payment_processing&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.PAYMENT_AUTHORIZED,
-                                                              OrderEvent.PAYMENT_FAILED,
-                                                              OrderEvent.FRAUD_DETECTED,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.PAYMENT_AUTHORIZED:
-                                                              ctx.order.payment_authorized_at = ctx.timestamp
-                                                              ctx.order.authorization_code = ctx.metadata.get(&quot;auth_code&quot;)
-
-                                                              # Check for partial authorization
-                                                              authorized_amount = ctx.metadata.get(&quot;authorized_amount&quot;, ctx.order.total)
-                                                              if authorized_amount &lt; ctx.order.total:
-                                                              # Partial auth - need additional payment or cancel
-                                                              ctx.order.partial_auth_amount = authorized_amount
-                                                              return PartialPaymentState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;partial_payment&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return PaymentAuthorizedState(), [
-                                                              {&quot;type&quot;: &quot;capture_payment&quot;, &quot;amount&quot;: ctx.order.total}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.PAYMENT_FAILED:
-                                                              ctx.order.payment_failed_at = ctx.timestamp
-                                                              ctx.order.payment_failure_reason = ctx.metadata.get(&quot;reason&quot;, &quot;Unknown&quot;)
-
-                                                              # Allow retry up to 3 times
-                                                              if ctx.order.payment_attempts &lt; 3:
-                                                              return PendingPaymentState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_failed_retry&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-                                                              else:
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_failed_final&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.FRAUD_DETECTED:
-                                                              # Void any authorization
-                                                              ctx.order.fraud_flag = True
-                                                              return FraudReviewState(), [
-                                                              {&quot;type&quot;: &quot;void_authorization&quot;, &quot;auth_code&quot;: ctx.order.authorization_code},
-                                                              {&quot;type&quot;: &quot;alert_fraud_team&quot;, &quot;order_id&quot;: ctx.order.id}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class PaymentAuthorizedState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Payment authorized, attempting capture.
-
-                                                              Authorization != Capture:
-                                                              - Authorization: &quot;Can this card pay $X?&quot; (hold on funds)
-                                                              - Capture: &quot;Actually charge $X now&quot; (transfer funds)
-
-                                                              Some merchants capture immediately, others wait until shipping.
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;payment_authorized&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.PAYMENT_CAPTURED,
-                                                              OrderEvent.PAYMENT_FAILED,
-                                                              OrderEvent.CANCELLED_BY_CUSTOMER,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.PAYMENT_CAPTURED:
-                                                              ctx.order.payment_captured_at = ctx.timestamp
-                                                              return PaidState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_received&quot;, &quot;to&quot;: ctx.order.customer_email},
-                                                              {&quot;type&quot;: &quot;reserve_inventory&quot;, &quot;items&quot;: ctx.order.items}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.PAYMENT_FAILED:
-                                                              # Capture failed after auth - rare but possible
-                                                              return PendingPaymentState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_issue&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
-                                                              ctx.order.cancelled_at = ctx.timestamp
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;void_authorization&quot;, &quot;auth_code&quot;: ctx.order.authorization_code},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class PaidState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Payment captured, ready for fulfillment.
-
-                                                              This triggers inventory reservation. If inventory
-                                                              is unavailable, order moves to backorder state.
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;paid&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.ITEMS_RESERVED,
-                                                              OrderEvent.ITEMS_UNAVAILABLE,
-                                                              OrderEvent.ITEMS_BACKORDERED,
-                                                              OrderEvent.CANCELLED_BY_CUSTOMER,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.ITEMS_RESERVED:
-                                                              ctx.order.inventory_reserved_at = ctx.timestamp
-                                                              return ReadyForFulfillmentState(), [
-                                                              {&quot;type&quot;: &quot;create_pick_list&quot;, &quot;order_id&quot;: ctx.order.id}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.ITEMS_UNAVAILABLE:
-                                                              # Complete stockout - refund and cancel
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;out_of_stock_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.ITEMS_BACKORDERED:
-                                                              ctx.order.backordered_at = ctx.timestamp
-                                                              ctx.order.estimated_ship_date = ctx.metadata.get(&quot;estimated_date&quot;)
-                                                              return BackorderedState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;backordered&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
-                                                              ctx.order.cancelled_at = ctx.timestamp
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled_refunded&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class BackorderedState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Items on backorder, waiting for inventory.
-
-                                                              Customer can cancel while backordered.
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;backordered&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.ITEMS_RESERVED,
-                                                              OrderEvent.CANCELLED_BY_CUSTOMER,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.ITEMS_RESERVED:
-                                                              ctx.order.inventory_reserved_at = ctx.timestamp
-                                                              return ReadyForFulfillmentState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;backorder_filled&quot;, &quot;to&quot;: ctx.order.customer_email},
-                                                              {&quot;type&quot;: &quot;create_pick_list&quot;, &quot;order_id&quot;: ctx.order.id}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
-                                                              ctx.order.cancelled_at = ctx.timestamp
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;backorder_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class ReadyForFulfillmentState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Inventory reserved, ready for warehouse picking.
-
-                                                              This is where the order enters the physical fulfillment process.
-                                                              Cancellation becomes more expensive here (restocking labor).
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;ready_for_fulfillment&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.PICKING_STARTED,
-                                                              OrderEvent.CANCELLED_BY_CUSTOMER,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.PICKING_STARTED:
-                                                              ctx.order.picking_started_at = ctx.timestamp
-                                                              return PickingState(), []
-
-                                                              elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
-                                                              ctx.order.cancelled_at = ctx.timestamp
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;release_inventory&quot;, &quot;items&quot;: ctx.order.items},
-                                                              {&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled_refunded&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class PickingState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Order is being picked in the warehouse.
-
-                                                              Cancellation no longer allowed - too late in process.
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;picking&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.PICKING_COMPLETED,
-                                                              OrderEvent.ITEMS_UNAVAILABLE,  # Item damaged/missing during pick
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.PICKING_COMPLETED:
-                                                              ctx.order.picking_completed_at = ctx.timestamp
-                                                              return PackingState(), []
-
-                                                              elif ctx.event == OrderEvent.ITEMS_UNAVAILABLE:
-                                                              # Partial fulfillment scenario
-                                                              unavailable_items = ctx.metadata.get(&quot;unavailable_items&quot;, [])
-                                                              if len(unavailable_items) == len(ctx.order.items):
-                                                              # Complete failure
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;fulfillment_failed&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-                                                              else:
-                                                              # Partial shipment
-                                                              ctx.order.partial_fulfillment = True
-                                                              ctx.order.unfulfilled_items = unavailable_items
-                                                              return PackingState(), [
-                                                              {&quot;type&quot;: &quot;partial_refund&quot;, &quot;items&quot;: unavailable_items},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;partial_shipment&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class PackingState(OrderState):
-                                                              &quot;&quot;&quot;Order is being packed.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;packing&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [OrderEvent.PACKED]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.PACKED:
-                                                              ctx.order.packed_at = ctx.timestamp
-                                                              return AwaitingShipmentState(), [
-                                                              {&quot;type&quot;: &quot;generate_shipping_label&quot;, &quot;order_id&quot;: ctx.order.id}
-                                                              ]
-                                                              return None, []
-
-
-                                                              class AwaitingShipmentState(OrderState):
-                                                              &quot;&quot;&quot;Packed and labeled, waiting for carrier pickup.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;awaiting_shipment&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [OrderEvent.SHIPPED]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.SHIPPED:
-                                                              ctx.order.shipped_at = ctx.timestamp
-                                                              ctx.order.tracking_number = ctx.metadata.get(&quot;tracking_number&quot;)
-                                                              ctx.order.carrier = ctx.metadata.get(&quot;carrier&quot;)
-                                                              return ShippedState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;shipped&quot;, &quot;to&quot;: ctx.order.customer_email,
-                                                              &quot;data&quot;: {&quot;tracking&quot;: ctx.order.tracking_number}}
-                                                              ]
-                                                              return None, []
-
-
-                                                              class ShippedState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Order is in transit.
-
-                                                              Now tracking carrier events (out for delivery, delivered, failed).
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;shipped&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.OUT_FOR_DELIVERY,
-                                                              OrderEvent.DELIVERED,
-                                                              OrderEvent.DELIVERY_FAILED,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.OUT_FOR_DELIVERY:
-                                                              ctx.order.out_for_delivery_at = ctx.timestamp
-                                                              return OutForDeliveryState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;out_for_delivery&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.DELIVERED:
-                                                              ctx.order.delivered_at = ctx.timestamp
-                                                              return DeliveredState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivered&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.DELIVERY_FAILED:
-                                                              ctx.order.delivery_attempts = ctx.order.delivery_attempts + 1
-                                                              if ctx.order.delivery_attempts &gt;= 3:
-                                                              return ReturnToSenderState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivery_failed_returning&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-                                                              return self, [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivery_failed_retry&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class OutForDeliveryState(OrderState):
-                                                              &quot;&quot;&quot;Order is out for delivery today.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;out_for_delivery&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.DELIVERED,
-                                                              OrderEvent.DELIVERY_FAILED,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.DELIVERED:
-                                                              ctx.order.delivered_at = ctx.timestamp
-                                                              return DeliveredState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivered&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.DELIVERY_FAILED:
-                                                              ctx.order.delivery_attempts = ctx.order.delivery_attempts + 1
-                                                              return ShippedState(), [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivery_failed_retry&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class DeliveredState(OrderState):
-                                                              &quot;&quot;&quot;
-                                                              Order successfully delivered.
-
-                                                              Return window is now open. Customer can request return
-                                                              within the return policy period (typically 30 days).
-                                                              &quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;delivered&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [OrderEvent.RETURN_REQUESTED]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.RETURN_REQUESTED:
-                                                              # Check return window
-                                                              days_since_delivery = (ctx.timestamp - ctx.order.delivered_at).days
-                                                              if days_since_delivery &gt; 30:
-                                                              # Return window closed - stay in delivered state
-                                                              logger.info(f&quot;Return rejected for order {ctx.order.id}: outside return window&quot;)
-                                                              return None, [
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;return_window_closed&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              ctx.order.return_requested_at = ctx.timestamp
-                                                              ctx.order.return_reason = ctx.metadata.get(&quot;reason&quot;)
-                                                              return ReturnRequestedState(), [
-                                                              {&quot;type&quot;: &quot;generate_return_label&quot;, &quot;order_id&quot;: ctx.order.id},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;return_approved&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              class ReturnRequestedState(OrderState):
-                                                              &quot;&quot;&quot;Return requested, waiting for item to be received back.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;return_requested&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [OrderEvent.RETURN_RECEIVED]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.RETURN_RECEIVED:
-                                                              ctx.order.return_received_at = ctx.timestamp
-                                                              return ReturnedState(), [
-                                                              {&quot;type&quot;: &quot;inspect_return&quot;, &quot;order_id&quot;: ctx.order.id},
-                                                              {&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
-                                                              {&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;return_complete&quot;, &quot;to&quot;: ctx.order.customer_email}
-                                                              ]
-                                                              return None, []
-
-
-                                                              # === Terminal States ===
-
-                                                              class CancelledState(OrderState):
-                                                              &quot;&quot;&quot;Order has been cancelled. Terminal state.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;cancelled&quot;
-
-                                                              @property
-                                                              def is_terminal(self) -&gt; bool:
-                                                              return True
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              return None, []  # No transitions from terminal state
-
-
-                                                              class ReturnedState(OrderState):
-                                                              &quot;&quot;&quot;Order has been returned. Terminal state.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;returned&quot;
-
-                                                              @property
-                                                              def is_terminal(self) -&gt; bool:
-                                                              return True
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              return None, []
-
-
-                                                              class ReturnToSenderState(OrderState):
-                                                              &quot;&quot;&quot;Package returned to sender after delivery failures. Terminal state.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;return_to_sender&quot;
-
-                                                              @property
-                                                              def is_terminal(self) -&gt; bool:
-                                                              return True
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              return None, []
-
-                                                              def on_enter(self, ctx: TransitionContext) -&gt; List[Dict]:
-                                                              return [
-                                                              {&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
-                                                              {&quot;type&quot;: &quot;release_inventory&quot;, &quot;items&quot;: ctx.order.items}
-                                                              ]
-
-
-                                                              class FraudReviewState(OrderState):
-                                                              &quot;&quot;&quot;Order flagged for fraud review. Manual intervention required.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;fraud_review&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              # Only manual review events, not modeled here
-                                                              return []
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              return None, []
-
-
-                                                              class PartialPaymentState(OrderState):
-                                                              &quot;&quot;&quot;Partial authorization received, needs additional payment.&quot;&quot;&quot;
-
-                                                              @property
-                                                              def name(self) -&gt; str:
-                                                              return &quot;partial_payment&quot;
-
-                                                              @property
-                                                              def allowed_events(self) -&gt; List[OrderEvent]:
-                                                              return [
-                                                              OrderEvent.PAYMENT_INITIATED,
-                                                              OrderEvent.CANCELLED_BY_CUSTOMER,
-                                                              ]
-
-                                                              def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
-                                                              if ctx.event == OrderEvent.PAYMENT_INITIATED:
-                                                              remaining = ctx.order.total - ctx.order.partial_auth_amount
-                                                              return PaymentProcessingState(), [
-                                                              {&quot;type&quot;: &quot;initiate_payment&quot;, &quot;amount&quot;: remaining}
-                                                              ]
-
-                                                              elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
-                                                              return CancelledState(), [
-                                                              {&quot;type&quot;: &quot;void_authorization&quot;, &quot;auth_code&quot;: ctx.order.authorization_code}
-                                                              ]
-
-                                                              return None, []
-
-
-                                                              # === State Machine Executor ===
-
-                                                              # Registry for deserializing states
-                                                              STATE_REGISTRY: Dict[str, type] = {
-                                                              &quot;pending_payment&quot;: PendingPaymentState,
-                                                              &quot;payment_processing&quot;: PaymentProcessingState,
-                                                              &quot;payment_authorized&quot;: PaymentAuthorizedState,
-                                                              &quot;paid&quot;: PaidState,
-                                                              &quot;backordered&quot;: BackorderedState,
-                                                              &quot;ready_for_fulfillment&quot;: ReadyForFulfillmentState,
-                                                              &quot;picking&quot;: PickingState,
-                                                              &quot;packing&quot;: PackingState,
-                                                              &quot;awaiting_shipment&quot;: AwaitingShipmentState,
-                                                              &quot;shipped&quot;: ShippedState,
-                                                              &quot;out_for_delivery&quot;: OutForDeliveryState,
-                                                              &quot;delivered&quot;: DeliveredState,
-                                                              &quot;return_requested&quot;: ReturnRequestedState,
-                                                              &quot;cancelled&quot;: CancelledState,
-                                                              &quot;returned&quot;: ReturnedState,
-                                                              &quot;return_to_sender&quot;: ReturnToSenderState,
-                                                              &quot;fraud_review&quot;: FraudReviewState,
-                                                              &quot;partial_payment&quot;: PartialPaymentState,
-                                                              }
-
-
-                                                              @dataclass
-                                                              class Order:
-                                                              &quot;&quot;&quot;Order entity with state machine integration.&quot;&quot;&quot;
-
-                                                              id: str
-                                                              customer_email: str
-                                                              items: List[Dict]
-                                                              total: float
-
-                                                              # State tracking
-                                                              _state: OrderState = field(default_factory=PendingPaymentState)
-                                                              state_name: str = &quot;pending_payment&quot;  # For persistence
-
-                                                              # Timestamps and metadata
-                                                              created_at: datetime = field(default_factory=datetime.now)
-                                                              payment_attempts: int = 0
-                                                              delivery_attempts: int = 0
-
-                                                              # State-specific data
-                                                              authorization_code: Optional[str] = None
-                                                              partial_auth_amount: Optional[float] = None
-                                                              tracking_number: Optional[str] = None
-                                                              carrier: Optional[str] = None
-                                                              fraud_flag: bool = False
-                                                              partial_fulfillment: bool = False
-                                                              unfulfilled_items: List[Dict] = field(default_factory=list)
-
-                                                              # Timestamps
-                                                              payment_authorized_at: Optional[datetime] = None
-                                                              payment_captured_at: Optional[datetime] = None
-                                                              payment_failed_at: Optional[datetime] = None
-                                                              inventory_reserved_at: Optional[datetime] = None
-                                                              backordered_at: Optional[datetime] = None
-                                                              picking_started_at: Optional[datetime] = None
-                                                              picking_completed_at: Optional[datetime] = None
-                                                              packed_at: Optional[datetime] = None
-                                                              shipped_at: Optional[datetime] = None
-                                                              out_for_delivery_at: Optional[datetime] = None
-                                                              delivered_at: Optional[datetime] = None
-                                                              cancelled_at: Optional[datetime] = None
-                                                              expired_at: Optional[datetime] = None
-                                                              return_requested_at: Optional[datetime] = None
-                                                              return_received_at: Optional[datetime] = None
-
-                                                              # Metadata
-                                                              cancel_reason: Optional[str] = None
-                                                              payment_failure_reason: Optional[str] = None
-                                                              return_reason: Optional[str] = None
-                                                              estimated_ship_date: Optional[datetime] = None
-
-                                                              def process_event(
-                                                              self,
-                                                              event: OrderEvent,
-                                                              metadata: Optional[Dict] = None
-                                                              ) -&gt; tuple[bool, List[Dict]]:
-                                                              &quot;&quot;&quot;
-                                                              Process an event and return (success, side_effects).
-
-                                                              This is the main entry point for state transitions.
-                                                              &quot;&quot;&quot;
-                                                              if self._state.is_terminal:
-                                                              logger.warning(f&quot;Attempted event {event} on terminal state {self.state_name}&quot;)
-                                                              return False, []
-
-                                                              if not self._state.can_process(event):
-                                                              logger.warning(f&quot;Event {event} not allowed in state {self.state_name}&quot;)
-                                                              return False, []
-
-                                                              ctx = TransitionContext(
-                                                              order=self,
-                                                              event=event,
-                                                              timestamp=datetime.now(),
-                                                              metadata=metadata or {}
-                                                              )
-
-                                                              # Process event
-                                                              new_state, effects = self._state.process_event(ctx)
-
-                                                              if new_state is not None:
-                                                              # Execute exit actions
-                                                              exit_effects = self._state.on_exit(ctx, new_state)
-
-                                                              # Transition
-                                                              old_state_name = self.state_name
-                                                              self._state = new_state
-                                                              self.state_name = new_state.name
-
-                                                              # Execute entry actions
-                                                              entry_effects = new_state.on_enter(ctx)
-
-                                                              logger.info(f&quot;Order {self.id}: {old_state_name} -&gt; {self.state_name} via {event.name}&quot;)
-
-                                                              return True, exit_effects + effects + entry_effects
-
-                                                              return True, effects
-
-                                                              @classmethod
-                                                              def from_persistence(cls, data: Dict) -&gt; 'Order':
-                                                              &quot;&quot;&quot;Reconstruct order from persisted data.&quot;&quot;&quot;
-                                                              order = cls(**{k: v for k, v in data.items() if k not in ['_state', 'state_name']})
-                                                              order.state_name = data.get('state_name', 'pending_payment')
-                                                              order._state = STATE_REGISTRY[order.state_name]()
-                                                              return order
-                                                              ```
-</code></pre>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import Optional, List, Dict, Any, Callable
+from enum import Enum, auto
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class OrderEvent(Enum):
+&quot;&quot;&quot;All possible order events.&quot;&quot;&quot;
+# Payment events
+PAYMENT_INITIATED = auto()
+PAYMENT_AUTHORIZED = auto()
+PAYMENT_CAPTURED = auto()
+PAYMENT_FAILED = auto()
+PAYMENT_REFUNDED = auto()
+
+# Inventory events
+ITEMS_RESERVED = auto()
+ITEMS_UNAVAILABLE = auto()
+ITEMS_BACKORDERED = auto()
+
+# Fulfillment events
+PICKING_STARTED = auto()
+PICKING_COMPLETED = auto()
+PACKED = auto()
+SHIPPED = auto()
+OUT_FOR_DELIVERY = auto()
+DELIVERED = auto()
+DELIVERY_FAILED = auto()
+
+# Customer events
+CANCELLED_BY_CUSTOMER = auto()
+RETURN_REQUESTED = auto()
+RETURN_RECEIVED = auto()
+
+# System events
+FRAUD_DETECTED = auto()
+EXPIRED = auto()
+
+
+@dataclass
+class TransitionContext:
+&quot;&quot;&quot;Context passed to transition handlers.&quot;&quot;&quot;
+order: 'Order'
+event: OrderEvent
+timestamp: datetime
+metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class OrderState(ABC):
+&quot;&quot;&quot;
+Abstract base for order states.
+
+Design choices:
+- States are stateless (no instance variables) to allow sharing
+- All order data lives in the Order context
+- States define allowed transitions and guard conditions
+&quot;&quot;&quot;
+
+@property
+@abstractmethod
+def name(self) -&gt; str:
+&quot;&quot;&quot;Canonical state name for persistence and logging.&quot;&quot;&quot;
+pass
+
+@property
+def is_terminal(self) -&gt; bool:
+&quot;&quot;&quot;Terminal states cannot transition further.&quot;&quot;&quot;
+return False
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+&quot;&quot;&quot;Events that can be processed in this state.&quot;&quot;&quot;
+return []
+
+def can_process(self, event: OrderEvent) -&gt; bool:
+&quot;&quot;&quot;Check if this state can process the given event.&quot;&quot;&quot;
+return event in self.allowed_events
+
+@abstractmethod
+def process_event(
+self,
+ctx: TransitionContext
+) -&gt; tuple[Optional['OrderState'], List[Dict]]:
+&quot;&quot;&quot;
+Process an event and return (new_state, side_effects).
+
+Returns:
+- (new_state, effects) if transition occurs
+- (None, []) if event is handled but no transition
+
+Side effects are returned as data, not executed, enabling:
+- Transaction safety (effects executed after DB commit)
+- Testing (verify effects without executing)
+- Event sourcing (effects become events)
+&quot;&quot;&quot;
+pass
+
+def on_enter(self, ctx: TransitionContext) -&gt; List[Dict]:
+&quot;&quot;&quot;
+Entry actions when transitioning INTO this state.
+Returns side effects to execute.
+&quot;&quot;&quot;
+return []
+
+def on_exit(self, ctx: TransitionContext, target: 'OrderState') -&gt; List[Dict]:
+&quot;&quot;&quot;
+Exit actions when transitioning OUT of this state.
+Returns side effects to execute.
+&quot;&quot;&quot;
+return []
+
+
+# === Concrete States ===
+
+class PendingPaymentState(OrderState):
+&quot;&quot;&quot;
+Initial state: awaiting payment.
+
+Edge cases handled:
+- Customer cancellation before payment
+- Payment timeout (order expiration)
+- Fraud detection during payment
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;pending_payment&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.PAYMENT_INITIATED,
+OrderEvent.CANCELLED_BY_CUSTOMER,
+OrderEvent.EXPIRED,
+OrderEvent.FRAUD_DETECTED,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.PAYMENT_INITIATED:
+return PaymentProcessingState(), [
+{&quot;type&quot;: &quot;initiate_payment&quot;, &quot;amount&quot;: ctx.order.total}
+]
+
+elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
+ctx.order.cancelled_at = ctx.timestamp
+ctx.order.cancel_reason = &quot;Customer cancelled before payment&quot;
+return CancelledState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.EXPIRED:
+ctx.order.expired_at = ctx.timestamp
+return CancelledState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_expired&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.FRAUD_DETECTED:
+ctx.order.fraud_flag = True
+return FraudReviewState(), [
+{&quot;type&quot;: &quot;alert_fraud_team&quot;, &quot;order_id&quot;: ctx.order.id}
+]
+
+return None, []
+
+def on_enter(self, ctx: TransitionContext) -&gt; List[Dict]:
+# Schedule expiration check
+expiry_time = ctx.timestamp + timedelta(hours=24)
+return [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_confirmation&quot;, &quot;to&quot;: ctx.order.customer_email},
+{&quot;type&quot;: &quot;schedule_event&quot;, &quot;event&quot;: &quot;EXPIRED&quot;, &quot;at&quot;: expiry_time}
+]
+
+
+class PaymentProcessingState(OrderState):
+&quot;&quot;&quot;
+Payment is being processed by payment gateway.
+
+This is typically a transient state - we're waiting for
+an async callback from the payment processor.
+
+Edge cases:
+- Payment processor timeout
+- Partial authorization (auth for less than order total)
+- 3D Secure / SCA challenges
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;payment_processing&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.PAYMENT_AUTHORIZED,
+OrderEvent.PAYMENT_FAILED,
+OrderEvent.FRAUD_DETECTED,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.PAYMENT_AUTHORIZED:
+ctx.order.payment_authorized_at = ctx.timestamp
+ctx.order.authorization_code = ctx.metadata.get(&quot;auth_code&quot;)
+
+# Check for partial authorization
+authorized_amount = ctx.metadata.get(&quot;authorized_amount&quot;, ctx.order.total)
+if authorized_amount &lt; ctx.order.total:
+# Partial auth - need additional payment or cancel
+ctx.order.partial_auth_amount = authorized_amount
+return PartialPaymentState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;partial_payment&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return PaymentAuthorizedState(), [
+{&quot;type&quot;: &quot;capture_payment&quot;, &quot;amount&quot;: ctx.order.total}
+]
+
+elif ctx.event == OrderEvent.PAYMENT_FAILED:
+ctx.order.payment_failed_at = ctx.timestamp
+ctx.order.payment_failure_reason = ctx.metadata.get(&quot;reason&quot;, &quot;Unknown&quot;)
+
+# Allow retry up to 3 times
+if ctx.order.payment_attempts &lt; 3:
+return PendingPaymentState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_failed_retry&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+else:
+return CancelledState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_failed_final&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.FRAUD_DETECTED:
+# Void any authorization
+ctx.order.fraud_flag = True
+return FraudReviewState(), [
+{&quot;type&quot;: &quot;void_authorization&quot;, &quot;auth_code&quot;: ctx.order.authorization_code},
+{&quot;type&quot;: &quot;alert_fraud_team&quot;, &quot;order_id&quot;: ctx.order.id}
+]
+
+return None, []
+
+
+class PaymentAuthorizedState(OrderState):
+&quot;&quot;&quot;
+Payment authorized, attempting capture.
+
+Authorization != Capture:
+- Authorization: &quot;Can this card pay $X?&quot; (hold on funds)
+- Capture: &quot;Actually charge $X now&quot; (transfer funds)
+
+Some merchants capture immediately, others wait until shipping.
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;payment_authorized&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.PAYMENT_CAPTURED,
+OrderEvent.PAYMENT_FAILED,
+OrderEvent.CANCELLED_BY_CUSTOMER,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.PAYMENT_CAPTURED:
+ctx.order.payment_captured_at = ctx.timestamp
+return PaidState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_received&quot;, &quot;to&quot;: ctx.order.customer_email},
+{&quot;type&quot;: &quot;reserve_inventory&quot;, &quot;items&quot;: ctx.order.items}
+]
+
+elif ctx.event == OrderEvent.PAYMENT_FAILED:
+# Capture failed after auth - rare but possible
+return PendingPaymentState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;payment_issue&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
+ctx.order.cancelled_at = ctx.timestamp
+return CancelledState(), [
+{&quot;type&quot;: &quot;void_authorization&quot;, &quot;auth_code&quot;: ctx.order.authorization_code},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class PaidState(OrderState):
+&quot;&quot;&quot;
+Payment captured, ready for fulfillment.
+
+This triggers inventory reservation. If inventory
+is unavailable, order moves to backorder state.
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;paid&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.ITEMS_RESERVED,
+OrderEvent.ITEMS_UNAVAILABLE,
+OrderEvent.ITEMS_BACKORDERED,
+OrderEvent.CANCELLED_BY_CUSTOMER,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.ITEMS_RESERVED:
+ctx.order.inventory_reserved_at = ctx.timestamp
+return ReadyForFulfillmentState(), [
+{&quot;type&quot;: &quot;create_pick_list&quot;, &quot;order_id&quot;: ctx.order.id}
+]
+
+elif ctx.event == OrderEvent.ITEMS_UNAVAILABLE:
+# Complete stockout - refund and cancel
+return CancelledState(), [
+{&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;out_of_stock_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.ITEMS_BACKORDERED:
+ctx.order.backordered_at = ctx.timestamp
+ctx.order.estimated_ship_date = ctx.metadata.get(&quot;estimated_date&quot;)
+return BackorderedState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;backordered&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
+ctx.order.cancelled_at = ctx.timestamp
+return CancelledState(), [
+{&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled_refunded&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class BackorderedState(OrderState):
+&quot;&quot;&quot;
+Items on backorder, waiting for inventory.
+
+Customer can cancel while backordered.
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;backordered&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.ITEMS_RESERVED,
+OrderEvent.CANCELLED_BY_CUSTOMER,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.ITEMS_RESERVED:
+ctx.order.inventory_reserved_at = ctx.timestamp
+return ReadyForFulfillmentState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;backorder_filled&quot;, &quot;to&quot;: ctx.order.customer_email},
+{&quot;type&quot;: &quot;create_pick_list&quot;, &quot;order_id&quot;: ctx.order.id}
+]
+
+elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
+ctx.order.cancelled_at = ctx.timestamp
+return CancelledState(), [
+{&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;backorder_cancelled&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class ReadyForFulfillmentState(OrderState):
+&quot;&quot;&quot;
+Inventory reserved, ready for warehouse picking.
+
+This is where the order enters the physical fulfillment process.
+Cancellation becomes more expensive here (restocking labor).
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;ready_for_fulfillment&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.PICKING_STARTED,
+OrderEvent.CANCELLED_BY_CUSTOMER,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.PICKING_STARTED:
+ctx.order.picking_started_at = ctx.timestamp
+return PickingState(), []
+
+elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
+ctx.order.cancelled_at = ctx.timestamp
+return CancelledState(), [
+{&quot;type&quot;: &quot;release_inventory&quot;, &quot;items&quot;: ctx.order.items},
+{&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;order_cancelled_refunded&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class PickingState(OrderState):
+&quot;&quot;&quot;
+Order is being picked in the warehouse.
+
+Cancellation no longer allowed - too late in process.
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;picking&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.PICKING_COMPLETED,
+OrderEvent.ITEMS_UNAVAILABLE,  # Item damaged/missing during pick
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.PICKING_COMPLETED:
+ctx.order.picking_completed_at = ctx.timestamp
+return PackingState(), []
+
+elif ctx.event == OrderEvent.ITEMS_UNAVAILABLE:
+# Partial fulfillment scenario
+unavailable_items = ctx.metadata.get(&quot;unavailable_items&quot;, [])
+if len(unavailable_items) == len(ctx.order.items):
+# Complete failure
+return CancelledState(), [
+{&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;fulfillment_failed&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+else:
+# Partial shipment
+ctx.order.partial_fulfillment = True
+ctx.order.unfulfilled_items = unavailable_items
+return PackingState(), [
+{&quot;type&quot;: &quot;partial_refund&quot;, &quot;items&quot;: unavailable_items},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;partial_shipment&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class PackingState(OrderState):
+&quot;&quot;&quot;Order is being packed.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;packing&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [OrderEvent.PACKED]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.PACKED:
+ctx.order.packed_at = ctx.timestamp
+return AwaitingShipmentState(), [
+{&quot;type&quot;: &quot;generate_shipping_label&quot;, &quot;order_id&quot;: ctx.order.id}
+]
+return None, []
+
+
+class AwaitingShipmentState(OrderState):
+&quot;&quot;&quot;Packed and labeled, waiting for carrier pickup.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;awaiting_shipment&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [OrderEvent.SHIPPED]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.SHIPPED:
+ctx.order.shipped_at = ctx.timestamp
+ctx.order.tracking_number = ctx.metadata.get(&quot;tracking_number&quot;)
+ctx.order.carrier = ctx.metadata.get(&quot;carrier&quot;)
+return ShippedState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;shipped&quot;, &quot;to&quot;: ctx.order.customer_email,
+&quot;data&quot;: {&quot;tracking&quot;: ctx.order.tracking_number}}
+]
+return None, []
+
+
+class ShippedState(OrderState):
+&quot;&quot;&quot;
+Order is in transit.
+
+Now tracking carrier events (out for delivery, delivered, failed).
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;shipped&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.OUT_FOR_DELIVERY,
+OrderEvent.DELIVERED,
+OrderEvent.DELIVERY_FAILED,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.OUT_FOR_DELIVERY:
+ctx.order.out_for_delivery_at = ctx.timestamp
+return OutForDeliveryState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;out_for_delivery&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.DELIVERED:
+ctx.order.delivered_at = ctx.timestamp
+return DeliveredState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivered&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.DELIVERY_FAILED:
+ctx.order.delivery_attempts = ctx.order.delivery_attempts + 1
+if ctx.order.delivery_attempts &gt;= 3:
+return ReturnToSenderState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivery_failed_returning&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+return self, [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivery_failed_retry&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class OutForDeliveryState(OrderState):
+&quot;&quot;&quot;Order is out for delivery today.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;out_for_delivery&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.DELIVERED,
+OrderEvent.DELIVERY_FAILED,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.DELIVERED:
+ctx.order.delivered_at = ctx.timestamp
+return DeliveredState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivered&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+elif ctx.event == OrderEvent.DELIVERY_FAILED:
+ctx.order.delivery_attempts = ctx.order.delivery_attempts + 1
+return ShippedState(), [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;delivery_failed_retry&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class DeliveredState(OrderState):
+&quot;&quot;&quot;
+Order successfully delivered.
+
+Return window is now open. Customer can request return
+within the return policy period (typically 30 days).
+&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;delivered&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [OrderEvent.RETURN_REQUESTED]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.RETURN_REQUESTED:
+# Check return window
+days_since_delivery = (ctx.timestamp - ctx.order.delivered_at).days
+if days_since_delivery &gt; 30:
+# Return window closed - stay in delivered state
+logger.info(f&quot;Return rejected for order {ctx.order.id}: outside return window&quot;)
+return None, [
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;return_window_closed&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+ctx.order.return_requested_at = ctx.timestamp
+ctx.order.return_reason = ctx.metadata.get(&quot;reason&quot;)
+return ReturnRequestedState(), [
+{&quot;type&quot;: &quot;generate_return_label&quot;, &quot;order_id&quot;: ctx.order.id},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;return_approved&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+
+return None, []
+
+
+class ReturnRequestedState(OrderState):
+&quot;&quot;&quot;Return requested, waiting for item to be received back.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;return_requested&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [OrderEvent.RETURN_RECEIVED]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.RETURN_RECEIVED:
+ctx.order.return_received_at = ctx.timestamp
+return ReturnedState(), [
+{&quot;type&quot;: &quot;inspect_return&quot;, &quot;order_id&quot;: ctx.order.id},
+{&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
+{&quot;type&quot;: &quot;send_email&quot;, &quot;template&quot;: &quot;return_complete&quot;, &quot;to&quot;: ctx.order.customer_email}
+]
+return None, []
+
+
+# === Terminal States ===
+
+class CancelledState(OrderState):
+&quot;&quot;&quot;Order has been cancelled. Terminal state.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;cancelled&quot;
+
+@property
+def is_terminal(self) -&gt; bool:
+return True
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+return None, []  # No transitions from terminal state
+
+
+class ReturnedState(OrderState):
+&quot;&quot;&quot;Order has been returned. Terminal state.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;returned&quot;
+
+@property
+def is_terminal(self) -&gt; bool:
+return True
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+return None, []
+
+
+class ReturnToSenderState(OrderState):
+&quot;&quot;&quot;Package returned to sender after delivery failures. Terminal state.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;return_to_sender&quot;
+
+@property
+def is_terminal(self) -&gt; bool:
+return True
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+return None, []
+
+def on_enter(self, ctx: TransitionContext) -&gt; List[Dict]:
+return [
+{&quot;type&quot;: &quot;refund_payment&quot;, &quot;amount&quot;: ctx.order.total},
+{&quot;type&quot;: &quot;release_inventory&quot;, &quot;items&quot;: ctx.order.items}
+]
+
+
+class FraudReviewState(OrderState):
+&quot;&quot;&quot;Order flagged for fraud review. Manual intervention required.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;fraud_review&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+# Only manual review events, not modeled here
+return []
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+return None, []
+
+
+class PartialPaymentState(OrderState):
+&quot;&quot;&quot;Partial authorization received, needs additional payment.&quot;&quot;&quot;
+
+@property
+def name(self) -&gt; str:
+return &quot;partial_payment&quot;
+
+@property
+def allowed_events(self) -&gt; List[OrderEvent]:
+return [
+OrderEvent.PAYMENT_INITIATED,
+OrderEvent.CANCELLED_BY_CUSTOMER,
+]
+
+def process_event(self, ctx: TransitionContext) -&gt; tuple[Optional[OrderState], List[Dict]]:
+if ctx.event == OrderEvent.PAYMENT_INITIATED:
+remaining = ctx.order.total - ctx.order.partial_auth_amount
+return PaymentProcessingState(), [
+{&quot;type&quot;: &quot;initiate_payment&quot;, &quot;amount&quot;: remaining}
+]
+
+elif ctx.event == OrderEvent.CANCELLED_BY_CUSTOMER:
+return CancelledState(), [
+{&quot;type&quot;: &quot;void_authorization&quot;, &quot;auth_code&quot;: ctx.order.authorization_code}
+]
+
+return None, []
+
+
+# === State Machine Executor ===
+
+# Registry for deserializing states
+STATE_REGISTRY: Dict[str, type] = {
+&quot;pending_payment&quot;: PendingPaymentState,
+&quot;payment_processing&quot;: PaymentProcessingState,
+&quot;payment_authorized&quot;: PaymentAuthorizedState,
+&quot;paid&quot;: PaidState,
+&quot;backordered&quot;: BackorderedState,
+&quot;ready_for_fulfillment&quot;: ReadyForFulfillmentState,
+&quot;picking&quot;: PickingState,
+&quot;packing&quot;: PackingState,
+&quot;awaiting_shipment&quot;: AwaitingShipmentState,
+&quot;shipped&quot;: ShippedState,
+&quot;out_for_delivery&quot;: OutForDeliveryState,
+&quot;delivered&quot;: DeliveredState,
+&quot;return_requested&quot;: ReturnRequestedState,
+&quot;cancelled&quot;: CancelledState,
+&quot;returned&quot;: ReturnedState,
+&quot;return_to_sender&quot;: ReturnToSenderState,
+&quot;fraud_review&quot;: FraudReviewState,
+&quot;partial_payment&quot;: PartialPaymentState,
+}
+
+
+@dataclass
+class Order:
+&quot;&quot;&quot;Order entity with state machine integration.&quot;&quot;&quot;
+
+id: str
+customer_email: str
+items: List[Dict]
+total: float
+
+# State tracking
+_state: OrderState = field(default_factory=PendingPaymentState)
+state_name: str = &quot;pending_payment&quot;  # For persistence
+
+# Timestamps and metadata
+created_at: datetime = field(default_factory=datetime.now)
+payment_attempts: int = 0
+delivery_attempts: int = 0
+
+# State-specific data
+authorization_code: Optional[str] = None
+partial_auth_amount: Optional[float] = None
+tracking_number: Optional[str] = None
+carrier: Optional[str] = None
+fraud_flag: bool = False
+partial_fulfillment: bool = False
+unfulfilled_items: List[Dict] = field(default_factory=list)
+
+# Timestamps
+payment_authorized_at: Optional[datetime] = None
+payment_captured_at: Optional[datetime] = None
+payment_failed_at: Optional[datetime] = None
+inventory_reserved_at: Optional[datetime] = None
+backordered_at: Optional[datetime] = None
+picking_started_at: Optional[datetime] = None
+picking_completed_at: Optional[datetime] = None
+packed_at: Optional[datetime] = None
+shipped_at: Optional[datetime] = None
+out_for_delivery_at: Optional[datetime] = None
+delivered_at: Optional[datetime] = None
+cancelled_at: Optional[datetime] = None
+expired_at: Optional[datetime] = None
+return_requested_at: Optional[datetime] = None
+return_received_at: Optional[datetime] = None
+
+# Metadata
+cancel_reason: Optional[str] = None
+payment_failure_reason: Optional[str] = None
+return_reason: Optional[str] = None
+estimated_ship_date: Optional[datetime] = None
+
+def process_event(
+self,
+event: OrderEvent,
+metadata: Optional[Dict] = None
+) -&gt; tuple[bool, List[Dict]]:
+&quot;&quot;&quot;
+Process an event and return (success, side_effects).
+
+This is the main entry point for state transitions.
+&quot;&quot;&quot;
+if self._state.is_terminal:
+logger.warning(f&quot;Attempted event {event} on terminal state {self.state_name}&quot;)
+return False, []
+
+if not self._state.can_process(event):
+logger.warning(f&quot;Event {event} not allowed in state {self.state_name}&quot;)
+return False, []
+
+ctx = TransitionContext(
+order=self,
+event=event,
+timestamp=datetime.now(),
+metadata=metadata or {}
+)
+
+# Process event
+new_state, effects = self._state.process_event(ctx)
+
+if new_state is not None:
+# Execute exit actions
+exit_effects = self._state.on_exit(ctx, new_state)
+
+# Transition
+old_state_name = self.state_name
+self._state = new_state
+self.state_name = new_state.name
+
+# Execute entry actions
+entry_effects = new_state.on_enter(ctx)
+
+logger.info(f&quot;Order {self.id}: {old_state_name} -&gt; {self.state_name} via {event.name}&quot;)
+
+return True, exit_effects + effects + entry_effects
+
+return True, effects
+
+@classmethod
+def from_persistence(cls, data: Dict) -&gt; 'Order':
+&quot;&quot;&quot;Reconstruct order from persisted data.&quot;&quot;&quot;
+order = cls(**{k: v for k, v in data.items() if k not in ['_state', 'state_name']})
+order.state_name = data.get('state_name', 'pending_payment')
+order._state = STATE_REGISTRY[order.state_name]()
+return order</code></pre>
 <h3 id="3-level-recursive-interview-questions-order-workflow">3-Level Recursive Interview Questions: Order Workflow</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem; font-size: 1.1rem">Level 1: How do you handle the case where an order can be cancelled from multiple states (pending, paid, ready for fulfillment)?</div>
@@ -1931,199 +1910,196 @@ Any substate can transition to <strong>Cancelled</strong> via "cancel" event (in
 </div>
 <hr />
 <h2 id="testing-strategies">Testing Strategies</h2>
-<pre><code>                                                                                                  ```python
-                                                                                                  import pytest
-                                                                                                  from datetime import datetime
-                                                                                                  from typing import List, Dict
+<pre><code class="language-python">import pytest
+from datetime import datetime
+from typing import List, Dict
 
 
-                                                                                                  class TestOrderStateMachine:
-                                                                                                  &quot;&quot;&quot;Comprehensive tests for order state machine.&quot;&quot;&quot;
+class TestOrderStateMachine:
+&quot;&quot;&quot;Comprehensive tests for order state machine.&quot;&quot;&quot;
 
-                                                                                                  def test_happy_path_to_delivery(self):
-                                                                                                  &quot;&quot;&quot;Test the complete successful order flow.&quot;&quot;&quot;
-                                                                                                  order = Order(
-                                                                                                  id=&quot;ORD-001&quot;,
-                                                                                                  customer_email=&quot;test@example.com&quot;,
-                                                                                                  items=[{&quot;sku&quot;: &quot;ABC123&quot;, &quot;qty&quot;: 1}],
-                                                                                                  total=99.99
-                                                                                                  )
+def test_happy_path_to_delivery(self):
+&quot;&quot;&quot;Test the complete successful order flow.&quot;&quot;&quot;
+order = Order(
+id=&quot;ORD-001&quot;,
+customer_email=&quot;test@example.com&quot;,
+items=[{&quot;sku&quot;: &quot;ABC123&quot;, &quot;qty&quot;: 1}],
+total=99.99
+)
 
-                                                                                                  # Process through complete flow
-                                                                                                  events = [
-                                                                                                  (OrderEvent.PAYMENT_INITIATED, {}),
-                                                                                                  (OrderEvent.PAYMENT_AUTHORIZED, {&quot;auth_code&quot;: &quot;AUTH123&quot;}),
-                                                                                                  (OrderEvent.PAYMENT_CAPTURED, {}),
-                                                                                                  (OrderEvent.ITEMS_RESERVED, {}),
-                                                                                                  (OrderEvent.PICKING_STARTED, {}),
-                                                                                                  (OrderEvent.PICKING_COMPLETED, {}),
-                                                                                                  (OrderEvent.PACKED, {}),
-                                                                                                  (OrderEvent.SHIPPED, {&quot;tracking_number&quot;: &quot;1Z999&quot;, &quot;carrier&quot;: &quot;UPS&quot;}),
-                                                                                                  (OrderEvent.OUT_FOR_DELIVERY, {}),
-                                                                                                  (OrderEvent.DELIVERED, {}),
-                                                                                                  ]
+# Process through complete flow
+events = [
+(OrderEvent.PAYMENT_INITIATED, {}),
+(OrderEvent.PAYMENT_AUTHORIZED, {&quot;auth_code&quot;: &quot;AUTH123&quot;}),
+(OrderEvent.PAYMENT_CAPTURED, {}),
+(OrderEvent.ITEMS_RESERVED, {}),
+(OrderEvent.PICKING_STARTED, {}),
+(OrderEvent.PICKING_COMPLETED, {}),
+(OrderEvent.PACKED, {}),
+(OrderEvent.SHIPPED, {&quot;tracking_number&quot;: &quot;1Z999&quot;, &quot;carrier&quot;: &quot;UPS&quot;}),
+(OrderEvent.OUT_FOR_DELIVERY, {}),
+(OrderEvent.DELIVERED, {}),
+]
 
-                                                                                                  for event, metadata in events:
-                                                                                                  success, effects = order.process_event(event, metadata)
-                                                                                                  assert success, f&quot;Event {event} should succeed&quot;
+for event, metadata in events:
+success, effects = order.process_event(event, metadata)
+assert success, f&quot;Event {event} should succeed&quot;
 
-                                                                                                  assert order.state_name == &quot;delivered&quot;
-                                                                                                  assert order.tracking_number == &quot;1Z999&quot;
+assert order.state_name == &quot;delivered&quot;
+assert order.tracking_number == &quot;1Z999&quot;
 
-                                                                                                  def test_cancellation_at_various_states(self):
-                                                                                                  &quot;&quot;&quot;Test that cancellation behaves correctly in each state.&quot;&quot;&quot;
-                                                                                                  cancellable_states_and_effects = [
-                                                                                                  (&quot;pending_payment&quot;, []),  # No refund needed
-                                                                                                  (&quot;paid&quot;, [&quot;refund_payment&quot;]),  # Refund required
-                                                                                                  (&quot;ready_for_fulfillment&quot;, [&quot;release_inventory&quot;, &quot;refund_payment&quot;]),
-                                                                                                  ]
+def test_cancellation_at_various_states(self):
+&quot;&quot;&quot;Test that cancellation behaves correctly in each state.&quot;&quot;&quot;
+cancellable_states_and_effects = [
+(&quot;pending_payment&quot;, []),  # No refund needed
+(&quot;paid&quot;, [&quot;refund_payment&quot;]),  # Refund required
+(&quot;ready_for_fulfillment&quot;, [&quot;release_inventory&quot;, &quot;refund_payment&quot;]),
+]
 
-                                                                                                  for state_name, expected_effect_types in cancellable_states_and_effects:
-                                                                                                  order = self._create_order_in_state(state_name)
-                                                                                                  success, effects = order.process_event(OrderEvent.CANCELLED_BY_CUSTOMER)
+for state_name, expected_effect_types in cancellable_states_and_effects:
+order = self._create_order_in_state(state_name)
+success, effects = order.process_event(OrderEvent.CANCELLED_BY_CUSTOMER)
 
-                                                                                                  assert success
-                                                                                                  assert order.state_name == &quot;cancelled&quot;
+assert success
+assert order.state_name == &quot;cancelled&quot;
 
-                                                                                                  effect_types = [e[&quot;type&quot;] for e in effects]
-                                                                                                  for expected in expected_effect_types:
-                                                                                                  assert expected in effect_types
+effect_types = [e[&quot;type&quot;] for e in effects]
+for expected in expected_effect_types:
+assert expected in effect_types
 
-                                                                                                  def test_cannot_cancel_after_shipping(self):
-                                                                                                  &quot;&quot;&quot;Orders cannot be cancelled once shipped.&quot;&quot;&quot;
-                                                                                                  order = self._create_order_in_state(&quot;shipped&quot;)
-                                                                                                  success, effects = order.process_event(OrderEvent.CANCELLED_BY_CUSTOMER)
+def test_cannot_cancel_after_shipping(self):
+&quot;&quot;&quot;Orders cannot be cancelled once shipped.&quot;&quot;&quot;
+order = self._create_order_in_state(&quot;shipped&quot;)
+success, effects = order.process_event(OrderEvent.CANCELLED_BY_CUSTOMER)
 
-                                                                                                  assert not success
-                                                                                                  assert order.state_name == &quot;shipped&quot;  # State unchanged
+assert not success
+assert order.state_name == &quot;shipped&quot;  # State unchanged
 
-                                                                                                  def test_invalid_event_in_state(self):
-                                                                                                  &quot;&quot;&quot;Verify invalid events are rejected.&quot;&quot;&quot;
-                                                                                                  order = Order(
-                                                                                                  id=&quot;ORD-001&quot;,
-                                                                                                  customer_email=&quot;test@example.com&quot;,
-                                                                                                  items=[],
-                                                                                                  total=99.99
-                                                                                                  )
+def test_invalid_event_in_state(self):
+&quot;&quot;&quot;Verify invalid events are rejected.&quot;&quot;&quot;
+order = Order(
+id=&quot;ORD-001&quot;,
+customer_email=&quot;test@example.com&quot;,
+items=[],
+total=99.99
+)
 
-                                                                                                  # Can't approve payment when pending payment
-                                                                                                  success, effects = order.process_event(OrderEvent.PAYMENT_CAPTURED)
-                                                                                                  assert not success
-                                                                                                  assert order.state_name == &quot;pending_payment&quot;
+# Can't approve payment when pending payment
+success, effects = order.process_event(OrderEvent.PAYMENT_CAPTURED)
+assert not success
+assert order.state_name == &quot;pending_payment&quot;
 
-                                                                                                  def test_return_window_enforcement(self):
-                                                                                                  &quot;&quot;&quot;Return requests outside window should be rejected.&quot;&quot;&quot;
-                                                                                                  order = self._create_order_in_state(&quot;delivered&quot;)
-                                                                                                  order.delivered_at = datetime.now() - timedelta(days=45)  # 45 days ago
+def test_return_window_enforcement(self):
+&quot;&quot;&quot;Return requests outside window should be rejected.&quot;&quot;&quot;
+order = self._create_order_in_state(&quot;delivered&quot;)
+order.delivered_at = datetime.now() - timedelta(days=45)  # 45 days ago
 
-                                                                                                  success, effects = order.process_event(OrderEvent.RETURN_REQUESTED)
+success, effects = order.process_event(OrderEvent.RETURN_REQUESTED)
 
-                                                                                                  assert success  # Event processed but no transition
-                                                                                                  assert order.state_name == &quot;delivered&quot;  # Still delivered
-                                                                                                  assert any(e[&quot;type&quot;] == &quot;send_email&quot; and &quot;window_closed&quot; in e[&quot;template&quot;]
-                                                                                                  for e in effects)
+assert success  # Event processed but no transition
+assert order.state_name == &quot;delivered&quot;  # Still delivered
+assert any(e[&quot;type&quot;] == &quot;send_email&quot; and &quot;window_closed&quot; in e[&quot;template&quot;]
+for e in effects)
 
-                                                                                                  def test_payment_retry_limit(self):
-                                                                                                  &quot;&quot;&quot;After 3 payment failures, order should be cancelled.&quot;&quot;&quot;
-                                                                                                  order = Order(
-                                                                                                  id=&quot;ORD-001&quot;,
-                                                                                                  customer_email=&quot;test@example.com&quot;,
-                                                                                                  items=[],
-                                                                                                  total=99.99
-                                                                                                  )
-                                                                                                  order.payment_attempts = 3  # Already failed 3 times
+def test_payment_retry_limit(self):
+&quot;&quot;&quot;After 3 payment failures, order should be cancelled.&quot;&quot;&quot;
+order = Order(
+id=&quot;ORD-001&quot;,
+customer_email=&quot;test@example.com&quot;,
+items=[],
+total=99.99
+)
+order.payment_attempts = 3  # Already failed 3 times
 
-                                                                                                  # Move to payment processing
-                                                                                                  order.process_event(OrderEvent.PAYMENT_INITIATED)
+# Move to payment processing
+order.process_event(OrderEvent.PAYMENT_INITIATED)
 
-                                                                                                  # Fail payment
-                                                                                                  success, effects = order.process_event(
-                                                                                                  OrderEvent.PAYMENT_FAILED,
-                                                                                                  {&quot;reason&quot;: &quot;Insufficient funds&quot;}
-                                                                                                  )
+# Fail payment
+success, effects = order.process_event(
+OrderEvent.PAYMENT_FAILED,
+{&quot;reason&quot;: &quot;Insufficient funds&quot;}
+)
 
-                                                                                                  assert order.state_name == &quot;cancelled&quot;  # No more retries
+assert order.state_name == &quot;cancelled&quot;  # No more retries
 
-                                                                                                  def _create_order_in_state(self, target_state: str) -&gt; Order:
-                                                                                                  &quot;&quot;&quot;Helper to create order in a specific state for testing.&quot;&quot;&quot;
-                                                                                                  order = Order(
-                                                                                                  id=f&quot;ORD-{target_state}&quot;,
-                                                                                                  customer_email=&quot;test@example.com&quot;,
-                                                                                                  items=[{&quot;sku&quot;: &quot;TEST&quot;, &quot;qty&quot;: 1}],
-                                                                                                  total=99.99
-                                                                                                  )
+def _create_order_in_state(self, target_state: str) -&gt; Order:
+&quot;&quot;&quot;Helper to create order in a specific state for testing.&quot;&quot;&quot;
+order = Order(
+id=f&quot;ORD-{target_state}&quot;,
+customer_email=&quot;test@example.com&quot;,
+items=[{&quot;sku&quot;: &quot;TEST&quot;, &quot;qty&quot;: 1}],
+total=99.99
+)
 
-                                                                                                  # Define path to each state
-                                                                                                  paths = {
-                                                                                                  &quot;pending_payment&quot;: [],
-                                                                                                  &quot;payment_processing&quot;: [OrderEvent.PAYMENT_INITIATED],
-                                                                                                  &quot;paid&quot;: [
-                                                                                                  OrderEvent.PAYMENT_INITIATED,
-                                                                                                  OrderEvent.PAYMENT_AUTHORIZED,
-                                                                                                  OrderEvent.PAYMENT_CAPTURED
-                                                                                                  ],
-                                                                                                  &quot;ready_for_fulfillment&quot;: [
-                                                                                                  OrderEvent.PAYMENT_INITIATED,
-                                                                                                  OrderEvent.PAYMENT_AUTHORIZED,
-                                                                                                  OrderEvent.PAYMENT_CAPTURED,
-                                                                                                  OrderEvent.ITEMS_RESERVED
-                                                                                                  ],
-                                                                                                  &quot;shipped&quot;: [
-                                                                                                  OrderEvent.PAYMENT_INITIATED,
-                                                                                                  OrderEvent.PAYMENT_AUTHORIZED,
-                                                                                                  OrderEvent.PAYMENT_CAPTURED,
-                                                                                                  OrderEvent.ITEMS_RESERVED,
-                                                                                                  OrderEvent.PICKING_STARTED,
-                                                                                                  OrderEvent.PICKING_COMPLETED,
-                                                                                                  OrderEvent.PACKED,
-                                                                                                  OrderEvent.SHIPPED
-                                                                                                  ],
-                                                                                                  &quot;delivered&quot;: [
-                                                                                                  OrderEvent.PAYMENT_INITIATED,
-                                                                                                  OrderEvent.PAYMENT_AUTHORIZED,
-                                                                                                  OrderEvent.PAYMENT_CAPTURED,
-                                                                                                  OrderEvent.ITEMS_RESERVED,
-                                                                                                  OrderEvent.PICKING_STARTED,
-                                                                                                  OrderEvent.PICKING_COMPLETED,
-                                                                                                  OrderEvent.PACKED,
-                                                                                                  OrderEvent.SHIPPED,
-                                                                                                  OrderEvent.DELIVERED
-                                                                                                  ],
-                                                                                                  }
+# Define path to each state
+paths = {
+&quot;pending_payment&quot;: [],
+&quot;payment_processing&quot;: [OrderEvent.PAYMENT_INITIATED],
+&quot;paid&quot;: [
+OrderEvent.PAYMENT_INITIATED,
+OrderEvent.PAYMENT_AUTHORIZED,
+OrderEvent.PAYMENT_CAPTURED
+],
+&quot;ready_for_fulfillment&quot;: [
+OrderEvent.PAYMENT_INITIATED,
+OrderEvent.PAYMENT_AUTHORIZED,
+OrderEvent.PAYMENT_CAPTURED,
+OrderEvent.ITEMS_RESERVED
+],
+&quot;shipped&quot;: [
+OrderEvent.PAYMENT_INITIATED,
+OrderEvent.PAYMENT_AUTHORIZED,
+OrderEvent.PAYMENT_CAPTURED,
+OrderEvent.ITEMS_RESERVED,
+OrderEvent.PICKING_STARTED,
+OrderEvent.PICKING_COMPLETED,
+OrderEvent.PACKED,
+OrderEvent.SHIPPED
+],
+&quot;delivered&quot;: [
+OrderEvent.PAYMENT_INITIATED,
+OrderEvent.PAYMENT_AUTHORIZED,
+OrderEvent.PAYMENT_CAPTURED,
+OrderEvent.ITEMS_RESERVED,
+OrderEvent.PICKING_STARTED,
+OrderEvent.PICKING_COMPLETED,
+OrderEvent.PACKED,
+OrderEvent.SHIPPED,
+OrderEvent.DELIVERED
+],
+}
 
-                                                                                                  for event in paths.get(target_state, []):
-                                                                                                  metadata = {}
-                                                                                                  if event == OrderEvent.PAYMENT_AUTHORIZED:
-                                                                                                  metadata = {&quot;auth_code&quot;: &quot;TEST_AUTH&quot;}
-                                                                                                  elif event == OrderEvent.SHIPPED:
-                                                                                                  metadata = {&quot;tracking_number&quot;: &quot;TEST123&quot;, &quot;carrier&quot;: &quot;UPS&quot;}
-                                                                                                  order.process_event(event, metadata)
+for event in paths.get(target_state, []):
+metadata = {}
+if event == OrderEvent.PAYMENT_AUTHORIZED:
+metadata = {&quot;auth_code&quot;: &quot;TEST_AUTH&quot;}
+elif event == OrderEvent.SHIPPED:
+metadata = {&quot;tracking_number&quot;: &quot;TEST123&quot;, &quot;carrier&quot;: &quot;UPS&quot;}
+order.process_event(event, metadata)
 
-                                                                                                  return order
+return order
 
 
-                                                                                                  class TestStateMachineProperties:
-                                                                                                  &quot;&quot;&quot;Property-based tests for state machine invariants.&quot;&quot;&quot;
+class TestStateMachineProperties:
+&quot;&quot;&quot;Property-based tests for state machine invariants.&quot;&quot;&quot;
 
-                                                                                                  def test_terminal_states_have_no_transitions(self):
-                                                                                                  &quot;&quot;&quot;Verify terminal states reject all events.&quot;&quot;&quot;
-                                                                                                  terminal_states = [CancelledState(), ReturnedState(), ReturnToSenderState()]
+def test_terminal_states_have_no_transitions(self):
+&quot;&quot;&quot;Verify terminal states reject all events.&quot;&quot;&quot;
+terminal_states = [CancelledState(), ReturnedState(), ReturnToSenderState()]
 
-                                                                                                  for state in terminal_states:
-                                                                                                  assert state.is_terminal
-                                                                                                  assert len(state.allowed_events) == 0
+for state in terminal_states:
+assert state.is_terminal
+assert len(state.allowed_events) == 0
 
-                                                                                                  def test_all_states_reachable_from_initial(self):
-                                                                                                  &quot;&quot;&quot;Verify every state can be reached from initial state.&quot;&quot;&quot;
-                                                                                                  # This would use graph traversal in production
-                                                                                                  pass
+def test_all_states_reachable_from_initial(self):
+&quot;&quot;&quot;Verify every state can be reached from initial state.&quot;&quot;&quot;
+# This would use graph traversal in production
+pass
 
-                                                                                                  def test_no_state_has_transition_to_itself(self):
-                                                                                                  &quot;&quot;&quot;Self-transitions should be explicit, not implicit.&quot;&quot;&quot;
-                                                                                                  # Verify states don't accidentally return themselves
-                                                                                                  pass
-                                                                                                  ```
-</code></pre>
+def test_no_state_has_transition_to_itself(self):
+&quot;&quot;&quot;Self-transitions should be explicit, not implicit.&quot;&quot;&quot;
+# Verify states don't accidentally return themselves
+pass</code></pre>
 <hr />
 <h2 id="related-patterns">Related Patterns</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0">

@@ -234,8 +234,7 @@
 </div>
 </div>
 <h3 id="when-to-use-hash-indexes">When to Use Hash Indexes</h3>
-<pre><code>```sql
--- Hash indexes are useful for exact equality on high-cardinality columns
+<pre><code class="language-sql">-- Hash indexes are useful for exact equality on high-cardinality columns
 -- PostgreSQL example:
 CREATE INDEX idx_users_email_hash ON users USING HASH (email);
 
@@ -245,9 +244,7 @@ SELECT * FROM users WHERE email = 'john@example.com';  -- O(1)
 -- Hash index CANNOT help with:
 SELECT * FROM users WHERE email LIKE 'john%';     -- Range/prefix
 SELECT * FROM users WHERE email &gt; 'a@example.com'; -- Range
-SELECT * FROM users ORDER BY email;               -- Sorting
-```
-</code></pre>
+SELECT * FROM users ORDER BY email;               -- Sorting</code></pre>
 <div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #991b1b; margin-top: 0">Hash Index Limitations in Production</h4>
 <div style="display: grid; gap: 12px">
@@ -365,8 +362,7 @@ SELECT * FROM users ORDER BY email;               -- Sorting
 </div>
 </div>
 <h3 id="column-order-strategy">Column Order Strategy</h3>
-<pre><code>```sql
--- WRONG: Low selectivity column first
+<pre><code class="language-sql">-- WRONG: Low selectivity column first
 CREATE INDEX idx_orders_status_user ON orders(status, user_id);
 -- status has few distinct values (pending, completed, cancelled)
 -- Matches millions of rows before filtering by user_id
@@ -380,9 +376,7 @@ CREATE INDEX idx_orders_user_status ON orders(user_id, status);
 SELECT
 COUNT(DISTINCT user_id) as user_cardinality,    -- High (millions)
 COUNT(DISTINCT status) as status_cardinality    -- Low (3-5)
-FROM orders;
-```
-</code></pre>
+FROM orders;</code></pre>
 <h3 id="composite-index-interview-questions-3-levels-deep">Composite Index Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: Why does column order matter in a composite index?</h4>
@@ -476,8 +470,7 @@ FROM orders;
 </div>
 </div>
 <h3 id="creating-covering-indexes">Creating Covering Indexes</h3>
-<pre><code>      ```sql
-      -- PostgreSQL 11+ syntax with INCLUDE
+<pre><code class="language-sql">      -- PostgreSQL 11+ syntax with INCLUDE
       CREATE INDEX idx_orders_covering ON orders(status)
       INCLUDE (order_number, amount, created_at);
 
@@ -494,9 +487,7 @@ FROM orders;
       -- When INCLUDE is better:
       -- 1. INCLUDE columns don't need to be searchable/sortable
       -- 2. Smaller index keys = more keys per page = shallower tree
-      -- 3. No overhead maintaining sort order for INCLUDE columns
-      ```
-</code></pre>
+      -- 3. No overhead maintaining sort order for INCLUDE columns</code></pre>
 <h3 id="visibility-map-and-index-only-scans">Visibility Map and Index-Only Scans</h3>
 <div style="background: #fef3c7;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">PostgreSQL Visibility Map Requirement</h4>
@@ -572,8 +563,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 </div>
 </div>
 <h3 id="calculating-selectivity">Calculating Selectivity</h3>
-<pre><code>              ```sql
-              -- Calculate selectivity for all columns in a table
+<pre><code class="language-sql">              -- Calculate selectivity for all columns in a table
               SELECT
               column_name,
               n_distinct,
@@ -596,9 +586,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
               'status' as column_name,
               COUNT(DISTINCT status)::float / COUNT(*)::float as selectivity
               FROM orders;
-              -- Result: 0.000003 (only 3 values in 1M rows)
-              ```
-</code></pre>
+              -- Result: 0.000003 (only 3 values in 1M rows)</code></pre>
 <h3 id="why-low-selectivity-indexes-are-problematic">Why Low-Selectivity Indexes Are Problematic</h3>
 <div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #991b1b; margin-top: 0">The Math Behind Selectivity Decisions</h4>
@@ -669,15 +657,12 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 <h3 id="understanding-explain-output">Understanding EXPLAIN Output</h3>
 <div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #1e293b; margin-top: 0">Anatomy of EXPLAIN ANALYZE</h4>
-<pre><code>                ```sql
-                EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+<pre><code class="language-sql">                EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
                 SELECT u.name, COUNT(o.id)
                 FROM users u
                 LEFT JOIN orders o ON u.id = o.user_id
                 WHERE u.created_at &gt; '2024-01-01'
-                GROUP BY u.id, u.name;
-                ```
-</code></pre>
+                GROUP BY u.id, u.name;</code></pre>
 <div style="background: #f8fafc; color: #1e293b; padding: 20px; border-radius: 8px; margin-top: 16px; font-family: monospace; font-size: 13px; line-height: 1.8; overflow-x: auto">
 <div><span style="color: #b45309">HashAggregate</span> (cost=1234.56..1240.00 rows=100 width=40) <span style="color: #047857">(actual time=15.2..15.8 rows=95 loops=1)</span></div>
 <div style="padding-left: 20px">Group Key: u.id, u.name</div>
@@ -817,8 +802,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 <hr />
 <h2 id="section-8-index-maintenance-and-monitoring">Section 8: Index Maintenance and Monitoring</h2>
 <h3 id="monitoring-index-health">Monitoring Index Health</h3>
-<pre><code>              ```sql
-              -- Index size and usage statistics
+<pre><code class="language-sql">              -- Index size and usage statistics
               SELECT
               schemaname,
               relname as table_name,
@@ -852,9 +836,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
               FROM pg_stat_user_tables
               JOIN pg_class ON pg_stat_user_tables.relid = pg_class.oid
               WHERE schemaname = 'public'
-              ORDER BY pg_total_relation_size(relid) DESC;
-              ```
-</code></pre>
+              ORDER BY pg_total_relation_size(relid) DESC;</code></pre>
 <h3 id="index-rebuild-strategies">Index Rebuild Strategies</h3>
 <div style="background: #fef3c7;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">When to Rebuild Indexes</h4>
@@ -873,8 +855,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
 </div>
 </div>
 </div>
-<pre><code>              ```sql
-              -- Standard REINDEX (locks table for writes)
+<pre><code class="language-sql">              -- Standard REINDEX (locks table for writes)
               REINDEX INDEX idx_users_email;
 
               -- Concurrent REINDEX (PostgreSQL 12+) - no lock, but uses more resources
@@ -887,9 +868,7 @@ Index-only scans require checking the <span style="color: #22c55e; font-weight: 
               -- More control, can rename to maintain same name
               CREATE INDEX CONCURRENTLY idx_users_email_new ON users(email);
               DROP INDEX idx_users_email;
-              ALTER INDEX idx_users_email_new RENAME TO idx_users_email;
-              ```
-</code></pre>
+              ALTER INDEX idx_users_email_new RENAME TO idx_users_email;</code></pre>
 <hr />
 <h2 id="best-practices-summary">Best Practices Summary</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0">

@@ -296,8 +296,7 @@
 <summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem">Level 1: How do you handle commands that cannot be undone?</summary>
 <div style="margin-top: 16px; color: #334155; line-height: 1.8">
 <strong>Answer:</strong> Mark commands as irreversible and handle them specially:
-<pre><code>```python
-class Command(ABC):
+<pre><code class="language-python">class Command(ABC):
 @property
 def is_reversible(self) -&gt; bool:
 return True  # Override to return False for irreversible commands
@@ -518,8 +517,7 @@ self.results = {}
 <summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: Design a macro system that supports conditional execution, loops, and branching based on command results</summary>
 <div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This essentially becomes a domain-specific workflow engine:
-<pre><code>        ```python
-        class ConditionalCommand(Command):
+<pre><code class="language-python">        class ConditionalCommand(Command):
         def __init__(self, condition: Callable[[], bool],
         if_true: Command, if_false: Optional[Command] = None):
         self._condition = condition
@@ -560,9 +558,7 @@ self.results = {}
         def undo(self):
         for cmd in reversed(self._iterations_executed):
         cmd.undo()
-        self._iterations_executed.clear()
-        ```
-</code></pre>
+        self._iterations_executed.clear()</code></pre>
 <p>Key design considerations:<br />
 - <strong>Undo complexity</strong>: Each loop iteration needs independent undo state<br />
 - <strong>Infinite loop protection</strong>: Max iteration limit<br />
@@ -842,8 +838,7 @@ return True
 <summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: Design a command queue system that maintains ordering guarantees while allowing parallel processing for unrelated commands</summary>
 <div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This requires partitioned ordering - order within a partition, parallelism across partitions:
-<pre><code>        ```python
-        class PartitionedCommandQueue:
+<pre><code class="language-python">        class PartitionedCommandQueue:
         &quot;&quot;&quot;
         Commands with same partition key execute in order.
         Commands with different keys can execute in parallel.
@@ -869,9 +864,7 @@ return True
         for partition_id, queue in self._partitions.items():
         worker = PartitionWorker(queue, partition_id)
         worker.start()
-        self._workers.append(worker)
-        ```
-</code></pre>
+        self._workers.append(worker)</code></pre>
 <p>Advanced considerations:<br />
 - <strong>Sticky sessions</strong>: Route related commands to same partition<br />
 - <strong>Partition rebalancing</strong>: Handle worker failures without losing ordering<br />
@@ -1144,8 +1137,7 @@ The key is that each command captures enough state to reverse itself, and the tr
 <li><strong>Orchestration</strong>: Central coordinator tells each service what to do</li>
 </ol>
 <p>Each step has a compensating action. If step N fails, execute compensations for steps N-1 to 1 in reverse.</p>
-<pre><code>    ```python
-    class SagaStep:
+<pre><code class="language-python">    class SagaStep:
     def __init__(self, action: Command, compensation: Command):
     self.action = action
     self.compensation = compensation
@@ -1167,9 +1159,7 @@ The key is that each command captures enough state to reverse itself, and the tr
 
     async def _compensate(self) -&gt; None:
     for step in reversed(self._completed_steps):
-    await step.compensation.execute()
-    ```
-</code></pre>
+    await step.compensation.execute()</code></pre>
 <details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px">
 <summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: Design a transaction system that handles the case where compensation itself fails</summary>
 <div style="margin-top: 12px; color: #334155">

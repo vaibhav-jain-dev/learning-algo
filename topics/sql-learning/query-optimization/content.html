@@ -343,8 +343,7 @@ Sort Method: <span style="color: #7ee787">top-N heapsort</span>  Memory: 25kB
 </div>
 </div>
 </div>
-<pre><code>```sql
--- BAD: No filter before join, scans entire orders table
+<pre><code class="language-sql">-- BAD: No filter before join, scans entire orders table
 SELECT c.name, o.total
 FROM customers c
 JOIN orders o ON c.id = o.customer_id
@@ -365,9 +364,7 @@ SELECT c.name, o.total
 FROM customers c
 JOIN orders o ON c.id = o.customer_id
 AND c.status = 'vip'  -- Pushdown to customers table
-;
-```
-</code></pre>
+;</code></pre>
 <h3 id="join-interview-questions-3-levels-deep">Join Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: Why would a query slow down significantly when you add a new JOIN?</h4>
@@ -459,8 +456,7 @@ AND c.status = 'vip'  -- Pushdown to customers table
 </div>
 </div>
 <h3 id="transforming-correlated-subqueries">Transforming Correlated Subqueries</h3>
-<pre><code>```sql
--- BAD: Correlated subquery - runs subquery once per employee
+<pre><code class="language-sql">-- BAD: Correlated subquery - runs subquery once per employee
 SELECT e.name, e.salary
 FROM employees e
 WHERE e.salary &gt; (
@@ -495,8 +491,7 @@ See [[Window Functions]](/topics/sql-learning/window-functions) for more on anal
 <div style="background: #fef3c7;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">Critical: NOT IN vs NOT EXISTS with NULLs</h4>
 <p style="color: #1e293b; line-height: 1.7"><code>NOT IN</code> returns no rows if the subquery contains ANY NULL value. This is a common production bug.</p>
-<pre><code>  ```sql
-  -- Table: orders has some NULL customer_id values
+<pre><code class="language-sql">  -- Table: orders has some NULL customer_id values
 
   -- BROKEN: Returns ZERO rows if any order.customer_id is NULL!
   SELECT * FROM customers
@@ -512,9 +507,7 @@ See [[Window Functions]](/topics/sql-learning/window-functions) for more on anal
   SELECT * FROM customers
   WHERE id NOT IN (
   SELECT customer_id FROM orders WHERE customer_id IS NOT NULL
-  );
-  ```
-</code></pre>
+  );</code></pre>
 </div>
 <h3 id="subquery-vs-join-interview-questions-3-levels-deep">Subquery vs JOIN Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -569,8 +562,7 @@ See [[Window Functions]](/topics/sql-learning/window-functions) for more on anal
 </div>
 </div>
 <h3 id="solutions-to-n1-problem">Solutions to N+1 Problem</h3>
-<pre><code>```python
-# Python/SQLAlchemy Example
+<pre><code class="language-python"># Python/SQLAlchemy Example
 
 # BAD: N+1 - each user.orders triggers a new query
 users = session.query(User).limit(100).all()
@@ -587,12 +579,9 @@ users = session.query(User).options(subqueryload(User.orders)).limit(100).all()
 
 # GOOD: selectinload (2 queries using IN clause - often fastest)
 from sqlalchemy.orm import selectinload
-users = session.query(User).options(selectinload(User.orders)).limit(100).all()
-```
-</code></pre>
+users = session.query(User).options(selectinload(User.orders)).limit(100).all()</code></pre>
 <h3 id="n1-in-raw-sql-context">N+1 in Raw SQL Context</h3>
-<pre><code>```sql
--- Instead of application-level loop with individual queries:
+<pre><code class="language-sql">-- Instead of application-level loop with individual queries:
 -- for each user_id: SELECT * FROM orders WHERE user_id = ?
 
 -- Use a single query with JOIN
@@ -609,9 +598,7 @@ WHERE user_id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 SELECT o.*
 FROM orders o
 JOIN (VALUES (1), (2), (3), (4), (5)) AS t(user_id)
-ON o.user_id = t.user_id;
-```
-</code></pre>
+ON o.user_id = t.user_id;</code></pre>
 <h3 id="detecting-n1-in-production">Detecting N+1 in Production</h3>
 <div style="background: #f0fdf4;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #166534; margin-top: 0">N+1 Detection Strategies</h4>
@@ -709,20 +696,16 @@ ON o.user_id = t.user_id;
 </div>
 </div>
 </div>
-<pre><code>```sql
--- BAD: OFFSET scans and discards rows
+<pre><code class="language-sql">-- BAD: OFFSET scans and discards rows
 SELECT * FROM products
 ORDER BY created_at DESC
 LIMIT 20 OFFSET 100000;  -- Scans 100,020 rows!
 
 -- EXPLAIN shows:
 -- Limit (cost=12847.82..12850.37 rows=20)
---   -&gt; Index Scan Backward using idx_created_at (cost=0.43..128478.23 rows=1000000)
-```
-</code></pre>
+--   -&gt; Index Scan Backward using idx_created_at (cost=0.43..128478.23 rows=1000000)</code></pre>
 <h3 id="keyset-cursor-pagination">Keyset (Cursor) Pagination</h3>
-<pre><code>```sql
--- GOOD: Keyset pagination - uses index efficiently
+<pre><code class="language-sql">-- GOOD: Keyset pagination - uses index efficiently
 -- Page 1
 SELECT id, name, created_at
 FROM products
@@ -738,12 +721,9 @@ WHERE (created_at, id) &lt; ('2024-01-15 10:30:00', 12345)
 ORDER BY created_at DESC, id DESC
 LIMIT 20;
 
--- EXPLAIN shows: Index Scan with condition (constant time seek)
-```
-</code></pre>
+-- EXPLAIN shows: Index Scan with condition (constant time seek)</code></pre>
 <h3 id="seek-method-for-multi-column-ordering">Seek Method for Multi-Column Ordering</h3>
-<pre><code>```sql
--- For ORDER BY created_at DESC, priority ASC, id DESC
+<pre><code class="language-sql">-- For ORDER BY created_at DESC, priority ASC, id DESC
 -- Need row value comparison for correct ordering
 
 -- Using ROW() comparison (PostgreSQL)
@@ -760,12 +740,9 @@ WHERE created_at &lt; '2024-01-15'
 OR (created_at = '2024-01-15' AND priority &gt; 2)
 OR (created_at = '2024-01-15' AND priority = 2 AND id &lt; 999)
 ORDER BY created_at DESC, priority ASC, id DESC
-LIMIT 20;
-```
-</code></pre>
+LIMIT 20;</code></pre>
 <h3 id="deferred-join-pattern">Deferred Join Pattern</h3>
-<pre><code>```sql
--- When you must support OFFSET but want better performance
+<pre><code class="language-sql">-- When you must support OFFSET but want better performance
 -- Works when sorting column has a covering index
 
 -- BAD: Scans wide rows
@@ -785,15 +762,12 @@ LIMIT 20 OFFSET 100000
 ORDER BY p.created_at DESC;
 
 -- Inner query uses index-only scan (id is in the index)
--- Only 20 full row fetches instead of 100,020
-```
-</code></pre>
+-- Only 20 full row fetches instead of 100,020</code></pre>
 <h3 id="pagination-with-total-count">Pagination with Total Count</h3>
 <div style="background: #fef3c7;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #92400e; margin-top: 0">Warning: COUNT(*) Can Be Expensive</h4>
 <p style="color: #1e293b; line-height: 1.7">Getting total count requires scanning all matching rows, even if you only return 20. For tables with millions of rows, this can take seconds.</p>
-<pre><code>  ```sql
-  -- SLOW: Full count on every page request
+<pre><code class="language-sql">  -- SLOW: Full count on every page request
   SELECT COUNT(*) FROM products WHERE category_id = 5;
   SELECT * FROM products WHERE category_id = 5 ORDER BY id LIMIT 20 OFFSET 100;
 
@@ -806,9 +780,7 @@ ORDER BY p.created_at DESC;
   -- Parse &quot;rows=X&quot; from output for approximate count
 
   -- BEST: Don't show total pages - use &quot;Load More&quot; / infinite scroll
-  -- Only show &quot;Page 1 of many&quot; or &quot;1000+ results&quot;
-  ```
-</code></pre>
+  -- Only show &quot;Page 1 of many&quot; or &quot;1000+ results&quot;</code></pre>
 </div>
 <h3 id="pagination-interview-questions-3-levels-deep">Pagination Interview Questions (3 Levels Deep)</h3>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -833,8 +805,7 @@ ORDER BY p.created_at DESC;
 <div style="display: flex; flex-direction: column; gap: 12px">
 <div style="background: white; padding: 16px; border-radius: 8px">
 <strong style="color: #166534">Avoid Functions on Indexed Columns</strong>
-<pre><code>      ```sql
-      -- BAD: Index on created_at won't be used
+<pre><code class="language-sql">      -- BAD: Index on created_at won't be used
       WHERE YEAR(created_at) = 2024
       WHERE DATE(created_at) = '2024-01-15'
       WHERE LOWER(email) = 'test@example.com'
@@ -843,27 +814,21 @@ ORDER BY p.created_at DESC;
       WHERE created_at &gt;= '2024-01-01' AND created_at &lt; '2025-01-01'
       WHERE created_at &gt;= '2024-01-15' AND created_at &lt; '2024-01-16'
       WHERE email = 'test@example.com'  -- with case-insensitive collation
-      -- Or create expression index: CREATE INDEX idx ON users(LOWER(email))
-      ```
-</code></pre>
+      -- Or create expression index: CREATE INDEX idx ON users(LOWER(email))</code></pre>
 </div>
 <div style="background: white; padding: 16px; border-radius: 8px">
 <strong style="color: #166534">Avoid Implicit Type Conversion</strong>
-<pre><code>      ```sql
-      -- BAD: user_id is INT, forces type conversion
+<pre><code class="language-sql">      -- BAD: user_id is INT, forces type conversion
       WHERE user_id = '123'
       WHERE phone_number = 5551234567  -- phone is VARCHAR
 
       -- GOOD: Match types exactly
       WHERE user_id = 123
-      WHERE phone_number = '5551234567'
-      ```
-</code></pre>
+      WHERE phone_number = '5551234567'</code></pre>
 </div>
 <div style="background: white; padding: 16px; border-radius: 8px">
 <strong style="color: #166534">Avoid Leading Wildcards</strong>
-<pre><code>      ```sql
-      -- BAD: Cannot use index
+<pre><code class="language-sql">      -- BAD: Cannot use index
       WHERE email LIKE '%@gmail.com'
       WHERE name LIKE '%smith%'
 
@@ -876,15 +841,12 @@ ORDER BY p.created_at DESC;
 
       -- ALTERNATIVE: Reverse index for suffix search
       CREATE INDEX idx_email_rev ON users(REVERSE(email));
-      WHERE REVERSE(email) LIKE REVERSE('%@gmail.com')
-      ```
-</code></pre>
+      WHERE REVERSE(email) LIKE REVERSE('%@gmail.com')</code></pre>
 </div>
 </div>
 </div>
 <h3 id="exists-vs-in-vs-join">EXISTS vs IN vs JOIN</h3>
-<pre><code>```sql
--- Finding users who have placed orders
+<pre><code class="language-sql">-- Finding users who have placed orders
 
 -- EXISTS: Short-circuits on first match, often fastest
 SELECT * FROM users u
@@ -917,12 +879,9 @@ WHERE id NOT IN (SELECT user_id FROM orders);  -- Returns 0 rows if any NULL!
 SELECT u.*
 FROM users u
 LEFT JOIN orders o ON u.id = o.user_id
-WHERE o.id IS NULL;
-```
-</code></pre>
+WHERE o.id IS NULL;</code></pre>
 <h3 id="aggregate-optimization">Aggregate Optimization</h3>
-<pre><code>```sql
--- Checking existence vs counting
+<pre><code class="language-sql">-- Checking existence vs counting
 
 -- BAD: Counts all rows
 SELECT CASE WHEN COUNT(*) &gt; 0 THEN 1 ELSE 0 END
@@ -945,12 +904,9 @@ SELECT user_id, COUNT(*) as order_count
 FROM orders
 GROUP BY user_id
 HAVING COUNT(*) &gt; 5
-) active_users ON u.id = active_users.user_id;
-```
-</code></pre>
+) active_users ON u.id = active_users.user_id;</code></pre>
 <h3 id="batch-operations">Batch Operations</h3>
-<pre><code>```sql
--- BAD: Many small updates (N round trips)
+<pre><code class="language-sql">-- BAD: Many small updates (N round trips)
 UPDATE users SET last_seen = NOW() WHERE id = 1;
 UPDATE users SET last_seen = NOW() WHERE id = 2;
 UPDATE users SET last_seen = NOW() WHERE id = 3;
@@ -1013,8 +969,7 @@ See [[Connection Pooling]](/topics/system-design/connection-pooling) for managin
 </div>
 </div>
 </div>
-<pre><code>```sql
--- Create covering index with INCLUDE (PostgreSQL 11+)
+<pre><code class="language-sql">-- Create covering index with INCLUDE (PostgreSQL 11+)
 CREATE INDEX idx_users_email_covering
 ON users(email)
 INCLUDE (name, created_at);
@@ -1034,8 +989,7 @@ ON users(email, name, created_at);
 See [[Indexing Deep Dive]](/topics/sql-learning/indexing-deep-dive) for comprehensive index strategies.
 </code></pre>
 <h3 id="partial-indexes">Partial Indexes</h3>
-<pre><code>```sql
--- Index only relevant subset of data
+<pre><code class="language-sql">-- Index only relevant subset of data
 
 -- Instead of full index (10M rows):
 CREATE INDEX idx_orders_status ON orders(status);
@@ -1052,12 +1006,9 @@ WHERE deleted_at IS NULL;
 
 -- Query must match the WHERE clause:
 SELECT * FROM users WHERE email = 'x@y.com' AND deleted_at IS NULL;
--- Uses partial index!
-```
-</code></pre>
+-- Uses partial index!</code></pre>
 <h3 id="expression-indexes">Expression Indexes</h3>
-<pre><code>```sql
--- Index on computed expressions
+<pre><code class="language-sql">-- Index on computed expressions
 
 -- For case-insensitive email lookups:
 CREATE INDEX idx_users_email_lower
@@ -1073,12 +1024,9 @@ SELECT * FROM user_settings WHERE settings-&gt;&gt;'theme' = 'dark';
 
 -- For date extraction:
 CREATE INDEX idx_orders_year_month
-ON orders(EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at));
-```
-</code></pre>
+ON orders(EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at));</code></pre>
 <h3 id="materialized-views">Materialized Views</h3>
-<pre><code>```sql
--- Pre-compute expensive aggregations
+<pre><code class="language-sql">-- Pre-compute expensive aggregations
 
 CREATE MATERIALIZED VIEW monthly_sales_summary AS
 SELECT
@@ -1110,8 +1058,7 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY monthly_sales_summary;
 </code></pre>
 <h2 id="section-9-monitoring-and-diagnostics">Section 9: Monitoring and Diagnostics</h2>
 <h3 id="postgresql-performance-views">PostgreSQL Performance Views</h3>
-<pre><code>```sql
--- Find slowest queries (requires pg_stat_statements extension)
+<pre><code class="language-sql">-- Find slowest queries (requires pg_stat_statements extension)
 SELECT
 query,
 calls,
@@ -1157,12 +1104,9 @@ last_vacuum,
 last_autovacuum
 FROM pg_stat_user_tables
 WHERE n_dead_tup &gt; 10000
-ORDER BY n_dead_tup DESC;
-```
-</code></pre>
+ORDER BY n_dead_tup DESC;</code></pre>
 <h3 id="mysql-performance-schema">MySQL Performance Schema</h3>
-<pre><code>```sql
--- Enable performance schema (if not enabled)
+<pre><code class="language-sql">-- Enable performance schema (if not enabled)
 -- my.cnf: performance_schema = ON
 
 -- Find slow queries
@@ -1202,9 +1146,7 @@ state,
 LEFT(info, 100) as query
 FROM information_schema.processlist
 WHERE command != 'Sleep'
-ORDER BY time DESC;
-```
-</code></pre>
+ORDER BY time DESC;</code></pre>
 <h3 id="key-metrics-to-track">Key Metrics to Track</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin: 0 0 20px 0">Database Health Indicators</h4>

@@ -427,8 +427,7 @@ return aggregate(child.operation() for child in self._children)
 <p>The shared interface enables polymorphic treatment despite different implementations.</p>
 <p><strong>Level 2: How would you design a Composite where the leaf/composite distinction can change at runtime?</strong></p>
 <p>This is the &quot;dynamic composite&quot; problem. A node that starts as a leaf should be promotable to a composite:</p>
-<pre><code>    ```python
-    class FlexibleComponent:
+<pre><code class="language-python">    class FlexibleComponent:
     def __init__(self, name):
     self.name = name
     self._children = None  # None = leaf, list = composite
@@ -455,9 +454,7 @@ return aggregate(child.operation() for child in self._children)
     # Auto-promote to composite
     self._children = []
     self._children.append(child)
-    child.parent = self
-    ```
-</code></pre>
+    child.parent = self</code></pre>
 <p><strong>Real-world example</strong>: macOS Finder allows converting empty folders to file bundles and vice versa. VSCode allows files to become &quot;virtual folders&quot; when opened as workspace roots.</p>
 <p><strong>Level 3: Design a type system that statically guarantees composite operations are only called on composites while maintaining polymorphic operation dispatch.</strong></p>
 <p>This requires encoding the leaf/composite distinction in the type system:</p>
@@ -527,20 +524,20 @@ enum Component {<br />
 Leaf { name: String, data: Vec<u8> },<br />
 Composite { name: String, children: Vec<Component> },<br />
 }</p>
-<pre><code>                    impl Component {
-                    fn add_child(&amp;mut self, child: Component) -&gt; Result&lt;(), Error&gt; {
-                    match self {
-                    Component::Composite { children, .. } =&gt; {
-                    children.push(child);
-                    Ok(())
-                    }
-                    Component::Leaf { .. } =&gt; {
-                    Err(Error::CannotAddToLeaf)
-                    }
-                    }
-                    }
-                    }
-                    ```
+<pre><code>impl Component {
+fn add_child(&amp;mut self, child: Component) -&gt; Result&lt;(), Error&gt; {
+match self {
+Component::Composite { children, .. } =&gt; {
+children.push(child);
+Ok(())
+}
+Component::Leaf { .. } =&gt; {
+Err(Error::CannotAddToLeaf)
+}
+}
+}
+}
+```
 </code></pre>
 <p>Each approach trades off ergonomics, compile-time safety, and expressiveness differently.</p>
 </div>
@@ -570,8 +567,7 @@ Composite { name: String, children: Vec<Component> },<br />
 </div>
 </div>
 <h3 id="complete-file-system-implementation">Complete File System Implementation</h3>
-<pre><code>                  ```python
-                  from abc import ABC, abstractmethod
+<pre><code class="language-python">                  from abc import ABC, abstractmethod
                   from typing import List, Optional, Iterator, Dict, Set
                   from datetime import datetime
                   from dataclasses import dataclass, field
@@ -986,9 +982,7 @@ Composite { name: String, children: Vec<Component> },<br />
 
                   def visit_symlink(self, symlink: SymbolicLink) -&gt; None:
                   if self.predicate(symlink):
-                  self.results.append(symlink)
-                  ```
-</code></pre>
+                  self.results.append(symlink)</code></pre>
 <h3 id="interview-questions-file-system">Interview Questions: File System</h3>
 <div style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0">
 <p><strong>Level 1: Why is a file system a good example of the Composite pattern?</strong></p>
@@ -1003,48 +997,45 @@ Composite { name: String, children: Vec<Component> },<br />
 <p>The pattern enables treating a single file and a complex directory tree identically through the common interface.</p>
 <p><strong>Level 2: How would you implement efficient size caching in a file system Composite, handling invalidation correctly?</strong></p>
 <p>Size caching requires a cache invalidation strategy that propagates changes up the tree:</p>
-<pre><code>                    ```python
-                    class CachedDirectory(Directory):
-                    def __init__(self, name: str):
-                    super().__init__(name)
-                    self._cached_size: Optional[int] = None
+<pre><code class="language-python">class CachedDirectory(Directory):
+def __init__(self, name: str):
+super().__init__(name)
+self._cached_size: Optional[int] = None
 
-                    def _invalidate_size_cache(self) -&gt; None:
-                    &quot;&quot;&quot;Invalidate this node's cache and all ancestors'&quot;&quot;&quot;
-                    self._cached_size = None
-                    if self.parent is not None:
-                    self.parent._invalidate_size_cache()
+def _invalidate_size_cache(self) -&gt; None:
+&quot;&quot;&quot;Invalidate this node's cache and all ancestors'&quot;&quot;&quot;
+self._cached_size = None
+if self.parent is not None:
+self.parent._invalidate_size_cache()
 
-                    def add(self, component: FileSystemComponent) -&gt; 'CachedDirectory':
-                    result = super().add(component)
-                    self._invalidate_size_cache()
-                    return result
+def add(self, component: FileSystemComponent) -&gt; 'CachedDirectory':
+result = super().add(component)
+self._invalidate_size_cache()
+return result
 
-                    def remove(self, component: FileSystemComponent) -&gt; bool:
-                    result = super().remove(component)
-                    if result:
-                    self._invalidate_size_cache()
-                    return result
+def remove(self, component: FileSystemComponent) -&gt; bool:
+result = super().remove(component)
+if result:
+self._invalidate_size_cache()
+return result
 
-                    def get_size(self) -&gt; int:
-                    if self._cached_size is None:
-                    self._cached_size = sum(child.get_size() for child in self._children.values())
-                    return self._cached_size
+def get_size(self) -&gt; int:
+if self._cached_size is None:
+self._cached_size = sum(child.get_size() for child in self._children.values())
+return self._cached_size
 
-                    class CachedFile(File):
-                    @property
-                    def content(self) -&gt; bytes:
-                    return self._content
+class CachedFile(File):
+@property
+def content(self) -&gt; bytes:
+return self._content
 
-                    @content.setter
-                    def content(self, value: bytes) -&gt; None:
-                    self._content = value
-                    self._content_hash = None
-                    # Invalidate ancestor caches
-                    if self.parent is not None:
-                    self.parent._invalidate_size_cache()
-                    ```
-</code></pre>
+@content.setter
+def content(self, value: bytes) -&gt; None:
+self._content = value
+self._content_hash = None
+# Invalidate ancestor caches
+if self.parent is not None:
+self.parent._invalidate_size_cache()</code></pre>
 <p><strong>Trade-offs</strong>:<br />
 - Write operations become O(depth) due to cache invalidation<br />
 - Read operations become O(1) after initial computation<br />
@@ -1054,187 +1045,184 @@ Composite { name: String, children: Vec<Component> },<br />
 <p><strong>Level 3: Design a distributed file system's metadata layer using the Composite pattern, handling partition tolerance and consistency.</strong></p>
 <p>A distributed file system metadata layer must handle network partitions while maintaining a coherent tree structure:</p>
 <p><strong>Architecture:</strong></p>
-<pre><code>                    ```python
-                    from typing import Dict, Set, Tuple
-                    from dataclasses import dataclass
-                    from enum import Enum
-                    import uuid
+<pre><code class="language-python">from typing import Dict, Set, Tuple
+from dataclasses import dataclass
+from enum import Enum
+import uuid
 
-                    class ConsistencyLevel(Enum):
-                    EVENTUAL = auto()      # Fastest, may see stale data
-                    READ_YOUR_WRITES = auto()  # See own writes immediately
-                    STRONG = auto()        # Linearizable, slowest
+class ConsistencyLevel(Enum):
+EVENTUAL = auto()      # Fastest, may see stale data
+READ_YOUR_WRITES = auto()  # See own writes immediately
+STRONG = auto()        # Linearizable, slowest
 
-                    @dataclass
-                    class VectorClock:
-                    &quot;&quot;&quot;Causality tracking for conflict detection&quot;&quot;&quot;
-                    clocks: Dict[str, int]
+@dataclass
+class VectorClock:
+&quot;&quot;&quot;Causality tracking for conflict detection&quot;&quot;&quot;
+clocks: Dict[str, int]
 
-                    def increment(self, node_id: str) -&gt; 'VectorClock':
-                    new_clocks = dict(self.clocks)
-                    new_clocks[node_id] = new_clocks.get(node_id, 0) + 1
-                    return VectorClock(new_clocks)
+def increment(self, node_id: str) -&gt; 'VectorClock':
+new_clocks = dict(self.clocks)
+new_clocks[node_id] = new_clocks.get(node_id, 0) + 1
+return VectorClock(new_clocks)
 
-                    def merge(self, other: 'VectorClock') -&gt; 'VectorClock':
-                    merged = dict(self.clocks)
-                    for k, v in other.clocks.items():
-                    merged[k] = max(merged.get(k, 0), v)
-                    return VectorClock(merged)
+def merge(self, other: 'VectorClock') -&gt; 'VectorClock':
+merged = dict(self.clocks)
+for k, v in other.clocks.items():
+merged[k] = max(merged.get(k, 0), v)
+return VectorClock(merged)
 
-                    def happens_before(self, other: 'VectorClock') -&gt; bool:
-                    return (all(self.clocks.get(k, 0) &lt;= v for k, v in other.clocks.items()) and
-                    any(self.clocks.get(k, 0) &lt; v for k, v in other.clocks.items()))
+def happens_before(self, other: 'VectorClock') -&gt; bool:
+return (all(self.clocks.get(k, 0) &lt;= v for k, v in other.clocks.items()) and
+any(self.clocks.get(k, 0) &lt; v for k, v in other.clocks.items()))
 
-                    @dataclass
-                    class DistributedMetadata:
-                    &quot;&quot;&quot;Replicated metadata entry&quot;&quot;&quot;
-                    component_id: str
-                    name: str
-                    parent_id: Optional[str]
-                    is_directory: bool
-                    size: int
-                    vector_clock: VectorClock
-                    deleted: bool = False  # Tombstone for deletions
+@dataclass
+class DistributedMetadata:
+&quot;&quot;&quot;Replicated metadata entry&quot;&quot;&quot;
+component_id: str
+name: str
+parent_id: Optional[str]
+is_directory: bool
+size: int
+vector_clock: VectorClock
+deleted: bool = False  # Tombstone for deletions
 
-                    class MetadataPartition:
-                    &quot;&quot;&quot;Single partition of metadata (runs on one node)&quot;&quot;&quot;
+class MetadataPartition:
+&quot;&quot;&quot;Single partition of metadata (runs on one node)&quot;&quot;&quot;
 
-                    def __init__(self, node_id: str, partition_id: int):
-                    self.node_id = node_id
-                    self.partition_id = partition_id
-                    self.entries: Dict[str, DistributedMetadata] = {}
-                    self.pending_sync: Set[str] = set()
+def __init__(self, node_id: str, partition_id: int):
+self.node_id = node_id
+self.partition_id = partition_id
+self.entries: Dict[str, DistributedMetadata] = {}
+self.pending_sync: Set[str] = set()
 
-                    def local_add(self, parent_id: str, name: str, is_directory: bool) -&gt; str:
-                    &quot;&quot;&quot;Create new entry in this partition&quot;&quot;&quot;
-                    component_id = str(uuid.uuid4())
-                    clock = VectorClock({self.node_id: 1})
+def local_add(self, parent_id: str, name: str, is_directory: bool) -&gt; str:
+&quot;&quot;&quot;Create new entry in this partition&quot;&quot;&quot;
+component_id = str(uuid.uuid4())
+clock = VectorClock({self.node_id: 1})
 
-                    entry = DistributedMetadata(
-                    component_id=component_id,
-                    name=name,
-                    parent_id=parent_id,
-                    is_directory=is_directory,
-                    size=0,
-                    vector_clock=clock
-                    )
+entry = DistributedMetadata(
+component_id=component_id,
+name=name,
+parent_id=parent_id,
+is_directory=is_directory,
+size=0,
+vector_clock=clock
+)
 
-                    self.entries[component_id] = entry
-                    self.pending_sync.add(component_id)
-                    return component_id
+self.entries[component_id] = entry
+self.pending_sync.add(component_id)
+return component_id
 
-                    def receive_update(self, entry: DistributedMetadata) -&gt; Tuple[bool, Optional[str]]:
-                    &quot;&quot;&quot;
-                    Receive replicated update from another node.
-                    Returns (accepted, conflict_resolution_needed)
-                    &quot;&quot;&quot;
-                    existing = self.entries.get(entry.component_id)
+def receive_update(self, entry: DistributedMetadata) -&gt; Tuple[bool, Optional[str]]:
+&quot;&quot;&quot;
+Receive replicated update from another node.
+Returns (accepted, conflict_resolution_needed)
+&quot;&quot;&quot;
+existing = self.entries.get(entry.component_id)
 
-                    if existing is None:
-                    # New entry, accept
-                    self.entries[entry.component_id] = entry
-                    return True, None
+if existing is None:
+# New entry, accept
+self.entries[entry.component_id] = entry
+return True, None
 
-                    if entry.vector_clock.happens_before(existing.vector_clock):
-                    # Stale update, ignore
-                    return False, None
+if entry.vector_clock.happens_before(existing.vector_clock):
+# Stale update, ignore
+return False, None
 
-                    if existing.vector_clock.happens_before(entry.vector_clock):
-                    # Newer update, accept
-                    self.entries[entry.component_id] = entry
-                    return True, None
+if existing.vector_clock.happens_before(entry.vector_clock):
+# Newer update, accept
+self.entries[entry.component_id] = entry
+return True, None
 
-                    # Concurrent updates - conflict!
-                    # Resolution strategy: Last-writer-wins with deterministic tiebreaker
-                    conflict_id = self._resolve_conflict(existing, entry)
-                    return True, conflict_id
+# Concurrent updates - conflict!
+# Resolution strategy: Last-writer-wins with deterministic tiebreaker
+conflict_id = self._resolve_conflict(existing, entry)
+return True, conflict_id
 
-                    def _resolve_conflict(
-                    self,
-                    local: DistributedMetadata,
-                    remote: DistributedMetadata
-                    ) -&gt; str:
-                    &quot;&quot;&quot;
-                    Resolve concurrent update conflict.
-                    Strategy: Merge clocks, keep higher node_id's changes
-                    &quot;&quot;&quot;
-                    merged_clock = local.vector_clock.merge(remote.vector_clock)
+def _resolve_conflict(
+self,
+local: DistributedMetadata,
+remote: DistributedMetadata
+) -&gt; str:
+&quot;&quot;&quot;
+Resolve concurrent update conflict.
+Strategy: Merge clocks, keep higher node_id's changes
+&quot;&quot;&quot;
+merged_clock = local.vector_clock.merge(remote.vector_clock)
 
-                    # Deterministic winner selection
-                    if max(local.vector_clock.clocks.keys()) &gt; max(remote.vector_clock.clocks.keys()):
-                    winner = local
-                    else:
-                    winner = remote
+# Deterministic winner selection
+if max(local.vector_clock.clocks.keys()) &gt; max(remote.vector_clock.clocks.keys()):
+winner = local
+else:
+winner = remote
 
-                    winner.vector_clock = merged_clock
-                    self.entries[winner.component_id] = winner
+winner.vector_clock = merged_clock
+self.entries[winner.component_id] = winner
 
-                    # Return conflict marker for user resolution
-                    return f&quot;conflict:{local.component_id}&quot;
+# Return conflict marker for user resolution
+return f&quot;conflict:{local.component_id}&quot;
 
-                    class DistributedFileSystem:
-                    &quot;&quot;&quot;
-                    Distributed composite file system with eventual consistency.
-                    Uses consistent hashing to partition metadata across nodes.
-                    &quot;&quot;&quot;
+class DistributedFileSystem:
+&quot;&quot;&quot;
+Distributed composite file system with eventual consistency.
+Uses consistent hashing to partition metadata across nodes.
+&quot;&quot;&quot;
 
-                    def __init__(self, node_id: str, num_partitions: int, replication_factor: int = 3):
-                    self.node_id = node_id
-                    self.partitions: Dict[int, MetadataPartition] = {}
-                    self.num_partitions = num_partitions
-                    self.replication_factor = replication_factor
+def __init__(self, node_id: str, num_partitions: int, replication_factor: int = 3):
+self.node_id = node_id
+self.partitions: Dict[int, MetadataPartition] = {}
+self.num_partitions = num_partitions
+self.replication_factor = replication_factor
 
-                    def _get_partition(self, component_id: str) -&gt; int:
-                    &quot;&quot;&quot;Consistent hash to determine owning partition&quot;&quot;&quot;
-                    return hash(component_id) % self.num_partitions
+def _get_partition(self, component_id: str) -&gt; int:
+&quot;&quot;&quot;Consistent hash to determine owning partition&quot;&quot;&quot;
+return hash(component_id) % self.num_partitions
 
-                    def create_file(
-                    self,
-                    parent_path: str,
-                    name: str,
-                    consistency: ConsistencyLevel = ConsistencyLevel.READ_YOUR_WRITES
-                    ) -&gt; str:
-                    &quot;&quot;&quot;
-                    Create file with specified consistency level.
+def create_file(
+self,
+parent_path: str,
+name: str,
+consistency: ConsistencyLevel = ConsistencyLevel.READ_YOUR_WRITES
+) -&gt; str:
+&quot;&quot;&quot;
+Create file with specified consistency level.
 
-                    EVENTUAL: Fire and forget, return immediately
-                    READ_YOUR_WRITES: Wait for local partition ack
-                    STRONG: Wait for quorum ack
-                    &quot;&quot;&quot;
-                    parent_id = self._resolve_path(parent_path)
-                    partition_id = self._get_partition(parent_id)
+EVENTUAL: Fire and forget, return immediately
+READ_YOUR_WRITES: Wait for local partition ack
+STRONG: Wait for quorum ack
+&quot;&quot;&quot;
+parent_id = self._resolve_path(parent_path)
+partition_id = self._get_partition(parent_id)
 
-                    component_id = self.partitions[partition_id].local_add(
-                    parent_id, name, is_directory=False
-                    )
+component_id = self.partitions[partition_id].local_add(
+parent_id, name, is_directory=False
+)
 
-                    if consistency == ConsistencyLevel.STRONG:
-                    self._wait_for_quorum(component_id)
-                    elif consistency == ConsistencyLevel.READ_YOUR_WRITES:
-                    self._wait_for_local(component_id)
+if consistency == ConsistencyLevel.STRONG:
+self._wait_for_quorum(component_id)
+elif consistency == ConsistencyLevel.READ_YOUR_WRITES:
+self._wait_for_local(component_id)
 
-                    return component_id
+return component_id
 
-                    def list_directory(
-                    self,
-                    path: str,
-                    consistency: ConsistencyLevel = ConsistencyLevel.EVENTUAL
-                    ) -&gt; List[DistributedMetadata]:
-                    &quot;&quot;&quot;
-                    List directory contents with specified consistency.
+def list_directory(
+self,
+path: str,
+consistency: ConsistencyLevel = ConsistencyLevel.EVENTUAL
+) -&gt; List[DistributedMetadata]:
+&quot;&quot;&quot;
+List directory contents with specified consistency.
 
-                    Note: EVENTUAL may return stale or incomplete results during partitions.
-                    &quot;&quot;&quot;
-                    dir_id = self._resolve_path(path)
+Note: EVENTUAL may return stale or incomplete results during partitions.
+&quot;&quot;&quot;
+dir_id = self._resolve_path(path)
 
-                    if consistency == ConsistencyLevel.STRONG:
-                    # Read from quorum of replicas
-                    return self._quorum_read_children(dir_id)
-                    else:
-                    # Read from local partition only
-                    return self._local_read_children(dir_id)
-                    ```
-</code></pre>
+if consistency == ConsistencyLevel.STRONG:
+# Read from quorum of replicas
+return self._quorum_read_children(dir_id)
+else:
+# Read from local partition only
+return self._local_read_children(dir_id)</code></pre>
 <p><strong>Key design decisions</strong>:</p>
 <ol>
 <li><strong>Vector clocks</strong> for causality tracking and conflict detection</li>
@@ -1274,8 +1262,7 @@ Composite { name: String, children: Vec<Component> },<br />
 </div>
 </div>
 <h3 id="ui-component-implementation">UI Component Implementation</h3>
-<pre><code>                  ```python
-                  from abc import ABC, abstractmethod
+<pre><code class="language-python">                  from abc import ABC, abstractmethod
                   from typing import List, Optional, Tuple, Callable, Any, Dict
                   from dataclasses import dataclass, field
                   from enum import Enum, auto
@@ -1675,9 +1662,7 @@ Composite { name: String, children: Vec<Component> },<br />
                   max_height = max(max_height, h)
                   total_width += w
 
-                  return total_width, max_height + 2 * self.padding
-                  ```
-</code></pre>
+                  return total_width, max_height + 2 * self.padding</code></pre>
 <h3 id="interview-questions-ui-component-hierarchies">Interview Questions: UI Component Hierarchies</h3>
 <div style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0">
 <p><strong>Level 1: How does event handling work in a UI component hierarchy?</strong></p>
@@ -1698,48 +1683,45 @@ Composite { name: String, children: Vec<Component> },<br />
 <p>Hit testing determines the target by traversing the tree, typically checking children before parents (so overlapping children take precedence).</p>
 <p><strong>Level 2: How would you implement efficient dirty-flag based rendering for a deeply nested UI tree?</strong></p>
 <p>Dirty-flag optimization avoids re-rendering unchanged subtrees:</p>
-<pre><code>                    ```python
-                    class OptimizedContainer(Container):
-                    def __init__(self):
-                    super().__init__()
-                    self._render_dirty = True
-                    self._cached_render: Optional[Any] = None
+<pre><code class="language-python">class OptimizedContainer(Container):
+def __init__(self):
+super().__init__()
+self._render_dirty = True
+self._cached_render: Optional[Any] = None
 
-                    def mark_dirty(self) -&gt; None:
-                    &quot;&quot;&quot;Mark this and all ancestors as needing re-render&quot;&quot;&quot;
-                    self._render_dirty = True
-                    if self.parent:
-                    self.parent.mark_dirty()
+def mark_dirty(self) -&gt; None:
+&quot;&quot;&quot;Mark this and all ancestors as needing re-render&quot;&quot;&quot;
+self._render_dirty = True
+if self.parent:
+self.parent.mark_dirty()
 
-                    def render(self, ctx: RenderContext) -&gt; None:
-                    if not self._render_dirty and self._cached_render:
-                    # Use cached render
-                    ctx.canvas.blit(self._cached_render, self.bounds)
-                    return
+def render(self, ctx: RenderContext) -&gt; None:
+if not self._render_dirty and self._cached_render:
+# Use cached render
+ctx.canvas.blit(self._cached_render, self.bounds)
+return
 
-                    # Create offscreen buffer for caching
-                    buffer = ctx.canvas.create_buffer(self.bounds.width, self.bounds.height)
-                    buffer_ctx = RenderContext(
-                    canvas=buffer,
-                    clip_rect=Rect(0, 0, self.bounds.width, self.bounds.height)
-                    )
+# Create offscreen buffer for caching
+buffer = ctx.canvas.create_buffer(self.bounds.width, self.bounds.height)
+buffer_ctx = RenderContext(
+canvas=buffer,
+clip_rect=Rect(0, 0, self.bounds.width, self.bounds.height)
+)
 
-                    # Render to buffer
-                    self._render_background(buffer_ctx)
-                    for child in self._children:
-                    child.render(buffer_ctx)
+# Render to buffer
+self._render_background(buffer_ctx)
+for child in self._children:
+child.render(buffer_ctx)
 
-                    # Cache and blit
-                    self._cached_render = buffer
-                    self._render_dirty = False
-                    ctx.canvas.blit(buffer, self.bounds)
+# Cache and blit
+self._cached_render = buffer
+self._render_dirty = False
+ctx.canvas.blit(buffer, self.bounds)
 
-                    def add(self, child: UIComponent) -&gt; 'Container':
-                    result = super().add(child)
-                    self.mark_dirty()
-                    return result
-                    ```
-</code></pre>
+def add(self, child: UIComponent) -&gt; 'Container':
+result = super().add(child)
+self.mark_dirty()
+return result</code></pre>
 <p><strong>Key optimizations</strong>:</p>
 <ol>
 <li><strong>Dirty flag propagation</strong>: Changes only mark ancestors dirty, not siblings</li>
@@ -1750,202 +1732,199 @@ Composite { name: String, children: Vec<Component> },<br />
 <p>React's reconciliation uses a similar approach with virtual DOM diffing.</p>
 <p><strong>Level 3: Design a UI framework's layout system that supports constraint-based layouts, handling circular dependencies gracefully.</strong></p>
 <p>Constraint-based layouts (like iOS Auto Layout) require solving a system of linear constraints:</p>
-<pre><code>                    ```python
-                    from typing import Dict, Set, Tuple, Optional
-                    from dataclasses import dataclass
-                    from enum import Enum, auto
+<pre><code class="language-python">from typing import Dict, Set, Tuple, Optional
+from dataclasses import dataclass
+from enum import Enum, auto
 
-                    class LayoutAttribute(Enum):
-                    LEFT = auto()
-                    RIGHT = auto()
-                    TOP = auto()
-                    BOTTOM = auto()
-                    WIDTH = auto()
-                    HEIGHT = auto()
-                    CENTER_X = auto()
-                    CENTER_Y = auto()
+class LayoutAttribute(Enum):
+LEFT = auto()
+RIGHT = auto()
+TOP = auto()
+BOTTOM = auto()
+WIDTH = auto()
+HEIGHT = auto()
+CENTER_X = auto()
+CENTER_Y = auto()
 
-                    @dataclass
-                    class Constraint:
-                    &quot;&quot;&quot;
-                    Represents: item1.attr1 = multiplier * item2.attr2 + constant
-                    Priority determines which constraints to break on conflict.
-                    &quot;&quot;&quot;
-                    item1: 'ConstrainedComponent'
-                    attr1: LayoutAttribute
-                    relation: str  # '=', '&lt;=', '&gt;='
-                    item2: Optional['ConstrainedComponent']
-                    attr2: Optional[LayoutAttribute]
-                    multiplier: float = 1.0
-                    constant: float = 0.0
-                    priority: int = 1000  # Required constraint
+@dataclass
+class Constraint:
+&quot;&quot;&quot;
+Represents: item1.attr1 = multiplier * item2.attr2 + constant
+Priority determines which constraints to break on conflict.
+&quot;&quot;&quot;
+item1: 'ConstrainedComponent'
+attr1: LayoutAttribute
+relation: str  # '=', '&lt;=', '&gt;='
+item2: Optional['ConstrainedComponent']
+attr2: Optional[LayoutAttribute]
+multiplier: float = 1.0
+constant: float = 0.0
+priority: int = 1000  # Required constraint
 
-                    class ConstraintSolver:
-                    &quot;&quot;&quot;
-                    Cassowary-style constraint solver for UI layout.
+class ConstraintSolver:
+&quot;&quot;&quot;
+Cassowary-style constraint solver for UI layout.
 
-                    Uses incremental simplex algorithm to efficiently handle:
-                    - Adding/removing constraints
-                    - Detecting unsatisfiable systems
-                    - Finding optimal solutions for soft constraints
-                    &quot;&quot;&quot;
+Uses incremental simplex algorithm to efficiently handle:
+- Adding/removing constraints
+- Detecting unsatisfiable systems
+- Finding optimal solutions for soft constraints
+&quot;&quot;&quot;
 
-                    def __init__(self):
-                    self.constraints: List[Constraint] = []
-                    self.variables: Dict[Tuple[int, LayoutAttribute], float] = {}
-                    self._dependency_graph: Dict[int, Set[int]] = {}
+def __init__(self):
+self.constraints: List[Constraint] = []
+self.variables: Dict[Tuple[int, LayoutAttribute], float] = {}
+self._dependency_graph: Dict[int, Set[int]] = {}
 
-                    def add_constraint(self, constraint: Constraint) -&gt; bool:
-                    &quot;&quot;&quot;
-                    Add constraint and check for cycles.
-                    Returns False if constraint creates unsatisfiable system.
-                    &quot;&quot;&quot;
-                    # Build dependency: item1 depends on item2
-                    if constraint.item2:
-                    id1 = id(constraint.item1)
-                    id2 = id(constraint.item2)
+def add_constraint(self, constraint: Constraint) -&gt; bool:
+&quot;&quot;&quot;
+Add constraint and check for cycles.
+Returns False if constraint creates unsatisfiable system.
+&quot;&quot;&quot;
+# Build dependency: item1 depends on item2
+if constraint.item2:
+id1 = id(constraint.item1)
+id2 = id(constraint.item2)
 
-                    if id1 not in self._dependency_graph:
-                    self._dependency_graph[id1] = set()
-                    self._dependency_graph[id1].add(id2)
+if id1 not in self._dependency_graph:
+self._dependency_graph[id1] = set()
+self._dependency_graph[id1].add(id2)
 
-                    # Check for cycle using DFS
-                    if self._has_cycle(id1):
-                    # Remove the edge we just added
-                    self._dependency_graph[id1].remove(id2)
-                    return False
+# Check for cycle using DFS
+if self._has_cycle(id1):
+# Remove the edge we just added
+self._dependency_graph[id1].remove(id2)
+return False
 
-                    self.constraints.append(constraint)
-                    return True
+self.constraints.append(constraint)
+return True
 
-                    def _has_cycle(self, start: int) -&gt; bool:
-                    &quot;&quot;&quot;Detect cycle in dependency graph using DFS&quot;&quot;&quot;
-                    visited = set()
-                    rec_stack = set()
+def _has_cycle(self, start: int) -&gt; bool:
+&quot;&quot;&quot;Detect cycle in dependency graph using DFS&quot;&quot;&quot;
+visited = set()
+rec_stack = set()
 
-                    def dfs(node: int) -&gt; bool:
-                    visited.add(node)
-                    rec_stack.add(node)
+def dfs(node: int) -&gt; bool:
+visited.add(node)
+rec_stack.add(node)
 
-                    for neighbor in self._dependency_graph.get(node, []):
-                    if neighbor not in visited:
-                    if dfs(neighbor):
-                    return True
-                    elif neighbor in rec_stack:
-                    return True
+for neighbor in self._dependency_graph.get(node, []):
+if neighbor not in visited:
+if dfs(neighbor):
+return True
+elif neighbor in rec_stack:
+return True
 
-                    rec_stack.remove(node)
-                    return False
+rec_stack.remove(node)
+return False
 
-                    return dfs(start)
+return dfs(start)
 
-                    def solve(self) -&gt; Dict[Tuple[int, LayoutAttribute], float]:
-                    &quot;&quot;&quot;
-                    Solve constraint system using incremental simplex.
+def solve(self) -&gt; Dict[Tuple[int, LayoutAttribute], float]:
+&quot;&quot;&quot;
+Solve constraint system using incremental simplex.
 
-                    Algorithm outline:
-                    1. Convert constraints to standard form
-                    2. Build initial tableau
-                    3. Pivot to find optimal solution
-                    4. Handle soft constraints by relaxation
-                    &quot;&quot;&quot;
-                    # Sort constraints by priority (solve required first)
-                    sorted_constraints = sorted(
-                    self.constraints,
-                    key=lambda c: -c.priority
-                    )
+Algorithm outline:
+1. Convert constraints to standard form
+2. Build initial tableau
+3. Pivot to find optimal solution
+4. Handle soft constraints by relaxation
+&quot;&quot;&quot;
+# Sort constraints by priority (solve required first)
+sorted_constraints = sorted(
+self.constraints,
+key=lambda c: -c.priority
+)
 
-                    # Initialize variables with intrinsic sizes
-                    self._initialize_variables()
+# Initialize variables with intrinsic sizes
+self._initialize_variables()
 
-                    # Solve using Gaussian elimination with pivoting
-                    for constraint in sorted_constraints:
-                    if not self._apply_constraint(constraint):
-                    if constraint.priority &gt;= 1000:
-                    raise LayoutError(f&quot;Required constraint unsatisfiable: {constraint}&quot;)
-                    # Soft constraint - skip if unsatisfiable
+# Solve using Gaussian elimination with pivoting
+for constraint in sorted_constraints:
+if not self._apply_constraint(constraint):
+if constraint.priority &gt;= 1000:
+raise LayoutError(f&quot;Required constraint unsatisfiable: {constraint}&quot;)
+# Soft constraint - skip if unsatisfiable
 
-                    return self.variables
+return self.variables
 
-                    def _apply_constraint(self, constraint: Constraint) -&gt; bool:
-                    &quot;&quot;&quot;Apply single constraint, return True if satisfied&quot;&quot;&quot;
-                    key1 = (id(constraint.item1), constraint.attr1)
+def _apply_constraint(self, constraint: Constraint) -&gt; bool:
+&quot;&quot;&quot;Apply single constraint, return True if satisfied&quot;&quot;&quot;
+key1 = (id(constraint.item1), constraint.attr1)
 
-                    if constraint.item2 is None:
-                    # Constant constraint: attr1 = constant
-                    self.variables[key1] = constraint.constant
-                    return True
+if constraint.item2 is None:
+# Constant constraint: attr1 = constant
+self.variables[key1] = constraint.constant
+return True
 
-                    key2 = (id(constraint.item2), constraint.attr2)
-                    value2 = self.variables.get(key2, 0)
-                    target = constraint.multiplier * value2 + constraint.constant
+key2 = (id(constraint.item2), constraint.attr2)
+value2 = self.variables.get(key2, 0)
+target = constraint.multiplier * value2 + constraint.constant
 
-                    if constraint.relation == '=':
-                    self.variables[key1] = target
-                    elif constraint.relation == '&lt;=':
-                    current = self.variables.get(key1, 0)
-                    self.variables[key1] = min(current, target)
-                    elif constraint.relation == '&gt;=':
-                    current = self.variables.get(key1, 0)
-                    self.variables[key1] = max(current, target)
+if constraint.relation == '=':
+self.variables[key1] = target
+elif constraint.relation == '&lt;=':
+current = self.variables.get(key1, 0)
+self.variables[key1] = min(current, target)
+elif constraint.relation == '&gt;=':
+current = self.variables.get(key1, 0)
+self.variables[key1] = max(current, target)
 
-                    return True
+return True
 
-                    class ConstrainedComponent(UIComponent):
-                    &quot;&quot;&quot;Component with constraint-based layout&quot;&quot;&quot;
+class ConstrainedComponent(UIComponent):
+&quot;&quot;&quot;Component with constraint-based layout&quot;&quot;&quot;
 
-                    def __init__(self):
-                    super().__init__()
-                    self._constraints: List[Constraint] = []
-                    self._intrinsic_width: Optional[float] = None
-                    self._intrinsic_height: Optional[float] = None
+def __init__(self):
+super().__init__()
+self._constraints: List[Constraint] = []
+self._intrinsic_width: Optional[float] = None
+self._intrinsic_height: Optional[float] = None
 
-                    def constrain(
-                    self,
-                    attr: LayoutAttribute,
-                    to_item: Optional['ConstrainedComponent'] = None,
-                    to_attr: Optional[LayoutAttribute] = None,
-                    multiplier: float = 1.0,
-                    constant: float = 0.0,
-                    priority: int = 1000
-                    ) -&gt; Constraint:
-                    &quot;&quot;&quot;Create and register a constraint&quot;&quot;&quot;
-                    constraint = Constraint(
-                    item1=self,
-                    attr1=attr,
-                    relation='=',
-                    item2=to_item,
-                    attr2=to_attr,
-                    multiplier=multiplier,
-                    constant=constant,
-                    priority=priority
-                    )
-                    self._constraints.append(constraint)
-                    return constraint
+def constrain(
+self,
+attr: LayoutAttribute,
+to_item: Optional['ConstrainedComponent'] = None,
+to_attr: Optional[LayoutAttribute] = None,
+multiplier: float = 1.0,
+constant: float = 0.0,
+priority: int = 1000
+) -&gt; Constraint:
+&quot;&quot;&quot;Create and register a constraint&quot;&quot;&quot;
+constraint = Constraint(
+item1=self,
+attr1=attr,
+relation='=',
+item2=to_item,
+attr2=to_attr,
+multiplier=multiplier,
+constant=constant,
+priority=priority
+)
+self._constraints.append(constraint)
+return constraint
 
-                    def pin_to_parent(
-                    self,
-                    edges: Set[LayoutAttribute],
-                    inset: float = 0
-                    ) -&gt; List[Constraint]:
-                    &quot;&quot;&quot;Convenience: pin edges to parent with inset&quot;&quot;&quot;
-                    constraints = []
-                    if LayoutAttribute.LEFT in edges:
-                    constraints.append(self.constrain(
-                    LayoutAttribute.LEFT,
-                    self.parent, LayoutAttribute.LEFT,
-                    constant=inset
-                    ))
-                    if LayoutAttribute.RIGHT in edges:
-                    constraints.append(self.constrain(
-                    LayoutAttribute.RIGHT,
-                    self.parent, LayoutAttribute.RIGHT,
-                    constant=-inset
-                    ))
-                    # ... similar for TOP, BOTTOM
-                    return constraints
-                    ```
-</code></pre>
+def pin_to_parent(
+self,
+edges: Set[LayoutAttribute],
+inset: float = 0
+) -&gt; List[Constraint]:
+&quot;&quot;&quot;Convenience: pin edges to parent with inset&quot;&quot;&quot;
+constraints = []
+if LayoutAttribute.LEFT in edges:
+constraints.append(self.constrain(
+LayoutAttribute.LEFT,
+self.parent, LayoutAttribute.LEFT,
+constant=inset
+))
+if LayoutAttribute.RIGHT in edges:
+constraints.append(self.constrain(
+LayoutAttribute.RIGHT,
+self.parent, LayoutAttribute.RIGHT,
+constant=-inset
+))
+# ... similar for TOP, BOTTOM
+return constraints</code></pre>
 <p><strong>Handling circular dependencies</strong>:</p>
 <ol>
 <li><strong>Detection</strong>: Build dependency graph during constraint addition</li>
@@ -1988,8 +1967,7 @@ Composite { name: String, children: Vec<Component> },<br />
 </div>
 <h3 id="stack-overflow-prevention">Stack Overflow Prevention</h3>
 <p>Deeply nested composites can cause stack overflow with naive recursion:</p>
-<pre><code>                  ```python
-                  class SafeTraversal:
+<pre><code class="language-python">                  class SafeTraversal:
                   &quot;&quot;&quot;Non-recursive traversal to handle arbitrarily deep trees&quot;&quot;&quot;
 
                   @staticmethod
@@ -2061,13 +2039,10 @@ Composite { name: String, children: Vec<Component> },<br />
                   # For directory: process children with accumulated value
                   for child in node.get_children():
                   accumulator = SafeTraversal.tail_recursive_size(child, accumulator)
-                  return accumulator
-                  ```
-</code></pre>
+                  return accumulator</code></pre>
 <h3 id="parallel-recursive-operations">Parallel Recursive Operations</h3>
 <p>For large trees, parallel processing can significantly improve performance:</p>
-<pre><code>                  ```python
-                  from concurrent.futures import ThreadPoolExecutor, Future
+<pre><code class="language-python">                  from concurrent.futures import ThreadPoolExecutor, Future
                   from typing import TypeVar, Callable
                   import threading
 
@@ -2141,9 +2116,7 @@ Composite { name: String, children: Vec<Component> },<br />
                   for future in futures:
                   future.result()
 
-                  return results
-                  ```
-</code></pre>
+                  return results</code></pre>
 <h3 id="interview-questions-recursive-operations">Interview Questions: Recursive Operations</h3>
 <div style="background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); border-radius: 12px; padding: 1.5rem; margin: 1rem 0">
 <p><strong>Level 1: What are the time and space complexities of common Composite operations?</strong></p>
@@ -2205,91 +2178,88 @@ Composite { name: String, children: Vec<Component> },<br />
 <p>The space complexity reflects call stack depth for recursive implementations.</p>
 <p><strong>Level 2: How would you implement a lazy-loading Composite where children are fetched on-demand?</strong></p>
 <p>Lazy loading defers child retrieval until accessed:</p>
-<pre><code>                    ```python
-                    from typing import Callable, List, Optional
-                    from enum import Enum, auto
+<pre><code class="language-python">from typing import Callable, List, Optional
+from enum import Enum, auto
 
-                    class LoadState(Enum):
-                    UNLOADED = auto()
-                    LOADING = auto()
-                    LOADED = auto()
-                    ERROR = auto()
+class LoadState(Enum):
+UNLOADED = auto()
+LOADING = auto()
+LOADED = auto()
+ERROR = auto()
 
-                    class LazyDirectory(Directory):
-                    &quot;&quot;&quot;
-                    Directory with lazy child loading.
+class LazyDirectory(Directory):
+&quot;&quot;&quot;
+Directory with lazy child loading.
 
-                    Design considerations:
-                    - Children fetched on first access
-                    - Loading state prevents redundant fetches
-                    - Error handling with retry capability
-                    - Optional prefetching for anticipated access
-                    &quot;&quot;&quot;
+Design considerations:
+- Children fetched on first access
+- Loading state prevents redundant fetches
+- Error handling with retry capability
+- Optional prefetching for anticipated access
+&quot;&quot;&quot;
 
-                    def __init__(self, name: str, loader: Callable[['LazyDirectory'], List[FileSystemComponent]]):
-                    super().__init__(name)
-                    self._loader = loader
-                    self._load_state = LoadState.UNLOADED
-                    self._load_error: Optional[Exception] = None
+def __init__(self, name: str, loader: Callable[['LazyDirectory'], List[FileSystemComponent]]):
+super().__init__(name)
+self._loader = loader
+self._load_state = LoadState.UNLOADED
+self._load_error: Optional[Exception] = None
 
-                    def _ensure_loaded(self) -&gt; None:
-                    &quot;&quot;&quot;Load children if not already loaded&quot;&quot;&quot;
-                    if self._load_state == LoadState.LOADED:
-                    return
+def _ensure_loaded(self) -&gt; None:
+&quot;&quot;&quot;Load children if not already loaded&quot;&quot;&quot;
+if self._load_state == LoadState.LOADED:
+return
 
-                    if self._load_state == LoadState.LOADING:
-                    # Prevent re-entrant loading
-                    raise RuntimeError(&quot;Circular loading detected&quot;)
+if self._load_state == LoadState.LOADING:
+# Prevent re-entrant loading
+raise RuntimeError(&quot;Circular loading detected&quot;)
 
-                    self._load_state = LoadState.LOADING
-                    try:
-                    children = self._loader(self)
-                    for child in children:
-                    super().add(child)
-                    self._load_state = LoadState.LOADED
-                    except Exception as e:
-                    self._load_state = LoadState.ERROR
-                    self._load_error = e
-                    raise
+self._load_state = LoadState.LOADING
+try:
+children = self._loader(self)
+for child in children:
+super().add(child)
+self._load_state = LoadState.LOADED
+except Exception as e:
+self._load_state = LoadState.ERROR
+self._load_error = e
+raise
 
-                    def get_children(self) -&gt; List[FileSystemComponent]:
-                    self._ensure_loaded()
-                    return super().get_children()
+def get_children(self) -&gt; List[FileSystemComponent]:
+self._ensure_loaded()
+return super().get_children()
 
-                    def get_size(self) -&gt; int:
-                    self._ensure_loaded()
-                    return super().get_size()
+def get_size(self) -&gt; int:
+self._ensure_loaded()
+return super().get_size()
 
-                    def prefetch(self, depth: int = 1) -&gt; 'LazyDirectory':
-                    &quot;&quot;&quot;Eagerly load children up to specified depth&quot;&quot;&quot;
-                    self._ensure_loaded()
-                    if depth &gt; 0:
-                    for child in self._children.values():
-                    if isinstance(child, LazyDirectory):
-                    child.prefetch(depth - 1)
-                    return self
+def prefetch(self, depth: int = 1) -&gt; 'LazyDirectory':
+&quot;&quot;&quot;Eagerly load children up to specified depth&quot;&quot;&quot;
+self._ensure_loaded()
+if depth &gt; 0:
+for child in self._children.values():
+if isinstance(child, LazyDirectory):
+child.prefetch(depth - 1)
+return self
 
-                    def invalidate(self) -&gt; None:
-                    &quot;&quot;&quot;Clear cached children, will reload on next access&quot;&quot;&quot;
-                    self._children.clear()
-                    self._load_state = LoadState.UNLOADED
-                    self._load_error = None
+def invalidate(self) -&gt; None:
+&quot;&quot;&quot;Clear cached children, will reload on next access&quot;&quot;&quot;
+self._children.clear()
+self._load_state = LoadState.UNLOADED
+self._load_error = None
 
-                    # Usage with API-backed loading
-                    def create_api_directory(path: str) -&gt; LazyDirectory:
-                    def loader(directory: LazyDirectory) -&gt; List[FileSystemComponent]:
-                    response = api_client.list_directory(directory.get_path())
-                    children = []
-                    for item in response['items']:
-                    if item['type'] == 'file':
-                    children.append(File(item['name'], item['size']))
-                    else:
-                    children.append(create_api_directory(item['name']))
-                    return children
+# Usage with API-backed loading
+def create_api_directory(path: str) -&gt; LazyDirectory:
+def loader(directory: LazyDirectory) -&gt; List[FileSystemComponent]:
+response = api_client.list_directory(directory.get_path())
+children = []
+for item in response['items']:
+if item['type'] == 'file':
+children.append(File(item['name'], item['size']))
+else:
+children.append(create_api_directory(item['name']))
+return children
 
-                    return LazyDirectory(path.split('/')[-1], loader)
-                    ```
-</code></pre>
+return LazyDirectory(path.split('/')[-1], loader)</code></pre>
 <p><strong>Trade-offs</strong>:<br />
 - Pro: Reduced memory for large trees<br />
 - Pro: Faster initial load<br />
@@ -2298,191 +2268,188 @@ Composite { name: String, children: Vec<Component> },<br />
 - Con: Stale data if source changes</p>
 <p><strong>Level 3: Design an incremental computation system for Composite that efficiently recomputes aggregates when leaves change.</strong></p>
 <p>Incremental computation avoids full recomputation by propagating deltas:</p>
-<pre><code>                    ```python
-                    from abc import ABC, abstractmethod
-                    from typing import TypeVar, Generic, Callable, Set
-                    from dataclasses import dataclass
+<pre><code class="language-python">from abc import ABC, abstractmethod
+from typing import TypeVar, Generic, Callable, Set
+from dataclasses import dataclass
 
-                    T = TypeVar('T')
+T = TypeVar('T')
 
-                    @dataclass
-                    class Delta(Generic[T]):
-                    &quot;&quot;&quot;Represents a change to a value&quot;&quot;&quot;
-                    old_value: T
-                    new_value: T
+@dataclass
+class Delta(Generic[T]):
+&quot;&quot;&quot;Represents a change to a value&quot;&quot;&quot;
+old_value: T
+new_value: T
 
-                    def invert(self) -&gt; 'Delta[T]':
-                    return Delta(self.new_value, self.old_value)
+def invert(self) -&gt; 'Delta[T]':
+return Delta(self.new_value, self.old_value)
 
-                    class IncrementalAggregate(ABC, Generic[T]):
-                    &quot;&quot;&quot;
-                    Defines an aggregate that can be incrementally updated.
+class IncrementalAggregate(ABC, Generic[T]):
+&quot;&quot;&quot;
+Defines an aggregate that can be incrementally updated.
 
-                    Requirements for incremental update:
-                    1. Combine operation must be associative
-                    2. Must support inverse operation for removals
-                    3. Must support delta application for updates
-                    &quot;&quot;&quot;
+Requirements for incremental update:
+1. Combine operation must be associative
+2. Must support inverse operation for removals
+3. Must support delta application for updates
+&quot;&quot;&quot;
 
-                    @abstractmethod
-                    def identity(self) -&gt; T:
-                    &quot;&quot;&quot;Identity element for combination&quot;&quot;&quot;
-                    pass
+@abstractmethod
+def identity(self) -&gt; T:
+&quot;&quot;&quot;Identity element for combination&quot;&quot;&quot;
+pass
 
-                    @abstractmethod
-                    def combine(self, a: T, b: T) -&gt; T:
-                    &quot;&quot;&quot;Combine two aggregate values&quot;&quot;&quot;
-                    pass
+@abstractmethod
+def combine(self, a: T, b: T) -&gt; T:
+&quot;&quot;&quot;Combine two aggregate values&quot;&quot;&quot;
+pass
 
-                    @abstractmethod
-                    def apply_delta(self, current: T, delta: Delta[T]) -&gt; T:
-                    &quot;&quot;&quot;Apply change to aggregate&quot;&quot;&quot;
-                    pass
+@abstractmethod
+def apply_delta(self, current: T, delta: Delta[T]) -&gt; T:
+&quot;&quot;&quot;Apply change to aggregate&quot;&quot;&quot;
+pass
 
-                    class SumAggregate(IncrementalAggregate[int]):
-                    &quot;&quot;&quot;Sum aggregate with O(1) incremental update&quot;&quot;&quot;
+class SumAggregate(IncrementalAggregate[int]):
+&quot;&quot;&quot;Sum aggregate with O(1) incremental update&quot;&quot;&quot;
 
-                    def identity(self) -&gt; int:
-                    return 0
+def identity(self) -&gt; int:
+return 0
 
-                    def combine(self, a: int, b: int) -&gt; int:
-                    return a + b
+def combine(self, a: int, b: int) -&gt; int:
+return a + b
 
-                    def apply_delta(self, current: int, delta: Delta[int]) -&gt; int:
-                    # Remove old contribution, add new
-                    return current - delta.old_value + delta.new_value
+def apply_delta(self, current: int, delta: Delta[int]) -&gt; int:
+# Remove old contribution, add new
+return current - delta.old_value + delta.new_value
 
-                    class IncrementalComposite:
-                    &quot;&quot;&quot;
-                    Composite with incremental aggregate computation.
+class IncrementalComposite:
+&quot;&quot;&quot;
+Composite with incremental aggregate computation.
 
-                    Key insight: When a leaf changes by delta, we only need to
-                    update aggregates on the path from leaf to root.
-                    &quot;&quot;&quot;
+Key insight: When a leaf changes by delta, we only need to
+update aggregates on the path from leaf to root.
+&quot;&quot;&quot;
 
-                    def __init__(self, name: str, aggregate: IncrementalAggregate[int]):
-                    self.name = name
-                    self.parent: Optional['IncrementalComposite'] = None
-                    self._children: List['IncrementalComposite'] = []
-                    self._aggregate = aggregate
-                    self._cached_value: int = aggregate.identity()
-                    self._value: int = 0  # Leaf value
-                    self._observers: Set[Callable[[Delta[int]], None]] = set()
+def __init__(self, name: str, aggregate: IncrementalAggregate[int]):
+self.name = name
+self.parent: Optional['IncrementalComposite'] = None
+self._children: List['IncrementalComposite'] = []
+self._aggregate = aggregate
+self._cached_value: int = aggregate.identity()
+self._value: int = 0  # Leaf value
+self._observers: Set[Callable[[Delta[int]], None]] = set()
 
-                    def set_value(self, new_value: int) -&gt; None:
-                    &quot;&quot;&quot;Update leaf value and propagate change&quot;&quot;&quot;
-                    if new_value == self._value:
-                    return
+def set_value(self, new_value: int) -&gt; None:
+&quot;&quot;&quot;Update leaf value and propagate change&quot;&quot;&quot;
+if new_value == self._value:
+return
 
-                    delta = Delta(self._value, new_value)
-                    self._value = new_value
+delta = Delta(self._value, new_value)
+self._value = new_value
 
-                    # Propagate delta up the tree
-                    self._propagate_delta(delta)
+# Propagate delta up the tree
+self._propagate_delta(delta)
 
-                    def _propagate_delta(self, delta: Delta[int]) -&gt; None:
-                    &quot;&quot;&quot;
-                    Propagate change up the tree.
-                    Time complexity: O(depth) instead of O(n)
-                    &quot;&quot;&quot;
-                    # Update cached aggregate
-                    self._cached_value = self._aggregate.apply_delta(
-                    self._cached_value, delta
-                    )
+def _propagate_delta(self, delta: Delta[int]) -&gt; None:
+&quot;&quot;&quot;
+Propagate change up the tree.
+Time complexity: O(depth) instead of O(n)
+&quot;&quot;&quot;
+# Update cached aggregate
+self._cached_value = self._aggregate.apply_delta(
+self._cached_value, delta
+)
 
-                    # Notify observers
-                    for observer in self._observers:
-                    observer(delta)
+# Notify observers
+for observer in self._observers:
+observer(delta)
 
-                    # Propagate to parent
-                    if self.parent:
-                    self.parent._propagate_delta(delta)
+# Propagate to parent
+if self.parent:
+self.parent._propagate_delta(delta)
 
-                    def add(self, child: 'IncrementalComposite') -&gt; None:
-                    &quot;&quot;&quot;Add child and update aggregates&quot;&quot;&quot;
-                    child.parent = self
-                    self._children.append(child)
+def add(self, child: 'IncrementalComposite') -&gt; None:
+&quot;&quot;&quot;Add child and update aggregates&quot;&quot;&quot;
+child.parent = self
+self._children.append(child)
 
-                    # Child's full value is added to our aggregate
-                    child_total = child.get_aggregate()
-                    delta = Delta(0, child_total)
-                    self._propagate_delta(delta)
+# Child's full value is added to our aggregate
+child_total = child.get_aggregate()
+delta = Delta(0, child_total)
+self._propagate_delta(delta)
 
-                    def remove(self, child: 'IncrementalComposite') -&gt; None:
-                    &quot;&quot;&quot;Remove child and update aggregates&quot;&quot;&quot;
-                    if child in self._children:
-                    self._children.remove(child)
-                    child.parent = None
+def remove(self, child: 'IncrementalComposite') -&gt; None:
+&quot;&quot;&quot;Remove child and update aggregates&quot;&quot;&quot;
+if child in self._children:
+self._children.remove(child)
+child.parent = None
 
-                    # Subtract child's contribution
-                    child_total = child.get_aggregate()
-                    delta = Delta(child_total, 0)
-                    self._propagate_delta(delta)
+# Subtract child's contribution
+child_total = child.get_aggregate()
+delta = Delta(child_total, 0)
+self._propagate_delta(delta)
 
-                    def get_aggregate(self) -&gt; int:
-                    &quot;&quot;&quot;Get cached aggregate value in O(1)&quot;&quot;&quot;
-                    if not self._children:
-                    return self._value
-                    return self._cached_value
+def get_aggregate(self) -&gt; int:
+&quot;&quot;&quot;Get cached aggregate value in O(1)&quot;&quot;&quot;
+if not self._children:
+return self._value
+return self._cached_value
 
-                    def subscribe(self, observer: Callable[[Delta[int]], None]) -&gt; None:
-                    &quot;&quot;&quot;Subscribe to aggregate changes&quot;&quot;&quot;
-                    self._observers.add(observer)
+def subscribe(self, observer: Callable[[Delta[int]], None]) -&gt; None:
+&quot;&quot;&quot;Subscribe to aggregate changes&quot;&quot;&quot;
+self._observers.add(observer)
 
-                    def unsubscribe(self, observer: Callable[[Delta[int]], None]) -&gt; None:
-                    &quot;&quot;&quot;Unsubscribe from changes&quot;&quot;&quot;
-                    self._observers.discard(observer)
+def unsubscribe(self, observer: Callable[[Delta[int]], None]) -&gt; None:
+&quot;&quot;&quot;Unsubscribe from changes&quot;&quot;&quot;
+self._observers.discard(observer)
 
-                    # Advanced: Segment tree for efficient range aggregates
-                    class SegmentTreeComposite:
-                    &quot;&quot;&quot;
-                    Uses segment tree for efficient aggregate queries on subtrees.
-                    Supports O(log n) update and O(log n) range queries.
-                    &quot;&quot;&quot;
+# Advanced: Segment tree for efficient range aggregates
+class SegmentTreeComposite:
+&quot;&quot;&quot;
+Uses segment tree for efficient aggregate queries on subtrees.
+Supports O(log n) update and O(log n) range queries.
+&quot;&quot;&quot;
 
-                    def __init__(self, values: List[int]):
-                    self.n = len(values)
-                    self.tree = [0] * (4 * self.n)
-                    self._build(values, 1, 0, self.n - 1)
+def __init__(self, values: List[int]):
+self.n = len(values)
+self.tree = [0] * (4 * self.n)
+self._build(values, 1, 0, self.n - 1)
 
-                    def _build(self, values: List[int], node: int, start: int, end: int) -&gt; None:
-                    if start == end:
-                    self.tree[node] = values[start]
-                    else:
-                    mid = (start + end) // 2
-                    self._build(values, 2*node, start, mid)
-                    self._build(values, 2*node+1, mid+1, end)
-                    self.tree[node] = self.tree[2*node] + self.tree[2*node+1]
+def _build(self, values: List[int], node: int, start: int, end: int) -&gt; None:
+if start == end:
+self.tree[node] = values[start]
+else:
+mid = (start + end) // 2
+self._build(values, 2*node, start, mid)
+self._build(values, 2*node+1, mid+1, end)
+self.tree[node] = self.tree[2*node] + self.tree[2*node+1]
 
-                    def update(self, index: int, value: int) -&gt; None:
-                    &quot;&quot;&quot;O(log n) point update&quot;&quot;&quot;
-                    self._update(1, 0, self.n-1, index, value)
+def update(self, index: int, value: int) -&gt; None:
+&quot;&quot;&quot;O(log n) point update&quot;&quot;&quot;
+self._update(1, 0, self.n-1, index, value)
 
-                    def _update(self, node: int, start: int, end: int, index: int, value: int) -&gt; None:
-                    if start == end:
-                    self.tree[node] = value
-                    else:
-                    mid = (start + end) // 2
-                    if index &lt;= mid:
-                    self._update(2*node, start, mid, index, value)
-                    else:
-                    self._update(2*node+1, mid+1, end, index, value)
-                    self.tree[node] = self.tree[2*node] + self.tree[2*node+1]
+def _update(self, node: int, start: int, end: int, index: int, value: int) -&gt; None:
+if start == end:
+self.tree[node] = value
+else:
+mid = (start + end) // 2
+if index &lt;= mid:
+self._update(2*node, start, mid, index, value)
+else:
+self._update(2*node+1, mid+1, end, index, value)
+self.tree[node] = self.tree[2*node] + self.tree[2*node+1]
 
-                    def query(self, left: int, right: int) -&gt; int:
-                    &quot;&quot;&quot;O(log n) range query&quot;&quot;&quot;
-                    return self._query(1, 0, self.n-1, left, right)
+def query(self, left: int, right: int) -&gt; int:
+&quot;&quot;&quot;O(log n) range query&quot;&quot;&quot;
+return self._query(1, 0, self.n-1, left, right)
 
-                    def _query(self, node: int, start: int, end: int, left: int, right: int) -&gt; int:
-                    if right &lt; start or end &lt; left:
-                    return 0
-                    if left &lt;= start and end &lt;= right:
-                    return self.tree[node]
-                    mid = (start + end) // 2
-                    return (self._query(2*node, start, mid, left, right) +
-                    self._query(2*node+1, mid+1, end, left, right))
-                    ```
-</code></pre>
+def _query(self, node: int, start: int, end: int, left: int, right: int) -&gt; int:
+if right &lt; start or end &lt; left:
+return 0
+if left &lt;= start and end &lt;= right:
+return self.tree[node]
+mid = (start + end) // 2
+return (self._query(2*node, start, mid, left, right) +
+self._query(2*node+1, mid+1, end, left, right))</code></pre>
 <p><strong>Performance comparison</strong>:</p>
 <table>
 <thead>
@@ -2522,8 +2489,7 @@ Composite { name: String, children: Vec<Component> },<br />
 </div>
 <hr />
 <h2 id="go-implementation-expression-evaluator">Go Implementation: Expression Evaluator</h2>
-<pre><code>                  ```go
-                  package main
+<pre><code class="language-go">                  package main
 
                   import (
                   &quot;fmt&quot;
@@ -2940,9 +2906,7 @@ Composite { name: String, children: Vec<Component> },<br />
                   a, b, c := NewConstant(5), NewConstant(12), NewConstant(7)
                   maximum := Max(a, b, c)
                   fmt.Println(&quot;\nMax(5, 12, 7):&quot;, maximum.Evaluate())
-                  }
-                  ```
-</code></pre>
+                  }</code></pre>
 <hr />
 <h2 id="design-trade-offs-summary">Design Trade-offs Summary</h2>
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0">

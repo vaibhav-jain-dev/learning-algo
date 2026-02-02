@@ -180,8 +180,7 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
 <span style="color: #166534; font-weight: 600">Abstract Factory</span> uses <strong>composition</strong> to delegate creation to a factory object. The class HAS a factory.
 </p>
 </div>
-<pre><code>  ```python
-  # Factory Method: Uses inheritance
+<pre><code class="language-python">  # Factory Method: Uses inheritance
   class LogisticsCompany(ABC):
   @abstractmethod
   def create_transport(self) -&gt; Transport:
@@ -208,9 +207,7 @@ Factory Method is fundamentally about <span style="color: #166534; font-weight: 
   # Factory is INJECTED - composition
   self.button = factory.create_button()
   self.checkbox = factory.create_checkbox()
-  self.textfield = factory.create_textfield()
-  ```
-</code></pre>
+  self.textfield = factory.create_textfield()</code></pre>
 <h3 id="12-when-to-choose-which">1.2 When to Choose Which</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center">Decision Framework</h4>
@@ -320,8 +317,7 @@ class Dialog:
 </div>
 </div>
 </div>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Dict, Type
   from enum import Enum, auto
 
@@ -392,13 +388,10 @@ class Dialog:
   ) -&gt; bool:
   &quot;&quot;&quot;Use the factory method in a template-style operation.&quot;&quot;&quot;
   notification = self.create_notification(preferred_channel)
-  return notification.send(user_id, message)
-  ```
-</code></pre>
+  return notification.send(user_id, message)</code></pre>
 <h3 id="22-registry-based-parameterized-factory">2.2 Registry-Based Parameterized Factory</h3>
 <p>A more extensible approach uses a <span style="color: #166534; font-weight: 600">registry pattern</span> that allows dynamic registration of new product types without modifying the factory.</p>
-<pre><code>  ```python
-  from typing import Callable, Dict, Any
+<pre><code class="language-python">  from typing import Callable, Dict, Any
 
 
   class NotificationFactory:
@@ -455,9 +448,7 @@ class Dialog:
   )
 
   # Usage
-  notification = NotificationFactory.create(&quot;webhook&quot;, endpoint=&quot;https://api.example.com&quot;)
-  ```
-</code></pre>
+  notification = NotificationFactory.create(&quot;webhook&quot;, endpoint=&quot;https://api.example.com&quot;)</code></pre>
 <div style="background: #dcfce7;padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0">
 <h4 style="margin: 0 0 8px 0; color: #166534">Design Benefit</h4>
 <p style="margin: 0; color: #14532d; font-size: 14px">
@@ -465,8 +456,7 @@ Registry-based factories enable <span style="color: #166534; font-weight: 600">p
 </p>
 </div>
 <h3 id="23-parameterized-factory-with-configuration">2.3 Parameterized Factory with Configuration</h3>
-<pre><code>  ```python
-  from dataclasses import dataclass
+<pre><code class="language-python">  from dataclasses import dataclass
   from typing import Optional
 
 
@@ -513,9 +503,7 @@ Registry-based factories enable <span style="color: #166534; font-weight: 600">p
   def send(self, recipient: str, message: str) -&gt; bool:
   print(f&quot;Sending EMAIL (retries={self.config.retry_count}, &quot;
   f&quot;timeout={self.config.timeout_seconds}s)&quot;)
-  return True
-  ```
-</code></pre>
+  return True</code></pre>
 <h3 id="interview-questions-parameterized-factories-3-levels-deep">Interview Questions: Parameterized Factories (3 Levels Deep)</h3>
 <div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
 <p><strong>Level 1: &quot;What is a parameterized factory and when would you use it?&quot;</strong></p>
@@ -689,8 +677,7 @@ class AdvancedFactory(Generic[T]):
 </div>
 </div>
 </div>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Protocol
 
 
@@ -779,13 +766,10 @@ class AdvancedFactory(Generic[T]):
   container = Container(output_format=&quot;html&quot;)  # Configuration
   generator = container.get_report_generator()  # Resolved with HTML factory
   report = generator.generate_report({&quot;title&quot;: &quot;Q4 Results&quot;, &quot;profit&quot;: 1000000})
-  print(report.render())
-  ```
-</code></pre>
+  print(report.render())</code></pre>
 <h3 id="32-factory-provider-pattern">3.2 Factory Provider Pattern</h3>
 <p>When you need <span style="color: #166534; font-weight: 600">deferred creation</span> or multiple instances from a single injection, use the Factory Provider pattern.</p>
-<pre><code>  ```python
-  from typing import Callable, TypeVar
+<pre><code class="language-python">  from typing import Callable, TypeVar
 
   T = TypeVar('T')
 
@@ -839,9 +823,7 @@ class AdvancedFactory(Generic[T]):
   return lambda content: HTMLDocument(content)
 
   def get_report_generator(self) -&gt; EnhancedReportGenerator:
-  return EnhancedReportGenerator(self.get_document_provider())
-  ```
-</code></pre>
+  return EnhancedReportGenerator(self.get_document_provider())</code></pre>
 <div style="background: #dbeafe;padding: 16px 20px; margin: 20px 0; border-radius: 0 8px 8px 0">
 <h4 style="margin: 0 0 8px 0; color: #1e40af">Why Use Factory Providers?</h4>
 <p style="margin: 0; color: #1e3a8a; font-size: 14px">
@@ -850,8 +832,7 @@ Standard DI creates one instance per injection. Factory providers let you create
 </div>
 <h3 id="33-scoped-factories">3.3 Scoped Factories</h3>
 <p>Factories can be <span style="color: #166534; font-weight: 600">scoped</span> to create products with appropriate lifecycles.</p>
-<pre><code>  ```python
-  from contextlib import contextmanager
+<pre><code class="language-python">  from contextlib import contextmanager
   from typing import Generator
 
 
@@ -907,9 +888,7 @@ Standard DI creates one instance per injection. Factory providers let you create
   # ... handle request ...
 
   return {&quot;status&quot;: &quot;ok&quot;}
-  # Scope ends: all connections automatically closed
-  ```
-</code></pre>
+  # Scope ends: all connections automatically closed</code></pre>
 <h3 id="interview-questions-di-integration-3-levels-deep">Interview Questions: DI Integration (3 Levels Deep)</h3>
 <div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
 <p><strong>Level 1: &quot;How does Factory Method work with Dependency Injection?&quot;</strong></p>
@@ -1018,8 +997,7 @@ class Container:
 <hr />
 <h2 id="section-4-real-world-examples-and-case-studies">Section 4: Real-World Examples and Case Studies</h2>
 <h3 id="41-cross-platform-logger-factory">4.1 Cross-Platform Logger Factory</h3>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Optional
   import sys
   import json
@@ -1220,9 +1198,7 @@ class Container:
   # Application code uses factory without knowing output type
   factory = get_logger_factory(&quot;production&quot;)
   logger = factory.get_logger()
-  logger.info(&quot;Application started&quot;, version=&quot;1.0.0&quot;, environment=&quot;production&quot;)
-  ```
-</code></pre>
+  logger.info(&quot;Application started&quot;, version=&quot;1.0.0&quot;, environment=&quot;production&quot;)</code></pre>
 <h3 id="42-database-connection-factory">4.2 Database Connection Factory</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #334155; margin: 0 0 20px 0; text-align: center">Database Factory Architecture</h4>
@@ -1253,8 +1229,7 @@ class Container:
 </div>
 </div>
 </div>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Optional, Dict, Any, List
   from contextlib import contextmanager
   import threading
@@ -1483,12 +1458,9 @@ class Container:
   &quot;INSERT INTO users (name, email) VALUES (%s, %s)&quot;,
   (name, email)
   )
-  return 1  # Would return last insert ID
-  ```
-</code></pre>
+  return 1  # Would return last insert ID</code></pre>
 <h3 id="43-http-client-factory">4.3 HTTP Client Factory</h3>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Dict, Any, Optional
   from dataclasses import dataclass
   from enum import Enum
@@ -1649,9 +1621,7 @@ class Container:
   &quot;https://api.stripe.com/v1/charges&quot;,
   body={&quot;amount&quot;: amount, &quot;source&quot;: token}
   )
-  return response.body
-  ```
-</code></pre>
+  return response.body</code></pre>
 <hr />
 <h2 id="when-to-use-factory-method">When to Use Factory Method</h2>
 <div style="background: #dcfce7; border-radius: 12px; padding: 20px; margin: 16px 0">
@@ -1678,8 +1648,7 @@ class Container:
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
 <h3 id="the-yagni-trap">The YAGNI Trap</h3>
-<pre><code>    ```python
-    # BAD: Over-engineering with factory method for single type
+<pre><code class="language-python">    # BAD: Over-engineering with factory method for single type
     class ButtonFactory(ABC):
     @abstractmethod
     def create_button(self) -&gt; Button:
@@ -1692,15 +1661,12 @@ class Container:
     # GOOD: Just create the object directly
     button = WebButton()
 
-    # Use factory method ONLY when you genuinely have multiple types
-    ```
-</code></pre>
+    # Use factory method ONLY when you genuinely have multiple types</code></pre>
 </div>
 <hr />
 <h2 id="python-implementation">Python Implementation</h2>
 <h3 id="basic-factory-method">Basic Factory Method</h3>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Dict, Any
 
 
@@ -1816,12 +1782,9 @@ class Container:
 
   send_alert(email_service, &quot;user@example.com&quot;, &quot;Your order shipped!&quot;)
   send_alert(sms_service, &quot;+1234567890&quot;, &quot;Your code is 123456&quot;)
-  send_alert(push_service, &quot;device_token_abc&quot;, &quot;New message received&quot;)
-  ```
-</code></pre>
+  send_alert(push_service, &quot;device_token_abc&quot;, &quot;New message received&quot;)</code></pre>
 <h3 id="production-grade-factory-with-registry">Production-Grade Factory with Registry</h3>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Dict, Type, Callable, Optional, Any
   from dataclasses import dataclass
   from enum import Enum
@@ -1991,9 +1954,7 @@ class Container:
   # Usage
   processor = PaymentProcessorFactory.create(&quot;stripe&quot;)
   result = processor.process(99.99, &quot;USD&quot;)
-  print(f&quot;Payment: {result}&quot;)
-  ```
-</code></pre>
+  print(f&quot;Payment: {result}&quot;)</code></pre>
 <hr />
 <h2 id="interview-questions-comprehensive-3-levels-deep">Interview Questions: Comprehensive (3 Levels Deep)</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -2194,56 +2155,47 @@ In Go, you use <span style="color: #166534; font-weight: 600">interfaces and fun
 <h2 id="common-mistakes-1">Common Mistakes</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="mistake-1-factory-that-does-too-much">Mistake 1: Factory That Does Too Much</h3>
-<pre><code>                            ```python
-                            # BAD: Factory has business logic
-                            class OrderFactory:
-                            def create_order(self, customer_id: str) -&gt; Order:
-                            customer = self.db.get(customer_id)  # Fetching data!
-                            if customer.is_premium:              # Business logic!
-                            discount = self.calc_discount()  # More logic!
-                            return PremiumOrder(discount=discount)
-                            return StandardOrder()
+<pre><code class="language-python"># BAD: Factory has business logic
+class OrderFactory:
+def create_order(self, customer_id: str) -&gt; Order:
+customer = self.db.get(customer_id)  # Fetching data!
+if customer.is_premium:              # Business logic!
+discount = self.calc_discount()  # More logic!
+return PremiumOrder(discount=discount)
+return StandardOrder()
 
-                            # GOOD: Factory only creates
-                            class OrderFactory:
-                            def create_order(self, order_type: str, **kwargs) -&gt; Order:
-                            return self._creators[order_type](**kwargs)
-                            ```
-</code></pre>
+# GOOD: Factory only creates
+class OrderFactory:
+def create_order(self, order_type: str, **kwargs) -&gt; Order:
+return self._creators[order_type](**kwargs)</code></pre>
 <h3 id="mistake-2-returning-different-interfaces">Mistake 2: Returning Different Interfaces</h3>
-<pre><code>                            ```python
-                            # BAD: Products don't share interface
-                            class AnimalFactory:
-                            def create(self, type: str):
-                            if type == &quot;dog&quot;:
-                            return Dog()   # Has bark()
-                            return Fish()      # Has swim() - different!
+<pre><code class="language-python"># BAD: Products don't share interface
+class AnimalFactory:
+def create(self, type: str):
+if type == &quot;dog&quot;:
+return Dog()   # Has bark()
+return Fish()      # Has swim() - different!
 
-                            # GOOD: All products implement same interface
-                            class AnimalFactory:
-                            def create(self, type: str) -&gt; Animal:
-                            return self._creators[type]()  # All have make_sound()
-                            ```
-</code></pre>
+# GOOD: All products implement same interface
+class AnimalFactory:
+def create(self, type: str) -&gt; Animal:
+return self._creators[type]()  # All have make_sound()</code></pre>
 <h3 id="mistake-3-ignoring-product-lifecycle">Mistake 3: Ignoring Product Lifecycle</h3>
-<pre><code>                            ```python
-                            # BAD: Factory creates but never cleans up
-                            class ConnectionFactory:
-                            def create_connection(self) -&gt; Connection:
-                            return Connection()  # Who closes this?
+<pre><code class="language-python"># BAD: Factory creates but never cleans up
+class ConnectionFactory:
+def create_connection(self) -&gt; Connection:
+return Connection()  # Who closes this?
 
-                            # GOOD: Factory manages full lifecycle
-                            class ConnectionFactory:
-                            def create_connection(self) -&gt; Connection:
-                            conn = Connection()
-                            self._active_connections.append(conn)
-                            return conn
+# GOOD: Factory manages full lifecycle
+class ConnectionFactory:
+def create_connection(self) -&gt; Connection:
+conn = Connection()
+self._active_connections.append(conn)
+return conn
 
-                            def close_all(self) -&gt; None:
-                            for conn in self._active_connections:
-                            conn.close()
-                            ```
-</code></pre>
+def close_all(self) -&gt; None:
+for conn in self._active_connections:
+conn.close()</code></pre>
 </div>
 <hr />
 <h2 id="key-takeaways">Key Takeaways</h2>
@@ -2277,9 +2229,9 @@ In Go, you use <span style="color: #166534; font-weight: 600">interfaces and fun
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="pattern-essence">Pattern Essence</h3>
 <div style="color: #475569">
-<pre><code>                              - **Intent**: Define interface for creation, let subclasses decide the class
-                              - **Key Benefit**: Extensible without modifying existing code
-                              - **Category**: Creational Pattern (GoF)
+<pre><code>- **Intent**: Define interface for creation, let subclasses decide the class
+- **Key Benefit**: Extensible without modifying existing code
+- **Category**: Creational Pattern (GoF)
 </code></pre>
 </div>
 <h3 id="decision-checklist">Decision Checklist</h3>
@@ -2314,19 +2266,19 @@ In Go, you use <span style="color: #166534; font-weight: 600">interfaces and fun
 </tbody>
 </table>
 <h3 id="code-smell-indicators">Code Smell Indicators</h3>
-<pre><code>                            - Scattered `new` statements throughout codebase
-                            - Conditional logic selecting between product types
-                            - Difficulty testing due to hard-coded dependencies
-                            - Adding new product types requires modifying multiple files
+<pre><code>- Scattered `new` statements throughout codebase
+- Conditional logic selecting between product types
+- Difficulty testing due to hard-coded dependencies
+- Adding new product types requires modifying multiple files
 </code></pre>
 </div>
 <hr />
 <h2 id="related-patterns">Related Patterns</h2>
-<pre><code>                          - [[Abstract Factory]](/topics/design-patterns/abstract-factory) - Creates families of products (Factory Method creates one)
-                          - [[Builder]](/topics/design-patterns/builder) - Complex object construction step-by-step
-                          - [[Prototype]](/topics/design-patterns/prototype) - Clone existing instances instead of creating new
-                          - [[Singleton]](/topics/design-patterns/singleton) - Often combined with Factory for single instances
-                          - [[Template Method]](/topics/design-patterns/template-method) - Factory Method often used as a hook in Template Method
-                          - [[Strategy]](/topics/design-patterns/strategy) - Can replace Factory Method when behavior varies
-                          - [[Dependency Injection]](/topics/design-patterns/dependency-injection) - Modern alternative using composition over inheritance
+<pre><code>- [[Abstract Factory]](/topics/design-patterns/abstract-factory) - Creates families of products (Factory Method creates one)
+- [[Builder]](/topics/design-patterns/builder) - Complex object construction step-by-step
+- [[Prototype]](/topics/design-patterns/prototype) - Clone existing instances instead of creating new
+- [[Singleton]](/topics/design-patterns/singleton) - Often combined with Factory for single instances
+- [[Template Method]](/topics/design-patterns/template-method) - Factory Method often used as a hook in Template Method
+- [[Strategy]](/topics/design-patterns/strategy) - Can replace Factory Method when behavior varies
+- [[Dependency Injection]](/topics/design-patterns/dependency-injection) - Modern alternative using composition over inheritance
 </code></pre>

@@ -423,20 +423,16 @@ FROM employees;
 <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
 <h5 style="color: #1e40af; margin-top: 0">Level 2: How do you get the top 3 employees by salary from each department, including ties for 3rd place?</h5>
 <p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Use <span style="color: #10b981; font-weight: 600">DENSE_RANK()</span> instead of ROW_NUMBER() to handle ties correctly. With ROW_NUMBER, if two employees tie for 3rd, one is arbitrarily excluded. With RANK or DENSE_RANK, both are included. DENSE_RANK is preferred over RANK here because RANK might skip values (if there's a tie for 2nd, the next rank is 4, not 3).</p>
-<pre><code>```sql
-WITH ranked AS (
+<pre><code class="language-sql">WITH ranked AS (
 SELECT *,
 DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS dr
 FROM employees
 )
-SELECT * FROM ranked WHERE dr &lt;= 3;
-```
-</code></pre>
+SELECT * FROM ranked WHERE dr &lt;= 3;</code></pre>
 <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
 <h6 style="color: #1e40af; margin-top: 0">Level 3: How would you implement a ranking that considers ties but also respects a maximum count limit (e.g., "top 5 employees, but if 7 people tie for 5th, include all 7")?</h6>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> This requires combining DENSE_RANK for tie handling with a conditional check on the last included rank. First, find the DENSE_RANK value at position N (the "cutoff rank"), then include all rows with rank <= that cutoff. This handles the edge case where the Nth position is part of a larger tie group.</p>
-<pre><code>  ```sql
-  WITH ranked AS (
+<pre><code class="language-sql">  WITH ranked AS (
   SELECT *,
   DENSE_RANK() OVER (ORDER BY salary DESC) AS dr,
   ROW_NUMBER() OVER (ORDER BY salary DESC) AS rn
@@ -449,9 +445,7 @@ SELECT * FROM ranked WHERE dr &lt;= 3;
   SELECT r.* FROM ranked r, cutoff c
   WHERE r.dr &lt;= c.cutoff_rank;
   -- This returns all employees whose dense_rank is &lt;= the rank of the 5th position
-  -- If rows 5,6,7 all tie, cutoff_rank captures that rank, including all 3
-  ```
-</code></pre>
+  -- If rows 5,6,7 all tie, cutoff_rank captures that rank, including all 3</code></pre>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px; margin-top: 12px">Alternative approach using <code>PERCENT_RANK()</code> or <code>CUME_DIST()</code> for percentile-based cutoffs when dealing with statistical distributions.</p>
 </div>
 </div>
@@ -593,8 +587,7 @@ WHERE sale_date - LAG(sale_date) OVER (ORDER BY sale_date) &gt; 3;
 <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
 <h6 style="color: #1e40af; margin-top: 0">Level 3: How would you efficiently detect consecutive rows that meet a condition (e.g., 3 consecutive sales above $5000)?</h6>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> This is the "islands and gaps" problem. Use LAG to check if conditions are met in consecutive rows, then use a running count to identify streak lengths.</p>
-<pre><code>  ```sql
-  WITH flagged AS (
+<pre><code class="language-sql">  WITH flagged AS (
   SELECT *,
   CASE WHEN amount &gt; 5000 THEN 1 ELSE 0 END AS is_above,
   CASE WHEN LAG(amount) OVER (ORDER BY sale_date) &gt; 5000
@@ -610,9 +603,7 @@ WHERE sale_date - LAG(sale_date) OVER (ORDER BY sale_date) &gt; 3;
   SELECT streak_id, COUNT(*) AS streak_length, MIN(sale_date), MAX(sale_date)
   FROM streaks
   GROUP BY streak_id
-  HAVING COUNT(*) &gt;= 3;  -- Find streaks of 3+ consecutive
-  ```
-</code></pre>
+  HAVING COUNT(*) &gt;= 3;  -- Find streaks of 3+ consecutive</code></pre>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px; margin-top: 12px">Alternative: Use <code>ROW_NUMBER() - DENSE_RANK()</code> to identify groups, or recursive [[CTEs]](/topic/sql-learning/subqueries-ctes) for complex multi-column streak detection.</p>
 </div>
 </div>
@@ -728,8 +719,7 @@ FROM employees;
 <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 16px">
 <h5 style="color: #1e40af; margin-top: 0">Level 2: How do you reset a running total at specific boundaries (e.g., per month or per customer)?</h5>
 <p style="color: #1e293b; line-height: 1.7"><strong>Answer:</strong> Add <span style="color: #10b981; font-weight: 600">PARTITION BY</span> to create independent running totals per group. The sum resets to 0 at each partition boundary.</p>
-<pre><code>```sql
--- Running total that resets each month
+<pre><code class="language-sql">-- Running total that resets each month
 SUM(amount) OVER (
 PARTITION BY DATE_TRUNC('month', sale_date)
 ORDER BY sale_date
@@ -739,14 +729,11 @@ ORDER BY sale_date
 SUM(amount) OVER (
 PARTITION BY customer_id
 ORDER BY order_date
-) AS customer_running_total
-```
-</code></pre>
+) AS customer_running_total</code></pre>
 <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
 <h6 style="color: #1e40af; margin-top: 0">Level 3: How would you calculate a "conditional" running total that only includes rows meeting certain criteria?</h6>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> Use a CASE expression inside the SUM to conditionally include values. This is more efficient than filtering and re-joining.</p>
-<pre><code>  ```sql
-  -- Running total of only successful transactions
+<pre><code class="language-sql">  -- Running total of only successful transactions
   SELECT
   transaction_date,
   status,
@@ -755,9 +742,7 @@ ORDER BY order_date
   ORDER BY transaction_date
   ) AS running_success_total,
   SUM(amount) OVER (ORDER BY transaction_date) AS running_all_total
-  FROM transactions;
-  ```
-</code></pre>
+  FROM transactions;</code></pre>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px; margin-top: 12px">For complex conditions spanning multiple rows (e.g., "running total excluding the 3 largest transactions"), use [[CTEs]](/topic/sql-learning/subqueries-ctes) to pre-flag rows, then apply the conditional sum.</p>
 </div>
 </div>
@@ -892,8 +877,7 @@ FROM employees;
 <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin-top: 12px">
 <h6 style="color: #1e40af; margin-top: 0">Level 3: How would you implement a 7-day rolling average where "7 days" means calendar days, not row count?</h6>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px"><strong>Answer:</strong> Use RANGE with an interval offset. This handles gaps in data correctly (days with no records are still within the range).</p>
-<pre><code>  ```sql
-  -- PostgreSQL syntax
+<pre><code class="language-sql">  -- PostgreSQL syntax
   AVG(amount) OVER (
   ORDER BY sale_date
   RANGE BETWEEN INTERVAL '7 days' PRECEDING AND CURRENT ROW
@@ -906,9 +890,7 @@ FROM employees;
   FROM sales s2
   WHERE s2.sale_date BETWEEN s1.sale_date - INTERVAL '7 days' AND s1.sale_date
   ) AS rolling_7day_avg
-  FROM sales s1;
-  ```
-</code></pre>
+  FROM sales s1;</code></pre>
 <p style="color: #1e293b; line-height: 1.7; font-size: 14px; margin-top: 12px">Key consideration: RANGE with intervals requires a sortable type (date, timestamp, numeric). For strings or complex ordering, you must use ROWS with explicit gap handling via [[CTEs]](/topic/sql-learning/subqueries-ctes) to fill missing dates first.</p>
 </div>
 </div>

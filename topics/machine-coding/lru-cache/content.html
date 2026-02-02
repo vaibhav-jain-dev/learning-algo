@@ -351,8 +351,7 @@ def remove(node):
 </div>
 <h3 id="pointer-update-sequence-critical">Pointer Update Sequence (Critical)</h3>
 <p><span style="background: #dcfce7; padding: 2px 6px; border-radius: 4px; font-weight: 500">The order of pointer updates matters! Updating in the wrong order can lose references.</span></p>
-<pre><code>        ```python
-        # CORRECT: Insert node after head
+<pre><code class="language-python">        # CORRECT: Insert node after head
         def add_to_front(self, node):
         # First, set the new node's pointers (doesn't modify existing structure)
         node.prev = self.head
@@ -366,9 +365,7 @@ def remove(node):
         def add_to_front_WRONG(self, node):
         self.head.next = node       # OOPS! Lost reference to old head.next
         node.prev = self.head
-        node.next = ???             # Can't access old first node anymore!
-        ```
-</code></pre>
+        node.next = ???             # Can't access old first node anymore!</code></pre>
 <h3 id="interview-questions-o1-operations">Interview Questions: O(1) Operations</h3>
 <div style="background: #faf5ff;border-radius: 8px; padding: 16px; margin: 16px 0">
 <div style="font-weight: 600; color: #6b21a8; margin-bottom: 8px">L1: Walk me through what happens internally when we call get(key) on an existing key.</div>
@@ -385,8 +382,7 @@ def remove(node):
 <hr />
 <h2 id="code-implementation">Code Implementation</h2>
 <h3 id="python-implementation">Python Implementation</h3>
-<pre><code>        ```python
-        from typing import Optional, Dict
+<pre><code class="language-python">        from typing import Optional, Dict
 
         class Node:
         &quot;&quot;&quot;
@@ -580,12 +576,9 @@ def remove(node):
         assert cache.get(3) == 3
         assert cache.get(4) == 4
 
-        print(&quot;All assertions passed!&quot;)
-        ```
-</code></pre>
+        print(&quot;All assertions passed!&quot;)</code></pre>
 <h3 id="java-implementation-thread-safe-version">Java Implementation (Thread-Safe Version)</h3>
-<pre><code>        ```java
-        import java.util.HashMap;
+<pre><code class="language-java">        import java.util.HashMap;
         import java.util.Map;
         import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -736,131 +729,126 @@ def remove(node):
                                   lock.readLock().unlock();
                                   }
                                   }
-                                  }
-                                  ```
-</code></pre>
+                                  }</code></pre>
 <h3 id="go-implementation">Go Implementation</h3>
-<pre><code>                                  ```go
-                                  package lru
+<pre><code class="language-go">package lru
 
-                                  import (
-                                  &quot;container/list&quot;
-                                  &quot;sync&quot;
-                                  )
+import (
+&quot;container/list&quot;
+&quot;sync&quot;
+)
 
-                                  // entry stores key-value pair in the list
-                                  // Key is needed to delete from map during eviction
-                                  type entry[K comparable, V any] struct {
-                                  key   K
-                                  value V
-                                  }
+// entry stores key-value pair in the list
+// Key is needed to delete from map during eviction
+type entry[K comparable, V any] struct {
+key   K
+value V
+}
 
-                                  // Cache is a thread-safe LRU cache with O(1) operations
-                                  type Cache[K comparable, V any] struct {
-                                  capacity int
-                                  cache    map[K]*list.Element
-                                  list     *list.List // Front = MRU, Back = LRU
-                                  mu       sync.RWMutex
-                                  zero     V // Zero value for type V
-                                  }
+// Cache is a thread-safe LRU cache with O(1) operations
+type Cache[K comparable, V any] struct {
+capacity int
+cache    map[K]*list.Element
+list     *list.List // Front = MRU, Back = LRU
+mu       sync.RWMutex
+zero     V // Zero value for type V
+}
 
-                                  // New creates a new LRU Cache with given capacity
-                                  func New[K comparable, V any](capacity int) *Cache[K, V] {
-                                  if capacity &lt;= 0 {
-                                  panic(&quot;capacity must be positive&quot;)
-                                  }
-                                  return &amp;Cache[K, V]{
-                                  capacity: capacity,
-                                  cache:    make(map[K]*list.Element, capacity),
-                                  list:     list.New(),
-                                  }
-                                  }
+// New creates a new LRU Cache with given capacity
+func New[K comparable, V any](capacity int) *Cache[K, V] {
+if capacity &lt;= 0 {
+panic(&quot;capacity must be positive&quot;)
+}
+return &amp;Cache[K, V]{
+capacity: capacity,
+cache:    make(map[K]*list.Element, capacity),
+list:     list.New(),
+}
+}
 
-                                  // Get retrieves value by key, returns (value, true) or (zero, false)
-                                  func (c *Cache[K, V]) Get(key K) (V, bool) {
-                                  c.mu.Lock()
-                                  defer c.mu.Unlock()
+// Get retrieves value by key, returns (value, true) or (zero, false)
+func (c *Cache[K, V]) Get(key K) (V, bool) {
+c.mu.Lock()
+defer c.mu.Unlock()
 
-                                  elem, ok := c.cache[key]
-                                  if !ok {
-                                  return c.zero, false
-                                  }
+elem, ok := c.cache[key]
+if !ok {
+return c.zero, false
+}
 
-                                  // Move to front (MRU position)
-                                  c.list.MoveToFront(elem)
-                                  return elem.Value.(*entry[K, V]).value, true
-                                  }
+// Move to front (MRU position)
+c.list.MoveToFront(elem)
+return elem.Value.(*entry[K, V]).value, true
+}
 
-                                  // Put inserts or updates key-value pair
-                                  func (c *Cache[K, V]) Put(key K, value V) {
-                                  c.mu.Lock()
-                                  defer c.mu.Unlock()
+// Put inserts or updates key-value pair
+func (c *Cache[K, V]) Put(key K, value V) {
+c.mu.Lock()
+defer c.mu.Unlock()
 
-                                  if elem, ok := c.cache[key]; ok {
-                                  // Update existing
-                                  elem.Value.(*entry[K, V]).value = value
-                                  c.list.MoveToFront(elem)
-                                  return
-                                  }
+if elem, ok := c.cache[key]; ok {
+// Update existing
+elem.Value.(*entry[K, V]).value = value
+c.list.MoveToFront(elem)
+return
+}
 
-                                  // Evict if at capacity
-                                  if c.list.Len() &gt;= c.capacity {
-                                  c.evictLRU()
-                                  }
+// Evict if at capacity
+if c.list.Len() &gt;= c.capacity {
+c.evictLRU()
+}
 
-                                  // Insert new
-                                  ent := &amp;entry[K, V]{key: key, value: value}
-                                  elem := c.list.PushFront(ent)
-                                  c.cache[key] = elem
-                                  }
+// Insert new
+ent := &amp;entry[K, V]{key: key, value: value}
+elem := c.list.PushFront(ent)
+c.cache[key] = elem
+}
 
-                                  // evictLRU removes least recently used entry (must hold lock)
-                                  func (c *Cache[K, V]) evictLRU() {
-                                  back := c.list.Back()
-                                  if back == nil {
-                                  return
-                                  }
+// evictLRU removes least recently used entry (must hold lock)
+func (c *Cache[K, V]) evictLRU() {
+back := c.list.Back()
+if back == nil {
+return
+}
 
-                                  ent := back.Value.(*entry[K, V])
-                                  delete(c.cache, ent.key)
-                                  c.list.Remove(back)
-                                  }
+ent := back.Value.(*entry[K, V])
+delete(c.cache, ent.key)
+c.list.Remove(back)
+}
 
-                                  // Peek gets value without updating recency
-                                  func (c *Cache[K, V]) Peek(key K) (V, bool) {
-                                  c.mu.RLock()
-                                  defer c.mu.RUnlock()
+// Peek gets value without updating recency
+func (c *Cache[K, V]) Peek(key K) (V, bool) {
+c.mu.RLock()
+defer c.mu.RUnlock()
 
-                                  elem, ok := c.cache[key]
-                                  if !ok {
-                                  return c.zero, false
-                                  }
-                                  return elem.Value.(*entry[K, V]).value, true
-                                  }
+elem, ok := c.cache[key]
+if !ok {
+return c.zero, false
+}
+return elem.Value.(*entry[K, V]).value, true
+}
 
-                                  // Len returns current number of entries
-                                  func (c *Cache[K, V]) Len() int {
-                                  c.mu.RLock()
-                                  defer c.mu.RUnlock()
-                                  return c.list.Len()
-                                  }
+// Len returns current number of entries
+func (c *Cache[K, V]) Len() int {
+c.mu.RLock()
+defer c.mu.RUnlock()
+return c.list.Len()
+}
 
-                                  // Delete removes a key from the cache
-                                  func (c *Cache[K, V]) Delete(key K) bool {
-                                  c.mu.Lock()
-                                  defer c.mu.Unlock()
+// Delete removes a key from the cache
+func (c *Cache[K, V]) Delete(key K) bool {
+c.mu.Lock()
+defer c.mu.Unlock()
 
-                                  elem, ok := c.cache[key]
-                                  if !ok {
-                                  return false
-                                  }
+elem, ok := c.cache[key]
+if !ok {
+return false
+}
 
-                                  delete(c.cache, key)
-                                  c.list.Remove(elem)
-                                  return true
-                                  }
-                                  ```
-</code></pre>
+delete(c.cache, key)
+c.list.Remove(elem)
+return true
+}</code></pre>
 <hr />
 <h2 id="thread-safety-deep-dive">Thread Safety Deep Dive</h2>
 <h3 id="the-challenge">The Challenge</h3>
@@ -1254,53 +1242,50 @@ def remove(node):
 </table>
 </div>
 <h3 id="critical-edge-cases-to-test">Critical Edge Cases to Test</h3>
-<pre><code>                                                          ```python
-                                                          def test_edge_cases():
-                                                          # Capacity 1 - every put after first evicts
-                                                          cache = LRUCache(1)
-                                                          cache.put(1, 1)
-                                                          cache.put(2, 2)  # Evicts 1
-                                                          assert cache.get(1) == -1
-                                                          assert cache.get(2) == 2
+<pre><code class="language-python">def test_edge_cases():
+# Capacity 1 - every put after first evicts
+cache = LRUCache(1)
+cache.put(1, 1)
+cache.put(2, 2)  # Evicts 1
+assert cache.get(1) == -1
+assert cache.get(2) == 2
 
-                                                          # Update same key multiple times
-                                                          cache = LRUCache(2)
-                                                          cache.put(1, 1)
-                                                          cache.put(1, 10)  # Update, not insert
-                                                          cache.put(1, 100) # Update again
-                                                          assert cache.get(1) == 100
-                                                          assert len(cache.cache) == 1  # Still only 1 entry
+# Update same key multiple times
+cache = LRUCache(2)
+cache.put(1, 1)
+cache.put(1, 10)  # Update, not insert
+cache.put(1, 100) # Update again
+assert cache.get(1) == 100
+assert len(cache.cache) == 1  # Still only 1 entry
 
-                                                          # Get non-existent key shouldn't crash or modify state
-                                                          cache = LRUCache(2)
-                                                          assert cache.get(999) == -1
-                                                          cache.put(1, 1)
-                                                          assert cache.get(999) == -1
-                                                          assert cache.get(1) == 1  # Original still works
+# Get non-existent key shouldn't crash or modify state
+cache = LRUCache(2)
+assert cache.get(999) == -1
+cache.put(1, 1)
+assert cache.get(999) == -1
+assert cache.get(1) == 1  # Original still works
 
-                                                          # Access pattern affects eviction
-                                                          cache = LRUCache(3)
-                                                          cache.put(1, 1)
-                                                          cache.put(2, 2)
-                                                          cache.put(3, 3)
-                                                          cache.get(1)      # 1 is now MRU
-                                                          cache.put(4, 4)   # Evicts 2 (not 1!)
-                                                          assert cache.get(2) == -1
-                                                          assert cache.get(1) == 1
+# Access pattern affects eviction
+cache = LRUCache(3)
+cache.put(1, 1)
+cache.put(2, 2)
+cache.put(3, 3)
+cache.get(1)      # 1 is now MRU
+cache.put(4, 4)   # Evicts 2 (not 1!)
+assert cache.get(2) == -1
+assert cache.get(1) == 1
 
-                                                          # Empty cache operations
-                                                          cache = LRUCache(2)
-                                                          assert cache.get(1) == -1  # No crash
+# Empty cache operations
+cache = LRUCache(2)
+assert cache.get(1) == -1  # No crash
 
-                                                          # Large capacity
-                                                          cache = LRUCache(10000)
-                                                          for i in range(10000):
-                                                          cache.put(i, i)
-                                                          assert cache.get(0) == 0  # First item still there
-                                                          cache.put(10000, 10000)   # Now evicts 1 (not 0, we just accessed 0)
-                                                          assert cache.get(1) == -1
-                                                          ```
-</code></pre>
+# Large capacity
+cache = LRUCache(10000)
+for i in range(10000):
+cache.put(i, i)
+assert cache.get(0) == 0  # First item still there
+cache.put(10000, 10000)   # Now evicts 1 (not 0, we just accessed 0)
+assert cache.get(1) == -1</code></pre>
 <hr />
 <h2 id="interview-execution-guide">Interview Execution Guide</h2>
 <h3 id="45-minute-timeline">45-Minute Timeline</h3>
@@ -1425,12 +1410,12 @@ def remove(node):
 - Total: ~60-90 bytes per entry (varies by language/implementation)</p>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>                                                          - [[Hash Map]](/topic/data-structures/hash-map) - Underlying lookup structure
-                                                          - [[Doubly Linked List]](/topic/data-structures/doubly-linked-list) - Underlying order structure
-                                                          - [[LFU Cache]](/topic/machine-coding/lfu-cache) - Frequency-based alternative
-                                                          - [[Consistent Hashing]](/topic/system-design/consistent-hashing) - Distribution strategy
-                                                          - [[Redis]](/topic/system-design/redis) - Production cache implementation
-                                                          - [[Caching Strategies]](/topic/system-design/caching) - Broader caching patterns
+<pre><code>- [[Hash Map]](/topic/data-structures/hash-map) - Underlying lookup structure
+- [[Doubly Linked List]](/topic/data-structures/doubly-linked-list) - Underlying order structure
+- [[LFU Cache]](/topic/machine-coding/lfu-cache) - Frequency-based alternative
+- [[Consistent Hashing]](/topic/system-design/consistent-hashing) - Distribution strategy
+- [[Redis]](/topic/system-design/redis) - Production cache implementation
+- [[Caching Strategies]](/topic/system-design/caching) - Broader caching patterns
 </code></pre>
 <hr />
 <h2 id="summary">Summary</h2>

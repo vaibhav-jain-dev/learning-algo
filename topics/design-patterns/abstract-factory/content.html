@@ -153,8 +153,7 @@ The pragmatic solution for most systems is Approach 1 combined with [[Dependency
 </div>
 <h3 id="23-hidden-complexity-event-system-coupling">2.3 Hidden Complexity: Event System Coupling</h3>
 <p>The most underappreciated aspect of UI Abstract Factories is <strong>event system coupling</strong>:</p>
-<pre><code>    ```python
-    class Button(ABC):
+<pre><code class="language-python">    class Button(ABC):
     @abstractmethod
     def on_click(self, handler: Callable[['ClickEvent'], None]) -&gt; None:
     &quot;&quot;&quot;Register click handler.
@@ -167,9 +166,7 @@ The pragmatic solution for most systems is Approach 1 combined with [[Dependency
     The abstract Button hides this, but the factory must ensure
     the event loop that dispatches events understands the event format.
     &quot;&quot;&quot;
-    pass
-    ```
-</code></pre>
+    pass</code></pre>
 <div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
 <h4 style="margin: 0 0 8px 0; color: #991b1b">Edge Case: Mixed Event Systems</h4>
 <p style="margin: 0; color: #7f1d1d; font-size: 14px">
@@ -177,8 +174,7 @@ If you create a MacButton but run it with a Windows event loop, the button will 
 </p>
 </div>
 <h3 id="24-real-implementation-java-swings-pluggable-look-and-feel">2.4 Real Implementation: Java Swing's Pluggable Look and Feel</h3>
-<pre><code>    ```java
-    // Java's UIManager is an Abstract Factory in disguise
+<pre><code class="language-java">    // Java's UIManager is an Abstract Factory in disguise
     UIManager.setLookAndFeel(&quot;javax.swing.plaf.metal.MetalLookAndFeel&quot;);
 
     // Under the hood:
@@ -194,9 +190,7 @@ If you create a MacButton but run it with a Windows event loop, the button will 
     public abstract ButtonUI getButtonUI(JButton b);
     public abstract ScrollBarUI getScrollBarUI(JScrollBar sb);
     // ... etc
-    }
-    ```
-</code></pre>
+    }</code></pre>
 <p><strong>Why Swing's approach is interesting</strong>: The UI delegates are created lazily and cached. The factory doesn't create widgets; it creates <em>renderers</em> for widgets. This is a variant called <strong>Abstract Factory with Flyweight</strong>.</p>
 <h3 id="interview-questions-ui-toolkit-3-levels-deep">Interview Questions: UI Toolkit (3 Levels Deep)</h3>
 <div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
@@ -292,8 +286,7 @@ class ThemeManager:
 </div>
 <h3 id="32-the-cross-cutting-concerns-problem">3.2 The Cross-Cutting Concerns Problem</h3>
 <p>A subtle issue arises when products have <strong>cross-cutting dependencies</strong>:</p>
-<pre><code>    ```python
-    class PlatformFactory(ABC):
+<pre><code class="language-python">    class PlatformFactory(ABC):
     @abstractmethod
     def create_file_system(self) -&gt; FileSystem: ...
 
@@ -311,9 +304,7 @@ class ThemeManager:
     # Option 1: Logger creates its own dependencies (breaks DI)
     # Option 2: Logger takes FileSystem and Network (circular!)
     # Option 3: Use a service locator (anti-pattern?)
-    pass
-    ```
-</code></pre>
+    pass</code></pre>
 <div style="background: #eff6ff;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
 <h4 style="margin: 0 0 8px 0; color: #1e40af">Design Choice: Factory as Service Locator</h4>
 <p style="margin: 0; color: #1e3a5f; font-size: 14px">
@@ -322,8 +313,7 @@ class ThemeManager:
 </div>
 <h3 id="33-conditional-compilation-vs-abstract-factory">3.3 Conditional Compilation vs. Abstract Factory</h3>
 <p>Many cross-platform codebases use <strong>conditional compilation</strong> instead of Abstract Factory:</p>
-<pre><code>    ```cpp
-    // Conditional compilation approach
+<pre><code class="language-cpp">    // Conditional compilation approach
     #ifdef _WIN32
     #include &quot;windows_impl.h&quot;
     using FileSystem = WindowsFileSystem;
@@ -333,9 +323,7 @@ class ThemeManager:
     #else
     #include &quot;linux_impl.h&quot;
     using FileSystem = LinuxFileSystem;
-    #endif
-    ```
-</code></pre>
+    #endif</code></pre>
 <p><strong>Trade-off analysis</strong>:</p>
 <table>
 <thead>
@@ -374,8 +362,7 @@ class ThemeManager:
 </tbody>
 </table>
 <h3 id="34-cloud-provider-abstraction-real-world-case-study">3.4 Cloud Provider Abstraction (Real-World Case Study)</h3>
-<pre><code>    ```python
-    class CloudInfrastructureFactory(ABC):
+<pre><code class="language-python">    class CloudInfrastructureFactory(ABC):
     &quot;&quot;&quot;Abstract factory for multi-cloud deployments.&quot;&quot;&quot;
 
     @abstractmethod
@@ -438,9 +425,7 @@ class ThemeManager:
 
     class AzureFactory(CloudInfrastructureFactory):
     # Similar implementation for Azure
-    pass
-    ```
-</code></pre>
+    pass</code></pre>
 <div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
 <h4 style="margin: 0 0 8px 0; color: #991b1b">Real-World Edge Case: Service Parity</h4>
 <p style="margin: 0; color: #7f1d1d; font-size: 14px">
@@ -585,8 +570,7 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </div>
 <h3 id="43-the-composition-relationship">4.3 The Composition Relationship</h3>
 <p>Abstract Factory often <strong>contains</strong> Factory Methods:</p>
-<pre><code>    ```python
-    class WidgetFactory(ABC):
+<pre><code class="language-python">    class WidgetFactory(ABC):
     &quot;&quot;&quot;Abstract Factory for UI widgets.&quot;&quot;&quot;
 
     @abstractmethod
@@ -600,9 +584,7 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
     pass
 
     # Each abstract method IS a Factory Method
-    # The collection of related Factory Methods IS an Abstract Factory
-    ```
-</code></pre>
+    # The collection of related Factory Methods IS an Abstract Factory</code></pre>
 <h3 id="44-evolution-path">4.4 Evolution Path</h3>
 <p>Systems often evolve from Factory Method to Abstract Factory:</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -703,8 +685,7 @@ class Application:
 <hr />
 <h2 id="section-5-implementation-deep-dive">Section 5: Implementation Deep Dive</h2>
 <h3 id="51-python-implementation-database-driver-factory">5.1 Python Implementation: Database Driver Factory</h3>
-<pre><code>    ```python
-    from abc import ABC, abstractmethod
+<pre><code class="language-python">    from abc import ABC, abstractmethod
     from typing import TypeVar, Generic, Any, Dict, List, Optional
     from dataclasses import dataclass
     from contextlib import contextmanager
@@ -1303,12 +1284,9 @@ class Application:
     print(f&quot;Created user with ID: {new_id}&quot;)
 
     if __name__ == &quot;__main__&quot;:
-    main()
-    ```
-</code></pre>
+    main()</code></pre>
 <h3 id="52-go-implementation-cross-platform-file-system">5.2 Go Implementation: Cross-Platform File System</h3>
-<pre><code>    ```go
-    package main
+<pre><code class="language-go">    package main
 
     import (
     &quot;fmt&quot;
@@ -1906,15 +1884,12 @@ class Application:
     if err != nil {
     fmt.Printf(&quot;Watch failed: %v\n&quot;, err)
     }
-    }
-    ```
-</code></pre>
+    }</code></pre>
 <hr />
 <h2 id="section-6-advanced-topics-and-edge-cases">Section 6: Advanced Topics and Edge Cases</h2>
 <h3 id="61-factory-composition-combining-multiple-factories">6.1 Factory Composition: Combining Multiple Factories</h3>
 <p>Sometimes systems need products from multiple factories:</p>
-<pre><code>    ```python
-    class CompositeCloudFactory:
+<pre><code class="language-python">    class CompositeCloudFactory:
     &quot;&quot;&quot;Combines products from multiple cloud providers.&quot;&quot;&quot;
 
     def __init__(self,
@@ -1934,9 +1909,7 @@ class Application:
     return self.storage.create_storage()
 
     def create_database(self) -&gt; DatabaseService:
-    return self.database.create_database()
-    ```
-</code></pre>
+    return self.database.create_database()</code></pre>
 <div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
 <h4 style="margin: 0 0 8px 0; color: #991b1b">Design Trade-off: Composite Factories</h4>
 <p style="margin: 0; color: #7f1d1d; font-size: 14px">
@@ -1945,8 +1918,7 @@ class Application:
 </div>
 <h3 id="62-factory-caching-and-singleton-integration">6.2 Factory Caching and Singleton Integration</h3>
 <p>Factories often integrate with <a href="/topics/design-patterns/singleton">[Singleton]</a>:</p>
-<pre><code>    ```python
-    class FactoryRegistry:
+<pre><code class="language-python">    class FactoryRegistry:
     &quot;&quot;&quot;Global registry of factories - Singleton pattern.&quot;&quot;&quot;
 
     _instance: Optional['FactoryRegistry'] = None
@@ -1966,13 +1938,10 @@ class Application:
     def get(self, name: str) -&gt; CloudFactory:
     if name not in self._factories:
     raise KeyError(f&quot;No factory registered for: {name}&quot;)
-    return self._factories[name]
-    ```
-</code></pre>
+    return self._factories[name]</code></pre>
 <h3 id="63-lazy-product-creation">6.3 Lazy Product Creation</h3>
 <p>For expensive products, defer creation:</p>
-<pre><code>    ```python
-    class LazyDatabaseFactory(DatabaseFactory):
+<pre><code class="language-python">    class LazyDatabaseFactory(DatabaseFactory):
     &quot;&quot;&quot;Factory that creates products lazily on first use.&quot;&quot;&quot;
 
     def __init__(self, underlying: DatabaseFactory):
@@ -1985,12 +1954,9 @@ class Application:
     with self._lock:
     if self._pool is None:
     self._pool = self._underlying.create_pool(**kwargs)
-    return self._pool
-    ```
-</code></pre>
+    return self._pool</code></pre>
 <h3 id="64-testing-with-mock-factories">6.4 Testing with Mock Factories</h3>
-<pre><code>    ```python
-    class MockDatabaseFactory(DatabaseFactory[MockFamily]):
+<pre><code class="language-python">    class MockDatabaseFactory(DatabaseFactory[MockFamily]):
     &quot;&quot;&quot;Factory for unit testing - creates in-memory mocks.&quot;&quot;&quot;
 
     def __init__(self):
@@ -2014,9 +1980,7 @@ class Application:
     assert matching, f&quot;No query matching '{pattern}' was executed&quot;
 
     def assert_connection_count(self, expected: int):
-    assert len(self.created_connections) == expected
-    ```
-</code></pre>
+    assert len(self.created_connections) == expected</code></pre>
 <hr />
 <h2 id="section-7-common-pitfalls-and-anti-patterns">Section 7: Common Pitfalls and Anti-Patterns</h2>
 <h3 id="71-the-god-factory-anti-pattern">7.1 The &quot;God Factory&quot; Anti-Pattern</h3>
@@ -2037,8 +2001,7 @@ class Application:
 </div>
 </div>
 <h3 id="72-violating-liskov-substitution">7.2 Violating Liskov Substitution</h3>
-<pre><code>    ```python
-    # BAD: Products behave differently across families
+<pre><code class="language-python">    # BAD: Products behave differently across families
     class MacButton(Button):
     def click(self):
     # Mac-specific: shows confirmation dialog first
@@ -2051,13 +2014,10 @@ class Application:
     # Windows: clicks immediately
     super().click()
 
-    # Client code expecting immediate click will break on Mac!
-    ```
-</code></pre>
+    # Client code expecting immediate click will break on Mac!</code></pre>
 <h3 id="73-factory-configuration-explosion">7.3 Factory Configuration Explosion</h3>
 <p>When factories have many configuration options, use <a href="/topics/design-patterns/builder">[Builder]</a>:</p>
-<pre><code>    ```python
-    # BAD: Constructor with too many parameters
+<pre><code class="language-python">    # BAD: Constructor with too many parameters
     factory = PostgresFactory(
     host=&quot;localhost&quot;,
     port=5432,
@@ -2082,9 +2042,7 @@ class Application:
     .ssl(mode=&quot;require&quot;, cert=&quot;/path/to/cert&quot;)
     .pool(min=5, max=20)
     .timeouts(connect=30, statement=60)
-    .build())
-    ```
-</code></pre>
+    .build())</code></pre>
 <hr />
 <h2 id="section-8-related-patterns">Section 8: Related Patterns</h2>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0">

@@ -148,8 +148,7 @@
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
 <h3 id="the-telescoping-constructor-problem">The Telescoping Constructor Problem</h3>
-<pre><code>          ```python
-          # BAD: Telescoping constructors
+<pre><code class="language-python">          # BAD: Telescoping constructors
           class Pizza:
           def __init__(self, size):
           self.size = size
@@ -166,9 +165,7 @@
           .cheese(&quot;mozzarella&quot;)
           .pepperoni(True)
           .build()
-          )
-          ```
-</code></pre>
+          )</code></pre>
 </div>
 <hr />
 <h2 id="anti-patterns-when-not-to-use">Anti-Patterns: When NOT to Use</h2>
@@ -181,8 +178,7 @@
 <li><strong>When Dataclasses Suffice</strong> - Python dataclasses with defaults often eliminate the need</li>
 </ol>
 </div>
-<pre><code>        ```python
-        # OVERKILL: Builder for simple object
+<pre><code class="language-python">        # OVERKILL: Builder for simple object
         class PointBuilder:  # Don't do this!
         def x(self, x): ...
         def y(self, y): ...
@@ -194,14 +190,11 @@
         x: float
         y: float
 
-        point = Point(10, 20)  # Simple and clear
-        ```
-</code></pre>
+        point = Point(10, 20)  # Simple and clear</code></pre>
 <hr />
 <h2 id="python-implementation">Python Implementation</h2>
 <h3 id="fluent-builder-most-common">Fluent Builder (Most Common)</h3>
-<pre><code>        ```python
-        from __future__ import annotations
+<pre><code class="language-python">        from __future__ import annotations
         from dataclasses import dataclass, field
         from typing import List, Optional, Dict, Any
         from enum import Enum
@@ -345,8 +338,7 @@
         ```
 </code></pre>
 <h3 id="builder-with-director">Builder with Director</h3>
-<pre><code>        ```python
-        from abc import ABC, abstractmethod
+<pre><code class="language-python">        from abc import ABC, abstractmethod
         from dataclasses import dataclass
         from typing import List, Optional
 
@@ -549,12 +541,9 @@
         .set_os()
         .get_result()
         )
-        print(f&quot;Server: {server.specs()}&quot;)
-        ```
-</code></pre>
+        print(f&quot;Server: {server.specs()}&quot;)</code></pre>
 <h3 id="production-grade-http-request-builder">Production-Grade: HTTP Request Builder</h3>
-<pre><code>        ```python
-        from dataclasses import dataclass, field
+<pre><code class="language-python">        from dataclasses import dataclass, field
         from typing import Dict, Any, Optional, Callable
         from enum import Enum
         import json
@@ -749,9 +738,7 @@
 
         print(f&quot;GET: {get_request.method.value} {get_request.url}&quot;)
         print(f&quot;POST: {post_request.method.value} {post_request.url}&quot;)
-        print(f&quot;Form: {form_request.method.value} {form_request.url}&quot;)
-        ```
-</code></pre>
+        print(f&quot;Form: {form_request.method.value} {form_request.url}&quot;)</code></pre>
 <hr />
 <h2 id="builder-vs-related-patterns">Builder vs Related Patterns</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -932,41 +919,32 @@ QueryBuilder()<br />
 <h2 id="common-mistakes-1">Common Mistakes</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="mistake-1-forgetting-to-reset-builder-state">Mistake 1: Forgetting to Reset Builder State</h3>
-<pre><code>                        ```python
-                        # BAD: Reusing builder without reset
-                        builder = EmailBuilder()
-                        email1 = builder.to(&quot;a@example.com&quot;).subject(&quot;Hi&quot;).build()
-                        email2 = builder.to(&quot;b@example.com&quot;).build()  # Still has &quot;a@example.com&quot;!
+<pre><code class="language-python"># BAD: Reusing builder without reset
+builder = EmailBuilder()
+email1 = builder.to(&quot;a@example.com&quot;).subject(&quot;Hi&quot;).build()
+email2 = builder.to(&quot;b@example.com&quot;).build()  # Still has &quot;a@example.com&quot;!
 
-                        # GOOD: Create new builder or add reset method
-                        email1 = EmailBuilder().to(&quot;a@example.com&quot;).subject(&quot;Hi&quot;).build()
-                        email2 = EmailBuilder().to(&quot;b@example.com&quot;).subject(&quot;Hello&quot;).build()
-                        ```
-</code></pre>
+# GOOD: Create new builder or add reset method
+email1 = EmailBuilder().to(&quot;a@example.com&quot;).subject(&quot;Hi&quot;).build()
+email2 = EmailBuilder().to(&quot;b@example.com&quot;).subject(&quot;Hello&quot;).build()</code></pre>
 <h3 id="mistake-2-returning-mutable-internal-state">Mistake 2: Returning Mutable Internal State</h3>
-<pre><code>                        ```python
-                        # BAD: Exposing internal list
-                        def build(self):
-                        return Product(items=self._items)  # Caller can modify!
+<pre><code class="language-python"># BAD: Exposing internal list
+def build(self):
+return Product(items=self._items)  # Caller can modify!
 
-                        # GOOD: Return copy
-                        def build(self):
-                        return Product(items=list(self._items))  # Defensive copy
-                        ```
-</code></pre>
+# GOOD: Return copy
+def build(self):
+return Product(items=list(self._items))  # Defensive copy</code></pre>
 <h3 id="mistake-3-not-validating-required-fields">Mistake 3: Not Validating Required Fields</h3>
-<pre><code>                        ```python
-                        # BAD: Silent failures
-                        def build(self):
-                        return User(name=self._name)  # What if name is empty?
+<pre><code class="language-python"># BAD: Silent failures
+def build(self):
+return User(name=self._name)  # What if name is empty?
 
-                        # GOOD: Validate in build()
-                        def build(self):
-                        if not self._name:
-                        raise ValueError(&quot;Name is required&quot;)
-                        return User(name=self._name)
-                        ```
-</code></pre>
+# GOOD: Validate in build()
+def build(self):
+if not self._name:
+raise ValueError(&quot;Name is required&quot;)
+return User(name=self._name)</code></pre>
 </div>
 <hr />
 <h2 id="key-takeaways">Key Takeaways</h2>
@@ -994,8 +972,8 @@ QueryBuilder()<br />
 </div>
 <hr />
 <h2 id="related-patterns">Related Patterns</h2>
-<pre><code>                      - [Factory Method](/topic/design-patterns/factory-method) - Single-step creation
-                      - [Abstract Factory](/topic/design-patterns/abstract-factory) - Product families
-                      - [Prototype](/topic/design-patterns/prototype) - Clone existing objects
-                      - [Composite](/topic/design-patterns/composite) - Build tree structures with Builder
+<pre><code>- [Factory Method](/topic/design-patterns/factory-method) - Single-step creation
+- [Abstract Factory](/topic/design-patterns/abstract-factory) - Product families
+- [Prototype](/topic/design-patterns/prototype) - Clone existing objects
+- [Composite](/topic/design-patterns/composite) - Build tree structures with Builder
 </code></pre>

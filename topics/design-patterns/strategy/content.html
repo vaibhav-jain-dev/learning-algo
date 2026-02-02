@@ -905,8 +905,7 @@ weekday_discount = conditional_strategy(
 <hr />
 <h2 id="real-world-implementation-payment-processing">Real-World Implementation: Payment Processing</h2>
 <p>Payment systems are a canonical Strategy pattern use case. Different payment methods have fundamentally different processing flows, fee structures, and validation requirements.</p>
-<pre><code>          ```python
-          from abc import ABC, abstractmethod
+<pre><code class="language-python">          from abc import ABC, abstractmethod
           from dataclasses import dataclass, field
           from decimal import Decimal, ROUND_HALF_UP
           from typing import Dict, Any, Optional, List
@@ -1457,9 +1456,7 @@ weekday_discount = conditional_strategy(
           print(f&quot;\nPayment result: {result.status.value}&quot;)
           print(f&quot;Transaction ID: {result.transaction_id}&quot;)
           print(f&quot;Fees: ${result.fees}&quot;)
-          print(f&quot;Net amount: ${result.net_amount}&quot;)
-          ```
-</code></pre>
+          print(f&quot;Net amount: ${result.net_amount}&quot;)</code></pre>
 <h3 id="interview-deep-dive-payment-processing">Interview Deep-Dive: Payment Processing</h3>
 <div style="background: #f0f9ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 1: Why is idempotency important in payment strategies?</div>
@@ -1659,8 +1656,7 @@ weekday_discount = conditional_strategy(
 </div>
 <hr />
 <h2 id="testing-strategies">Testing Strategies</h2>
-<pre><code>          ```python
-          import unittest
+<pre><code class="language-python">          import unittest
           from decimal import Decimal
           from unittest.mock import Mock, patch
 
@@ -1757,9 +1753,7 @@ weekday_discount = conditional_strategy(
           discount = cart.discount
 
           self.assertEqual(discount, Decimal(&quot;42.00&quot;))
-          mock_strategy.calculate_discount.assert_called_once()
-          ```
-</code></pre>
+          mock_strategy.calculate_discount.assert_called_once()</code></pre>
 <hr />
 <h2 id="related-patterns">Related Patterns</h2>
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">

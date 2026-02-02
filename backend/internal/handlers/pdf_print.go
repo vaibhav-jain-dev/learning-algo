@@ -30,22 +30,30 @@ func (h *Handlers) PDFPrintView(c *fiber.Ctx) error {
 		category := parts[0]
 		topic := parts[1]
 
-		// Load markdown content
-		contentPath := filepath.Join(topicsDir, category, topic, "content.md")
-		mdContent, err := os.ReadFile(contentPath)
-		if err != nil {
-			continue
-		}
+		var contentHTML string
 
-		// Convert to HTML
-		var buf bytes.Buffer
-		if err := h.md.Convert(mdContent, &buf); err != nil {
-			continue
+		// Try HTML first (preferred - faster, no conversion needed)
+		htmlPath := filepath.Join(topicsDir, category, topic, "content.html")
+		if htmlContent, err := os.ReadFile(htmlPath); err == nil && len(htmlContent) > 0 {
+			contentHTML = string(htmlContent)
+		} else {
+			// Fallback to markdown conversion
+			mdPath := filepath.Join(topicsDir, category, topic, "content.md")
+			mdContent, err := os.ReadFile(mdPath)
+			if err != nil {
+				continue
+			}
+
+			var buf bytes.Buffer
+			if err := h.md.Convert(mdContent, &buf); err != nil {
+				continue
+			}
+			contentHTML = buf.String()
 		}
 
 		topics = append(topics, fiber.Map{
 			"Title":   formatName(topic),
-			"Content": buf.String(),
+			"Content": contentHTML,
 		})
 	}
 

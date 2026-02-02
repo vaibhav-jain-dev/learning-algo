@@ -383,8 +383,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 3: Design a handler chain where handlers can execute in parallel for independent checks, then merge results. What are the tradeoffs?</div>
 <div style="color: #7f1d1d; line-height: 1.7">
 <strong>Answer:</strong> This is a <span style="color: #22c55e; font-weight: 600">Fan-Out/Fan-In</span> variant of Chain of Responsibility:
-<pre><code>  ```python
-  class ParallelHandler(Handler):
+<pre><code class="language-python">  class ParallelHandler(Handler):
   def __init__(self, handlers: List[Handler]):
   self._handlers = handlers
 
@@ -401,9 +400,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
   return result  # First failure wins
 
   # All passed, continue chain
-  return self._next.handle(request)
-  ```
-</code></pre>
+  return self._next.handle(request)</code></pre>
 <p><strong>Tradeoffs:</strong></p>
 <ul style="margin: 8px 0 0 0; padding-left: 20px">
 <li><strong>Pro:</strong> Reduced latency when handlers are I/O-bound (auth check + rate limit check in parallel)</li>
@@ -446,8 +443,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 <strong>1. Error Handler Middleware (Recommended):</strong>
   <br/>
   Place an error-catching middleware at the <em>outermost</em> layer:
-<pre><code>  ```python
-  class ErrorHandlerMiddleware(Handler):
+<pre><code class="language-python">  class ErrorHandlerMiddleware(Handler):
   def handle(self, request):
   try:
   return self._next.handle(request)
@@ -457,12 +453,9 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
   return Response(401, {&quot;error&quot;: str(e)})
   except Exception as e:
   log.exception(&quot;Unhandled error&quot;)
-  return Response(500, {&quot;error&quot;: &quot;Internal error&quot;})
-  ```
-</code></pre>
+  return Response(500, {&quot;error&quot;: &quot;Internal error&quot;})</code></pre>
 <p><strong>2. Result Objects Instead of Exceptions:</strong></p>
-<pre><code>  ```python
-  @dataclass
+<pre><code class="language-python">  @dataclass
   class Result:
   success: bool
   value: Any = None
@@ -472,19 +465,14 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
   def handle(self, request) -&gt; Result:
   if not valid:
   return Result(success=False, error=&quot;Invalid&quot;)
-  return self._next.handle(request)
-  ```
-</code></pre>
+  return self._next.handle(request)</code></pre>
 <p><strong>3. Cleanup via Context Managers:</strong></p>
-<pre><code>  ```python
-  class ResourceHandler(Handler):
+<pre><code class="language-python">  class ResourceHandler(Handler):
   def handle(self, request):
   with self.acquire_resource() as resource:
   request.context[&quot;resource&quot;] = resource
   return self._next.handle(request)
-  # Resource automatically cleaned up, even on exception
-  ```
-</code></pre>
+  # Resource automatically cleaned up, even on exception</code></pre>
 <p><strong>Best Practice:</strong> Use error middleware at the boundary, Result objects for expected failures, exceptions for unexpected failures.</p>
 </div>
 </div>
@@ -492,8 +480,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 3: Design a middleware system that supports both synchronous and asynchronous handlers in the same chain. What are the challenges?</div>
 <div style="color: #7f1d1d; line-height: 1.7">
 <strong>Answer:</strong> This is a real challenge in mixed codebases. Here's an approach:
-<pre><code>  ```python
-  import asyncio
+<pre><code class="language-python">  import asyncio
   import inspect
 
   class UnifiedHandler(ABC):
@@ -526,9 +513,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 
   def run_sync(self, request) -&gt; Response:
   # For sync-only chains, avoid async overhead
-  return asyncio.run(self.run_async(request))
-  ```
-</code></pre>
+  return asyncio.run(self.run_async(request))</code></pre>
 <p><strong>Challenges:</strong></p>
 <ul style="margin: 8px 0 0 0; padding-left: 20px">
 <li><strong>Colored function problem:</strong> Once you have one async handler, the entire chain must be async-aware</li>
@@ -547,8 +532,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 1: How do handlers communicate data to downstream handlers?</div>
 <div style="color: #0c4a6e; line-height: 1.7">
 <strong>Answer:</strong> The standard approach is <span style="color: #22c55e; font-weight: 600">request enrichment</span> - handlers add data to the request object:
-<pre><code>  ```python
-  class AuthHandler(Handler):
+<pre><code class="language-python">  class AuthHandler(Handler):
   def handle(self, request):
   token = request.headers.get(&quot;Authorization&quot;)
   user = self.validate_and_decode(token)
@@ -565,9 +549,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
   # Use data from upstream handler
   if &quot;admin&quot; not in request.context[&quot;permissions&quot;]:
   return Response(403, &quot;Forbidden&quot;)
-  return self._next.handle(request)
-  ```
-</code></pre>
+  return self._next.handle(request)</code></pre>
 <p><strong>Alternative approaches:</strong></p>
 <ul style="margin: 8px 0 0 0; padding-left: 20px">
 <li><strong>Thread-local/Context variables:</strong> Implicit passing (Python's contextvars, Java's ThreadLocal)</li>
@@ -580,8 +562,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 2: How do you implement request/response transformation in middleware?</div>
 <div style="color: #701a75; line-height: 1.7">
 <strong>Answer:</strong> The key is that middleware executes <span style="color: #22c55e; font-weight: 600">twice per request</span> - once on the way in, once on the way out:
-<pre><code>  ```python
-  class CompressionHandler(Handler):
+<pre><code class="language-python">  class CompressionHandler(Handler):
   def handle(self, request):
   # INBOUND: Check if client accepts compression
   accepts_gzip = &quot;gzip&quot; in request.headers.get(&quot;Accept-Encoding&quot;, &quot;&quot;)
@@ -606,9 +587,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
   elapsed_ms = (time.perf_counter() - start) * 1000
   response.headers[&quot;X-Response-Time&quot;] = f&quot;{elapsed_ms:.2f}ms&quot;
 
-  return response
-  ```
-</code></pre>
+  return response</code></pre>
 <p><strong>Critical insight:</strong> The order of inbound processing is opposite to outbound processing. If chain is A -&gt; B -&gt; C -&gt; Handler:</p>
 <ul style="margin: 8px 0 0 0; padding-left: 20px">
 <li>Inbound: A's pre-processing, B's pre-processing, C's pre-processing, Handler</li>
@@ -620,8 +599,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 3: Design a handler that retries failed requests. What invariants must you maintain?</div>
 <div style="color: #7f1d1d; line-height: 1.7">
 <strong>Answer:</strong> Retry middleware is deceptively complex:
-<pre><code>  ```python
-  class RetryHandler(Handler):
+<pre><code class="language-python">  class RetryHandler(Handler):
   def __init__(self, max_retries=3, backoff_ms=100, retryable_statuses={500, 502, 503}):
   self._max_retries = max_retries
   self._backoff_ms = backoff_ms
@@ -660,9 +638,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
   time.sleep(sleep_ms / 1000)
 
   # INVARIANT 5: Return last response, not raise
-  return last_response
-  ```
-</code></pre>
+  return last_response</code></pre>
 <p><strong>Critical Invariants:</strong></p>
 <ol style="margin: 8px 0 0 0; padding-left: 20px">
 <li><strong>Body buffering:</strong> Request body streams can only be read once - must buffer before retry</li>
@@ -679,8 +655,7 @@ body={&quot;error&quot;: &quot;Unauthorized&quot;}<br />
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h3 style="color: #1e293b; margin-top: 0">Complete JWT Authentication Handler</h3>
 <p style="color: #334155; margin-bottom: 20px">This example demonstrates a production-quality authentication handler with <span style="color: #22c55e; font-weight: 600">multiple authentication strategies</span>, <span style="color: #22c55e; font-weight: 600">proper error handling</span>, and <span style="color: #22c55e; font-weight: 600">request enrichment</span>.</p>
-<pre><code>```python
-from abc import ABC, abstractmethod
+<pre><code class="language-python">from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
@@ -863,16 +838,13 @@ return 'Bearer realm=&quot;api&quot;'
 return f'{strategy.name} realm=&quot;api&quot;'
 
 def _get_challenges(self) -&gt; str:
-return &quot;, &quot;.join(self._get_challenge(s) for s in self._strategies)
-```
-</code></pre>
+return &quot;, &quot;.join(self._get_challenge(s) for s in self._strategies)</code></pre>
 </div>
 <hr />
 <h2 id="real-world-example-logging-middleware">Real-World Example: Logging Middleware</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h3 style="color: #1e293b; margin-top: 0">Production Logging Handler with Structured Output</h3>
-<pre><code>```python
-import json
+<pre><code class="language-python">import json
 import time
 import uuid
 from dataclasses import dataclass, asdict
@@ -1025,9 +997,7 @@ body_str = str(body)
 
 if len(body_str) &gt; self._max_body_size:
 return body_str[:self._max_body_size] + &quot;...[TRUNCATED]&quot;
-return body_str
-```
-</code></pre>
+return body_str</code></pre>
 </div>
 <hr />
 <h2 id="python-implementation-complete-middleware-chain">Python Implementation: Complete Middleware Chain</h2>
@@ -1396,8 +1366,7 @@ print(f&quot;Response: {response}\n&quot;)
 <h2 id="common-mistakes-and-anti-patterns">Common Mistakes and Anti-Patterns</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="mistake-1-forgetting-default-handler">Mistake 1: Forgetting Default Handler</h3>
-<pre><code>        ```python
-        # BAD: Request might not be handled
+<pre><code class="language-python">        # BAD: Request might not be handled
         chain = auth.set_next(validation).set_next(router)
         response = chain.handle(request)  # Could be None!
 
@@ -1406,31 +1375,22 @@ print(f&quot;Response: {response}\n&quot;)
         def handle(self, request):
         return Response(status=404, body={&quot;error&quot;: &quot;Not found&quot;})
 
-        chain = auth.set_next(validation).set_next(router).set_next(NotFoundHandler())
-        ```
-</code></pre>
+        chain = auth.set_next(validation).set_next(router).set_next(NotFoundHandler())</code></pre>
 <h3 id="mistake-2-circular-chain">Mistake 2: Circular Chain</h3>
-<pre><code>        ```python
-        # BAD: Infinite loop!
+<pre><code class="language-python">        # BAD: Infinite loop!
         handler_a.set_next(handler_b)
         handler_b.set_next(handler_a)  # Circular!
 
         # GOOD: Linear chain with termination
-        handler_a.set_next(handler_b).set_next(handler_c)  # Ends at c
-        ```
-</code></pre>
+        handler_a.set_next(handler_b).set_next(handler_c)  # Ends at c</code></pre>
 <h3 id="mistake-3-order-dependent-hidden-bugs">Mistake 3: Order-Dependent Hidden Bugs</h3>
-<pre><code>        ```python
-        # BAD: Auth after rate limit - can rate limit unauthenticated requests
+<pre><code class="language-python">        # BAD: Auth after rate limit - can rate limit unauthenticated requests
         chain = rate_limit.set_next(auth)
 
         # GOOD: Auth before rate limit - rate limit per authenticated user
-        chain = auth.set_next(rate_limit)
-        ```
-</code></pre>
+        chain = auth.set_next(rate_limit)</code></pre>
 <h3 id="mistake-4-handlers-modifying-shared-state">Mistake 4: Handlers Modifying Shared State</h3>
-<pre><code>        ```python
-        # BAD: Handler modifies shared request object, affects other chains
+<pre><code class="language-python">        # BAD: Handler modifies shared request object, affects other chains
         class BadHandler(Handler):
         def handle(self, request):
         request.headers[&quot;X-Modified&quot;] = &quot;true&quot;  # Mutates original!
@@ -1445,12 +1405,9 @@ print(f&quot;Response: {response}\n&quot;)
         headers={**request.headers, &quot;X-Modified&quot;: &quot;true&quot;},
         body=request.body
         )
-        return self._pass_to_next(enriched)
-        ```
-</code></pre>
+        return self._pass_to_next(enriched)</code></pre>
 <h3 id="mistake-5-not-handling-exceptions">Mistake 5: Not Handling Exceptions</h3>
-<pre><code>        ```python
-        # BAD: Exception in handler breaks entire chain
+<pre><code class="language-python">        # BAD: Exception in handler breaks entire chain
         class FragileHandler(Handler):
         def handle(self, request):
         data = json.loads(request.body)  # Could raise!
@@ -1463,9 +1420,7 @@ print(f&quot;Response: {response}\n&quot;)
         data = json.loads(request.body)
         except json.JSONDecodeError as e:
         return Response(400, {&quot;error&quot;: f&quot;Invalid JSON: {e}&quot;})
-        return self._pass_to_next(request)
-        ```
-</code></pre>
+        return self._pass_to_next(request)</code></pre>
 </div>
 <hr />
 <h2 id="interview-deep-dive-advanced-scenarios">Interview Deep-Dive: Advanced Scenarios</h2>
@@ -1473,8 +1428,7 @@ print(f&quot;Response: {response}\n&quot;)
 <div style="color: #0369a1; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 1: How would you implement chain configuration that can be changed at runtime?</div>
 <div style="color: #0c4a6e; line-height: 1.7">
 <strong>Answer:</strong> Use a <span style="color: #22c55e; font-weight: 600">ChainBuilder</span> pattern that reconstructs the chain when configuration changes:
-<pre><code>          ```python
-          class ChainBuilder:
+<pre><code class="language-python">          class ChainBuilder:
           def __init__(self):
           self._handlers = []
 
@@ -1515,17 +1469,14 @@ print(f&quot;Response: {response}\n&quot;)
           builder.add(ValidationHandler())
           builder.add(RouterHandler())
 
-          return builder.build()
-          ```
-</code></pre>
+          return builder.build()</code></pre>
 </div>
 </div>
 <div style="background: #fdf4ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="color: #a21caf; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 2: How would you implement branching chains where a handler can route to different sub-chains?</div>
 <div style="color: #701a75; line-height: 1.7">
 <strong>Answer:</strong> Implement a <span style="color: #22c55e; font-weight: 600">CompositeHandler</span> that routes to sub-chains based on conditions:
-<pre><code>          ```python
-          class BranchingHandler(Handler):
+<pre><code class="language-python">          class BranchingHandler(Handler):
           &quot;&quot;&quot;Routes to different chains based on request properties.&quot;&quot;&quot;
 
           def __init__(self):
@@ -1557,9 +1508,7 @@ print(f&quot;Response: {response}\n&quot;)
           branching.add_branch(&quot;/api/v1/&quot;, v1_chain)
           branching.add_branch(&quot;/api/v2/&quot;, v2_chain)
           branching.add_branch(&quot;/internal/&quot;, internal_chain)
-          branching.set_default(public_chain)
-          ```
-</code></pre>
+          branching.set_default(public_chain)</code></pre>
 <p>This enables <span style="color: #22c55e; font-weight: 600">tree-like routing</span> where different paths get different middleware stacks.</p>
 </div>
 </div>
@@ -1567,8 +1516,7 @@ print(f&quot;Response: {response}\n&quot;)
 <div style="color: #b91c1c; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem">Level 3: Design a handler chain that supports transactional semantics - if any handler fails, all previous handlers' effects are rolled back.</div>
 <div style="color: #7f1d1d; line-height: 1.7">
 <strong>Answer:</strong> This requires a <span style="color: #22c55e; font-weight: 600">Saga-like pattern</span> with compensating actions:
-<pre><code>          ```python
-          from typing import Callable, List, Tuple
+<pre><code class="language-python">          from typing import Callable, List, Tuple
           from contextlib import contextmanager
 
           class TransactionalHandler(Handler):
@@ -1660,9 +1608,7 @@ print(f&quot;Response: {response}\n&quot;)
           def compensate(self, request, error):
           charge_id = request.context.get(&quot;charge_id&quot;)
           if charge_id:
-          self._payment_service.refund(charge_id)
-          ```
-</code></pre>
+          self._payment_service.refund(charge_id)</code></pre>
 <p><strong>Key considerations:</strong></p>
 <ul style="margin: 8px 0 0 0; padding-left: 20px">
 <li><strong>Compensation order matters:</strong> Compensate in reverse order of execution</li>

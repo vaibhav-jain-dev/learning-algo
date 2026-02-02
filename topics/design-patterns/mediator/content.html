@@ -601,8 +601,7 @@ if __name__ == &quot;__main__&quot;:
     3. **Use events:** Mediator dispatches events instead of direct calls
     4. **Single responsibility:** Mediator only routes, doesn't contain business logic
     5. **Composition:** Break into smaller coordinator classes
-<pre><code>```python
-# Bad: God mediator
+<pre><code class="language-python"># Bad: God mediator
 class AppMediator:
 def handle(self, event):
 if event.type == &quot;user_login&quot;: ...
@@ -613,9 +612,7 @@ elif event.type == &quot;payment_received&quot;: ...
 # Good: Domain-specific mediators
 class UserMediator: ...
 class OrderMediator: ...
-class PaymentMediator: ...
-```
-</code></pre>
+class PaymentMediator: ...</code></pre>
 </div>
 </details>
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px">
@@ -646,8 +643,7 @@ Use Observer when:
     4. **Circuit breakers:** Protect against cascading failures
     5. **Health checks:** Monitor mediator health
     6. **Stateless design:** Keep mediator stateless, store state externally
-<pre><code>```python
-class FaultTolerantMediator:
+<pre><code class="language-python">class FaultTolerantMediator:
 def __init__(self):
 self.message_store = PersistentQueue()
 self.circuit_breaker = CircuitBreaker()
@@ -663,9 +659,7 @@ self._deliver(msg, sender, recipient)
 self.message_store.mark_delivered(msg_id)
 except Exception as e:
 self.circuit_breaker.record_failure()
-# Message will be retried from store
-```
-</code></pre>
+# Message will be retried from store</code></pre>
 </div>
 </details>
 <details style="margin: 12px 0; padding: 16px; background: #f8fafc; border-radius: 8px">

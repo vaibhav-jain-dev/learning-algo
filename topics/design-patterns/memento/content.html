@@ -862,8 +862,7 @@ class AdvancedCaretaker(Generic[T]):
 <summary style="font-weight: 600; color: #166534; cursor: pointer">L3: Design a memento system where state MUST be partially inspectable by the Caretaker for legitimate reasons. How do you preserve encapsulation?</summary>
 <div style="margin-top: 10px; color: #334155">
 <strong>Answer:</strong> Use explicit projection interfaces. Define a MementoMetadata interface with sanctioned inspectable fields (file size, word count, thumbnail) that the Originator populates. The Caretaker depends only on this interface, not the concrete Memento. The Originator can change internal state representation freely as long as it maintains the metadata contract. This is Separated Interface pattern combined with Memento.
-<pre><code>        ```python
-        class MementoMetadata(Protocol):
+<pre><code class="language-python">        class MementoMetadata(Protocol):
         &quot;&quot;&quot;What Caretaker is allowed to know.&quot;&quot;&quot;
         def get_preview_thumbnail(self) -&gt; bytes: ...
         def get_byte_size(self) -&gt; int: ...
@@ -874,9 +873,7 @@ class AdvancedCaretaker(Generic[T]):
         _internal_state: Any  # Originator-only
 
         def get_preview_thumbnail(self) -&gt; bytes:
-        return self._generate_thumbnail()  # Derived from state
-        ```
-</code></pre>
+        return self._generate_thumbnail()  # Derived from state</code></pre>
 <p>The key insight is that inspectable metadata is computed/derived, not raw internal state exposure.</p>
 </div>
 </details>
@@ -909,8 +906,7 @@ class AdvancedCaretaker(Generic[T]):
 </li>
 <li>
 <p>History becomes a tree, not a list</p>
-<pre><code>   ```python
-   @dataclass
+<pre><code class="language-python">   @dataclass
    class Delta:
    parent_id: str  # UUID of parent delta or checkpoint
    changes: Dict[str, Any]
@@ -922,9 +918,7 @@ class AdvancedCaretaker(Generic[T]):
    parent_id=target_id,  # Branch from restored state
    changes=compute_diff(parent.full_state, new_state)
    )
-   self.deltas[new_delta.id] = new_delta
-   ```
-</code></pre>
+   self.deltas[new_delta.id] = new_delta</code></pre>
 </li>
 </ol>
 <p>This converts linear undo to tree-structured undo, preserving all history branches.</p>
@@ -982,8 +976,7 @@ Key invariant: undo_stack.top + redo_stack = complete linear history. Clearing r
 </li>
 </ol>
 <p>Production systems typically use option 2 (resurrection with transforms) via OT/CRDT. The insight is that undo is not &quot;restore memento&quot; but &quot;generate inverse operation and apply through normal collaborative pipeline.&quot;</p>
-<pre><code>        ```python
-        def selective_undo(user_id: str, operation_id: str):
+<pre><code class="language-python">        def selective_undo(user_id: str, operation_id: str):
         original_op = history.find(operation_id)
         inverse_op = original_op.compute_inverse()
 
@@ -992,9 +985,7 @@ Key invariant: undo_stack.top + redo_stack = complete linear history. Clearing r
         inverse_op = OT.transform(inverse_op, subsequent_op)
 
         # Apply transformed inverse as new operation
-        apply_and_broadcast(inverse_op, user_id)
-        ```
-</code></pre>
+        apply_and_broadcast(inverse_op, user_id)</code></pre>
 <p>This maintains the invariant that all users converge to same state despite concurrent undos.</p>
 </div>
 </details>
@@ -1035,8 +1026,7 @@ The Caretaker treats mementos as opaque tokens. This enables polymorphism: same 
 <li>Thread A: Restores memento at index 5 (now different state!)</li>
 </ol>
 <p>Fix: Use proper synchronization.</p>
-<pre><code>        ```python
-        class ThreadSafeCaretaker:
+<pre><code class="language-python">        class ThreadSafeCaretaker:
         def __init__(self):
         self._lock = threading.RLock()
         self._mementos: List[Memento] = []
@@ -1052,12 +1042,9 @@ The Caretaker treats mementos as opaque tokens. This enables polymorphism: same 
         def _evict(self):
         with self._lock:  # Same lock - eviction waits for undo
         # Perform eviction, adjust indices atomically
-        pass
-        ```
-</code></pre>
+        pass</code></pre>
 <p>Alternative: Lock-free design using immutable snapshots of the memento list. Each operation creates new list reference; eviction and access never conflict because they work on different list instances.</p>
-<pre><code>        ```python
-        def undo(self) -&gt; Optional[Memento]:
+<pre><code class="language-python">        def undo(self) -&gt; Optional[Memento]:
         while True:
         snapshot = self._mementos  # Atomic read
         new_index = self._current_index - 1
@@ -1065,9 +1052,7 @@ The Caretaker treats mementos as opaque tokens. This enables polymorphism: same 
         return None
         if self._cas_index(self._current_index, new_index):
         return snapshot[new_index]
-        # CAS failed, retry with new snapshot
-        ```
-</code></pre>
+        # CAS failed, retry with new snapshot</code></pre>
 <p>The key insight: phantom undos come from non-atomic read-then-act sequences. Solution is either blocking locks or lock-free atomic operations.</p>
 </div>
 </details>

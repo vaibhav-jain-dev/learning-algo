@@ -689,517 +689,511 @@
 <hr />
 <h2 id="implementation">Implementation</h2>
 <h3 id="complete-event-sourcing-system">Complete Event Sourcing System</h3>
-<pre><code>                                              ```python
-                                              from dataclasses import dataclass, field
-                                              from datetime import datetime
-                                              from typing import List, Dict, Optional, Any, Callable
-                                              from abc import ABC, abstractmethod
-                                              import uuid
-                                              import json
-
-
-                                              # ============ Events ============
-
-                                              @dataclass
-                                              class Event:
-                                              &quot;&quot;&quot;Base class for all domain events.&quot;&quot;&quot;
-                                              event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-                                              aggregate_id: str = &quot;&quot;
-                                              aggregate_type: str = &quot;&quot;
-                                              event_type: str = &quot;&quot;
-                                              data: Dict[str, Any] = field(default_factory=dict)
-                                              metadata: Dict[str, Any] = field(default_factory=dict)
-                                              version: int = 0
-                                              timestamp: datetime = field(default_factory=datetime.utcnow)
-
-                                              def to_dict(self) -&gt; dict:
-                                              return {
-                                              &quot;event_id&quot;: self.event_id,
-                                              &quot;aggregate_id&quot;: self.aggregate_id,
-                                              &quot;aggregate_type&quot;: self.aggregate_type,
-                                              &quot;event_type&quot;: self.event_type,
-                                              &quot;data&quot;: self.data,
-                                              &quot;metadata&quot;: self.metadata,
-                                              &quot;version&quot;: self.version,
-                                              &quot;timestamp&quot;: self.timestamp.isoformat()
-                                              }
-
-
-                                              # ============ Event Store ============
-
-                                              class EventStore:
-                                              &quot;&quot;&quot;
-                                              Append-only store for events with optimistic concurrency.
-
-                                              In production, use EventStoreDB, PostgreSQL, or Kafka.
-                                              &quot;&quot;&quot;
-
-                                              def __init__(self):
-                                              self._events: List[Event] = []
-                                              self._streams: Dict[str, List[Event]] = {}
-                                              self._subscribers: List[Callable[[Event], None]] = []
-
-                                              def append(self, aggregate_id: str, events: List[Event],
-                                              expected_version: int) -&gt; None:
-                                              &quot;&quot;&quot;
-                                              Append events with optimistic concurrency control.
-
-                                              Raises ConcurrencyError if expected_version doesn't match.
-                                              &quot;&quot;&quot;
-                                              if aggregate_id not in self._streams:
-                                              self._streams[aggregate_id] = []
-
-                                              current_version = len(self._streams[aggregate_id])
-
-                                              if expected_version != current_version:
-                                              raise ConcurrencyError(
-                                              f&quot;Expected version {expected_version}, &quot;
-                                              f&quot;but stream is at version {current_version}&quot;
-                                              )
-
-                                              for i, event in enumerate(events):
-                                              event.version = current_version + i + 1
-                                              event.aggregate_id = aggregate_id
-                                              self._events.append(event)
-                                              self._streams[aggregate_id].append(event)
-
-                                              # Notify subscribers
-                                              for subscriber in self._subscribers:
-                                              subscriber(event)
-
-                                              def get_events(self, aggregate_id: str,
-                                              from_version: int = 0) -&gt; List[Event]:
-                                              &quot;&quot;&quot;Get events for an aggregate starting from a version.&quot;&quot;&quot;
-                                              if aggregate_id not in self._streams:
-                                              return []
-
-                                              return [e for e in self._streams[aggregate_id]
-                                              if e.version &gt; from_version]
-
-                                              def get_all_events(self, from_position: int = 0) -&gt; List[Event]:
-                                              &quot;&quot;&quot;Get all events across all aggregates (for projections).&quot;&quot;&quot;
-                                              return self._events[from_position:]
-
-                                              def subscribe(self, handler: Callable[[Event], None]) -&gt; None:
-                                              &quot;&quot;&quot;Subscribe to new events (for real-time projections).&quot;&quot;&quot;
-                                              self._subscribers.append(handler)
-
-
-                                              class ConcurrencyError(Exception):
-                                              &quot;&quot;&quot;Raised when optimistic concurrency check fails.&quot;&quot;&quot;
-                                              pass
-
-
-                                              # ============ Aggregates ============
-
-                                              class Aggregate(ABC):
-                                              &quot;&quot;&quot;
-                                              Base class for domain aggregates.
-
-                                              Aggregates produce events and rebuild state from events.
-                                              &quot;&quot;&quot;
-
-                                              def __init__(self):
-                                              self.id: str = &quot;&quot;
-                                              self.version: int = 0
-                                              self._pending_events: List[Event] = []
-
-                                              @abstractmethod
-                                              def apply(self, event: Event) -&gt; None:
-                                              &quot;&quot;&quot;Apply an event to update aggregate state.&quot;&quot;&quot;
-                                              pass
-
-                                              def load_from_events(self, events: List[Event]) -&gt; None:
-                                              &quot;&quot;&quot;Reconstruct aggregate state by replaying events.&quot;&quot;&quot;
-                                              for event in events:
-                                              self.apply(event)
-                                              self.version = event.version
-
-                                              def add_event(self, event_type: str, data: dict) -&gt; None:
-                                              &quot;&quot;&quot;Record a new event (to be persisted).&quot;&quot;&quot;
-                                              event = Event(
-                                              aggregate_type=self.__class__.__name__,
-                                              event_type=event_type,
-                                              data=data,
-                                              version=self.version + len(self._pending_events) + 1
-                                              )
-                                              self._pending_events.append(event)
-                                              self.apply(event)
-
-                                              def get_pending_events(self) -&gt; List[Event]:
-                                              return self._pending_events.copy()
-
-                                              def clear_pending_events(self) -&gt; None:
-                                              self._pending_events.clear()
-
-
-                                              class BankAccount(Aggregate):
-                                              &quot;&quot;&quot;
-                                              Example aggregate: A bank account with event-sourced state.
-                                              &quot;&quot;&quot;
-
-                                              def __init__(self):
-                                              super().__init__()
-                                              self.owner: str = &quot;&quot;
-                                              self.balance: float = 0.0
-                                              self.is_closed: bool = False
-                                              self.transaction_count: int = 0
-
-                                              def apply(self, event: Event) -&gt; None:
-                                              &quot;&quot;&quot;Apply event to update account state.&quot;&quot;&quot;
-                                              if event.event_type == &quot;AccountOpened&quot;:
-                                              self.id = event.aggregate_id or event.data.get(&quot;account_id&quot;, &quot;&quot;)
-                                              self.owner = event.data[&quot;owner&quot;]
-                                              self.balance = event.data.get(&quot;initial_balance&quot;, 0.0)
-
-                                              elif event.event_type == &quot;MoneyDeposited&quot;:
-                                              self.balance += event.data[&quot;amount&quot;]
-                                              self.transaction_count += 1
-
-                                              elif event.event_type == &quot;MoneyWithdrawn&quot;:
-                                              self.balance -= event.data[&quot;amount&quot;]
-                                              self.transaction_count += 1
-
-                                              elif event.event_type == &quot;AccountClosed&quot;:
-                                              self.is_closed = True
-
-                                              # Command handlers
-
-                                              @classmethod
-                                              def open(cls, account_id: str, owner: str,
-                                              initial_balance: float = 0.0) -&gt; &quot;BankAccount&quot;:
-                                              &quot;&quot;&quot;Command: Open a new account.&quot;&quot;&quot;
-                                              account = cls()
-                                              account.id = account_id
-                                              account.add_event(&quot;AccountOpened&quot;, {
-                                              &quot;account_id&quot;: account_id,
-                                              &quot;owner&quot;: owner,
-                                              &quot;initial_balance&quot;: initial_balance
-                                              })
-                                              return account
-
-                                              def deposit(self, amount: float, description: str = &quot;&quot;) -&gt; None:
-                                              &quot;&quot;&quot;Command: Deposit money into account.&quot;&quot;&quot;
-                                              if self.is_closed:
-                                              raise InvalidOperationError(&quot;Cannot deposit to closed account&quot;)
-                                              if amount &lt;= 0:
-                                              raise InvalidOperationError(&quot;Deposit amount must be positive&quot;)
-
-                                              self.add_event(&quot;MoneyDeposited&quot;, {
-                                              &quot;amount&quot;: amount,
-                                              &quot;description&quot;: description
-                                              })
-
-                                              def withdraw(self, amount: float, description: str = &quot;&quot;) -&gt; None:
-                                              &quot;&quot;&quot;Command: Withdraw money from account.&quot;&quot;&quot;
-                                              if self.is_closed:
-                                              raise InvalidOperationError(&quot;Cannot withdraw from closed account&quot;)
-                                              if amount &lt;= 0:
-                                              raise InvalidOperationError(&quot;Withdrawal amount must be positive&quot;)
-                                              if amount &gt; self.balance:
-                                              raise InvalidOperationError(
-                                              f&quot;Insufficient funds. Balance: {self.balance}, &quot;
-                                              f&quot;Requested: {amount}&quot;
-                                              )
-
-                                              self.add_event(&quot;MoneyWithdrawn&quot;, {
-                                              &quot;amount&quot;: amount,
-                                              &quot;description&quot;: description
-                                              })
-
-                                              def close(self) -&gt; None:
-                                              &quot;&quot;&quot;Command: Close the account.&quot;&quot;&quot;
-                                              if self.is_closed:
-                                              raise InvalidOperationError(&quot;Account is already closed&quot;)
-                                              if self.balance != 0:
-                                              raise InvalidOperationError(
-                                              &quot;Cannot close account with non-zero balance&quot;
-                                              )
-
-                                              self.add_event(&quot;AccountClosed&quot;, {})
-
-
-                                              class InvalidOperationError(Exception):
-                                              &quot;&quot;&quot;Raised when a command violates business rules.&quot;&quot;&quot;
-                                              pass
-
-
-                                              # ============ Repository ============
-
-                                              class Repository:
-                                              &quot;&quot;&quot;
-                                              Repository pattern for loading and saving aggregates.
-                                              &quot;&quot;&quot;
-
-                                              def __init__(self, event_store: EventStore, aggregate_class: type):
-                                              self.event_store = event_store
-                                              self.aggregate_class = aggregate_class
-
-                                              def get(self, aggregate_id: str) -&gt; Optional[Aggregate]:
-                                              &quot;&quot;&quot;Load an aggregate by replaying its events.&quot;&quot;&quot;
-                                              events = self.event_store.get_events(aggregate_id)
-
-                                              if not events:
-                                              return None
-
-                                              aggregate = self.aggregate_class()
-                                              aggregate.load_from_events(events)
-                                              return aggregate
-
-                                              def save(self, aggregate: Aggregate) -&gt; None:
-                                              &quot;&quot;&quot;Persist pending events with optimistic concurrency.&quot;&quot;&quot;
-                                              pending = aggregate.get_pending_events()
-
-                                              if not pending:
-                                              return
-
-                                              expected_version = aggregate.version - len(pending)
-                                              self.event_store.append(aggregate.id, pending, expected_version)
-                                              aggregate.clear_pending_events()
-
-
-                                              # ============ Projections ============
-
-                                              class Projection(ABC):
-                                              &quot;&quot;&quot;
-                                              Base class for read model projections.
-
-                                              Projections build queryable views from events.
-                                              &quot;&quot;&quot;
-
-                                              @abstractmethod
-                                              def handle(self, event: Event) -&gt; None:
-                                              &quot;&quot;&quot;Process an event to update the projection.&quot;&quot;&quot;
-                                              pass
-
-
-                                              class AccountBalanceProjection(Projection):
-                                              &quot;&quot;&quot;Simple projection: account_id -&gt; balance.&quot;&quot;&quot;
-
-                                              def __init__(self):
-                                              self.balances: Dict[str, float] = {}
-
-                                              def handle(self, event: Event) -&gt; None:
-                                              if event.event_type == &quot;AccountOpened&quot;:
-                                              self.balances[event.aggregate_id] = event.data.get(
-                                              &quot;initial_balance&quot;, 0.0
-                                              )
-                                              elif event.event_type == &quot;MoneyDeposited&quot;:
-                                              self.balances[event.aggregate_id] += event.data[&quot;amount&quot;]
-                                              elif event.event_type == &quot;MoneyWithdrawn&quot;:
-                                              self.balances[event.aggregate_id] -= event.data[&quot;amount&quot;]
-                                              elif event.event_type == &quot;AccountClosed&quot;:
-                                              del self.balances[event.aggregate_id]
-
-                                              def get_balance(self, account_id: str) -&gt; Optional[float]:
-                                              return self.balances.get(account_id)
-
-
-                                              class AccountSummaryProjection(Projection):
-                                              &quot;&quot;&quot;Rich projection with multiple fields per account.&quot;&quot;&quot;
-
-                                              def __init__(self):
-                                              self.accounts: Dict[str, dict] = {}
-
-                                              def handle(self, event: Event) -&gt; None:
-                                              if event.event_type == &quot;AccountOpened&quot;:
-                                              self.accounts[event.aggregate_id] = {
-                                              &quot;owner&quot;: event.data[&quot;owner&quot;],
-                                              &quot;balance&quot;: event.data.get(&quot;initial_balance&quot;, 0.0),
-                                              &quot;transaction_count&quot;: 0,
-                                              &quot;opened_at&quot;: event.timestamp,
-                                              &quot;last_activity&quot;: event.timestamp,
-                                              &quot;status&quot;: &quot;active&quot;
-                                              }
-
-                                              elif event.event_type in [&quot;MoneyDeposited&quot;, &quot;MoneyWithdrawn&quot;]:
-                                              account = self.accounts.get(event.aggregate_id)
-                                              if account:
-                                              delta = event.data[&quot;amount&quot;]
-                                              if event.event_type == &quot;MoneyWithdrawn&quot;:
-                                              delta = -delta
-                                              account[&quot;balance&quot;] += delta
-                                              account[&quot;transaction_count&quot;] += 1
-                                              account[&quot;last_activity&quot;] = event.timestamp
-
-                                              elif event.event_type == &quot;AccountClosed&quot;:
-                                              account = self.accounts.get(event.aggregate_id)
-                                              if account:
-                                              account[&quot;status&quot;] = &quot;closed&quot;
-                                              account[&quot;closed_at&quot;] = event.timestamp
-
-                                              def get_account(self, account_id: str) -&gt; Optional[dict]:
-                                              return self.accounts.get(account_id)
-
-                                              def get_active_accounts(self) -&gt; List[dict]:
-                                              return [a for a in self.accounts.values() if a[&quot;status&quot;] == &quot;active&quot;]
-
-
-                                              class ProjectionManager:
-                                              &quot;&quot;&quot;Manages multiple projections and keeps them in sync.&quot;&quot;&quot;
-
-                                              def __init__(self, event_store: EventStore):
-                                              self.event_store = event_store
-                                              self.projections: List[Projection] = []
-                                              self.position: int = 0
-
-                                              def register(self, projection: Projection) -&gt; None:
-                                              &quot;&quot;&quot;Register a projection to receive events.&quot;&quot;&quot;
-                                              self.projections.append(projection)
-
-                                              def rebuild_all(self) -&gt; None:
-                                              &quot;&quot;&quot;Rebuild all projections from scratch.&quot;&quot;&quot;
-                                              self.position = 0
-                                              for projection in self.projections:
-                                              projection.__init__()  # Reset state
-                                              self.catch_up()
-
-                                              def catch_up(self) -&gt; None:
-                                              &quot;&quot;&quot;Process any new events since last catch_up.&quot;&quot;&quot;
-                                              events = self.event_store.get_all_events(self.position)
-
-                                              for event in events:
-                                              for projection in self.projections:
-                                              projection.handle(event)
-                                              self.position += 1
-
-
-                                              # ============ Snapshots ============
-
-                                              @dataclass
-                                              class Snapshot:
-                                              &quot;&quot;&quot;Snapshot of aggregate state for faster loading.&quot;&quot;&quot;
-                                              aggregate_id: str
-                                              aggregate_type: str
-                                              version: int
-                                              state: dict
-                                              created_at: datetime = field(default_factory=datetime.utcnow)
-
-
-                                              class SnapshotStore:
-                                              &quot;&quot;&quot;Store for aggregate snapshots.&quot;&quot;&quot;
-
-                                              def __init__(self, snapshot_frequency: int = 100):
-                                              self.snapshots: Dict[str, Snapshot] = {}
-                                              self.snapshot_frequency = snapshot_frequency
-
-                                              def should_snapshot(self, version: int) -&gt; bool:
-                                              return version % self.snapshot_frequency == 0
-
-                                              def save(self, aggregate: Aggregate, state: dict) -&gt; None:
-                                              &quot;&quot;&quot;Save a snapshot of the aggregate.&quot;&quot;&quot;
-                                              self.snapshots[aggregate.id] = Snapshot(
-                                              aggregate_id=aggregate.id,
-                                              aggregate_type=aggregate.__class__.__name__,
-                                              version=aggregate.version,
-                                              state=state
-                                              )
-
-                                              def get(self, aggregate_id: str) -&gt; Optional[Snapshot]:
-                                              &quot;&quot;&quot;Get the latest snapshot for an aggregate.&quot;&quot;&quot;
-                                              return self.snapshots.get(aggregate_id)
-
-
-                                              # ============ Usage Example ============
-
-                                              def main():
-                                              # Set up infrastructure
-                                              event_store = EventStore()
-                                              repo = Repository(event_store, BankAccount)
-
-                                              # Set up projections
-                                              balance_projection = AccountBalanceProjection()
-                                              summary_projection = AccountSummaryProjection()
-                                              projection_manager = ProjectionManager(event_store)
-                                              projection_manager.register(balance_projection)
-                                              projection_manager.register(summary_projection)
-
-                                              # Subscribe projections to real-time updates
-                                              event_store.subscribe(balance_projection.handle)
-                                              event_store.subscribe(summary_projection.handle)
-
-                                              # Create and use an account
-                                              account = BankAccount.open(&quot;acc-001&quot;, &quot;Alice&quot;, initial_balance=100.0)
-                                              repo.save(account)
-
-                                              # Perform operations
-                                              account.deposit(50.0, &quot;Paycheck&quot;)
-                                              account.withdraw(30.0, &quot;Groceries&quot;)
-                                              repo.save(account)
-
-                                              # Query via projection (fast)
-                                              balance = balance_projection.get_balance(&quot;acc-001&quot;)
-                                              print(f&quot;Balance from projection: ${balance}&quot;)  # $120.0
-
-                                              # Query via aggregate (replay events)
-                                              loaded = repo.get(&quot;acc-001&quot;)
-                                              print(f&quot;Balance from replay: ${loaded.balance}&quot;)  # $120.0
-
-                                              # Get rich account data
-                                              summary = summary_projection.get_account(&quot;acc-001&quot;)
-                                              print(f&quot;Transaction count: {summary['transaction_count']}&quot;)  # 2
-
-
-                                              if __name__ == &quot;__main__&quot;:
-                                              main()
-                                              ```
-</code></pre>
+<pre><code class="language-python">from dataclasses import dataclass, field
+from datetime import datetime
+from typing import List, Dict, Optional, Any, Callable
+from abc import ABC, abstractmethod
+import uuid
+import json
+
+
+# ============ Events ============
+
+@dataclass
+class Event:
+&quot;&quot;&quot;Base class for all domain events.&quot;&quot;&quot;
+event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+aggregate_id: str = &quot;&quot;
+aggregate_type: str = &quot;&quot;
+event_type: str = &quot;&quot;
+data: Dict[str, Any] = field(default_factory=dict)
+metadata: Dict[str, Any] = field(default_factory=dict)
+version: int = 0
+timestamp: datetime = field(default_factory=datetime.utcnow)
+
+def to_dict(self) -&gt; dict:
+return {
+&quot;event_id&quot;: self.event_id,
+&quot;aggregate_id&quot;: self.aggregate_id,
+&quot;aggregate_type&quot;: self.aggregate_type,
+&quot;event_type&quot;: self.event_type,
+&quot;data&quot;: self.data,
+&quot;metadata&quot;: self.metadata,
+&quot;version&quot;: self.version,
+&quot;timestamp&quot;: self.timestamp.isoformat()
+}
+
+
+# ============ Event Store ============
+
+class EventStore:
+&quot;&quot;&quot;
+Append-only store for events with optimistic concurrency.
+
+In production, use EventStoreDB, PostgreSQL, or Kafka.
+&quot;&quot;&quot;
+
+def __init__(self):
+self._events: List[Event] = []
+self._streams: Dict[str, List[Event]] = {}
+self._subscribers: List[Callable[[Event], None]] = []
+
+def append(self, aggregate_id: str, events: List[Event],
+expected_version: int) -&gt; None:
+&quot;&quot;&quot;
+Append events with optimistic concurrency control.
+
+Raises ConcurrencyError if expected_version doesn't match.
+&quot;&quot;&quot;
+if aggregate_id not in self._streams:
+self._streams[aggregate_id] = []
+
+current_version = len(self._streams[aggregate_id])
+
+if expected_version != current_version:
+raise ConcurrencyError(
+f&quot;Expected version {expected_version}, &quot;
+f&quot;but stream is at version {current_version}&quot;
+)
+
+for i, event in enumerate(events):
+event.version = current_version + i + 1
+event.aggregate_id = aggregate_id
+self._events.append(event)
+self._streams[aggregate_id].append(event)
+
+# Notify subscribers
+for subscriber in self._subscribers:
+subscriber(event)
+
+def get_events(self, aggregate_id: str,
+from_version: int = 0) -&gt; List[Event]:
+&quot;&quot;&quot;Get events for an aggregate starting from a version.&quot;&quot;&quot;
+if aggregate_id not in self._streams:
+return []
+
+return [e for e in self._streams[aggregate_id]
+if e.version &gt; from_version]
+
+def get_all_events(self, from_position: int = 0) -&gt; List[Event]:
+&quot;&quot;&quot;Get all events across all aggregates (for projections).&quot;&quot;&quot;
+return self._events[from_position:]
+
+def subscribe(self, handler: Callable[[Event], None]) -&gt; None:
+&quot;&quot;&quot;Subscribe to new events (for real-time projections).&quot;&quot;&quot;
+self._subscribers.append(handler)
+
+
+class ConcurrencyError(Exception):
+&quot;&quot;&quot;Raised when optimistic concurrency check fails.&quot;&quot;&quot;
+pass
+
+
+# ============ Aggregates ============
+
+class Aggregate(ABC):
+&quot;&quot;&quot;
+Base class for domain aggregates.
+
+Aggregates produce events and rebuild state from events.
+&quot;&quot;&quot;
+
+def __init__(self):
+self.id: str = &quot;&quot;
+self.version: int = 0
+self._pending_events: List[Event] = []
+
+@abstractmethod
+def apply(self, event: Event) -&gt; None:
+&quot;&quot;&quot;Apply an event to update aggregate state.&quot;&quot;&quot;
+pass
+
+def load_from_events(self, events: List[Event]) -&gt; None:
+&quot;&quot;&quot;Reconstruct aggregate state by replaying events.&quot;&quot;&quot;
+for event in events:
+self.apply(event)
+self.version = event.version
+
+def add_event(self, event_type: str, data: dict) -&gt; None:
+&quot;&quot;&quot;Record a new event (to be persisted).&quot;&quot;&quot;
+event = Event(
+aggregate_type=self.__class__.__name__,
+event_type=event_type,
+data=data,
+version=self.version + len(self._pending_events) + 1
+)
+self._pending_events.append(event)
+self.apply(event)
+
+def get_pending_events(self) -&gt; List[Event]:
+return self._pending_events.copy()
+
+def clear_pending_events(self) -&gt; None:
+self._pending_events.clear()
+
+
+class BankAccount(Aggregate):
+&quot;&quot;&quot;
+Example aggregate: A bank account with event-sourced state.
+&quot;&quot;&quot;
+
+def __init__(self):
+super().__init__()
+self.owner: str = &quot;&quot;
+self.balance: float = 0.0
+self.is_closed: bool = False
+self.transaction_count: int = 0
+
+def apply(self, event: Event) -&gt; None:
+&quot;&quot;&quot;Apply event to update account state.&quot;&quot;&quot;
+if event.event_type == &quot;AccountOpened&quot;:
+self.id = event.aggregate_id or event.data.get(&quot;account_id&quot;, &quot;&quot;)
+self.owner = event.data[&quot;owner&quot;]
+self.balance = event.data.get(&quot;initial_balance&quot;, 0.0)
+
+elif event.event_type == &quot;MoneyDeposited&quot;:
+self.balance += event.data[&quot;amount&quot;]
+self.transaction_count += 1
+
+elif event.event_type == &quot;MoneyWithdrawn&quot;:
+self.balance -= event.data[&quot;amount&quot;]
+self.transaction_count += 1
+
+elif event.event_type == &quot;AccountClosed&quot;:
+self.is_closed = True
+
+# Command handlers
+
+@classmethod
+def open(cls, account_id: str, owner: str,
+initial_balance: float = 0.0) -&gt; &quot;BankAccount&quot;:
+&quot;&quot;&quot;Command: Open a new account.&quot;&quot;&quot;
+account = cls()
+account.id = account_id
+account.add_event(&quot;AccountOpened&quot;, {
+&quot;account_id&quot;: account_id,
+&quot;owner&quot;: owner,
+&quot;initial_balance&quot;: initial_balance
+})
+return account
+
+def deposit(self, amount: float, description: str = &quot;&quot;) -&gt; None:
+&quot;&quot;&quot;Command: Deposit money into account.&quot;&quot;&quot;
+if self.is_closed:
+raise InvalidOperationError(&quot;Cannot deposit to closed account&quot;)
+if amount &lt;= 0:
+raise InvalidOperationError(&quot;Deposit amount must be positive&quot;)
+
+self.add_event(&quot;MoneyDeposited&quot;, {
+&quot;amount&quot;: amount,
+&quot;description&quot;: description
+})
+
+def withdraw(self, amount: float, description: str = &quot;&quot;) -&gt; None:
+&quot;&quot;&quot;Command: Withdraw money from account.&quot;&quot;&quot;
+if self.is_closed:
+raise InvalidOperationError(&quot;Cannot withdraw from closed account&quot;)
+if amount &lt;= 0:
+raise InvalidOperationError(&quot;Withdrawal amount must be positive&quot;)
+if amount &gt; self.balance:
+raise InvalidOperationError(
+f&quot;Insufficient funds. Balance: {self.balance}, &quot;
+f&quot;Requested: {amount}&quot;
+)
+
+self.add_event(&quot;MoneyWithdrawn&quot;, {
+&quot;amount&quot;: amount,
+&quot;description&quot;: description
+})
+
+def close(self) -&gt; None:
+&quot;&quot;&quot;Command: Close the account.&quot;&quot;&quot;
+if self.is_closed:
+raise InvalidOperationError(&quot;Account is already closed&quot;)
+if self.balance != 0:
+raise InvalidOperationError(
+&quot;Cannot close account with non-zero balance&quot;
+)
+
+self.add_event(&quot;AccountClosed&quot;, {})
+
+
+class InvalidOperationError(Exception):
+&quot;&quot;&quot;Raised when a command violates business rules.&quot;&quot;&quot;
+pass
+
+
+# ============ Repository ============
+
+class Repository:
+&quot;&quot;&quot;
+Repository pattern for loading and saving aggregates.
+&quot;&quot;&quot;
+
+def __init__(self, event_store: EventStore, aggregate_class: type):
+self.event_store = event_store
+self.aggregate_class = aggregate_class
+
+def get(self, aggregate_id: str) -&gt; Optional[Aggregate]:
+&quot;&quot;&quot;Load an aggregate by replaying its events.&quot;&quot;&quot;
+events = self.event_store.get_events(aggregate_id)
+
+if not events:
+return None
+
+aggregate = self.aggregate_class()
+aggregate.load_from_events(events)
+return aggregate
+
+def save(self, aggregate: Aggregate) -&gt; None:
+&quot;&quot;&quot;Persist pending events with optimistic concurrency.&quot;&quot;&quot;
+pending = aggregate.get_pending_events()
+
+if not pending:
+return
+
+expected_version = aggregate.version - len(pending)
+self.event_store.append(aggregate.id, pending, expected_version)
+aggregate.clear_pending_events()
+
+
+# ============ Projections ============
+
+class Projection(ABC):
+&quot;&quot;&quot;
+Base class for read model projections.
+
+Projections build queryable views from events.
+&quot;&quot;&quot;
+
+@abstractmethod
+def handle(self, event: Event) -&gt; None:
+&quot;&quot;&quot;Process an event to update the projection.&quot;&quot;&quot;
+pass
+
+
+class AccountBalanceProjection(Projection):
+&quot;&quot;&quot;Simple projection: account_id -&gt; balance.&quot;&quot;&quot;
+
+def __init__(self):
+self.balances: Dict[str, float] = {}
+
+def handle(self, event: Event) -&gt; None:
+if event.event_type == &quot;AccountOpened&quot;:
+self.balances[event.aggregate_id] = event.data.get(
+&quot;initial_balance&quot;, 0.0
+)
+elif event.event_type == &quot;MoneyDeposited&quot;:
+self.balances[event.aggregate_id] += event.data[&quot;amount&quot;]
+elif event.event_type == &quot;MoneyWithdrawn&quot;:
+self.balances[event.aggregate_id] -= event.data[&quot;amount&quot;]
+elif event.event_type == &quot;AccountClosed&quot;:
+del self.balances[event.aggregate_id]
+
+def get_balance(self, account_id: str) -&gt; Optional[float]:
+return self.balances.get(account_id)
+
+
+class AccountSummaryProjection(Projection):
+&quot;&quot;&quot;Rich projection with multiple fields per account.&quot;&quot;&quot;
+
+def __init__(self):
+self.accounts: Dict[str, dict] = {}
+
+def handle(self, event: Event) -&gt; None:
+if event.event_type == &quot;AccountOpened&quot;:
+self.accounts[event.aggregate_id] = {
+&quot;owner&quot;: event.data[&quot;owner&quot;],
+&quot;balance&quot;: event.data.get(&quot;initial_balance&quot;, 0.0),
+&quot;transaction_count&quot;: 0,
+&quot;opened_at&quot;: event.timestamp,
+&quot;last_activity&quot;: event.timestamp,
+&quot;status&quot;: &quot;active&quot;
+}
+
+elif event.event_type in [&quot;MoneyDeposited&quot;, &quot;MoneyWithdrawn&quot;]:
+account = self.accounts.get(event.aggregate_id)
+if account:
+delta = event.data[&quot;amount&quot;]
+if event.event_type == &quot;MoneyWithdrawn&quot;:
+delta = -delta
+account[&quot;balance&quot;] += delta
+account[&quot;transaction_count&quot;] += 1
+account[&quot;last_activity&quot;] = event.timestamp
+
+elif event.event_type == &quot;AccountClosed&quot;:
+account = self.accounts.get(event.aggregate_id)
+if account:
+account[&quot;status&quot;] = &quot;closed&quot;
+account[&quot;closed_at&quot;] = event.timestamp
+
+def get_account(self, account_id: str) -&gt; Optional[dict]:
+return self.accounts.get(account_id)
+
+def get_active_accounts(self) -&gt; List[dict]:
+return [a for a in self.accounts.values() if a[&quot;status&quot;] == &quot;active&quot;]
+
+
+class ProjectionManager:
+&quot;&quot;&quot;Manages multiple projections and keeps them in sync.&quot;&quot;&quot;
+
+def __init__(self, event_store: EventStore):
+self.event_store = event_store
+self.projections: List[Projection] = []
+self.position: int = 0
+
+def register(self, projection: Projection) -&gt; None:
+&quot;&quot;&quot;Register a projection to receive events.&quot;&quot;&quot;
+self.projections.append(projection)
+
+def rebuild_all(self) -&gt; None:
+&quot;&quot;&quot;Rebuild all projections from scratch.&quot;&quot;&quot;
+self.position = 0
+for projection in self.projections:
+projection.__init__()  # Reset state
+self.catch_up()
+
+def catch_up(self) -&gt; None:
+&quot;&quot;&quot;Process any new events since last catch_up.&quot;&quot;&quot;
+events = self.event_store.get_all_events(self.position)
+
+for event in events:
+for projection in self.projections:
+projection.handle(event)
+self.position += 1
+
+
+# ============ Snapshots ============
+
+@dataclass
+class Snapshot:
+&quot;&quot;&quot;Snapshot of aggregate state for faster loading.&quot;&quot;&quot;
+aggregate_id: str
+aggregate_type: str
+version: int
+state: dict
+created_at: datetime = field(default_factory=datetime.utcnow)
+
+
+class SnapshotStore:
+&quot;&quot;&quot;Store for aggregate snapshots.&quot;&quot;&quot;
+
+def __init__(self, snapshot_frequency: int = 100):
+self.snapshots: Dict[str, Snapshot] = {}
+self.snapshot_frequency = snapshot_frequency
+
+def should_snapshot(self, version: int) -&gt; bool:
+return version % self.snapshot_frequency == 0
+
+def save(self, aggregate: Aggregate, state: dict) -&gt; None:
+&quot;&quot;&quot;Save a snapshot of the aggregate.&quot;&quot;&quot;
+self.snapshots[aggregate.id] = Snapshot(
+aggregate_id=aggregate.id,
+aggregate_type=aggregate.__class__.__name__,
+version=aggregate.version,
+state=state
+)
+
+def get(self, aggregate_id: str) -&gt; Optional[Snapshot]:
+&quot;&quot;&quot;Get the latest snapshot for an aggregate.&quot;&quot;&quot;
+return self.snapshots.get(aggregate_id)
+
+
+# ============ Usage Example ============
+
+def main():
+# Set up infrastructure
+event_store = EventStore()
+repo = Repository(event_store, BankAccount)
+
+# Set up projections
+balance_projection = AccountBalanceProjection()
+summary_projection = AccountSummaryProjection()
+projection_manager = ProjectionManager(event_store)
+projection_manager.register(balance_projection)
+projection_manager.register(summary_projection)
+
+# Subscribe projections to real-time updates
+event_store.subscribe(balance_projection.handle)
+event_store.subscribe(summary_projection.handle)
+
+# Create and use an account
+account = BankAccount.open(&quot;acc-001&quot;, &quot;Alice&quot;, initial_balance=100.0)
+repo.save(account)
+
+# Perform operations
+account.deposit(50.0, &quot;Paycheck&quot;)
+account.withdraw(30.0, &quot;Groceries&quot;)
+repo.save(account)
+
+# Query via projection (fast)
+balance = balance_projection.get_balance(&quot;acc-001&quot;)
+print(f&quot;Balance from projection: ${balance}&quot;)  # $120.0
+
+# Query via aggregate (replay events)
+loaded = repo.get(&quot;acc-001&quot;)
+print(f&quot;Balance from replay: ${loaded.balance}&quot;)  # $120.0
+
+# Get rich account data
+summary = summary_projection.get_account(&quot;acc-001&quot;)
+print(f&quot;Transaction count: {summary['transaction_count']}&quot;)  # 2
+
+
+if __name__ == &quot;__main__&quot;:
+main()</code></pre>
 <h3 id="event-schema-evolution">Event Schema Evolution</h3>
-<pre><code>                                              ```python
-                                              class EventUpcaster:
-                                              &quot;&quot;&quot;
-                                              Transform old event schemas to current version.
+<pre><code class="language-python">class EventUpcaster:
+&quot;&quot;&quot;
+Transform old event schemas to current version.
 
-                                              Never modify stored events - upcast on read instead.
-                                              &quot;&quot;&quot;
+Never modify stored events - upcast on read instead.
+&quot;&quot;&quot;
 
-                                              def __init__(self):
-                                              self.upcasters = {}
+def __init__(self):
+self.upcasters = {}
 
-                                              def register(self, event_type: str, from_version: int,
-                                              upcaster: Callable[[dict], dict]) -&gt; None:
-                                              &quot;&quot;&quot;Register an upcaster for a specific event type and version.&quot;&quot;&quot;
-                                              key = (event_type, from_version)
-                                              self.upcasters[key] = upcaster
+def register(self, event_type: str, from_version: int,
+upcaster: Callable[[dict], dict]) -&gt; None:
+&quot;&quot;&quot;Register an upcaster for a specific event type and version.&quot;&quot;&quot;
+key = (event_type, from_version)
+self.upcasters[key] = upcaster
 
-                                              def upcast(self, event: dict) -&gt; dict:
-                                              &quot;&quot;&quot;Apply all necessary upcasters to bring event to current schema.&quot;&quot;&quot;
-                                              event_type = event[&quot;event_type&quot;]
-                                              version = event.get(&quot;schema_version&quot;, 1)
+def upcast(self, event: dict) -&gt; dict:
+&quot;&quot;&quot;Apply all necessary upcasters to bring event to current schema.&quot;&quot;&quot;
+event_type = event[&quot;event_type&quot;]
+version = event.get(&quot;schema_version&quot;, 1)
 
-                                              while True:
-                                              key = (event_type, version)
-                                              if key not in self.upcasters:
-                                              break
+while True:
+key = (event_type, version)
+if key not in self.upcasters:
+break
 
-                                              event = self.upcasters[key](event)
-                                              version += 1
+event = self.upcasters[key](event)
+version += 1
 
-                                              event[&quot;schema_version&quot;] = version
-                                              return event
-
-
-                                              # Example: Evolving AccountOpened event
-                                              def upcast_account_opened_v1_to_v2(event: dict) -&gt; dict:
-                                              &quot;&quot;&quot;V1 had 'name', V2 renamed to 'owner'.&quot;&quot;&quot;
-                                              data = event[&quot;data&quot;].copy()
-                                              data[&quot;owner&quot;] = data.pop(&quot;name&quot;, &quot;Unknown&quot;)
-                                              return {**event, &quot;data&quot;: data}
+event[&quot;schema_version&quot;] = version
+return event
 
 
-                                              def upcast_account_opened_v2_to_v3(event: dict) -&gt; dict:
-                                              &quot;&quot;&quot;V3 added 'currency' field with default.&quot;&quot;&quot;
-                                              data = event[&quot;data&quot;].copy()
-                                              data.setdefault(&quot;currency&quot;, &quot;USD&quot;)
-                                              return {**event, &quot;data&quot;: data}
+# Example: Evolving AccountOpened event
+def upcast_account_opened_v1_to_v2(event: dict) -&gt; dict:
+&quot;&quot;&quot;V1 had 'name', V2 renamed to 'owner'.&quot;&quot;&quot;
+data = event[&quot;data&quot;].copy()
+data[&quot;owner&quot;] = data.pop(&quot;name&quot;, &quot;Unknown&quot;)
+return {**event, &quot;data&quot;: data}
 
 
-                                              # Usage
-                                              upcaster = EventUpcaster()
-                                              upcaster.register(&quot;AccountOpened&quot;, 1, upcast_account_opened_v1_to_v2)
-                                              upcaster.register(&quot;AccountOpened&quot;, 2, upcast_account_opened_v2_to_v3)
-                                              ```
-</code></pre>
+def upcast_account_opened_v2_to_v3(event: dict) -&gt; dict:
+&quot;&quot;&quot;V3 added 'currency' field with default.&quot;&quot;&quot;
+data = event[&quot;data&quot;].copy()
+data.setdefault(&quot;currency&quot;, &quot;USD&quot;)
+return {**event, &quot;data&quot;: data}
+
+
+# Usage
+upcaster = EventUpcaster()
+upcaster.register(&quot;AccountOpened&quot;, 1, upcast_account_opened_v1_to_v2)
+upcaster.register(&quot;AccountOpened&quot;, 2, upcast_account_opened_v2_to_v3)</code></pre>
 <hr />
 <h2 id="3-level-recursive-interview-questions">3-Level Recursive Interview Questions</h2>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1327,40 +1321,37 @@
 <div style="color: #15803d; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle snapshot invalidation when aggregate logic changes?</div>
 <div style="color: #166534; font-size: 13px">
 <p><strong>Snapshot Versioning Strategy:</strong></p>
-<pre><code>                                                        ```python
-                                                        @dataclass
-                                                        class Snapshot:
-                                                        aggregate_id: str
-                                                        version: int
-                                                        schema_version: int  # Snapshot schema version
-                                                        state: dict
+<pre><code class="language-python">@dataclass
+class Snapshot:
+aggregate_id: str
+version: int
+schema_version: int  # Snapshot schema version
+state: dict
 
-                                                        class SnapshotAwareRepository:
-                                                        CURRENT_SCHEMA_VERSION = 3
+class SnapshotAwareRepository:
+CURRENT_SCHEMA_VERSION = 3
 
-                                                        def load(self, aggregate_id: str) -&gt; Aggregate:
-                                                        snapshot = self.snapshot_store.get(aggregate_id)
+def load(self, aggregate_id: str) -&gt; Aggregate:
+snapshot = self.snapshot_store.get(aggregate_id)
 
-                                                        if snapshot and snapshot.schema_version == self.CURRENT_SCHEMA_VERSION:
-                                                        # Valid snapshot - use it
-                                                        aggregate = self.restore_from_snapshot(snapshot)
-                                                        events = self.event_store.get_events(
-                                                        aggregate_id, from_version=snapshot.version
-                                                        )
-                                                        else:
-                                                        # Stale snapshot - full replay
-                                                        aggregate = self.aggregate_class()
-                                                        events = self.event_store.get_events(aggregate_id)
+if snapshot and snapshot.schema_version == self.CURRENT_SCHEMA_VERSION:
+# Valid snapshot - use it
+aggregate = self.restore_from_snapshot(snapshot)
+events = self.event_store.get_events(
+aggregate_id, from_version=snapshot.version
+)
+else:
+# Stale snapshot - full replay
+aggregate = self.aggregate_class()
+events = self.event_store.get_events(aggregate_id)
 
-                                                        aggregate.load_from_events(events)
+aggregate.load_from_events(events)
 
-                                                        # Optionally create new snapshot
-                                                        if self.should_snapshot(aggregate):
-                                                        self.create_snapshot(aggregate)
+# Optionally create new snapshot
+if self.should_snapshot(aggregate):
+self.create_snapshot(aggregate)
 
-                                                        return aggregate
-                                                        ```
-</code></pre>
+return aggregate</code></pre>
 <p><strong>Handling logic changes:</strong></p>
 <ol>
 <li>Increment <code>CURRENT_SCHEMA_VERSION</code> when aggregate <code>apply()</code> logic changes</li>
@@ -1396,13 +1387,13 @@
 ```python<br />
 async def place_order_and_wait(order_data):<br />
 event_version = await command_handler.place_order(order_data)</p>
-<pre><code>                                               # Wait for projection to catch up
-                                               while True:
-                                               projection = await order_projection.get(order_data.id)
-                                               if projection and projection.version &gt;= event_version:
-                                               return projection
-                                               await asyncio.sleep(0.1)
-                                               ```
+<pre><code># Wait for projection to catch up
+while True:
+projection = await order_projection.get(order_data.id)
+if projection and projection.version &gt;= event_version:
+return projection
+await asyncio.sleep(0.1)
+```
 </code></pre>
 </li>
 <li>
@@ -1419,35 +1410,32 @@ event_version = await command_handler.place_order(order_data)</p>
 <div style="color: #92400e; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you design idempotent projection handlers for exactly-once semantics?</div>
 <div style="color: #92400e; font-size: 13px">
 <p><strong>Idempotent Projection Pattern:</strong></p>
-<pre><code>                                                        ```python
-                                                        class IdempotentProjection:
-                                                        def __init__(self, db):
-                                                        self.db = db
+<pre><code class="language-python">class IdempotentProjection:
+def __init__(self, db):
+self.db = db
 
-                                                        def handle(self, event: Event) -&gt; None:
-                                                        # Check if event already processed
-                                                        if self._is_processed(event.event_id):
-                                                        return  # Skip duplicate
+def handle(self, event: Event) -&gt; None:
+# Check if event already processed
+if self._is_processed(event.event_id):
+return  # Skip duplicate
 
-                                                        # Process event and mark as processed atomically
-                                                        with self.db.transaction():
-                                                        self._apply_event(event)
-                                                        self._mark_processed(event.event_id, event.version)
+# Process event and mark as processed atomically
+with self.db.transaction():
+self._apply_event(event)
+self._mark_processed(event.event_id, event.version)
 
-                                                        def _is_processed(self, event_id: str) -&gt; bool:
-                                                        return self.db.exists(
-                                                        &quot;processed_events&quot;,
-                                                        {&quot;event_id&quot;: event_id}
-                                                        )
+def _is_processed(self, event_id: str) -&gt; bool:
+return self.db.exists(
+&quot;processed_events&quot;,
+{&quot;event_id&quot;: event_id}
+)
 
-                                                        def _mark_processed(self, event_id: str, version: int) -&gt; None:
-                                                        self.db.insert(&quot;processed_events&quot;, {
-                                                        &quot;event_id&quot;: event_id,
-                                                        &quot;version&quot;: version,
-                                                        &quot;processed_at&quot;: datetime.utcnow()
-                                                        })
-                                                        ```
-</code></pre>
+def _mark_processed(self, event_id: str, version: int) -&gt; None:
+self.db.insert(&quot;processed_events&quot;, {
+&quot;event_id&quot;: event_id,
+&quot;version&quot;: version,
+&quot;processed_at&quot;: datetime.utcnow()
+})</code></pre>
 <p><strong>Key techniques:</strong></p>
 <ul>
 <li>
@@ -1497,17 +1485,14 @@ event_version = await command_handler.place_order(order_data)</p>
 - Keep old event samples in test fixtures<br />
 - Integration test full replay path<br />
 - Monitor projection checksums after deployments</p>
-<pre><code>                                                    ```python
-                                                    def test_upcaster_chain():
-                                                    v1_event = {&quot;event_type&quot;: &quot;AccountOpened&quot;, &quot;data&quot;: {&quot;name&quot;: &quot;Alice&quot;}}
+<pre><code class="language-python">def test_upcaster_chain():
+v1_event = {&quot;event_type&quot;: &quot;AccountOpened&quot;, &quot;data&quot;: {&quot;name&quot;: &quot;Alice&quot;}}
 
-                                                    result = upcaster.upcast(v1_event)
+result = upcaster.upcast(v1_event)
 
-                                                    assert result[&quot;data&quot;][&quot;owner&quot;] == &quot;Alice&quot;
-                                                    assert result[&quot;data&quot;][&quot;currency&quot;] == &quot;USD&quot;
-                                                    assert result[&quot;schema_version&quot;] == 3
-                                                    ```
-</code></pre>
+assert result[&quot;data&quot;][&quot;owner&quot;] == &quot;Alice&quot;
+assert result[&quot;data&quot;][&quot;currency&quot;] == &quot;USD&quot;
+assert result[&quot;schema_version&quot;] == 3</code></pre>
 <div style="background: #ede9fe;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
 <div style="color: #5b21b6; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle breaking changes that can't be upcasted?</div>
 <div style="color: #5b21b6; font-size: 13px">
@@ -1523,14 +1508,14 @@ event_version = await command_handler.place_order(order_data)</p>
 ```python<br />
 # Original event (wrong)<br />
 OrderPlaced {amount: 100}  # Should have been 110</p>
-<pre><code>                                                   # Compensation event
-                                                   OrderAmountCorrected {
-                                                   original_event_id: &quot;evt-123&quot;,
-                                                   old_amount: 100,
-                                                   new_amount: 110,
-                                                   reason: &quot;Pricing bug fix&quot;
-                                                   }
-                                                   ```
+<pre><code># Compensation event
+OrderAmountCorrected {
+original_event_id: &quot;evt-123&quot;,
+old_amount: 100,
+new_amount: 110,
+reason: &quot;Pricing bug fix&quot;
+}
+```
 </code></pre>
 </li>
 <li>
@@ -1574,13 +1559,10 @@ OrderPlaced {amount: 100}  # Should have been 110</p>
 - Need read/write separation for scaling<br />
 - Traditional database on write side is sufficient<br />
 - Example: E-commerce product catalog (read-heavy, simple writes)</p>
-<pre><code>                                                    ```
-                                                    CQRS without ES:
-                                                    [Command] -&gt; [Write DB] -&gt; [Change Data Capture] -&gt; [Read DB]
-                                                    |                                      |
-                                                    Normalized                           Denormalized
-                                                    ```
-</code></pre>
+<pre><code>CQRS without ES:
+[Command] -&gt; [Write DB] -&gt; [Change Data Capture] -&gt; [Read DB]
+|                                      |
+Normalized                           Denormalized</code></pre>
 <div style="background: #fdf2f8;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
 <div style="color: #9d174d; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you handle cross-aggregate queries in an Event Sourced CQRS system?</div>
 <div style="color: #831843; font-size: 13px">
@@ -1591,19 +1573,19 @@ OrderPlaced {amount: 100}  # Should have been 110</p>
 ```python<br />
 class CustomerOrdersProjection:<br />
 &quot;&quot;&quot;Combines Customer and Order aggregate data.&quot;&quot;&quot;</p>
-<pre><code>                                                   def handle(self, event: Event):
-                                                   if event.event_type == &quot;CustomerCreated&quot;:
-                                                   self.data[event.aggregate_id] = {
-                                                   &quot;customer_name&quot;: event.data[&quot;name&quot;],
-                                                   &quot;orders&quot;: []
-                                                   }
-                                                   elif event.event_type == &quot;OrderPlaced&quot;:
-                                                   customer_id = event.data[&quot;customer_id&quot;]
-                                                   self.data[customer_id][&quot;orders&quot;].append({
-                                                   &quot;order_id&quot;: event.aggregate_id,
-                                                   &quot;total&quot;: event.data[&quot;total&quot;]
-                                                   })
-                                                   ```
+<pre><code>def handle(self, event: Event):
+if event.event_type == &quot;CustomerCreated&quot;:
+self.data[event.aggregate_id] = {
+&quot;customer_name&quot;: event.data[&quot;name&quot;],
+&quot;orders&quot;: []
+}
+elif event.event_type == &quot;OrderPlaced&quot;:
+customer_id = event.data[&quot;customer_id&quot;]
+self.data[customer_id][&quot;orders&quot;].append({
+&quot;order_id&quot;: event.aggregate_id,
+&quot;total&quot;: event.data[&quot;total&quot;]
+})
+```
 </code></pre>
 </li>
 <li>
@@ -1643,27 +1625,24 @@ class CustomerOrdersProjection:<br />
 </li>
 <li>
 <p><strong>Hypothesis testing</strong>: Modify event data to test fixes</p>
-<pre><code>                                           ```python
-                                           class DebuggingReplayer:
-                                           def replay_until(self, aggregate_id: str, target_version: int,
-                                           breakpoint_fn: Callable[[Event, Aggregate], bool] = None):
-                                           aggregate = self.aggregate_class()
-                                           events = self.event_store.get_events(aggregate_id)
+<pre><code class="language-python">class DebuggingReplayer:
+def replay_until(self, aggregate_id: str, target_version: int,
+breakpoint_fn: Callable[[Event, Aggregate], bool] = None):
+aggregate = self.aggregate_class()
+events = self.event_store.get_events(aggregate_id)
 
-                                           for event in events:
-                                           if event.version &gt; target_version:
-                                           break
+for event in events:
+if event.version &gt; target_version:
+break
 
-                                           print(f&quot;Applying: {event.event_type} v{event.version}&quot;)
-                                           aggregate.apply(event)
+print(f&quot;Applying: {event.event_type} v{event.version}&quot;)
+aggregate.apply(event)
 
-                                           if breakpoint_fn and breakpoint_fn(event, aggregate):
-                                           print(f&quot;Breakpoint hit at v{event.version}&quot;)
-                                           import pdb; pdb.set_trace()
+if breakpoint_fn and breakpoint_fn(event, aggregate):
+print(f&quot;Breakpoint hit at v{event.version}&quot;)
+import pdb; pdb.set_trace()
 
-                                           return aggregate
-                                           ```
-</code></pre>
+return aggregate</code></pre>
 </li>
 </ol>
 <div style="background: #fef2f2;padding: 16px; margin-top: 16px; border-radius: 0 8px 8px 0">
@@ -1678,13 +1657,13 @@ class OrderAggregate:<br />
 def place_order(self, data):<br />
 # State change - replayed<br />
 self.add_event(&quot;OrderPlaced&quot;, data)</p>
-<pre><code>                                               # Side effects handled separately by process manager
-                                               class OrderProcessManager:
-                                               def handle(self, event: Event):
-                                               if event.event_type == &quot;OrderPlaced&quot;:
-                                               if not self.is_replay_mode:
-                                               self.email_service.send_confirmation(event.data)
-                                               ```
+<pre><code># Side effects handled separately by process manager
+class OrderProcessManager:
+def handle(self, event: Event):
+if event.event_type == &quot;OrderPlaced&quot;:
+if not self.is_replay_mode:
+self.email_service.send_confirmation(event.data)
+```
 </code></pre>
 </li>
 <li>
@@ -1712,13 +1691,13 @@ self.add_event(&quot;OrderPlaced&quot;, data)</p>
 class EventSourcedAggregate:<br />
 def <strong>init</strong>(self, clock: Callable[[], datetime] = datetime.utcnow):<br />
 self.clock = clock</p>
-<pre><code>                                                   def current_time(self) -&gt; datetime:
-                                                   return self.clock()
+<pre><code>def current_time(self) -&gt; datetime:
+return self.clock()
 
-                                                   # During replay, inject event timestamp as clock
-                                                   def replay_clock(event: Event):
-                                                   return lambda: event.timestamp
-                                                   ```
+# During replay, inject event timestamp as clock
+def replay_clock(event: Event):
+return lambda: event.timestamp
+```
 </code></pre>
 </li>
 <li>
@@ -1753,9 +1732,9 @@ customer_id: &quot;456&quot;,<br />
 items: [{sku: &quot;ABC&quot;, qty: 2, price: 25.00}],<br />
 total: 50.00<br />
 }</p>
-<pre><code>                                             # Bad - requires lookup
-                                             OrderPlaced {order_id: &quot;123&quot;}  # Missing context
-                                             ```
+<pre><code># Bad - requires lookup
+OrderPlaced {order_id: &quot;123&quot;}  # Missing context
+```
 </code></pre>
 </li>
 <li>
@@ -1810,18 +1789,15 @@ total: 50.00<br />
 </li>
 <li>
 <p>Would require expensive lookups</p>
-<pre><code>                                               ```python
-                                               # Good balance
-                                               OrderPlaced {
-                                               order_id: &quot;123&quot;,
-                                               customer_id: &quot;456&quot;,
-                                               customer_name: &quot;Alice&quot;,  # Denormalized - needed for display
-                                               items: [...],
-                                               total: 50.00,
-                                               currency: &quot;USD&quot;
-                                               }
-                                               ```
-</code></pre>
+<pre><code class="language-python"># Good balance
+OrderPlaced {
+order_id: &quot;123&quot;,
+customer_id: &quot;456&quot;,
+customer_name: &quot;Alice&quot;,  # Denormalized - needed for display
+items: [...],
+total: 50.00,
+currency: &quot;USD&quot;
+}</code></pre>
 </li>
 </ol>
 <div style="background: #d1fae5;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
@@ -1867,15 +1843,15 @@ account = BankAccount()<br />
 account.load_from_events([<br />
 Event(event_type=&quot;AccountOpened&quot;, data={&quot;owner&quot;: &quot;Alice&quot;, &quot;initial_balance&quot;: 100})<br />
 ])</p>
-<pre><code>                                             # When
-                                             account.withdraw(30)
+<pre><code># When
+account.withdraw(30)
 
-                                             # Then
-                                             pending = account.get_pending_events()
-                                             assert len(pending) == 1
-                                             assert pending[0].event_type == &quot;MoneyWithdrawn&quot;
-                                             assert pending[0].data[&quot;amount&quot;] == 30
-                                             ```
+# Then
+pending = account.get_pending_events()
+assert len(pending) == 1
+assert pending[0].event_type == &quot;MoneyWithdrawn&quot;
+assert pending[0].data[&quot;amount&quot;] == 30
+```
 </code></pre>
 </li>
 <li>
@@ -1892,88 +1868,82 @@ Event(event_type=&quot;AccountOpened&quot;, data={&quot;owner&quot;: &quot;Alice
 <div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Follow-up L2: How do you write integration tests that verify eventual consistency?</div>
 <div style="color: #1e40af; font-size: 14px">
 <p><strong>Eventual Consistency Testing:</strong></p>
-<pre><code>                                                    ```python
-                                                    @pytest.fixture
-                                                    def event_sourced_system():
-                                                    event_store = InMemoryEventStore()
-                                                    projection = OrderProjection()
-                                                    event_store.subscribe(projection.handle)
-                                                    return event_store, projection
+<pre><code class="language-python">@pytest.fixture
+def event_sourced_system():
+event_store = InMemoryEventStore()
+projection = OrderProjection()
+event_store.subscribe(projection.handle)
+return event_store, projection
 
-                                                    def test_projection_eventually_consistent(event_sourced_system):
-                                                    event_store, projection = event_sourced_system
+def test_projection_eventually_consistent(event_sourced_system):
+event_store, projection = event_sourced_system
 
-                                                    # When: Place order via command
-                                                    order = Order.create(&quot;order-1&quot;, customer_id=&quot;cust-1&quot;, total=100)
-                                                    event_store.append(&quot;order-1&quot;, order.pending_events, expected_version=0)
+# When: Place order via command
+order = Order.create(&quot;order-1&quot;, customer_id=&quot;cust-1&quot;, total=100)
+event_store.append(&quot;order-1&quot;, order.pending_events, expected_version=0)
 
-                                                    # Then: Projection reflects change (sync subscription)
-                                                    result = projection.get_order(&quot;order-1&quot;)
-                                                    assert result[&quot;total&quot;] == 100
+# Then: Projection reflects change (sync subscription)
+result = projection.get_order(&quot;order-1&quot;)
+assert result[&quot;total&quot;] == 100
 
-                                                    def test_projection_handles_out_of_order_events(event_sourced_system):
-                                                    &quot;&quot;&quot;Verify projection handles events arriving out of order.&quot;&quot;&quot;
-                                                    event_store, projection = event_sourced_system
+def test_projection_handles_out_of_order_events(event_sourced_system):
+&quot;&quot;&quot;Verify projection handles events arriving out of order.&quot;&quot;&quot;
+event_store, projection = event_sourced_system
 
-                                                    # Simulate out-of-order delivery
-                                                    events = [
-                                                    Event(event_type=&quot;ItemAdded&quot;, version=2),
-                                                    Event(event_type=&quot;OrderCreated&quot;, version=1),  # Arrives second
-                                                    ]
+# Simulate out-of-order delivery
+events = [
+Event(event_type=&quot;ItemAdded&quot;, version=2),
+Event(event_type=&quot;OrderCreated&quot;, version=1),  # Arrives second
+]
 
-                                                    for event in events:
-                                                    projection.handle(event)
+for event in events:
+projection.handle(event)
 
-                                                    # Projection should buffer/reorder correctly
-                                                    assert projection.get_order(&quot;order-1&quot;) is not None
-                                                    ```
-</code></pre>
+# Projection should buffer/reorder correctly
+assert projection.get_order(&quot;order-1&quot;) is not None</code></pre>
 <div style="background: #dbeafe;padding: 12px; margin-top: 12px; border-radius: 0 6px 6px 0">
 <div style="color: #1e40af; font-weight: 600; margin-bottom: 4px">Follow-up L3: How do you implement property-based testing for event-sourced aggregates?</div>
 <div style="color: #1e40af; font-size: 13px">
 <p><strong>Property-Based Testing with Hypothesis:</strong></p>
-<pre><code>                                                        ```python
-                                                        from hypothesis import given, strategies as st
-                                                        from hypothesis.stateful import RuleBasedStateMachine, rule
+<pre><code class="language-python">from hypothesis import given, strategies as st
+from hypothesis.stateful import RuleBasedStateMachine, rule
 
-                                                        class BankAccountStateMachine(RuleBasedStateMachine):
-                                                        &quot;&quot;&quot;Property: Replaying events always produces same state.&quot;&quot;&quot;
+class BankAccountStateMachine(RuleBasedStateMachine):
+&quot;&quot;&quot;Property: Replaying events always produces same state.&quot;&quot;&quot;
 
-                                                        def __init__(self):
-                                                        super().__init__()
-                                                        self.account = BankAccount.open(&quot;test&quot;, &quot;Alice&quot;, initial_balance=1000)
-                                                        self.event_store = InMemoryEventStore()
+def __init__(self):
+super().__init__()
+self.account = BankAccount.open(&quot;test&quot;, &quot;Alice&quot;, initial_balance=1000)
+self.event_store = InMemoryEventStore()
 
-                                                        @rule(amount=st.floats(min_value=0.01, max_value=100))
-                                                        def deposit(self, amount):
-                                                        self.account.deposit(amount)
-                                                        self._verify_replay_consistency()
+@rule(amount=st.floats(min_value=0.01, max_value=100))
+def deposit(self, amount):
+self.account.deposit(amount)
+self._verify_replay_consistency()
 
-                                                        @rule(amount=st.floats(min_value=0.01, max_value=100))
-                                                        def withdraw(self, amount):
-                                                        if amount &lt;= self.account.balance:
-                                                        self.account.withdraw(amount)
-                                                        self._verify_replay_consistency()
+@rule(amount=st.floats(min_value=0.01, max_value=100))
+def withdraw(self, amount):
+if amount &lt;= self.account.balance:
+self.account.withdraw(amount)
+self._verify_replay_consistency()
 
-                                                        def _verify_replay_consistency(self):
-                                                        # Save events
-                                                        events = self.account.get_pending_events()
-                                                        self.event_store.append(self.account.id, events,
-                                                        expected_version=self.account.version - len(events))
-                                                        self.account.clear_pending_events()
+def _verify_replay_consistency(self):
+# Save events
+events = self.account.get_pending_events()
+self.event_store.append(self.account.id, events,
+expected_version=self.account.version - len(events))
+self.account.clear_pending_events()
 
-                                                        # Replay and compare
-                                                        replayed = BankAccount()
-                                                        replayed.load_from_events(
-                                                        self.event_store.get_events(self.account.id)
-                                                        )
+# Replay and compare
+replayed = BankAccount()
+replayed.load_from_events(
+self.event_store.get_events(self.account.id)
+)
 
-                                                        assert replayed.balance == self.account.balance
-                                                        assert replayed.version == self.account.version
+assert replayed.balance == self.account.balance
+assert replayed.version == self.account.version
 
-                                                        TestBankAccount = BankAccountStateMachine.TestCase
-                                                        ```
-</code></pre>
+TestBankAccount = BankAccountStateMachine.TestCase</code></pre>
 <p><strong>Properties to test:</strong><br />
 - Replay produces identical state<br />
 - Events are idempotent when applied<br />
@@ -2117,11 +2087,11 @@ Event(event_type=&quot;AccountOpened&quot;, data={&quot;owner&quot;: &quot;Alice
 </div>
 <hr />
 <h2 id="related-topics">Related Topics</h2>
-<pre><code>                                              - [[CQRS Pattern]](/topic/design-patterns/cqrs) - Separating read and write models
-                                              - [[Message Queues]](/topic/system-design/message-queues) - Publishing events to subscribers
-                                              - [[Distributed Locking]](/topic/system-design/distributed-locking) - Concurrency control
-                                              - [[Saga Pattern]](/topic/design-patterns/saga) - Coordinating distributed transactions
-                                              - [[API Gateway]](/topic/system-design/api-gateway) - Aggregating read models
-                                              - [[Change Data Capture]](/topic/system-design/cdc) - Generating events from databases
-                                              - [[Microservices Event Strategies]](/topic/microservices/event-strategies) - Event-driven architecture patterns
+<pre><code>- [[CQRS Pattern]](/topic/design-patterns/cqrs) - Separating read and write models
+- [[Message Queues]](/topic/system-design/message-queues) - Publishing events to subscribers
+- [[Distributed Locking]](/topic/system-design/distributed-locking) - Concurrency control
+- [[Saga Pattern]](/topic/design-patterns/saga) - Coordinating distributed transactions
+- [[API Gateway]](/topic/system-design/api-gateway) - Aggregating read models
+- [[Change Data Capture]](/topic/system-design/cdc) - Generating events from databases
+- [[Microservices Event Strategies]](/topic/microservices/event-strategies) - Event-driven architecture patterns
 </code></pre>

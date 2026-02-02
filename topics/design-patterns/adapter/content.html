@@ -319,8 +319,7 @@ print(StripeAdapter.__mro__)
 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How does Python's MRO affect class adapter behavior, especially with diamond inheritance?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155">
 <p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Python's C3 linearization creates a deterministic but sometimes surprising method resolution order.</span></p>
-<pre><code>          ```python
-          class Base:
+<pre><code class="language-python">          class Base:
           def operation(self):
           return &quot;Base&quot;
 
@@ -338,9 +337,7 @@ print(StripeAdapter.__mro__)
           adapter = Adapter()
           print(adapter.operation())  # &quot;Target&quot; - leftmost parent wins
           print(Adapter.__mro__)
-          # (Adapter, Target, Adaptee, Base, object)
-          ```
-</code></pre>
+          # (Adapter, Target, Adaptee, Base, object)</code></pre>
 <p><strong>The Diamond Problem Manifestation:</strong><br />
 ```python<br />
 class PaymentInterface:<br />
@@ -368,8 +365,7 @@ return &quot;Interface default&quot;</p>
 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: What are the memory and performance implications of class vs object adapter at scale?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155">
 <p><strong>Memory Footprint:</strong></p>
-<pre><code>              ```python
-              import sys
+<pre><code class="language-python">              import sys
 
               class Adaptee:
               def __init__(self):
@@ -391,12 +387,9 @@ return &quot;Interface default&quot;</p>
               print(sys.getsizeof(adaptee) + sys.getsizeof(obj_adapter))  # ~100 bytes
 
               # Class adapter: Single object
-              print(sys.getsizeof(class_adapter))  # ~56 bytes
-              ```
-</code></pre>
+              print(sys.getsizeof(class_adapter))  # ~56 bytes</code></pre>
 <p><strong>Performance Implications:</strong></p>
-<pre><code>              ```python
-              import timeit
+<pre><code class="language-python">              import timeit
 
               class Adaptee:
               def heavy_operation(self):
@@ -419,9 +412,7 @@ return &quot;Interface default&quot;</p>
 
               # Object adapter: ~2.1 seconds (attribute lookup + delegation)
               # Class adapter: ~1.9 seconds (direct method resolution)
-              # Difference: ~10% overhead from delegation
-              ```
-</code></pre>
+              # Difference: ~10% overhead from delegation</code></pre>
 <p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">In practice, this overhead is negligible unless you're in a hot loop with millions of calls per second.</span> The flexibility benefits of object adapter almost always outweigh the minor performance cost.</p>
 <p><strong>Real-World Trade-off Analysis:</strong></p>
 <table>
@@ -498,8 +489,7 @@ return &quot;Interface default&quot;</p>
 </div>
 </div>
 <h3 id="two-way-adapter-implementation">Two-Way Adapter Implementation</h3>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from typing import Dict, Any, Optional
   from dataclasses import dataclass
   from enum import Enum
@@ -745,9 +735,7 @@ return &quot;Interface default&quot;</p>
   body='{&quot;payment_id&quot;: &quot;pay_123&quot;}',
   headers={&quot;X-Event-Timestamp&quot;: &quot;1234567890.0&quot;},
   message_id=&quot;msg_001&quot;
-  ))
-  ```
-</code></pre>
+  ))</code></pre>
 <h3 id="interview-deep-dive-two-way-adapters">Interview Deep-Dive: Two-Way Adapters</h3>
 <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: When would you need a two-way adapter instead of a regular one-way adapter?</summary>
@@ -834,8 +822,7 @@ b_txn = self._system_b.begin_transaction()</p>
 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: How would you implement idempotency in a two-way adapter to handle duplicate messages from either direction?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155">
 <p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Idempotency requires tracking processed messages from BOTH directions and ensuring repeated processing produces the same result.</span></p>
-<pre><code>              ```python
-              from typing import Dict, Set, Optional
+<pre><code class="language-python">              from typing import Dict, Set, Optional
               from dataclasses import dataclass
               from datetime import datetime, timedelta
               import hashlib
@@ -921,9 +908,7 @@ b_txn = self._system_b.begin_transaction()</p>
               if now - v.processed_at &gt; self._ttl
               ]
               for key in expired:
-              del self._idempotency_store[key]
-              ```
-</code></pre>
+              del self._idempotency_store[key]</code></pre>
 <p><strong>Production Considerations:</strong></p>
 <ol>
 <li>
@@ -957,8 +942,7 @@ key = idempotency_key or self._compute_message_hash(message_a, 'a')</p>
 <hr />
 <h2 id="real-world-api-adapter-examples">Real-World API Adapter Examples</h2>
 <h3 id="example-1-multi-cloud-storage-adapter">Example 1: Multi-Cloud Storage Adapter</h3>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from dataclasses import dataclass
   from typing import BinaryIO, Optional, Dict, List
   from datetime import datetime
@@ -1350,12 +1334,9 @@ key = idempotency_key or self._compute_message_hash(message_a, 'a')</p>
 
   doc_service = DocumentService(storage)
   result = doc_service.upload_document(&quot;doc123&quot;, b&quot;PDF content...&quot;, &quot;invoices&quot;)
-  print(f&quot;Uploaded to {result.provider}: {result.key}&quot;)
-  ```
-</code></pre>
+  print(f&quot;Uploaded to {result.provider}: {result.key}&quot;)</code></pre>
 <h3 id="example-2-payment-gateway-adapter-with-retry-and-circuit-breaker">Example 2: Payment Gateway Adapter with Retry and Circuit Breaker</h3>
-<pre><code>  ```python
-  from abc import ABC, abstractmethod
+<pre><code class="language-python">  from abc import ABC, abstractmethod
   from dataclasses import dataclass, field
   from decimal import Decimal
   from typing import Optional, Dict, Any, Callable
@@ -1665,9 +1646,7 @@ key = idempotency_key or self._compute_message_hash(message_a, 'a')</p>
   self.code = code
 
   class ServiceUnavailableError(Exception):
-  pass
-  ```
-</code></pre>
+  pass</code></pre>
 <h3 id="interview-deep-dive-real-world-api-adapters">Interview Deep-Dive: Real-World API Adapters</h3>
 <details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: How do you handle API versioning when the adaptee releases breaking changes?</summary>
@@ -1732,8 +1711,7 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How do you implement graceful degradation when adaptee capabilities are reduced?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155">
 <p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Graceful degradation in adapters means providing reduced but functional service when the full capability isn't available.</span></p>
-<pre><code>          ```python
-          class DegradableStorageAdapter(CloudStorageGateway):
+<pre><code class="language-python">          class DegradableStorageAdapter(CloudStorageGateway):
           &quot;&quot;&quot;
           Storage adapter that degrades gracefully when features unavailable.
           &quot;&quot;&quot;
@@ -1798,15 +1776,12 @@ class VersionedStripeAdapter(PaymentGateway):<br />
           &quot;available_features&quot;: [
           f for f, enabled in self._features.items() if enabled
           ]
-          }
-          ```
-</code></pre>
+          }</code></pre>
 <details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
 <summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: How would you implement adapter telemetry to monitor adaptation overhead and detect adaptee drift?</summary>
 <div style="padding: 0 12px 12px 12px; color: #334155">
 <p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Adapter telemetry tracks both the translation overhead and detects when adaptee behavior changes unexpectedly (drift).</span></p>
-<pre><code>              ```python
-              from dataclasses import dataclass, field
+<pre><code class="language-python">              from dataclasses import dataclass, field
               from typing import Dict, List, Optional, Any
               from datetime import datetime
               import time
@@ -2015,9 +1990,7 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 
               # Check telemetry
               stats = telemetry.get_statistics()
-              print(f&quot;Transformation overhead: {stats['overhead_percentage']:.2f}%&quot;)
-              ```
-</code></pre>
+              print(f&quot;Transformation overhead: {stats['overhead_percentage']:.2f}%&quot;)</code></pre>
 </div>
 </details>
 </div>
@@ -2127,20 +2100,17 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; margin-top: 24px">
 <h4 style="color: #0f172a; margin-top: 0">Decision Tree</h4>
 <div style="color: #334155; font-size: 0.95rem">
-<pre><code>                            ```
-                            Do you have an existing class with wrong interface?
-                            ├─ YES → Do you need to change the interface signature?
-                            │        ├─ YES → ADAPTER (convert interface A to interface B)
-                            │        └─ NO → Do you need to add behavior?
-                            │                ├─ YES → DECORATOR (add logging, caching, etc.)
-                            │                └─ NO → PROXY (add access control, lazy loading)
-                            └─ NO → Are you simplifying a complex subsystem?
-                            ├─ YES → FACADE (unified simple interface over complexity)
-                            └─ NO → Do you need abstraction and implementation to vary independently?
-                            ├─ YES → BRIDGE (design for future flexibility)
-                            └─ NO → Consider if you need a pattern at all
-                            ```
-</code></pre>
+<pre><code>Do you have an existing class with wrong interface?
+├─ YES → Do you need to change the interface signature?
+│        ├─ YES → ADAPTER (convert interface A to interface B)
+│        └─ NO → Do you need to add behavior?
+│                ├─ YES → DECORATOR (add logging, caching, etc.)
+│                └─ NO → PROXY (add access control, lazy loading)
+└─ NO → Are you simplifying a complex subsystem?
+├─ YES → FACADE (unified simple interface over complexity)
+└─ NO → Do you need abstraction and implementation to vary independently?
+├─ YES → BRIDGE (design for future flexibility)
+└─ NO → Consider if you need a pattern at all</code></pre>
 </div>
 </div>
 </div>
@@ -2148,315 +2118,300 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 <h2 id="common-anti-patterns-and-pitfalls">Common Anti-Patterns and Pitfalls</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h3 id="anti-pattern-1-business-logic-in-adapter">Anti-Pattern 1: Business Logic in Adapter</h3>
-<pre><code>                        ```python
-                        # BAD: Adapter contains business rules
-                        class PaymentAdapter(PaymentGateway):
-                        def charge(self, amount: Decimal, currency: str, token: str):
-                        # WRONG: Discount logic doesn't belong in adapter
-                        if self._is_premium_customer():
-                        amount = amount * Decimal(&quot;0.9&quot;)
+<pre><code class="language-python"># BAD: Adapter contains business rules
+class PaymentAdapter(PaymentGateway):
+def charge(self, amount: Decimal, currency: str, token: str):
+# WRONG: Discount logic doesn't belong in adapter
+if self._is_premium_customer():
+amount = amount * Decimal(&quot;0.9&quot;)
 
-                        # WRONG: Fraud detection doesn't belong in adapter
-                        if self._fraud_score(token) &gt; 0.8:
-                        raise FraudDetectedError()
+# WRONG: Fraud detection doesn't belong in adapter
+if self._fraud_score(token) &gt; 0.8:
+raise FraudDetectedError()
 
-                        return self._adaptee.create_charge(int(amount * 100), currency, token)
+return self._adaptee.create_charge(int(amount * 100), currency, token)
 
-                        # GOOD: Adapter only translates
-                        class PaymentAdapter(PaymentGateway):
-                        def charge(self, amount: Decimal, currency: str, token: str):
-                        # Pure translation - no business logic
-                        response = self._adaptee.create_charge(
-                        amount_cents=int(amount * 100),
-                        currency=currency.lower(),
-                        source=token
-                        )
-                        return self._transform_response(response)
+# GOOD: Adapter only translates
+class PaymentAdapter(PaymentGateway):
+def charge(self, amount: Decimal, currency: str, token: str):
+# Pure translation - no business logic
+response = self._adaptee.create_charge(
+amount_cents=int(amount * 100),
+currency=currency.lower(),
+source=token
+)
+return self._transform_response(response)
 
-                        # Business logic belongs in service layer
-                        class PaymentService:
-                        def __init__(self, gateway: PaymentGateway, fraud_detector: FraudDetector):
-                        self._gateway = gateway
-                        self._fraud_detector = fraud_detector
+# Business logic belongs in service layer
+class PaymentService:
+def __init__(self, gateway: PaymentGateway, fraud_detector: FraudDetector):
+self._gateway = gateway
+self._fraud_detector = fraud_detector
 
-                        def process_payment(self, amount: Decimal, currency: str,
-                        token: str, customer: Customer):
-                        # Business logic HERE
-                        if customer.is_premium:
-                        amount = amount * Decimal(&quot;0.9&quot;)
+def process_payment(self, amount: Decimal, currency: str,
+token: str, customer: Customer):
+# Business logic HERE
+if customer.is_premium:
+amount = amount * Decimal(&quot;0.9&quot;)
 
-                        if self._fraud_detector.score(token) &gt; 0.8:
-                        raise FraudDetectedError()
+if self._fraud_detector.score(token) &gt; 0.8:
+raise FraudDetectedError()
 
-                        return self._gateway.charge(amount, currency, token)
-                        ```
-</code></pre>
+return self._gateway.charge(amount, currency, token)</code></pre>
 <h3 id="anti-pattern-2-adapter-chains-adapting-adapters">Anti-Pattern 2: Adapter Chains (Adapting Adapters)</h3>
-<pre><code>                        ```python
-                        # BAD: Stacked adapters create complexity and performance issues
-                        class XMLParser:
-                        def parse(self, xml: str) -&gt; XMLElement: ...
+<pre><code class="language-python"># BAD: Stacked adapters create complexity and performance issues
+class XMLParser:
+def parse(self, xml: str) -&gt; XMLElement: ...
 
-                        class XMLToJSONAdapter:
-                        def __init__(self, parser: XMLParser):
-                        self._parser = parser
+class XMLToJSONAdapter:
+def __init__(self, parser: XMLParser):
+self._parser = parser
 
-                        def to_json(self, xml: str) -&gt; str:
-                        element = self._parser.parse(xml)
-                        return json.dumps(self._element_to_dict(element))
+def to_json(self, xml: str) -&gt; str:
+element = self._parser.parse(xml)
+return json.dumps(self._element_to_dict(element))
 
-                        class JSONToDataFrameAdapter:
-                        def __init__(self, json_adapter: XMLToJSONAdapter):  # Wrapping adapter!
-                        self._json_adapter = json_adapter
+class JSONToDataFrameAdapter:
+def __init__(self, json_adapter: XMLToJSONAdapter):  # Wrapping adapter!
+self._json_adapter = json_adapter
 
-                        def to_dataframe(self, xml: str):
-                        json_str = self._json_adapter.to_json(xml)  # Double conversion!
-                        return pd.DataFrame(json.loads(json_str))
+def to_dataframe(self, xml: str):
+json_str = self._json_adapter.to_json(xml)  # Double conversion!
+return pd.DataFrame(json.loads(json_str))
 
-                        # GOOD: Direct adaptation
-                        class XMLToDataFrameAdapter:
-                        def __init__(self, parser: XMLParser):
-                        self._parser = parser
+# GOOD: Direct adaptation
+class XMLToDataFrameAdapter:
+def __init__(self, parser: XMLParser):
+self._parser = parser
 
-                        def to_dataframe(self, xml: str):
-                        element = self._parser.parse(xml)
-                        return self._element_to_dataframe(element)  # Direct conversion
-                        ```
-</code></pre>
+def to_dataframe(self, xml: str):
+element = self._parser.parse(xml)
+return self._element_to_dataframe(element)  # Direct conversion</code></pre>
 <h3 id="anti-pattern-3-leaky-abstraction">Anti-Pattern 3: Leaky Abstraction</h3>
-<pre><code>                        ```python
-                        # BAD: Adapter exposes adaptee-specific details
-                        class StripeAdapter(PaymentGateway):
-                        def charge(self, amount: Decimal, currency: str, token: str):
-                        try:
-                        return self._client.create_charge(...)
-                        except stripe.error.CardError as e:
-                        # LEAKY: Exposing Stripe-specific exception
-                        raise e  # Clients now depend on Stripe!
+<pre><code class="language-python"># BAD: Adapter exposes adaptee-specific details
+class StripeAdapter(PaymentGateway):
+def charge(self, amount: Decimal, currency: str, token: str):
+try:
+return self._client.create_charge(...)
+except stripe.error.CardError as e:
+# LEAKY: Exposing Stripe-specific exception
+raise e  # Clients now depend on Stripe!
 
-                        # GOOD: Normalize errors to domain exceptions
-                        class StripeAdapter(PaymentGateway):
-                        def charge(self, amount: Decimal, currency: str, token: str):
-                        try:
-                        response = self._client.create_charge(...)
-                        return self._transform_response(response)
-                        except stripe.error.CardError as e:
-                        # Translate to domain exception
-                        raise PaymentDeclinedError(
-                        code=self._map_error_code(e.code),
-                        message=e.user_message,
-                        provider=&quot;stripe&quot;
-                        )
-                        except stripe.error.RateLimitError:
-                        raise ServiceThrottledError(provider=&quot;stripe&quot;, retry_after=60)
-                        ```
-</code></pre>
+# GOOD: Normalize errors to domain exceptions
+class StripeAdapter(PaymentGateway):
+def charge(self, amount: Decimal, currency: str, token: str):
+try:
+response = self._client.create_charge(...)
+return self._transform_response(response)
+except stripe.error.CardError as e:
+# Translate to domain exception
+raise PaymentDeclinedError(
+code=self._map_error_code(e.code),
+message=e.user_message,
+provider=&quot;stripe&quot;
+)
+except stripe.error.RateLimitError:
+raise ServiceThrottledError(provider=&quot;stripe&quot;, retry_after=60)</code></pre>
 <h3 id="anti-pattern-4-incomplete-interface-implementation">Anti-Pattern 4: Incomplete Interface Implementation</h3>
-<pre><code>                        ```python
-                        # BAD: Partial implementation surprises callers
-                        class MinimalPaymentAdapter(PaymentGateway):
-                        def charge(self, amount, currency, token):
-                        return self._adaptee.pay(amount)
+<pre><code class="language-python"># BAD: Partial implementation surprises callers
+class MinimalPaymentAdapter(PaymentGateway):
+def charge(self, amount, currency, token):
+return self._adaptee.pay(amount)
 
-                        def refund(self, transaction_id, amount=None):
-                        raise NotImplementedError(&quot;This provider doesn't support refunds&quot;)
+def refund(self, transaction_id, amount=None):
+raise NotImplementedError(&quot;This provider doesn't support refunds&quot;)
 
-                        def get_transaction(self, transaction_id):
-                        raise NotImplementedError(&quot;Transaction lookup not available&quot;)
+def get_transaction(self, transaction_id):
+raise NotImplementedError(&quot;Transaction lookup not available&quot;)
 
-                        # GOOD: Use interface segregation or explicit capability checking
-                        class ChargeOnlyGateway(ABC):
-                        &quot;&quot;&quot;Interface for providers that only support charging.&quot;&quot;&quot;
-                        @abstractmethod
-                        def charge(self, amount, currency, token): pass
+# GOOD: Use interface segregation or explicit capability checking
+class ChargeOnlyGateway(ABC):
+&quot;&quot;&quot;Interface for providers that only support charging.&quot;&quot;&quot;
+@abstractmethod
+def charge(self, amount, currency, token): pass
 
-                        class FullGateway(ChargeOnlyGateway):
-                        &quot;&quot;&quot;Interface for providers with full feature set.&quot;&quot;&quot;
-                        @abstractmethod
-                        def refund(self, transaction_id, amount=None): pass
+class FullGateway(ChargeOnlyGateway):
+&quot;&quot;&quot;Interface for providers with full feature set.&quot;&quot;&quot;
+@abstractmethod
+def refund(self, transaction_id, amount=None): pass
 
-                        @abstractmethod
-                        def get_transaction(self, transaction_id): pass
+@abstractmethod
+def get_transaction(self, transaction_id): pass
 
-                        # Or use capability checking
-                        class CapabilityAwareAdapter(PaymentGateway):
-                        @property
-                        def capabilities(self) -&gt; Set[str]:
-                        return {&quot;charge&quot;}  # Explicitly declare what's supported
+# Or use capability checking
+class CapabilityAwareAdapter(PaymentGateway):
+@property
+def capabilities(self) -&gt; Set[str]:
+return {&quot;charge&quot;}  # Explicitly declare what's supported
 
-                        def refund(self, transaction_id, amount=None):
-                        if &quot;refund&quot; not in self.capabilities:
-                        raise CapabilityNotSupportedError(&quot;refund&quot;, self.provider_name)
-                        ```
-</code></pre>
+def refund(self, transaction_id, amount=None):
+if &quot;refund&quot; not in self.capabilities:
+raise CapabilityNotSupportedError(&quot;refund&quot;, self.provider_name)</code></pre>
 </div>
 <hr />
 <h2 id="testing-adapters">Testing Adapters</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h3 id="testing-strategy">Testing Strategy</h3>
-<pre><code>                        ```python
-                        import pytest
-                        from unittest.mock import Mock, patch
-                        from decimal import Decimal
+<pre><code class="language-python">import pytest
+from unittest.mock import Mock, patch
+from decimal import Decimal
 
-                        class TestStripeAdapter:
-                        &quot;&quot;&quot;
-                        Adapter tests should verify:
-                        1. Correct transformation of inputs (request adaptation)
-                        2. Correct transformation of outputs (response adaptation)
-                        3. Error handling and normalization
-                        4. Edge cases in data conversion
-                        &quot;&quot;&quot;
+class TestStripeAdapter:
+&quot;&quot;&quot;
+Adapter tests should verify:
+1. Correct transformation of inputs (request adaptation)
+2. Correct transformation of outputs (response adaptation)
+3. Error handling and normalization
+4. Edge cases in data conversion
+&quot;&quot;&quot;
 
-                        @pytest.fixture
-                        def mock_stripe_client(self):
-                        &quot;&quot;&quot;Create mock Stripe client.&quot;&quot;&quot;
-                        client = Mock()
-                        client.create_charge.return_value = {
-                        &quot;id&quot;: &quot;ch_test123&quot;,
-                        &quot;amount&quot;: 9999,
-                        &quot;currency&quot;: &quot;usd&quot;,
-                        &quot;status&quot;: &quot;succeeded&quot;,
-                        &quot;created&quot;: 1234567890
-                        }
-                        return client
+@pytest.fixture
+def mock_stripe_client(self):
+&quot;&quot;&quot;Create mock Stripe client.&quot;&quot;&quot;
+client = Mock()
+client.create_charge.return_value = {
+&quot;id&quot;: &quot;ch_test123&quot;,
+&quot;amount&quot;: 9999,
+&quot;currency&quot;: &quot;usd&quot;,
+&quot;status&quot;: &quot;succeeded&quot;,
+&quot;created&quot;: 1234567890
+}
+return client
 
-                        @pytest.fixture
-                        def adapter(self, mock_stripe_client):
-                        &quot;&quot;&quot;Create adapter with mocked client.&quot;&quot;&quot;
-                        adapter = StripeAdapter.__new__(StripeAdapter)
-                        adapter._client = mock_stripe_client
-                        return adapter
+@pytest.fixture
+def adapter(self, mock_stripe_client):
+&quot;&quot;&quot;Create adapter with mocked client.&quot;&quot;&quot;
+adapter = StripeAdapter.__new__(StripeAdapter)
+adapter._client = mock_stripe_client
+return adapter
 
-                        # =========================================================================
-                        # INPUT TRANSFORMATION TESTS
-                        # =========================================================================
+# =========================================================================
+# INPUT TRANSFORMATION TESTS
+# =========================================================================
 
-                        def test_converts_decimal_dollars_to_integer_cents(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify $99.99 becomes 9999 cents.&quot;&quot;&quot;
-                        adapter.charge(Decimal(&quot;99.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+def test_converts_decimal_dollars_to_integer_cents(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify $99.99 becomes 9999 cents.&quot;&quot;&quot;
+adapter.charge(Decimal(&quot;99.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        mock_stripe_client.create_charge.assert_called_once()
-                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
-                        assert call_kwargs[&quot;amount_cents&quot;] == 9999
+mock_stripe_client.create_charge.assert_called_once()
+call_kwargs = mock_stripe_client.create_charge.call_args[1]
+assert call_kwargs[&quot;amount_cents&quot;] == 9999
 
-                        def test_handles_currency_case_normalization(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify currency codes are normalized.&quot;&quot;&quot;
-                        adapter.charge(Decimal(&quot;10.00&quot;), &quot;usd&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+def test_handles_currency_case_normalization(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify currency codes are normalized.&quot;&quot;&quot;
+adapter.charge(Decimal(&quot;10.00&quot;), &quot;usd&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
-                        # Stripe expects lowercase
-                        assert call_kwargs[&quot;currency&quot;] == &quot;usd&quot;
+call_kwargs = mock_stripe_client.create_charge.call_args[1]
+# Stripe expects lowercase
+assert call_kwargs[&quot;currency&quot;] == &quot;usd&quot;
 
-                        def test_handles_fractional_cent_rounding(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify amounts that don't convert cleanly to cents.&quot;&quot;&quot;
-                        # $10.999 should become 1100 cents (banker's rounding)
-                        adapter.charge(Decimal(&quot;10.999&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+def test_handles_fractional_cent_rounding(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify amounts that don't convert cleanly to cents.&quot;&quot;&quot;
+# $10.999 should become 1100 cents (banker's rounding)
+adapter.charge(Decimal(&quot;10.999&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
-                        assert call_kwargs[&quot;amount_cents&quot;] == 1100  # Rounded
+call_kwargs = mock_stripe_client.create_charge.call_args[1]
+assert call_kwargs[&quot;amount_cents&quot;] == 1100  # Rounded
 
-                        # =========================================================================
-                        # OUTPUT TRANSFORMATION TESTS
-                        # =========================================================================
+# =========================================================================
+# OUTPUT TRANSFORMATION TESTS
+# =========================================================================
 
-                        def test_transforms_successful_response(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify response transformation preserves data correctly.&quot;&quot;&quot;
-                        result = adapter.charge(Decimal(&quot;99.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+def test_transforms_successful_response(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify response transformation preserves data correctly.&quot;&quot;&quot;
+result = adapter.charge(Decimal(&quot;99.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        assert result.status == PaymentStatus.SUCCESS
-                        assert result.transaction_id == &quot;ch_test123&quot;
-                        assert result.amount == Decimal(&quot;99.99&quot;)  # Converted back from cents
-                        assert result.currency == &quot;USD&quot;  # Uppercase for our system
-                        assert result.provider == &quot;stripe&quot;
+assert result.status == PaymentStatus.SUCCESS
+assert result.transaction_id == &quot;ch_test123&quot;
+assert result.amount == Decimal(&quot;99.99&quot;)  # Converted back from cents
+assert result.currency == &quot;USD&quot;  # Uppercase for our system
+assert result.provider == &quot;stripe&quot;
 
-                        def test_transforms_failed_response(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify failed responses are correctly identified.&quot;&quot;&quot;
-                        mock_stripe_client.create_charge.return_value[&quot;status&quot;] = &quot;failed&quot;
+def test_transforms_failed_response(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify failed responses are correctly identified.&quot;&quot;&quot;
+mock_stripe_client.create_charge.return_value[&quot;status&quot;] = &quot;failed&quot;
 
-                        result = adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+result = adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        assert result.status == PaymentStatus.FAILED
+assert result.status == PaymentStatus.FAILED
 
-                        # =========================================================================
-                        # ERROR HANDLING TESTS
-                        # =========================================================================
+# =========================================================================
+# ERROR HANDLING TESTS
+# =========================================================================
 
-                        def test_normalizes_stripe_card_error(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify Stripe-specific errors become domain errors.&quot;&quot;&quot;
-                        mock_stripe_client.create_charge.side_effect = StripeAPIError(
-                        &quot;Card declined&quot;, code=&quot;card_declined&quot;
-                        )
+def test_normalizes_stripe_card_error(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify Stripe-specific errors become domain errors.&quot;&quot;&quot;
+mock_stripe_client.create_charge.side_effect = StripeAPIError(
+&quot;Card declined&quot;, code=&quot;card_declined&quot;
+)
 
-                        with pytest.raises(PaymentDeclinedError) as exc_info:
-                        adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+with pytest.raises(PaymentDeclinedError) as exc_info:
+adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        assert exc_info.value.provider == &quot;stripe&quot;
-                        assert &quot;declined&quot; in str(exc_info.value).lower()
+assert exc_info.value.provider == &quot;stripe&quot;
+assert &quot;declined&quot; in str(exc_info.value).lower()
 
-                        def test_normalizes_stripe_rate_limit_error(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify rate limit errors become retryable errors.&quot;&quot;&quot;
-                        mock_stripe_client.create_charge.side_effect = StripeAPIError(
-                        &quot;Rate limited&quot;, code=&quot;rate_limit_error&quot;
-                        )
+def test_normalizes_stripe_rate_limit_error(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify rate limit errors become retryable errors.&quot;&quot;&quot;
+mock_stripe_client.create_charge.side_effect = StripeAPIError(
+&quot;Rate limited&quot;, code=&quot;rate_limit_error&quot;
+)
 
-                        with pytest.raises(ServiceThrottledError):
-                        adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+with pytest.raises(ServiceThrottledError):
+adapter.charge(Decimal(&quot;10.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        # =========================================================================
-                        # EDGE CASE TESTS
-                        # =========================================================================
+# =========================================================================
+# EDGE CASE TESTS
+# =========================================================================
 
-                        def test_handles_zero_amount(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify $0.00 charges are handled (e.g., for card verification).&quot;&quot;&quot;
-                        adapter.charge(Decimal(&quot;0.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+def test_handles_zero_amount(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify $0.00 charges are handled (e.g., for card verification).&quot;&quot;&quot;
+adapter.charge(Decimal(&quot;0.00&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
-                        assert call_kwargs[&quot;amount_cents&quot;] == 0
+call_kwargs = mock_stripe_client.create_charge.call_args[1]
+assert call_kwargs[&quot;amount_cents&quot;] == 0
 
-                        def test_handles_very_large_amount(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify large amounts don't overflow.&quot;&quot;&quot;
-                        # $999,999.99
-                        adapter.charge(Decimal(&quot;999999.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+def test_handles_very_large_amount(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify large amounts don't overflow.&quot;&quot;&quot;
+# $999,999.99
+adapter.charge(Decimal(&quot;999999.99&quot;), &quot;USD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
 
-                        call_kwargs = mock_stripe_client.create_charge.call_args[1]
-                        assert call_kwargs[&quot;amount_cents&quot;] == 99999999
+call_kwargs = mock_stripe_client.create_charge.call_args[1]
+assert call_kwargs[&quot;amount_cents&quot;] == 99999999
 
-                        def test_handles_three_decimal_currencies(self, adapter, mock_stripe_client):
-                        &quot;&quot;&quot;Verify currencies with 3 decimal places (e.g., KWD).&quot;&quot;&quot;
-                        # Kuwaiti Dinar has 3 decimal places
-                        # This is an edge case most adapters get wrong
-                        mock_stripe_client.create_charge.return_value[&quot;currency&quot;] = &quot;kwd&quot;
-                        mock_stripe_client.create_charge.return_value[&quot;amount&quot;] = 1000  # 1.000 KWD
+def test_handles_three_decimal_currencies(self, adapter, mock_stripe_client):
+&quot;&quot;&quot;Verify currencies with 3 decimal places (e.g., KWD).&quot;&quot;&quot;
+# Kuwaiti Dinar has 3 decimal places
+# This is an edge case most adapters get wrong
+mock_stripe_client.create_charge.return_value[&quot;currency&quot;] = &quot;kwd&quot;
+mock_stripe_client.create_charge.return_value[&quot;amount&quot;] = 1000  # 1.000 KWD
 
-                        result = adapter.charge(Decimal(&quot;1.000&quot;), &quot;KWD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
-                        # Adapter should know KWD uses fils (1/1000) not cents (1/100)
-                        # This test documents whether the adapter handles this correctly
+result = adapter.charge(Decimal(&quot;1.000&quot;), &quot;KWD&quot;, &quot;tok_visa&quot;, &quot;idem_key&quot;)
+# Adapter should know KWD uses fils (1/1000) not cents (1/100)
+# This test documents whether the adapter handles this correctly
 
 
-                        # Integration test with real (sandbox) API
-                        class TestStripeAdapterIntegration:
-                        &quot;&quot;&quot;
-                        Integration tests using Stripe test mode.
-                        Run with: pytest -m integration
-                        &quot;&quot;&quot;
+# Integration test with real (sandbox) API
+class TestStripeAdapterIntegration:
+&quot;&quot;&quot;
+Integration tests using Stripe test mode.
+Run with: pytest -m integration
+&quot;&quot;&quot;
 
-                        @pytest.mark.integration
-                        def test_real_charge_flow(self):
-                        &quot;&quot;&quot;Test against actual Stripe test API.&quot;&quot;&quot;
-                        adapter = StripeAdapter(api_key=&quot;sk_test_xxx&quot;)
+@pytest.mark.integration
+def test_real_charge_flow(self):
+&quot;&quot;&quot;Test against actual Stripe test API.&quot;&quot;&quot;
+adapter = StripeAdapter(api_key=&quot;sk_test_xxx&quot;)
 
-                        result = adapter.charge(
-                        amount=Decimal(&quot;10.00&quot;),
-                        currency=&quot;USD&quot;,
-                        payment_method_token=&quot;tok_visa&quot;,  # Stripe test token
-                        idempotency_key=f&quot;test_{time.time()}&quot;
-                        )
+result = adapter.charge(
+amount=Decimal(&quot;10.00&quot;),
+currency=&quot;USD&quot;,
+payment_method_token=&quot;tok_visa&quot;,  # Stripe test token
+idempotency_key=f&quot;test_{time.time()}&quot;
+)
 
-                        assert result.status == PaymentStatus.SUCCESS
-                        assert result.transaction_id.startswith(&quot;ch_&quot;)
-                        ```
-</code></pre>
+assert result.status == PaymentStatus.SUCCESS
+assert result.transaction_id.startswith(&quot;ch_&quot;)</code></pre>
 </div>
 <hr />
 <h2 id="key-takeaways">Key Takeaways</h2>
@@ -2506,9 +2461,9 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </div>
 <hr />
 <h2 id="related-patterns">Related Patterns</h2>
-<pre><code>                      - [[Facade]](/topic/design-patterns/facade) - Simplifies complex subsystems; adapter makes incompatible interfaces work together
-                      - [[Decorator]](/topic/design-patterns/decorator) - Adds behavior without changing interface; adapter changes interface
-                      - [[Bridge]](/topic/design-patterns/bridge) - Designed upfront for abstraction/implementation separation; adapter retrofits compatibility
-                      - [[Proxy]](/topic/design-patterns/proxy) - Same interface with controlled access; adapter changes interface
-                      - [[Strategy]](/topic/design-patterns/strategy) - Interchangeable algorithms; often combined with adapter for algorithm selection
+<pre><code>- [[Facade]](/topic/design-patterns/facade) - Simplifies complex subsystems; adapter makes incompatible interfaces work together
+- [[Decorator]](/topic/design-patterns/decorator) - Adds behavior without changing interface; adapter changes interface
+- [[Bridge]](/topic/design-patterns/bridge) - Designed upfront for abstraction/implementation separation; adapter retrofits compatibility
+- [[Proxy]](/topic/design-patterns/proxy) - Same interface with controlled access; adapter changes interface
+- [[Strategy]](/topic/design-patterns/strategy) - Interchangeable algorithms; often combined with adapter for algorithm selection
 </code></pre>
