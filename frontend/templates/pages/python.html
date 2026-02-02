@@ -3147,8 +3147,15 @@ html, body {
     document.querySelectorAll('.run-code-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const codeBlock = this.parentElement.querySelector('code');
-            const code = codeBlock.textContent;
+            let code = codeBlock.textContent;
             const language = this.dataset.language || 'python';
+
+            // Wrap Python code in main() if it doesn't have one
+            if (language === 'python' && !code.includes('def main(')) {
+                // Indent the code and wrap in main()
+                const indentedCode = code.split('\n').map(line => '    ' + line).join('\n');
+                code = `def main():\n${indentedCode}\n    return None`;
+            }
 
             this.disabled = true;
             this.textContent = 'Running...';
