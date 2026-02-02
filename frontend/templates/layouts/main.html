@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,43 +8,141 @@
     <title>{{.Title}}</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 
-    <!-- SINGLE CSS FILE - Clean shadow-based design -->
+    <!-- Core CSS files -->
     <link rel="stylesheet" href="/static/css/clean-ui.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/animations.css">
+    <link rel="stylesheet" href="/static/css/diagrams.css">
+    <link rel="stylesheet" href="/static/css/topic-detail.css">
+    <link rel="stylesheet" href="/static/css/responsive-enhancements.css">
+    <link rel="stylesheet" href="/static/css/smart-widescreen.css">
+    <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
 </head>
-<body>
+<body hx-boost="true">
     <header class="header">
         <a href="/" class="logo">
             <span class="logo-icon">&lt;/&gt;</span>
             <span class="logo-text">DSAlgo</span>
         </a>
-        <button class="mobile-menu-btn" onclick="document.getElementById('main-nav').classList.toggle('mobile-open')" aria-label="Menu">☰</button>
+        <button class="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle navigation">
+            <span class="hamburger-icon">&#9776;</span>
+        </button>
         <nav class="nav" id="main-nav">
-            <a href="/practice" class="nav-pill">▶ Practice</a>
-            <a href="/200-problems" class="nav-pill">🏆 200 Problems</a>
-            <a href="/roadmap" class="nav-pill">📋 Roadmap</a>
-            <a href="/sql" class="nav-pill">🗃 SQL</a>
-            <a href="/elasticsearch" class="nav-pill">🔍 Elasticsearch</a>
-            <a href="/redis" class="nav-pill">⚡ Redis</a>
-            <a href="/golang" class="nav-pill">🐹 Go</a>
-            <a href="/python" class="nav-pill">🐍 Python</a>
-            <a href="/system-design" class="nav-pill">🏗 System Design</a>
-            <a href="/system-architectures" class="nav-pill">📋 Architectures</a>
-            <a href="/design-patterns" class="nav-pill">🧩 Patterns</a>
-            <a href="/machine-coding" class="nav-pill">⚙ Machine Coding</a>
-            <a href="/microservices" class="nav-pill">📦 Microservices</a>
+            <a href="/practice" class="nav-pill" data-path="/practice">
+                <span class="nav-icon">&#9654;</span>
+                <span>Practice</span>
+            </a>
+            <a href="/200-problems" class="nav-pill" data-path="/200-problems">
+                <span class="nav-icon">&#127942;</span>
+                <span>200 Problems</span>
+            </a>
+            <a href="/roadmap" class="nav-pill" data-path="/roadmap">
+                <span class="nav-icon">&#128199;</span>
+                <span>Roadmap</span>
+            </a>
+            <a href="/sql" class="nav-pill" data-path="/sql">
+                <span class="nav-icon">&#128451;</span>
+                <span>SQL</span>
+            </a>
+            <a href="/elasticsearch" class="nav-pill" data-path="/elasticsearch">
+                <span class="nav-icon">&#128269;</span>
+                <span>Elasticsearch</span>
+            </a>
+            <a href="/redis" class="nav-pill" data-path="/redis">
+                <span class="nav-icon">&#9889;</span>
+                <span>Redis</span>
+            </a>
+            <a href="/golang" class="nav-pill" data-path="/golang">
+                <span class="nav-icon">&#128025;</span>
+                <span>Go</span>
+            </a>
+            <a href="/python" class="nav-pill" data-path="/python">
+                <span class="nav-icon">&#128013;</span>
+                <span>Python</span>
+            </a>
+            <a href="/python-asyncio" class="nav-pill" data-path="/python-asyncio">
+                <span class="nav-icon">&#9889;</span>
+                <span>Asyncio</span>
+            </a>
+            <a href="/system-design" class="nav-pill" data-path="/system-design">
+                <span class="nav-icon">&#127959;</span>
+                <span>System Design</span>
+            </a>
+            <a href="/system-architectures" class="nav-pill" data-path="/system-architectures">
+                <span class="nav-icon">&#128203;</span>
+                <span>Architectures</span>
+            </a>
+            <a href="/design-patterns" class="nav-pill" data-path="/design-patterns">
+                <span class="nav-icon">&#129513;</span>
+                <span>Patterns</span>
+            </a>
+            <a href="/machine-coding" class="nav-pill" data-path="/machine-coding">
+                <span class="nav-icon">&#9881;</span>
+                <span>Machine Coding</span>
+            </a>
+            <a href="/microservices" class="nav-pill" data-path="/microservices">
+                <span class="nav-icon">&#128230;</span>
+                <span>Microservices</span>
+            </a>
         </nav>
     </header>
-
+    <script>
+        // Highlight active nav item
+        (function() {
+            var path = window.location.pathname;
+            document.querySelectorAll('.nav-pill').forEach(function(pill) {
+                if (pill.getAttribute('data-path') === path) {
+                    pill.classList.add('active');
+                }
+            });
+        })();
+        // Mobile nav toggle
+        function toggleMobileNav() {
+            var nav = document.getElementById('main-nav');
+            var btn = document.querySelector('.mobile-menu-btn');
+            nav.classList.toggle('mobile-open');
+            btn.classList.toggle('active');
+        }
+    </script>
     <main class="main">
         {{embed}}
     </main>
+    <!-- Core utilities -->
+    <script src="/static/js/lazy-loader.js"></script>
+    <script src="/static/js/state-manager.js"></script>
 
-    <!-- Minimal JS -->
+    <!-- Feature scripts -->
+    <script src="/static/js/diagrams.js" defer></script>
+    <script src="/static/js/visualizations.js" defer></script>
+    <script src="/static/js/pdf-export.js" defer></script>
+    <script src="/static/js/adhd-enhancements.js" defer></script>
+
+    <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+
     <script>
-        // Highlight active nav
-        document.querySelectorAll('.nav-pill').forEach(function(p) {
-            if (p.getAttribute('href') === location.pathname) p.classList.add('active');
+        // Wait for lazy loader
+        function onLazyLoaderReady(cb) {
+            if (typeof LazyLoader !== 'undefined') cb();
+            else setTimeout(function() { onLazyLoaderReady(cb); }, 10);
+        }
+
+        // Code highlighting after HTMX swaps
+        document.body.addEventListener('htmx:afterSwap', function() {
+            onLazyLoaderReady(function() {
+                LazyLoader.loadHighlight().then(function() {
+                    document.querySelectorAll('pre code:not(.hljs)').forEach(function(block) {
+                        hljs.highlightElement(block);
+                    });
+                });
+            });
+        });
+
+        // Initial highlight
+        onLazyLoaderReady(function() {
+            LazyLoader.loadHighlight().then(function() {
+                if (typeof hljs !== 'undefined') hljs.highlightAll();
+            });
         });
     </script>
 </body>
