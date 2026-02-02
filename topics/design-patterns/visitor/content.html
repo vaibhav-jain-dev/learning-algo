@@ -34,28 +34,6 @@ processor = Processor()
 shape: Shape = Circle()  # Declared as Shape, actually Circle
 processor.process(shape)  # Calls Shape overload, not Circle!
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Why Single Dispatch Falls Short?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Why Single Dispatch Falls Short in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Why Single Dispatch Falls Short?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Why Single Dispatch Falls Short provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Why Single Dispatch Falls Short?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Why Single Dispatch Falls Short from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="the-double-dispatch-solution">The Double Dispatch Solution</h3>
 <p>The Visitor pattern achieves runtime dispatch on both types through a <strong>two-step protocol</strong>:</p>
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0">
@@ -84,28 +62,6 @@ processor.process(shape)  # Calls Shape overload, not Circle!
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Double Dispatch Solution and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Double Dispatch Solution in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Double Dispatch Solution?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The Double Dispatch Solution provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Double Dispatch Solution?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Double Dispatch Solution from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="the-critical-role-of-this">The Critical Role of &quot;this&quot;</h3>
 <p>The key insight is that inside a method, <code>this</code> (or <code>self</code>) has a <strong>static type</strong> equal to the class where the method is defined. When <code>CircleElement.accept()</code> calls <code>visitor.visitCircle(this)</code>, the compiler knows <code>this</code> is exactly a <code>CircleElement</code>, not just some <code>Element</code>.</p>
 <pre><code class="language-python">class CircleElement(Element):
@@ -119,28 +75,6 @@ processor.process(shape)  # Calls Shape overload, not Circle!
 <div style="color: #7f1d1d; line-height: 1.7">
 Double dispatch assumes <strong>static overload resolution</strong>. In languages with full multiple dispatch (like Julia or Common Lisp CLOS), the Visitor pattern is unnecessary because the language natively dispatches on all argument types at runtime.
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Critical Role of "this" and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Critical Role of "this" in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Critical Role of "this"?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The Critical Role of "this" provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Critical Role of "this"?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Critical Role of "this" from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="interview-deep-dive-double-dispatch">Interview Deep Dive: Double Dispatch</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
@@ -162,28 +96,6 @@ It chains two single-dispatch calls. The first call <code>element.accept(visitor
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Deep Dive: Double Dispatch?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Deep Dive: Double Dispatch in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Deep Dive: Double Dispatch?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Deep Dive: Double Dispatch provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Deep Dive: Double Dispatch?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Deep Dive: Double Dispatch from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="element-hierarchy-traversal">Element Hierarchy Traversal</h2>
 <h3 id="traversal-responsibility">Traversal Responsibility</h3>
 <p>A critical design decision is <strong>who controls traversal</strong>: the visitor, the elements, or an external iterator? Each approach has distinct implications.</p>
@@ -211,28 +123,6 @@ It chains two single-dispatch calls. The first call <code>element.accept(visitor
 <td style="padding: 0.75rem">Clean separation, but adds complexity</td>
 </tr>
 </table>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Traversal Responsibility?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Traversal Responsibility in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Traversal Responsibility?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Traversal Responsibility provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Traversal Responsibility?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Traversal Responsibility from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="visitor-controlled-traversal">Visitor-Controlled Traversal</h3>
 <p>The visitor explicitly navigates the structure, calling <code>accept()</code> on children as needed:</p>
@@ -266,28 +156,6 @@ class DepthFirstPrinter(TreeVisitor):
     Visitor-controlled traversal allows different visitors to traverse differently: pre-order, post-order, selective visiting, early termination, or even visiting the same node multiple times.
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Visitor-Controlled Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Visitor-Controlled Traversal in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Visitor-Controlled Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Visitor-Controlled Traversal provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Visitor-Controlled Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Visitor-Controlled Traversal from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="element-controlled-traversal">Element-Controlled Traversal</h3>
 <p>Elements handle their own child traversal, simplifying visitor implementation:</p>
 <pre><code class="language-python">class Composite(Element):
@@ -307,28 +175,6 @@ class DepthFirstPrinter(TreeVisitor):
 <div style="color: #78350f; line-height: 1.7">
     When elements control traversal, all visitors use the same order. This reduces flexibility but ensures consistency and prevents visitors from needing to understand the element structure.
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Element-Controlled Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Element-Controlled Traversal in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Element-Controlled Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Element-Controlled Traversal provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Element-Controlled Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Element-Controlled Traversal from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="handling-cycles-and-graph-structures">Handling Cycles and Graph Structures</h3>
 <p>Tree structures are straightforward, but graphs with cycles require cycle detection:</p>
@@ -354,28 +200,6 @@ class DepthFirstPrinter(TreeVisitor):
     In DAGs (directed acyclic graphs), nodes may be reachable via multiple paths without cycles. Decide whether shared nodes should be visited once or multiple times based on your use case. Size calculation should visit once; path enumeration should visit multiple times.
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Handling Cycles and Graph Structures and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Handling Cycles and Graph Structures and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Handling Cycles and Graph Structures?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Handling Cycles and Graph Structures provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Handling Cycles and Graph Structures?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Handling Cycles and Graph Structures from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-deep-dive-traversal">Interview Deep Dive: Traversal</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: Who should control traversal in the Visitor pattern?</div>
@@ -396,28 +220,6 @@ Track visited nodes using a set of object identities (or unique IDs). Before vis
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Deep Dive: Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Deep Dive: Traversal in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Deep Dive: Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Deep Dive: Traversal provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Deep Dive: Traversal?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Deep Dive: Traversal from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="adding-operations-without-modifying-classes">Adding Operations Without Modifying Classes</h2>
 <h3 id="the-open-closed-trade-off">The Open-Closed Trade-off</h3>
 <p>The Visitor pattern embodies a <strong>dimensional trade-off</strong> in the Open-Closed Principle:</p>
@@ -440,28 +242,6 @@ Track visited nodes using a set of object identities (or unique IDs). Before vis
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Open-Closed Trade-off and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Open-Closed Trade-off in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Open-Closed Trade-off?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The Open-Closed Trade-off provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating The Open-Closed Trade-off?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how The Open-Closed Trade-off performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
-</div>
-</details>
-</div>
 <h3 id="when-visitor-wins">When Visitor Wins</h3>
 <p>Use Visitor when your <strong>element hierarchy is stable</strong> but <strong>operations change frequently</strong>:</p>
 <pre><code class="language-python"># AST for a simple expression language - these rarely change
@@ -481,28 +261,6 @@ class SymbolResolver(ExpressionVisitor): pass    # Week 6
 class DeadCodeAnalyzer(ExpressionVisitor): pass  # Week 7
 # ... and so on
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are When Visitor Wins and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of When Visitor Wins and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply When Visitor Wins?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where When Visitor Wins provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using When Visitor Wins?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider When Visitor Wins from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="the-acyclic-visitor-pattern">The Acyclic Visitor Pattern</h3>
 <p>When you need to add both element types and operations more freely, consider the <strong>Acyclic Visitor</strong> pattern, which breaks the cyclic dependency:</p>
 <pre><code class="language-python">from abc import ABC, abstractmethod
@@ -557,28 +315,6 @@ class CircleCounter(Visitor, CircleVisitor):
 Acyclic Visitor trades compile-time safety for flexibility. The <code>isinstance()</code> check happens at runtime, meaning you lose static guarantees that all element types are handled. This is acceptable when visitors legitimately need to ignore certain element types.
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Acyclic Visitor Pattern and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Acyclic Visitor Pattern in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Acyclic Visitor Pattern?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The Acyclic Visitor Pattern provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Acyclic Visitor Pattern?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Acyclic Visitor Pattern from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="default-visitor-implementation">Default Visitor Implementation</h3>
 <p>Provide a base visitor with default (often no-op) implementations to reduce boilerplate:</p>
 <pre><code class="language-python">class DefaultExpressionVisitor(ExpressionVisitor):
@@ -610,28 +346,6 @@ class VariableFinder(DefaultExpressionVisitor):
         self.variables.add(expr.name)
     # All other visit methods inherited - they traverse but do nothing
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Default Visitor Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Default Visitor Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Default Visitor Implementation correctly?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Default Visitor Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Default Visitor Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-deep-dive-extensibility">Interview Deep Dive: Extensibility</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: How does Visitor enable adding operations without modifying element classes?</div>
@@ -652,28 +366,6 @@ The <strong>Expression Problem</strong> asks: how do you add both new data varia
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Deep Dive: Extensibility?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Deep Dive: Extensibility in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Deep Dive: Extensibility?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Deep Dive: Extensibility provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Deep Dive: Extensibility?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Deep Dive: Extensibility from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="complete-implementation-compiler-ast-visitor">Complete Implementation: Compiler AST Visitor</h2>
 <pre><code class="language-python">from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -1767,28 +1459,6 @@ Convert to <strong>continuation-passing style</strong> or use an <strong>explici
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are When to Use Alternatives and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of When to Use Alternatives and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply When to Use Alternatives?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where When to Use Alternatives provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using When to Use Alternatives?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider When to Use Alternatives from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="common-pitfalls-and-edge-cases">Common Pitfalls and Edge Cases</h2>
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #991b1b; margin-bottom: 1rem">Critical Pitfalls</div>
@@ -1865,77 +1535,11 @@ The Visitor pattern has a fundamental tension here. Strategies: <strong>1) Acycl
 <div style="color: #475569; font-size: 0.9rem">Plugins are visitors that transform JavaScript AST. The plugin API is essentially a visitor registration system.</div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Compilers and Static Analysis and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Compilers and Static Analysis and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Compilers and Static Analysis?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Compilers and Static Analysis provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: How do you analyze the complexity implications of Compilers and Static Analysis?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Start with the theoretical analysis - what is the time and space complexity in best, average, and worst cases? Then consider practical factors: constant factors matter for small inputs, cache behavior matters for large inputs. Real performance often differs from theoretical analysis due to hardware and implementation details.</p>
-</div>
-</details>
-</div>
 <h3 id="database-query-processing">Database Query Processing</h3>
 <p>ORMs like SQLAlchemy, Django ORM, and Hibernate use visitors to traverse expression trees and generate SQL for different database backends (PostgreSQL, MySQL, SQLite each have different SQL dialects).</p>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Database Query Processing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Database Query Processing in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Database Query Processing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Database Query Processing provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Database Query Processing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Database Query Processing from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="document-processing">Document Processing</h3>
 <p>PDF libraries traverse document structure with visitors for rendering, text extraction, and accessibility analysis. XML/HTML parsers expose SAX-like visitor interfaces for efficient streaming processing.</p>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Document Processing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Document Processing in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Document Processing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Document Processing provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Document Processing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Document Processing from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="summary-key-interview-points">Summary: Key Interview Points</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;padding-bottom: 0.75rem; color: #1e293b">Memorize These</div>

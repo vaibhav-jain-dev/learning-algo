@@ -134,28 +134,6 @@
 <li>If failures exceed the <span style="color:#10b981"><strong>failure threshold</strong></span>, circuit &quot;trips&quot; to OPEN</li>
 <li>Slow calls (exceeding latency threshold) may also count as failures</li>
 </ul>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a State 1: CLOSED (Normal Operation)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about State 1: CLOSED (Normal Operation) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply State 1: CLOSED (Normal Operation)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where State 1: CLOSED (Normal Operation) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using State 1: CLOSED (Normal Operation)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider State 1: CLOSED (Normal Operation) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="state-open">State 2: OPEN (Failing Fast)</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
@@ -199,28 +177,6 @@
 <li>After a configurable <span style="color:#10b981"><strong>timeout duration</strong></span>, transitions to HALF-OPEN</li>
 <li>This is the <span style="color:#10b981"><strong>&quot;fail fast&quot;</strong></span> principle in action</li>
 </ul>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a State 2: OPEN (Failing Fast)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about State 2: OPEN (Failing Fast) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply State 2: OPEN (Failing Fast)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where State 2: OPEN (Failing Fast) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using State 2: OPEN (Failing Fast)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider State 2: OPEN (Failing Fast) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="state-half-open">State 3: HALF-OPEN (Testing Recovery)</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
@@ -265,28 +221,6 @@
 <li>This prevents <span style="color:#10b981"><strong>&quot;thundering herd&quot;</strong></span> when a service comes back up</li>
 </ul>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a State 3: HALF-OPEN (Testing Recovery)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about State 3: HALF-OPEN (Testing Recovery) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply State 3: HALF-OPEN (Testing Recovery)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where State 3: HALF-OPEN (Testing Recovery) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using State 3: HALF-OPEN (Testing Recovery)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider State 3: HALF-OPEN (Testing Recovery) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="failure-thresholds">Failure Thresholds and Counting Strategies</h2>
 <p>The way you count and evaluate failures significantly impacts circuit breaker effectiveness.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -367,28 +301,6 @@
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Sliding Window Types and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Sliding Window Types and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Sliding Window Types?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Sliding Window Types provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Sliding Window Types?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Sliding Window Types from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="timeout-strategies">Timeout Strategies</h2>
 <p><span style="color:#10b981"><strong>Timeout configuration</strong></span> is critical - it determines how quickly your circuit breaker responds to failures and how conservatively it tests recovery.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -460,28 +372,6 @@ base: 30s, max: 5m, multiplier: 2
 </tbody>
 </table>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Timeout Strategy Comparison?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Timeout Strategy Comparison in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Timeout Strategy Comparison?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Timeout Strategy Comparison provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Timeout Strategy Comparison?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Timeout Strategy Comparison from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="bulkhead-pattern">The Bulkhead Pattern</h2>
 <p>The <span style="color:#10b981"><strong>Bulkhead pattern</strong></span> complements circuit breakers by isolating resources so a failure in one area cannot exhaust resources needed by others - like watertight compartments in a ship.</p>
 <div class="diagram-container">
@@ -570,28 +460,6 @@ cache: max_conn=25
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Bulkhead Types and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Bulkhead Types and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Bulkhead Types?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Bulkhead Types provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Bulkhead Types?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Bulkhead Types from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="circuit-breaker-bulkhead">Circuit Breaker + Bulkhead Together</h3>
 <pre><code class="language-python"># Combining circuit breaker with bulkhead for complete protection
 from concurrent.futures import ThreadPoolExecutor
@@ -643,28 +511,6 @@ class ResilientServiceClient:
             self.semaphore.release()
 </code></pre>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Circuit Breaker + Bulkhead Together?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Circuit Breaker + Bulkhead Together in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Circuit Breaker + Bulkhead Together?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Circuit Breaker + Bulkhead Together provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Circuit Breaker + Bulkhead Together?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Circuit Breaker + Bulkhead Together from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="cascading-failures">Cascading Failures: The Problem Circuit Breakers Solve</h2>
 <p><span style="color:#10b981"><strong>Cascading failures</strong></span> occur when a failure in one service causes failures in dependent services, which then cause failures in their dependents, creating a domino effect that can bring down an entire system.</p>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1015,28 +861,6 @@ def circuit_breaker(breaker: CircuitBreaker, fallback: Callable = None):
         return wrapper
     return decorator
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Python - Production-Grade Circuit Breaker?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Python - Production-Grade Circuit Breaker in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Python - Production-Grade Circuit Breaker?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Python - Production-Grade Circuit Breaker provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Python - Production-Grade Circuit Breaker?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Python - Production-Grade Circuit Breaker from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="go-implementation">Go - Circuit Breaker with Bulkhead</h3>
 <pre><code class="language-go">package resilience
 
@@ -1235,28 +1059,6 @@ func (cb *CircuitBreaker) recordFailure() {
 }
 </code></pre>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Go - Circuit Breaker with Bulkhead?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Go - Circuit Breaker with Bulkhead in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Go - Circuit Breaker with Bulkhead?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Go - Circuit Breaker with Bulkhead provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Go - Circuit Breaker with Bulkhead?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Go - Circuit Breaker with Bulkhead from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="fallback-strategies">Fallback Strategies</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
 <h3 style="color: #1e293b; text-align: center; margin: 0 0 24px 0; font-size: 18px; font-weight: 600">FALLBACK OPTIONS WHEN CIRCUIT IS OPEN</h3>
@@ -1452,28 +1254,6 @@ class TestCircuitBreakerEdgeCases:
             pytest.fail(&quot;Circuit breaker should fail open&quot;)
 </code></pre>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Testing Failure Modes and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Testing Failure Modes and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Testing Failure Modes?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Testing Failure Modes provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Testing Failure Modes?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Testing Failure Modes from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="color: #dc2626; font-weight: 700; margin-bottom: 12px">1. Not Distinguishing Error Types</div>
@@ -1533,28 +1313,6 @@ class TestCircuitBreakerEdgeCases:
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q1: Why use a circuit breaker instead of just retries??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Q1: Why use a circuit breaker instead of just retries? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q1: Why use a circuit breaker instead of just retries??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Q1: Why use a circuit breaker instead of just retries? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q1: Why use a circuit breaker instead of just retries??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Q1: Why use a circuit breaker instead of just retries? from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="q2-microservices-implementation">Q2: How would you implement circuit breakers in a microservices architecture?</h3>
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
@@ -1612,28 +1370,6 @@ class TestCircuitBreakerEdgeCases:
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q2: How would you implement circuit breakers in a microservices architecture??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Q2: How would you implement circuit breakers in a microservices architecture? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q2: How would you implement circuit breakers in a microservices architecture??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Q2: How would you implement circuit breakers in a microservices architecture? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q2: How would you implement circuit breakers in a microservices architecture??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Q2: How would you implement circuit breakers in a microservices architecture? from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="q3-payment-system-design">Q3: Design a payment system with circuit breakers. What happens when the payment provider is down?</h3>
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
@@ -1713,28 +1449,6 @@ if oldest_item_age &gt; timedelta(hours=2):
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q3: Design a payment system with circuit breakers. What happens when the payment provider is down??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Q3: Design a payment system with circuit breakers. What happens when the payment provider is down? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q3: Design a payment system with circuit breakers. What happens when the payment provider is down??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Q3: Design a payment system with circuit breakers. What happens when the payment provider is down? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q3: Design a payment system with circuit breakers. What happens when the payment provider is down??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Q3: Design a payment system with circuit breakers. What happens when the payment provider is down? from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="q4-bulkhead-explanation">Q4: Explain the bulkhead pattern and how it works with circuit breakers.</h3>
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
@@ -1808,28 +1522,6 @@ class AsyncBulkhead:
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the Q4: Explain the bulkhead pattern and how it works with circuit breakers. and when should you use it?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>The Q4: Explain the bulkhead pattern and how it works with circuit breakers. addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q4: Explain the bulkhead pattern and how it works with circuit breakers.?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Q4: Explain the bulkhead pattern and how it works with circuit breakers. provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q4: Explain the bulkhead pattern and how it works with circuit breakers.?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Q4: Explain the bulkhead pattern and how it works with circuit breakers. from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="q5-testing-circuit-breakers">Q5: How do you test circuit breakers and validate they work correctly?</h3>
 <div style="background: white; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Level 1 Answer:</div>
@@ -1943,28 +1635,6 @@ def test_race_condition_on_threshold():
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q5: How do you test circuit breakers and validate they work correctly??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Q5: How do you test circuit breakers and validate they work correctly? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q5: How do you test circuit breakers and validate they work correctly??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Q5: How do you test circuit breakers and validate they work correctly? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q5: How do you test circuit breakers and validate they work correctly??</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Q5: How do you test circuit breakers and validate they work correctly? from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="monitoring-alerting">Monitoring and Alerting</h2>
 <pre><code class="language-python"># Prometheus metrics for circuit breaker monitoring
 from prometheus_client import Gauge, Counter, Histogram

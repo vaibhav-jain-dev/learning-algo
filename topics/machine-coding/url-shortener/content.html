@@ -53,28 +53,6 @@
 </table>
 <p><strong>Key Insight</strong>: Base62 maximizes information density while remaining URL-safe without encoding. The <code>+</code> and <code>/</code> in Base64 require percent-encoding, making URLs longer and uglier.</p>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Mathematics Behind Short Codes and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Mathematics Behind Short Codes in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Mathematics Behind Short Codes?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The Mathematics Behind Short Codes provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Mathematics Behind Short Codes?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Mathematics Behind Short Codes from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="internal-mechanism-conversion-algorithm">Internal Mechanism: Conversion Algorithm</h3>
 <pre><code class="language-python">BASE62_ALPHABET = &quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;
 
@@ -116,28 +94,6 @@ def decode_base62(code: str) -&gt; int:
 <p><strong>Assumption</strong>: The alphabet ordering affects generated codes. Starting with digits (<code>0-9</code>) means small numbers produce digit-only codes, potentially revealing ID patterns. Some systems shuffle the alphabet for obfuscation.</p>
 <p><strong>Trade-off</strong>: Shuffled alphabets prevent enumeration attacks but complicate debugging and make codes less memorable.</p>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Internal Mechanism: Conversion Algorithm?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Internal Mechanism: Conversion Algorithm in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Internal Mechanism: Conversion Algorithm?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Internal Mechanism: Conversion Algorithm provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Internal Mechanism: Conversion Algorithm?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Internal Mechanism: Conversion Algorithm from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="edge-cases-in-base62-encoding">Edge Cases in Base62 Encoding</h3>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Edge Case 1: Leading Zeros</strong></p>
@@ -159,28 +115,6 @@ def decode_base62(code: str) -&gt; int:
 <li>Some services exclude these (Base58 in Bitcoin addresses)</li>
 </ul>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Edge Cases in Base62 Encoding?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Edge Cases in Base62 Encoding in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Edge Cases in Base62 Encoding?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Edge Cases in Base62 Encoding provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Edge Cases in Base62 Encoding?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Edge Cases in Base62 Encoding from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="code-length-capacity-planning">Code Length Capacity Planning</h3>
 <pre><code>Length | Unique Codes      | URLs/Second for 10 Years | Storage at 500B/URL
 -------|-------------------|--------------------------|--------------------
@@ -191,28 +125,6 @@ def decode_base62(code: str) -&gt; int:
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Design Choice</strong>: 7 characters provides the sweet spot - short enough to be memorable, large enough keyspace to avoid collisions for decades at massive scale.</p>
 <p><strong>Real-world validation</strong>: bit.ly uses 7 characters, TinyURL uses 7-8, Twitter's t.co uses 10 (includes error detection).</p>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Code Length Capacity Planning?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Code Length Capacity Planning in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Code Length Capacity Planning?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Code Length Capacity Planning provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Code Length Capacity Planning?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Code Length Capacity Planning from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="interview-questions-base62-encoding-3-levels-deep">Interview Questions: Base62 Encoding (3 Levels Deep)</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -231,28 +143,6 @@ def decode_base62(code: str) -&gt; int:
 <p><strong>Level 3</strong>: You've implemented alphabet shuffling with a secret seed. An attacker has collected 10,000 sequential short codes created over time. Can they reverse-engineer your alphabet order? Design a scheme that prevents this attack while maintaining O(1) encoding and supporting counter-based generation.</p>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Base62 Encoding (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Base62 Encoding (3 Levels Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Base62 Encoding (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Base62 Encoding (3 Levels Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Base62 Encoding (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Base62 Encoding (3 Levels Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-2-collision-handling-strategies">Section 2: Collision Handling Strategies</h2>
 <h3 id="understanding-collision-probability">Understanding Collision Probability</h3>
 <p><span style="color:#22c55e;font-weight:bold">Hash collisions</span> occur when two different inputs produce the same short code. The probability follows the <a href="/topics/probability/birthday-paradox">[birthday paradox]</a> mathematics, a fundamental concept in <a href="/topics/security/cryptographic-foundations">[cryptography]</a> and <a href="/topics/system-design/distributed-systems-fundamentals">[distributed systems]</a>.</p>
@@ -269,28 +159,6 @@ def decode_base62(code: str) -&gt; int:
 <li>At 10 billion URLs: P ≈ 76% (guaranteed issues)</li>
 </ul>
 <p><strong>Key Insight</strong>: You'll hit collisions far sooner than exhausting the keyspace.</p>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Understanding Collision Probability?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Understanding Collision Probability in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Understanding Collision Probability?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Understanding Collision Probability provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Understanding Collision Probability?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Understanding Collision Probability from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="strategy-1-counter-based-collision-free-by-design">Strategy 1: Counter-Based (Collision-Free by Design)</h3>
 <pre><code class="language-python">class CounterBasedShortener:
@@ -342,28 +210,6 @@ def decode_base62(code: str) -&gt; int:
 </tr>
 </tbody>
 </table>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Strategy 1: Counter-Based (Collision-Free by Design)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Strategy 1: Counter-Based (Collision-Free by Design) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Strategy 1: Counter-Based (Collision-Free by Design)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Strategy 1: Counter-Based (Collision-Free by Design) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Strategy 1: Counter-Based (Collision-Free by Design)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Strategy 1: Counter-Based (Collision-Free by Design) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="strategy-2-hash-based-with-collision-resolution">Strategy 2: Hash-Based with Collision Resolution</h3>
 <pre><code class="language-python">import hashlib
@@ -418,28 +264,6 @@ class HashBasedShortener:
 <div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Assumption</strong>: Hash-based approach assumes same URL should map to same short code (idempotency). This is a business decision - some services intentionally create different codes for the same URL to track different campaigns.</p>
 <p><strong>Real-world implication</strong>: If you hash <code>url + user_id</code>, different users sharing the same long URL get different short codes, enabling per-user analytics.</p>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Strategy 2: Hash-Based with Collision Resolution?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Strategy 2: Hash-Based with Collision Resolution in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Strategy 2: Hash-Based with Collision Resolution?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Strategy 2: Hash-Based with Collision Resolution provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Strategy 2: Hash-Based with Collision Resolution?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Strategy 2: Hash-Based with Collision Resolution from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="strategy-3-bloom-filter-pre-check">Strategy 3: Bloom Filter Pre-Check</h3>
 <pre><code class="language-python">from pybloom_live import ScalableBloomFilter
@@ -515,28 +339,6 @@ class BloomOptimizedShortener:
 </table>
 <p>At 1 billion codes: Bloom filter uses ~1.2GB RAM, saves billions of DB lookups.</p>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Strategy 3: Bloom Filter Pre-Check?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Strategy 3: Bloom Filter Pre-Check in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Strategy 3: Bloom Filter Pre-Check?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Strategy 3: Bloom Filter Pre-Check provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Strategy 3: Bloom Filter Pre-Check?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Strategy 3: Bloom Filter Pre-Check from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="collision-resolution-linear-probing-vs-chaining">Collision Resolution: Linear Probing vs. Chaining</h3>
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Collision Resolution Strategies</div>
@@ -579,28 +381,6 @@ class BloomOptimizedShortener:
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in Collision Resolution: Linear Probing vs. Chaining?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Collision Resolution: Linear Probing vs. Chaining?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Collision Resolution: Linear Probing vs. Chaining provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Collision Resolution: Linear Probing vs. Chaining?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Collision Resolution: Linear Probing vs. Chaining performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-collision-handling-3-levels-deep">Interview Questions: Collision Handling (3 Levels Deep)</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Level 1</strong>: How would you handle hash collisions in a URL shortener?</p>
@@ -618,28 +398,6 @@ class BloomOptimizedShortener:
 <p><strong>Level 3</strong>: Design a distributed Bloom filter architecture that (a) provides consistent false positive rates as data grows, (b) handles server failures without losing accuracy, (c) supports efficient rebuilding, and (d) minimizes network overhead for cross-server coordination. Analyze the CAP theorem implications of your design.</p>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Collision Handling (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Collision Handling (3 Levels Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Collision Handling (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Collision Handling (3 Levels Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Collision Handling (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Collision Handling (3 Levels Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-3-distributed-id-generation">Section 3: Distributed ID Generation</h2>
 <h3 id="the-coordination-problem">The Coordination Problem</h3>
 <p>In a <span style="color:#22c55e;font-weight:bold">distributed system</span>, generating unique IDs without coordination is one of the hardest problems. Each approach trades off between <span style="color:#22c55e;font-weight:bold">uniqueness guarantees</span>, <span style="color:#22c55e;font-weight:bold">latency</span>, and operational complexity. This relates closely to <a href="/topics/system-design/consensus-algorithms">[consensus protocols]</a> and <a href="/topics/system-design/distributed-locking">[distributed coordination]</a>.</p>
@@ -648,28 +406,6 @@ class BloomOptimizedShortener:
 <p>Without coordination: Risk duplicate IDs (correctness issue)<br />
 With coordination: Add latency and single point of failure (availability issue)</p>
 <p>This is a manifestation of the <a href="/topics/system-design/cap-theorem">[CAP theorem]</a> - you cannot have both strong consistency (unique IDs) and high availability (no coordination) under network partitions.</p>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Coordination Problem and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Coordination Problem in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: How would you approach solving a problem related to The Coordination Problem?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Start by clearly defining the problem constraints and requirements. Consider what makes this problem challenging and what techniques apply. Think about how you would break it down into smaller subproblems. Remember that recognizing the problem pattern is often the hardest part.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Coordination Problem?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Coordination Problem from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="strategy-1-twitter-snowflake-ids">Strategy 1: Twitter Snowflake IDs</h3>
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -829,28 +565,6 @@ class SnowflakeGenerator:
 <li><strong>Use logical clocks</strong>: Hybrid Logical Clocks (HLC) combine physical and logical time</li>
 </ol>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Strategy 1: Twitter Snowflake IDs and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Strategy 1: Twitter Snowflake IDs and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Strategy 1: Twitter Snowflake IDs?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Strategy 1: Twitter Snowflake IDs provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Strategy 1: Twitter Snowflake IDs?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Strategy 1: Twitter Snowflake IDs from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="strategy-2-range-based-allocation-with-zookeeper">Strategy 2: Range-Based Allocation with Zookeeper</h3>
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
 <div style="color: #7ee787; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Range Allocation Architecture</div>
@@ -988,28 +702,6 @@ class RangeAllocator:
 </table>
 <p><strong>Assumption</strong>: Lost IDs are acceptable. With 3.5 trillion possible 7-char codes, losing millions per day is negligible.</p>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Strategy 2: Range-Based Allocation with Zookeeper?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Strategy 2: Range-Based Allocation with Zookeeper in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Strategy 2: Range-Based Allocation with Zookeeper?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Strategy 2: Range-Based Allocation with Zookeeper provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Strategy 2: Range-Based Allocation with Zookeeper?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Strategy 2: Range-Based Allocation with Zookeeper from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="strategy-3-ulid-universally-unique-lexicographically-sortable-identifier">Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier)</h3>
 <pre><code class="language-python">import os
 import time
@@ -1080,28 +772,6 @@ class ULIDGenerator:
         &quot;&quot;&quot;
         return self.generate()[:length]
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Strategy 3: ULID (Universally Unique Lexicographically Sortable Identifier) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="comparison-of-distributed-id-strategies">Comparison of Distributed ID Strategies</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 20px 0">
 <table>
@@ -1159,28 +829,6 @@ class ULIDGenerator:
 </tbody>
 </table>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Comparison of Distributed ID Strategies and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Comparison of Distributed ID Strategies and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Comparison of Distributed ID Strategies?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Comparison of Distributed ID Strategies provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Comparison of Distributed ID Strategies?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Comparison of Distributed ID Strategies from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-distributed-id-generation-3-levels-deep">Interview Questions: Distributed ID Generation (3 Levels Deep)</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Level 1</strong>: How does Snowflake ID ensure uniqueness across distributed servers?</p>
@@ -1198,28 +846,6 @@ class ULIDGenerator:
 <p><strong>Level 3</strong>: You're building a URL shortener that must work in a serverless environment (AWS Lambda) where (a) instances have no persistent state, (b) multiple instances run concurrently, (c) you cannot use external coordination services, and (d) you need sub-millisecond ID generation latency. Design an ID generation scheme that provides acceptably low collision probability while meeting all constraints. Quantify &quot;acceptably low&quot; for a system expecting 10 billion URLs over 5 years.</p>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Distributed ID Generation (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Distributed ID Generation (3 Levels Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Distributed ID Generation (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Distributed ID Generation (3 Levels Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Distributed ID Generation (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Distributed ID Generation (3 Levels Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-4-custom-aliases-vanity-urls">Section 4: Custom Aliases (Vanity URLs)</h2>
 <h3 id="the-business-case-for-custom-aliases">The Business Case for Custom Aliases</h3>
 <p><span style="color:#22c55e;font-weight:bold">Custom aliases</span> (also called vanity URLs) allow users to choose memorable, branded short codes instead of auto-generated ones. This feature transforms a utility into a premium product.</p>
@@ -1232,28 +858,6 @@ class ULIDGenerator:
 <li><strong>Premium feature</strong>: Monetization opportunity (paid plans)</li>
 </ul>
 <p><strong>Real-world pricing</strong>: bit.ly charges $35/month for custom back-halves, Rebrandly's business plan at $69/month includes vanity URLs.</p>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Business Case for Custom Aliases and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Business Case for Custom Aliases in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Business Case for Custom Aliases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The Business Case for Custom Aliases provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Business Case for Custom Aliases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Business Case for Custom Aliases from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="design-challenges-for-custom-aliases">Design Challenges for Custom Aliases</h3>
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1284,28 +888,6 @@ class ULIDGenerator:
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Design Challenges for Custom Aliases and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Design Challenges for Custom Aliases and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: How would you approach solving a problem related to Design Challenges for Custom Aliases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Start by clearly defining the problem constraints and requirements. Consider what makes this problem challenging and what techniques apply. Think about how you would break it down into smaller subproblems. Remember that recognizing the problem pattern is often the hardest part.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Design Challenges for Custom Aliases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Design Challenges for Custom Aliases from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="implementation-custom-alias-validator">Implementation: Custom Alias Validator</h3>
 <pre><code class="language-python">import re
@@ -1427,28 +1009,6 @@ class CustomAliasValidator:
                 return True
         return False
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Implementation: Custom Alias Validator?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Implementation: Custom Alias Validator in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Implementation: Custom Alias Validator correctly?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Implementation: Custom Alias Validator?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Implementation: Custom Alias Validator from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="namespace-separation-strategy">Namespace Separation Strategy</h3>
 <div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>The Namespace Problem</strong>:</p>
@@ -1542,28 +1102,6 @@ class CustomAliasValidator:
             # Must be custom alias
             return await custom_storage.get(code)
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Namespace Separation Strategy?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Namespace Separation Strategy in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Namespace Separation Strategy?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Namespace Separation Strategy provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Namespace Separation Strategy?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Namespace Separation Strategy from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="premium-feature-custom-domain-integration">Premium Feature: Custom Domain Integration</h3>
 <p><span style="color:#22c55e;font-weight:bold">Custom domains</span> take vanity URLs to the next level, allowing enterprises to use their own domains (e.g., <code>go.nike.com/sale</code>) while the URL shortener handles everything.</p>
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1692,28 +1230,6 @@ class CustomDomainManager:
             return custom_domain.organization_id
         return None
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Premium Feature: Custom Domain Integration?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Premium Feature: Custom Domain Integration in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Premium Feature: Custom Domain Integration?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Premium Feature: Custom Domain Integration provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Premium Feature: Custom Domain Integration?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Premium Feature: Custom Domain Integration from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-custom-aliases-3-levels-deep">Interview Questions: Custom Aliases (3 Levels Deep)</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Level 1</strong>: How would you implement custom short code (vanity URL) support?</p>
@@ -2022,28 +1538,6 @@ return True
 </details>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Custom Aliases (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Custom Aliases (3 Levels Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Custom Aliases (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Custom Aliases (3 Levels Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Custom Aliases (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Custom Aliases (3 Levels Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-5-analytics-tracking-architecture">Section 5: Analytics Tracking Architecture</h2>
 <h3 id="the-301-vs-302-decision">The 301 vs 302 Decision</h3>
 <p>Redirect status codes fundamentally affect your analytics capabilities.</p>
@@ -2079,28 +1573,6 @@ return True
 <div>Marketing platforms: 302 (prioritizes analytics)</div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The 301 vs 302 Decision and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The 301 vs 302 Decision in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The 301 vs 302 Decision?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The 301 vs 302 Decision provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating The 301 vs 302 Decision?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how The 301 vs 302 Decision performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
-</div>
-</details>
 </div>
 <h3 id="multi-dimensional-analytics-data-model">Multi-Dimensional Analytics Data Model</h3>
 <pre><code class="language-python">from dataclasses import dataclass, field
@@ -2185,28 +1657,6 @@ class URLAnalytics:
     # Time series (hourly buckets for last 30 days)
     hourly_clicks: List[int] = field(default_factory=list)
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Multi-Dimensional Analytics Data Model?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Multi-Dimensional Analytics Data Model in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Multi-Dimensional Analytics Data Model?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Multi-Dimensional Analytics Data Model provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Multi-Dimensional Analytics Data Model?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Multi-Dimensional Analytics Data Model from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="real-time-vs-batch-analytics-pipeline">Real-Time vs. Batch Analytics Pipeline</h3>
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
 <div style="color: #58a6ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Lambda Architecture for Analytics</div>
@@ -2271,28 +1721,6 @@ class URLAnalytics:
 <div style="color: #d1fae5; font-size: 11px; margin-top: 12px">Merges speed + batch for complete, consistent view</div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in Real-Time vs. Batch Analytics Pipeline?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Real-Time vs. Batch Analytics Pipeline?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Real-Time vs. Batch Analytics Pipeline provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Real-Time vs. Batch Analytics Pipeline?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Real-Time vs. Batch Analytics Pipeline performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
-</div>
-</details>
 </div>
 <h3 id="click-event-processing-pipeline">Click Event Processing Pipeline</h3>
 <pre><code class="language-python">import asyncio
@@ -2478,28 +1906,6 @@ class ClickEnricher:
 </table>
 <p>bit.ly processes 10 billion+ clicks/month. Exact counting at this scale requires careful data structure choices.</p>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Click Event Processing Pipeline?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Click Event Processing Pipeline in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Click Event Processing Pipeline?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Click Event Processing Pipeline provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Click Event Processing Pipeline?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Click Event Processing Pipeline from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-analytics-tracking-3-levels-deep">Interview Questions: Analytics Tracking (3 Levels Deep)</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Level 1</strong>: Why might you choose 302 redirects over 301 for a URL shortener with analytics?</p>
@@ -2517,28 +1923,6 @@ class ClickEnricher:
 <p><strong>Level 3</strong>: Design a click processing pipeline that (a) guarantees exactly-once processing semantics, (b) handles out-of-order events (mobile clicks arriving late), (c) supports reprocessing historical data when you fix bugs, and (d) provides real-time counters with &lt; 5 second lag. Address the tension between exactly-once semantics and real-time requirements.</p>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Analytics Tracking (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Analytics Tracking (3 Levels Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Analytics Tracking (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Analytics Tracking (3 Levels Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Analytics Tracking (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Analytics Tracking (3 Levels Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-5-caching-strategy">Section 5: Caching Strategy</h2>
 <h3 id="cache-hierarchy-design">Cache Hierarchy Design</h3>
 <p>URL shorteners are extremely read-heavy (100:1 read:write ratio or higher), making caching critical for performance and cost.</p>
@@ -2601,28 +1985,6 @@ class ClickEnricher:
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Cache Hierarchy Design?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Cache Hierarchy Design in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Cache Hierarchy Design?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Cache Hierarchy Design provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Cache Hierarchy Design?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Cache Hierarchy Design from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="cache-implementation-with-write-through-pattern">Cache Implementation with Write-Through Pattern</h3>
 <pre><code class="language-python">import asyncio
@@ -2767,28 +2129,6 @@ class URLCache:
             ) / total
         }
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the Cache Implementation with Write-Through Pattern and when should you use it?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>The Cache Implementation with Write-Through Pattern addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Cache Implementation with Write-Through Pattern correctly?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Cache Implementation with Write-Through Pattern?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Cache Implementation with Write-Through Pattern from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="handling-cache-stampede">Handling Cache Stampede</h3>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Cache Stampede Problem</strong>:</p>
@@ -2952,28 +2292,6 @@ class StampedeProtectedCache:
         if url:
             await self._set_both(short_code, url, fresh_ttl, stale_ttl)
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Handling Cache Stampede?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Handling Cache Stampede in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Handling Cache Stampede?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Handling Cache Stampede provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Handling Cache Stampede?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Handling Cache Stampede from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="cache-consistency-in-distributed-systems">Cache Consistency in Distributed Systems</h3>
 <div style="background: #f5f3ff; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>The Consistency Challenge</strong>:</p>
@@ -3088,28 +2406,6 @@ class ConsistentCache:
             })
         )
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Cache Consistency in Distributed Systems and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Cache Consistency in Distributed Systems and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Cache Consistency in Distributed Systems?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Cache Consistency in Distributed Systems provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Cache Consistency in Distributed Systems?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Cache Consistency in Distributed Systems from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-caching-strategy-3-levels-deep">Interview Questions: Caching Strategy (3 Levels Deep)</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>Level 1</strong>: Why use multiple cache layers (local + Redis) instead of just Redis?</p>
@@ -3127,28 +2423,6 @@ class ConsistentCache:
 <p><strong>Level 3</strong>: Design an adaptive caching system that (a) automatically learns access patterns per URL, (b) adjusts TTLs dynamically to optimize hit rate vs. memory, (c) pre-warms cache for predictably viral URLs (e.g., shared by influencers), and (d) handles flash crowds without manual intervention. Quantify the memory-performance trade-offs in your design.</p>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Caching Strategy (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Caching Strategy (3 Levels Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Caching Strategy (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Caching Strategy (3 Levels Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Caching Strategy (3 Levels Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Caching Strategy (3 Levels Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="system-architecture-overview">System Architecture Overview</h2>
 <div style="background: #eff6ff; border-radius: 16px; padding: 32px; margin: 24px 0">
 <div style="color: #58a6ff; font-weight: bold; font-size: 18px; margin-bottom: 24px; text-align: center">Complete URL Shortener Architecture</div>
@@ -3764,28 +3038,6 @@ if __name__ == &quot;__main__&quot;:
     asyncio.run(main())
 </code></pre>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Complete URL Shortener Service?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Complete URL Shortener Service in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Complete URL Shortener Service?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Complete URL Shortener Service provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Complete URL Shortener Service?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Complete URL Shortener Service from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="key-interview-takeaways">Key Interview Takeaways</h2>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
 <p><strong>What Interviewers Look For</strong>:</p>

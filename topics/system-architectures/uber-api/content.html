@@ -47,28 +47,6 @@
 </ul>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Core Requirements and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Core Requirements and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Core Requirements?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Core Requirements provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Core Requirements?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Core Requirements from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="high-level-architecture">High-Level Architecture</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
 <h3 style="color: #1d4ed8; text-align: center; margin: 0 0 24px 0">UBER SYSTEM ARCHITECTURE</h3>
@@ -218,28 +196,6 @@
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Fundamental Problem and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Fundamental Problem in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: How would you approach solving a problem related to The Fundamental Problem?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Start by clearly defining the problem constraints and requirements. Consider what makes this problem challenging and what techniques apply. Think about how you would break it down into smaller subproblems. Remember that recognizing the problem pattern is often the hardest part.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Fundamental Problem?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Fundamental Problem from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="redis-geospatial-implementation">Redis Geospatial Implementation</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Trade-off</strong>: Redis stores all data in memory, making it expensive at scale (~$0.02/driver/month) but providing sub-millisecond query latency that disk-based solutions cannot match.</span></p>
 <pre><code class="language-python">class GeospatialDriverIndex:
@@ -340,28 +296,6 @@
 
         return drivers
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Redis Geospatial Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Redis Geospatial Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Redis Geospatial Implementation correctly?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Redis Geospatial Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Redis Geospatial Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-geospatial-indexing">Interview Questions: Geospatial Indexing</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-use-redis-georadius-instead-of-postgresql-postgis">Level 1: &quot;Why use Redis GEORADIUS instead of PostgreSQL PostGIS?&quot;</h4>
@@ -425,28 +359,6 @@ return [center_geohash] + list(neighbors.values())
 </div>
 <p>See also: <a href="/topics/distributed-systems/consistent-hashing">[Consistent Hashing]</a>, <a href="/topics/databases/redis">[Redis Cluster]</a></p>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Geospatial Indexing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Geospatial Indexing in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Geospatial Indexing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Geospatial Indexing provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Geospatial Indexing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Geospatial Indexing from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="driver-matching">2. Driver Matching (Dispatch)</h2>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Core Assumption</strong>: The naive &quot;assign nearest driver&quot; approach leads to globally suboptimal outcomes. Assigning driver A to rider 1 might make driver B's assignment to rider 2 much worse.</span></p>
 <h3 id="the-matching-problem">The Matching Problem</h3>
@@ -497,28 +409,6 @@ return [center_geohash] + list(neighbors.values())
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Matching Problem and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Matching Problem in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: How would you approach solving a problem related to The Matching Problem?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Start by clearly defining the problem constraints and requirements. Consider what makes this problem challenging and what techniques apply. Think about how you would break it down into smaller subproblems. Remember that recognizing the problem pattern is often the hardest part.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Matching Problem?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Matching Problem from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="hungarian-algorithm-implementation">Hungarian Algorithm Implementation</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Trade-off</strong>: The Hungarian algorithm is O(n^3) which seems expensive, but for a 500x300 matrix, it completes in ~50ms. The optimization savings far exceed the computation cost.</span></p>
@@ -663,28 +553,6 @@ class BatchDispatcher:
         # Normalize: 0 degrees = 0 score, 180 degrees = 1 score
         return angle_diff / 180.0
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Hungarian Algorithm Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Hungarian Algorithm Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Hungarian Algorithm Implementation correctly?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Hungarian Algorithm Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Hungarian Algorithm Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-driver-matching">Interview Questions: Driver Matching</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-batch-matching-instead-of-assigning-drivers-immediately-as-requests-come-in">Level 1: &quot;Why batch matching instead of assigning drivers immediately as requests come in?&quot;</h4>
@@ -787,28 +655,6 @@ return base_score
 </div>
 <p>See also: <a href="/topics/algorithms/hungarian-algorithm">[Hungarian Algorithm]</a>, <a href="/topics/algorithms/assignment-problem">[Assignment Problem]</a></p>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Driver Matching?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Driver Matching in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Driver Matching?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Driver Matching provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Driver Matching?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Driver Matching from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="surge-pricing">3. Surge Pricing</h2>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Core Assumption</strong>: Surge pricing is a market-clearing mechanism, not a profit-maximization tool. The goal is to balance supply and demand, not to extract maximum revenue during high-demand periods.</span></p>
 <h3 id="the-economics-of-surge">The Economics of Surge</h3>
@@ -865,28 +711,6 @@ return base_score
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Economics of Surge and what problem does it solve?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about The Economics of Surge in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Economics of Surge?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where The Economics of Surge provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Economics of Surge?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider The Economics of Surge from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="surge-pricing-implementation">Surge Pricing Implementation</h3>
 <pre><code class="language-python">class SurgePricingService:
@@ -1066,28 +890,6 @@ return base_score
             'surge_expires_at': surge_info['expires_at']
         }
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Surge Pricing Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Surge Pricing Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Surge Pricing Implementation correctly?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Surge Pricing Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Surge Pricing Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-surge-pricing">Interview Questions: Surge Pricing</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-how-do-you-prevent-surge-from-oscillating-wildly---spiking-to-3x-then-crashing-to-1x-every-few-minutes">Level 1: &quot;How do you prevent surge from oscillating wildly - spiking to 3x then crashing to 1x every few minutes?&quot;</h4>
@@ -1205,28 +1007,6 @@ self.db.insert({
 </div>
 <p>See also: <a href="/topics/economics/market-mechanisms">[Market Mechanisms]</a>, <a href="/topics/system-design/dynamic-pricing">[Dynamic Pricing]</a></p>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Surge Pricing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Surge Pricing in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Surge Pricing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Surge Pricing provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Surge Pricing?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Surge Pricing from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="eta-calculation">4. ETA Calculation</h2>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Core Assumption</strong>: Google Maps ETA is accurate for driving time, but Uber's ETA must account for: driver acceptance time, walking to vehicle, traffic changes during ride, and pickup location complexity (airport terminals, stadium exits).</span></p>
 <h3 id="components-of-uber-eta">Components of Uber ETA</h3>
@@ -1280,28 +1060,6 @@ self.db.insert({
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Components of Uber ETA?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Components of Uber ETA in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Components of Uber ETA?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Components of Uber ETA provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Components of Uber ETA?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Components of Uber ETA from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="eta-prediction-service">ETA Prediction Service</h3>
 <pre><code class="language-python">class ETAService:
@@ -1457,28 +1215,6 @@ self.db.insert({
         # Cache for 20 minutes (overlaps with next bucket for smoothness)
         self.redis.setex(cache_key, 1200, eta)
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an ETA Prediction Service?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about ETA Prediction Service in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply ETA Prediction Service?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where ETA Prediction Service provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using ETA Prediction Service?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider ETA Prediction Service from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-eta-calculation">Interview Questions: ETA Calculation</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-not-just-use-google-maps-api-for-all-eta-calculations">Level 1: &quot;Why not just use Google Maps API for all ETA calculations?&quot;</h4>
@@ -1571,28 +1307,6 @@ return False
 </div>
 <p>See also: <a href="/topics/ml/time-series">[Time Series Prediction]</a>, <a href="/topics/algorithms/dijkstra">[Routing Algorithms]</a></p>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: ETA Calculation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: ETA Calculation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: ETA Calculation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: ETA Calculation provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: ETA Calculation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: ETA Calculation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="ride-state-machine">5. Ride State Machine</h2>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Core Assumption</strong>: A ride's state must be consistent across all services (trip, payment, driver app, rider app) even when network partitions occur. We use event sourcing with idempotent state transitions.</span></p>
 <h3 id="state-machine-definition">State Machine Definition</h3>
@@ -1659,28 +1373,6 @@ return False
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a State Machine Definition?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about State Machine Definition in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply State Machine Definition?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where State Machine Definition provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using State Machine Definition?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider State Machine Definition from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="event-sourced-implementation">Event Sourced Implementation</h3>
 <pre><code class="language-python">from enum import Enum
@@ -1925,28 +1617,6 @@ class RideSaga:
 
             raise
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Event Sourced Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Event Sourced Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Event Sourced Implementation correctly?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Event Sourced Implementation?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Event Sourced Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="interview-questions-ride-state-machine">Interview Questions: Ride State Machine</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 id="level-1-why-use-event-sourcing-instead-of-just-updating-the-ride-status-in-a-database">Level 1: &quot;Why use event sourcing instead of just updating the ride status in a database?&quot;</h4>
@@ -2074,28 +1744,6 @@ metadata={
 </div>
 <p>See also: <a href="/topics/distributed-systems/event-sourcing">[Event Sourcing]</a>, <a href="/topics/distributed-systems/saga-pattern">[Saga Pattern]</a>, <a href="/topics/distributed-systems/distributed-locking">[Distributed Locking]</a></p>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Ride State Machine?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Interview Questions: Ride State Machine in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Ride State Machine?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Interview Questions: Ride State Machine provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Ride State Machine?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Interview Questions: Ride State Machine from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="system-integration-summary">System Integration Summary</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
 <h4 style="color: #a371f7; text-align: center; margin: 0 0 24px 0">END-TO-END RIDE FLOW</h4>
@@ -2226,28 +1874,6 @@ metadata={
 - **Maps**: Google Maps API (~$200/month)
 - **Real-time**: HTTP polling every 5 seconds
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Phase 1: College Town MVP ($300/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Phase 1: College Town MVP ($300/month) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Phase 1: College Town MVP ($300/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Phase 1: College Town MVP ($300/month) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Phase 1: College Town MVP ($300/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Phase 1: College Town MVP ($300/month) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="phase-2-regional">Phase 2: Regional Player ($50K/month)</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Assumption</strong>: 5K drivers, 50K rides/day, 5 cities</span></p>
 <pre><code>- **Infrastructure**: AWS with Redis ElastiCache, Aurora PostgreSQL
@@ -2256,28 +1882,6 @@ metadata={
 - **Maps**: Mix of Google + OSRM for bulk calculations
 - **Real-time**: WebSockets for active trips
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Phase 2: Regional Player ($50K/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Phase 2: Regional Player ($50K/month) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Phase 2: Regional Player ($50K/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Phase 2: Regional Player ($50K/month) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Phase 2: Regional Player ($50K/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Phase 2: Regional Player ($50K/month) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="phase-3-uber-scale">Phase 3: Uber Scale ($10M+/month)</h3>
 <p><span style="background: linear-gradient(135deg, #00d4aa22 0%, #00d4aa11 100%); padding: 2px 8px; border-radius: 4px"><strong>Assumption</strong>: 5M drivers, 20M rides/day, 1000+ cities</span></p>
 <pre><code>- **Infrastructure**: Multi-region with geographic sharding
@@ -2289,28 +1893,6 @@ metadata={
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Phase 3: Uber Scale ($10M+/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Phase 3: Uber Scale ($10M+/month) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Phase 3: Uber Scale ($10M+/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Phase 3: Uber Scale ($10M+/month) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Phase 3: Uber Scale ($10M+/month)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Phase 3: Uber Scale ($10M+/month) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="interview-red-flags-vs-strong-signals">Interview Red Flags vs. Strong Signals</h2>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
@@ -2388,28 +1970,6 @@ metadata={
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are GPS and Location Failures and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of GPS and Location Failures and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply GPS and Location Failures?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where GPS and Location Failures provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using GPS and Location Failures?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider GPS and Location Failures from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="surge-pricing-edge-cases" style="margin-top: 32px">Surge Pricing Edge Cases</h3>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px">
 <div style="background: #fff; border-radius: 12px; padding: 20px">
@@ -2449,28 +2009,6 @@ metadata={
 </ul>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Surge Pricing Edge Cases and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Surge Pricing Edge Cases and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Surge Pricing Edge Cases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Surge Pricing Edge Cases provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Surge Pricing Edge Cases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Surge Pricing Edge Cases from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="payment-failures" style="margin-top: 32px">Payment Failures</h3>
 <div class="flow-diagram" style="background: #fff; border-radius: 12px; padding: 24px; margin-top: 20px">
@@ -2524,28 +2062,6 @@ metadata={
 </table>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Payment Failures and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Payment Failures and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Payment Failures?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Payment Failures provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Payment Failures?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Payment Failures from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="driver-behavior-edge-cases" style="margin-top: 32px">Driver Behavior Edge Cases</h3>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px">
 <div style="background: #fff; border-radius: 12px; padding: 20px">
@@ -2576,28 +2092,6 @@ metadata={
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Driver Behavior Edge Cases and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Driver Behavior Edge Cases and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Driver Behavior Edge Cases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Driver Behavior Edge Cases provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Driver Behavior Edge Cases?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Driver Behavior Edge Cases from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="scale-strategy">Scale Strategy</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
 <p style="color: #475569; font-size: 14px; line-height: 1.8; margin-bottom: 24px">
@@ -2641,28 +2135,6 @@ A ride-hailing platform experiences dramatically different challenges at differe
 </tr>
 </tbody>
 </table>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Scale Triggers Matrix?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Scale Triggers Matrix in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Scale Triggers Matrix?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Scale Triggers Matrix provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Scale Triggers Matrix?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Scale Triggers Matrix from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="horizontal-scaling-strategies" style="margin-top: 32px">Horizontal Scaling Strategies</h3>
 <div class="flow-diagram" style="background: #fff; border-radius: 12px; padding: 24px; margin-top: 20px">
@@ -2734,28 +2206,6 @@ Times Square, airports, stadiums create traffic spikes:
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Horizontal Scaling Strategies and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of Horizontal Scaling Strategies and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Horizontal Scaling Strategies?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Horizontal Scaling Strategies provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Horizontal Scaling Strategies?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Horizontal Scaling Strategies from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="graceful-degradation" style="margin-top: 32px">Graceful Degradation Playbook</h3>
 <div style="background: #fff; border-radius: 12px; padding: 20px; margin-top: 20px">
 <table style="width: 100%; border-collapse: collapse">
@@ -2797,28 +2247,6 @@ Times Square, airports, stadiums create traffic spikes:
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Graceful Degradation Playbook?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about Graceful Degradation Playbook in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Graceful Degradation Playbook?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where Graceful Degradation Playbook provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Graceful Degradation Playbook?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider Graceful Degradation Playbook from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="further-reading">Further Reading</h2>
 <ul>
 <li><a href="/topics/distributed-systems/consistent-hashing">[Consistent Hashing]</a> - Understand geographic sharding</li>

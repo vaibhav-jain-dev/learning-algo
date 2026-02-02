@@ -51,28 +51,6 @@
 <li>Simplicity requirements outweigh scalability concerns</li>
 <li>Latency-critical paths where cross-machine communication adds unacceptable delay</li>
 </ul>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1.1 Vertical Scaling (Scale Up)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 1.1 Vertical Scaling (Scale Up) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1.1 Vertical Scaling (Scale Up)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 1.1 Vertical Scaling (Scale Up) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1.1 Vertical Scaling (Scale Up)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 1.1 Vertical Scaling (Scale Up) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="12-horizontal-scaling-scale-out">1.2 Horizontal Scaling (Scale Out)</h3>
 <p>Horizontal scaling adds more machines to distribute load. This enables theoretically unlimited capacity but introduces distributed systems complexity.</p>
 <p><strong>Internal Mechanisms:</strong></p>
@@ -94,28 +72,6 @@
 <li><strong>Data Locality:</strong> Cross-shard queries require scatter-gather patterns. A query touching all shards scales linearly with shard count, potentially worse than a single large machine.</li>
 <li><strong>Network Partitions:</strong> Split-brain scenarios require detection and resolution. During partitions, you choose between availability (serve potentially stale data) and consistency (reject requests).</li>
 </ul>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1.2 Horizontal Scaling (Scale Out)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 1.2 Horizontal Scaling (Scale Out) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1.2 Horizontal Scaling (Scale Out)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 1.2 Horizontal Scaling (Scale Out) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1.2 Horizontal Scaling (Scale Out)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 1.2 Horizontal Scaling (Scale Out) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="13-scaling-strategies-comparison">1.3 Scaling Strategies Comparison</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h4 style="color: #0f172a; margin: 0 0 24px 0; text-align: center; font-size: 18px; font-weight: 700">SCALING DECISION MATRIX</h4>
@@ -141,28 +97,6 @@
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1.3 Scaling Strategies Comparison?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 1.3 Scaling Strategies Comparison in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1.3 Scaling Strategies Comparison?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 1.3 Scaling Strategies Comparison provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1.3 Scaling Strategies Comparison?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 1.3 Scaling Strategies Comparison from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="14-interview-questions-scalability-3-level-deep">1.4 Interview Questions: Scalability (3-Level Deep)</h3>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -211,28 +145,6 @@
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1.4 Interview Questions: Scalability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 1.4 Interview Questions: Scalability (3-Level Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1.4 Interview Questions: Scalability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 1.4 Interview Questions: Scalability (3-Level Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1.4 Interview Questions: Scalability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 1.4 Interview Questions: Scalability (3-Level Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-2-reliability">Section 2: Reliability</h2>
 <p>Reliability is the ability of a system to function correctly even when things go wrong. A reliable system continues to work correctly, even when hardware fails, software has bugs, and humans make mistakes.</p>
 <div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -249,28 +161,6 @@
 <li><strong>Failure:</strong> When the system deviates from expected behavior (user sees error page, data is lost)</li>
 </ul>
 <p><strong>Goal:</strong> Build <strong>fault-tolerant</strong> systems that prevent faults from causing failures through <strong>error detection</strong> and <strong>recovery</strong>.</p>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in 2.1 Fault vs. Failure vs. Error?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.1 Fault vs. Failure vs. Error?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 2.1 Fault vs. Failure vs. Error provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating 2.1 Fault vs. Failure vs. Error?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how 2.1 Fault vs. Failure vs. Error performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
-</div>
-</details>
-</div>
 <h3 id="22-types-of-faults">2.2 Types of Faults</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h4 style="color: #0f172a; margin: 0 0 24px 0; text-align: center; font-size: 18px; font-weight: 700">FAULT TAXONOMY</h4>
@@ -312,28 +202,6 @@
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 2.2 Types of Faults and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of 2.2 Types of Faults and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.2 Types of Faults?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 2.2 Types of Faults provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2.2 Types of Faults?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 2.2 Types of Faults from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="23-reliability-mechanisms">2.3 Reliability Mechanisms</h3>
 <p><strong>Redundancy:</strong></p>
@@ -563,28 +431,6 @@ def call_external_api(endpoint: str) -&gt; dict:
     # Implementation
     pass
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 2.3 Reliability Mechanisms and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of 2.3 Reliability Mechanisms and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.3 Reliability Mechanisms?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 2.3 Reliability Mechanisms provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2.3 Reliability Mechanisms?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 2.3 Reliability Mechanisms from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="24-availability-calculations">2.4 Availability Calculations</h3>
 <p>Availability is the percentage of time a system is operational. Often expressed as &quot;nines&quot;:</p>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -662,28 +508,6 @@ The database is the bottleneck. Solutions:
 - Read replicas to reduce load on primary
 - Async replication for non-critical reads
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 2.4 Availability Calculations and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of 2.4 Availability Calculations and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.4 Availability Calculations?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 2.4 Availability Calculations provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2.4 Availability Calculations?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 2.4 Availability Calculations from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="25-interview-questions-reliability-3-level-deep">2.5 Interview Questions: Reliability (3-Level Deep)</h3>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #166534; margin: 0 0 20px 0; font-size: 16px; font-weight: 700">LEVEL 1: Foundation</h4>
@@ -731,28 +555,6 @@ The database is the bottleneck. Solutions:
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 2.5 Interview Questions: Reliability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 2.5 Interview Questions: Reliability (3-Level Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.5 Interview Questions: Reliability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 2.5 Interview Questions: Reliability (3-Level Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2.5 Interview Questions: Reliability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 2.5 Interview Questions: Reliability (3-Level Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-3-maintainability">Section 3: Maintainability</h2>
 <p>Maintainability is about making the system easy to operate, understand, and evolve. Over a system's lifetime, the majority of cost is in ongoing maintenance, not initial development.</p>
 <div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -805,28 +607,6 @@ The database is the bottleneck. Solutions:
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3.1 Three Pillars of Maintainability?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 3.1 Three Pillars of Maintainability in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3.1 Three Pillars of Maintainability?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 3.1 Three Pillars of Maintainability provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.1 Three Pillars of Maintainability?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 3.1 Three Pillars of Maintainability from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="32-operational-excellence-practices">3.2 Operational Excellence Practices</h3>
 <p><strong>Observability (The Three Pillars):</strong></p>
@@ -901,28 +681,6 @@ The database is the bottleneck. Solutions:
 </tr>
 </tbody>
 </table>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 3.2 Operational Excellence Practices and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of 3.2 Operational Excellence Practices and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3.2 Operational Excellence Practices?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 3.2 Operational Excellence Practices provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.2 Operational Excellence Practices?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 3.2 Operational Excellence Practices from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="33-technical-debt-management">3.3 Technical Debt Management</h3>
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 20px 0">
 <div style="color: #991b1b; font-weight: 700; margin-bottom: 12px; font-size: 14px">CRITICAL INSIGHT</div>
@@ -937,28 +695,6 @@ The database is the bottleneck. Solutions:
 <li><strong>Inadvertent/Prudent:</strong> &quot;Now we know how we should have done it&quot; - learning as you go, unavoidable</li>
 <li><strong>Inadvertent/Reckless:</strong> &quot;What's layering?&quot; - lack of skill, needs education not just refactoring</li>
 </ul>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3.3 Technical Debt Management?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 3.3 Technical Debt Management in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3.3 Technical Debt Management?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 3.3 Technical Debt Management provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.3 Technical Debt Management?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 3.3 Technical Debt Management from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="34-interview-questions-maintainability-3-level-deep">3.4 Interview Questions: Maintainability (3-Level Deep)</h3>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #166534; margin: 0 0 20px 0; font-size: 16px; font-weight: 700">LEVEL 1: Foundation</h4>
@@ -1006,28 +742,6 @@ The database is the bottleneck. Solutions:
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3.4 Interview Questions: Maintainability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 3.4 Interview Questions: Maintainability (3-Level Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3.4 Interview Questions: Maintainability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 3.4 Interview Questions: Maintainability (3-Level Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.4 Interview Questions: Maintainability (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 3.4 Interview Questions: Maintainability (3-Level Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-4-performance-estimation-and-back-of-envelope-calculations">Section 4: Performance Estimation and Back-of-Envelope Calculations</h2>
 <p>The ability to quickly estimate system capacity requirements is essential for both design interviews and real-world architecture decisions. This section provides the framework and reference numbers needed for rapid estimation.</p>
 <h3 id="41-essential-numbers-every-engineer-should-know">4.1 Essential Numbers Every Engineer Should Know</h3>
@@ -1101,28 +815,6 @@ The database is the bottleneck. Solutions:
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 4.1 Essential Numbers Every Engineer Should Know?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 4.1 Essential Numbers Every Engineer Should Know in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.1 Essential Numbers Every Engineer Should Know?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 4.1 Essential Numbers Every Engineer Should Know provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.1 Essential Numbers Every Engineer Should Know?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 4.1 Essential Numbers Every Engineer Should Know from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="42-estimation-framework">4.2 Estimation Framework</h3>
 <div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0">
 <h4 style="color: #1e40af; margin: 0 0 20px 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px">KEY ASSUMPTION</h4>
@@ -1139,28 +831,6 @@ The database is the bottleneck. Solutions:
 <li><strong>Account for peaks:</strong> Typically 2-10x average</li>
 <li><strong>Add safety margin:</strong> 2-3x for growth and headroom</li>
 </ol>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 4.2 Estimation Framework?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 4.2 Estimation Framework in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.2 Estimation Framework?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 4.2 Estimation Framework provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.2 Estimation Framework?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 4.2 Estimation Framework from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="43-worked-examples">4.3 Worked Examples</h3>
 <p><strong>Example 1: Twitter-Scale Estimation</strong></p>
 <pre><code>GIVEN:
@@ -1233,28 +903,6 @@ But: need low latency (&lt;10ms) for redirects
 Solution: Redis cache for hot URLs (80-20 rule: 20% of URLs get 80% traffic)
 Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 </code></pre>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 4.3 Worked Examples and why are they important?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider the different types or categories of 4.3 Worked Examples and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.3 Worked Examples?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 4.3 Worked Examples provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.3 Worked Examples?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 4.3 Worked Examples from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="44-common-estimation-patterns">4.4 Common Estimation Patterns</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
 <h4 style="color: #0f172a; margin: 0 0 24px 0; text-align: center; font-size: 18px; font-weight: 700">ESTIMATION HEURISTICS</h4>
@@ -1300,28 +948,6 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 </div>
 </div>
 </div>
-</div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the 4.4 Common Estimation Patterns and when should you use it?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>The 4.4 Common Estimation Patterns addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.4 Common Estimation Patterns?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 4.4 Common Estimation Patterns provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.4 Common Estimation Patterns?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 4.4 Common Estimation Patterns from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
 </div>
 <h3 id="45-interview-questions-estimation-3-level-deep">4.5 Interview Questions: Estimation (3-Level Deep)</h3>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -1370,28 +996,6 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 4.5 Interview Questions: Estimation (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 4.5 Interview Questions: Estimation (3-Level Deep) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.5 Interview Questions: Estimation (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 4.5 Interview Questions: Estimation (3-Level Deep) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.5 Interview Questions: Estimation (3-Level Deep)?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 4.5 Interview Questions: Estimation (3-Level Deep) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="section-5-system-design-interview-framework">Section 5: System Design Interview Framework</h2>
 <h3 id="51-the-four-phase-approach">5.1 The Four-Phase Approach</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 32px; margin: 24px 0">
@@ -1434,28 +1038,6 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 </div>
 </div>
 </div>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the 5.1 The Four-Phase Approach and when should you use it?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>The 5.1 The Four-Phase Approach addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 5.1 The Four-Phase Approach?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 5.1 The Four-Phase Approach provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 5.1 The Four-Phase Approach?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 5.1 The Four-Phase Approach from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="52-requirements-gathering-checklist">5.2 Requirements Gathering Checklist</h3>
 <p><strong>Functional Requirements:</strong></p>
 <ul>
@@ -1478,28 +1060,6 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 <li>Timeline: MVP or production-ready?</li>
 <li>Technology: Any mandated or prohibited technologies?</li>
 </ul>
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 5.2 Requirements Gathering Checklist?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 5.2 Requirements Gathering Checklist in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 5.2 Requirements Gathering Checklist?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 5.2 Requirements Gathering Checklist provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 5.2 Requirements Gathering Checklist?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 5.2 Requirements Gathering Checklist from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h3 id="53-common-mistakes-to-avoid">5.3 Common Mistakes to Avoid</h3>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 24px 0">
 <h4 style="color: #dc2626; margin: 0 0 16px 0">INTERVIEW ANTI-PATTERNS</h4>
@@ -1525,28 +1085,6 @@ Cache size: 6B x 20% x 500 bytes = 600GB (fits in Redis cluster)
 </div>
 </div>
 <hr />
-
-<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
-<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 5.3 Common Mistakes to Avoid?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about 5.3 Common Mistakes to Avoid in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 5.3 Common Mistakes to Avoid?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Think about the characteristics of problems where 5.3 Common Mistakes to Avoid provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
-</div>
-</details>
-<details style="margin-bottom: 12px;">
-<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 5.3 Common Mistakes to Avoid?</summary>
-<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
-<p>Consider 5.3 Common Mistakes to Avoid from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
-</div>
-</details>
-</div>
 <h2 id="real-world-failure-case-studies">Real-World Failure Case Studies</h2>
 <p>Understanding failures deepens appreciation for design principles.</p>
 <div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 24px 0">
