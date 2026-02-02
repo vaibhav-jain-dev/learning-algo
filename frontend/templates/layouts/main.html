@@ -20,32 +20,34 @@
     <style>
         /* Nuclear border reset - override ALL CSS */
         *, *::before, *::after {
-            border-width: 0 !important;
-            border-style: none !important;
-            border-color: transparent !important;
+            border: 0 none transparent !important;
+            outline: 0 none transparent !important;
         }
 
-        /* Re-enable borders ONLY for semantic elements that need them */
-        table, table *, th, td,
-        pre, pre *, code,
-        hr, blockquote,
-        input, textarea, select, button {
-            border-width: revert !important;
-            border-style: revert !important;
-            border-color: revert !important;
-        }
+        /* Re-enable borders ONLY for elements that actually need them */
+        table { border-collapse: collapse !important; }
+        th, td { border: 1px solid #e2e8f0 !important; padding: 8px 12px !important; }
+        pre { border: 1px solid #334155 !important; }
+        code:not(pre code) { border: 0 !important; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+        hr { border: 0 !important; border-top: 1px solid #e2e8f0 !important; }
+        blockquote { border: 0 !important; border-left: 4px solid #3b82f6 !important; padding-left: 16px !important; }
+        input, textarea, select { border: 1px solid #cbd5e1 !important; }
+        button { border: 0 !important; }
 
-        /* Cards use shadows, not borders */
+        /* Cards use shadows only */
         .topic-card, .card, .quick-ref-card, .tldr-box,
         .table-of-contents, .concept-section, .panel,
-        .content-box, .toc, .adhd-nav-panel, .adhd-quick-ref {
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+        .content-box, .toc, .adhd-nav-panel, .adhd-quick-ref,
+        .topic-content, .nav-category, [class*="box"], [class*="card"] {
+            border: 0 none transparent !important;
+            background: #fff !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
             border-radius: 12px !important;
         }
 
-        /* Tags - pill style, no border */
-        .tag, .badge, .topic-badge, .tags span {
+        /* Tags - pill style */
+        .tag, .badge, .topic-badge, .tags span, [class*="tag"], [class*="badge"] {
+            border: 0 none transparent !important;
             background: #f1f5f9 !important;
             box-shadow: none !important;
             border-radius: 999px !important;
@@ -53,33 +55,13 @@
 
         /* Mobile responsive */
         @media (max-width: 1199px) {
-            .adhd-nav-panel, .adhd-quick-ref, .nav-panel, .quick-panel {
-                display: none !important;
-            }
-            .adhd-main-content, .detail-main {
-                max-width: 100% !important;
-                width: 100% !important;
-            }
+            .adhd-nav-panel, .adhd-quick-ref, .nav-panel, .quick-panel { display: none !important; }
+            .adhd-main-content, .detail-main, .adhd-layout { max-width: 100% !important; width: 100% !important; display: block !important; }
         }
-
         @media (max-width: 768px) {
-            .topic-grid {
-                grid-template-columns: 1fr !important;
-            }
-            .nav {
-                display: none;
-            }
-            .nav.mobile-open {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: #fff;
-                padding: 1rem;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            }
+            .topic-grid { grid-template-columns: 1fr !important; }
+            .nav { display: none; }
+            .nav.mobile-open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; }
         }
     </style>
 </head>
