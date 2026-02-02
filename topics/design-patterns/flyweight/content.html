@@ -1,9 +1,9 @@
 <h1 id="flyweight-pattern">Flyweight Pattern</h1>
 <h2 id="overview">Overview</h2>
 <p>The Flyweight pattern is a structural design pattern that achieves massive memory optimization by <strong>sharing common state across multiple objects</strong> rather than duplicating it. The pattern separates object state into two categories: <strong>intrinsic state</strong> (shared, immutable) and <strong>extrinsic state</strong> (unique, context-dependent). This separation allows thousands or millions of conceptual objects to share a handful of actual instances.</p>
-<div>
-<h4>Core Insight</h4>
-<p>The Flyweight pattern trades <strong>computational complexity</strong> for <strong>memory efficiency</strong>. Instead of storing data with each object, you store it once and compute lookups at runtime. This is only beneficial when: (1) you have many objects, (2) storage costs are significant, and (3) most state can be externalized.</p>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);padding: 20px; border-radius: 8px; margin: 20px 0">
+<h4 style="color: #e94560; margin-top: 0">Core Insight</h4>
+<p style="color: #eee; margin-bottom: 0">The Flyweight pattern trades <strong>computational complexity</strong> for <strong>memory efficiency</strong>. Instead of storing data with each object, you store it once and compute lookups at runtime. This is only beneficial when: (1) you have many objects, (2) storage costs are significant, and (3) most state can be externalized.</p>
 </div>
 <h3 id="pattern-classification">Pattern Classification</h3>
 <table>
@@ -37,9 +37,9 @@
 <p>The most critical decision in implementing Flyweight is correctly partitioning state. This partitioning determines the pattern's effectiveness and correctness.</p>
 <h3 id="intrinsic-state-shared">Intrinsic State (Shared)</h3>
 <p>Intrinsic state represents the <strong>context-independent, immutable properties</strong> that can be shared across all uses of a flyweight. This state is stored inside the flyweight object itself.</p>
-<div>
-<h4>Characteristics of Intrinsic State</h4>
-<ul>
+<div style="background: #0d1117;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #58a6ff; margin-top: 0">Characteristics of Intrinsic State</h4>
+<ul style="color: #c9d1d9">
 <li><strong>Immutable</strong>: Cannot change after flyweight creation (enables safe sharing)</li>
 <li><strong>Context-Free</strong>: Same value regardless of where/how the flyweight is used</li>
 <li><strong>Identity-Defining</strong>: Uniquely identifies the flyweight type</li>
@@ -55,9 +55,9 @@
 </ul>
 <h3 id="extrinsic-state-unique">Extrinsic State (Unique)</h3>
 <p>Extrinsic state represents the <strong>context-dependent, variable properties</strong> that differ for each logical use of a flyweight. This state is NOT stored in the flyweight; instead, it is passed to flyweight methods by the client.</p>
-<div>
-<h4>Characteristics of Extrinsic State</h4>
-<ul>
+<div style="background: #0d1117;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #f0883e; margin-top: 0">Characteristics of Extrinsic State</h4>
+<ul style="color: #c9d1d9">
 <li><strong>Mutable</strong>: Can change independently for each usage context</li>
 <li><strong>Context-Dependent</strong>: Different values for different usages</li>
 <li><strong>Lightweight</strong>: Typically simple values (coordinates, indices, timestamps)</li>
@@ -72,47 +72,47 @@
 <li>Input string to validate against a compiled regex</li>
 </ul>
 <h3 id="state-partitioning-decision-framework">State Partitioning Decision Framework</h3>
-<div>
-<h4>Decision Criteria</h4>
-<table>
-<tr>
-<th>Question</th>
-<th>If Yes</th>
-<th>If No</th>
+<div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #7dd3fc; margin-top: 0">Decision Criteria</h4>
+<table style="width: 100%; color: #e2e8f0; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 8px">Question</th>
+<th style="text-align: left; padding: 8px">If Yes</th>
+<th style="text-align: left; padding: 8px">If No</th>
+</tr>
+<tr >
+<td style="padding: 8px">Is the value the same across all usages?</td>
+<td style="padding: 8px">Intrinsic</td>
+<td style="padding: 8px">Extrinsic</td>
+</tr>
+<tr >
+<td style="padding: 8px">Does the value change over time?</td>
+<td style="padding: 8px">Extrinsic</td>
+<td style="padding: 8px">Possibly Intrinsic</td>
+</tr>
+<tr >
+<td style="padding: 8px">Is the value expensive to store?</td>
+<td style="padding: 8px">Prioritize as Intrinsic</td>
+<td style="padding: 8px">Either (low impact)</td>
 </tr>
 <tr>
-<td>Is the value the same across all usages?</td>
-<td>Intrinsic</td>
-<td>Extrinsic</td>
-</tr>
-<tr>
-<td>Does the value change over time?</td>
-<td>Extrinsic</td>
-<td>Possibly Intrinsic</td>
-</tr>
-<tr>
-<td>Is the value expensive to store?</td>
-<td>Prioritize as Intrinsic</td>
-<td>Either (low impact)</td>
-</tr>
-<tr>
-<td>Can the value be computed from context?</td>
-<td>Extrinsic candidate</td>
-<td>Intrinsic candidate</td>
+<td style="padding: 8px">Can the value be computed from context?</td>
+<td style="padding: 8px">Extrinsic candidate</td>
+<td style="padding: 8px">Intrinsic candidate</td>
 </tr>
 </table>
 </div>
 <h3 id="interview-questions-intrinsic-vs-extrinsic-state">Interview Questions: Intrinsic vs Extrinsic State</h3>
-<div>
-<h4>Level 1: Conceptual Understanding</h4>
-<p><strong>Q: What happens if you accidentally include mutable state in the intrinsic portion?</strong></p>
-<p>A: This creates a race condition/data corruption bug. Since flyweights are shared, mutating intrinsic state affects ALL contexts using that flyweight simultaneously. For example, if "current animation frame" were intrinsic, advancing one enemy's animation would advance ALL enemies of that type.</p>
-<h4>Level 2: Design Trade-offs</h4>
-<p><strong>Q: A game has 10,000 trees. Each tree has: species (Oak/Pine/Birch), mesh data (10MB), position (x,y,z), and "health" that decreases when hit. An artist wants different "damage textures" at health thresholds 100%, 75%, 50%, 25%. How do you partition state?</strong></p>
-<p>A: Intrinsic: species + damage-level creates composite key. Create flyweights for (Oak, 100%), (Oak, 75%), etc. = 3 species x 4 damage levels = 12 flyweights storing mesh variations. Extrinsic: position (x,y,z), exact health value. When health crosses threshold, client switches flyweight reference. Trade-off: 12 flyweights x 10MB = 120MB vs naive 10,000 x 10MB = 100GB.</p>
-<h4>Level 3: System Architecture</h4>
-<p><strong>Q: You're building a distributed text editor where multiple users edit simultaneously. Document characters use Flyweight for styling. How do you handle: (1) style conflicts when users edit same region, (2) undo/redo with flyweights, (3) syncing flyweight pools across nodes?</strong></p>
-<p>A: (1) Style conflicts: Flyweights are immutable, so no conflict on intrinsic state. Conflict is on extrinsic mapping (which char has which style). Use [[CRDT]](/topic/distributed-systems/crdt) or OT for character-to-style-reference mapping. (2) Undo/redo: Store operation log of (position, old_flyweight_ref, new_flyweight_ref). Flyweights themselves never undo - just swap references. (3) Pool sync: Don't sync pools directly. Each node maintains local pool. Sync style-keys (font, size, color tuples), not objects. Nodes lazily create flyweights on first local use of a key. Pool convergence is eventual and doesn't affect correctness since flyweights with same intrinsic state are semantically identical.</p>
+<div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #ffd700; margin-top: 0">Level 1: Conceptual Understanding</h4>
+<p style="color: #ccc"><strong>Q: What happens if you accidentally include mutable state in the intrinsic portion?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: This creates a race condition/data corruption bug. Since flyweights are shared, mutating intrinsic state affects ALL contexts using that flyweight simultaneously. For example, if "current animation frame" were intrinsic, advancing one enemy's animation would advance ALL enemies of that type.</p>
+<h4 style="color: #ff6b6b; margin-top: 15px">Level 2: Design Trade-offs</h4>
+<p style="color: #ccc"><strong>Q: A game has 10,000 trees. Each tree has: species (Oak/Pine/Birch), mesh data (10MB), position (x,y,z), and "health" that decreases when hit. An artist wants different "damage textures" at health thresholds 100%, 75%, 50%, 25%. How do you partition state?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Intrinsic: species + damage-level creates composite key. Create flyweights for (Oak, 100%), (Oak, 75%), etc. = 3 species x 4 damage levels = 12 flyweights storing mesh variations. Extrinsic: position (x,y,z), exact health value. When health crosses threshold, client switches flyweight reference. Trade-off: 12 flyweights x 10MB = 120MB vs naive 10,000 x 10MB = 100GB.</p>
+<h4 style="color: #a855f7; margin-top: 15px">Level 3: System Architecture</h4>
+<p style="color: #ccc"><strong>Q: You're building a distributed text editor where multiple users edit simultaneously. Document characters use Flyweight for styling. How do you handle: (1) style conflicts when users edit same region, (2) undo/redo with flyweights, (3) syncing flyweight pools across nodes?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: (1) Style conflicts: Flyweights are immutable, so no conflict on intrinsic state. Conflict is on extrinsic mapping (which char has which style). Use [[CRDT]](/topic/distributed-systems/crdt) or OT for character-to-style-reference mapping. (2) Undo/redo: Store operation log of (position, old_flyweight_ref, new_flyweight_ref). Flyweights themselves never undo - just swap references. (3) Pool sync: Don't sync pools directly. Each node maintains local pool. Sync style-keys (font, size, color tuples), not objects. Nodes lazily create flyweights on first local use of a key. Pool convergence is eventual and doesn't affect correctness since flyweights with same intrinsic state are semantically identical.</p>
 </div>
 <hr />
 <h2 id="the-flyweight-factory">The Flyweight Factory</h2>
@@ -125,33 +125,33 @@
 <li><strong>Thread Safety</strong>: Ensure correct behavior under concurrent access</li>
 </ol>
 <h3 id="implementation-patterns">Implementation Patterns</h3>
-<div>
-<h4>Factory Implementation Strategies</h4>
-<table>
-<tr>
-<th>Strategy</th>
-<th>Pros</th>
-<th>Cons</th>
+<div style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #6ee7b7; margin-top: 0">Factory Implementation Strategies</h4>
+<table style="width: 100%; color: #d1fae5; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 8px">Strategy</th>
+<th style="text-align: left; padding: 8px">Pros</th>
+<th style="text-align: left; padding: 8px">Cons</th>
+</tr>
+<tr >
+<td style="padding: 8px"><strong>HashMap + Lazy Init</strong></td>
+<td style="padding: 8px">Simple, memory-efficient</td>
+<td style="padding: 8px">Requires synchronization</td>
+</tr>
+<tr >
+<td style="padding: 8px"><strong>Enum-based (finite set)</strong></td>
+<td style="padding: 8px">Type-safe, no factory needed</td>
+<td style="padding: 8px">Only for bounded flyweight sets</td>
+</tr>
+<tr >
+<td style="padding: 8px"><strong>Weak References</strong></td>
+<td style="padding: 8px">Auto-eviction when unused</td>
+<td style="padding: 8px">Non-deterministic, GC pressure</td>
 </tr>
 <tr>
-<td><strong>HashMap + Lazy Init</strong></td>
-<td>Simple, memory-efficient</td>
-<td>Requires synchronization</td>
-</tr>
-<tr>
-<td><strong>Enum-based (finite set)</strong></td>
-<td>Type-safe, no factory needed</td>
-<td>Only for bounded flyweight sets</td>
-</tr>
-<tr>
-<td><strong>Weak References</strong></td>
-<td>Auto-eviction when unused</td>
-<td>Non-deterministic, GC pressure</td>
-</tr>
-<tr>
-<td><strong>LRU Cache</strong></td>
-<td>Bounded memory, eviction policy</td>
-<td>May recreate evicted flyweights</td>
+<td style="padding: 8px"><strong>LRU Cache</strong></td>
+<td style="padding: 8px">Bounded memory, eviction policy</td>
+<td style="padding: 8px">May recreate evicted flyweights</td>
 </tr>
 </table>
 </div>
@@ -291,31 +291,31 @@ class WeakStyleFactory:
             return style
 </code></pre>
 <h3 id="interview-questions-flyweight-factory">Interview Questions: Flyweight Factory</h3>
-<div>
-<h4>Level 1: Implementation Details</h4>
-<p><strong>Q: Why is double-checked locking used in the factory's get_style method?</strong></p>
-<p>A: Double-checked locking optimizes for the common case (cache hit) by avoiding lock acquisition. First check is lock-free and fast. If miss, acquire lock and check again because another thread may have created the flyweight between the first check and lock acquisition. This reduces contention while maintaining correctness. The pattern is safe here because flyweights are immutable - a partial read still yields correct data.</p>
-<h4>Level 2: Architectural Decisions</h4>
-<p><strong>Q: When would you choose WeakValueDictionary over a regular dict for the flyweight cache? What are the risks?</strong></p>
-<p>A: Use weak references when: (1) flyweight set is unbounded/unknown, (2) flyweights may become unused and you want automatic cleanup, (3) memory pressure is a concern. Risks: (1) Non-deterministic eviction - flyweight may be GC'd between get_style calls, requiring recreation. (2) GC overhead from weak reference bookkeeping. (3) Potential "thrashing" if flyweights are briefly released then immediately needed again. (4) Harder to debug - cache contents depend on GC timing. Mitigation: Use LRU cache with explicit size limit for predictable behavior.</p>
-<h4>Level 3: Production Systems</h4>
-<p><strong>Q: You're operating a flyweight factory in a high-throughput system (100K requests/sec). Profiling shows lock contention on the factory. How do you scale it?</strong></p>
-<p>A: Multiple strategies: (1) <strong>Sharded factories</strong>: Partition keyspace (e.g., by hash of key % N) across N independent factories, each with its own lock. Reduces contention by N. (2) <strong>Lock-free ConcurrentHashMap</strong>: Languages like Java offer ConcurrentHashMap with fine-grained locking or lock-free operations. (3) <strong>Read-write lock</strong>: Allow multiple concurrent readers; only block for writes (new flyweights). Most operations are reads after warmup. (4) <strong>Pre-population</strong>: If flyweight set is known/bounded, create all flyweights at startup. Factory becomes read-only, eliminating write locks entirely. (5) <strong>Thread-local caching</strong>: Each thread maintains local cache of recently used flyweights, reducing factory access. Trade-off: memory duplication if sets diverge. Best approach often combines pre-population (for known flyweights) with sharded lazy creation (for dynamic ones).</p>
+<div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #ffd700; margin-top: 0">Level 1: Implementation Details</h4>
+<p style="color: #ccc"><strong>Q: Why is double-checked locking used in the factory's get_style method?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Double-checked locking optimizes for the common case (cache hit) by avoiding lock acquisition. First check is lock-free and fast. If miss, acquire lock and check again because another thread may have created the flyweight between the first check and lock acquisition. This reduces contention while maintaining correctness. The pattern is safe here because flyweights are immutable - a partial read still yields correct data.</p>
+<h4 style="color: #ff6b6b; margin-top: 15px">Level 2: Architectural Decisions</h4>
+<p style="color: #ccc"><strong>Q: When would you choose WeakValueDictionary over a regular dict for the flyweight cache? What are the risks?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Use weak references when: (1) flyweight set is unbounded/unknown, (2) flyweights may become unused and you want automatic cleanup, (3) memory pressure is a concern. Risks: (1) Non-deterministic eviction - flyweight may be GC'd between get_style calls, requiring recreation. (2) GC overhead from weak reference bookkeeping. (3) Potential "thrashing" if flyweights are briefly released then immediately needed again. (4) Harder to debug - cache contents depend on GC timing. Mitigation: Use LRU cache with explicit size limit for predictable behavior.</p>
+<h4 style="color: #a855f7; margin-top: 15px">Level 3: Production Systems</h4>
+<p style="color: #ccc"><strong>Q: You're operating a flyweight factory in a high-throughput system (100K requests/sec). Profiling shows lock contention on the factory. How do you scale it?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Multiple strategies: (1) <strong>Sharded factories</strong>: Partition keyspace (e.g., by hash of key % N) across N independent factories, each with its own lock. Reduces contention by N. (2) <strong>Lock-free ConcurrentHashMap</strong>: Languages like Java offer ConcurrentHashMap with fine-grained locking or lock-free operations. (3) <strong>Read-write lock</strong>: Allow multiple concurrent readers; only block for writes (new flyweights). Most operations are reads after warmup. (4) <strong>Pre-population</strong>: If flyweight set is known/bounded, create all flyweights at startup. Factory becomes read-only, eliminating write locks entirely. (5) <strong>Thread-local caching</strong>: Each thread maintains local cache of recently used flyweights, reducing factory access. Trade-off: memory duplication if sets diverge. Best approach often combines pre-population (for known flyweights) with sharded lazy creation (for dynamic ones).</p>
 </div>
 <hr />
 <h2 id="string-interning-flyweight-in-language-runtimes">String Interning: Flyweight in Language Runtimes</h2>
 <p>String interning is the <strong>canonical example of Flyweight</strong> implemented at the language/runtime level. It demonstrates how the pattern can be applied transparently to achieve memory optimization without explicit programmer intervention.</p>
 <h3 id="how-string-interning-works">How String Interning Works</h3>
-<div>
-<h4>String Pool Mechanics</h4>
-<p>When a string is interned, the runtime:</p>
-<ol>
+<div style="background: linear-gradient(135deg, #4a1d6b 0%, #6b21a8 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #e9d5ff; margin-top: 0">String Pool Mechanics</h4>
+<p style="color: #ddd">When a string is interned, the runtime:</p>
+<ol style="color: #ddd">
 <li>Computes a hash of the string content</li>
 <li>Looks up the hash in a global string pool (hash table)</li>
 <li>If found: returns reference to existing string (flyweight reuse)</li>
 <li>If not found: adds string to pool, returns reference to new entry</li>
 </ol>
-<p><strong>Result</strong>: All references to the same string content point to the same object in memory. Equality comparison becomes O(1) pointer comparison instead of O(n) character comparison.</p>
+<p style="color: #ddd; margin-bottom: 0"><strong>Result</strong>: All references to the same string content point to the same object in memory. Equality comparison becomes O(1) pointer comparison instead of O(n) character comparison.</p>
 </div>
 <h3 id="language-specific-implementations">Language-Specific Implementations</h3>
 <pre><code class="language-python">import sys
@@ -419,16 +419,16 @@ func main() {
 }
 </code></pre>
 <h3 id="interning-trade-offs">Interning Trade-offs</h3>
-<div>
-<h4>When to Use Manual Interning</h4>
-<table>
-<tr>
-<th>Good Candidates</th>
-<th>Poor Candidates</th>
+<div style="background: #1e293b;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #f472b6; margin-top: 0">When to Use Manual Interning</h4>
+<table style="width: 100%; color: #e2e8f0; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 8px; color: #22c55e">Good Candidates</th>
+<th style="text-align: left; padding: 8px; color: #ef4444">Poor Candidates</th>
 </tr>
 <tr>
-<td>
-<ul>
+<td style="padding: 8px; vertical-align: top">
+<ul style="margin: 0; padding-left: 20px">
 <li>Repeated enum-like strings (status codes, log levels)</li>
 <li>Dictionary keys used millions of times</li>
 <li>User IDs, session tokens with high reuse</li>
@@ -436,8 +436,8 @@ func main() {
 <li>Database column names in ORM</li>
 </ul>
 </td>
-<td>
-<ul>
+<td style="padding: 8px; vertical-align: top">
+<ul style="margin: 0; padding-left: 20px">
 <li>Unique strings (UUIDs, timestamps)</li>
 <li>User-generated content (comments, messages)</li>
 <li>Large strings (documents, base64 data)</li>
@@ -449,27 +449,27 @@ func main() {
 </table>
 </div>
 <h3 id="interview-questions-string-interning">Interview Questions: String Interning</h3>
-<div>
-<h4>Level 1: Language Behavior</h4>
-<p><strong>Q: In Java, what's the difference between String.intern() and the string pool for literals?</strong></p>
-<p>A: String literals are automatically added to the string pool at class loading time (stored in PermGen/Metaspace). String.intern() explicitly adds a runtime-created string to the pool if not present, returning the canonical reference. Key difference: literals are pooled at compile/load time (cheap), intern() is runtime operation (hash lookup cost). Pre-Java 7, intern() added to PermGen (fixed size, could cause OOM). Post-Java 7, pool moved to heap, reducing OOM risk but increasing GC pressure.</p>
-<h4>Level 2: Security Implications</h4>
-<p><strong>Q: Why can string interning from untrusted input be a denial-of-service vector?</strong></p>
-<p>A: If you intern all strings from user input, an attacker can: (1) <strong>Memory exhaustion</strong>: Send millions of unique strings, filling the intern pool. Pool entries typically aren't garbage collected (or have weak references in some implementations). (2) <strong>Hash collision attack</strong>: Craft strings with identical hash codes, degrading hash table to O(n) linked list, making each intern() call O(n). With n malicious strings, total time becomes O(n^2). Mitigation: Never intern untrusted input. Use bounded LRU cache instead of unbounded pool. Use cryptographic hash or randomized hash seed.</p>
-<h4>Level 3: System Design</h4>
-<p><strong>Q: Design a distributed string interning system for a log aggregation service processing 1TB/day. Requirements: deduplication across nodes, bounded memory, support for string expiration.</strong></p>
-<p>A: Architecture: (1) <strong>Local tier</strong>: Each node has LRU intern cache (bounded, e.g., 100K entries). Handles high-frequency strings locally. (2) <strong>Shared tier</strong>: [[Redis]](/topic/databases/redis) cluster with string content -> canonical ID mapping. Use SETNX for atomic intern-or-get. (3) <strong>Storage optimization</strong>: Instead of storing strings, store (hash, length, content) tuples. Use consistent hashing to partition keyspace across Redis nodes. (4) <strong>Expiration</strong>: Redis TTL on entries (e.g., 24h). Local cache uses access-time-based LRU. (5) <strong>Flow</strong>: Check local cache -> if miss, check Redis -> if miss, SETNX to Redis with TTL, update local cache. (6) <strong>Memory bound</strong>: Monitor Redis memory. If approaching limit, reduce TTL or switch to approximate dedup (bloom filter to skip known-unique strings). Trade-off: Some strings may be re-interned after expiration, but memory stays bounded. See also: [[Bloom Filters]](/topic/data-structures/bloom-filter) for approximate membership.</p>
+<div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #ffd700; margin-top: 0">Level 1: Language Behavior</h4>
+<p style="color: #ccc"><strong>Q: In Java, what's the difference between String.intern() and the string pool for literals?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: String literals are automatically added to the string pool at class loading time (stored in PermGen/Metaspace). String.intern() explicitly adds a runtime-created string to the pool if not present, returning the canonical reference. Key difference: literals are pooled at compile/load time (cheap), intern() is runtime operation (hash lookup cost). Pre-Java 7, intern() added to PermGen (fixed size, could cause OOM). Post-Java 7, pool moved to heap, reducing OOM risk but increasing GC pressure.</p>
+<h4 style="color: #ff6b6b; margin-top: 15px">Level 2: Security Implications</h4>
+<p style="color: #ccc"><strong>Q: Why can string interning from untrusted input be a denial-of-service vector?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: If you intern all strings from user input, an attacker can: (1) <strong>Memory exhaustion</strong>: Send millions of unique strings, filling the intern pool. Pool entries typically aren't garbage collected (or have weak references in some implementations). (2) <strong>Hash collision attack</strong>: Craft strings with identical hash codes, degrading hash table to O(n) linked list, making each intern() call O(n). With n malicious strings, total time becomes O(n^2). Mitigation: Never intern untrusted input. Use bounded LRU cache instead of unbounded pool. Use cryptographic hash or randomized hash seed.</p>
+<h4 style="color: #a855f7; margin-top: 15px">Level 3: System Design</h4>
+<p style="color: #ccc"><strong>Q: Design a distributed string interning system for a log aggregation service processing 1TB/day. Requirements: deduplication across nodes, bounded memory, support for string expiration.</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Architecture: (1) <strong>Local tier</strong>: Each node has LRU intern cache (bounded, e.g., 100K entries). Handles high-frequency strings locally. (2) <strong>Shared tier</strong>: [[Redis]](/topic/databases/redis) cluster with string content -> canonical ID mapping. Use SETNX for atomic intern-or-get. (3) <strong>Storage optimization</strong>: Instead of storing strings, store (hash, length, content) tuples. Use consistent hashing to partition keyspace across Redis nodes. (4) <strong>Expiration</strong>: Redis TTL on entries (e.g., 24h). Local cache uses access-time-based LRU. (5) <strong>Flow</strong>: Check local cache -> if miss, check Redis -> if miss, SETNX to Redis with TTL, update local cache. (6) <strong>Memory bound</strong>: Monitor Redis memory. If approaching limit, reduce TTL or switch to approximate dedup (bloom filter to skip known-unique strings). Trade-off: Some strings may be re-interned after expiration, but memory stays bounded. See also: [[Bloom Filters]](/topic/data-structures/bloom-filter) for approximate membership.</p>
 </div>
 <hr />
 <h2 id="game-character-system-complete-implementation">Game Character System: Complete Implementation</h2>
 <p>The game character/sprite system is the <strong>quintessential Flyweight example</strong> because it perfectly illustrates the memory savings when rendering thousands of entities with shared visual assets.</p>
 <h3 id="architecture-overview">Architecture Overview</h3>
-<div>
-<h4>Game Flyweight Architecture</h4>
-<div>
-<div>
-<h5>Intrinsic (Shared)</h5>
-<ul>
+<div style="background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #7dd3fc; margin-top: 0">Game Flyweight Architecture</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; color: #e0f2fe">
+<div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px">
+<h5 style="color: #38bdf8; margin-top: 0">Intrinsic (Shared)</h5>
+<ul style="margin: 0; padding-left: 20px">
 <li>Sprite texture (10-50 MB)</li>
 <li>Animation frame data</li>
 <li>Sound effects</li>
@@ -478,9 +478,9 @@ func main() {
 <li>AI behavior tree</li>
 </ul>
 </div>
-<div>
-<h5>Extrinsic (Per-Instance)</h5>
-<ul>
+<div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px">
+<h5 style="color: #fb923c; margin-top: 0">Extrinsic (Per-Instance)</h5>
+<ul style="margin: 0; padding-left: 20px">
 <li>Position (x, y, z)</li>
 <li>Current health/mana</li>
 <li>Current animation frame</li>
@@ -962,61 +962,61 @@ if __name__ == &quot;__main__&quot;:
         print(f&quot;  {key}: {value}&quot;)
 </code></pre>
 <h3 id="interview-questions-game-character-system">Interview Questions: Game Character System</h3>
-<div>
-<h4>Level 1: Pattern Recognition</h4>
-<p><strong>Q: In the game character implementation, why is animation_start_time extrinsic rather than storing "current_frame" directly?</strong></p>
-<p>A: Storing animation_start_time and computing current_frame is more efficient because: (1) No update loop needed - frame is computed on-demand during render. (2) Automatic frame progression - time naturally advances. (3) Smaller state - single float vs tracking frame + accumulator. (4) Synchronization-free - no need to call update() at exact intervals. The flyweight's get_animation_frame() does pure computation from (animation_start_time, current_time) -> frame_index. Trade-off: slightly more computation per render call, but eliminates update overhead.</p>
-<h4>Level 2: Performance Optimization</h4>
-<p><strong>Q: The game needs to render 10,000 characters at 60 FPS. Each render() call creates a new Dict. How would you optimize this?</strong></p>
-<p>A: Multiple optimizations: (1) <strong>Object pooling for render commands</strong>: Pre-allocate render command objects, reuse instead of creating new dicts each frame. (2) <strong>Batch by type</strong>: Group characters by CharacterType, issue single batched draw call per type (instanced rendering). GPU draws all warriors in one call. (3) <strong>Spatial culling</strong>: Use [[quadtree]](/topic/data-structures/quadtree) or [[spatial hash]](/topic/algorithms/spatial-hashing) to skip off-screen characters. (4) <strong>LOD (Level of Detail)</strong>: Distant characters use simpler flyweights with lower-res textures. (5) <strong>Struct of Arrays</strong>: Instead of List[CharacterInstance], store positions as separate float arrays. Better cache locality, enables SIMD. (6) <strong>Frame budgeting</strong>: If over budget, render subset of characters (prioritize nearby/important).</p>
-<h4>Level 3: Architectural Extension</h4>
-<p><strong>Q: Design an extension where players can customize character appearance (different armor colors, weapon skins) while maintaining flyweight benefits. Customizations are purchased and persistent.</strong></p>
-<p>A: Use composite flyweight architecture: (1) <strong>Base flyweight layer</strong>: CharacterType stays as-is (mesh, animation, base texture). (2) <strong>Customization flyweights</strong>: New flyweight category for customizations. ArmorTint(color), WeaponSkin(texture_id) are separate flyweights. Limited set (e.g., 20 colors, 50 skins) = manageable pool. (3) <strong>Instance composition</strong>: CharacterInstance holds references to [base_type, armor_tint, weapon_skin]. (4) <strong>Render pipeline</strong>: Shader applies customizations as overlays/tints. base_texture + tint_color + skin_texture combined at render time. (5) <strong>Database design</strong>: User purchases stored as (user_id, customization_type_id). Customization flyweights loaded from config, not per-user. (6) <strong>Memory math</strong>: 1M players with customizations = 1M * 3 references (24 bytes) + shared flyweight pool. Without flyweight: 1M * full texture data = impossible. Key insight: Flyweight pattern composes - multiple flyweight pools can work together.</p>
+<div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #ffd700; margin-top: 0">Level 1: Pattern Recognition</h4>
+<p style="color: #ccc"><strong>Q: In the game character implementation, why is animation_start_time extrinsic rather than storing "current_frame" directly?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Storing animation_start_time and computing current_frame is more efficient because: (1) No update loop needed - frame is computed on-demand during render. (2) Automatic frame progression - time naturally advances. (3) Smaller state - single float vs tracking frame + accumulator. (4) Synchronization-free - no need to call update() at exact intervals. The flyweight's get_animation_frame() does pure computation from (animation_start_time, current_time) -> frame_index. Trade-off: slightly more computation per render call, but eliminates update overhead.</p>
+<h4 style="color: #ff6b6b; margin-top: 15px">Level 2: Performance Optimization</h4>
+<p style="color: #ccc"><strong>Q: The game needs to render 10,000 characters at 60 FPS. Each render() call creates a new Dict. How would you optimize this?</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Multiple optimizations: (1) <strong>Object pooling for render commands</strong>: Pre-allocate render command objects, reuse instead of creating new dicts each frame. (2) <strong>Batch by type</strong>: Group characters by CharacterType, issue single batched draw call per type (instanced rendering). GPU draws all warriors in one call. (3) <strong>Spatial culling</strong>: Use [[quadtree]](/topic/data-structures/quadtree) or [[spatial hash]](/topic/algorithms/spatial-hashing) to skip off-screen characters. (4) <strong>LOD (Level of Detail)</strong>: Distant characters use simpler flyweights with lower-res textures. (5) <strong>Struct of Arrays</strong>: Instead of List[CharacterInstance], store positions as separate float arrays. Better cache locality, enables SIMD. (6) <strong>Frame budgeting</strong>: If over budget, render subset of characters (prioritize nearby/important).</p>
+<h4 style="color: #a855f7; margin-top: 15px">Level 3: Architectural Extension</h4>
+<p style="color: #ccc"><strong>Q: Design an extension where players can customize character appearance (different armor colors, weapon skins) while maintaining flyweight benefits. Customizations are purchased and persistent.</strong></p>
+<p style="color: #9ca3af; font-style: italic">A: Use composite flyweight architecture: (1) <strong>Base flyweight layer</strong>: CharacterType stays as-is (mesh, animation, base texture). (2) <strong>Customization flyweights</strong>: New flyweight category for customizations. ArmorTint(color), WeaponSkin(texture_id) are separate flyweights. Limited set (e.g., 20 colors, 50 skins) = manageable pool. (3) <strong>Instance composition</strong>: CharacterInstance holds references to [base_type, armor_tint, weapon_skin]. (4) <strong>Render pipeline</strong>: Shader applies customizations as overlays/tints. base_texture + tint_color + skin_texture combined at render time. (5) <strong>Database design</strong>: User purchases stored as (user_id, customization_type_id). Customization flyweights loaded from config, not per-user. (6) <strong>Memory math</strong>: 1M players with customizations = 1M * 3 references (24 bytes) + shared flyweight pool. Without flyweight: 1M * full texture data = impossible. Key insight: Flyweight pattern composes - multiple flyweight pools can work together.</p>
 </div>
 <hr />
 <h2 id="related-patterns-and-integration">Related Patterns and Integration</h2>
 <p>The Flyweight pattern often works alongside other patterns to create robust architectures.</p>
-<div>
-<h4>Pattern Relationships</h4>
-<table>
-<tr>
-<th>Pattern</th>
-<th>Relationship with Flyweight</th>
+<div style="background: linear-gradient(135deg, #3f0d0d 0%, #5c1a1a 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #fca5a5; margin-top: 0">Pattern Relationships</h4>
+<table style="width: 100%; color: #fecaca; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 10px">Pattern</th>
+<th style="text-align: left; padding: 10px">Relationship with Flyweight</th>
+</tr>
+<tr >
+<td style="padding: 10px"><strong>[[Factory Method]](/topic/design-patterns/factory-method)</strong></td>
+<td style="padding: 10px">Factory creates and manages flyweight pool. Encapsulates creation logic and caching.</td>
+</tr>
+<tr >
+<td style="padding: 10px"><strong>[[Singleton]](/topic/design-patterns/singleton)</strong></td>
+<td style="padding: 10px">Factory is often singleton to ensure single source of truth for flyweight instances.</td>
+</tr>
+<tr >
+<td style="padding: 10px"><strong>[[Composite]](/topic/design-patterns/composite)</strong></td>
+<td style="padding: 10px">Leaf nodes in composite structures often use flyweights (e.g., characters in GUI tree).</td>
+</tr>
+<tr >
+<td style="padding: 10px"><strong>[[State]](/topic/design-patterns/state)</strong></td>
+<td style="padding: 10px">State objects can be flyweights when they're stateless (pure behavior, no instance data).</td>
+</tr>
+<tr >
+<td style="padding: 10px"><strong>[[Object Pool]](/topic/design-patterns/object-pool)</strong></td>
+<td style="padding: 10px">Related but different: Pool reuses mutable objects; Flyweight shares immutable objects.</td>
 </tr>
 <tr>
-<td><strong>[[Factory Method]](/topic/design-patterns/factory-method)</strong></td>
-<td>Factory creates and manages flyweight pool. Encapsulates creation logic and caching.</td>
-</tr>
-<tr>
-<td><strong>[[Singleton]](/topic/design-patterns/singleton)</strong></td>
-<td>Factory is often singleton to ensure single source of truth for flyweight instances.</td>
-</tr>
-<tr>
-<td><strong>[[Composite]](/topic/design-patterns/composite)</strong></td>
-<td>Leaf nodes in composite structures often use flyweights (e.g., characters in GUI tree).</td>
-</tr>
-<tr>
-<td><strong>[[State]](/topic/design-patterns/state)</strong></td>
-<td>State objects can be flyweights when they're stateless (pure behavior, no instance data).</td>
-</tr>
-<tr>
-<td><strong>[[Object Pool]](/topic/design-patterns/object-pool)</strong></td>
-<td>Related but different: Pool reuses mutable objects; Flyweight shares immutable objects.</td>
-</tr>
-<tr>
-<td><strong>[[Prototype]](/topic/design-patterns/prototype)</strong></td>
-<td>Alternative approach: clone template objects vs share flyweights. Prototype for mutable needs.</td>
+<td style="padding: 10px"><strong>[[Prototype]](/topic/design-patterns/prototype)</strong></td>
+<td style="padding: 10px">Alternative approach: clone template objects vs share flyweights. Prototype for mutable needs.</td>
 </tr>
 </table>
 </div>
 <hr />
 <h2 id="common-pitfalls-and-anti-patterns">Common Pitfalls and Anti-Patterns</h2>
-<div>
-<h4>Pitfalls to Avoid</h4>
-<div>
-<h5>1. Mutable Intrinsic State</h5>
-<p>Making flyweight state mutable corrupts all clients simultaneously. Always use frozen/immutable objects.</p>
-<pre>
+<div style="background: #1c1917;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #ef4444; margin-top: 0">Pitfalls to Avoid</h4>
+<div style="margin-bottom: 20px">
+<h5 style="color: #fbbf24">1. Mutable Intrinsic State</h5>
+<p style="color: #d6d3d1">Making flyweight state mutable corrupts all clients simultaneously. Always use frozen/immutable objects.</p>
+<pre style="background: #292524; padding: 10px; border-radius: 4px; color: #a8a29e; overflow-x: auto">
 # WRONG: Mutable flyweight
   class CharStyle:
   def __init__(self, color):
@@ -1025,29 +1025,29 @@ if __name__ == &quot;__main__&quot;:
 <p>style.color = &quot;red&quot;  # Bug: every character using this style turns red<br />
 </pre></p>
 </div>
-<div>
-<h5>2. Identity Confusion</h5>
-<p>Flyweights must not be used where object identity matters. Two "different" characters share the same flyweight - they're not distinguishable by flyweight identity.</p>
-<pre>
+<div style="margin-bottom: 20px">
+<h5 style="color: #fbbf24">2. Identity Confusion</h5>
+<p style="color: #d6d3d1">Flyweights must not be used where object identity matters. Two "different" characters share the same flyweight - they're not distinguishable by flyweight identity.</p>
+<pre style="background: #292524; padding: 10px; border-radius: 4px; color: #a8a29e; overflow-x: auto">
 # WRONG: Using flyweight for identity
   if character1.type is character2.type:
   print("Same character!")  # Bug: just same TYPE, not same instance
 </pre>
 </div>
-<div>
-<h5>3. Premature Optimization</h5>
-<p>Applying Flyweight when object count is low adds complexity without benefit. Profile first.</p>
+<div style="margin-bottom: 20px">
+<h5 style="color: #fbbf24">3. Premature Optimization</h5>
+<p style="color: #d6d3d1">Applying Flyweight when object count is low adds complexity without benefit. Profile first.</p>
 </div>
 <div>
-<h5>4. Unbounded Factory Growth</h5>
-<p>If flyweight keys come from user input, the factory can grow unbounded. Use LRU eviction or validate keys against a known set.</p>
+<h5 style="color: #fbbf24">4. Unbounded Factory Growth</h5>
+<p style="color: #d6d3d1">If flyweight keys come from user input, the factory can grow unbounded. Use LRU eviction or validate keys against a known set.</p>
 </div>
 </div>
 <hr />
 <h2 id="when-to-use-flyweight">When to Use Flyweight</h2>
-<div>
-<h4>Use Flyweight When</h4>
-<ul>
+<div style="background: linear-gradient(135deg, #14532d 0%, #166534 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #86efac; margin-top: 0">Use Flyweight When</h4>
+<ul style="color: #dcfce7">
 <li>Application uses a <strong>large number of objects</strong> (thousands+)</li>
 <li>Storage costs are <strong>high due to object quantity</strong></li>
 <li>Most object state can be made <strong>extrinsic</strong></li>
@@ -1055,9 +1055,9 @@ if __name__ == &quot;__main__&quot;:
 <li>Application doesn't depend on <strong>object identity</strong></li>
 </ul>
 </div>
-<div>
-<h4>Avoid Flyweight When</h4>
-<ul>
+<div style="background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #fecaca; margin-top: 0">Avoid Flyweight When</h4>
+<ul style="color: #fee2e2">
 <li>Object count is <strong>small</strong> (overhead exceeds savings)</li>
 <li>Most state is <strong>intrinsically unique</strong> per object</li>
 <li>State separation would <strong>complicate code significantly</strong></li>

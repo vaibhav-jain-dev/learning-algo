@@ -1,9 +1,9 @@
 <h1 id="abstract-factory-pattern">Abstract Factory Pattern</h1>
 <h2 id="overview">Overview</h2>
 <p>The Abstract Factory pattern provides an interface for creating <strong>families of related or dependent objects</strong> without specifying their concrete classes. Unlike <a href="/topics/design-patterns/factory-method">[Factory Method]</a> which creates a single product, Abstract Factory orchestrates the creation of multiple products that must work together coherently.</p>
-<div>
-<h4>Core Insight</h4>
-<p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 20px; margin: 20px 0">
+<h4 style="margin: 0 0 12px 0; color: #1e40af">Core Insight</h4>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #475569">
 Abstract Factory enforces a <strong>product family constraint</strong>: all products created by a single factory instance are guaranteed to be compatible. This is the pattern's defining characteristic and primary value proposition.
 </p>
 </div>
@@ -17,9 +17,9 @@ Abstract Factory enforces a <strong>product family constraint</strong>: all prod
 <li>A <strong>concrete factory</strong> - The class responsible for creating all products in that family</li>
 <li>An <strong>invariant</strong> - The guarantee that all products from one factory are mutually compatible</li>
 </ol>
-<div>
-<h4>Key Assumption</h4>
-<p>
+<div style="background: #fefce8;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
+<h4 style="margin: 0 0 8px 0; color: #a16207">Key Assumption</h4>
+<p style="margin: 0; color: #713f12; font-size: 14px">
 The pattern assumes that <strong>all products within a family share enough common interface</strong> that they can be substituted for products from another family. If MacButton and WindowsButton have fundamentally different behaviors (not just appearance), the abstraction breaks down.
 </p>
 </div>
@@ -37,22 +37,22 @@ The pattern assumes that <strong>all products within a family share enough commo
 </code></pre>
 <p><strong>Internal mechanism</strong>: The concrete factory holds the &quot;family identity&quot; as implicit state. When <code>MacFactory.create_button()</code> is called, the method's implementation (not runtime configuration) determines the product type.</p>
 <h3 id="13-family-consistency-vs-product-consistency">1.3 Family Consistency vs. Product Consistency</h3>
-<div>
-<div>
-<h5>Family Consistency (Abstract Factory)</h5>
-<p>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0">
+<div style="background: #f0fdf4;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #166534">Family Consistency (Abstract Factory)</h5>
+<p style="margin: 0; font-size: 13px; color: #15803d">
   All products created by MacFactory work together. All products created by WindowsFactory work together. You cannot mix.
 </p>
 </div>
-<div>
-<h5>Product Consistency (Factory Method)</h5>
-<p>
+<div style="background: #fef2f2;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #991b1b">Product Consistency (Factory Method)</h5>
+<p style="margin: 0; font-size: 13px; color: #b91c1c">
   Each factory method creates one product type. No guarantee about relationships between different products.
 </p>
 </div>
 </div>
 <h3 id="interview-questions-factory-families-3-levels-deep">Interview Questions: Factory Families (3 Levels Deep)</h3>
-<div>
+<div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
 <p><strong>Level 1: &quot;What is a factory family and why does it matter?&quot;</strong></p>
 <blockquote>
 <p>A factory family is a set of related products designed to work together, created by a single concrete factory. It matters because it prevents incompatibility bugs - like trying to use a Windows scrollbar rendering callback with a Mac button event system. The factory guarantees coherence by construction.</p>
@@ -105,14 +105,14 @@ The pragmatic solution for most systems is Approach 1 combined with [[Dependency
 <li><strong>Accessibility APIs vary</strong> - Screen readers expect platform-specific semantics</li>
 </ol>
 <h3 id="22-anatomy-of-a-cross-platform-ui-factory">2.2 Anatomy of a Cross-Platform UI Factory</h3>
-<div>
-<h4>Cross-Platform UI Factory Architecture</h4>
-<div>
-<div>
-<div>
-<div>WidgetFactory</div>
-<div>interface</div>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center">Cross-Platform UI Factory Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #dbeafe;border-radius: 8px; padding: 12px 20px; text-align: center">
+<div style="font-weight: 700; color: #1e40af; font-size: 14px">WidgetFactory</div>
+<div style="font-size: 11px; color: #3b82f6; margin-top: 4px">interface</div>
+<div style="font-family: monospace; font-size: 11px; color: #1e3a5f; margin-top: 8px; text-align: left">
   +createButton()<br/>
   +createScrollbar()<br/>
   +createTextInput()<br/>
@@ -121,32 +121,32 @@ The pragmatic solution for most systems is Approach 1 combined with [[Dependency
 </div>
 </div>
 </div>
-<div>
-<div>implements</div>
+<div style="display: flex; justify-content: center">
+<div style="color: #64748b; font-size: 12px">implements</div>
 </div>
-<div>
-<div>
-<div>MacWidgetFactory</div>
-<div>Cocoa/AppKit backend</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dcfce7;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px">
+<div style="font-weight: 600; color: #166534; font-size: 13px">MacWidgetFactory</div>
+<div style="font-size: 10px; color: #15803d; margin-top: 4px">Cocoa/AppKit backend</div>
 </div>
-<div>
-<div>WinWidgetFactory</div>
-<div>Win32/WinRT backend</div>
+<div style="background: #e0e7ff;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px">
+<div style="font-weight: 600; color: #3730a3; font-size: 13px">WinWidgetFactory</div>
+<div style="font-size: 10px; color: #4338ca; margin-top: 4px">Win32/WinRT backend</div>
 </div>
-<div>
-<div>LinuxWidgetFactory</div>
-<div>GTK/Qt backend</div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 140px">
+<div style="font-weight: 600; color: #92400e; font-size: 13px">LinuxWidgetFactory</div>
+<div style="font-size: 10px; color: #b45309; margin-top: 4px">GTK/Qt backend</div>
 </div>
 </div>
-<div>
-<div>Each factory creates a complete, coherent product family</div>
-<div>
-<div>MacButton</div>
-<div>MacScrollbar</div>
-<div>MacEventLoop</div>
-<div>WinButton</div>
-<div>WinScrollbar</div>
-<div>WinEventLoop</div>
+<div style="padding-top: 16px; margin-top: 8px">
+<div style="text-align: center; color: #64748b; font-size: 12px; margin-bottom: 12px">Each factory creates a complete, coherent product family</div>
+<div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap">
+<div style="background: #f0fdf4;border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534">MacButton</div>
+<div style="background: #f0fdf4;border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534">MacScrollbar</div>
+<div style="background: #f0fdf4;border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534">MacEventLoop</div>
+<div style="background: #eef2ff;border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3">WinButton</div>
+<div style="background: #eef2ff;border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3">WinScrollbar</div>
+<div style="background: #eef2ff;border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #3730a3">WinEventLoop</div>
 </div>
 </div>
 </div>
@@ -170,9 +170,9 @@ The pragmatic solution for most systems is Approach 1 combined with [[Dependency
     pass
     ```
 </code></pre>
-<div>
-<h4>Edge Case: Mixed Event Systems</h4>
-<p>
+<div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
+<h4 style="margin: 0 0 8px 0; color: #991b1b">Edge Case: Mixed Event Systems</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px">
 If you create a MacButton but run it with a Windows event loop, the button will never receive click events. The event loop doesn't know how to translate Windows messages into Mac responder chain calls. <strong>This is why the factory must also provide the event loop</strong> - it's part of the family.
 </p>
 </div>
@@ -199,7 +199,7 @@ If you create a MacButton but run it with a Windows event loop, the button will 
 </code></pre>
 <p><strong>Why Swing's approach is interesting</strong>: The UI delegates are created lazily and cached. The factory doesn't create widgets; it creates <em>renderers</em> for widgets. This is a variant called <strong>Abstract Factory with Flyweight</strong>.</p>
 <h3 id="interview-questions-ui-toolkit-3-levels-deep">Interview Questions: UI Toolkit (3 Levels Deep)</h3>
-<div>
+<div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
 <p><strong>Level 1: &quot;Why is UI toolkit development a canonical example of Abstract Factory?&quot;</strong></p>
 <blockquote>
 <p>UI toolkits need to create multiple related components (buttons, scrollbars, text inputs) that must be visually and behaviorally consistent. A Mac button must work with Mac menus and Mac event handling. Abstract Factory guarantees this by making the platform choice a single decision point that affects all component creation.</p>
@@ -251,41 +251,41 @@ class ThemeManager:
 <h2 id="section-3-cross-platform-development---beyond-ui">Section 3: Cross-Platform Development - Beyond UI</h2>
 <h3 id="31-platform-abstraction-layers">3.1 Platform Abstraction Layers</h3>
 <p>Abstract Factory excels at creating <strong>Platform Abstraction Layers (PALs)</strong>:</p>
-<div>
-<h4>Platform Abstraction Layer Architecture</h4>
-<div>
-<div>
-<div>Application Layer</div>
-<div>Business logic - uses only abstract interfaces</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center">Platform Abstraction Layer Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #fef3c7;border-radius: 8px; padding: 16px; text-align: center">
+<div style="font-weight: 700; color: #92400e">Application Layer</div>
+<div style="font-size: 12px; color: #b45309">Business logic - uses only abstract interfaces</div>
 </div>
-<div>
-<div></div>
+<div style="display: flex; justify-content: center">
+<div style="width: 2px; height: 20px; background: #94a3b8"></div>
 </div>
-<div>
-<div>PlatformFactory Interface</div>
-<div>
+<div style="background: #dbeafe;border-radius: 8px; padding: 16px; text-align: center">
+<div style="font-weight: 700; color: #1e40af">PlatformFactory Interface</div>
+<div style="font-size: 12px; color: #3b82f6; margin-top: 8px">
   createFileSystem() | createNetwork() | createThreading() | createGraphics()
 </div>
 </div>
-<div>
-<div></div>
+<div style="display: flex; justify-content: center">
+<div style="width: 2px; height: 20px; background: #94a3b8"></div>
 </div>
-<div>
-<div>
-<div>POSIXFactory</div>
-<div>Linux, macOS, BSD</div>
+<div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #dcfce7;border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px">
+<div style="font-weight: 600; color: #166534; font-size: 13px">POSIXFactory</div>
+<div style="font-size: 10px; color: #15803d">Linux, macOS, BSD</div>
 </div>
-<div>
-<div>Win32Factory</div>
-<div>Windows desktop</div>
+<div style="background: #e0e7ff;border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px">
+<div style="font-weight: 600; color: #3730a3; font-size: 13px">Win32Factory</div>
+<div style="font-size: 10px; color: #4338ca">Windows desktop</div>
 </div>
-<div>
-<div>WebFactory</div>
-<div>Browser/WASM</div>
+<div style="background: #fce7f3;border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px">
+<div style="font-weight: 600; color: #9d174d; font-size: 13px">WebFactory</div>
+<div style="font-size: 10px; color: #be185d">Browser/WASM</div>
 </div>
-<div>
-<div>EmbeddedFactory</div>
-<div>RTOS, bare metal</div>
+<div style="background: #fef9c3;border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 120px; max-width: 160px">
+<div style="font-weight: 600; color: #854d0e; font-size: 13px">EmbeddedFactory</div>
+<div style="font-size: 10px; color: #a16207">RTOS, bare metal</div>
 </div>
 </div>
 </div>
@@ -314,9 +314,9 @@ class ThemeManager:
     pass
     ```
 </code></pre>
-<div>
-<h4>Design Choice: Factory as Service Locator</h4>
-<p>
+<div style="background: #eff6ff;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
+<h4 style="margin: 0 0 8px 0; color: #1e40af">Design Choice: Factory as Service Locator</h4>
+<p style="margin: 0; color: #1e3a5f; font-size: 14px">
   One solution is to make the factory itself a parameter to product constructors. The logger receives the factory and lazily retrieves dependencies. This is controversial - it resembles Service Locator, which hides dependencies. The trade-off is explicit: cross-cutting concerns require either dependency hiding or complex initialization ordering.
 </p>
 </div>
@@ -441,14 +441,14 @@ class ThemeManager:
     pass
     ```
 </code></pre>
-<div>
-<h4>Real-World Edge Case: Service Parity</h4>
-<p>
+<div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
+<h4 style="margin: 0 0 8px 0; color: #991b1b">Real-World Edge Case: Service Parity</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px">
 Cloud providers don't have perfect feature parity. AWS Lambda has different cold start characteristics than Azure Functions. S3 has eventual consistency properties that GCS doesn't. <strong>The abstraction leaks</strong>. Solutions: 1) Lowest common denominator API, 2) Provider-specific extension interfaces, 3) Feature flags in the abstract interface.
 </p>
 </div>
 <h3 id="interview-questions-cross-platform-development-3-levels-deep">Interview Questions: Cross-Platform Development (3 Levels Deep)</h3>
-<div>
+<div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
 <p><strong>Level 1: &quot;How does Abstract Factory help with cross-platform development?&quot;</strong></p>
 <blockquote>
 <p>Abstract Factory creates a single abstraction point for platform differences. Application code depends only on abstract interfaces (FileSystem, Network, etc.), and a platform-specific factory provides concrete implementations. Switching platforms means changing only the factory instantiation, not the application logic.</p>
@@ -527,18 +527,18 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 <hr />
 <h2 id="section-4-factory-method-vs-abstract-factory---critical-distinctions">Section 4: Factory Method vs Abstract Factory - Critical Distinctions</h2>
 <h3 id="41-structural-comparison">4.1 Structural Comparison</h3>
-<div>
-<h4>Factory Method vs Abstract Factory</h4>
-<div>
-<div>
-<h5>Factory Method</h5>
-<div>
-<div><strong>Structure:</strong> Single method in a class</div>
-<div><strong>Creates:</strong> One product type</div>
-<div><strong>Extension:</strong> Subclass overrides method</div>
-<div><strong>Relationship:</strong> IS-A (inheritance)</div>
-<div>
-<code>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #334155; margin: 0 0 20px 0; text-align: center">Factory Method vs Abstract Factory</h4>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+<div style="background: #dbeafe;border-radius: 10px; padding: 16px">
+<h5 style="color: #1e40af; margin: 0 0 12px 0; text-align: center">Factory Method</h5>
+<div style="font-size: 13px; color: #1e3a5f">
+<div style="margin-bottom: 8px"><strong>Structure:</strong> Single method in a class</div>
+<div style="margin-bottom: 8px"><strong>Creates:</strong> One product type</div>
+<div style="margin-bottom: 8px"><strong>Extension:</strong> Subclass overrides method</div>
+<div style="margin-bottom: 8px"><strong>Relationship:</strong> IS-A (inheritance)</div>
+<div style="background: #bfdbfe; padding: 8px; border-radius: 4px; margin-top: 12px">
+<code style="font-size: 11px">
   class Dialog:<br/>
   &nbsp;&nbsp;def create_button(self) -> Button:<br/>
   &nbsp;&nbsp;&nbsp;&nbsp;return DefaultButton()
@@ -546,15 +546,15 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </div>
 </div>
 </div>
-<div>
-<h5>Abstract Factory</h5>
-<div>
-<div><strong>Structure:</strong> Interface with multiple methods</div>
-<div><strong>Creates:</strong> Family of related products</div>
-<div><strong>Extension:</strong> New factory class</div>
-<div><strong>Relationship:</strong> HAS-A (composition)</div>
-<div>
-<code>
+<div style="background: #dcfce7;border-radius: 10px; padding: 16px">
+<h5 style="color: #166534; margin: 0 0 12px 0; text-align: center">Abstract Factory</h5>
+<div style="font-size: 13px; color: #14532d">
+<div style="margin-bottom: 8px"><strong>Structure:</strong> Interface with multiple methods</div>
+<div style="margin-bottom: 8px"><strong>Creates:</strong> Family of related products</div>
+<div style="margin-bottom: 8px"><strong>Extension:</strong> New factory class</div>
+<div style="margin-bottom: 8px"><strong>Relationship:</strong> HAS-A (composition)</div>
+<div style="background: #bbf7d0; padding: 8px; border-radius: 4px; margin-top: 12px">
+<code style="font-size: 11px">
   class WidgetFactory:<br/>
   &nbsp;&nbsp;def create_button(self) -> Button<br/>
   &nbsp;&nbsp;def create_scroll(self) -> Scrollbar<br/>
@@ -566,17 +566,17 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </div>
 </div>
 <h3 id="42-when-to-use-which">4.2 When to Use Which</h3>
-<div>
-<h4>Decision Framework</h4>
-<div>
+<div style="background: #fefce8;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
+<h4 style="margin: 0 0 8px 0; color: #a16207">Decision Framework</h4>
+<div style="color: #713f12; font-size: 14px">
 <p><strong>Use Factory Method when:</strong></p>
-<ul>
+<ul style="margin: 8px 0">
 <li>You need to create ONE type of object with variations</li>
 <li>Subclasses should decide which class to instantiate</li>
 <li>You want to defer instantiation to derived classes</li>
 </ul>
 <p><strong>Use Abstract Factory when:</strong></p>
-<ul>
+<ul style="margin: 8px 0">
 <li>You need to create MULTIPLE related objects that must work together</li>
 <li>System should be independent of how products are created</li>
 <li>You need to enforce family constraints (no mixing)</li>
@@ -605,40 +605,40 @@ Cloud providers don't have perfect feature parity. AWS Lambda has different cold
 </code></pre>
 <h3 id="44-evolution-path">4.4 Evolution Path</h3>
 <p>Systems often evolve from Factory Method to Abstract Factory:</p>
-<div>
-<h4>Pattern Evolution</h4>
-<div>
-<div>
-<div>Stage 1</div>
-<div>Constructor</div>
-<div>new Button()</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #334155; margin: 0 0 16px 0; text-align: center">Pattern Evolution</h4>
+<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px">
+<div style="background: #f1f5f9;border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px">
+<div style="font-weight: 600; color: #475569; font-size: 12px">Stage 1</div>
+<div style="font-size: 11px; color: #64748b">Constructor</div>
+<div style="font-family: monospace; font-size: 10px; margin-top: 4px">new Button()</div>
 </div>
-<div>-></div>
-<div>
-<div>Stage 2</div>
-<div>Factory Method</div>
-<div>createButton()</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #dbeafe;border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px">
+<div style="font-weight: 600; color: #1e40af; font-size: 12px">Stage 2</div>
+<div style="font-size: 11px; color: #3b82f6">Factory Method</div>
+<div style="font-family: monospace; font-size: 10px; margin-top: 4px">createButton()</div>
 </div>
-<div>-></div>
-<div>
-<div>Stage 3</div>
-<div>Abstract Factory</div>
-<div>factory.createX()</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #dcfce7;border-radius: 8px; padding: 12px 16px; text-align: center; flex: 1; min-width: 100px">
+<div style="font-weight: 600; color: #166534; font-size: 12px">Stage 3</div>
+<div style="font-size: 11px; color: #15803d">Abstract Factory</div>
+<div style="font-family: monospace; font-size: 10px; margin-top: 4px">factory.createX()</div>
 </div>
 </div>
-<div>
+<div style="margin-top: 16px; padding-top: 12px;font-size: 12px; color: #64748b; text-align: center">
   Evolve when: single product becomes family, OR platform variations emerge
 </div>
 </div>
 <h3 id="45-anti-pattern-premature-abstract-factory">4.5 Anti-Pattern: Premature Abstract Factory</h3>
-<div>
-<h4>Common Mistake: Over-Engineering</h4>
-<p>
+<div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
+<h4 style="margin: 0 0 8px 0; color: #991b1b">Common Mistake: Over-Engineering</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px">
 Creating an Abstract Factory when you only have one product family and no plans for more is over-engineering. The indirection adds complexity without benefit. <strong>YAGNI</strong> (You Aren't Gonna Need It) applies. Start with direct construction or Factory Method; refactor to Abstract Factory when the second family appears.
 </p>
 </div>
 <h3 id="interview-questions-factory-method-vs-abstract-factory-3-levels-deep">Interview Questions: Factory Method vs Abstract Factory (3 Levels Deep)</h3>
-<div>
+<div style="background: #f8fafc;border-radius: 8px; padding: 20px; margin: 20px 0">
 <p><strong>Level 1: &quot;What is the key difference between Factory Method and Abstract Factory?&quot;</strong></p>
 <blockquote>
 <p>Factory Method creates ONE product through inheritance (subclass overrides a creation method). Abstract Factory creates a FAMILY of related products through composition (client holds a factory object). Factory Method is about deferring instantiation to subclasses; Abstract Factory is about enforcing family consistency.</p>
@@ -1937,9 +1937,9 @@ class Application:
     return self.database.create_database()
     ```
 </code></pre>
-<div>
-<h4>Design Trade-off: Composite Factories</h4>
-<p>
+<div style="background: #fef2f2;border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0">
+<h4 style="margin: 0 0 8px 0; color: #991b1b">Design Trade-off: Composite Factories</h4>
+<p style="margin: 0; color: #7f1d1d; font-size: 14px">
   Composite factories sacrifice family consistency for flexibility. Use only when: (1) Products are truly independent, (2) Cross-provider communication is handled explicitly, (3) The performance/cost benefits outweigh the complexity. Document the "allowed combinations" clearly.
 </p>
 </div>
@@ -2020,11 +2020,11 @@ class Application:
 <hr />
 <h2 id="section-7-common-pitfalls-and-anti-patterns">Section 7: Common Pitfalls and Anti-Patterns</h2>
 <h3 id="71-the-god-factory-anti-pattern">7.1 The &quot;God Factory&quot; Anti-Pattern</h3>
-<div>
-<h4>Anti-Pattern: God Factory</h4>
-<div>
+<div style="background: #fef2f2;border-radius: 10px; padding: 20px; margin: 20px 0">
+<h4 style="margin: 0 0 12px 0; color: #991b1b">Anti-Pattern: God Factory</h4>
+<div style="color: #7f1d1d; font-size: 14px">
 <p><strong>Problem:</strong> Factory that creates too many unrelated products:</p>
-<pre>
+<pre style="background: #fee2e2; padding: 12px; border-radius: 4px; overflow-x: auto">
   class ApplicationFactory:
   def create_database(self): ...
   def create_cache(self): ...
@@ -2033,7 +2033,7 @@ class Application:
   def create_logger(self): ...
   def create_metrics(self): ...
 </pre>
-<p><strong>Solution:</strong> Split into multiple focused factories. Use [[Interface Segregation]](/topics/design-patterns/solid) principle.</p>
+<p style="margin-top: 12px"><strong>Solution:</strong> Split into multiple focused factories. Use [[Interface Segregation]](/topics/design-patterns/solid) principle.</p>
 </div>
 </div>
 <h3 id="72-violating-liskov-substitution">7.2 Violating Liskov Substitution</h3>
@@ -2087,49 +2087,49 @@ class Application:
 </code></pre>
 <hr />
 <h2 id="section-8-related-patterns">Section 8: Related Patterns</h2>
-<div>
-<div>
-<h5>[[Factory Method]](/topics/design-patterns/factory-method)</h5>
-<p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0">
+<div style="background: #f8fafc;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #334155">[[Factory Method]](/topics/design-patterns/factory-method)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b">
   Single product creation via inheritance. Abstract Factory often composed of multiple Factory Methods.
 </p>
 </div>
-<div>
-<h5>[[Builder]](/topics/design-patterns/builder)</h5>
-<p>
+<div style="background: #f8fafc;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #334155">[[Builder]](/topics/design-patterns/builder)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b">
   Step-by-step construction. Use when products require complex configuration before creation.
 </p>
 </div>
-<div>
-<h5>[[Prototype]](/topics/design-patterns/prototype)</h5>
-<p>
+<div style="background: #f8fafc;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #334155">[[Prototype]](/topics/design-patterns/prototype)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b">
   Clone-based creation. Alternative when products are expensive to create from scratch.
 </p>
 </div>
-<div>
-<h5>[[Singleton]](/topics/design-patterns/singleton)</h5>
-<p>
+<div style="background: #f8fafc;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #334155">[[Singleton]](/topics/design-patterns/singleton)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b">
   Factories are often singletons. Ensures consistent factory instance across application.
 </p>
 </div>
-<div>
-<h5>[[Dependency Injection]](/topics/design-patterns/dependency-injection)</h5>
-<p>
+<div style="background: #f8fafc;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #334155">[[Dependency Injection]](/topics/design-patterns/dependency-injection)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b">
   Factories are injected into clients. Enables testing and configuration flexibility.
 </p>
 </div>
-<div>
-<h5>[[Strategy]](/topics/design-patterns/strategy)</h5>
-<p>
+<div style="background: #f8fafc;border-radius: 10px; padding: 16px">
+<h5 style="margin: 0 0 8px 0; color: #334155">[[Strategy]](/topics/design-patterns/strategy)</h5>
+<p style="margin: 0; font-size: 13px; color: #64748b">
   Factory selection itself can be a strategy. Runtime factory switching based on context.
 </p>
 </div>
 </div>
 <hr />
 <h2 id="quick-reference-card">Quick Reference Card</h2>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="pattern-essence">Pattern Essence</h3>
-<div>
+<div style="color: #475569">
 <pre><code>        - **Intent**: Create families of related objects without specifying concrete classes
         - **Key Benefit**: Guarantees product family consistency by construction
         - **Category**: Creational Pattern (GoF)

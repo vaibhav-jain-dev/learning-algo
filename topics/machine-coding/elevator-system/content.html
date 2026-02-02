@@ -1,19 +1,19 @@
 <h1 id="elevator-system-design">Elevator System Design</h1>
 <h2 id="problem-statement">Problem Statement</h2>
 <p>Design and implement an elevator control system for a multi-story building with multiple elevators. The system must efficiently handle pickup requests from floors and destination requests from inside cabins, optimizing for minimal wait times while ensuring fair service to all passengers.</p>
-<p>This classic machine coding problem tests your ability to model real-world physical systems with <span>complex state transitions</span>, implement <span>scheduling algorithms</span> borrowed from operating systems, and design <span>coordination mechanisms</span> for distributed actors. Companies like Amazon, Google, Microsoft, and Uber use this problem to assess systems thinking, <a href="/topics/system-design/state-machine">[state-machine]</a> design, and algorithm selection.</p>
-<div>
-<div>Why This Problem Matters</div>
-<div>
+<p>This classic machine coding problem tests your ability to model real-world physical systems with <span style="color: #22c55e; font-weight: bold">complex state transitions</span>, implement <span style="color: #22c55e; font-weight: bold">scheduling algorithms</span> borrowed from operating systems, and design <span style="color: #22c55e; font-weight: bold">coordination mechanisms</span> for distributed actors. Companies like Amazon, Google, Microsoft, and Uber use this problem to assess systems thinking, <a href="/topics/system-design/state-machine">[state-machine]</a> design, and algorithm selection.</p>
+<div style="background: #f8fafc; border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">Why This Problem Matters</div>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.8">
 The elevator problem is a microcosm of distributed systems challenges: multiple independent actors (elevators) must coordinate to serve shared resources (passengers) while optimizing global metrics (wait time, throughput) without centralized real-time control. The algorithms you apply here—SCAN, LOOK, shortest-seek-time—originate from disk scheduling, making this an excellent bridge between OS concepts and real-world system design.
 </div>
 </div>
 <hr />
 <h2 id="requirements-analysis">Requirements Analysis</h2>
 <h3 id="functional-requirements">Functional Requirements</h3>
-<div>
-<div>Core Capabilities</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Core Capabilities</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>External Requests (Hall Calls)</strong></p>
 <ul>
 <li>Handle UP/DOWN button presses from floor hallways</li>
@@ -41,9 +41,9 @@ The elevator problem is a microcosm of distributed systems challenges: multiple 
 </div>
 </div>
 <h3 id="non-functional-requirements">Non-Functional Requirements</h3>
-<div>
-<div>System Constraints</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">System Constraints</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <table>
 <thead>
 <tr>
@@ -82,21 +82,21 @@ The elevator problem is a microcosm of distributed systems challenges: multiple 
 </table>
 </div>
 </div>
-<div>
-<div>Assumption: Request Model</div>
-<div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Assumption: Request Model</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 We assume a <strong>two-phase request model</strong>: passengers first make a hall call (external) specifying only direction, then make a car call (internal) specifying destination after boarding. This reflects real elevator systems where you don't know the destination until the passenger enters. Some modern "destination dispatch" systems ask for the destination floor upfront at kiosks—this fundamentally changes the optimization problem and should be clarified with your interviewer.
 </div>
 </div>
 <h3 id="interview-questions-requirements">Interview Questions: Requirements</h3>
-<div>
-<div>Level 1: Basic Understanding</div>
-<div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 16px">Level 1: Basic Understanding</div>
+<div style="color: #334155; font-size: 14px; line-height: 2.0">
 <p><strong>Q: Why do we need separate hall calls and car calls?</strong></p>
 <p>Hall calls represent where passengers are waiting; car calls represent where they want to go. This separation reflects the physical reality that we don't know a passenger's destination until they board. It also enables important optimizations: we can batch multiple passengers going the same direction at the same floor, and we can assign the closest suitable elevator before knowing exact destinations.</p>
-<div>
-<div>Level 2: Design Implications</div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 2: Design Implications</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: How would the system change with destination dispatch (passengers enter destination at hall kiosk)?</strong></p>
 <p>Destination dispatch fundamentally transforms the optimization problem:</p>
 <ol>
@@ -106,9 +106,9 @@ We assume a <strong>two-phase request model</strong>: passengers first make a ha
 <li><strong>Changed data model</strong>: Requests now carry full trip information (origin, destination) rather than just (origin, direction)</li>
 </ol>
 <p>The trade-off is increased complexity at the input interface and potential passenger confusion.</p>
-<div>
-<div>Level 3: Real-World Implications</div>
-<div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 3: Real-World Implications</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: In destination dispatch, how do you handle passengers who enter the wrong destination or change their mind after boarding?</strong></p>
 <p>This reveals a critical UX and system design challenge:</p>
 <ol>
@@ -127,39 +127,39 @@ We assume a <strong>two-phase request model</strong>: passengers first make a ha
 </div>
 <hr />
 <h2 id="scheduling-algorithms-deep-dive">Scheduling Algorithms Deep Dive</h2>
-<p>The core intellectual challenge of elevator systems is the <span>scheduling algorithm</span>—determining which floors to visit and in what order. These algorithms have direct parallels to <a href="/topics/operating-systems/disk-scheduling">[disk-scheduling]</a> in operating systems, where the elevator head movement mirrors disk seek operations.</p>
-<div>
-<div>Scheduling Algorithm Taxonomy</div>
-<div>
-<div>
-<div>Naive</div>
-<div>FCFS</div>
-<div>High variance</div>
+<p>The core intellectual challenge of elevator systems is the <span style="color: #22c55e; font-weight: bold">scheduling algorithm</span>—determining which floors to visit and in what order. These algorithms have direct parallels to <a href="/topics/operating-systems/disk-scheduling">[disk-scheduling]</a> in operating systems, where the elevator head movement mirrors disk seek operations.</p>
+<div style="background: #eff6ff; border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 20px; text-align: center">Scheduling Algorithm Taxonomy</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center">
+<div style="background: #fef2f2;padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center">
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px">Naive</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px">FCFS</div>
+<div style="color: #dc2626; font-size: 11px; margin-top: 4px">High variance</div>
 </div>
-<div>→</div>
-<div>
-<div>Sweep-Based</div>
-<div>SCAN / LOOK</div>
-<div>Bounded wait</div>
+<div style="color: #475569; display: flex; align-items: center; font-size: 20px">→</div>
+<div style="background: #f0fdf4;padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center">
+<div style="color: #166534; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px">Sweep-Based</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px">SCAN / LOOK</div>
+<div style="color: #166534; font-size: 11px; margin-top: 4px">Bounded wait</div>
 </div>
-<div>→</div>
-<div>
-<div>Greedy</div>
-<div>SSTF</div>
-<div>Starvation risk</div>
+<div style="color: #475569; display: flex; align-items: center; font-size: 20px">→</div>
+<div style="background: #eff6ff;padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center">
+<div style="color: #1e40af; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px">Greedy</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px">SSTF</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 4px">Starvation risk</div>
 </div>
-<div>→</div>
-<div>
-<div>Hybrid</div>
-<div>SSTF + Aging</div>
-<div>Best of both</div>
+<div style="color: #475569; display: flex; align-items: center; font-size: 20px">→</div>
+<div style="background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%); padding: 16px 20px; border-radius: 12px; min-width: 140px; text-align: center">
+<div style="color: #e9d5ff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px">Hybrid</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 15px">SSTF + Aging</div>
+<div style="color: #c4b5fd; font-size: 11px; margin-top: 4px">Best of both</div>
 </div>
 </div>
 </div>
 <h3 id="fcfs-first-come-first-served">FCFS (First-Come-First-Served)</h3>
-<div>
-<div>FCFS: The Naive Baseline</div>
-<div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">FCFS: The Naive Baseline</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p>Service requests in the exact order they arrive, regardless of elevator position or direction.</p>
 <p><strong>Mechanism</strong>: Maintain a simple queue; always go to the head of the queue next.</p>
 <p><strong>Problem</strong>: Creates &quot;thrashing&quot;—elevator oscillates wildly between distant floors.</p>
@@ -174,62 +174,62 @@ We assume a <strong>two-phase request model</strong>: passengers first make a ha
 </div>
 </div>
 <h3 id="scan-algorithm-the-elevator-algorithm">SCAN Algorithm (The Elevator Algorithm)</h3>
-<div>
-<div>SCAN: Systematic Sweeping</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">SCAN: Systematic Sweeping</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p>Move in one direction serving all requests, then reverse direction and repeat. Continue to the building's end before reversing, even if no requests remain in that direction.</p>
 <p><strong>Mechanism</strong>:</p>
 <ol>
-<li>Maintain current <span>direction state</span> (UP or DOWN)</li>
+<li>Maintain current <span style="color: #22c55e; font-weight: bold">direction state</span> (UP or DOWN)</li>
 <li>Continue in that direction, stopping at requested floors</li>
-<li>When reaching <span>building boundary</span> (top or bottom floor), reverse direction</li>
+<li>When reaching <span style="color: #22c55e; font-weight: bold">building boundary</span> (top or bottom floor), reverse direction</li>
 <li>Repeat indefinitely</li>
 </ol>
 <p><strong>Properties</strong>:</p>
 <ul>
-<li><span>Bounded wait time</span>: Maximum wait is 2 * (num_floors - 1) moves</li>
-<li><span>No starvation</span>: Every floor gets served within one complete cycle</li>
-<li><span>Predictable</span>: Passengers can estimate arrival based on elevator position</li>
+<li><span style="color: #22c55e; font-weight: bold">Bounded wait time</span>: Maximum wait is 2 * (num_floors - 1) moves</li>
+<li><span style="color: #22c55e; font-weight: bold">No starvation</span>: Every floor gets served within one complete cycle</li>
+<li><span style="color: #22c55e; font-weight: bold">Predictable</span>: Passengers can estimate arrival based on elevator position</li>
 </ul>
 <p><strong>Trade-off</strong>: May travel to building extremes unnecessarily when no requests exist there.</p>
 </div>
 </div>
-<div>
-<div>SCAN Algorithm Visualization</div>
-<div>
-<div>
-<div>F10</div>
-<div>F9</div>
-<div>F8</div>
-<div>F7</div>
-<div>F6</div>
-<div>F5</div>
-<div>F4</div>
-<div>F3</div>
-<div>F2</div>
-<div>F1</div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">SCAN Algorithm Visualization</div>
+<div style="display: flex; gap: 8px; align-items: flex-end; justify-content: center; margin-bottom: 16px; height: 200px">
+<div style="display: flex; flex-direction: column; justify-content: space-between; padding-right: 8px; height: 100%">
+<div style="font-size: 11px; color: #475569">F10</div>
+<div style="font-size: 11px; color: #475569">F9</div>
+<div style="font-size: 11px; color: #475569">F8</div>
+<div style="font-size: 11px; color: #475569">F7</div>
+<div style="font-size: 11px; color: #475569">F6</div>
+<div style="font-size: 11px; color: #475569">F5</div>
+<div style="font-size: 11px; color: #475569">F4</div>
+<div style="font-size: 11px; color: #475569">F3</div>
+<div style="font-size: 11px; color: #475569">F2</div>
+<div style="font-size: 11px; color: #475569">F1</div>
 </div>
-<div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
+<div style="position: relative; width: 300px; height: 100%; background: linear-gradient(to right, #dbeafe 0%, #dbeafe 50%, #fef3c7 50%, #fef3c7 100%); border-radius: 8px">
+<div style="position: absolute; left: 10%; top: 10%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%"></div>
+<div style="position: absolute; left: 20%; top: 30%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%"></div>
+<div style="position: absolute; left: 35%; top: 50%; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%"></div>
+<div style="position: absolute; left: 45%; top: 0%; width: 12px; height: 12px; background: #ef4444; border-radius: 50%"></div>
+<div style="position: absolute; left: 55%; top: 20%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%"></div>
+<div style="position: absolute; left: 70%; top: 60%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%"></div>
+<div style="position: absolute; left: 85%; top: 80%; width: 12px; height: 12px; background: #22c55e; border-radius: 50%"></div>
+<div style="position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: #94a3b8"></div>
+<div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #94a3b8"></div>
 </div>
 </div>
-<div>
-<div><div></div> Current Position</div>
-<div><div></div> Pending Stop</div>
-<div><div></div> Boundary (Must Visit)</div>
-<div><div></div> UP Phase</div>
-<div><div></div> DOWN Phase</div>
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; font-size: 12px">
+<div style="display: flex; align-items: center; gap: 6px"><div style="width: 12px; height: 12px; background: #3b82f6; border-radius: 50%"></div> Current Position</div>
+<div style="display: flex; align-items: center; gap: 6px"><div style="width: 12px; height: 12px; background: #22c55e; border-radius: 50%"></div> Pending Stop</div>
+<div style="display: flex; align-items: center; gap: 6px"><div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%"></div> Boundary (Must Visit)</div>
+<div style="display: flex; align-items: center; gap: 6px"><div style="width: 20px; height: 12px; background: #dbeafe; border-radius: 2px"></div> UP Phase</div>
+<div style="display: flex; align-items: center; gap: 6px"><div style="width: 20px; height: 12px; background: #fef3c7; border-radius: 2px"></div> DOWN Phase</div>
 </div>
-<div>
-<strong>SCAN Path:</strong> Floor 5 → 7 → 9 → <span>10 (boundary)</span> → 8 → 4 → 2 → <span>1 (boundary)</span>
+<div style="margin-top: 16px; padding: 12px; background: #f1f5f9; border-radius: 8px; font-size: 13px; color: #475569; text-align: center">
+<strong>SCAN Path:</strong> Floor 5 → 7 → 9 → <span style="color: #ef4444; font-weight: bold">10 (boundary)</span> → 8 → 4 → 2 → <span style="color: #ef4444; font-weight: bold">1 (boundary)</span>
 </div>
 </div>
 <pre><code class="language-python">class SCANElevator:
@@ -273,18 +273,18 @@ We assume a <strong>two-phase request model</strong>: passengers first make a ha
             return self.get_next_floor()
 </code></pre>
 <h3 id="look-algorithm-optimized-scan">LOOK Algorithm (Optimized SCAN)</h3>
-<div>
-<div>LOOK: Smarter Boundary Handling</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">LOOK: Smarter Boundary Handling</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p>Like SCAN, but reverses direction when no more requests exist in the current direction—doesn't travel to building boundary unnecessarily.</p>
 <p><strong>Mechanism</strong>:</p>
 <ol>
 <li>Maintain current direction</li>
 <li>Continue in that direction, stopping at requested floors</li>
-<li>When no more requests in current direction, <span>reverse immediately</span></li>
-<li><span>&quot;Look ahead&quot;</span> before moving to see if direction change is needed</li>
+<li>When no more requests in current direction, <span style="color: #22c55e; font-weight: bold">reverse immediately</span></li>
+<li><span style="color: #22c55e; font-weight: bold">&quot;Look ahead&quot;</span> before moving to see if direction change is needed</li>
 </ol>
-<p><strong>Improvement over SCAN</strong>: Eliminates <span>wasteful travel</span> to building boundaries when no requests exist there.</p>
+<p><strong>Improvement over SCAN</strong>: Eliminates <span style="color: #22c55e; font-weight: bold">wasteful travel</span> to building boundaries when no requests exist there.</p>
 <p><strong>Example</strong>:</p>
 <ul>
 <li>Current: Floor 5, Direction: UP</li>
@@ -294,67 +294,67 @@ We assume a <strong>two-phase request model</strong>: passengers first make a ha
 </ul>
 </div>
 </div>
-<div>
-<div>SCAN vs LOOK Comparison</div>
-<div>
-<div>
-<div>SCAN (Wasteful)</div>
-<div>
-<div>
-<div>F10</div>
-<div>
-<div>← wasted travel</div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">SCAN vs LOOK Comparison</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+<div style="background: #fef2f2; border-radius: 12px; padding: 16px">
+<div style="color: #991b1b; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center">SCAN (Wasteful)</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F10</div>
+<div style="flex: 1; height: 20px; background: #fee2e2; border-radius: 4px; position: relative">
+<div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #dc2626">← wasted travel</div>
 </div>
 </div>
-<div>
-<div>F7</div>
-<div><div></div></div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F7</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%"></div></div>
 </div>
-<div>
-<div>F5</div>
-<div><div></div></div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F5</div>
+<div style="flex: 1; height: 20px; background: #dbeafe; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%"></div></div>
 </div>
-<div>
-<div>F3</div>
-<div><div></div></div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F3</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%"></div></div>
 </div>
-<div>
-<div>F1</div>
-<div><div></div></div>
-</div>
-</div>
-<div><strong>Path:</strong> 5→7→8→9→10→3→1 = <strong>12 moves</strong></div>
-</div>
-<div>
-<div>LOOK (Efficient)</div>
-<div>
-<div>
-<div>F10</div>
-<div>
-<div>skipped</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F1</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%"></div></div>
 </div>
 </div>
-<div>
-<div>F7</div>
-<div><div></div><span>reverse here!</span></div>
+<div style="margin-top: 12px; font-size: 12px; color: #991b1b; text-align: center"><strong>Path:</strong> 5→7→8→9→10→3→1 = <strong>12 moves</strong></div>
 </div>
-<div>
-<div>F5</div>
-<div><div></div></div>
-</div>
-<div>
-<div>F3</div>
-<div><div></div></div>
-</div>
-<div>
-<div>F1</div>
-<div><div></div></div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 16px">
+<div style="color: #166534; font-weight: bold; font-size: 14px; margin-bottom: 12px; text-align: center">LOOK (Efficient)</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F10</div>
+<div style="flex: 1; height: 20px; background: #f1f5f9; border-radius: 4px; position: relative">
+<div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; color: #94a3b8">skipped</div>
 </div>
 </div>
-<div><strong>Path:</strong> 5→7→3→1 = <strong>8 moves</strong></div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F7</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%"></div><span style="font-size: 10px; margin-left: 4px; color: #166534">reverse here!</span></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F5</div>
+<div style="flex: 1; height: 20px; background: #dbeafe; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #3b82f6; border-radius: 50%"></div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F3</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%"></div></div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<div style="width: 40px; font-size: 11px; color: #475569">F1</div>
+<div style="flex: 1; height: 20px; background: #dcfce7; border-radius: 4px; display: flex; align-items: center; justify-content: center"><div style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%"></div></div>
 </div>
 </div>
-<div>
+<div style="margin-top: 12px; font-size: 12px; color: #166534; text-align: center"><strong>Path:</strong> 5→7→3→1 = <strong>8 moves</strong></div>
+</div>
+</div>
+<div style="margin-top: 16px; padding: 12px; background: #dcfce7; border-radius: 8px; font-size: 13px; color: #166534; text-align: center">
 <strong>LOOK saves 33% movement</strong> in this example by not traveling to floor 10 unnecessarily
 </div>
 </div>
@@ -397,9 +397,9 @@ We assume a <strong>two-phase request model</strong>: passengers first make a ha
         return None
 </code></pre>
 <h3 id="c-scan-and-c-look-circular-variants">C-SCAN and C-LOOK (Circular Variants)</h3>
-<div>
-<div>Circular Variants: Uniform Wait Time</div>
-<div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Circular Variants: Uniform Wait Time</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>C-SCAN (Circular SCAN)</strong>: Service requests in one direction only. After reaching the end, return to the beginning without servicing and start again.</p>
 <p><strong>C-LOOK</strong>: Like C-SCAN but reverses at last request rather than building boundary.</p>
 <p><strong>Why Circular?</strong><br />
@@ -409,9 +409,9 @@ Standard SCAN/LOOK creates unfair wait times: floors in the middle get served tw
 </div>
 </div>
 <h3 id="sstf-shortest-seek-time-first">SSTF (Shortest Seek Time First)</h3>
-<div>
-<div>SSTF: Greedy Optimization</div>
-<div>
+<div style="background: #faf5ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">SSTF: Greedy Optimization</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p>Always go to the nearest requested floor, regardless of direction.</p>
 <p><strong>Mechanism</strong>: At each decision point, calculate distance to all pending requests and choose the minimum.</p>
 <p><strong>Advantage</strong>: Minimizes total travel distance in many scenarios.</p>
@@ -467,8 +467,8 @@ Standard SCAN/LOOK creates unfair wait times: floors in the middle get served tw
         return best_floor
 </code></pre>
 <h3 id="algorithm-comparison">Algorithm Comparison</h3>
-<div>
-<h4>Scheduling Algorithm Comparison</h4>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Scheduling Algorithm Comparison</h4>
 <table>
 <thead>
 <tr>
@@ -534,14 +534,14 @@ Standard SCAN/LOOK creates unfair wait times: floors in the middle get served tw
 <p><em>n = number of floors, k = number of pending requests</em></p>
 </div>
 <h3 id="interview-questions-scheduling-algorithms">Interview Questions: Scheduling Algorithms</h3>
-<div>
-<div>Level 1: Algorithm Understanding</div>
-<div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 16px">Level 1: Algorithm Understanding</div>
+<div style="color: #334155; font-size: 14px; line-height: 2.0">
 <p><strong>Q: Why is LOOK preferred over SCAN in most elevator implementations?</strong></p>
 <p>LOOK eliminates unnecessary travel to building boundaries. In SCAN, if the elevator is at floor 5 going up with requests only at floors 6 and 7, it would still travel to the top floor (say, floor 20) before reversing. LOOK reverses at floor 7 immediately, saving 13 floors of travel. The only scenario where SCAN is better is when new requests consistently appear ahead of the elevator—SCAN's predictable path makes it easier for passengers to anticipate, but this rarely outweighs the efficiency loss.</p>
-<div>
-<div>Level 2: Trade-off Analysis</div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 2: Trade-off Analysis</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: How would you modify SSTF to guarantee bounded wait times while preserving its efficiency benefits?</strong></p>
 <p>The key insight is to use <strong>aging</strong> or <strong>deadline-based promotion</strong>:</p>
 <ol>
@@ -556,9 +556,9 @@ Standard SCAN/LOOK creates unfair wait times: floors in the middle get served tw
 </li>
 </ol>
 <p>The trade-off: more complex bookkeeping and slightly reduced throughput, but bounded maximum wait time.</p>
-<div>
-<div>Level 3: System Design Implications</div>
-<div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 3: System Design Implications</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: In a multi-elevator system, should each elevator run its own scheduling algorithm independently, or should there be a central coordinator? What are the implications of each approach?</strong></p>
 <p>This is a fundamental distributed systems question with significant implications:</p>
 <p><strong>Decentralized (each elevator independent)</strong>:</p>
@@ -589,88 +589,88 @@ Standard SCAN/LOOK creates unfair wait times: floors in the middle get served tw
 </div>
 <hr />
 <h2 id="state-machine-design">State Machine Design</h2>
-<p>A single elevator is fundamentally a <a href="/topics/system-design/state-machine">[state-machine]</a>—it exists in <span>discrete states</span> and transitions between them based on <span>events</span>. Correct state machine design is critical for <span>safety</span> and <span>correctness</span>.</p>
-<div>
-<div>State Machine Design Principles</div>
-<div>
-<div>
-<div>1</div>
-<div>Explicit States</div>
-<div>Every possible elevator condition has a named state</div>
+<p>A single elevator is fundamentally a <a href="/topics/system-design/state-machine">[state-machine]</a>—it exists in <span style="color: #22c55e; font-weight: bold">discrete states</span> and transitions between them based on <span style="color: #22c55e; font-weight: bold">events</span>. Correct state machine design is critical for <span style="color: #22c55e; font-weight: bold">safety</span> and <span style="color: #22c55e; font-weight: bold">correctness</span>.</p>
+<div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="color: #e0e7ff; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">State Machine Design Principles</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px">
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px">1</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px">Explicit States</div>
+<div style="color: #c7d2fe; font-size: 12px">Every possible elevator condition has a named state</div>
 </div>
-<div>
-<div>2</div>
-<div>Defined Transitions</div>
-<div>Only valid (state, event) pairs cause state changes</div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px">2</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px">Defined Transitions</div>
+<div style="color: #c7d2fe; font-size: 12px">Only valid (state, event) pairs cause state changes</div>
 </div>
-<div>
-<div>3</div>
-<div>Guard Conditions</div>
-<div>Transitions can have boolean conditions that must be true</div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px">3</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px">Guard Conditions</div>
+<div style="color: #c7d2fe; font-size: 12px">Transitions can have boolean conditions that must be true</div>
 </div>
-<div>
-<div>4</div>
-<div>Actions on Transition</div>
-<div>Side effects execute atomically with state change</div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #a5b4fc; font-size: 24px; margin-bottom: 8px">4</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 6px">Actions on Transition</div>
+<div style="color: #c7d2fe; font-size: 12px">Side effects execute atomically with state change</div>
 </div>
 </div>
 </div>
 <h3 id="elevator-states">Elevator States</h3>
-<div>
-<h4>Elevator State Machine</h4>
-<div>
-<div>
-<div>
-<div>IDLE</div>
-<div>Stationary, no requests</div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Elevator State Machine</h4>
+<div style="display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #dcfce7; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #166534; font-weight: bold; font-size: 13px">IDLE</div>
+<div style="color: #22c55e; font-size: 10px">Stationary, no requests</div>
 </div>
-<div>&#8594;</div>
-<div>
-<div>MOVING_UP</div>
-<div>Ascending</div>
+<div style="color: #475569; font-size: 20px">&#8594;</div>
+<div style="background: #dbeafe; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px">MOVING_UP</div>
+<div style="color: #3b82f6; font-size: 10px">Ascending</div>
 </div>
-<div>&#8594;</div>
-<div>
-<div>STOPPING</div>
-<div>Decelerating</div>
+<div style="color: #475569; font-size: 20px">&#8594;</div>
+<div style="background: #fef3c7; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #92400e; font-weight: bold; font-size: 13px">STOPPING</div>
+<div style="color: #d97706; font-size: 10px">Decelerating</div>
 </div>
-<div>&#8594;</div>
-<div>
-<div>DOORS_OPENING</div>
-<div>Doors in motion</div>
-</div>
-</div>
-<div>
-<div>
-<div>DOORS_OPEN</div>
-<div>Passengers boarding</div>
-</div>
-<div>&#8594;</div>
-<div>
-<div>DOORS_CLOSING</div>
-<div>Doors in motion</div>
-</div>
-<div>&#8594;</div>
-<div>
-<div>MOVING_DOWN</div>
-<div>Descending</div>
-</div>
-<div>&#8594;</div>
-<div>
-<div>IDLE</div>
-<div>Cycle complete</div>
+<div style="color: #475569; font-size: 20px">&#8594;</div>
+<div style="background: #fae8ff; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #86198f; font-weight: bold; font-size: 13px">DOORS_OPENING</div>
+<div style="color: #c026d3; font-size: 10px">Doors in motion</div>
 </div>
 </div>
-<div>
-<div>
-<div>EMERGENCY_STOP</div>
-<div>Reachable from any state</div>
+<div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="background: #f0fdf4; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #166534; font-weight: bold; font-size: 13px">DOORS_OPEN</div>
+<div style="color: #22c55e; font-size: 10px">Passengers boarding</div>
+</div>
+<div style="color: #475569; font-size: 20px">&#8594;</div>
+<div style="background: #fae8ff; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #86198f; font-weight: bold; font-size: 13px">DOORS_CLOSING</div>
+<div style="color: #c026d3; font-size: 10px">Doors in motion</div>
+</div>
+<div style="color: #475569; font-size: 20px">&#8594;</div>
+<div style="background: #dbeafe; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px">MOVING_DOWN</div>
+<div style="color: #3b82f6; font-size: 10px">Descending</div>
+</div>
+<div style="color: #475569; font-size: 20px">&#8594;</div>
+<div style="background: #dcfce7; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #166534; font-weight: bold; font-size: 13px">IDLE</div>
+<div style="color: #22c55e; font-size: 10px">Cycle complete</div>
+</div>
+</div>
+<div style="display: flex; justify-content: center; margin-top: 16px">
+<div style="background: #fee2e2; padding: 16px 24px; border-radius: 50px; text-align: center">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px">EMERGENCY_STOP</div>
+<div style="color: #dc2626; font-size: 10px">Reachable from any state</div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="state-transition-table">State Transition Table</h3>
-<div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0">
 <table>
 <thead>
 <tr>
@@ -1071,16 +1071,16 @@ class ElevatorStateMachine:
             self.door_timer.cancel()
         # In real system: emergency brake, open doors, sound alarm
 </code></pre>
-<div>
-<div>Design Choice: Guards vs. Multiple Transitions</div>
-<div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Design Choice: Guards vs. Multiple Transitions</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 We use <strong>guard conditions</strong> on transitions rather than creating many micro-states. For example, DOORS_CLOSING can transition to MOVING_UP, MOVING_DOWN, or IDLE depending on pending requests. Alternative approach: create states like DOORS_CLOSING_WILL_GO_UP, but this explodes the state space. Guards keep the state machine manageable while handling conditional logic.
 </div>
 </div>
 <h3 id="interview-questions-state-machines">Interview Questions: State Machines</h3>
-<div>
-<div>Level 1: State Machine Fundamentals</div>
-<div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 16px">Level 1: State Machine Fundamentals</div>
+<div style="color: #334155; font-size: 14px; line-height: 2.0">
 <p><strong>Q: Why do we need separate DOORS_OPENING and DOORS_OPEN states instead of just one &quot;doors open&quot; state?</strong></p>
 <p>The distinction models physical reality and enables proper safety handling:</p>
 <ul>
@@ -1094,9 +1094,9 @@ We use <strong>guard conditions</strong> on transitions rather than creating man
 <li><strong>Timer management</strong>: Timer only starts after doors are fully open</li>
 <li><strong>Sensor interpretation</strong>: Door position sensors mean different things in each state</li>
 </ol>
-<div>
-<div>Level 2: Safety Critical Design</div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 2: Safety Critical Design</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: How do you ensure the elevator never moves while doors are open? What could go wrong and how do you prevent it?</strong></p>
 <p>This is a <strong>safety-critical invariant</strong> that must be enforced at multiple levels:</p>
 <p><strong>Software enforcement</strong>:</p>
@@ -1118,9 +1118,9 @@ We use <strong>guard conditions</strong> on transitions rather than creating man
 <li>Race condition: state changes between check and motor start (mitigated by atomic operations + hardware)</li>
 </ol>
 <p>Real elevator systems use IEC 62443 (industrial cybersecurity) and EN 81-20 (elevator safety) standards requiring multiple independent safety mechanisms.</p>
-<div>
-<div>Level 3: Fault Tolerance and Recovery</div>
-<div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 3: Fault Tolerance and Recovery</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: What happens if the door timer never fires (timer subsystem fails)? How do you design the system to handle this and similar failure modes?</strong></p>
 <p>This is a classic reliability engineering problem. Solutions involve multiple layers:</p>
 <p><strong>Detection mechanisms</strong>:</p>
@@ -1152,48 +1152,48 @@ We use <strong>guard conditions</strong> on transitions rather than creating man
 <h2 id="multi-elevator-coordination">Multi-Elevator Coordination</h2>
 <p>With multiple elevators, the system must decide which elevator should serve each request. This is an <a href="/topics/algorithms/assignment-problem">[assignment-problem]</a> with real-time constraints.</p>
 <h3 id="assignment-strategies">Assignment Strategies</h3>
-<div>
-<h4>Multi-Elevator System Architecture</h4>
-<div>
-<div>
-<div>Central Dispatcher</div>
-<div>
-<div>
-<div>Request Queue</div>
-<div>Incoming hall calls</div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Multi-Elevator System Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 24px">
+<div style="background: #ffffff;border-radius: 12px; padding: 20px">
+<div style="color: #0369a1; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center">Central Dispatcher</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dbeafe;padding: 12px 20px; border-radius: 8px; text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px">Request Queue</div>
+<div style="color: #3b82f6; font-size: 11px">Incoming hall calls</div>
 </div>
-<div>
-<div>Assignment Engine</div>
-<div>Scoring + optimization</div>
+<div style="background: #dbeafe;padding: 12px 20px; border-radius: 8px; text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px">Assignment Engine</div>
+<div style="color: #3b82f6; font-size: 11px">Scoring + optimization</div>
 </div>
-<div>
-<div>Load Balancer</div>
-<div>Even distribution</div>
-</div>
-</div>
-</div>
-<div>&#8595; Commands &#8595;</div>
-<div>
-<div>Elevator Fleet (Independent State Machines)</div>
-<div>
-<div>
-<div>Elevator A</div>
-<div>Floor 5 | UP</div>
-<div>Stops: {7, 9, 12}</div>
-</div>
-<div>
-<div>Elevator B</div>
-<div>Floor 8 | IDLE</div>
-<div>Stops: {}</div>
-</div>
-<div>
-<div>Elevator C</div>
-<div>Floor 15 | DOWN</div>
-<div>Stops: {10, 3, 1}</div>
+<div style="background: #dbeafe;padding: 12px 20px; border-radius: 8px; text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 12px">Load Balancer</div>
+<div style="color: #3b82f6; font-size: 11px">Even distribution</div>
 </div>
 </div>
 </div>
-<div>&#8593; Status Updates &#8593;</div>
+<div style="text-align: center; color: #475569; font-size: 24px">&#8595; Commands &#8595;</div>
+<div style="background: #ffffff;border-radius: 12px; padding: 20px">
+<div style="color: #7c3aed; font-weight: bold; font-size: 14px; margin-bottom: 16px; text-align: center">Elevator Fleet (Independent State Machines)</div>
+<div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #f0fdf4;padding: 16px; border-radius: 8px; text-align: center; min-width: 120px">
+<div style="color: #166534; font-weight: bold; font-size: 13px">Elevator A</div>
+<div style="color: #22c55e; font-size: 11px">Floor 5 | UP</div>
+<div style="color: #15803d; font-size: 10px">Stops: {7, 9, 12}</div>
+</div>
+<div style="background: #fef3c7;padding: 16px; border-radius: 8px; text-align: center; min-width: 120px">
+<div style="color: #92400e; font-weight: bold; font-size: 13px">Elevator B</div>
+<div style="color: #d97706; font-size: 11px">Floor 8 | IDLE</div>
+<div style="color: #b45309; font-size: 10px">Stops: {}</div>
+</div>
+<div style="background: #fee2e2;padding: 16px; border-radius: 8px; text-align: center; min-width: 120px">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px">Elevator C</div>
+<div style="color: #dc2626; font-size: 11px">Floor 15 | DOWN</div>
+<div style="color: #b91c1c; font-size: 10px">Stops: {10, 3, 1}</div>
+</div>
+</div>
+</div>
+<div style="text-align: center; color: #475569; font-size: 24px">&#8593; Status Updates &#8593;</div>
 </div>
 </div>
 <h3 id="nearest-car-algorithm">Nearest Car Algorithm</h3>
@@ -1275,9 +1275,9 @@ We use <strong>guard conditions</strong> on transitions rather than creating man
             return (elevator.current_floor - min_stop) + abs(floor - min_stop)
 </code></pre>
 <h3 id="zoned-elevator-systems">Zoned Elevator Systems</h3>
-<div>
-<div>Zoning Strategy</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Zoning Strategy</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p>In tall buildings (30+ floors), divide elevators into zones:</p>
 <p><strong>Low-rise zone</strong>: Elevators serving floors 1-15<br />
 <strong>Mid-rise zone</strong>: Elevators serving floors 1, 16-30<br />
@@ -1357,9 +1357,9 @@ We use <strong>guard conditions</strong> on transitions rather than creating man
         return self._nearest_in_zone(zone_elevators, floor, direction)
 </code></pre>
 <h3 id="load-balancing-and-fairness">Load Balancing and Fairness</h3>
-<div>
-<div>Trade-off: Efficiency vs. Fairness</div>
-<div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Trade-off: Efficiency vs. Fairness</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 Pure efficiency optimization (always assign to nearest elevator) creates unfair outcomes: elevators near high-traffic floors get overloaded while others sit idle. We need to balance immediate efficiency with long-term fairness and load distribution.
 </div>
 </div>
@@ -1436,9 +1436,9 @@ Pure efficiency optimization (always assign to nearest elevator) creates unfair 
         self.total_assignments = 0
 </code></pre>
 <h3 id="interview-questions-multi-elevator-coordination">Interview Questions: Multi-Elevator Coordination</h3>
-<div>
-<div>Level 1: Basic Coordination</div>
-<div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 16px">Level 1: Basic Coordination</div>
+<div style="color: #334155; font-size: 14px; line-height: 2.0">
 <p><strong>Q: Two elevators are equidistant from a request. How do you break the tie?</strong></p>
 <p>Several reasonable tie-breaking strategies:</p>
 <ol>
@@ -1449,9 +1449,9 @@ Pure efficiency optimization (always assign to nearest elevator) creates unfair 
 <li><strong>Recent history</strong>: Choose the one that hasn't been assigned recently</li>
 </ol>
 <p>The best choice depends on system goals. For throughput, prefer lower load. For fairness, prefer round-robin. Most systems use a combination: primary tie-breaker is load, secondary is round-robin.</p>
-<div>
-<div>Level 2: Dynamic Adaptation</div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 2: Dynamic Adaptation</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: How would you handle &quot;rush hour&quot; scenarios where traffic patterns are highly skewed (e.g., 8-9 AM, everyone going from lobby to upper floors)?</strong></p>
 <p>Rush hour requires proactive strategies beyond reactive assignment:</p>
 <p><strong>1. Predictive positioning</strong>:</p>
@@ -1477,9 +1477,9 @@ Pure efficiency optimization (always assign to nearest elevator) creates unfair 
 <li>Temporarily reassign high-rise elevators to serve mid-rise floors</li>
 <li>Expand low-rise zone upward during morning rush</li>
 </ul>
-<div>
-<div>Level 3: Distributed Systems Challenges</div>
-<div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 3: Distributed Systems Challenges</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: The central dispatcher fails. How do elevators continue to operate? Design a fault-tolerant coordination mechanism.</strong></p>
 <p>This is a <a href="/topics/system-design/distributed-consensus">[distributed-consensus]</a> problem in disguise:</p>
 <p><strong>Immediate failover</strong>:</p>
@@ -1514,44 +1514,44 @@ Pure efficiency optimization (always assign to nearest elevator) creates unfair 
 </div>
 <hr />
 <h2 id="emergency-handling-and-safety-systems">Emergency Handling and Safety Systems</h2>
-<p><span>Emergency handling</span> is a critical aspect of elevator systems that interviewers love to explore. It tests your understanding of <a href="/topics/system-design/fault-tolerance">[fault-tolerance]</a>, safety-critical design, and graceful degradation patterns.</p>
-<div>
-<div>Emergency Response Architecture</div>
-<div>
-<div>
-<div>Fire Emergency</div>
-<div>Phase 1 Recall</div>
-<div>
+<p><span style="color: #22c55e; font-weight: bold">Emergency handling</span> is a critical aspect of elevator systems that interviewers love to explore. It tests your understanding of <a href="/topics/system-design/fault-tolerance">[fault-tolerance]</a>, safety-critical design, and graceful degradation patterns.</p>
+<div style="background: #fef2f2;border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="color: #ffffff; font-weight: bold; font-size: 18px; margin-bottom: 20px; text-align: center">Emergency Response Architecture</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px">Fire Emergency</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px">Phase 1 Recall</div>
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6">
 All elevators → Lobby<br/>
 Doors open & hold<br/>
 Disable hall calls<br/>
 Firefighter key override
 </div>
 </div>
-<div>
-<div>Power Failure</div>
-<div>Battery Backup</div>
-<div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px">Power Failure</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px">Battery Backup</div>
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6">
 One elevator at a time<br/>
 Move to nearest floor<br/>
 Open doors safely<br/>
 Evacuate passengers
 </div>
 </div>
-<div>
-<div>Earthquake</div>
-<div>Seismic Protocol</div>
-<div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px">Earthquake</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px">Seismic Protocol</div>
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6">
 Stop at nearest floor<br/>
 Open doors immediately<br/>
 Disable all operation<br/>
 Require inspection reset
 </div>
 </div>
-<div>
-<div>Entrapment</div>
-<div>Rescue Mode</div>
-<div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 16px">
+<div style="color: #dc2626; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px">Entrapment</div>
+<div style="color: #ffffff; font-weight: bold; font-size: 14px; margin-bottom: 8px">Rescue Mode</div>
+<div style="color: #dc2626; font-size: 12px; line-height: 1.6">
 Emergency intercom<br/>
 Ventilation maintained<br/>
 Position broadcast<br/>
@@ -1732,49 +1732,49 @@ class EmergencyHandler:
         return True
 </code></pre>
 <h3 id="emergency-response-flow-diagram">Emergency Response Flow Diagram</h3>
-<div>
-<div>Emergency Detection and Response Flow</div>
-<div>
-<div>
-<div>
-<div>TRIGGER DETECTED</div>
-<div>Fire/Quake/Power/Manual</div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 20px; text-align: center">Emergency Detection and Response Flow</div>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center">
+<div style="background: #fee2e2; padding: 12px 20px; border-radius: 8px;text-align: center">
+<div style="color: #991b1b; font-weight: bold; font-size: 13px">TRIGGER DETECTED</div>
+<div style="color: #dc2626; font-size: 11px">Fire/Quake/Power/Manual</div>
 </div>
-<div>→</div>
-<div>
-<div>HALT NEW REQUESTS</div>
-<div>Disable hall buttons</div>
+<div style="color: #475569; font-size: 20px">→</div>
+<div style="background: #fef3c7; padding: 12px 20px; border-radius: 8px;text-align: center">
+<div style="color: #92400e; font-weight: bold; font-size: 13px">HALT NEW REQUESTS</div>
+<div style="color: #d97706; font-size: 11px">Disable hall buttons</div>
 </div>
-<div>→</div>
-<div>
-<div>CLEAR STOP QUEUES</div>
-<div>Override scheduling</div>
+<div style="color: #475569; font-size: 20px">→</div>
+<div style="background: #dbeafe; padding: 12px 20px; border-radius: 8px;text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px">CLEAR STOP QUEUES</div>
+<div style="color: #3b82f6; font-size: 11px">Override scheduling</div>
 </div>
 </div>
-<div>
-<div>
-<div>EXECUTE PROTOCOL</div>
-<div>Type-specific response</div>
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center">
+<div style="background: #f3e8ff; padding: 12px 20px; border-radius: 8px;text-align: center">
+<div style="color: #7c3aed; font-weight: bold; font-size: 13px">EXECUTE PROTOCOL</div>
+<div style="color: #8b5cf6; font-size: 11px">Type-specific response</div>
 </div>
-<div>→</div>
-<div>
-<div>SAFE STATE REACHED</div>
-<div>Passengers evacuated</div>
+<div style="color: #475569; font-size: 20px">→</div>
+<div style="background: #dcfce7; padding: 12px 20px; border-radius: 8px;text-align: center">
+<div style="color: #166534; font-weight: bold; font-size: 13px">SAFE STATE REACHED</div>
+<div style="color: #22c55e; font-size: 11px">Passengers evacuated</div>
 </div>
-<div>→</div>
-<div>
-<div>AWAIT RESET</div>
-<div>Authorized personnel</div>
+<div style="color: #475569; font-size: 20px">→</div>
+<div style="background: #f1f5f9; padding: 12px 20px; border-radius: 8px;text-align: center">
+<div style="color: #475569; font-weight: bold; font-size: 13px">AWAIT RESET</div>
+<div style="color: #475569; font-size: 11px">Authorized personnel</div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="interview-questions-emergency-handling">Interview Questions: Emergency Handling</h3>
-<div>
-<div>Level 1: Basic Emergency Design</div>
-<div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 16px">Level 1: Basic Emergency Design</div>
+<div style="color: #334155; font-size: 14px; line-height: 2.0">
 <p><strong>Q: Why do elevators return to the lobby during a fire alarm instead of the nearest floor?</strong></p>
-<p>The lobby is typically the <span>primary egress point</span> for a building and where firefighters will enter. Returning all elevators to lobby:</p>
+<p>The lobby is typically the <span style="color: #22c55e; font-weight: bold">primary egress point</span> for a building and where firefighters will enter. Returning all elevators to lobby:</p>
 <ol>
 <li><strong>Centralizes evacuation</strong>: Passengers exit through monitored, accessible ground floor</li>
 <li><strong>Firefighter access</strong>: Firefighters can commandeer elevators from lobby for rescue operations</li>
@@ -1782,11 +1782,11 @@ class EmergencyHandler:
 <li><strong>Standardization</strong>: Emergency responders know exactly where to find the elevators</li>
 </ol>
 <p>Exception: If the fire is AT the lobby, elevators go to an alternate recall floor (usually one floor up).</p>
-<div>
-<div>Level 2: Safety Invariants</div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 2: Safety Invariants</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: What safety invariants must NEVER be violated, even in software bugs? How do you enforce them?</strong></p>
-<p>Critical <span>safety invariants</span> for elevator systems:</p>
+<p>Critical <span style="color: #22c55e; font-weight: bold">safety invariants</span> for elevator systems:</p>
 <ol>
 <li><strong>Elevator must not move with doors open</strong> - Enforced by hardware interlock (physical switch cuts motor power)</li>
 <li><strong>Doors must not open between floors</strong> - Door motor circuit includes floor-position sensor</li>
@@ -1799,12 +1799,12 @@ class EmergencyHandler:
 <li>Hardware provides independent safety layer</li>
 <li>Regulations (ASME A17.1) mandate hardware interlocks</li>
 </ul>
-<p><strong>Design pattern</strong>: <span>Defense in depth</span> - multiple independent mechanisms protecting each invariant.</p>
-<div>
-<div>Level 3: Partial Failure Scenarios</div>
-<div>
+<p><strong>Design pattern</strong>: <span style="color: #22c55e; font-weight: bold">Defense in depth</span> - multiple independent mechanisms protecting each invariant.</p>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 3: Partial Failure Scenarios</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: The building loses power, but only 2 of 6 elevators have passengers. Battery backup can only run one elevator at a time for 30 minutes total. Design the evacuation strategy.</strong></p>
-<p>This is a <span>resource-constrained optimization</span> problem:</p>
+<p>This is a <span style="color: #22c55e; font-weight: bold">resource-constrained optimization</span> problem:</p>
 <p><strong>Analysis</strong>:</p>
 <ul>
 <li>2 occupied elevators need evacuation</li>
@@ -1841,10 +1841,10 @@ class EmergencyHandler:
 </div>
 </div>
 <h3 id="fire-service-phase-2-operation">Fire Service Phase 2 Operation</h3>
-<div>
-<div>Firefighter Manual Control Mode</div>
-<div>
-<p>After Phase 1 recall, firefighters can activate <span>Phase 2 operation</span> using a special key. In this mode:</p>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Firefighter Manual Control Mode</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
+<p>After Phase 1 recall, firefighters can activate <span style="color: #22c55e; font-weight: bold">Phase 2 operation</span> using a special key. In this mode:</p>
 <ul>
 <li><strong>Only in-car controls work</strong> (hall buttons remain disabled)</li>
 <li><strong>Doors require constant pressure</strong> (dead-man switch for safety)</li>
@@ -2524,8 +2524,8 @@ if __name__ == &quot;__main__&quot;:
 </code></pre>
 <hr />
 <h2 id="edge-cases-and-error-handling">Edge Cases and Error Handling</h2>
-<div>
-<div>Critical Edge Cases</div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">Critical Edge Cases</div>
 <table>
 <thead>
 <tr>
@@ -2670,9 +2670,9 @@ if __name__ == &quot;__main__&quot;:
         return self.current_passengers &gt;= self.max_capacity
 </code></pre>
 <h3 id="interview-questions-edge-cases">Interview Questions: Edge Cases</h3>
-<div>
-<div>Level 1: Basic Error Handling</div>
-<div>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 16px">Level 1: Basic Error Handling</div>
+<div style="color: #334155; font-size: 14px; line-height: 2.0">
 <p><strong>Q: A passenger inside the elevator presses a floor button that's in the opposite direction of travel. What happens?</strong></p>
 <p>The request should be accepted and added to the appropriate stop set:</p>
 <ol>
@@ -2681,9 +2681,9 @@ if __name__ == &quot;__main__&quot;:
 <li>Passenger waits longer but their request is eventually served</li>
 </ol>
 <p>This is correct LOOK algorithm behavior. The alternative—rejecting the request—would strand passengers who made mistakes or changed their minds.</p>
-<div>
-<div>Level 2: Race Conditions</div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 2: Race Conditions</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: Two requests arrive simultaneously: Floor 5 UP and Floor 5 DOWN. How does the system handle this?</strong></p>
 <p>This is a valid scenario (two people at same floor going opposite directions). The system should:</p>
 <ol>
@@ -2698,9 +2698,9 @@ if __name__ == &quot;__main__&quot;:
     elevator.down_stops.add(5)
 </code></pre>
 <p>Both stops are independent and can coexist. When elevator arrives at 5, it should serve the current-direction stop, let those passengers board, then handle direction change for the other stop.</p>
-<div>
-<div>Level 3: Cascading Failures</div>
-<div>
+<div style="background: #e2e8f0; border-radius: 8px; padding: 16px; margin: 12px 0">
+<div style="color: #7c3aed; font-weight: bold; margin-bottom: 8px">Level 3: Cascading Failures</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <p><strong>Q: One elevator fails mid-trip with passengers inside. How do you prevent this failure from cascading and ensure other elevators handle the load?</strong></p>
 <p>This requires a comprehensive failure handling strategy:</p>
 <p><strong>Immediate response</strong>:</p>
@@ -2952,8 +2952,8 @@ if __name__ == '__main__':
 </code></pre>
 <hr />
 <h2 id="complexity-analysis">Complexity Analysis</h2>
-<div>
-<h4>Time and Space Complexity</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; font-size: 16px">Time and Space Complexity</h4>
 <table>
 <thead>
 <tr>
@@ -3048,8 +3048,8 @@ class CachingDispatcher:
 </code></pre>
 <hr />
 <h2 id="interview-approach">Interview Approach</h2>
-<div>
-<div>45-Minute Interview Strategy</div>
+<div style="background: #f0f9ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px; margin-bottom: 16px">45-Minute Interview Strategy</div>
 <table>
 <thead>
 <tr>
@@ -3100,9 +3100,9 @@ class CachingDispatcher:
 </table>
 </div>
 <h3 id="key-points-to-demonstrate">Key Points to Demonstrate</h3>
-<div>
-<div>What Interviewers Look For</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e293b; font-weight: bold; margin-bottom: 12px">What Interviewers Look For</div>
+<div style="color: #334155; font-size: 14px; line-height: 1.8">
 <ol>
 <li><strong>Systems thinking</strong>: See the problem holistically before diving into code</li>
 <li><strong>Trade-off awareness</strong>: Articulate why LOOK &gt; SCAN, mention starvation in SSTF</li>

@@ -56,8 +56,8 @@ func main() {
 			return nil
 		}
 
-		// Strip border styles
-		htmlContent := stripBorderStyles(buf.String())
+		// Strip ONLY border styles, keep everything else (backgrounds, colors, grids, etc.)
+		htmlContent := stripOnlyBorderStyles(buf.String())
 
 		// Write HTML file (same name but .html extension)
 		htmlPath := strings.TrimSuffix(path, ".md") + ".html"
@@ -81,11 +81,12 @@ func main() {
 	fmt.Printf("Failed: %d files\n", failed)
 }
 
-// stripBorderStyles removes all border-related inline styles from HTML content
-func stripBorderStyles(htmlContent string) string {
+// stripOnlyBorderStyles removes ONLY border-related properties from inline styles
+// Keeps: background, color, display, grid, flex, padding, margin, font, etc.
+func stripOnlyBorderStyles(html string) string {
 	styleRegex := regexp.MustCompile(`style\s*=\s*"([^"]*)"`)
 
-	return styleRegex.ReplaceAllStringFunc(htmlContent, func(match string) string {
+	return styleRegex.ReplaceAllStringFunc(html, func(match string) string {
 		styleMatch := styleRegex.FindStringSubmatch(match)
 		if len(styleMatch) < 2 {
 			return match
@@ -93,13 +94,18 @@ func stripBorderStyles(htmlContent string) string {
 
 		styleContent := styleMatch[1]
 
-		// Remove border-related properties (but keep border-radius)
+		// Remove ONLY border-related properties (but keep border-radius)
+		// Match: border, border-top, border-right, border-bottom, border-left,
+		// border-width, border-style, border-color
 		borderRegex := regexp.MustCompile(`\s*border(?:-(?:top|right|bottom|left))?(?:-(?:width|style|color))?\s*:\s*[^;]+;?\s*`)
+
 		cleanedStyle := borderRegex.ReplaceAllString(styleContent, "")
 
+		// Trim whitespace and semicolons
 		cleanedStyle = strings.TrimSpace(cleanedStyle)
 		cleanedStyle = strings.Trim(cleanedStyle, ";")
 
+		// If no styles remain, remove the style attribute entirely
 		if cleanedStyle == "" {
 			return ""
 		}

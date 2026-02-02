@@ -6,113 +6,113 @@
 <strong>Also Known As:</strong> Action, Transaction, Operation</p>
 <hr />
 <h2 id="mental-model-the-restaurant-analogy">Mental Model: The Restaurant Analogy</h2>
-<div>
-<div>The Restaurant Order System</div>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 16px">The Restaurant Order System</div>
+<div style="color: #334155; font-size: 1rem; line-height: 1.7">
     When you dine at a restaurant, you do not walk into the kitchen and instruct the chef directly. Instead, a waiter captures your request on an order slip, carries it to the kitchen, and hands it to the appropriate cook. That order slip IS the command object - it encapsulates everything about your request: what dish, how cooked, modifications. The waiter does not need culinary skills; the chef does not need to know who ordered. The order slip decouples the request from execution.
 </div>
-<div>
-<div>
-<div>Customer</div>
-<div>Client (creates request)</div>
+<div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px">
+<div style="background: #dbeafe; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #1e40af; font-weight: 600">Customer</div>
+<div style="color: #3b82f6; font-size: 0.85rem">Client (creates request)</div>
 </div>
-<div>
-<div>Order Slip</div>
-<div>Command Object</div>
+<div style="background: #dcfce7; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #166534; font-weight: 600">Order Slip</div>
+<div style="color: #22c55e; font-size: 0.85rem">Command Object</div>
 </div>
-<div>
-<div>Waiter</div>
-<div>Invoker (triggers execution)</div>
+<div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #92400e; font-weight: 600">Waiter</div>
+<div style="color: #f59e0b; font-size: 0.85rem">Invoker (triggers execution)</div>
 </div>
-<div>
-<div>Chef</div>
-<div>Receiver (does work)</div>
+<div style="background: #fce7f3; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="color: #9d174d; font-weight: 600">Chef</div>
+<div style="color: #ec4899; font-size: 0.85rem">Receiver (does work)</div>
 </div>
 </div>
 </div>
-<div>
-<div>Expert Insight</div>
-<div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 20px; margin: 20px 0">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 8px">Expert Insight</div>
+<div style="color: #78350f">
 <strong>Novice thinks:</strong> "Command is just wrapping a function call in an object."<br/><br/>
 <strong>Expert knows:</strong> "Command transforms <em>imperative code into data</em>. Once an action becomes data, you can store it, transmit it, queue it, serialize it, replay it, and undo it. This is the foundation of event sourcing, transaction logs, CQRS, and distributed systems. The real power emerges when you realize commands become auditable, recoverable, and reproducible."
 </div>
 </div>
 <hr />
 <h2 id="core-components-deep-dive">Core Components Deep Dive</h2>
-<div>
-<div>Command Pattern Architecture</div>
-<div>
-<div>
-<div>
-<div>Client</div>
-<div>Creates and configures<br/>concrete commands</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 24px; font-size: 1.2rem">Command Pattern Architecture</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px">
+<div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap">
+<div style="background: #dbeafe;border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px">
+<div style="font-weight: 700; color: #1e40af; font-size: 1.1rem">Client</div>
+<div style="font-size: 0.8rem; color: #3b82f6; margin-top: 4px">Creates and configures<br/>concrete commands</div>
 </div>
-<div>
-<div>Invoker</div>
-<div>+ setCommand()<br/>+ invoke()<br/>+ history: Command[]</div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px 24px; text-align: center; min-width: 160px">
+<div style="font-weight: 700; color: #92400e; font-size: 1.1rem">Invoker</div>
+<div style="font-size: 0.8rem; color: #b45309; margin-top: 4px; font-family: monospace">+ setCommand()<br/>+ invoke()<br/>+ history: Command[]</div>
 </div>
 </div>
-<div>triggers</div>
-<div>
-<div>Command (interface)</div>
-<div>+ execute(): void<br/>+ undo(): void<br/>+ canExecute(): bool</div>
+<div style="color: #64748b; font-size: 1.5rem">triggers</div>
+<div style="background: #f1f5f9;border-radius: 12px; padding: 16px 32px; text-align: center">
+<div style="font-weight: 600; color: #475569; font-style: italic">Command (interface)</div>
+<div style="font-size: 0.85rem; color: #64748b; margin-top: 8px; font-family: monospace">+ execute(): void<br/>+ undo(): void<br/>+ canExecute(): bool</div>
 </div>
-<div>implements</div>
-<div>
-<div>ConcreteCommand</div>
-<div>- receiver: Receiver<br/>- previousState: State<br/>+ execute() / undo()</div>
+<div style="color: #64748b; font-size: 1rem">implements</div>
+<div style="background: #dcfce7;border-radius: 12px; padding: 16px 32px; text-align: center">
+<div style="font-weight: 700; color: #166534; font-size: 1.1rem">ConcreteCommand</div>
+<div style="font-size: 0.8rem; color: #15803d; margin-top: 8px; font-family: monospace">- receiver: Receiver<br/>- previousState: State<br/>+ execute() / undo()</div>
 </div>
-<div>delegates to</div>
-<div>
-<div>Receiver</div>
-<div>+ action()<br/>+ businessLogic()</div>
+<div style="color: #64748b; font-size: 1rem">delegates to</div>
+<div style="background: #fce7f3;border-radius: 12px; padding: 16px 32px; text-align: center">
+<div style="font-weight: 700; color: #9d174d; font-size: 1.1rem">Receiver</div>
+<div style="font-size: 0.8rem; color: #be185d; margin-top: 8px; font-family: monospace">+ action()<br/>+ businessLogic()</div>
 </div>
 </div>
 </div>
 <h3 id="component-responsibilities">Component Responsibilities</h3>
-<div>
-<table>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
+<table style="width: 100%; border-collapse: collapse; color: #334155">
     <thead>
-<tr>
-<th>Component</th>
-<th>Responsibility</th>
-<th>Key Design Decisions</th>
+<tr style="background: #e2e8f0">
+<th style="padding: 12px; text-align: left">Component</th>
+<th style="padding: 12px; text-align: left">Responsibility</th>
+<th style="padding: 12px; text-align: left">Key Design Decisions</th>
 </tr>
     </thead>
     <tbody>
 <tr>
-<td><strong>Command</strong></td>
-<td>Declares execution interface</td>
-<td>Should undo() be required? Should canExecute() exist?</td>
+<td style="padding: 12px"><strong>Command</strong></td>
+<td style="padding: 12px">Declares execution interface</td>
+<td style="padding: 12px">Should undo() be required? Should canExecute() exist?</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 12px"><strong>ConcreteCommand</strong></td>
+<td style="padding: 12px">Binds receiver to action, stores state for undo</td>
+<td style="padding: 12px">How much state to capture? Snapshot vs delta?</td>
 </tr>
 <tr>
-<td><strong>ConcreteCommand</strong></td>
-<td>Binds receiver to action, stores state for undo</td>
-<td>How much state to capture? Snapshot vs delta?</td>
+<td style="padding: 12px"><strong>Invoker</strong></td>
+<td style="padding: 12px">Manages command lifecycle, maintains history</td>
+<td style="padding: 12px">Queue vs stack? History limit? Persistence?</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 12px"><strong>Receiver</strong></td>
+<td style="padding: 12px">Contains actual business logic</td>
+<td style="padding: 12px">Should it know about commands? Coupling trade-offs</td>
 </tr>
 <tr>
-<td><strong>Invoker</strong></td>
-<td>Manages command lifecycle, maintains history</td>
-<td>Queue vs stack? History limit? Persistence?</td>
-</tr>
-<tr>
-<td><strong>Receiver</strong></td>
-<td>Contains actual business logic</td>
-<td>Should it know about commands? Coupling trade-offs</td>
-</tr>
-<tr>
-<td><strong>Client</strong></td>
-<td>Creates and configures commands</td>
-<td>Factory pattern for command creation?</td>
+<td style="padding: 12px"><strong>Client</strong></td>
+<td style="padding: 12px">Creates and configures commands</td>
+<td style="padding: 12px">Factory pattern for command creation?</td>
 </tr>
     </tbody>
 </table>
 </div>
 <hr />
 <h2 id="critical-assumption-analysis">Critical Assumption Analysis</h2>
-<div>
-<div>Hidden Assumptions That Can Break Your System</div>
-<div>
+<div style="background: #fef2f2;border-radius: 8px; padding: 20px; margin: 20px 0">
+<div style="font-weight: 700; color: #991b1b; margin-bottom: 12px">Hidden Assumptions That Can Break Your System</div>
+<div style="color: #7f1d1d; line-height: 1.8">
 <strong>1. Reversibility Assumption:</strong> Not all operations are reversible. Sending an email, making an API call to a third party, or triggering a physical action cannot be undone. Your design must distinguish between reversible and irreversible commands.<br/><br/>
 <strong>2. Idempotency Assumption:</strong> Commands may be retried (network failures, crashes). If execute() is called twice, will your system be in a valid state? Non-idempotent commands require careful deduplication logic.<br/><br/>
 <strong>3. State Isolation Assumption:</strong> Commands assume they capture sufficient state for undo. But if external state changes between execute() and undo() (concurrent modifications), your undo may corrupt data.<br/><br/>
@@ -122,18 +122,18 @@
 <hr />
 <h2 id="undoredo-implementation-deep-dive">Undo/Redo Implementation Deep Dive</h2>
 <h3 id="the-two-approaches-to-undo">The Two Approaches to Undo</h3>
-<div>
-<div>Approach 1: Reverse Operation (Delta-Based)</div>
-<div>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 16px; font-size: 1.1rem">Approach 1: Reverse Operation (Delta-Based)</div>
+<div style="color: #1e3a8a; line-height: 1.7">
     Each command stores the minimal delta required to reverse itself. For example, a DeleteCommand stores the deleted text and its position. Undo re-inserts that text at that position.<br/><br/>
 <strong>Pros:</strong> Memory efficient, fast undo/redo<br/>
 <strong>Cons:</strong> Complex for operations with side effects, requires careful implementation<br/>
 <strong>Best for:</strong> Text editors, drawing applications, simple CRUD operations
 </div>
 </div>
-<div>
-<div>Approach 2: State Snapshot (Memento-Based)</div>
-<div>
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="font-weight: 700; color: #166534; margin-bottom: 16px; font-size: 1.1rem">Approach 2: State Snapshot (Memento-Based)</div>
+<div style="color: #14532d; line-height: 1.7">
     Each command stores a complete snapshot of the affected state before execution. Undo restores the snapshot. Often implemented using the [[Memento Pattern]](/topics/design-patterns/memento).<br/><br/>
 <strong>Pros:</strong> Simple to implement, handles complex state changes<br/>
 <strong>Cons:</strong> Memory intensive, slow for large states<br/>
@@ -249,20 +249,20 @@
         if hasattr(command, 'release_resources'):
             command.release_resources()
 </code></pre>
-<div>
-<div>Interview Trap: The Redo Invalidation Problem</div>
-<div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 20px; margin: 20px 0">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 8px">Interview Trap: The Redo Invalidation Problem</div>
+<div style="color: #78350f">
     When you undo command A, then execute new command B, then try to redo A - what happens? The naive answer is "redo A". The correct answer is "A is no longer in the redo stack because B invalidated it." Executing B after undoing A creates a new timeline branch, and the old redo history must be discarded. This is why most applications clear the redo stack on any new action.
 </div>
 </div>
 <h3 id="interview-questions-undoredo">Interview Questions: Undo/Redo</h3>
-<details>
-<summary>Level 1: How do you implement undo/redo using the Command pattern?</summary>
-<div>
+<details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px">
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem">Level 1: How do you implement undo/redo using the Command pattern?</summary>
+<div style="margin-top: 16px; color: #334155; line-height: 1.8">
 <strong>Answer:</strong> Maintain two stacks - an undo stack for executed commands and a redo stack for undone commands. Each command implements execute() and undo() methods. On execute(), push to undo stack and clear redo stack. On undo(), pop from undo stack, call undo(), push to redo stack. On redo(), pop from redo stack, call execute(), push to undo stack.
-<details>
-<summary>Level 2: What happens when undo() fails partway through? How do you maintain consistency?</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 2: What happens when undo() fails partway through? How do you maintain consistency?</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This is the "partial undo" problem. Solutions include:
 <ol>
 <li><strong>Transactional undo</strong>: Wrap undo in a try-catch, and if it fails, attempt to re-execute to restore state</li>
@@ -271,9 +271,9 @@
 <li><strong>Compensation commands</strong>: Generate a compensating command that will fix any partial state</li>
 </ol>
 <p>The safest approach is making undo operations atomic - design them so they either fully complete or fully fail without side effects.</p>
-<details>
-<summary>Level 3: How would you implement collaborative undo in a multi-user real-time editor where User A and User B can both undo their own actions?</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: How would you implement collaborative undo in a multi-user real-time editor where User A and User B can both undo their own actions?</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This requires Operational Transformation (OT) or Conflict-free Replicated Data Types (CRDTs). Key challenges:
 <ol>
 <li><strong>Per-user undo stacks</strong>: Each user has their own undo history, but all modify shared state</li>
@@ -292,9 +292,9 @@
 </details>
 </div>
 </details>
-<details>
-<summary>Level 1: How do you handle commands that cannot be undone?</summary>
-<div>
+<details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px">
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem">Level 1: How do you handle commands that cannot be undone?</summary>
+<div style="margin-top: 16px; color: #334155; line-height: 1.8">
 <strong>Answer:</strong> Mark commands as irreversible and handle them specially:
 <pre><code>```python
 class Command(ABC):
@@ -305,9 +305,9 @@ return True  # Override to return False for irreversible commands
 
 For irreversible commands: warn user before execution, do not add to undo stack, or implement &quot;soft&quot; alternatives (soft delete instead of hard delete).
 </code></pre>
-<details>
-<summary>Level 2: What if an irreversible command is in the middle of a macro? How do you undo the macro?</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 2: What if an irreversible command is in the middle of a macro? How do you undo the macro?</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> Several strategies:
 <ol>
 <li><strong>Block macro creation</strong>: Prevent irreversible commands from being added to macros</li>
@@ -315,9 +315,9 @@ For irreversible commands: warn user before execution, do not add to undo stack,
 <li><strong>Checkpoint macros</strong>: Split macro at irreversible boundaries, warn user that undo will only go back to the checkpoint</li>
 <li><strong>Compensating actions</strong>: For some &quot;irreversible&quot; operations, provide a compensating action (e.g., &quot;unsend&quot; email within time window)</li>
 </ol>
-<details>
-<summary>Level 3: Design an undo system for a payment processing application where some commands trigger external API calls</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: Design an undo system for a payment processing application where some commands trigger external API calls</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This requires the [[Saga Pattern]](/topics/design-patterns/saga) combined with Command:
 <ol>
 <li><strong>Two-phase commands</strong>: Separate &quot;prepare&quot; (reversible, local) from &quot;commit&quot; (irreversible, external)</li>
@@ -474,9 +474,9 @@ class RecordingMacro(MacroCommand):
             self._commands.append(command.clone() if hasattr(command, 'clone') else command)
 </code></pre>
 <h3 id="interview-questions-macro-commands">Interview Questions: Macro Commands</h3>
-<details>
-<summary>Level 1: How does a MacroCommand differ from simply calling multiple commands in sequence?</summary>
-<div>
+<details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px">
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem">Level 1: How does a MacroCommand differ from simply calling multiple commands in sequence?</summary>
+<div style="margin-top: 16px; color: #334155; line-height: 1.8">
 <strong>Answer:</strong> A MacroCommand provides:
 <pre><code>1. **Atomic undo**: All commands undo as one unit
 2. **Single history entry**: One undo step instead of many
@@ -486,9 +486,9 @@ class RecordingMacro(MacroCommand):
 
 Without MacroCommand, undoing 10 sequential commands requires 10 undo operations, and partial failure handling is ad-hoc.
 </code></pre>
-<details>
-<summary>Level 2: How do you handle commands in a macro that depend on the results of previous commands?</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 2: How do you handle commands in a macro that depend on the results of previous commands?</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> Several approaches:
 <ol>
 <li>
@@ -514,9 +514,9 @@ self.results = {}
 <p><strong>Command chaining</strong>: Commands explicitly link to predecessors</p>
 </li>
 </ol>
-<details>
-<summary>Level 3: Design a macro system that supports conditional execution, loops, and branching based on command results</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: Design a macro system that supports conditional execution, loops, and branching based on command results</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This essentially becomes a domain-specific workflow engine:
 <pre><code>        ```python
         class ConditionalCommand(Command):
@@ -580,29 +580,29 @@ self.results = {}
 <h2 id="command-queuing-and-scheduling">Command Queuing and Scheduling</h2>
 <p>Command queuing decouples command creation from execution, enabling deferred processing, rate limiting, prioritization, and retry logic.</p>
 <h3 id="queue-architecture">Queue Architecture</h3>
-<div>
-<div>Command Queue Flow</div>
-<div>
-<div>
-<div>
-<div>Producer</div>
-<div>Creates commands</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="font-weight: 700; color: #1e293b; text-align: center; margin-bottom: 20px; font-size: 1.1rem">Command Queue Flow</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; align-items: center">
+<div style="background: #dbeafe;border-radius: 8px; padding: 12px 20px; text-align: center">
+<div style="font-weight: 600; color: #1e40af">Producer</div>
+<div style="font-size: 0.75rem; color: #3b82f6">Creates commands</div>
 </div>
-<div>enqueue</div>
-<div>
-<div>Queue</div>
-<div>Priority + Scheduling</div>
+<div style="color: #64748b; font-size: 1.5rem">enqueue</div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 12px 20px; text-align: center; min-width: 120px">
+<div style="font-weight: 600; color: #92400e">Queue</div>
+<div style="font-size: 0.75rem; color: #b45309">Priority + Scheduling</div>
 </div>
-<div>dequeue</div>
-<div>
-<div>Worker</div>
-<div>Executes commands</div>
+<div style="color: #64748b; font-size: 1.5rem">dequeue</div>
+<div style="background: #dcfce7;border-radius: 8px; padding: 12px 20px; text-align: center">
+<div style="font-weight: 600; color: #166534">Worker</div>
+<div style="font-size: 0.75rem; color: #15803d">Executes commands</div>
 </div>
 </div>
-<div>
-<div>Dead Letter Queue</div>
-<div>Retry Queue</div>
-<div>Scheduled Queue</div>
+<div style="display: flex; gap: 60px; margin-top: 12px; flex-wrap: wrap; justify-content: center">
+<div style="background: #fee2e2;border-radius: 6px; padding: 8px 12px; font-size: 0.8rem; color: #991b1b">Dead Letter Queue</div>
+<div style="background: #e0e7ff;border-radius: 6px; padding: 8px 12px; font-size: 0.8rem; color: #3730a3">Retry Queue</div>
+<div style="background: #f3e8ff;border-radius: 6px; padding: 8px 12px; font-size: 0.8rem; color: #6b21a8">Scheduled Queue</div>
 </div>
 </div>
 </div>
@@ -792,9 +792,9 @@ class CommandWorker:
                 self._queue.retry(queued, e)
 </code></pre>
 <h3 id="interview-questions-command-queuing">Interview Questions: Command Queuing</h3>
-<details>
-<summary>Level 1: Why use a command queue instead of executing commands immediately?</summary>
-<div>
+<details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px">
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem">Level 1: Why use a command queue instead of executing commands immediately?</summary>
+<div style="margin-top: 16px; color: #334155; line-height: 1.8">
 <strong>Answer:</strong> Command queuing provides:
 <pre><code>1. **Decoupling**: Producers and consumers work independently
 2. **Load leveling**: Smooth out traffic spikes
@@ -804,9 +804,9 @@ class CommandWorker:
 6. **Scalability**: Add more workers without changing producers
 7. **Resilience**: Commands survive process restarts (if persisted)
 </code></pre>
-<details>
-<summary>Level 2: How do you ensure exactly-once execution of queued commands in a distributed system?</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 2: How do you ensure exactly-once execution of queued commands in a distributed system?</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> Exactly-once is impossible in distributed systems, but you can achieve effectively-once through:
 <ol>
 <li>
@@ -838,9 +838,9 @@ return True
 </code></pre>
 </li>
 </ol>
-<details>
-<summary>Level 3: Design a command queue system that maintains ordering guarantees while allowing parallel processing for unrelated commands</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: Design a command queue system that maintains ordering guarantees while allowing parallel processing for unrelated commands</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This requires partitioned ordering - order within a partition, parallelism across partitions:
 <pre><code>        ```python
         class PartitionedCommandQueue:
@@ -1124,9 +1124,9 @@ class TransferFundsCommand(TransactionCommand[str]):
         self._locks_held.clear()
 </code></pre>
 <h3 id="interview-questions-transaction-scripts">Interview Questions: Transaction Scripts</h3>
-<details>
-<summary>Level 1: How does the Command pattern enable transaction-like behavior without a database?</summary>
-<div>
+<details style="margin: 12px 0; padding: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px">
+<summary style="font-weight: 700; color: #1e293b; cursor: pointer; font-size: 1.05rem">Level 1: How does the Command pattern enable transaction-like behavior without a database?</summary>
+<div style="margin-top: 16px; color: #334155; line-height: 1.8">
 <strong>Answer:</strong> Command pattern provides transaction semantics through:
 <pre><code>1. **Atomicity**: MacroCommand groups operations; all succeed or all fail via rollback
 2. **Consistency**: canExecute() validates invariants before execution
@@ -1135,9 +1135,9 @@ class TransferFundsCommand(TransactionCommand[str]):
 
 The key is that each command captures enough state to reverse itself, and the transaction manager coordinates multiple commands.
 </code></pre>
-<details>
-<summary>Level 2: How do you handle long-running transactions that span multiple services?</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #f1f5f9; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 2: How do you handle long-running transactions that span multiple services?</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> Use the [[Saga Pattern]](/topics/design-patterns/saga) instead of traditional transactions:
 <ol>
 <li><strong>Choreography</strong>: Each service publishes events, others react</li>
@@ -1170,9 +1170,9 @@ The key is that each command captures enough state to reverse itself, and the tr
     await step.compensation.execute()
     ```
 </code></pre>
-<details>
-<summary>Level 3: Design a transaction system that handles the case where compensation itself fails</summary>
-<div>
+<details style="margin: 12px 0; padding: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="font-weight: 600; color: #475569; cursor: pointer">Level 3: Design a transaction system that handles the case where compensation itself fails</summary>
+<div style="margin-top: 12px; color: #334155">
 <strong>Answer:</strong> This is the "compensation failure" problem, one of the hardest distributed systems challenges:
 <p><strong>Strategy 1: Retry with exponential backoff</strong><br />
 ```python<br />
@@ -1220,53 +1220,53 @@ FAILED = auto()</p>
 </details>
 <hr />
 <h2 id="command-pattern-vs-related-patterns">Command Pattern vs Related Patterns</h2>
-<div>
-<table>
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
+<table style="width: 100%; border-collapse: collapse; color: #334155; font-size: 0.95rem">
     <thead>
-<tr>
-<th>Aspect</th>
-<th>Command</th>
-<th>[[Strategy]](/topics/design-patterns/strategy)</th>
-<th>[[Memento]](/topics/design-patterns/memento)</th>
+<tr style="background: #e2e8f0">
+<th style="padding: 12px; text-align: left">Aspect</th>
+<th style="padding: 12px; text-align: left">Command</th>
+<th style="padding: 12px; text-align: left">[[Strategy]](/topics/design-patterns/strategy)</th>
+<th style="padding: 12px; text-align: left">[[Memento]](/topics/design-patterns/memento)</th>
 </tr>
     </thead>
     <tbody>
 <tr>
-<td><strong>Purpose</strong></td>
-<td>Encapsulate request as object</td>
-<td>Encapsulate algorithm</td>
-<td>Capture and restore state</td>
+<td style="padding: 12px"><strong>Purpose</strong></td>
+<td style="padding: 12px">Encapsulate request as object</td>
+<td style="padding: 12px">Encapsulate algorithm</td>
+<td style="padding: 12px">Capture and restore state</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 12px"><strong>State</strong></td>
+<td style="padding: 12px">Contains parameters + receiver</td>
+<td style="padding: 12px">Usually stateless</td>
+<td style="padding: 12px">Contains full state snapshot</td>
 </tr>
 <tr>
-<td><strong>State</strong></td>
-<td>Contains parameters + receiver</td>
-<td>Usually stateless</td>
-<td>Contains full state snapshot</td>
+<td style="padding: 12px"><strong>Undo</strong></td>
+<td style="padding: 12px">Via reverse operation</td>
+<td style="padding: 12px">No undo concept</td>
+<td style="padding: 12px">Via state restoration</td>
+</tr>
+<tr style="background: #f8fafc">
+<td style="padding: 12px"><strong>Lifetime</strong></td>
+<td style="padding: 12px">Created, executed, potentially stored</td>
+<td style="padding: 12px">Swapped at runtime</td>
+<td style="padding: 12px">Created, stored, restored</td>
 </tr>
 <tr>
-<td><strong>Undo</strong></td>
-<td>Via reverse operation</td>
-<td>No undo concept</td>
-<td>Via state restoration</td>
-</tr>
-<tr>
-<td><strong>Lifetime</strong></td>
-<td>Created, executed, potentially stored</td>
-<td>Swapped at runtime</td>
-<td>Created, stored, restored</td>
-</tr>
-<tr>
-<td><strong>Use with</strong></td>
-<td>Undo, queuing, logging</td>
-<td>Algorithm selection</td>
-<td>Checkpoints, save/load</td>
+<td style="padding: 12px"><strong>Use with</strong></td>
+<td style="padding: 12px">Undo, queuing, logging</td>
+<td style="padding: 12px">Algorithm selection</td>
+<td style="padding: 12px">Checkpoints, save/load</td>
 </tr>
     </tbody>
 </table>
 </div>
-<div>
-<div>Command + Memento Hybrid</div>
-<div>
+<div style="background: #dbeafe;border-radius: 8px; padding: 20px; margin: 20px 0">
+<div style="font-weight: 700; color: #1e40af; margin-bottom: 8px">Command + Memento Hybrid</div>
+<div style="color: #1e3a8a; line-height: 1.7">
     For complex undo scenarios, combine both patterns: Command defines <em>what</em> to do and <em>how</em> to reverse it, while Memento captures the <em>before state</em> for when reverse operations are too complex or risky. This is common in game engines where "undo" restores a checkpoint rather than reversing each action.
 </div>
 </div>
@@ -1849,17 +1849,17 @@ if __name__ == &quot;__main__&quot;:
 </code></pre>
 <hr />
 <h2 id="advanced-design-trade-offs">Advanced Design Trade-offs</h2>
-<div>
-<div>Key Design Decisions and Their Trade-offs</div>
-<div>
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="font-weight: 700; color: #92400e; margin-bottom: 16px; font-size: 1.1rem">Key Design Decisions and Their Trade-offs</div>
+<div style="color: #78350f; line-height: 1.8">
 <strong>1. Command granularity:</strong> Should each keystroke be a command, or group related actions?<br/>
-<span>Fine-grained = more undo flexibility, more memory. Coarse-grained = less memory, less flexibility.</span><br/>
+<span style="margin-left: 20px; display: block; margin-top: 4px">Fine-grained = more undo flexibility, more memory. Coarse-grained = less memory, less flexibility.</span><br/>
 <p><strong>2. State storage location:</strong> Should commands store state internally or reference external storage?<br/><br />
-<span>Internal = self-contained, larger commands. External = smaller commands, coordination complexity.</span><br/></p>
+<span style="margin-left: 20px; display: block; margin-top: 4px">Internal = self-contained, larger commands. External = smaller commands, coordination complexity.</span><br/></p>
 <p><strong>3. Receiver coupling:</strong> Should commands know about receivers or use indirection?<br/><br />
-<span>Direct reference = simpler, tighter coupling. Indirection (locator) = flexible, more complexity.</span><br/></p>
+<span style="margin-left: 20px; display: block; margin-top: 4px">Direct reference = simpler, tighter coupling. Indirection (locator) = flexible, more complexity.</span><br/></p>
 <p><strong>4. Validation timing:</strong> Validate at creation time, execution time, or both?<br/><br />
-<span>Creation = fail fast, stale validation. Execution = current state, delayed feedback.</span></p>
+<span style="margin-left: 20px; display: block; margin-top: 4px">Creation = fail fast, stale validation. Execution = current state, delayed feedback.</span></p>
 </div>
 </div>
 <hr />

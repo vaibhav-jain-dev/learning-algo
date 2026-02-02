@@ -6,50 +6,50 @@
 <strong>Also Known As:</strong> Publish-Subscribe, Event-Subscriber, Listener, Dependents</p>
 <hr />
 <h2 id="core-mechanism-how-observer-actually-works">Core Mechanism: How Observer Actually Works</h2>
-<div>
-<h4>Observer Pattern Internal Flow</h4>
-<div>
-<div>
-<div>
-<div>Subject</div>
-<div>observers: List&lt;Observer&gt;</div>
-<div>state: T</div>
-<div></div>
-<div>attach(o) / detach(o)</div>
-<div>notify() / setState()</div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center">Observer Pattern Internal Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center">
+<div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: center">
+<div style="background: #252540;border-radius: 8px; padding: 16px; min-width: 200px">
+<div style="color: #569cd6; font-weight: bold; margin-bottom: 8px">Subject</div>
+<div style="color: #ce9178; font-size: 13px">observers: List&lt;Observer&gt;</div>
+<div style="color: #ce9178; font-size: 13px">state: T</div>
+<div style="margin: 8px 0"></div>
+<div style="color: #dcdcaa; font-size: 13px">attach(o) / detach(o)</div>
+<div style="color: #dcdcaa; font-size: 13px">notify() / setState()</div>
 </div>
-<div>&#8594;</div>
-<div>
-<div>
-<div>Observer A</div>
-<div>update(state)</div>
+<div style="color: #4ecdc4; font-size: 32px">&#8594;</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #252540;border-radius: 8px; padding: 12px; min-width: 150px">
+<div style="color: #4ecdc4; font-size: 13px">Observer A</div>
+<div style="color: #888; font-size: 11px">update(state)</div>
 </div>
-<div>
-<div>Observer B</div>
-<div>update(state)</div>
+<div style="background: #252540;border-radius: 8px; padding: 12px; min-width: 150px">
+<div style="color: #4ecdc4; font-size: 13px">Observer B</div>
+<div style="color: #888; font-size: 11px">update(state)</div>
 </div>
-<div>
-<div>Observer N</div>
-<div>update(state)</div>
-</div>
-</div>
-</div>
-<div>
-<div>Notification Sequence</div>
-<div>
-<div>1. State changes</div>
-<div>&#8594;</div>
-<div>2. notify() called</div>
-<div>&#8594;</div>
-<div>3. Iterate observers</div>
-<div>&#8594;</div>
-<div>4. Call update()</div>
+<div style="background: #252540;border-radius: 8px; padding: 12px; min-width: 150px">
+<div style="color: #4ecdc4; font-size: 13px">Observer N</div>
+<div style="color: #888; font-size: 11px">update(state)</div>
 </div>
 </div>
 </div>
+<div style="background: #1e3a5f; border-radius: 8px; padding: 16px; width: 90%; margin-top: 16px">
+<div style="color: #4ecdc4; font-weight: bold; margin-bottom: 8px">Notification Sequence</div>
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px">
+<div style="color: #ddd; font-size: 12px">1. State changes</div>
+<div style="color: #888">&#8594;</div>
+<div style="color: #ddd; font-size: 12px">2. notify() called</div>
+<div style="color: #888">&#8594;</div>
+<div style="color: #ddd; font-size: 12px">3. Iterate observers</div>
+<div style="color: #888">&#8594;</div>
+<div style="color: #ddd; font-size: 12px">4. Call update()</div>
 </div>
-<div>
-<strong>Key Assumption:</strong> The Observer pattern assumes observers are independent and can be notified in any order. When this assumption breaks, you have hidden temporal coupling that leads to subtle bugs.
+</div>
+</div>
+</div>
+<div style="background: #143d2e;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #28a745">Key Assumption:</strong> The Observer pattern assumes observers are independent and can be notified in any order. When this assumption breaks, you have hidden temporal coupling that leads to subtle bugs.
 </div>
 <h3 id="the-registration-mechanism">The Registration Mechanism</h3>
 <p>When an observer registers with a subject, several things happen internally:</p>
@@ -83,9 +83,9 @@
             except ValueError:
                 pass  # Already removed or never registered
 </code></pre>
-<div>
-<strong>Trade-off - Collection Choice:</strong>
-<ul>
+<div style="background: #143d2e;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #28a745">Trade-off - Collection Choice:</strong>
+<ul style="margin: 8px 0 0 0; color: #ddd">
 <li><strong>List:</strong> Preserves registration order, O(n) contains check, allows duplicates if unchecked</li>
 <li><strong>Set:</strong> O(1) contains check, no duplicates, but loses ordering guarantees</li>
 <li><strong>OrderedDict:</strong> O(1) lookup + ordering, but more memory overhead</li>
@@ -161,37 +161,37 @@
 <hr />
 <h2 id="push-vs-pull-the-fundamental-design-decision">Push vs Pull: The Fundamental Design Decision</h2>
 <p>The most critical architectural decision in Observer implementation is how data flows from subject to observer.</p>
-<div>
-<h4>Push vs Pull Model Comparison</h4>
-<div>
-<div>
-<h5>Push Model</h5>
-<div>Subject sends data to observers</div>
-<div>
-<code>observer.update(changed_data)</code>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center">Push vs Pull Model Comparison</h4>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center">
+<div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px">
+<h5 style="color: #569cd6; margin-top: 0">Push Model</h5>
+<div style="color: #888; font-size: 12px; margin-bottom: 12px">Subject sends data to observers</div>
+<div style="background: #1a1a2e; border-radius: 4px; padding: 12px; margin-bottom: 12px">
+<code style="color: #dcdcaa; font-size: 12px">observer.update(changed_data)</code>
 </div>
-<div>
-<div><span>+</span> Single call per observer</div>
-<div><span>+</span> Observer gets data immediately</div>
-<div><span>+</span> Lower latency</div>
-<div><span>-</span> Subject must know observer needs</div>
-<div><span>-</span> May send unnecessary data</div>
-<div><span>-</span> Tight data coupling</div>
+<div style="color: #ddd; font-size: 13px">
+<div style="margin-bottom: 8px"><span style="color: #4ecdc4">+</span> Single call per observer</div>
+<div style="margin-bottom: 8px"><span style="color: #4ecdc4">+</span> Observer gets data immediately</div>
+<div style="margin-bottom: 8px"><span style="color: #4ecdc4">+</span> Lower latency</div>
+<div style="margin-bottom: 8px"><span style="color: #f85149">-</span> Subject must know observer needs</div>
+<div style="margin-bottom: 8px"><span style="color: #f85149">-</span> May send unnecessary data</div>
+<div><span style="color: #f85149">-</span> Tight data coupling</div>
 </div>
 </div>
-<div>
-<h5>Pull Model</h5>
-<div>Observer requests data from subject</div>
-<div>
-<code>observer.update(subject_ref)</code>
+<div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px">
+<h5 style="color: #4ecdc4; margin-top: 0">Pull Model</h5>
+<div style="color: #888; font-size: 12px; margin-bottom: 12px">Observer requests data from subject</div>
+<div style="background: #1a1a2e; border-radius: 4px; padding: 12px; margin-bottom: 12px">
+<code style="color: #dcdcaa; font-size: 12px">observer.update(subject_ref)</code>
 </div>
-<div>
-<div><span>+</span> Observer controls what it fetches</div>
-<div><span>+</span> Subject stays simple</div>
-<div><span>+</span> Loose coupling</div>
-<div><span>-</span> Multiple calls to subject</div>
-<div><span>-</span> State may change between pulls</div>
-<div><span>-</span> Higher latency</div>
+<div style="color: #ddd; font-size: 13px">
+<div style="margin-bottom: 8px"><span style="color: #4ecdc4">+</span> Observer controls what it fetches</div>
+<div style="margin-bottom: 8px"><span style="color: #4ecdc4">+</span> Subject stays simple</div>
+<div style="margin-bottom: 8px"><span style="color: #4ecdc4">+</span> Loose coupling</div>
+<div style="margin-bottom: 8px"><span style="color: #f85149">-</span> Multiple calls to subject</div>
+<div style="margin-bottom: 8px"><span style="color: #f85149">-</span> State may change between pulls</div>
+<div><span style="color: #f85149">-</span> Higher latency</div>
 </div>
 </div>
 </div>
@@ -273,8 +273,8 @@ class TemperatureDisplay:
         temp = subject.get_temperature()
         print(f&quot;Temperature: {temp}C&quot;)
 </code></pre>
-<div>
-<strong>Critical Trade-off - State Consistency:</strong> In pull model, if observer A pulls temperature, then subject changes, then observer B pulls temperature, they see different values from the same notification. Push model guarantees all observers see the same snapshot.
+<div style="background: #143d2e;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #28a745">Critical Trade-off - State Consistency:</strong> In pull model, if observer A pulls temperature, then subject changes, then observer B pulls temperature, they see different values from the same notification. Push model guarantees all observers see the same snapshot.
 </div>
 <h3 id="hybrid-model-production-best-practice">Hybrid Model (Production Best Practice)</h3>
 <pre><code class="language-python">class HybridSubject:
@@ -432,35 +432,35 @@ class ChangeEvent:
 <hr />
 <h2 id="memory-leaks-and-observer-lifecycle">Memory Leaks and Observer Lifecycle</h2>
 <p>Memory leaks are the most common production issue with Observer pattern. They occur when observers subscribe but never unsubscribe, creating strong references that prevent garbage collection.</p>
-<div>
-<h4>Memory Leak Scenario</h4>
-<div>
-<div>
-<div>
-<div>Subject</div>
-<div>Long-lived</div>
-<div>(e.g., EventBus)</div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #f85149; margin-top: 0; text-align: center">Memory Leak Scenario</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap">
+<div style="background: #252540;border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: #569cd6; font-weight: bold">Subject</div>
+<div style="color: #888; font-size: 12px">Long-lived</div>
+<div style="color: #888; font-size: 12px">(e.g., EventBus)</div>
 </div>
-<div>
-<div>&#8594; strong ref &#8594;</div>
-<div>&#8594; strong ref &#8594;</div>
-<div>&#8594; strong ref &#8594;</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="color: #f85149">&#8594; strong ref &#8594;</div>
+<div style="color: #f85149">&#8594; strong ref &#8594;</div>
+<div style="color: #f85149">&#8594; strong ref &#8594;</div>
 </div>
-<div>
-<div>
-<div>Observer (destroyed UI)</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #3d2525;border-radius: 8px; padding: 8px; text-align: center">
+<div style="color: #f85149; font-size: 13px">Observer (destroyed UI)</div>
 </div>
-<div>
-<div>Observer (closed tab)</div>
+<div style="background: #3d2525;border-radius: 8px; padding: 8px; text-align: center">
+<div style="color: #f85149; font-size: 13px">Observer (closed tab)</div>
 </div>
-<div>
-<div>Observer (old request)</div>
+<div style="background: #3d2525;border-radius: 8px; padding: 8px; text-align: center">
+<div style="color: #f85149; font-size: 13px">Observer (old request)</div>
 </div>
 </div>
 </div>
-<div>
-<div>Result: Observers cannot be garbage collected</div>
-<div>Memory grows linearly with each subscribe() without unsubscribe()</div>
+<div style="background: #3d2525; border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: #f85149; font-weight: bold">Result: Observers cannot be garbage collected</div>
+<div style="color: #888; font-size: 12px; margin-top: 8px">Memory grows linearly with each subscribe() without unsubscribe()</div>
 </div>
 </div>
 </div>
@@ -567,8 +567,8 @@ class SimpleWeakSubject:
         for observer in self._observers:
             observer.update(data)
 </code></pre>
-<div>
-<strong>Weak Reference Gotcha:</strong> Lambdas and closures create temporary objects that get garbage collected immediately. Always use bound methods or explicitly stored callbacks with weak references.
+<div style="background: #143d2e;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #28a745">Weak Reference Gotcha:</strong> Lambdas and closures create temporary objects that get garbage collected immediately. Always use bound methods or explicitly stored callbacks with weak references.
 <pre><code class="language-python"># BAD: Lambda is immediately garbage collected
 bus.subscribe('event', lambda e: print(e))  # Callback disappears!
 
@@ -774,32 +774,32 @@ def diagnose_leaks():
 <hr />
 <h2 id="event-ordering-and-notification-guarantees">Event Ordering and Notification Guarantees</h2>
 <p>Event ordering is a subtle but critical aspect of Observer implementations. Different systems provide different guarantees.</p>
-<div>
-<h4>Ordering Guarantee Spectrum</h4>
-<div>
-<div>
-<div>
-<div>FIFO per Observer</div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center">Ordering Guarantee Spectrum</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; min-width: 180px; text-align: center">
+<div style="color: #4ecdc4; font-weight: bold">FIFO per Observer</div>
 </div>
-<div>Each observer receives events in order they were emitted</div>
+<div style="color: #888; flex: 1; font-size: 13px">Each observer receives events in order they were emitted</div>
 </div>
-<div>
-<div>
-<div>Total Order</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; min-width: 180px; text-align: center">
+<div style="color: #f0ad4e; font-weight: bold">Total Order</div>
 </div>
-<div>All observers see same global event order</div>
+<div style="color: #888; flex: 1; font-size: 13px">All observers see same global event order</div>
 </div>
-<div>
-<div>
-<div>Causal Order</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; min-width: 180px; text-align: center">
+<div style="color: #f85149; font-weight: bold">Causal Order</div>
 </div>
-<div>If A caused B, all observers see A before B</div>
+<div style="color: #888; flex: 1; font-size: 13px">If A caused B, all observers see A before B</div>
 </div>
-<div>
-<div>
-<div>No Guarantee</div>
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #1e3a5f; border-radius: 8px; padding: 12px; min-width: 180px; text-align: center">
+<div style="color: #888; font-weight: bold">No Guarantee</div>
 </div>
-<div>Events may arrive in any order (async systems)</div>
+<div style="color: #888; flex: 1; font-size: 13px">Events may arrive in any order (async systems)</div>
 </div>
 </div>
 </div>
@@ -935,8 +935,8 @@ bus.subscribe('request.received', process_request, Priority.NORMAL)
 
         return result
 </code></pre>
-<div>
-<strong>Design Choice:</strong> If you find yourself building dependency-aware observer systems, strongly consider whether the Observer pattern is the right choice. Dependencies between observers indicate they aren't truly independent, and you may benefit from [[Chain of Responsibility]](/topic/design-patterns/chain-of-responsibility) or [[Pipeline]](/topic/design-patterns/pipeline) patterns instead.
+<div style="background: #143d2e;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #28a745">Design Choice:</strong> If you find yourself building dependency-aware observer systems, strongly consider whether the Observer pattern is the right choice. Dependencies between observers indicate they aren't truly independent, and you may benefit from [[Chain of Responsibility]](/topic/design-patterns/chain-of-responsibility) or [[Pipeline]](/topic/design-patterns/pipeline) patterns instead.
 </div>
 <h3 id="interview-questions---event-ordering">Interview Questions - Event Ordering</h3>
 <details>
@@ -1076,28 +1076,28 @@ def get_partition(event: Event) -&gt; int:
 <hr />
 <h2 id="backpressure-when-observers-cant-keep-up">Backpressure: When Observers Can't Keep Up</h2>
 <p>Backpressure occurs when subjects produce events faster than observers can consume them. Without handling, this leads to memory exhaustion, increased latency, or dropped events.</p>
-<div>
-<h4>Backpressure Scenario</h4>
-<div>
-<div>
-<div>Producer</div>
-<div>1000 evt/s</div>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #f85149; margin-top: 0; text-align: center">Backpressure Scenario</h4>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 16px 0">
+<div style="background: #252540;border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: #4ecdc4; font-weight: bold">Producer</div>
+<div style="color: #4ecdc4; font-size: 24px">1000 evt/s</div>
 </div>
-<div>
-<div>&#8594;&#8594;&#8594;</div>
-<div>
-<div>Queue: 50,000</div>
-<div>(growing!)</div>
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="color: #f0ad4e">&#8594;&#8594;&#8594;</div>
+<div style="background: #3d3520;border-radius: 4px; padding: 8px; margin: 8px 0">
+<div style="color: #f0ad4e; font-size: 12px">Queue: 50,000</div>
+<div style="color: #f0ad4e; font-size: 12px">(growing!)</div>
 </div>
-<div>&#8594;&#8594;&#8594;</div>
+<div style="color: #f0ad4e">&#8594;&#8594;&#8594;</div>
 </div>
-<div>
-<div>Consumer</div>
-<div>100 evt/s</div>
+<div style="background: #252540;border-radius: 8px; padding: 16px; text-align: center">
+<div style="color: #f85149; font-weight: bold">Consumer</div>
+<div style="color: #f85149; font-size: 24px">100 evt/s</div>
 </div>
 </div>
-<div>
-<div>Without backpressure: Queue grows 900 events/second until OOM</div>
+<div style="background: #3d2525; border-radius: 8px; padding: 12px; text-align: center">
+<div style="color: #f85149">Without backpressure: Queue grows 900 events/second until OOM</div>
 </div>
 </div>
 <h3 id="backpressure-strategies">Backpressure Strategies</h3>
@@ -1349,9 +1349,9 @@ class SlowConsumer(Subscriber):
     def on_complete(self):
         print(&quot;Done&quot;)
 </code></pre>
-<div>
-<strong>Trade-off - Backpressure Strategy Selection:</strong>
-<ul>
+<div style="background: #143d2e;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #28a745">Trade-off - Backpressure Strategy Selection:</strong>
+<ul style="margin: 8px 0 0 0; color: #ddd">
 <li><strong>BLOCK:</strong> Use when every event must be processed, and you can afford producer slowdown</li>
 <li><strong>DROP_OLDEST:</strong> Use when recent data is more valuable (real-time monitoring)</li>
 <li><strong>DROP_NEWEST:</strong> Use when processing order matters and you want to finish current work</li>
@@ -1466,12 +1466,12 @@ class KafkaBackpressureMonitor:
 <hr />
 <h2 id="reactive-patterns-and-modern-implementations">Reactive Patterns and Modern Implementations</h2>
 <p>The Observer pattern evolved into Reactive Programming, which adds composability, error handling, and backpressure as first-class concepts.</p>
-<div>
-<h4>Observer vs Reactive Streams</h4>
-<div>
-<div>
-<h5>Classic Observer</h5>
-<ul>
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #4ecdc4; margin-top: 0; text-align: center">Observer vs Reactive Streams</h4>
+<div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; margin-top: 16px">
+<div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px">
+<h5 style="color: #888; margin-top: 0">Classic Observer</h5>
+<ul style="color: #ddd; font-size: 13px; padding-left: 20px; margin: 0">
 <li>Push-only notification</li>
 <li>No error channel</li>
 <li>No completion signal</li>
@@ -1479,9 +1479,9 @@ class KafkaBackpressureMonitor:
 <li>Imperative composition</li>
 </ul>
 </div>
-<div>
-<h5>Reactive Streams</h5>
-<ul>
+<div style="flex: 1; min-width: 280px; background: #252540; border-radius: 8px; padding: 16px">
+<h5 style="color: #4ecdc4; margin-top: 0">Reactive Streams</h5>
+<ul style="color: #ddd; font-size: 13px; padding-left: 20px; margin: 0">
 <li>on_next / on_error / on_complete</li>
 <li>Built-in error propagation</li>
 <li>Explicit completion</li>
@@ -1749,9 +1749,9 @@ class ReplaySubject(Subject[T]):
         self._buffer.append(value)
         super().on_next(value)
 </code></pre>
-<div>
-<strong>Design Choice - Subject Types:</strong>
-<ul>
+<div style="background: #143d2e;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #28a745">Design Choice - Subject Types:</strong>
+<ul style="margin: 8px 0 0 0; color: #ddd">
 <li><strong>Subject:</strong> Pure multicast, no replay - use for events where history doesn't matter</li>
 <li><strong>BehaviorSubject:</strong> Always has current value - use for state (like Redux store)</li>
 <li><strong>ReplaySubject:</strong> Replays history - use when late subscribers need past events</li>
@@ -2320,9 +2320,9 @@ class EventEmitter:
 </code></pre>
 <hr />
 <h2 id="common-pitfalls-and-anti-patterns">Common Pitfalls and Anti-Patterns</h2>
-<div>
-<strong>Anti-Pattern 1: The God Subject</strong>
-<p>A single subject that everything observes, creating a tight coupling bottleneck.</p>
+<div style="background: #3d2525;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #f85149">Anti-Pattern 1: The God Subject</strong>
+<p style="color: #ddd; margin: 8px 0">A single subject that everything observes, creating a tight coupling bottleneck.</p>
 <pre><code class="language-python"># BAD: Everything watches one global event bus
 class Application:
     event_bus = GlobalEventBus()  # Singleton!
@@ -2333,11 +2333,11 @@ order_service.events = Application.event_bus
 inventory_service.events = Application.event_bus
 # Any change to event_bus affects everything
 </code></pre>
-<p><strong>Fix:</strong> Domain-specific event buses with clear boundaries.</p>
+<p style="color: #4ecdc4; margin-top: 12px"><strong>Fix:</strong> Domain-specific event buses with clear boundaries.</p>
 </div>
-<div>
-<strong>Anti-Pattern 2: Observer Cascade</strong>
-<p>Observer A triggers Observer B which triggers Observer A.</p>
+<div style="background: #3d2525;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #f85149">Anti-Pattern 2: Observer Cascade</strong>
+<p style="color: #ddd; margin: 8px 0">Observer A triggers Observer B which triggers Observer A.</p>
 <pre><code class="language-python"># BAD: Infinite loop
 @event_bus.on('user.updated')
 def sync_profile(event):
@@ -2349,11 +2349,11 @@ def sync_user(event):
     update_user(event.data)
     event_bus.emit('user.updated', event.data)  # Loop!
 </code></pre>
-<p><strong>Fix:</strong> Use correlation IDs or event source tracking to detect cycles.</p>
+<p style="color: #4ecdc4; margin-top: 12px"><strong>Fix:</strong> Use correlation IDs or event source tracking to detect cycles.</p>
 </div>
-<div>
-<strong>Anti-Pattern 3: Synchronous Blocking</strong>
-<p>Slow observer blocks all other observers.</p>
+<div style="background: #3d2525;padding: 16px; margin: 20px 0; border-radius: 0 8px 8px 0">
+<strong style="color: #f85149">Anti-Pattern 3: Synchronous Blocking</strong>
+<p style="color: #ddd; margin: 8px 0">Slow observer blocks all other observers.</p>
 <pre><code class="language-python"># BAD: 5 second database write blocks email
 @event_bus.on('order.created')
 def audit_log(event):
@@ -2364,7 +2364,7 @@ def send_email(event):
     # Waits 5 seconds because audit_log runs first
     email.send(event.data)
 </code></pre>
-<p><strong>Fix:</strong> Use async execution with priorities and timeouts.</p>
+<p style="color: #4ecdc4; margin-top: 12px"><strong>Fix:</strong> Use async execution with priorities and timeouts.</p>
 </div>
 <hr />
 <h2 id="related-patterns">Related Patterns</h2>

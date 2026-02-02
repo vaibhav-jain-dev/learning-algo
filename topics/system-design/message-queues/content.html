@@ -28,18 +28,18 @@
 <p>Message queues decouple producers from consumers, enabling systems to handle load spikes gracefully, improve reliability through persistence, and scale components independently.</p>
 <hr />
 <h2 id="why-message-queues-matter-why-message-queues-matter">Why Message Queues Matter {#why-message-queues-matter}</h2>
-<div>
-<h4>Real-World Impact</h4>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #166534; margin-top: 0">Real-World Impact</h4>
+<div style="color: #1e293b">
 <p><strong>LinkedIn</strong> processes over 7 trillion messages per day through Apache Kafka for activity feeds, metrics, and data pipelines. Message queues enable them to handle massive scale without losing data.</p>
 <p><strong>Uber</strong> uses message queues to coordinate rides - when you request a ride, the request goes into a queue that matches drivers with riders asynchronously, enabling them to handle millions of concurrent ride requests.</p>
 <p><strong>Slack</strong> relies on message queues to deliver billions of messages reliably. Even if a recipient's client is offline, the message is queued and delivered when they reconnect.</p>
 </div>
 </div>
 <h3 id="the-problem-direct-service-communication-problem-direct-communication">The Problem: Direct Service Communication {#problem-direct-communication}</h3>
-<div>
-<h4>Without Message Queues</h4>
-<div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #991b1b; margin-top: 0">Without Message Queues</h4>
+<div style="color: #1e293b">
 <pre><code class="language-python">def place_order(order):
     save_to_database(order)           # 50ms
     email_service.send_confirmation() # 200ms (external API)
@@ -59,7 +59,7 @@
 </div>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Synchronous Flow - Slow & Fragile</div>
+<div style="text-align: center; font-weight: 600; color: #991b1b; margin-bottom: 16px">Synchronous Flow - Slow & Fragile</div>
 <div class="flow-row">
 <div class="flow-box primary">
 <div class="flow-box-title">Order Service</div>
@@ -93,9 +93,9 @@
 </div>
 </div>
 </div>
-<div>
-<h4>With Message Queues</h4>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #166534; margin-top: 0">With Message Queues</h4>
+<div style="color: #1e293b">
 <pre><code class="language-python">def place_order(order):
     save_to_database(order)            # 50ms
     queue.publish(&quot;order_placed&quot;, order)  # ~5ms
@@ -107,7 +107,7 @@
 </div>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Asynchronous Flow - Fast & Resilient</div>
+<div style="text-align: center; font-weight: 600; color: #166534; margin-bottom: 16px">Asynchronous Flow - Fast & Resilient</div>
 <div class="flow-row">
 <div class="flow-box primary">
 <div class="flow-box-title">Order Service</div>
@@ -129,7 +129,7 @@
 <div class="flow-box-subtitle">55ms total</div>
 </div>
 </div>
-<div class="flow-arrow">&#8595;</div>
+<div class="flow-arrow" style="transform: rotate(90deg); margin: 8px 0">&#8595;</div>
 <div class="flow-row">
 <div class="flow-box neutral">
 <div class="flow-box-title">Email</div>
@@ -155,17 +155,17 @@
 <h3 id="core-components-core-components">Core Components {#core-components}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Message Queue Architecture</div>
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Message Queue Architecture</div>
 <div class="flow-row">
 <div class="flow-box primary">
 <div class="flow-box-title">Producer</div>
 <div class="flow-box-subtitle">Sends messages</div>
 </div>
 <div class="flow-arrow">&#8594;</div>
-<div class="flow-box warning">
+<div class="flow-box warning" style="min-width: 180px">
 <div class="flow-box-title">Message Queue</div>
 <div class="flow-box-subtitle">Stores & delivers</div>
-<div>
+<div style="display: flex; gap: 6px; justify-content: center; margin-top: 10px">
 <span class="diagram-badge warning">msg1</span>
 <span class="diagram-badge warning">msg2</span>
 <span class="diagram-badge warning">msg3</span>
@@ -180,19 +180,19 @@
 </div>
 </div>
 <h3 id="key-benefits-key-benefits">Key Benefits {#key-benefits}</h3>
-<div>
-<div>
-<div>
-<h5>Temporal Decoupling</h5>
-<p>Producer and consumer don't need to be running at the same time</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px">
+<h5 style="color: #1e40af; margin: 0 0 8px 0">Temporal Decoupling</h5>
+<p style="color: #1e293b; margin: 0; font-size: 13px">Producer and consumer don't need to be running at the same time</p>
 </div>
-<div>
-<h5>Spatial Decoupling</h5>
-<p>Producer doesn't need to know where or what the consumer is</p>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px">
+<h5 style="color: #166534; margin: 0 0 8px 0">Spatial Decoupling</h5>
+<p style="color: #1e293b; margin: 0; font-size: 13px">Producer doesn't need to know where or what the consumer is</p>
 </div>
-<div>
-<h5>Rate Decoupling</h5>
-<p>Producer can send faster than consumer processes</p>
+<div style="background: #fefce8; padding: 16px; border-radius: 8px">
+<h5 style="color: #854d0e; margin: 0 0 8px 0">Rate Decoupling</h5>
+<p style="color: #1e293b; margin: 0; font-size: 13px">Producer can send faster than consumer processes</p>
 </div>
 </div>
 </div>
@@ -201,30 +201,30 @@
 <h3 id="pattern-1-point-to-point-work-queue-pattern-point-to-point">Pattern 1: Point-to-Point (Work Queue) {#pattern-point-to-point}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Point-to-Point Pattern</div>
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Point-to-Point Pattern</div>
 <div class="flow-row">
 <div class="flow-box primary">
 <div class="flow-box-title">Producer</div>
 <div class="flow-box-subtitle">Sends tasks</div>
 </div>
 <div class="flow-arrow">&#8594;</div>
-<div class="flow-box warning">
+<div class="flow-box warning" style="min-width: 160px">
 <div class="flow-box-title">Queue</div>
-<div>
+<div style="display: flex; gap: 4px; justify-content: center; margin-top: 8px">
 <span class="diagram-badge warning">msg1</span>
 <span class="diagram-badge warning">msg2</span>
 <span class="diagram-badge warning">msg3</span>
 </div>
 </div>
-<div>
-<div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px">
 <div class="flow-arrow">&#8594;</div>
 <div class="flow-box success">
 <div class="flow-box-title">Consumer 1</div>
 <div class="flow-box-subtitle">Gets msg1</div>
 </div>
 </div>
-<div>
+<div style="display: flex; align-items: center; gap: 8px">
 <div class="flow-arrow">&#8594;</div>
 <div class="flow-box success">
 <div class="flow-box-title">Consumer 2</div>
@@ -233,8 +233,8 @@
 </div>
 </div>
 </div>
-<div>
-<div><strong>Key:</strong> Each message is processed by exactly ONE consumer. Add more consumers to process faster.</div>
+<div style="background: #eff6ff; padding: 12px 16px; border-radius: 8px; margin-top: 16px">
+<div style="color: #1e40af; font-size: 13px"><strong>Key:</strong> Each message is processed by exactly ONE consumer. Add more consumers to process faster.</div>
 </div>
 </div>
 </div>
@@ -242,33 +242,33 @@
 <h3 id="pattern-2-publish-subscribe-fan-out-pattern-publish-subscribe">Pattern 2: Publish-Subscribe (Fan-out) {#pattern-publish-subscribe}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Publish-Subscribe Pattern</div>
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Publish-Subscribe Pattern</div>
 <div class="flow-row">
 <div class="flow-box primary">
 <div class="flow-box-title">Publisher</div>
 <div class="flow-box-subtitle">Broadcasts event</div>
 </div>
 <div class="flow-arrow">&#8594;</div>
-<div class="flow-box purple">
+<div class="flow-box purple" style="min-width: 140px">
 <div class="flow-box-title">Topic</div>
 <div class="flow-box-subtitle">user.created</div>
 </div>
-<div>
-<div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 8px">
 <div class="flow-arrow">&#8594;</div>
 <div class="flow-box success">
 <div class="flow-box-title">Email Service</div>
 <div class="flow-box-subtitle">Copy 1</div>
 </div>
 </div>
-<div>
+<div style="display: flex; align-items: center; gap: 8px">
 <div class="flow-arrow">&#8594;</div>
 <div class="flow-box warning">
 <div class="flow-box-title">Analytics</div>
 <div class="flow-box-subtitle">Copy 2</div>
 </div>
 </div>
-<div>
+<div style="display: flex; align-items: center; gap: 8px">
 <div class="flow-arrow">&#8594;</div>
 <div class="flow-box info">
 <div class="flow-box-title">CRM Service</div>
@@ -277,8 +277,8 @@
 </div>
 </div>
 </div>
-<div>
-<div><strong>Key:</strong> ALL subscribers receive a copy of every message. Publisher doesn't know who is listening.</div>
+<div style="background: rgba(139, 92, 246, 0.1); padding: 12px 16px; border-radius: 8px; margin-top: 16px">
+<div style="color: #7c3aed; font-size: 13px"><strong>Key:</strong> ALL subscribers receive a copy of every message. Publisher doesn't know who is listening.</div>
 </div>
 </div>
 </div>
@@ -286,7 +286,7 @@
 <h3 id="pattern-3-request-reply-pattern-request-reply">Pattern 3: Request-Reply {#pattern-request-reply}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Request-Reply Pattern</div>
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Request-Reply Pattern</div>
 <div class="flow-row">
 <div class="flow-box primary">
 <div class="flow-box-title">Requester</div>
@@ -303,20 +303,20 @@
 <div class="flow-box-subtitle">Processes</div>
 </div>
 </div>
-<div>
-<div class="flow-arrow">&#8592;</div>
+<div style="display: flex; justify-content: center; margin: 16px 0">
+<div class="flow-arrow" style="transform: rotate(180deg)">&#8592;</div>
 </div>
 <div class="flow-row">
 <div class="flow-box success">
 <div class="flow-box-title">Requester</div>
 <div class="flow-box-subtitle">Gets response</div>
 </div>
-<div class="flow-arrow">&#8592;</div>
+<div class="flow-arrow" style="transform: rotate(180deg)">&#8592;</div>
 <div class="flow-box warning">
 <div class="flow-box-title">Reply Queue</div>
 <div class="flow-box-subtitle">matched by id</div>
 </div>
-<div class="flow-arrow">&#8592;</div>
+<div class="flow-arrow" style="transform: rotate(180deg)">&#8592;</div>
 <div class="flow-box info">
 <div class="flow-box-title">Responder</div>
 <div class="flow-box-subtitle">Sends reply</div>
@@ -324,9 +324,9 @@
 </div>
 </div>
 </div>
-<div>
-<h4>Request-Reply Implementation</h4>
-<p>Synchronous-like pattern over async messaging. Used when you need a response but want queue benefits.</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Request-Reply Implementation</h4>
+<p style="color: #475569">Synchronous-like pattern over async messaging. Used when you need a response but want queue benefits.</p>
 <pre><code class="language-python"># Requester
 correlation_id = uuid4()
 queue.send(&quot;requests&quot;, {
@@ -350,41 +350,41 @@ queue.send(request[&quot;reply_to&quot;], {
 <h2 id="delivery-guarantees-delivery-guarantees">Delivery Guarantees {#delivery-guarantees}</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Delivery Guarantees Comparison</div>
-<div class="flow-row">
-<div class="flow-box error">
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Delivery Guarantees Comparison</div>
+<div class="flow-row" style="align-items: stretch">
+<div class="flow-box error" style="flex: 1; max-width: 250px">
 <div class="flow-box-title">At-Most-Once</div>
 <div class="flow-box-subtitle">"Fire and forget"</div>
-<div>
+<div style="text-align: left; margin-top: 12px; font-size: 12px">
 <div>- Message may be lost</div>
 <div>- No duplicates</div>
 <div>- Fastest option</div>
 </div>
-<div>
+<div style="background: rgba(255,255,255,0.9); padding: 6px 8px; border-radius: 4px; margin-top: 8px; font-size: 11px">
 <strong>Use for:</strong> Metrics, logs
 </div>
 </div>
-<div class="flow-box info">
+<div class="flow-box info" style="flex: 1; max-width: 250px">
 <div class="flow-box-title">At-Least-Once</div>
 <div class="flow-box-subtitle">"Keep trying"</div>
-<div>
+<div style="text-align: left; margin-top: 12px; font-size: 12px">
 <div>- Message will arrive</div>
 <div>- May have duplicates</div>
 <div>- Needs idempotency</div>
 </div>
-<div>
+<div style="background: rgba(255,255,255,0.9); padding: 6px 8px; border-radius: 4px; margin-top: 8px; font-size: 11px">
 <strong>Use for:</strong> Most systems
 </div>
 </div>
-<div class="flow-box success">
+<div class="flow-box success" style="flex: 1; max-width: 250px">
 <div class="flow-box-title">Exactly-Once</div>
 <div class="flow-box-subtitle">"Guaranteed single"</div>
-<div>
+<div style="text-align: left; margin-top: 12px; font-size: 12px">
 <div>- No loss, no duplicates</div>
 <div>- Complex to implement</div>
 <div>- Higher latency</div>
 </div>
-<div>
+<div style="background: rgba(255,255,255,0.9); padding: 6px 8px; border-radius: 4px; margin-top: 8px; font-size: 11px">
 <strong>Use for:</strong> Payments
 </div>
 </div>
@@ -394,7 +394,7 @@ queue.send(request[&quot;reply_to&quot;], {
 <h3 id="the-duplicate-problem-duplicate-problem">The Duplicate Problem {#duplicate-problem}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Why At-Least-Once Can Cause Duplicates</div>
+<div style="text-align: center; font-weight: 600; color: #92400e; margin-bottom: 16px">Why At-Least-Once Can Cause Duplicates</div>
 <div class="flow-row">
 <div class="flow-box warning">
 <div class="flow-box-title">1. Queue</div>
@@ -411,7 +411,7 @@ queue.send(request[&quot;reply_to&quot;], {
 <div class="flow-box-subtitle">Network error!</div>
 </div>
 </div>
-<div class="flow-arrow">&#8595;</div>
+<div class="flow-arrow" style="transform: rotate(90deg); margin: 12px 0">&#8595;</div>
 <div class="flow-row">
 <div class="flow-box warning">
 <div class="flow-box-title">4. Queue</div>
@@ -431,8 +431,8 @@ queue.send(request[&quot;reply_to&quot;], {
 </div>
 </div>
 <h3 id="the-solution-idempotency-solution-idempotency">The Solution: Idempotency {#solution-idempotency}</h3>
-<div>
-<h4>Making Consumers Idempotent</h4>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #166534; margin-top: 0">Making Consumers Idempotent</h4>
 <pre><code class="language-python">def process_payment(message):
     # BAD: Always transfers money
     transfer_money(message.from_user, message.to_user, message.amount)
@@ -442,7 +442,7 @@ queue.send(request[&quot;reply_to&quot;], {
         transfer_money(message.from_user, message.to_user, message.amount)
         mark_as_processed(message.id)
 </code></pre>
-<div>
+<div style="color: #166534; font-size: 13px; margin-top: 12px">
 <strong>Rule:</strong> Processing the same message twice should have the same effect as processing it once.
 </div>
 </div>
@@ -450,7 +450,7 @@ queue.send(request[&quot;reply_to&quot;], {
 <h2 id="dead-letter-queues-dead-letter-queues">Dead Letter Queues {#dead-letter-queues}</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Dead Letter Queue Flow</div>
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Dead Letter Queue Flow</div>
 <div class="flow-row">
 <div class="flow-box warning">
 <div class="flow-box-title">Main Queue</div>
@@ -462,13 +462,13 @@ queue.send(request[&quot;reply_to&quot;], {
 <div class="flow-box-subtitle">Processes</div>
 </div>
 </div>
-<div>
-<div>Retry 1, 2, 3... Failed</div>
-<div class="flow-arrow">&#8595;</div>
-<div></div>
+<div style="display: flex; align-items: center; gap: 16px; margin: 16px 0">
+<div style="flex: 1; text-align: right; color: #64748b; font-size: 12px">Retry 1, 2, 3... Failed</div>
+<div class="flow-arrow" style="transform: rotate(90deg)">&#8595;</div>
+<div style="flex: 1"></div>
 </div>
 <div class="flow-row">
-<div class="flow-box error">
+<div class="flow-box error" style="min-width: 200px">
 <div class="flow-box-title">Dead Letter Queue</div>
 <div class="flow-box-subtitle">For investigation & manual processing</div>
 </div>
@@ -498,27 +498,27 @@ queue.send(request[&quot;reply_to&quot;], {
 <hr />
 <h2 id="message-ordering-message-ordering">Message Ordering {#message-ordering}</h2>
 <h3 id="fifo-vs-partitioned-ordering-fifo-vs-partitioned">FIFO vs Partitioned Ordering {#fifo-vs-partitioned}</h3>
-<div>
-<div>
-<div>
-<h5>FIFO Queue</h5>
-<p>All messages processed in exact order. Simple but limits throughput to single consumer.</p>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 16px">
+<div style="background: #eff6ff; padding: 16px; border-radius: 8px">
+<h5 style="color: #1e40af; margin: 0 0 12px 0">FIFO Queue</h5>
+<p style="color: #475569; font-size: 13px; margin: 0">All messages processed in exact order. Simple but limits throughput to single consumer.</p>
 </div>
-<div>
-<h5>Partitioned Queue</h5>
-<p>Order guaranteed within partition. Use partition key to keep related messages together.</p>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 8px">
+<h5 style="color: #166534; margin: 0 0 12px 0">Partitioned Queue</h5>
+<p style="color: #475569; font-size: 13px; margin: 0">Order guaranteed within partition. Use partition key to keep related messages together.</p>
 </div>
 </div>
 </div>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Partitioned Ordering</div>
-<div>
-<div class="flow-row">
-<div class="flow-box success">
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Partitioned Ordering</div>
+<div style="display: flex; flex-direction: column; gap: 12px; width: 100%">
+<div class="flow-row" style="justify-content: flex-start">
+<div class="flow-box success" style="min-width: 100px">
 <div class="flow-box-title">Partition 0</div>
 </div>
-<div>
+<div style="display: flex; gap: 4px; margin: 0 16px">
 <span class="diagram-badge success">msg1</span>
 <span class="diagram-badge success">msg2</span>
 <span class="diagram-badge success">msg3</span>
@@ -528,11 +528,11 @@ queue.send(request[&quot;reply_to&quot;], {
 <div class="flow-box-title">Consumer 0</div>
 </div>
 </div>
-<div class="flow-row">
-<div class="flow-box info">
+<div class="flow-row" style="justify-content: flex-start">
+<div class="flow-box info" style="min-width: 100px">
 <div class="flow-box-title">Partition 1</div>
 </div>
-<div>
+<div style="display: flex; gap: 4px; margin: 0 16px">
 <span class="diagram-badge info">msg4</span>
 <span class="diagram-badge info">msg5</span>
 <span class="diagram-badge info">msg6</span>
@@ -543,8 +543,8 @@ queue.send(request[&quot;reply_to&quot;], {
 </div>
 </div>
 </div>
-<div>
-<div><strong>Partition Key Example:</strong> hash(user_id) % num_partitions ensures all messages for one user go to same partition and are processed in order.</div>
+<div style="background: #fefce8; padding: 12px 16px; border-radius: 8px; margin-top: 16px">
+<div style="color: #854d0e; font-size: 13px"><strong>Partition Key Example:</strong> hash(user_id) % num_partitions ensures all messages for one user go to same partition and are processed in order.</div>
 </div>
 </div>
 </div>
@@ -554,21 +554,21 @@ queue.send(request[&quot;reply_to&quot;], {
 <h3 id="message-loss-scenarios-message-loss-scenarios">Message Loss Scenarios {#message-loss-scenarios}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Message Loss Points</div>
+<div style="text-align: center; font-weight: 700; color: #991b1b; margin-bottom: 24px; font-size: 1.1rem">Message Loss Points</div>
 <div class="flow-row">
 <div class="flow-box primary">
 <div class="flow-box-title">Producer</div>
 </div>
-<div class="flow-box error">
-<div>Loss Point 1</div>
-<div>Network failure</div>
+<div class="flow-box error" style="padding: 8px">
+<div style="font-size: 11px">Loss Point 1</div>
+<div style="font-size: 10px">Network failure</div>
 </div>
 <div class="flow-box warning">
 <div class="flow-box-title">Queue</div>
 </div>
-<div class="flow-box error">
-<div>Loss Point 2</div>
-<div>Disk failure</div>
+<div class="flow-box error" style="padding: 8px">
+<div style="font-size: 11px">Loss Point 2</div>
+<div style="font-size: 10px">Disk failure</div>
 </div>
 <div class="flow-box success">
 <div class="flow-box-title">Consumer</div>
@@ -576,16 +576,16 @@ queue.send(request[&quot;reply_to&quot;], {
 </div>
 </div>
 </div>
-<div>
-<h4>Common Message Loss Causes</h4>
-<div>
-<div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #991b1b; margin-top: 0">Common Message Loss Causes</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; color: #1e293b">
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>Producer-side Loss:</strong> Message sent but network fails before queue receives it. Use acknowledgments and retries.
 </div>
-<div>
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>Broker Crash:</strong> In-memory messages lost on restart. Use persistent/durable queues with disk writes.
 </div>
-<div>
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>Consumer ACK Before Processing:</strong> Consumer acknowledges, then crashes. Process first, ACK after.
 </div>
 </div>
@@ -607,27 +607,27 @@ def place_order_safely(order):
 <h3 id="duplicate-message-handling-duplicate-message-handling">Duplicate Message Handling {#duplicate-message-handling}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Duplicate Prevention Strategies</div>
-<div class="flow-row">
-<div class="flow-box info">
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Duplicate Prevention Strategies</div>
+<div class="flow-row" style="align-items: stretch">
+<div class="flow-box info" style="flex: 1; max-width: 220px">
 <div class="flow-box-title">Message Deduplication</div>
-<div>
+<div style="text-align: left; margin-top: 12px; font-size: 11px">
 <div>1. Store message IDs in cache</div>
 <div>2. Check before processing</div>
 <div>3. TTL based on retention</div>
 </div>
 </div>
-<div class="flow-box success">
+<div class="flow-box success" style="flex: 1; max-width: 220px">
 <div class="flow-box-title">Idempotent Operations</div>
-<div>
+<div style="text-align: left; margin-top: 12px; font-size: 11px">
 <div>1. Use unique request IDs</div>
 <div>2. Check final state vs action</div>
 <div>3. SET not INCREMENT</div>
 </div>
 </div>
-<div class="flow-box purple">
+<div class="flow-box purple" style="flex: 1; max-width: 220px">
 <div class="flow-box-title">Database Constraints</div>
-<div>
+<div style="text-align: left; margin-top: 12px; font-size: 11px">
 <div>1. Unique index on msg_id</div>
 <div>2. Upsert operations</div>
 <div>3. Optimistic locking</div>
@@ -661,8 +661,8 @@ def place_order_safely(order):
 <h3 id="consumer-failure-scenarios-consumer-failure-scenarios">Consumer Failure Scenarios {#consumer-failure-scenarios}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Consumer Failure & Recovery</div>
-<div>
+<div style="text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 1.1rem">Consumer Failure & Recovery</div>
+<div style="display: flex; flex-direction: column; gap: 16px; width: 100%">
 <div class="flow-row">
 <div class="flow-box warning">
 <div class="flow-box-title">Queue</div>
@@ -679,7 +679,7 @@ def place_order_safely(order):
 <div class="flow-box-subtitle">No ACK sent</div>
 </div>
 </div>
-<div>After 30 seconds...</div>
+<div style="text-align: center; color: #64748b; font-size: 12px">After 30 seconds...</div>
 <div class="flow-row">
 <div class="flow-box warning">
 <div class="flow-box-title">Queue</div>
@@ -699,9 +699,9 @@ def place_order_safely(order):
 </div>
 </div>
 </div>
-<div>
-<h4>Critical: Visibility Timeout Configuration</h4>
-<div>
+<div style="background: #fff7ed; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #92400e; margin-top: 0">Critical: Visibility Timeout Configuration</h4>
+<div style="color: #1e293b; font-size: 14px">
 <table>
 <thead>
 <tr>
@@ -751,32 +751,32 @@ def process_with_heartbeat(message):
 <h3 id="poison-message-handling-poison-message-handling">Poison Message Handling {#poison-message-handling}</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>Poison Message Detection</div>
+<div style="text-align: center; font-weight: 700; color: #991b1b; margin-bottom: 24px; font-size: 1.1rem">Poison Message Detection</div>
 <div class="flow-row">
-<div class="flow-box error">
+<div class="flow-box error" style="min-width: 160px">
 <div class="flow-box-title">Poison Message</div>
 <div class="flow-box-subtitle">Always fails</div>
 </div>
-<div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center">
 <div class="flow-arrow">&#8594;</div>
-<div>Retry 1</div>
+<div style="font-size: 10px; color: #64748b">Retry 1</div>
 </div>
-<div class="flow-box error">
-<div>FAIL</div>
+<div class="flow-box error" style="padding: 8px">
+<div style="font-size: 11px">FAIL</div>
 </div>
-<div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center">
 <div class="flow-arrow">&#8594;</div>
-<div>Retry 2</div>
+<div style="font-size: 10px; color: #64748b">Retry 2</div>
 </div>
-<div class="flow-box error">
-<div>FAIL</div>
+<div class="flow-box error" style="padding: 8px">
+<div style="font-size: 11px">FAIL</div>
 </div>
-<div>
+<div style="display: flex; flex-direction: column; gap: 4px; align-items: center">
 <div class="flow-arrow">&#8594;</div>
-<div>Retry 3</div>
+<div style="font-size: 10px; color: #64748b">Retry 3</div>
 </div>
-<div class="flow-box error">
-<div>DLQ</div>
+<div class="flow-box error" style="padding: 8px">
+<div style="font-size: 11px">DLQ</div>
 </div>
 </div>
 </div>
@@ -820,70 +820,70 @@ def process_with_heartbeat(message):
 </code></pre>
 <hr />
 <h2 id="common-pitfalls-common-pitfalls">Common Pitfalls {#common-pitfalls}</h2>
-<div>
-<h4>Mistakes to Avoid</h4>
-<div>
-<div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #991b1b; margin-top: 0">Mistakes to Avoid</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; color: #1e293b">
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>Non-Idempotent Consumers:</strong> Without idempotency, duplicate messages cause data corruption or double charges.
 </div>
-<div>
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>No Dead Letter Queue:</strong> Poison messages (that always fail) will block the queue forever or be lost.
 </div>
-<div>
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>Ignoring Backpressure:</strong> If consumers can't keep up, queues grow unbounded, eventually causing OOM or disk full.
 </div>
-<div>
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>Wrong Visibility Timeout:</strong> If timeout is shorter than processing time, messages get redelivered mid-processing.
 </div>
-<div>
+<div style="background: #fff; padding: 12px; border-radius: 8px">
 <strong>No Monitoring:</strong> Without queue depth monitoring, you won't know consumers are falling behind until it's too late.
 </div>
 </div>
 </div>
 <hr />
 <h2 id="popular-message-queue-systems-popular-systems">Popular Message Queue Systems {#popular-systems}</h2>
-<div>
-<table>
-<tr>
-<th>System</th>
-<th>Best For</th>
-<th>Key Features</th>
+<div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin: 20px 0;overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; min-width: 500px">
+<tr style="background: #f1f5f9">
+<th style="padding: 12px; text-align: left; color: #1e293b">System</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Best For</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Key Features</th>
 </tr>
 <tr>
-<td><strong>Apache Kafka</strong></td>
-<td>High throughput streaming</td>
-<td>Log-based, partitions, retention</td>
+<td style="padding: 12px; color: #1e293b"><strong>Apache Kafka</strong></td>
+<td style="padding: 12px; color: #475569">High throughput streaming</td>
+<td style="padding: 12px; color: #475569">Log-based, partitions, retention</td>
 </tr>
 <tr>
-<td><strong>RabbitMQ</strong></td>
-<td>Complex routing</td>
-<td>AMQP, exchanges, bindings</td>
+<td style="padding: 12px; color: #1e293b"><strong>RabbitMQ</strong></td>
+<td style="padding: 12px; color: #475569">Complex routing</td>
+<td style="padding: 12px; color: #475569">AMQP, exchanges, bindings</td>
 </tr>
 <tr>
-<td><strong>Amazon SQS</strong></td>
-<td>AWS workloads</td>
-<td>Managed, auto-scaling, FIFO</td>
+<td style="padding: 12px; color: #1e293b"><strong>Amazon SQS</strong></td>
+<td style="padding: 12px; color: #475569">AWS workloads</td>
+<td style="padding: 12px; color: #475569">Managed, auto-scaling, FIFO</td>
 </tr>
 <tr>
-<td><strong>Redis Streams</strong></td>
-<td>Real-time, low latency</td>
-<td>In-memory, consumer groups</td>
+<td style="padding: 12px; color: #1e293b"><strong>Redis Streams</strong></td>
+<td style="padding: 12px; color: #475569">Real-time, low latency</td>
+<td style="padding: 12px; color: #475569">In-memory, consumer groups</td>
 </tr>
 <tr>
-<td><strong>Apache Pulsar</strong></td>
-<td>Multi-tenancy</td>
-<td>Tiered storage, geo-replication</td>
+<td style="padding: 12px; color: #1e293b"><strong>Apache Pulsar</strong></td>
+<td style="padding: 12px; color: #475569">Multi-tenancy</td>
+<td style="padding: 12px; color: #475569">Tiered storage, geo-replication</td>
 </tr>
 </table>
 </div>
 <hr />
 <h2 id="interview-questions-interview-questions">Interview Questions {#interview-questions}</h2>
-<div>
-<h4>Common Interview Questions</h4>
-<div>
+<div style="background: #f3e8ff; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #7c3aed; margin-top: 0">Common Interview Questions</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; color: #1e293b">
 <div>
 <strong>1. How do you ensure exactly-once processing?</strong>
-<ul>
+<ul style="margin: 8px 0 0 0; color: #475569">
 <li>Use idempotent consumers with deduplication</li>
 <li>Store message ID before processing, check before each operation</li>
 <li>Use transactional outbox pattern for database + queue atomicity</li>
@@ -892,7 +892,7 @@ def process_with_heartbeat(message):
 </div>
 <div>
 <strong>2. How do you handle message ordering?</strong>
-<ul>
+<ul style="margin: 8px 0 0 0; color: #475569">
 <li>Use partition keys to route related messages to same partition</li>
 <li>Single consumer per partition guarantees order</li>
 <li>Include sequence numbers for verification</li>
@@ -901,7 +901,7 @@ def process_with_heartbeat(message):
 </div>
 <div>
 <strong>3. What happens if a consumer crashes mid-processing?</strong>
-<ul>
+<ul style="margin: 8px 0 0 0; color: #475569">
 <li>Message remains unacknowledged in queue</li>
 <li>After visibility timeout, message becomes visible again</li>
 <li>Another consumer (or same one after restart) picks it up</li>
@@ -910,7 +910,7 @@ def process_with_heartbeat(message):
 </div>
 <div>
 <strong>4. How do you scale message consumers?</strong>
-<ul>
+<ul style="margin: 8px 0 0 0; color: #475569">
 <li>Add more partitions to increase parallelism</li>
 <li>Consumer groups share partitions automatically</li>
 <li>Each partition assigned to one consumer in the group</li>
@@ -919,7 +919,7 @@ def process_with_heartbeat(message):
 </div>
 <div>
 <strong>5. Kafka vs RabbitMQ - when to use each?</strong>
-<ul>
+<ul style="margin: 8px 0 0 0; color: #475569">
 <li><strong>Kafka:</strong> High throughput, event streaming, replay capability, log aggregation</li>
 <li><strong>RabbitMQ:</strong> Complex routing, request-reply, lower latency, traditional messaging</li>
 </ul>
@@ -1153,36 +1153,36 @@ func main() {
 </code></pre>
 <hr />
 <h2 id="best-practices-best-practices">Best Practices {#best-practices}</h2>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #166534; margin-top: 0">Production Checklist</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; color: #1e293b">
 <div>
-<h4>Production Checklist</h4>
-<div>
-<div>
-<strong>Reliability</strong>
-<ul>
+<strong style="color: #166534">Reliability</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569">
 <li>Make consumers idempotent</li>
 <li>Use dead letter queues</li>
 <li>Implement retry with backoff</li>
 </ul>
 </div>
 <div>
-<strong>Performance</strong>
-<ul>
+<strong style="color: #166534">Performance</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569">
 <li>Use batching for throughput</li>
 <li>Set appropriate timeouts</li>
 <li>Implement backpressure</li>
 </ul>
 </div>
 <div>
-<strong>Monitoring</strong>
-<ul>
+<strong style="color: #166534">Monitoring</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569">
 <li>Track queue depth</li>
 <li>Alert on consumer lag</li>
 <li>Monitor DLQ size</li>
 </ul>
 </div>
 <div>
-<strong>Operations</strong>
-<ul>
+<strong style="color: #166534">Operations</strong>
+<ul style="margin: 4px 0 0 0; padding-left: 20px; color: #475569">
 <li>Plan for replay scenarios</li>
 <li>Document message schemas</li>
 <li>Version your messages</li>

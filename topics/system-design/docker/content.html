@@ -1,48 +1,48 @@
 <h1 id="docker">Docker</h1>
 <h2 id="overview">Overview</h2>
-<p>Docker is a platform for developing, shipping, and running applications in containers. <span>Containers package an application with all its dependencies, ensuring it runs consistently across any environment</span>.</p>
-<div>
-<h4>Docker Architecture</h4>
-<div>
-<div>
-<div>Docker Client</div>
-<div>docker CLI</div>
+<p>Docker is a platform for developing, shipping, and running applications in containers. <span style="background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%); padding: 2px 6px; border-radius: 4px">Containers package an application with all its dependencies, ensuring it runs consistently across any environment</span>.</p>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Docker Architecture</h4>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
+<div style="background: #3b82f6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">Docker Client</div>
+<div style="font-size: 12px; opacity: 0.9">docker CLI</div>
 </div>
-<div>→</div>
-<div>
-<div>Docker Daemon</div>
-<div>dockerd</div>
+<div style="display: flex; align-items: center; font-size: 24px">→</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">Docker Daemon</div>
+<div style="font-size: 12px; opacity: 0.9">dockerd</div>
 </div>
-<div>→</div>
-<div>
-<div>Containers</div>
-<div>Images</div>
-<div>Volumes</div>
+<div style="display: flex; align-items: center; font-size: 24px">→</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px">Containers</div>
+<div style="background: #f97316; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px">Images</div>
+<div style="background: #06b6d4; color: white; padding: 8px 16px; border-radius: 6px; font-size: 13px">Volumes</div>
 </div>
 </div>
 </div>
 <h3 id="key-concepts">Key Concepts</h3>
-<div>
-<div>
-<div>
-<div>Image</div>
-<div>Read-only template with instructions for creating a container. Built from Dockerfile.</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px">
+<div style="background: #eff6ff; border-radius: 8px; padding: 16px">
+<div style="color: #1d4ed8; font-weight: 600; margin-bottom: 8px">Image</div>
+<div style="color: #475569; font-size: 14px">Read-only template with instructions for creating a container. Built from Dockerfile.</div>
 </div>
-<div>
-<div>Container</div>
-<div>Running instance of an image. Isolated process with its own filesystem, networking.</div>
+<div style="background: #f0fdf4; border-radius: 8px; padding: 16px">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px">Container</div>
+<div style="color: #475569; font-size: 14px">Running instance of an image. Isolated process with its own filesystem, networking.</div>
 </div>
-<div>
-<div>Volume</div>
-<div>Persistent storage that exists outside container lifecycle. Data survives container deletion.</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px">
+<div style="color: #b45309; font-weight: 600; margin-bottom: 8px">Volume</div>
+<div style="color: #475569; font-size: 14px">Persistent storage that exists outside container lifecycle. Data survives container deletion.</div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="essential-docker-commands">Essential Docker Commands</h2>
 <h3 id="container-lifecycle">Container Lifecycle</h3>
-<div>
-<h4>Running Containers</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Running Containers</h4>
 <pre><code class="language-bash"># Run a container (pulls image if not local)
 docker run nginx
 # What it does: Creates and starts a new container from the nginx image
@@ -92,8 +92,8 @@ docker run -d --restart=always nginx
 </code></pre>
 </div>
 <h3 id="managing-containers">Managing Containers</h3>
-<div>
-<h4>Container Management</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Container Management</h4>
 <pre><code class="language-bash"># List running containers
 docker ps
 # What it does: Shows all running containers with ID, image, status, ports

@@ -4,9 +4,9 @@
 <p>This appears frequently at FAANG companies (LeetCode 588) and can be extended to cover distributed file systems, making it a multi-layered interview topic.</p>
 <hr />
 <h2 id="core-mental-model">Core Mental Model</h2>
-<div>
-<div>The Unified Tree Abstraction</div>
-<div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="color: #1e293b; font-weight: bold; font-size: 18px; margin-bottom: 16px">The Unified Tree Abstraction</div>
+<div style="color: #1e293b; font-size: 15px; line-height: 1.8">
 <p>A file system is fundamentally a <strong>rooted tree</strong> where:</p>
 <ul>
 <li><strong>Every node is either a leaf (file) or an internal node (directory)</strong></li>
@@ -20,14 +20,14 @@
 <h2 id="section-1-the-composite-pattern-deep-dive">Section 1: The Composite Pattern Deep Dive</h2>
 <h3 id="11-pattern-structure-and-intent">1.1 Pattern Structure and Intent</h3>
 <p>The Composite Pattern is the architectural backbone of every file system implementation. It allows clients to treat individual objects and compositions uniformly through a common interface.</p>
-<div>
-<h4>Composite Pattern Architecture</h4>
-<div>
-<div>
-<div>
-<div>FileSystemEntry</div>
-<div>Abstract Component</div>
-<div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Composite Pattern Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: center">
+<div style="background: #eff6ff;border-radius: 12px; padding: 20px 40px; text-align: center; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3)">
+<div style="color: #1e293b; font-weight: bold; font-size: 16px">FileSystemEntry</div>
+<div style="color: #1e40af; font-size: 12px; margin-top: 8px">Abstract Component</div>
+<div style="color: #1e40af; font-size: 11px; margin-top: 12px; font-family: monospace; text-align: left">
 + getName(): String<br/>
 + getPath(): String<br/>
 + getSize(): Long<br/>
@@ -37,14 +37,14 @@
 </div>
 </div>
 </div>
-<div>
-<div>|</div>
+<div style="display: flex; justify-content: center">
+<div style="color: #64748b; font-size: 24px">|</div>
 </div>
-<div>
-<div>
-<div>File</div>
-<div>Leaf Component</div>
-<div>
+<div style="display: flex; justify-content: center; gap: 48px; flex-wrap: wrap">
+<div style="background: #f0fdf4;border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3)">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px">File</div>
+<div style="color: #166534; font-size: 11px; margin-top: 4px">Leaf Component</div>
+<div style="color: #166534; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left">
 - content: byte[]<br/>
 - mimeType: String<br/>
 + read(): byte[]<br/>
@@ -52,10 +52,10 @@
 + getSize(): contentLen
 </div>
 </div>
-<div>
-<div>Directory</div>
-<div>Composite Component</div>
-<div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 20px 32px; text-align: center; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3)">
+<div style="color: #1e293b; font-weight: bold; font-size: 14px">Directory</div>
+<div style="color: #92400e; font-size: 11px; margin-top: 4px">Composite Component</div>
+<div style="color: #92400e; font-size: 10px; margin-top: 10px; font-family: monospace; text-align: left">
 - children: Map&lt;String, Entry&gt;<br/>
 + add(Entry): void<br/>
 + remove(name): Entry<br/>
@@ -66,9 +66,9 @@
 </div>
 </div>
 </div>
-<div>
-<div>Key Insight: Uniform Interface, Polymorphic Behavior</div>
-<div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #854d0e; font-weight: bold; margin-bottom: 12px">Key Insight: Uniform Interface, Polymorphic Behavior</div>
+<div style="color: #713f12; font-size: 14px; line-height: 1.8">
 <p>The power of Composite lies in <strong>behavioral polymorphism</strong>:</p>
 <ul>
 <li><code>getSize()</code> on a File returns content length</li>
@@ -79,9 +79,9 @@
 </div>
 </div>
 <h3 id="12-design-trade-offs-in-component-interface">1.2 Design Trade-offs in Component Interface</h3>
-<div>
-<div>Critical Design Decision: Where to Place Child Management</div>
-<div>
+<div style="background: #fff7ed; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9a3412; font-weight: bold; margin-bottom: 12px">Critical Design Decision: Where to Place Child Management</div>
+<div style="color: #7c2d12; font-size: 14px; line-height: 1.8">
 <p><strong>Option A: Methods in Base Class (Transparency)</strong></p>
 <pre><code class="language-python">class FileSystemEntry:
     def add(self, child): raise NotImplementedError
@@ -103,16 +103,16 @@
 </div>
 </div>
 <h3 id="13-interview-questions-composite-pattern">1.3 Interview Questions: Composite Pattern</h3>
-<div>
-<div>Level 1: Fundamentals</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
 <p><strong>Q1.1</strong>: Why is Composite Pattern preferred over simple inheritance for file systems?</p>
 <p><strong>Expected Answer</strong>: Composite enables <strong>recursive structure handling</strong>. A directory can contain both files and other directories, and operations like <code>getSize()</code> or <code>delete()</code> naturally recurse through the tree. Simple inheritance would require explicit tree traversal logic at every call site.</p>
 </div>
 </div>
-<div>
-<div>Level 2: Design Trade-offs</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Design Trade-offs</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
 <p><strong>Q1.2</strong>: How would you handle the case where <code>addChild()</code> is called on a File?</p>
 <p><strong>Follow-up</strong>: What are the implications of throwing <code>UnsupportedOperationException</code> vs. not having the method at all?</p>
 <p><strong>Expected Answer</strong>:</p>
@@ -134,9 +134,9 @@ class SizeCalculator(FileSystemVisitor):
 </code></pre>
 </div>
 </div>
-<div>
-<div>Level 3: System Design Integration</div>
-<div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: System Design Integration</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
 <p><strong>Q1.3</strong>: In a distributed file system like HDFS, how does the Composite pattern manifest differently?</p>
 <p><strong>Follow-up</strong>: How would you modify the pattern to support file blocks distributed across nodes?</p>
 <p><strong>Expected Answer</strong>:<br />
@@ -162,12 +162,12 @@ In HDFS, the <strong>NameNode</strong> maintains the Composite tree structure (m
 <hr />
 <h2 id="section-2-file-vs-directory---internal-mechanisms">Section 2: File vs. Directory - Internal Mechanisms</h2>
 <h3 id="21-fundamental-differences">2.1 Fundamental Differences</h3>
-<div>
-<h4>File vs. Directory Comparison</h4>
-<div>
-<div>
-<div>File (Leaf Node)</div>
-<div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">File vs. Directory Comparison</h4>
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap">
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #166534; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">File (Leaf Node)</div>
+<div style="color: #334155; font-size: 13px; line-height: 2">
 <strong>Purpose:</strong> Store arbitrary byte sequences<br/>
 <strong>Children:</strong> None (terminal node)<br/>
 <strong>Size semantics:</strong> Content byte length<br/>
@@ -176,9 +176,9 @@ In HDFS, the <strong>NameNode</strong> maintains the Composite tree structure (m
 <strong>Special types:</strong> Regular, symlink, device, socket, pipe
 </div>
 </div>
-<div>
-<div>Directory (Composite Node)</div>
-<div>
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #b45309; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">Directory (Composite Node)</div>
+<div style="color: #334155; font-size: 13px; line-height: 2">
 <strong>Purpose:</strong> Namespace for child entries<br/>
 <strong>Children:</strong> Map of name to FileSystemEntry<br/>
 <strong>Size semantics:</strong> Entry count or recursive sum<br/>
@@ -190,9 +190,9 @@ In HDFS, the <strong>NameNode</strong> maintains the Composite tree structure (m
 </div>
 </div>
 <h3 id="22-the-inode-abstraction">2.2 The Inode Abstraction</h3>
-<div>
-<div>Real-World Insight: Separating Name from Content</div>
-<div>
+<div style="background: #f0f9ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #0c4a6e; font-weight: bold; margin-bottom: 12px">Real-World Insight: Separating Name from Content</div>
+<div style="color: #164e63; font-size: 14px; line-height: 1.8">
 <p>In Unix-like systems, files have two distinct components:</p>
 <ol>
 <li><strong>Directory Entry (dentry)</strong>: Maps name to inode number within a directory</li>
@@ -221,9 +221,9 @@ class DirectoryEntry:
 </div>
 </div>
 <h3 id="23-interview-questions-file-vs-directory">2.3 Interview Questions: File vs. Directory</h3>
-<div>
-<div>Level 1: Fundamentals</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
 <p><strong>Q2.1</strong>: What data structure would you use to store children in a directory, and why?</p>
 <p><strong>Expected Answer</strong>:</p>
 <ul>
@@ -234,9 +234,9 @@ class DirectoryEntry:
 <p>For interviews, HashMap is the standard choice. Mention sorting can be done at query time if needed.</p>
 </div>
 </div>
-<div>
-<div>Level 2: Edge Cases and Semantics</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Edge Cases and Semantics</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
 <p><strong>Q2.2</strong>: What happens when you delete a file that has hard links? What about when you delete an open file?</p>
 <p><strong>Expected Answer</strong>:</p>
 <ul>
@@ -257,9 +257,9 @@ class DirectoryEntry:
 Windows uses a &quot;delete pending&quot; state; the file cannot be deleted while open (common source of &quot;file in use&quot; errors).</p>
 </div>
 </div>
-<div>
-<div>Level 3: System Design</div>
-<div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: System Design</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
 <p><strong>Q2.3</strong>: How would you implement sparse files, and what are the trade-offs?</p>
 <p><strong>Expected Answer</strong>:<br />
 A sparse file has &quot;holes&quot; - regions that contain only zeros but don't consume disk space.</p>
@@ -291,33 +291,33 @@ A sparse file has &quot;holes&quot; - regions that contain only zeros but don't 
 <h2 id="section-3-path-resolution---the-critical-algorithm">Section 3: Path Resolution - The Critical Algorithm</h2>
 <h3 id="31-path-resolution-mechanics">3.1 Path Resolution Mechanics</h3>
 <p>Path resolution is the process of converting a string path like <code>/home/user/documents/file.txt</code> into a reference to the actual file system node. This is the <strong>most frequently called operation</strong> in any file system.</p>
-<div>
-<h4>Path Resolution Flow</h4>
-<div>
-<div>
-<div>
-<div>Input Path</div>
-<div>/home/user/file.txt</div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Path Resolution Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px">
+<div style="background: #dbeafe; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #1e40af; font-weight: bold; font-size: 13px">Input Path</div>
+<div style="color: #3b82f6; font-size: 11px; font-family: monospace; margin-top: 4px">/home/user/file.txt</div>
 </div>
-<div>-></div>
-<div>
-<div>Tokenize</div>
-<div>["home", "user", "file.txt"]</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #b45309; font-weight: bold; font-size: 13px">Tokenize</div>
+<div style="color: #d97706; font-size: 11px; font-family: monospace; margin-top: 4px">["home", "user", "file.txt"]</div>
 </div>
-<div>-></div>
-<div>
-<div>Traverse</div>
-<div>root->home->user->file</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #dcfce7; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #166534; font-weight: bold; font-size: 13px">Traverse</div>
+<div style="color: #22c55e; font-size: 11px; font-family: monospace; margin-top: 4px">root->home->user->file</div>
 </div>
-<div>-></div>
-<div>
-<div>Return Node</div>
-<div>FileNode @ 0x7f...</div>
+<div style="color: #94a3b8; font-size: 20px">-></div>
+<div style="background: #fce7f3; border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; text-align: center">
+<div style="color: #9d174d; font-weight: bold; font-size: 13px">Return Node</div>
+<div style="color: #ec4899; font-size: 11px; font-family: monospace; margin-top: 4px">FileNode @ 0x7f...</div>
 </div>
 </div>
-<div>
-<div>At Each Step, Check:</div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 12px">
+<div style="color: #475569; font-size: 13px; font-weight: bold; margin-bottom: 8px">At Each Step, Check:</div>
+<div style="color: #64748b; font-size: 12px; line-height: 1.8">
 1. Does the child exist in current directory? (FileNotFoundError)<br/>
 2. Is current node a directory? (NotADirectoryError if traversing through file)<br/>
 3. Do we have execute permission on directory? (PermissionError)<br/>
@@ -462,9 +462,9 @@ class PathResolver:
         return self.current_user
 </code></pre>
 <h3 id="33-critical-edge-cases">3.3 Critical Edge Cases</h3>
-<div>
-<div>Edge Cases That Break Naive Implementations</div>
-<div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Edge Cases That Break Naive Implementations</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
 <table>
 <thead>
 <tr>
@@ -528,9 +528,9 @@ class PathResolver:
 </table>
 </div>
 </div>
-<div>
-<div>Why "." and ".." Can't Be Pre-normalized</div>
-<div>
+<div style="background: #fefce8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #854d0e; font-weight: bold; margin-bottom: 12px">Why "." and ".." Can't Be Pre-normalized</div>
+<div style="color: #713f12; font-size: 14px; line-height: 1.8">
 <p>A common mistake is to normalize <code>a/b/../c</code> to <code>a/c</code> before traversal. This is <strong>incorrect</strong> when symlinks are involved:</p>
 <pre><code>/dir/link -&gt; /other/path
 /dir/link/../file
@@ -541,9 +541,9 @@ Correct resolution: <code>/other/file</code> (follows symlink first, then goes t
 </div>
 </div>
 <h3 id="34-interview-questions-path-resolution">3.4 Interview Questions: Path Resolution</h3>
-<div>
-<div>Level 1: Fundamentals</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
 <p><strong>Q3.1</strong>: What is the time complexity of path resolution, and what dominates the cost in practice?</p>
 <p><strong>Expected Answer</strong>:</p>
 <ul>
@@ -553,9 +553,9 @@ Correct resolution: <code>/other/file</code> (follows symlink first, then goes t
 </ul>
 </div>
 </div>
-<div>
-<div>Level 2: Symlinks and Edge Cases</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Symlinks and Edge Cases</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
 <p><strong>Q3.2</strong>: How do you detect and prevent symlink loops? What's the standard limit?</p>
 <p><strong>Expected Answer</strong>:<br />
 Track symlink resolution count during traversal. POSIX systems typically limit to <strong>40</strong> (SYMLOOP_MAX). When exceeded, return ELOOP.</p>
@@ -571,9 +571,9 @@ def _resolve(self, path, symlink_count):
 Same limit applies - prevents both loops and excessive indirection. The limit is about <strong>complexity</strong>, not just cycles.</p>
 </div>
 </div>
-<div>
-<div>Level 3: Race Conditions (TOCTOU)</div>
-<div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: Race Conditions (TOCTOU)</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
 <p><strong>Q3.3</strong>: Explain the TOCTOU vulnerability in path resolution and how real file systems mitigate it.</p>
 <p><strong>Expected Answer</strong>:<br />
 <strong>TOCTOU</strong> (Time-Of-Check-Time-Of-Use): Between checking a path and using the result, the path could change.</p>
@@ -600,33 +600,33 @@ fd = os.open(&quot;safe_file&quot;, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=dir_fd)
 <hr />
 <h2 id="section-4-permission-model">Section 4: Permission Model</h2>
 <h3 id="41-unix-permission-fundamentals">4.1 Unix Permission Fundamentals</h3>
-<div>
-<h4>Permission Bit Layout</h4>
-<div>
-<div>
-<div>
-<div>Special</div>
-<div>sst</div>
-<div>setuid/gid/sticky</div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Permission Bit Layout</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: center; gap: 4px; flex-wrap: wrap">
+<div style="background: #fee2e2;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #991b1b; font-weight: bold; font-size: 14px">Special</div>
+<div style="color: #dc2626; font-size: 20px; font-family: monospace; margin-top: 4px">sst</div>
+<div style="color: #f87171; font-size: 10px; margin-top: 4px">setuid/gid/sticky</div>
 </div>
-<div>
-<div>Owner</div>
-<div>rwx</div>
-<div>7 = 111</div>
+<div style="background: #dbeafe;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #1e40af; font-weight: bold; font-size: 14px">Owner</div>
+<div style="color: #2563eb; font-size: 20px; font-family: monospace; margin-top: 4px">rwx</div>
+<div style="color: #60a5fa; font-size: 10px; margin-top: 4px">7 = 111</div>
 </div>
-<div>
-<div>Group</div>
-<div>rwx</div>
-<div>5 = 101</div>
+<div style="background: #dcfce7;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #166534; font-weight: bold; font-size: 14px">Group</div>
+<div style="color: #16a34a; font-size: 20px; font-family: monospace; margin-top: 4px">rwx</div>
+<div style="color: #4ade80; font-size: 10px; margin-top: 4px">5 = 101</div>
 </div>
-<div>
-<div>Other</div>
-<div>rwx</div>
-<div>4 = 100</div>
+<div style="background: #fef3c7;border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px">
+<div style="color: #b45309; font-weight: bold; font-size: 14px">Other</div>
+<div style="color: #d97706; font-size: 20px; font-family: monospace; margin-top: 4px">rwx</div>
+<div style="color: #fbbf24; font-size: 10px; margin-top: 4px">4 = 100</div>
 </div>
 </div>
-<div>
-<div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 8px">
+<div style="color: #334155; font-size: 13px; line-height: 1.8">
 <strong>For Files:</strong> r=read content, w=write content, x=execute as program<br/>
 <strong>For Directories:</strong> r=list entries, w=create/delete entries, x=traverse (access children)
 </div>
@@ -634,9 +634,9 @@ fd = os.open(&quot;safe_file&quot;, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=dir_fd)
 </div>
 </div>
 <h3 id="42-permission-checking-algorithm">4.2 Permission Checking Algorithm</h3>
-<div>
-<div>Critical: Permission Check Order</div>
-<div>
+<div style="background: #fff7ed; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9a3412; font-weight: bold; margin-bottom: 12px">Critical: Permission Check Order</div>
+<div style="color: #7c2d12; font-size: 14px; line-height: 1.8">
 <p>Permission checking is <strong>not</strong> a simple OR of all applicable bits. The order matters:</p>
 <ol>
 <li><strong>Root user (uid 0)</strong>: Bypass all permission checks (except execute without any x bit)</li>
@@ -701,9 +701,9 @@ fd = os.open(&quot;safe_file&quot;, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=dir_fd)
         return (applicable &amp; required) == required
 </code></pre>
 <h3 id="43-special-permission-bits">4.3 Special Permission Bits</h3>
-<div>
-<div>Setuid, Setgid, and Sticky Bit</div>
-<div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #991b1b; font-weight: bold; margin-bottom: 12px">Setuid, Setgid, and Sticky Bit</div>
+<div style="color: #7f1d1d; font-size: 14px; line-height: 1.8">
 <table>
 <thead>
 <tr>
@@ -739,18 +739,18 @@ fd = os.open(&quot;safe_file&quot;, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=dir_fd)
 </div>
 </div>
 <h3 id="44-interview-questions-permissions">4.4 Interview Questions: Permissions</h3>
-<div>
-<div>Level 1: Fundamentals</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
 <p><strong>Q4.1</strong>: What permission is needed to delete a file?</p>
 <p><strong>Expected Answer</strong>:<br />
 You need <strong>write permission on the parent directory</strong>, not on the file itself. Deleting modifies the directory's entry list. The file's own permissions only protect its content.</p>
 <p>This is why you can delete a read-only file if you have write permission on its directory.</p>
 </div>
 </div>
-<div>
-<div>Level 2: Execute Permission Nuances</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Execute Permission Nuances</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
 <p><strong>Q4.2</strong>: A directory has permissions <code>rwx------</code> (700). User A is the owner. User B is not the owner but knows a file <code>/secret/known.txt</code> exists. Can User B read it?</p>
 <p><strong>Expected Answer</strong>:<br />
 No. User B cannot <strong>traverse</strong> the directory (no execute permission for others). Even with the full path, path resolution fails at <code>/secret</code> with PermissionError.</p>
@@ -760,9 +760,9 @@ User B still cannot access. Owner can read and traverse, but group/other have no
 Still no access. Permission checks happen at <strong>every component</strong> of the path. The file's generous permissions are irrelevant if you can't reach it.</p>
 </div>
 </div>
-<div>
-<div>Level 3: ACLs and Capability-Based Security</div>
-<div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: ACLs and Capability-Based Security</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
 <p><strong>Q4.3</strong>: What are the limitations of Unix permissions, and how do ACLs address them?</p>
 <p><strong>Expected Answer</strong>:<br />
 <strong>Unix permission limitations</strong>:</p>
@@ -799,12 +799,12 @@ Instead of checking &quot;who is asking?&quot;, grant <strong>capabilities</stro
 <li><strong>Traversal-based</strong>: Walk the tree and filter (find, ls -R)</li>
 <li><strong>Index-based</strong>: Precomputed indexes for fast lookup (locate, mdfind)</li>
 </ol>
-<div>
-<h4>Search Strategy Comparison</h4>
-<div>
-<div>
-<div>Traversal (DFS/BFS)</div>
-<div>
+<div style="background: #f8fafc;border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin: 0 0 24px 0; text-align: center; font-size: 18px">Search Strategy Comparison</h4>
+<div style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap">
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #6d28d9; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">Traversal (DFS/BFS)</div>
+<div style="color: #334155; font-size: 13px; line-height: 1.8">
 <strong>Time:</strong> O(N) where N = total entries<br/>
 <strong>Space:</strong> O(depth) for DFS, O(width) for BFS<br/>
 <strong>Freshness:</strong> Always current<br/>
@@ -812,9 +812,9 @@ Instead of checking &quot;who is asking?&quot;, grant <strong>capabilities</stro
 <strong>Example:</strong> <code>find /home -name "*.log"</code>
 </div>
 </div>
-<div>
-<div>Index-based</div>
-<div>
+<div style="background: #ffffff;border-radius: 12px; padding: 24px; min-width: 280px; flex: 1; max-width: 380px">
+<div style="color: #be185d; font-weight: bold; font-size: 16px; margin-bottom: 16px; text-align: center">Index-based</div>
+<div style="color: #334155; font-size: 13px; line-height: 1.8">
 <strong>Build time:</strong> O(N) initial, O(1) per update<br/>
 <strong>Query time:</strong> O(log N) to O(1)<br/>
 <strong>Freshness:</strong> May be stale<br/>
@@ -966,9 +966,9 @@ class FileSystemSearch:
         return int(s)
 </code></pre>
 <h3 id="53-glob-pattern-matching">5.3 Glob Pattern Matching</h3>
-<div>
-<div>Glob vs. Regex: Know the Difference</div>
-<div>
+<div style="background: #f0f9ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #0c4a6e; font-weight: bold; margin-bottom: 12px">Glob vs. Regex: Know the Difference</div>
+<div style="color: #164e63; font-size: 14px; line-height: 1.8">
 <table>
 <thead>
 <tr>
@@ -1133,9 +1133,9 @@ class FileSystemIndex:
         # Remove from trigram index...
 </code></pre>
 <h3 id="55-interview-questions-search-operations">5.5 Interview Questions: Search Operations</h3>
-<div>
-<div>Level 1: Fundamentals</div>
-<div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #166534; font-weight: bold; margin-bottom: 16px">Level 1: Fundamentals</div>
+<div style="color: #14532d; font-size: 14px; line-height: 1.8">
 <p><strong>Q5.1</strong>: Why does <code>find</code> use DFS rather than BFS?</p>
 <p><strong>Expected Answer</strong>:</p>
 <ol>
@@ -1146,9 +1146,9 @@ class FileSystemIndex:
 </ol>
 </div>
 </div>
-<div>
-<div>Level 2: Optimization</div>
-<div>
+<div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 16px">Level 2: Optimization</div>
+<div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
 <p><strong>Q5.2</strong>: The <code>locate</code> command returns results in milliseconds for millions of files. How does it work?</p>
 <p><strong>Expected Answer</strong>:<br />
 <code>locate</code> uses a precomputed database (<code>/var/lib/mlocate/mlocate.db</code>) built by <code>updatedb</code>:</p>
@@ -1174,9 +1174,9 @@ for event in notifier.event_gen():
 <p>Trade-off: Watch descriptors are limited; may need to re-scan subtrees periodically.</p>
 </div>
 </div>
-<div>
-<div>Level 3: Distributed Search</div>
-<div>
+<div style="background: #fdf2f8; border-radius: 12px; padding: 20px; margin: 16px 0">
+<div style="color: #9d174d; font-weight: bold; margin-bottom: 16px">Level 3: Distributed Search</div>
+<div style="color: #831843; font-size: 14px; line-height: 1.8">
 <p><strong>Q5.3</strong>: How would you implement search across a distributed file system with petabytes of data?</p>
 <p><strong>Expected Answer</strong>:</p>
 <p><strong>Architecture</strong>:</p>
@@ -1832,8 +1832,8 @@ if __name__ == &quot;__main__&quot;:
 </code></pre>
 <hr />
 <h2 id="section-7-common-mistakes-and-anti-patterns">Section 7: Common Mistakes and Anti-Patterns</h2>
-<div>
-<div>Interview Red Flags</div>
+<div style="background: #fef2f2; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="color: #991b1b; font-weight: bold; font-size: 16px; margin-bottom: 16px">Interview Red Flags</div>
 <table>
 <thead>
 <tr>
@@ -1878,8 +1878,8 @@ if __name__ == &quot;__main__&quot;:
 </div>
 <hr />
 <h2 id="section-8-extension-points">Section 8: Extension Points</h2>
-<div>
-<div>Follow-up Features to Discuss</div>
+<div style="background: #f0fdf4; border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="color: #166534; font-weight: bold; font-size: 16px; margin-bottom: 16px">Follow-up Features to Discuss</div>
 <table>
 <thead>
 <tr>

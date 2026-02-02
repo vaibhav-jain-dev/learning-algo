@@ -1,41 +1,41 @@
 <h1 id="rate-limiting">Rate Limiting</h1>
-<nav class="toc">
-<h2 id="table-of-contents">Table of Contents</h2>
+<nav class="toc" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
+<h2 id="table-of-contents" style="color: #1d4ed8; margin: 0 0 16px 0; font-size: 18px">Table of Contents</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
 <div>
-<div>
-<h4>Fundamentals</h4>
-<ul>
-<li><a href="#overview">Overview</a></li>
-<li><a href="#why-this-matters">Why This Matters</a></li>
-<li><a href="#how-it-works">How It Works</a></li>
-<li><a href="#rate-limit-response-headers">Response Headers</a></li>
+<h4 style="color: #475569; margin: 0 0 8px 0; font-size: 14px">Fundamentals</h4>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 2">
+<li><a href="#overview" style="color: #3b82f6; text-decoration: none">Overview</a></li>
+<li><a href="#why-this-matters" style="color: #3b82f6; text-decoration: none">Why This Matters</a></li>
+<li><a href="#how-it-works" style="color: #3b82f6; text-decoration: none">How It Works</a></li>
+<li><a href="#rate-limit-response-headers" style="color: #3b82f6; text-decoration: none">Response Headers</a></li>
 </ul>
 </div>
 <div>
-<h4>Algorithms</h4>
-<ul>
-<li><a href="#rate-limiting-algorithms">Algorithm Comparison</a></li>
-<li><a href="#token-bucket-algorithm">Token Bucket</a></li>
-<li><a href="#leaky-bucket-algorithm">Leaky Bucket</a></li>
-<li><a href="#sliding-window-algorithm">Sliding Window</a></li>
-<li><a href="#fixed-window-problem">Fixed Window Problem</a></li>
+<h4 style="color: #475569; margin: 0 0 8px 0; font-size: 14px">Algorithms</h4>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 2">
+<li><a href="#rate-limiting-algorithms" style="color: #3b82f6; text-decoration: none">Algorithm Comparison</a></li>
+<li><a href="#token-bucket-algorithm" style="color: #3b82f6; text-decoration: none">Token Bucket</a></li>
+<li><a href="#leaky-bucket-algorithm" style="color: #3b82f6; text-decoration: none">Leaky Bucket</a></li>
+<li><a href="#sliding-window-algorithm" style="color: #3b82f6; text-decoration: none">Sliding Window</a></li>
+<li><a href="#fixed-window-problem" style="color: #3b82f6; text-decoration: none">Fixed Window Problem</a></li>
 </ul>
 </div>
 <div>
-<h4>Implementation</h4>
-<ul>
-<li><a href="#implementation">Code Examples</a></li>
-<li><a href="#distributed-rate-limiter-with-redis">Distributed with Redis</a></li>
-<li><a href="#http-middleware">HTTP Middleware</a></li>
+<h4 style="color: #475569; margin: 0 0 8px 0; font-size: 14px">Implementation</h4>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 2">
+<li><a href="#implementation" style="color: #3b82f6; text-decoration: none">Code Examples</a></li>
+<li><a href="#distributed-rate-limiter-with-redis" style="color: #3b82f6; text-decoration: none">Distributed with Redis</a></li>
+<li><a href="#http-middleware" style="color: #3b82f6; text-decoration: none">HTTP Middleware</a></li>
 </ul>
 </div>
 <div>
-<h4>Production Concerns</h4>
-<ul>
-<li><a href="#edge-cases-failure-modes">Edge Cases & Failure Modes</a></li>
-<li><a href="#real-life-failure-story">Real-Life Failure Story</a></li>
-<li><a href="#common-mistakes">Common Mistakes</a></li>
-<li><a href="#interview-questions">Interview Questions</a></li>
+<h4 style="color: #475569; margin: 0 0 8px 0; font-size: 14px">Production Concerns</h4>
+<ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 2">
+<li><a href="#edge-cases-failure-modes" style="color: #3b82f6; text-decoration: none">Edge Cases & Failure Modes</a></li>
+<li><a href="#real-life-failure-story" style="color: #3b82f6; text-decoration: none">Real-Life Failure Story</a></li>
+<li><a href="#common-mistakes" style="color: #3b82f6; text-decoration: none">Common Mistakes</a></li>
+<li><a href="#interview-questions" style="color: #3b82f6; text-decoration: none">Interview Questions</a></li>
 </ul>
 </div>
 </div>
@@ -47,20 +47,20 @@
 <hr />
 <h2 id="why-this-matters">Why This Matters</h2>
 <h3 id="real-company-examples">Real Company Examples</h3>
-<div>
-<h4>Companies Using Rate Limiting</h4>
-<div>
-<div>
-<div>Twitter/X - API Access</div>
-<div>Twitter's API has strict rate limits (15-900 requests per 15-minute window depending on endpoint). This prevents bots from scraping all tweets and ensures fair access for legitimate developers.</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Companies Using Rate Limiting</h4>
+<div style="display: grid; gap: 16px">
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Twitter/X - API Access</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Twitter's API has strict rate limits (15-900 requests per 15-minute window depending on endpoint). This prevents bots from scraping all tweets and ensures fair access for legitimate developers.</div>
 </div>
-<div>
-<div>Stripe - Payment APIs</div>
-<div>Stripe rate limits API requests to protect against runaway scripts that could create thousands of charges. Different endpoints have different limits based on cost and risk.</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">Stripe - Payment APIs</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">Stripe rate limits API requests to protect against runaway scripts that could create thousands of charges. Different endpoints have different limits based on cost and risk.</div>
 </div>
-<div>
-<div>GitHub - API and Git Operations</div>
-<div>GitHub limits authenticated users to 5,000 requests/hour. During CI/CD spikes, this prevents a single user's pipeline from overwhelming shared infrastructure.</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px">
+<div style="color: #1e293b; font-weight: 600">GitHub - API and Git Operations</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">GitHub limits authenticated users to 5,000 requests/hour. During CI/CD spikes, this prevents a single user's pipeline from overwhelming shared infrastructure.</div>
 </div>
 </div>
 </div>
@@ -98,8 +98,8 @@
 </div>
 </div>
 <div class="flow-arrow vertical">&#9660;</div>
-<div class="flow-row">
-<div>
+<div class="flow-row" style="gap: 40px">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
 <div class="flow-box success">
 <div class="flow-box-title">Under Limit</div>
 <div class="flow-box-subtitle">Increment Counter</div>
@@ -110,7 +110,7 @@
 <div class="flow-box-subtitle">Return 200 + Headers</div>
 </div>
 </div>
-<div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
 <div class="flow-box error">
 <div class="flow-box-title">Over Limit</div>
 <div class="flow-box-subtitle">Reject Request</div>
@@ -125,66 +125,66 @@
 </div>
 </div>
 <h3 id="rate-limit-response-headers">Rate Limit Response Headers</h3>
-<div>
-<h4>Standard Rate Limit Headers</h4>
-<div>
-<div><span>X-RateLimit-Limit:</span> 100</div>
-<div>Maximum requests allowed in window</div>
-<div><span>X-RateLimit-Remaining:</span> 45</div>
-<div>Requests remaining in current window</div>
-<div><span>X-RateLimit-Reset:</span> 1642089600</div>
-<div>Unix timestamp when window resets</div>
-<div><span>Retry-After:</span> 30</div>
-<div>Seconds until client can retry (only on 429)</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Standard Rate Limit Headers</h4>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px">
+<div style="color: #1e293b"><span style="color: #3b82f6">X-RateLimit-Limit:</span> 100</div>
+<div style="color: #475569; font-size: 12px; margin-bottom: 8px">Maximum requests allowed in window</div>
+<div style="color: #1e293b"><span style="color: #3b82f6">X-RateLimit-Remaining:</span> 45</div>
+<div style="color: #475569; font-size: 12px; margin-bottom: 8px">Requests remaining in current window</div>
+<div style="color: #1e293b"><span style="color: #3b82f6">X-RateLimit-Reset:</span> 1642089600</div>
+<div style="color: #475569; font-size: 12px; margin-bottom: 8px">Unix timestamp when window resets</div>
+<div style="color: #1e293b"><span style="color: #ef4444">Retry-After:</span> 30</div>
+<div style="color: #475569; font-size: 12px">Seconds until client can retry (only on 429)</div>
 </div>
 </div>
 <hr />
 <h2 id="rate-limiting-algorithms">Rate Limiting Algorithms</h2>
-<div>
-<h4>Algorithm Comparison</h4>
-<div>
-<table>
-<tr>
-<th>Algorithm</th>
-<th>Allows Bursts</th>
-<th>Memory</th>
-<th>Accuracy</th>
-<th>Best For</th>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Algorithm Comparison</h4>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<tr style="background: #f1f5f9">
+<th style="padding: 12px; text-align: left; color: #1e293b">Algorithm</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Allows Bursts</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Memory</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Accuracy</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Best For</th>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Token Bucket</td>
+<td style="padding: 12px; color: #10b981">Yes (controlled)</td>
+<td style="padding: 12px; color: #475569">O(1)</td>
+<td style="padding: 12px; color: #475569">Good</td>
+<td style="padding: 12px; color: #475569">APIs with burst tolerance</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Leaky Bucket</td>
+<td style="padding: 12px; color: #ef4444">No</td>
+<td style="padding: 12px; color: #475569">O(n)</td>
+<td style="padding: 12px; color: #475569">Good</td>
+<td style="padding: 12px; color: #475569">Smooth output rate</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Fixed Window</td>
+<td style="padding: 12px; color: #f59e0b">Edge bursts</td>
+<td style="padding: 12px; color: #475569">O(1)</td>
+<td style="padding: 12px; color: #475569">Low</td>
+<td style="padding: 12px; color: #475569">Simple use cases</td>
+</tr>
+<tr >
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Sliding Window Log</td>
+<td style="padding: 12px; color: #ef4444">No</td>
+<td style="padding: 12px; color: #475569">O(n)</td>
+<td style="padding: 12px; color: #475569">High</td>
+<td style="padding: 12px; color: #475569">Precise tracking</td>
 </tr>
 <tr>
-<td>Token Bucket</td>
-<td>Yes (controlled)</td>
-<td>O(1)</td>
-<td>Good</td>
-<td>APIs with burst tolerance</td>
-</tr>
-<tr>
-<td>Leaky Bucket</td>
-<td>No</td>
-<td>O(n)</td>
-<td>Good</td>
-<td>Smooth output rate</td>
-</tr>
-<tr>
-<td>Fixed Window</td>
-<td>Edge bursts</td>
-<td>O(1)</td>
-<td>Low</td>
-<td>Simple use cases</td>
-</tr>
-<tr>
-<td>Sliding Window Log</td>
-<td>No</td>
-<td>O(n)</td>
-<td>High</td>
-<td>Precise tracking</td>
-</tr>
-<tr>
-<td>Sliding Window Counter</td>
-<td>Weighted</td>
-<td>O(1)</td>
-<td>High</td>
-<td>Production APIs</td>
+<td style="padding: 12px; color: #1e293b; font-weight: 600">Sliding Window Counter</td>
+<td style="padding: 12px; color: #f59e0b">Weighted</td>
+<td style="padding: 12px; color: #475569">O(1)</td>
+<td style="padding: 12px; color: #475569">High</td>
+<td style="padding: 12px; color: #475569">Production APIs</td>
 </tr>
 </table>
 </div>
@@ -192,42 +192,42 @@
 <h3 id="token-bucket-algorithm">Token Bucket Algorithm</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>
-<div>Token Bucket Visualization</div>
-<div>Tokens refill at a constant rate; requests consume tokens</div>
+<div style="text-align: center; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 700; font-size: 16px">Token Bucket Visualization</div>
+<div style="color: #64748b; font-size: 13px">Tokens refill at a constant rate; requests consume tokens</div>
 </div>
-<div>
-<div>
-<div class="flow-box success">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%">
+<div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center">
+<div class="flow-box success" style="min-width: 100px">
 <div class="flow-box-title">Refill</div>
 <div class="flow-box-subtitle">10 tokens/sec</div>
 </div>
 <div class="flow-arrow horizontal">&#9654;</div>
-<div>
-<div>45</div>
-<div>tokens available</div>
-<div>capacity: 100</div>
+<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 16px; padding: 24px 32px; text-align: center; color: white; min-width: 180px">
+<div style="font-size: 32px; font-weight: 700">45</div>
+<div style="font-size: 12px; opacity: 0.9">tokens available</div>
+<div style="font-size: 11px; opacity: 0.7; margin-top: 4px">capacity: 100</div>
 </div>
 <div class="flow-arrow horizontal">&#9654;</div>
-<div class="flow-box warning">
+<div class="flow-box warning" style="min-width: 100px">
 <div class="flow-box-title">Request</div>
 <div class="flow-box-subtitle">-1 token</div>
 </div>
 </div>
-<div>
-<div>
-<div>
-<div>Tokens Available</div>
-<div>Request allowed</div>
+<div style="background: #f1f5f9; border-radius: 12px; padding: 16px 24px; max-width: 500px; width: 100%">
+<div style="display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+<div style="text-align: center; flex: 1; min-width: 120px">
+<div style="color: #10b981; font-weight: 600">Tokens Available</div>
+<div style="color: #475569; font-size: 13px">Request allowed</div>
 </div>
-<div>
-<div>No Tokens</div>
-<div>Request rejected (429)</div>
+<div style="text-align: center; flex: 1; min-width: 120px">
+<div style="color: #ef4444; font-weight: 600">No Tokens</div>
+<div style="color: #475569; font-size: 13px">Request rejected (429)</div>
 </div>
 </div>
 </div>
-<div>
-<div><strong>Key Insight:</strong> Allows burst traffic up to bucket capacity, then enforces average rate. Great for APIs where occasional spikes are acceptable.</div>
+<div style="background: #ecfdf5;border-radius: 8px; padding: 12px 16px; max-width: 500px; width: 100%">
+<div style="color: #065f46; font-size: 13px"><strong>Key Insight:</strong> Allows burst traffic up to bucket capacity, then enforces average rate. Great for APIs where occasional spikes are acceptable.</div>
 </div>
 </div>
 </div>
@@ -235,45 +235,45 @@
 <h3 id="leaky-bucket-algorithm">Leaky Bucket Algorithm</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>
-<div>Leaky Bucket Visualization</div>
-<div>Requests queue up; processed at a constant rate</div>
+<div style="text-align: center; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 700; font-size: 16px">Leaky Bucket Visualization</div>
+<div style="color: #64748b; font-size: 13px">Requests queue up; processed at a constant rate</div>
 </div>
-<div>
-<div>
-<div>
-<div class="flow-box primary">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%">
+<div style="display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; justify-content: center">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div class="flow-box primary" style="min-width: 100px">
 <div class="flow-box-title">Incoming</div>
 <div class="flow-box-subtitle">Requests</div>
 </div>
 <div class="flow-arrow vertical">&#9660;</div>
 </div>
-<div>
-<div>QUEUE</div>
-<div>
+<div style="position: relative; background: linear-gradient(180deg, #dbeafe 0%, #3b82f6 100%); border-radius: 8px 8px 16px 16px; width: 120px; height: 160px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 8px">
+<div style="position: absolute; top: 8px; color: #1e40af; font-weight: 600; font-size: 12px">QUEUE</div>
+<div style="background: #60a5fa; border-radius: 4px; width: 80%; height: 60%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; font-size: 11px">
 <div>Request 1</div>
 <div>Request 2</div>
 <div>Request 3</div>
 </div>
-<div></div>
+<div style="position: absolute; bottom: -12px; background: #3b82f6; width: 20px; height: 20px; border-radius: 50%"></div>
 </div>
-<div>
-<div>&#9654;</div>
-<div>Constant<br/>drain rate</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 24px">&#9654;</div>
+<div style="color: #475569; font-size: 11px; text-align: center">Constant<br/>drain rate</div>
 </div>
-<div>
-<div class="flow-box success">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div class="flow-box success" style="min-width: 100px">
 <div class="flow-box-title">Processed</div>
 <div class="flow-box-subtitle">10 req/sec</div>
 </div>
 </div>
 </div>
-<div>
-<div>
-<div><strong>Queue Full:</strong> New requests rejected immediately</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 500px">
+<div style="background: #fef3c7;border-radius: 8px; padding: 12px 16px; flex: 1; min-width: 200px">
+<div style="color: #92400e; font-size: 13px"><strong>Queue Full:</strong> New requests rejected immediately</div>
 </div>
-<div>
-<div><strong>Best For:</strong> Smooth output rate to protect downstream services</div>
+<div style="background: #ecfdf5;border-radius: 8px; padding: 12px 16px; flex: 1; min-width: 200px">
+<div style="color: #065f46; font-size: 13px"><strong>Best For:</strong> Smooth output rate to protect downstream services</div>
 </div>
 </div>
 </div>
@@ -282,70 +282,70 @@
 <h3 id="sliding-window-algorithm">Sliding Window Algorithm</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>
-<div>Sliding Window Counter</div>
-<div>Weighted average of current and previous window</div>
+<div style="text-align: center; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 700; font-size: 16px">Sliding Window Counter</div>
+<div style="color: #64748b; font-size: 13px">Weighted average of current and previous window</div>
 </div>
-<div>
-<div>
-<div>
-<div>Previous Window</div>
-<div>
-<div>90</div>
-<div>requests</div>
-</div>
-</div>
-<div>
-<div>Current Window</div>
-<div>
-<div>10</div>
-<div>requests</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%">
+<div style="display: flex; gap: 4px; align-items: flex-end; justify-content: center; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="color: #64748b; font-size: 11px; margin-bottom: 4px">Previous Window</div>
+<div style="background: #ddd6fe;border-radius: 8px 0 0 8px; width: 140px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center">
+<div style="color: #5b21b6; font-weight: 700; font-size: 24px">90</div>
+<div style="color: #7c3aed; font-size: 11px">requests</div>
 </div>
 </div>
-</div>
-<div>
-<div>
-<div>Window Progress: 25% into current window</div>
-<div>
-<div></div>
+<div style="display: flex; flex-direction: column; align-items: center">
+<div style="color: #64748b; font-size: 11px; margin-bottom: 4px">Current Window</div>
+<div style="background: #bbf7d0;border-radius: 0 8px 8px 0; width: 140px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center">
+<div style="color: #15803d; font-weight: 700; font-size: 24px">10</div>
+<div style="color: #22c55e; font-size: 11px">requests</div>
 </div>
 </div>
 </div>
-<div>
-<div>
-<div>Weighted Count Formula:</div>
-<div>count = prev * (1 - progress) + curr</div>
-<div>= 90 * 0.75 + 10 = <strong>77.5</strong></div>
-<div>Under 100 limit - Request allowed!</div>
+<div style="background: #f1f5f9; border-radius: 12px; padding: 16px 24px; max-width: 400px; width: 100%">
+<div style="text-align: center">
+<div style="color: #64748b; font-size: 12px; margin-bottom: 8px">Window Progress: 25% into current window</div>
+<div style="background: #e2e8f0; border-radius: 4px; height: 8px; width: 100%; overflow: hidden">
+<div style="background: #3b82f6; height: 100%; width: 25%"></div>
+</div>
+</div>
+</div>
+<div style="background: #eff6ff;border-radius: 12px; padding: 16px 24px; max-width: 500px; width: 100%">
+<div style="text-align: center; font-family: monospace">
+<div style="color: #1e40af; font-size: 14px; margin-bottom: 8px">Weighted Count Formula:</div>
+<div style="color: #1e293b; font-size: 16px">count = prev * (1 - progress) + curr</div>
+<div style="color: #3b82f6; font-size: 14px; margin-top: 8px">= 90 * 0.75 + 10 = <strong>77.5</strong></div>
+<div style="color: #10b981; font-size: 13px; margin-top: 4px">Under 100 limit - Request allowed!</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 <h3 id="fixed-window-problem">Fixed Window Problem</h3>
-<div>
-<h4>Why Fixed Windows Have Edge Burst Problems</h4>
-<div>
-<div>The Problem</div>
-<div>
-<div>
-<div>Window 1 (0:00-1:00)</div>
-<div>90 requests at 0:59</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Why Fixed Windows Have Edge Burst Problems</h4>
+<div style="background: #fef2f2;border-radius: 8px; padding: 16px; margin-bottom: 16px">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 12px">The Problem</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 13px">
+<div style="background: #fee2e2; padding: 12px; border-radius: 4px 0 0 4px; text-align: center">
+<div style="color: #7f1d1d; font-weight: 600">Window 1 (0:00-1:00)</div>
+<div style="color: #991b1b; margin-top: 8px">90 requests at 0:59</div>
 </div>
-<div>
-<div>Window 2 (1:00-2:00)</div>
-<div>100 requests at 1:01</div>
-</div>
-</div>
-<div>
-<div>190 requests in 2 seconds - nearly 2x the intended limit!</div>
+<div style="background: #fee2e2; padding: 12px; border-radius: 0 4px 4px 0; text-align: center">
+<div style="color: #7f1d1d; font-weight: 600">Window 2 (1:00-2:00)</div>
+<div style="color: #991b1b; margin-top: 8px">100 requests at 1:01</div>
 </div>
 </div>
-<div>
-<div>Solution: Sliding Window Counter</div>
-<div>
+<div style="background: #fecaca; padding: 12px; border-radius: 8px; margin-top: 12px; text-align: center">
+<div style="color: #991b1b; font-weight: 600">190 requests in 2 seconds - nearly 2x the intended limit!</div>
+</div>
+</div>
+<div style="background: #ecfdf5;border-radius: 8px; padding: 16px">
+<div style="color: #065f46; font-weight: 600; margin-bottom: 8px">Solution: Sliding Window Counter</div>
+<div style="color: #047857; font-size: 13px">
   Weight the previous window based on how much of it overlaps with the current sliding window.
-<div>
+<div style="margin-top: 8px; font-family: monospace; background: #d1fae5; padding: 8px; border-radius: 4px">
   count = prev_window * (1 - progress) + curr_window<br>
   count = 90 * 0.75 + 10 = 77.5 (under 100 limit)
 </div>
@@ -356,9 +356,9 @@
 <h2 id="edge-cases-failure-modes">Edge Cases & Failure Modes</h2>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>
-<div>Rate Limiter Failure Decision Tree</div>
-<div>What happens when the rate limiter itself fails?</div>
+<div style="text-align: center; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 700; font-size: 16px">Rate Limiter Failure Decision Tree</div>
+<div style="color: #64748b; font-size: 13px">What happens when the rate limiter itself fails?</div>
 </div>
 <div class="flow-row">
 <div class="flow-box error">
@@ -367,69 +367,69 @@
 </div>
 </div>
 <div class="flow-arrow vertical">&#9660;</div>
-<div class="flow-row">
-<div>
+<div class="flow-row" style="gap: 40px">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
 <div class="flow-box success">
 <div class="flow-box-title">Fail Open</div>
 <div class="flow-box-subtitle">Allow all requests</div>
 </div>
-<div>
-<div><strong>Pro:</strong> High availability</div>
-<div><strong>Con:</strong> No protection</div>
+<div style="background: #ecfdf5; border-radius: 8px; padding: 12px; max-width: 180px; text-align: center">
+<div style="color: #065f46; font-size: 12px"><strong>Pro:</strong> High availability</div>
+<div style="color: #dc2626; font-size: 12px"><strong>Con:</strong> No protection</div>
 </div>
 </div>
-<div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
 <div class="flow-box error">
 <div class="flow-box-title">Fail Closed</div>
 <div class="flow-box-subtitle">Reject all requests</div>
 </div>
-<div>
-<div><strong>Pro:</strong> Maximum safety</div>
-<div><strong>Con:</strong> Service outage</div>
+<div style="background: #fef2f2; border-radius: 8px; padding: 12px; max-width: 180px; text-align: center">
+<div style="color: #065f46; font-size: 12px"><strong>Pro:</strong> Maximum safety</div>
+<div style="color: #dc2626; font-size: 12px"><strong>Con:</strong> Service outage</div>
 </div>
 </div>
-<div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
 <div class="flow-box warning">
 <div class="flow-box-title">Local Fallback</div>
 <div class="flow-box-subtitle">Use cached limits</div>
 </div>
-<div>
-<div><strong>Pro:</strong> Balanced approach</div>
-<div><strong>Con:</strong> Stale data</div>
+<div style="background: #fef3c7; border-radius: 8px; padding: 12px; max-width: 180px; text-align: center">
+<div style="color: #065f46; font-size: 12px"><strong>Pro:</strong> Balanced approach</div>
+<div style="color: #dc2626; font-size: 12px"><strong>Con:</strong> Stale data</div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div>
-<h4>Critical Edge Cases</h4>
-<div>
-<div>
-<div>1. Clock Skew in Distributed Systems</div>
-<div>Different servers have different times, causing inconsistent window calculations.</div>
-<div>
-<div><strong>Solution:</strong> Use centralized time source (Redis server time) or NTP synchronization. Never rely on application server clocks.</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Critical Edge Cases</h4>
+<div style="display: grid; gap: 16px">
+<div style="background: #fef2f2;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600; margin-bottom: 8px">1. Clock Skew in Distributed Systems</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-bottom: 8px">Different servers have different times, causing inconsistent window calculations.</div>
+<div style="background: #fee2e2; border-radius: 6px; padding: 12px">
+<div style="color: #065f46; font-size: 13px"><strong>Solution:</strong> Use centralized time source (Redis server time) or NTP synchronization. Never rely on application server clocks.</div>
 </div>
 </div>
-<div>
-<div>2. Race Conditions in Check-and-Increment</div>
-<div>Multiple requests check limit simultaneously before any increment happens.</div>
-<div>
-<div><strong>Solution:</strong> Use atomic operations (Redis Lua scripts, INCR with TTL) to ensure check and increment happen atomically.</div>
+<div style="background: #fef3c7;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 8px">2. Race Conditions in Check-and-Increment</div>
+<div style="color: #78350f; font-size: 14px; margin-bottom: 8px">Multiple requests check limit simultaneously before any increment happens.</div>
+<div style="background: #fef9c3; border-radius: 6px; padding: 12px">
+<div style="color: #065f46; font-size: 13px"><strong>Solution:</strong> Use atomic operations (Redis Lua scripts, INCR with TTL) to ensure check and increment happen atomically.</div>
 </div>
 </div>
-<div>
-<div>3. Thundering Herd on Window Reset</div>
-<div>All queued requests flood in when the rate limit window resets.</div>
-<div>
-<div><strong>Solution:</strong> Use sliding windows instead of fixed windows, or add jitter to client retry logic.</div>
+<div style="background: #eff6ff;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px">3. Thundering Herd on Window Reset</div>
+<div style="color: #1e3a8a; font-size: 14px; margin-bottom: 8px">All queued requests flood in when the rate limit window resets.</div>
+<div style="background: #dbeafe; border-radius: 6px; padding: 12px">
+<div style="color: #065f46; font-size: 13px"><strong>Solution:</strong> Use sliding windows instead of fixed windows, or add jitter to client retry logic.</div>
 </div>
 </div>
-<div>
-<div>4. Hot Key Problem</div>
-<div>One client (e.g., large enterprise customer) creates disproportionate load on a single Redis key.</div>
-<div>
-<div><strong>Solution:</strong> Shard rate limit keys across multiple Redis instances, or use local caching with periodic sync.</div>
+<div style="background: #f0fdf4;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="color: #166534; font-weight: 600; margin-bottom: 8px">4. Hot Key Problem</div>
+<div style="color: #14532d; font-size: 14px; margin-bottom: 8px">One client (e.g., large enterprise customer) creates disproportionate load on a single Redis key.</div>
+<div style="background: #dcfce7; border-radius: 6px; padding: 12px">
+<div style="color: #065f46; font-size: 13px"><strong>Solution:</strong> Shard rate limit keys across multiple Redis instances, or use local caching with periodic sync.</div>
 </div>
 </div>
 </div>
@@ -437,48 +437,48 @@
 <h3 id="distributed-rate-limiting-challenges">Distributed Rate Limiting Challenges</h3>
 <div class="diagram-container">
 <div class="flow-diagram">
-<div>
-<div>Distributed Rate Limiting Architecture</div>
-<div>Multiple app servers sharing rate limit state</div>
+<div style="text-align: center; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 700; font-size: 16px">Distributed Rate Limiting Architecture</div>
+<div style="color: #64748b; font-size: 13px">Multiple app servers sharing rate limit state</div>
 </div>
-<div>
-<div class="flow-row">
-<div class="flow-box info">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%">
+<div class="flow-row" style="gap: 16px">
+<div class="flow-box info" style="min-width: 80px">
 <div class="flow-box-title">App 1</div>
 <div class="flow-box-subtitle">Server</div>
 </div>
-<div class="flow-box info">
+<div class="flow-box info" style="min-width: 80px">
 <div class="flow-box-title">App 2</div>
 <div class="flow-box-subtitle">Server</div>
 </div>
-<div class="flow-box info">
+<div class="flow-box info" style="min-width: 80px">
 <div class="flow-box-title">App 3</div>
 <div class="flow-box-subtitle">Server</div>
 </div>
 </div>
 <div class="flow-arrow vertical">&#9660;</div>
-<div class="flow-box primary">
+<div class="flow-box primary" style="min-width: 200px">
 <div class="flow-box-title">Redis Cluster</div>
 <div class="flow-box-subtitle">Centralized Rate Limit State</div>
 </div>
-<div>
-<div>Consistency vs Performance Tradeoffs</div>
-<div>
-<div>
-<div>Strong Consistency</div>
-<div>Every request hits Redis. Higher latency, perfect accuracy.</div>
+<div style="background: #f1f5f9; border-radius: 12px; padding: 16px; max-width: 500px; width: 100%">
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px; text-align: center">Consistency vs Performance Tradeoffs</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px">
+<div style="background: white; border-radius: 6px; padding: 12px">
+<div style="color: #3b82f6; font-weight: 600">Strong Consistency</div>
+<div style="color: #475569">Every request hits Redis. Higher latency, perfect accuracy.</div>
 </div>
-<div>
-<div>Eventual Consistency</div>
-<div>Local cache + sync. Lower latency, allows brief overage.</div>
-</div>
-</div>
+<div style="background: white; border-radius: 6px; padding: 12px">
+<div style="color: #8b5cf6; font-weight: 600">Eventual Consistency</div>
+<div style="color: #475569">Local cache + sync. Lower latency, allows brief overage.</div>
 </div>
 </div>
 </div>
 </div>
-<div>
-<h4>Hybrid Approach: Best of Both Worlds</h4>
+</div>
+</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Hybrid Approach: Best of Both Worlds</h4>
 <pre><code class="language-python">class HybridRateLimiter:
     &quot;&quot;&quot;
     Combines local caching with Redis for optimal performance.
@@ -520,26 +520,26 @@
 <hr />
 <h2 id="real-life-failure-story">Real-Life Failure Story</h2>
 <h3 id="cloudflare-rate-limiting-incident">The Cloudflare Rate Limiting Incident (2020)</h3>
-<div>
-<h4>What Happened</h4>
-<div>
-<div>The Incident</div>
-<div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">What Happened</h4>
+<div style="background: #fef2f2; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+<div style="color: #991b1b; font-weight: 600">The Incident</div>
+<div style="color: #7f1d1d; font-size: 14px; margin-top: 8px">
   A misconfigured rate limiter caused Cloudflare to reject legitimate traffic during a major DDoS attack. The rate limiting rules were too aggressive and didn't distinguish between attack traffic and legitimate users, causing a 27-minute outage affecting millions of websites.
 </div>
 </div>
-<div>
-<div>Root Cause</div>
-<div>
-<div>Rate limiting was applied at IP level only</div>
-<div>Many legitimate users share IPs (corporate NAT, mobile carriers)</div>
-<div>Attack traffic triggered limits that blocked legitimate users</div>
-<div>No fallback mechanism or graceful degradation</div>
+<div style="background: #f1f5f9; border-radius: 8px; padding: 16px; margin-bottom: 16px">
+<div style="color: #1e293b; font-weight: 600">Root Cause</div>
+<div style="color: #475569; font-size: 14px; margin-top: 8px">
+<div style="padding: 4px 0">Rate limiting was applied at IP level only</div>
+<div style="padding: 4px 0">Many legitimate users share IPs (corporate NAT, mobile carriers)</div>
+<div style="padding: 4px 0">Attack traffic triggered limits that blocked legitimate users</div>
+<div style="padding: 4px 0">No fallback mechanism or graceful degradation</div>
 </div>
 </div>
-<div>
-<div>How They Fixed It</div>
-<div>
+<div style="background: #ecfdf5; border-radius: 8px; padding: 16px">
+<div style="color: #065f46; font-weight: 600">How They Fixed It</div>
+<div style="color: #047857; font-size: 14px; margin-top: 8px">
 <div>1. Multi-dimensional rate limiting (IP + User-Agent + behavior patterns)</div>
 <div>2. Implemented "fail open" mode for rate limiter failures</div>
 <div>3. Added progressive rate limiting (warn, slow, then block)</div>
@@ -954,7 +954,7 @@ def expensive_operation():
 </code></pre>
 <hr />
 <h2 id="interview-questions">Interview Questions</h2>
-<div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="q1-distributed-rate-limiting">Q1: How would you implement rate limiting in a distributed system?</h3>
 <p><strong>Answer:</strong> Use a centralized store (Redis) with atomic operations to ensure consistency across multiple application instances.</p>
 <p>Key considerations:</p>
@@ -1058,74 +1058,74 @@ class TieredRateLimiter:
 </div>
 <hr />
 <h2 id="common-mistakes">Common Mistakes</h2>
-<div>
-<h4>Rate Limiting Anti-Patterns</h4>
-<div>
-<div>
-<div>Rate limiting only by IP address</div>
-<div>Many users share IPs (corporate networks, mobile carriers). Use multiple identifiers or authenticated user IDs when possible.</div>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Rate Limiting Anti-Patterns</h4>
+<div style="display: grid; gap: 12px">
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Rate limiting only by IP address</div>
+<div style="color: #7f1d1d; font-size: 14px">Many users share IPs (corporate networks, mobile carriers). Use multiple identifiers or authenticated user IDs when possible.</div>
 </div>
-<div>
-<div>Not returning rate limit headers</div>
-<div>Clients need to know their limits to implement proper backoff. Always include X-RateLimit-* and Retry-After headers.</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Not returning rate limit headers</div>
+<div style="color: #7f1d1d; font-size: 14px">Clients need to know their limits to implement proper backoff. Always include X-RateLimit-* and Retry-After headers.</div>
 </div>
-<div>
-<div>Hard-coded limits without configuration</div>
-<div>Rate limits should be configurable per-endpoint, per-tier, and adjustable without deployment. Use configuration service.</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Hard-coded limits without configuration</div>
+<div style="color: #7f1d1d; font-size: 14px">Rate limits should be configurable per-endpoint, per-tier, and adjustable without deployment. Use configuration service.</div>
 </div>
-<div>
-<div>No monitoring or alerting</div>
-<div>Track rejection rates, top limited clients, and limiter latency. Alert on unusual patterns that might indicate attacks or misconfigurations.</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">No monitoring or alerting</div>
+<div style="color: #7f1d1d; font-size: 14px">Track rejection rates, top limited clients, and limiter latency. Alert on unusual patterns that might indicate attacks or misconfigurations.</div>
 </div>
-<div>
-<div>Applying rate limits after expensive operations</div>
-<div>Check rate limits BEFORE processing requests. Place rate limiting middleware at the earliest point in the request pipeline.</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Applying rate limits after expensive operations</div>
+<div style="color: #7f1d1d; font-size: 14px">Check rate limits BEFORE processing requests. Place rate limiting middleware at the earliest point in the request pipeline.</div>
 </div>
-<div>
-<div>Same limits for all endpoints</div>
-<div>Expensive operations (AI inference, reports) need stricter limits than cheap ones (health checks). Differentiate by endpoint cost.</div>
+<div style="background: #fef2f2;padding: 12px 16px; border-radius: 0 8px 8px 0">
+<div style="color: #991b1b; font-weight: 600">Same limits for all endpoints</div>
+<div style="color: #7f1d1d; font-size: 14px">Expensive operations (AI inference, reports) need stricter limits than cheap ones (health checks). Differentiate by endpoint cost.</div>
 </div>
 </div>
 </div>
 <hr />
 <h2 id="quick-reference-card">Quick Reference Card</h2>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin-top: 0">Rate Limiting Cheat Sheet</h4>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px">
 <div>
-<h4>Rate Limiting Cheat Sheet</h4>
-<div>
-<div>
-<div>Algorithm Selection</div>
-<div>
-<div><strong>Token Bucket:</strong> Allow bursts, smooth average</div>
-<div><strong>Sliding Window:</strong> Strict limits, no bursts</div>
-<div><strong>Fixed Window:</strong> Simple, edge burst problem</div>
-<div><strong>Leaky Bucket:</strong> Smooth output rate</div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Algorithm Selection</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>Token Bucket:</strong> Allow bursts, smooth average</div>
+<div style="padding: 4px 0"><strong>Sliding Window:</strong> Strict limits, no bursts</div>
+<div style="padding: 4px 0"><strong>Fixed Window:</strong> Simple, edge burst problem</div>
+<div style="padding: 4px 0"><strong>Leaky Bucket:</strong> Smooth output rate</div>
 </div>
 </div>
 <div>
-<div>Standard Headers</div>
-<div>
-<div><strong>X-RateLimit-Limit:</strong> Maximum allowed</div>
-<div><strong>X-RateLimit-Remaining:</strong> Remaining</div>
-<div><strong>X-RateLimit-Reset:</strong> Reset timestamp</div>
-<div><strong>Retry-After:</strong> Seconds to wait</div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Standard Headers</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>X-RateLimit-Limit:</strong> Maximum allowed</div>
+<div style="padding: 4px 0"><strong>X-RateLimit-Remaining:</strong> Remaining</div>
+<div style="padding: 4px 0"><strong>X-RateLimit-Reset:</strong> Reset timestamp</div>
+<div style="padding: 4px 0"><strong>Retry-After:</strong> Seconds to wait</div>
 </div>
 </div>
 <div>
-<div>Client Identification</div>
-<div>
-<div>1. API key (best)</div>
-<div>2. User ID (authenticated)</div>
-<div>3. IP + User-Agent (anonymous)</div>
-<div>4. Behavioral fingerprinting</div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Client Identification</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0">1. API key (best)</div>
+<div style="padding: 4px 0">2. User ID (authenticated)</div>
+<div style="padding: 4px 0">3. IP + User-Agent (anonymous)</div>
+<div style="padding: 4px 0">4. Behavioral fingerprinting</div>
 </div>
 </div>
 <div>
-<div>Failure Strategies</div>
-<div>
-<div><strong>Fail Open:</strong> Allow on failure (UX)</div>
-<div><strong>Fail Closed:</strong> Block on failure (safety)</div>
-<div><strong>Local Fallback:</strong> Use local cache</div>
-<div><strong>Circuit Breaker:</strong> Graceful degradation</div>
+<div style="color: #1e293b; font-weight: 600; margin-bottom: 8px">Failure Strategies</div>
+<div style="font-size: 14px; color: #475569">
+<div style="padding: 4px 0"><strong>Fail Open:</strong> Allow on failure (UX)</div>
+<div style="padding: 4px 0"><strong>Fail Closed:</strong> Block on failure (safety)</div>
+<div style="padding: 4px 0"><strong>Local Fallback:</strong> Use local cache</div>
+<div style="padding: 4px 0"><strong>Circuit Breaker:</strong> Graceful degradation</div>
 </div>
 </div>
 </div>

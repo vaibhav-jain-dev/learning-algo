@@ -1,95 +1,95 @@
 <h1 id="adapter-pattern">Adapter Pattern</h1>
 <h2 id="overview">Overview</h2>
-<p>The Adapter pattern converts the interface of a class into another interface that clients expect, enabling classes with incompatible interfaces to collaborate. <span>Unlike simple interface wrapping, a true adapter performs semantic translation between fundamentally different interface paradigms while preserving behavioral equivalence.</span></p>
+<p>The Adapter pattern converts the interface of a class into another interface that clients expect, enabling classes with incompatible interfaces to collaborate. <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px; font-weight: 500">Unlike simple interface wrapping, a true adapter performs semantic translation between fundamentally different interface paradigms while preserving behavioral equivalence.</span></p>
 <p><strong>Difficulty:</strong> Intermediate-Advanced<br />
 <strong>Category:</strong> Structural Pattern<br />
 <strong>First Documented:</strong> GoF (1994)<br />
 <strong>Also Known As:</strong> Wrapper Pattern</p>
 <hr />
 <h2 id="foundational-mental-model">Foundational Mental Model</h2>
-<div>
-<h3>The Diplomatic Translator Analogy</h3>
-<p>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.3rem">The Diplomatic Translator Analogy</h3>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7">
     Consider a diplomatic summit between nations speaking different languages. A translator does more than word-for-word conversion - they understand cultural nuances, idiomatic expressions, and contextual meaning. They ensure the <em>intent</em> is preserved, not just the words.
 </p>
-<div>
-<div>
-<div>Client (Diplomat A)</div>
-<div>Speaks Language A, expects responses in Language A semantics</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0">
+<div style="background: #dbeafe; padding: 16px; border-radius: 12px">
+<div style="color: #1e40af; font-weight: 700">Client (Diplomat A)</div>
+<div style="color: #1e3a8a; font-size: 0.9rem">Speaks Language A, expects responses in Language A semantics</div>
 </div>
-<div>
-<div>Adapter (Translator)</div>
-<div>Converts not just words but meaning, idioms, and cultural context</div>
+<div style="background: #dcfce7; padding: 16px; border-radius: 12px">
+<div style="color: #166534; font-weight: 700">Adapter (Translator)</div>
+<div style="color: #14532d; font-size: 0.9rem">Converts not just words but meaning, idioms, and cultural context</div>
 </div>
-<div>
-<div>Adaptee (Diplomat B)</div>
-<div>Speaks Language B with different conceptual framework</div>
+<div style="background: #fef3c7; padding: 16px; border-radius: 12px">
+<div style="color: #92400e; font-weight: 700">Adaptee (Diplomat B)</div>
+<div style="color: #78350f; font-size: 0.9rem">Speaks Language B with different conceptual framework</div>
 </div>
 </div>
-<div>
-<strong>Critical Insight:</strong>
-<span> <span>The adapter must understand both interfaces deeply enough to preserve semantic equivalence, not just syntactic compatibility.</span> A charge() call must produce the same business outcome whether routed through Stripe or PayPal, despite their radically different APIs.</span>
+<div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin-top: 16px">
+<strong style="color: #0f172a">Critical Insight:</strong>
+<span style="color: #334155"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter must understand both interfaces deeply enough to preserve semantic equivalence, not just syntactic compatibility.</span> A charge() call must produce the same business outcome whether routed through Stripe or PayPal, despite their radically different APIs.</span>
 </div>
 </div>
 <hr />
 <h2 id="internal-architecture-how-adapters-actually-work">Internal Architecture: How Adapters Actually Work</h2>
-<div>
-<h4>Adapter Pattern Internal Flow</h4>
-<div>
-<div>
-<div>
-<div>Client Code</div>
-<div>PaymentService</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 24px 0">
+<h4 style="color: #1e293b; margin-top: 0; text-align: center; font-size: 1.1rem">Adapter Pattern Internal Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 20px; margin: 24px 0">
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dbeafe;border-radius: 12px; padding: 16px; min-width: 150px; text-align: center">
+<div style="color: #1e40af; font-weight: 700; font-size: 0.9rem">Client Code</div>
+<div style="color: #1e3a8a; font-size: 0.75rem; margin-top: 4px">PaymentService</div>
 </div>
-<div>---(1) charge()---></div>
-<div>
-<div>Target Interface</div>
-<div>PaymentGateway</div>
+<div style="color: #64748b; font-size: 1.2rem">---(1) charge()---></div>
+<div style="background: #f3e8ff;border-radius: 12px; padding: 16px; min-width: 150px; text-align: center">
+<div style="color: #7c3aed; font-weight: 700; font-size: 0.9rem">Target Interface</div>
+<div style="color: #6b21a8; font-size: 0.75rem; margin-top: 4px">PaymentGateway</div>
 </div>
 </div>
-<div>
-<div>implements</div>
+<div style="display: flex; align-items: center; justify-content: center">
+<div style="color: #a855f7; font-size: 0.9rem">implements</div>
 </div>
-<div>
-<div>
-<div>Adapter</div>
-<div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dcfce7;border-radius: 12px; padding: 16px; min-width: 200px">
+<div style="color: #166534; font-weight: 700; text-align: center; font-size: 0.9rem">Adapter</div>
+<div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px; margin-top: 8px">
 <strong>(2) Transform Request:</strong><br/>
           - Convert Decimal to cents<br/>
           - Map currency codes<br/>
           - Restructure parameters
 </div>
 </div>
-<div>---(3)---></div>
-<div>
-<div>Adaptee</div>
-<div>StripeClient.create_charge()</div>
+<div style="color: #64748b; font-size: 1.2rem">---(3)---></div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px; min-width: 180px; text-align: center">
+<div style="color: #92400e; font-weight: 700; font-size: 0.9rem">Adaptee</div>
+<div style="color: #78350f; font-size: 0.75rem; margin-top: 4px">StripeClient.create_charge()</div>
 </div>
 </div>
-<div>
-<div>
-<div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap">
+<div style="background: #dcfce7;border-radius: 12px; padding: 16px; min-width: 200px">
+<div style="color: #14532d; font-size: 0.75rem; padding: 8px; background: #f0fdf4; border-radius: 6px">
 <strong>(5) Transform Response:</strong><br/>
           - Convert cents to Decimal<br/>
           - Normalize status codes<br/>
           - Build PaymentResult
 </div>
 </div>
-<div><---(4)---</div>
-<div>
-<div>Raw Stripe Response</div>
+<div style="color: #64748b; font-size: 1.2rem"><---(4)---</div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px; min-width: 180px; text-align: center">
+<div style="color: #78350f; font-size: 0.75rem">Raw Stripe Response</div>
 </div>
 </div>
 </div>
-<div>
-<strong>Critical Implementation Detail:</strong>
-<span> <span>The adapter must handle bidirectional transformation - both request adaptation (client to adaptee) and response adaptation (adaptee to client).</span> Many implementations focus only on request transformation and break when adaptee responses differ from expected formats.</span>
+<div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin-top: 16px">
+<strong style="color: #991b1b">Critical Implementation Detail:</strong>
+<span style="color: #7f1d1d"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter must handle bidirectional transformation - both request adaptation (client to adaptee) and response adaptation (adaptee to client).</span> Many implementations focus only on request transformation and break when adaptee responses differ from expected formats.</span>
 </div>
 </div>
 <h3 id="interview-deep-dive-internal-mechanisms">Interview Deep-Dive: Internal Mechanisms</h3>
-<details>
-<summary>Level 1: What are the core responsibilities of an adapter's transformation layer?</summary>
-<div>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: What are the core responsibilities of an adapter's transformation layer?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
 <pre><code>The transformation layer handles four critical responsibilities:
 
 **1. Type Conversion**: Converting between incompatible data types
@@ -118,10 +118,10 @@ if stripe_response.get(&quot;error&quot;):
 raise PaymentError(code=map_error_code(stripe_response[&quot;error&quot;][&quot;code&quot;]))
 ```
 </code></pre>
-<details>
-<summary>Level 2: How do you handle lossy transformations where the adaptee has less capability than the target interface promises?</summary>
-<div>
-<p>This is a critical design challenge. <span>Lossy adaptation occurs when the target interface contracts cannot be fully satisfied by the adaptee's capabilities.</span></p>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How do you handle lossy transformations where the adaptee has less capability than the target interface promises?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p>This is a critical design challenge. <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Lossy adaptation occurs when the target interface contracts cannot be fully satisfied by the adaptee's capabilities.</span></p>
 <p><strong>Strategy 1: Capability Detection</strong><br />
 ```python<br />
 class PaymentAdapter(PaymentGateway):<br />
@@ -138,10 +138,10 @@ return self._adaptee_supports_partial_refund</p>
 <code>python def get_transaction_history(self, days: int) -&gt; List[Transaction]: &quot;&quot;&quot;Target promises date-range filtering, adaptee only returns last 100.&quot;&quot;&quot; all_txns = self._adaptee.list_transactions(limit=100) cutoff = datetime.now() - timedelta(days=days) return [t for t in all_txns if t.created_at &gt;= cutoff]  # Client-side filter </code></p>
 <p><strong>Strategy 3: Fail-Fast with Clear Errors</strong><br />
 <code>python def capture_authorization(self, auth_id: str): &quot;&quot;&quot;Adaptee doesn't support auth/capture separation.&quot;&quot;&quot; raise AdapterLimitationError( &quot;This payment provider does not support separate authorization and capture. &quot; &quot;Use charge() for immediate payment.&quot; ) </code></p>
-<details>
-<summary>Level 3: What are the implications for Liskov Substitution Principle when adapters cannot fully implement the target interface?</summary>
-<div>
-<p><span>This is where adapter pattern can technically violate LSP - if clients cannot substitute adapted implementations without behavioral changes.</span></p>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: What are the implications for Liskov Substitution Principle when adapters cannot fully implement the target interface?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">This is where adapter pattern can technically violate LSP - if clients cannot substitute adapted implementations without behavioral changes.</span></p>
 <p><strong>The LSP Violation Pattern:</strong><br />
 <code>python # Client code assumes all PaymentGateway implementations support refunds def process_return(gateway: PaymentGateway, txn_id: str): gateway.refund(txn_id)  # Throws UnsupportedOperationError for some adapters! </code></p>
 <p><strong>Architectural Solutions:</strong></p>
@@ -173,7 +173,7 @@ pass</p>
 </code></pre>
 <p><strong>3. Null Object for Unsupported Operations</strong><br />
 <code>python def refund(self, txn_id: str) -&gt; PaymentResult: &quot;&quot;&quot;Return a 'no-op' result rather than throwing.&quot;&quot;&quot; return PaymentResult( success=False, error_code=&quot;UNSUPPORTED&quot;, message=&quot;Refunds not supported by this provider&quot; ) </code></p>
-<p>The trade-off: <span>Interface segregation provides compile-time safety but fragments the interface hierarchy. Capability checking provides runtime flexibility but shifts error handling to callers.</span></p>
+<p>The trade-off: <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Interface segregation provides compile-time safety but fragments the interface hierarchy. Capability checking provides runtime flexibility but shifts error handling to callers.</span></p>
 </div>
 </details>
 </div>
@@ -182,12 +182,12 @@ pass</p>
 </details>
 <hr />
 <h2 id="class-adapter-vs-object-adapter-deep-comparison">Class Adapter vs Object Adapter: Deep Comparison</h2>
-<div>
-<div>
-<div>
-<h4>Object Adapter (Composition)</h4>
-<p><span>The adapter HOLDS a reference to the adaptee and delegates calls to it.</span></p>
-<pre><code>class StripeAdapter(PaymentGateway):
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px">
+<div style="background: #dbeafe; padding: 24px; border-radius: 12px">
+<h4 style="color: #1e40af; margin-top: 0">Object Adapter (Composition)</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 16px"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter HOLDS a reference to the adaptee and delegates calls to it.</span></p>
+<pre style="background: #eff6ff; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto"><code style="color: #1e3a8a">class StripeAdapter(PaymentGateway):
   """Object Adapter - uses composition."""
 
   def __init__(self, stripe_client: StripeClient):
@@ -202,9 +202,9 @@ pass</p>
   source=token
   )
 return self._transform_response(response)</code></pre>
-<div>
-<div><strong>Advantages:</strong></div>
-<ul>
+<div style="margin-top: 16px">
+<div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px"><strong>Advantages:</strong></div>
+<ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px">
 <li>Works with adaptee and ALL its subclasses</li>
 <li>Adaptee can be injected (testability)</li>
 <li>Adapter can wrap multiple adaptees</li>
@@ -212,19 +212,19 @@ return self._transform_response(response)</code></pre>
 <li>Works in languages without multiple inheritance</li>
 </ul>
 </div>
-<div>
-<div><strong>Disadvantages:</strong></div>
-<ul>
+<div style="margin-top: 12px">
+<div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px"><strong>Disadvantages:</strong></div>
+<ul style="color: #1e3a8a; font-size: 0.85rem; margin: 0; padding-left: 20px">
 <li>Extra object allocation and indirection</li>
 <li>Must delegate all adaptee method calls explicitly</li>
 <li>Cannot override adaptee behavior directly</li>
 </ul>
 </div>
 </div>
-<div>
-<h4>Class Adapter (Inheritance)</h4>
-<p><span>The adapter INHERITS from both the target interface and the adaptee class.</span></p>
-<pre><code>class StripeAdapter(PaymentGateway, StripeClient):
+<div style="background: #dcfce7; padding: 24px; border-radius: 12px">
+<h4 style="color: #166534; margin-top: 0">Class Adapter (Inheritance)</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 16px"><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter INHERITS from both the target interface and the adaptee class.</span></p>
+<pre style="background: #f0fdf4; padding: 16px; border-radius: 8px; font-size: 0.8rem; overflow-x: auto"><code style="color: #166534">class StripeAdapter(PaymentGateway, StripeClient):
   """Class Adapter - uses multiple inheritance."""
 
   def __init__(self, api_key: str):
@@ -239,18 +239,18 @@ return self._transform_response(response)</code></pre>
   source=token
   )
 return self._transform_response(response)</code></pre>
-<div>
-<div><strong>Advantages:</strong></div>
-<ul>
+<div style="margin-top: 16px">
+<div style="color: #166534; font-size: 0.85rem; margin-bottom: 8px"><strong>Advantages:</strong></div>
+<ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px">
 <li>No extra object - direct method access</li>
 <li>Can override adaptee behavior</li>
 <li>Slightly better performance (no delegation)</li>
 <li>Adapter IS-A adaptee (can be used where adaptee expected)</li>
 </ul>
 </div>
-<div>
-<div><strong>Disadvantages:</strong></div>
-<ul>
+<div style="margin-top: 12px">
+<div style="color: #b91c1c; font-size: 0.85rem; margin-bottom: 8px"><strong>Disadvantages:</strong></div>
+<ul style="color: #14532d; font-size: 0.85rem; margin: 0; padding-left: 20px">
 <li>Requires multiple inheritance (not all languages)</li>
 <li>Tied to ONE specific adaptee class</li>
 <li>Cannot adapt adaptee subclasses</li>
@@ -260,18 +260,18 @@ return self._transform_response(response)</code></pre>
 </div>
 </div>
 </div>
-<div>
-<strong>When to Choose Which:</strong>
-<div>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px; margin-top: 20px">
+<strong style="color: #92400e">When to Choose Which:</strong>
+<div style="color: #78350f; margin-top: 8px">
 <p><strong>Use Object Adapter (95% of cases) when:</strong></p>
-<ul>
+<ul style="margin: 8px 0; padding-left: 20px">
 <li>You need to adapt multiple related classes (inheritance hierarchies)</li>
 <li>You want dependency injection for testing</li>
 <li>Your language doesn't support multiple inheritance (Java, C#)</li>
 <li>You might need to swap adaptees at runtime</li>
 </ul>
 <p><strong>Use Class Adapter when:</strong></p>
-<ul>
+<ul style="margin: 8px 0; padding-left: 20px">
 <li>You need to override specific adaptee methods</li>
 <li>Performance is critical and delegation overhead matters</li>
 <li>You're in C++ or Python and comfortable with multiple inheritance</li>
@@ -281,9 +281,9 @@ return self._transform_response(response)</code></pre>
 </div>
 </div>
 <h3 id="interview-deep-dive-class-vs-object-adapter">Interview Deep-Dive: Class vs Object Adapter</h3>
-<details>
-<summary>Level 1: Why is object adapter preferred in Java and C# but class adapter is valid in Python and C++?</summary>
-<div>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: Why is object adapter preferred in Java and C# but class adapter is valid in Python and C++?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
 <pre><code>The key difference is **multiple inheritance support**:
 
 **Java/C# Limitation:**
@@ -315,10 +315,10 @@ print(StripeAdapter.__mro__)
 # (&lt;class 'StripeAdapter'&gt;, &lt;class 'PaymentGateway'&gt;, &lt;class 'StripeClient'&gt;, ...)
       ```
 </code></pre>
-<details>
-<summary>Level 2: How does Python's MRO affect class adapter behavior, especially with diamond inheritance?</summary>
-<div>
-<p><span>Python's C3 linearization creates a deterministic but sometimes surprising method resolution order.</span></p>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How does Python's MRO affect class adapter behavior, especially with diamond inheritance?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Python's C3 linearization creates a deterministic but sometimes surprising method resolution order.</span></p>
 <pre><code>          ```python
           class Base:
           def operation(self):
@@ -364,9 +364,9 @@ return &quot;Interface default&quot;</p>
 </code></pre>
 <p><strong>Explicit Resolution:</strong><br />
 <code>python class BridgeAdapter(ModernGateway, LegacySystem): def process(self): # Explicitly choose which parent's implementation legacy_result = LegacySystem.process(self) return f&quot;Adapted from: {legacy_result}&quot; </code></p>
-<details>
-<summary>Level 3: What are the memory and performance implications of class vs object adapter at scale?</summary>
-<div>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: What are the memory and performance implications of class vs object adapter at scale?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
 <p><strong>Memory Footprint:</strong></p>
 <pre><code>              ```python
               import sys
@@ -422,7 +422,7 @@ return &quot;Interface default&quot;</p>
               # Difference: ~10% overhead from delegation
               ```
 </code></pre>
-<p><span>In practice, this overhead is negligible unless you're in a hot loop with millions of calls per second.</span> The flexibility benefits of object adapter almost always outweigh the minor performance cost.</p>
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">In practice, this overhead is negligible unless you're in a hot loop with millions of calls per second.</span> The flexibility benefits of object adapter almost always outweigh the minor performance cost.</p>
 <p><strong>Real-World Trade-off Analysis:</strong></p>
 <table>
 <thead>
@@ -460,7 +460,7 @@ return &quot;Interface default&quot;</p>
 </tr>
 </tbody>
 </table>
-<p><span>The recommendation: Use object adapter unless profiling proves delegation overhead is a bottleneck in your specific use case.</span></p>
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The recommendation: Use object adapter unless profiling proves delegation overhead is a bottleneck in your specific use case.</span></p>
 </div>
 </details>
 </div>
@@ -469,31 +469,31 @@ return &quot;Interface default&quot;</p>
 </details>
 <hr />
 <h2 id="two-way-adapters-bidirectional-interface-translation">Two-Way Adapters: Bidirectional Interface Translation</h2>
-<div>
-<h3>Understanding Two-Way Adapters</h3>
-<p>
-<span>A two-way adapter implements BOTH interfaces, allowing either system to use the other transparently.</span> This is essential when two systems need mutual interoperability, not just one-way communication.
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<h3 style="color: #1e293b; margin-top: 0; font-size: 1.2rem">Understanding Two-Way Adapters</h3>
+<p style="color: #334155; font-size: 1rem; line-height: 1.7">
+<span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">A two-way adapter implements BOTH interfaces, allowing either system to use the other transparently.</span> This is essential when two systems need mutual interoperability, not just one-way communication.
 </p>
-<div>
-<div>
-<div>System A</div>
-<div>Interface A methods</div>
+<div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 24px 0">
+<div style="background: #dbeafe;border-radius: 12px; padding: 16px; min-width: 140px; text-align: center">
+<div style="color: #1e40af; font-weight: 700; font-size: 0.9rem">System A</div>
+<div style="color: #1e3a8a; font-size: 0.75rem">Interface A methods</div>
 </div>
-<div>
-<div>---> calls A interface ---></div>
-<div><--- calls B interface <---</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 0.9rem">---> calls A interface ---></div>
+<div style="color: #64748b; font-size: 0.9rem"><--- calls B interface <---</div>
 </div>
-<div>
-<div>Two-Way Adapter</div>
-<div>Implements BOTH A and B</div>
+<div style="background: #dcfce7;border-radius: 12px; padding: 16px; min-width: 180px; text-align: center">
+<div style="color: #166534; font-weight: 700; font-size: 0.9rem">Two-Way Adapter</div>
+<div style="color: #14532d; font-size: 0.75rem">Implements BOTH A and B</div>
 </div>
-<div>
-<div>---> delegates to B ---></div>
-<div><--- delegates to A <---</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<div style="color: #64748b; font-size: 0.9rem">---> delegates to B ---></div>
+<div style="color: #64748b; font-size: 0.9rem"><--- delegates to A <---</div>
 </div>
-<div>
-<div>System B</div>
-<div>Interface B methods</div>
+<div style="background: #fef3c7;border-radius: 12px; padding: 16px; min-width: 140px; text-align: center">
+<div style="color: #92400e; font-weight: 700; font-size: 0.9rem">System B</div>
+<div style="color: #78350f; font-size: 0.75rem">Interface B methods</div>
 </div>
 </div>
 </div>
@@ -749,9 +749,9 @@ return &quot;Interface default&quot;</p>
   ```
 </code></pre>
 <h3 id="interview-deep-dive-two-way-adapters">Interview Deep-Dive: Two-Way Adapters</h3>
-<details>
-<summary>Level 1: When would you need a two-way adapter instead of a regular one-way adapter?</summary>
-<div>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: When would you need a two-way adapter instead of a regular one-way adapter?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
 <p>Two-way adapters are needed when:</p>
 <p><strong>1. Bidirectional Integration:</strong> Both systems need to initiate communication<br />
 <code>python # E-commerce integrating with warehouse # - E-commerce sends orders TO warehouse # - Warehouse sends inventory updates TO e-commerce class EcommerceWarehouseAdapter(EcommerceAPI, WarehouseAPI): pass </code></p>
@@ -761,10 +761,10 @@ return &quot;Interface default&quot;</p>
 <code>python # During migration from Monolith to Microservices # - Monolith calls appear as microservice events # - Microservice events appear as monolith method calls </code></p>
 <p><strong>4. Testing/Mocking:</strong> Creating test doubles that work from both directions<br />
 <code>python # Mock that can be used by either system under test </code></p>
-<details>
-<summary>Level 2: What are the synchronization challenges in two-way adapters when both systems can initiate state changes?</summary>
-<div>
-<p><span>The core challenge is maintaining consistency when both sides can modify shared state.</span></p>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: What are the synchronization challenges in two-way adapters when both systems can initiate state changes?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The core challenge is maintaining consistency when both sides can modify shared state.</span></p>
 <p><strong>Challenge 1: Race Conditions</strong><br />
 ```python<br />
 # System A sends: &quot;Update inventory to 100&quot;<br />
@@ -830,10 +830,10 @@ b_txn = self._system_b.begin_transaction()</p>
           raise
           ```
 </code></pre>
-<details>
-<summary>Level 3: How would you implement idempotency in a two-way adapter to handle duplicate messages from either direction?</summary>
-<div>
-<p><span>Idempotency requires tracking processed messages from BOTH directions and ensuring repeated processing produces the same result.</span></p>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: How would you implement idempotency in a two-way adapter to handle duplicate messages from either direction?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Idempotency requires tracking processed messages from BOTH directions and ensuring repeated processing produces the same result.</span></p>
 <pre><code>              ```python
               from typing import Dict, Set, Optional
               from dataclasses import dataclass
@@ -1669,10 +1669,10 @@ key = idempotency_key or self._compute_message_hash(message_a, 'a')</p>
   ```
 </code></pre>
 <h3 id="interview-deep-dive-real-world-api-adapters">Interview Deep-Dive: Real-World API Adapters</h3>
-<details>
-<summary>Level 1: How do you handle API versioning when the adaptee releases breaking changes?</summary>
-<div>
-<p><span>API versioning in adapters requires a strategy that isolates version-specific logic while maintaining a stable interface for clients.</span></p>
+<details style="margin-bottom: 12px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 8px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 16px">Level 1: How do you handle API versioning when the adaptee releases breaking changes?</summary>
+<div style="padding: 0 16px 16px 16px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">API versioning in adapters requires a strategy that isolates version-specific logic while maintaining a stable interface for clients.</span></p>
 <p><strong>Strategy 1: Version-Specific Adapter Classes</strong><br />
 ```python<br />
 class StripeAdapterV1(PaymentGateway):<br />
@@ -1728,10 +1728,10 @@ class VersionedStripeAdapter(PaymentGateway):<br />
       return handlers[self._version_family(version)]()
       ```
 </code></pre>
-<details>
-<summary>Level 2: How do you implement graceful degradation when adaptee capabilities are reduced?</summary>
-<div>
-<p><span>Graceful degradation in adapters means providing reduced but functional service when the full capability isn't available.</span></p>
+<details style="margin-top: 16px; background: #f1f5f9; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 2: How do you implement graceful degradation when adaptee capabilities are reduced?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Graceful degradation in adapters means providing reduced but functional service when the full capability isn't available.</span></p>
 <pre><code>          ```python
           class DegradableStorageAdapter(CloudStorageGateway):
           &quot;&quot;&quot;
@@ -1801,10 +1801,10 @@ class VersionedStripeAdapter(PaymentGateway):<br />
           }
           ```
 </code></pre>
-<details>
-<summary>Level 3: How would you implement adapter telemetry to monitor adaptation overhead and detect adaptee drift?</summary>
-<div>
-<p><span>Adapter telemetry tracks both the translation overhead and detects when adaptee behavior changes unexpectedly (drift).</span></p>
+<details style="margin-top: 12px; background: #e2e8f0; border-radius: 6px">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b; padding: 12px">Level 3: How would you implement adapter telemetry to monitor adaptation overhead and detect adaptee drift?</summary>
+<div style="padding: 0 12px 12px 12px; color: #334155">
+<p><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Adapter telemetry tracks both the translation overhead and detects when adaptee behavior changes unexpectedly (drift).</span></p>
 <pre><code>              ```python
               from dataclasses import dataclass, field
               from typing import Dict, List, Optional, Any
@@ -2026,7 +2026,7 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </details>
 <hr />
 <h2 id="industry-usage-and-production-patterns">Industry Usage and Production Patterns</h2>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <table>
 <thead>
 <tr>
@@ -2039,7 +2039,7 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 <tr>
 <td><strong>Django ORM</strong></td>
 <td>Database backends (PostgreSQL, MySQL, SQLite) adapt to unified QuerySet interface</td>
-<td><span>Adapters handle SQL dialect differences and type conversions</span></td>
+<td><span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">Adapters handle SQL dialect differences and type conversions</span></td>
 </tr>
 <tr>
 <td><strong>AWS SDK</strong></td>
@@ -2076,57 +2076,57 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </div>
 <hr />
 <h2 id="adapter-vs-related-patterns-decision-framework">Adapter vs Related Patterns: Decision Framework</h2>
-<div>
-<div>
-<div>
-<h4>Adapter</h4>
-<p>Makes existing incompatible interface work with expected interface.</p>
-<div>
-<strong>Use when:</strong> <span>"I have ClassA but need InterfaceB"</span><br>
-<strong>Changes:</strong> <span>Interface signature only</span><br>
-<strong>Relationship:</strong> <span>Wraps ONE object</span>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px">
+<div style="background: #dbeafe; padding: 20px; border-radius: 12px">
+<h4 style="color: #1e40af; margin-top: 0">Adapter</h4>
+<p style="color: #1e3a8a; font-size: 0.9rem; margin-bottom: 12px">Makes existing incompatible interface work with expected interface.</p>
+<div style="background: #eff6ff; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #1e40af">Use when:</strong> <span style="color: #1e3a8a">"I have ClassA but need InterfaceB"</span><br>
+<strong style="color: #1e40af">Changes:</strong> <span style="color: #1e3a8a">Interface signature only</span><br>
+<strong style="color: #1e40af">Relationship:</strong> <span style="color: #1e3a8a">Wraps ONE object</span>
 </div>
 </div>
-<div>
-<h4>[[Decorator]](/topic/design-patterns/decorator)</h4>
-<p>Adds behavior to object without changing its interface.</p>
-<div>
-<strong>Use when:</strong> <span>"Add logging to this service"</span><br>
-<strong>Changes:</strong> <span>Behavior, not interface</span><br>
-<strong>Relationship:</strong> <span>Same interface as wrapped</span>
+<div style="background: #dcfce7; padding: 20px; border-radius: 12px">
+<h4 style="color: #166534; margin-top: 0">[[Decorator]](/topic/design-patterns/decorator)</h4>
+<p style="color: #14532d; font-size: 0.9rem; margin-bottom: 12px">Adds behavior to object without changing its interface.</p>
+<div style="background: #f0fdf4; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #166534">Use when:</strong> <span style="color: #14532d">"Add logging to this service"</span><br>
+<strong style="color: #166534">Changes:</strong> <span style="color: #14532d">Behavior, not interface</span><br>
+<strong style="color: #166534">Relationship:</strong> <span style="color: #14532d">Same interface as wrapped</span>
 </div>
 </div>
-<div>
-<h4>[[Facade]](/topic/design-patterns/facade)</h4>
-<p>Simplifies complex subsystem with unified interface.</p>
-<div>
-<strong>Use when:</strong> <span>"Simplify these 10 services"</span><br>
-<strong>Changes:</strong> <span>Complexity level</span><br>
-<strong>Relationship:</strong> <span>Wraps MULTIPLE objects</span>
+<div style="background: #fef3c7; padding: 20px; border-radius: 12px">
+<h4 style="color: #92400e; margin-top: 0">[[Facade]](/topic/design-patterns/facade)</h4>
+<p style="color: #78350f; font-size: 0.9rem; margin-bottom: 12px">Simplifies complex subsystem with unified interface.</p>
+<div style="background: #fffbeb; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #92400e">Use when:</strong> <span style="color: #78350f">"Simplify these 10 services"</span><br>
+<strong style="color: #92400e">Changes:</strong> <span style="color: #78350f">Complexity level</span><br>
+<strong style="color: #92400e">Relationship:</strong> <span style="color: #78350f">Wraps MULTIPLE objects</span>
 </div>
 </div>
-<div>
-<h4>[[Bridge]](/topic/design-patterns/bridge)</h4>
-<p>Separates abstraction from implementation for independent variation.</p>
-<div>
-<strong>Use when:</strong> <span>"Both sides need to vary"</span><br>
-<strong>Changes:</strong> <span>Decouples hierarchies</span><br>
-<strong>Relationship:</strong> <span>Designed upfront</span>
+<div style="background: #f3e8ff; padding: 20px; border-radius: 12px">
+<h4 style="color: #7c3aed; margin-top: 0">[[Bridge]](/topic/design-patterns/bridge)</h4>
+<p style="color: #6b21a8; font-size: 0.9rem; margin-bottom: 12px">Separates abstraction from implementation for independent variation.</p>
+<div style="background: #faf5ff; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #7c3aed">Use when:</strong> <span style="color: #6b21a8">"Both sides need to vary"</span><br>
+<strong style="color: #7c3aed">Changes:</strong> <span style="color: #6b21a8">Decouples hierarchies</span><br>
+<strong style="color: #7c3aed">Relationship:</strong> <span style="color: #6b21a8">Designed upfront</span>
 </div>
 </div>
-<div>
-<h4>[[Proxy]](/topic/design-patterns/proxy)</h4>
-<p>Controls access to object with same interface.</p>
-<div>
-<strong>Use when:</strong> <span>"Control access to this object"</span><br>
-<strong>Changes:</strong> <span>Access policy, not interface</span><br>
-<strong>Relationship:</strong> <span>Identical interface to subject</span>
+<div style="background: #fce7f3; padding: 20px; border-radius: 12px">
+<h4 style="color: #be185d; margin-top: 0">[[Proxy]](/topic/design-patterns/proxy)</h4>
+<p style="color: #9d174d; font-size: 0.9rem; margin-bottom: 12px">Controls access to object with same interface.</p>
+<div style="background: #fdf2f8; padding: 12px; border-radius: 6px; font-size: 0.85rem">
+<strong style="color: #be185d">Use when:</strong> <span style="color: #9d174d">"Control access to this object"</span><br>
+<strong style="color: #be185d">Changes:</strong> <span style="color: #9d174d">Access policy, not interface</span><br>
+<strong style="color: #be185d">Relationship:</strong> <span style="color: #9d174d">Identical interface to subject</span>
 </div>
 </div>
 </div>
-<div>
-<h4>Decision Tree</h4>
-<div>
+<div style="background: #f1f5f9; padding: 20px; border-radius: 12px; margin-top: 24px">
+<h4 style="color: #0f172a; margin-top: 0">Decision Tree</h4>
+<div style="color: #334155; font-size: 0.95rem">
 <pre><code>                            ```
                             Do you have an existing class with wrong interface?
                             ├─ YES → Do you need to change the interface signature?
@@ -2146,7 +2146,7 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </div>
 <hr />
 <h2 id="common-anti-patterns-and-pitfalls">Common Anti-Patterns and Pitfalls</h2>
-<div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h3 id="anti-pattern-1-business-logic-in-adapter">Anti-Pattern 1: Business Logic in Adapter</h3>
 <pre><code>                        ```python
                         # BAD: Adapter contains business rules
@@ -2292,7 +2292,7 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </div>
 <hr />
 <h2 id="testing-adapters">Testing Adapters</h2>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 24px; margin: 24px 0">
 <h3 id="testing-strategy">Testing Strategy</h3>
 <pre><code>                        ```python
                         import pytest
@@ -2460,11 +2460,11 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </div>
 <hr />
 <h2 id="key-takeaways">Key Takeaways</h2>
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 16px; padding: 28px; margin: 24px 0">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px">
 <div>
-<div>
-<div>
-<h4>Core Principles</h4>
-<ul>
+<h4 style="color: #1e40af; margin-top: 0">Core Principles</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
 <li><strong>Single Responsibility:</strong> Adapters ONLY translate interfaces</li>
 <li><strong>Bidirectional Translation:</strong> Transform both requests AND responses</li>
 <li><strong>Error Normalization:</strong> Convert provider errors to domain errors</li>
@@ -2472,8 +2472,8 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </ul>
 </div>
 <div>
-<h4>Design Decisions</h4>
-<ul>
+<h4 style="color: #1e40af; margin-top: 0">Design Decisions</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
 <li><strong>Object over Class:</strong> Prefer composition for flexibility</li>
 <li><strong>Interface Segregation:</strong> Don't implement what you can't support</li>
 <li><strong>Capability Discovery:</strong> Let clients query supported features</li>
@@ -2481,8 +2481,8 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </ul>
 </div>
 <div>
-<h4>Production Concerns</h4>
-<ul>
+<h4 style="color: #1e40af; margin-top: 0">Production Concerns</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
 <li><strong>Resilience:</strong> Circuit breakers and retry logic at adapter boundary</li>
 <li><strong>Idempotency:</strong> Handle duplicate requests from either side</li>
 <li><strong>Version Management:</strong> Strategy for adaptee API changes</li>
@@ -2490,8 +2490,8 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </ul>
 </div>
 <div>
-<h4>Common Pitfalls</h4>
-<ul>
+<h4 style="color: #1e40af; margin-top: 0">Common Pitfalls</h4>
+<ul style="color: #1e3a8a; margin: 0; padding-left: 20px">
 <li><strong>Business Logic Creep:</strong> Keep adapters pure translators</li>
 <li><strong>Leaky Abstractions:</strong> Don't expose adaptee-specific types</li>
 <li><strong>Adapter Chains:</strong> Avoid adapting adapters</li>
@@ -2499,9 +2499,9 @@ class VersionedStripeAdapter(PaymentGateway):<br />
 </ul>
 </div>
 </div>
-<div>
-<strong>Interview Insight:</strong>
-<span> <span>The adapter pattern is deceptively simple in concept but complex in production implementation.</span> Interviewers often probe for understanding of edge cases (lossy adaptation, error handling), production concerns (resilience, monitoring), and design trade-offs (class vs object adapter, interface segregation). Demonstrating awareness of two-way adapters and real API integration challenges shows senior-level thinking.</span>
+<div style="background: #eff6ff; padding: 20px; border-radius: 12px; margin-top: 20px">
+<strong style="color: #1e40af">Interview Insight:</strong>
+<span style="color: #1e3a8a"> <span style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 2px 6px; border-radius: 4px">The adapter pattern is deceptively simple in concept but complex in production implementation.</span> Interviewers often probe for understanding of edge cases (lossy adaptation, error handling), production concerns (resilience, monitoring), and design trade-offs (class vs object adapter, interface segregation). Demonstrating awareness of two-way adapters and real API integration challenges shows senior-level thinking.</span>
 </div>
 </div>
 <hr />

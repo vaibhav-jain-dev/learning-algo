@@ -1,27 +1,27 @@
 <h1 id="tic-tac-toe---machine-coding-deep-dive">Tic Tac Toe - Machine Coding Deep Dive</h1>
 <h2 id="problem-statement">Problem Statement</h2>
 <p>Design a production-ready Tic Tac Toe game supporting two players on an NxN board with configurable win conditions, O(1) win detection, undo functionality, and an unbeatable AI opponent using game theory.</p>
-<div>
-<h4>Why This Problem Matters in Interviews</h4>
-<p>Tic Tac Toe tests your ability to design clean abstractions, optimize algorithmic complexity, implement game theory (minimax), and handle state management - all core skills for building interactive systems, game engines, and decision-making algorithms.</p>
+<div style="background: #f8fafc;padding: 20px; border-radius: 8px; margin: 20px 0">
+<h4 style="color: #dc2626; margin-top: 0">Why This Problem Matters in Interviews</h4>
+<p style="color: #1e293b">Tic Tac Toe tests your ability to design clean abstractions, optimize algorithmic complexity, implement game theory (minimax), and handle state management - all core skills for building interactive systems, game engines, and decision-making algorithms.</p>
 </div>
 <hr />
 <h2 id="core-architecture-overview">Core Architecture Overview</h2>
-<div>
-<div>
-<div>
-<div>Game State Manager</div>
-<div>Board, Players, History</div>
+<div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
+<div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px">
+<div style="background: #f0fdf4;padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 140px">
+<div style="color: #fff; font-weight: bold; font-size: 14px">Game State Manager</div>
+<div style="color: #166534; font-size: 12px; margin-top: 8px">Board, Players, History</div>
 </div>
-<div>&#8594;</div>
-<div>
-<div>Win Detector</div>
-<div>O(1) Counter System</div>
+<div style="color: #1e40af; font-size: 24px; display: flex; align-items: center">&#8594;</div>
+<div style="background: #eff6ff;padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 140px">
+<div style="color: #fff; font-weight: bold; font-size: 14px">Win Detector</div>
+<div style="color: #1e40af; font-size: 12px; margin-top: 8px">O(1) Counter System</div>
 </div>
-<div>&#8594;</div>
-<div>
-<div>AI Engine</div>
-<div>Minimax + Alpha-Beta</div>
+<div style="color: #1e40af; font-size: 24px; display: flex; align-items: center">&#8594;</div>
+<div style="background: #f5f3ff;padding: 16px 24px; border-radius: 8px; text-align: center; min-width: 140px">
+<div style="color: #fff; font-weight: bold; font-size: 14px">AI Engine</div>
+<div style="color: #5b21b6; font-size: 12px; margin-top: 8px">Minimax + Alpha-Beta</div>
 </div>
 </div>
 </div>
@@ -29,23 +29,23 @@
 <h2 id="section-1-game-state-management">Section 1: Game State Management</h2>
 <h3 id="the-state-machine-model">The State Machine Model</h3>
 <p>Tic Tac Toe is fundamentally a <a href="/topics/system-design/state-machines">[finite state machine]</a> with deterministic transitions. Understanding this model is critical for building maintainable game logic.</p>
-<div>
-<h4>State Transition Diagram</h4>
-<div>
-<div>
-<div>INITIALIZED</div>
-<div>&#8594; Player X's turn</div>
-<div>IN_PROGRESS</div>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">State Transition Diagram</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #1e40af; font-weight: bold">INITIALIZED</div>
+<div style="color: #64748b">&#8594; Player X's turn</div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #22c55e; font-weight: bold">IN_PROGRESS</div>
 </div>
-<div>
-<div>IN_PROGRESS</div>
-<div>&#8594; Win detected</div>
-<div>X_WINS | O_WINS</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-left: 40px">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #22c55e; font-weight: bold">IN_PROGRESS</div>
+<div style="color: #64748b">&#8594; Win detected</div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #ef4444; font-weight: bold">X_WINS | O_WINS</div>
 </div>
-<div>
-<div>IN_PROGRESS</div>
-<div>&#8594; Board full, no winner</div>
-<div>DRAW</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-left: 40px">
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #22c55e; font-weight: bold">IN_PROGRESS</div>
+<div style="color: #64748b">&#8594; Board full, no winner</div>
+<div style="background: #f8fafc; padding: 12px 20px; border-radius: 6px;color: #c2410c; font-weight: bold">DRAW</div>
 </div>
 </div>
 </div>
@@ -108,9 +108,9 @@ class Move:
         if self.row &lt; 0 or self.col &lt; 0:
             raise ValueError(&quot;Move coordinates must be non-negative&quot;)
 </code></pre>
-<div>
-<h4>Key Assumption</h4>
-<p>The board is represented as a 2D array where <code>None</code> indicates an empty cell. This choice enables O(1) cell access but requires O(n^2) space. For sparse boards (large N with few moves), a <strong>dictionary-based representation</strong> <code>{(row, col): Player}</code> would be more memory-efficient.</p>
+<div style="background: #f0fdf4;padding: 20px; border-radius: 8px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Key Assumption</h4>
+<p style="color: #1e293b">The board is represented as a 2D array where <code>None</code> indicates an empty cell. This choice enables O(1) cell access but requires O(n^2) space. For sparse boards (large N with few moves), a <strong>dictionary-based representation</strong> <code>{(row, col): Player}</code> would be more memory-efficient.</p>
 </div>
 <h3 id="the-command-pattern-for-move-history">The Command Pattern for Move History</h3>
 <p>Implementing undo/redo requires the <a href="/topics/design-patterns/command">[Command Pattern]</a>:</p>
@@ -331,8 +331,8 @@ class TicTacToe:
         return new_game
 </code></pre>
 <h3 id="interview-questions---game-state-management">Interview Questions - Game State Management</h3>
-<div>
-<h4>Level 1: Fundamentals</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
 <p><strong>Q1: Why use an Enum for Player instead of strings or integers?</strong></p>
 <p>Enums provide type safety, prevent typos, enable exhaustive pattern matching, and are self-documenting. With strings, <code>&quot;x&quot;</code> vs <code>&quot;X&quot;</code> could cause bugs. With integers, <code>3</code> has no semantic meaning.</p>
 <p><strong>Q2: How would you detect if the game is a draw before the board is full?</strong></p>
@@ -353,8 +353,8 @@ class TicTacToe:
     return True
 </code></pre>
 </div>
-<div>
-<h4>Level 2: Design Trade-offs</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Design Trade-offs</h4>
 <p><strong>Q3: The current design stores the full board AND counters. Is this redundant? What are the trade-offs?</strong></p>
 <p>Yes, it's redundant - the board alone is sufficient for correctness. However:</p>
 <ul>
@@ -373,8 +373,8 @@ class TicTacToe:
 </code></pre>
 <p><strong>Gotcha</strong>: The naive implementation above has a bug - <code>make_move</code> clears <code>redo_stack</code>. Need to either bypass the clear or use a flag.</p>
 </div>
-<div>
-<h4>Level 3: Production Scenarios</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: Production Scenarios</h4>
 <p><strong>Q5: How would you handle concurrent players in a distributed system?</strong></p>
 <p>This requires <a href="/topics/system-design/distributed-locking">[distributed locking]</a> and <a href="/topics/system-design/optimistic-locking">[optimistic concurrency]</a>:</p>
 <ol>
@@ -414,38 +414,38 @@ def apply_move_distributed(request: MoveRequest) -&gt; MoveResult:
 <h2 id="section-2-win-detection-algorithms">Section 2: Win Detection Algorithms</h2>
 <h3 id="the-counter-based-o1-approach">The Counter-Based O(1) Approach</h3>
 <p>The key insight is that we don't need to check the entire board - only the lines affected by the last move.</p>
-<div>
-<h4>Win Lines Through Any Cell</h4>
-<div>
-<div>
-<div>Standard Cell (not on diagonal)</div>
-<div>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Win Lines Through Any Cell</h4>
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 16px">
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #22c55e; font-weight: bold; margin-bottom: 8px">Standard Cell (not on diagonal)</div>
+<div style="color: #64748b; font-size: 14px">
 Passes through exactly 2 lines:<br/>
 - 1 horizontal row<br/>
 - 1 vertical column
 </div>
 </div>
-<div>
-<div>Main Diagonal Cell (row == col)</div>
-<div>
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #1e40af; font-weight: bold; margin-bottom: 8px">Main Diagonal Cell (row == col)</div>
+<div style="color: #64748b; font-size: 14px">
 Passes through exactly 3 lines:<br/>
 - 1 horizontal row<br/>
 - 1 vertical column<br/>
 - 1 main diagonal
 </div>
 </div>
-<div>
-<div>Anti-Diagonal Cell (row + col == n-1)</div>
-<div>
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #5b21b6; font-weight: bold; margin-bottom: 8px">Anti-Diagonal Cell (row + col == n-1)</div>
+<div style="color: #64748b; font-size: 14px">
 Passes through exactly 3 lines:<br/>
 - 1 horizontal row<br/>
 - 1 vertical column<br/>
 - 1 anti-diagonal
 </div>
 </div>
-<div>
-<div>Center Cell (odd n only)</div>
-<div>
+<div style="background: #eff6ff;border-radius: 8px; padding: 16px">
+<div style="color: #c2410c; font-weight: bold; margin-bottom: 8px">Center Cell (odd n only)</div>
+<div style="color: #64748b; font-size: 14px">
 Passes through exactly 4 lines:<br/>
 - 1 horizontal row<br/>
 - 1 vertical column<br/>
@@ -509,33 +509,33 @@ Passes through exactly 4 lines:<br/>
 
         return 0
 </code></pre>
-<div>
-<h4>Trade-off Analysis: Two Counters vs Signed Counter</h4>
-<table>
-<tr>
-<th>Aspect</th>
-<th>Two Counters</th>
-<th>Signed Counter</th>
+<div style="background: #f5f3ff;padding: 20px; border-radius: 8px; margin: 20px 0">
+<h4 style="color: #5b21b6; margin-top: 0">Trade-off Analysis: Two Counters vs Signed Counter</h4>
+<table style="width: 100%; color: #1e293b; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 8px">Aspect</th>
+<th style="text-align: left; padding: 8px">Two Counters</th>
+<th style="text-align: left; padding: 8px">Signed Counter</th>
+</tr>
+<tr >
+<td style="padding: 8px">Space</td>
+<td style="padding: 8px">4n + 4 integers</td>
+<td style="padding: 8px">2n + 2 integers</td>
+</tr>
+<tr >
+<td style="padding: 8px">Undo Support</td>
+<td style="padding: 8px">Easy (decrement)</td>
+<td style="padding: 8px">Easy (subtract delta)</td>
+</tr>
+<tr >
+<td style="padding: 8px">Draw Detection</td>
+<td style="padding: 8px">Check both counters > 0</td>
+<td style="padding: 8px">Cannot detect blocked lines</td>
 </tr>
 <tr>
-<td>Space</td>
-<td>4n + 4 integers</td>
-<td>2n + 2 integers</td>
-</tr>
-<tr>
-<td>Undo Support</td>
-<td>Easy (decrement)</td>
-<td>Easy (subtract delta)</td>
-</tr>
-<tr>
-<td>Draw Detection</td>
-<td>Check both counters> 0</td>
-<td>Cannot detect blocked lines</td>
-</tr>
-<tr>
-<td>Extensibility</td>
-<td>Supports 3+ players</td>
-<td>Only 2 players</td>
+<td style="padding: 8px">Extensibility</td>
+<td style="padding: 8px">Supports 3+ players</td>
+<td style="padding: 8px">Only 2 players</td>
 </tr>
 </table>
 </div>
@@ -620,8 +620,8 @@ Passes through exactly 4 lines:<br/>
         return count
 </code></pre>
 <h3 id="interview-questions---win-detection">Interview Questions - Win Detection</h3>
-<div>
-<h4>Level 1: Fundamentals</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
 <p><strong>Q1: Why is the center cell special for win detection?</strong></p>
 <p>The center cell (for odd-sized boards) lies on both diagonals. Position (n//2, n//2) satisfies both:</p>
 <ul>
@@ -633,8 +633,8 @@ Passes through exactly 4 lines:<br/>
 <p>No. The fundamental problem is that the winning sequence can start anywhere along the line. With N-in-a-row, there's only one possible sequence per line. With M &lt; N, there are N - M + 1 possible positions, and we must find which one (if any) is complete.</p>
 <p>However, we can optimize to O(M) instead of O(N) by only checking M cells in each direction from the last move.</p>
 </div>
-<div>
-<h4>Level 2: Algorithm Optimization</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Algorithm Optimization</h4>
 <p><strong>Q3: How would you modify the counter approach to detect &quot;three corners&quot; as an alternate win condition?</strong></p>
 <p>Corners are fixed positions: (0,0), (0,n-1), (n-1,0), (n-1,n-1). Add dedicated corner counters:</p>
 <pre><code class="language-python">def __init__(self, n):
@@ -665,8 +665,8 @@ def update_streaks(self, row, col, player):
 </code></pre>
 <p>This achieves O(1) per move at cost of O(n^2 * 4) space.</p>
 </div>
-<div>
-<h4>Level 3: System Design Scenarios</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: System Design Scenarios</h4>
 <p><strong>Q5: You're building a spectator system where millions of users watch a game. Each move must broadcast win status. How do you scale win detection?</strong></p>
 <p>The win check itself is already O(1), so the bottleneck is <a href="/topics/system-design/pub-sub">[broadcasting]</a>. Solutions:</p>
 <ol>
@@ -717,44 +717,44 @@ self.space_diagonals = [0] * 4
 <hr />
 <h2 id="section-3-nxn-board-extensibility">Section 3: NxN Board Extensibility</h2>
 <h3 id="architectural-considerations">Architectural Considerations</h3>
-<div>
-<h4>Scaling Dimensions</h4>
-<table>
-<tr>
-<th>Board Size</th>
-<th>Total States</th>
-<th>AI Feasibility</th>
-<th>Typical Use</th>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Scaling Dimensions</h4>
+<table style="width: 100%; color: #1e293b; border-collapse: collapse">
+<tr >
+<th style="text-align: left; padding: 12px">Board Size</th>
+<th style="text-align: left; padding: 12px">Total States</th>
+<th style="text-align: left; padding: 12px">AI Feasibility</th>
+<th style="text-align: left; padding: 12px">Typical Use</th>
+</tr>
+<tr >
+<td style="padding: 12px">3x3</td>
+<td style="padding: 12px">~5,500</td>
+<td style="padding: 12px; color: #22c55e">Perfect play (minimax)</td>
+<td style="padding: 12px">Classic game</td>
+</tr>
+<tr >
+<td style="padding: 12px">4x4</td>
+<td style="padding: 12px">~6 million</td>
+<td style="padding: 12px; color: #22c55e">Perfect play with pruning</td>
+<td style="padding: 12px">Extended variant</td>
+</tr>
+<tr >
+<td style="padding: 12px">5x5 (4 to win)</td>
+<td style="padding: 12px">~10^12</td>
+<td style="padding: 12px; color: #c2410c">Heuristic required</td>
+<td style="padding: 12px">Gomoku variant</td>
+</tr>
+<tr >
+<td style="padding: 12px">15x15 (5 to win)</td>
+<td style="padding: 12px">~3^225</td>
+<td style="padding: 12px; color: #ef4444">MCTS or neural nets</td>
+<td style="padding: 12px">Gomoku</td>
 </tr>
 <tr>
-<td>3x3</td>
-<td>~5,500</td>
-<td>Perfect play (minimax)</td>
-<td>Classic game</td>
-</tr>
-<tr>
-<td>4x4</td>
-<td>~6 million</td>
-<td>Perfect play with pruning</td>
-<td>Extended variant</td>
-</tr>
-<tr>
-<td>5x5 (4 to win)</td>
-<td>~10^12</td>
-<td>Heuristic required</td>
-<td>Gomoku variant</td>
-</tr>
-<tr>
-<td>15x15 (5 to win)</td>
-<td>~3^225</td>
-<td>MCTS or neural nets</td>
-<td>Gomoku</td>
-</tr>
-<tr>
-<td>19x19 (5 to win)</td>
-<td>~3^361</td>
-<td>AlphaGo-style</td>
-<td>Go (different rules)</td>
+<td style="padding: 12px">19x19 (5 to win)</td>
+<td style="padding: 12px">~3^361</td>
+<td style="padding: 12px; color: #ef4444">AlphaGo-style</td>
+<td style="padding: 12px">Go (different rules)</td>
 </tr>
 </table>
 </div>
@@ -957,8 +957,8 @@ class DirectionBasedWinDetector(WinDetector):
         pass  # Stateless - board is source of truth
 </code></pre>
 <h3 id="interview-questions---nxn-extensibility">Interview Questions - NxN Extensibility</h3>
-<div>
-<h4>Level 1: Fundamentals</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
 <p><strong>Q1: What breaks when you scale from 3x3 to 100x100?</strong></p>
 <ol>
 <li><strong>Memory</strong>: Board alone is 10,000 cells; acceptable</li>
@@ -976,8 +976,8 @@ class DirectionBasedWinDetector(WinDetector):
 <p>Maximum: 4 directions x 4 sequences = 16 potential winning contributions.<br />
 For a center cell, it could complete any of these 16.</p>
 </div>
-<div>
-<h4>Level 2: Architecture Decisions</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Architecture Decisions</h4>
 <p><strong>Q3: How would you implement &quot;Misere&quot; Tic Tac Toe (getting N-in-a-row LOSES)?</strong></p>
 <p>Minimal change - just invert the win detection outcome:</p>
 <pre><code class="language-python">def make_move(self, row, col):
@@ -1004,8 +1004,8 @@ For a center cell, it could complete any of these 16.</p>
 </code></pre>
 <p>Variants only need to provide their own implementations of these interfaces.</p>
 </div>
-<div>
-<h4>Level 3: Performance at Scale</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: Performance at Scale</h4>
 <p><strong>Q5: You need to support 1000x1000 boards for a massively multiplayer variant. What architectural changes are needed?</strong></p>
 <ol>
 <li>
@@ -1068,23 +1068,23 @@ For a center cell, it could complete any of these 16.</p>
 <li><strong>Finite</strong>: Game always terminates</li>
 </ol>
 <p>These properties guarantee that an optimal strategy exists and can be computed.</p>
-<div>
-<h4>Minimax Game Tree Concept</h4>
-<div>
-<div>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<h4 style="color: #1e40af; margin-top: 0">Minimax Game Tree Concept</h4>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px">
+<div style="background: #238636; color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: bold">
 MAX Layer (AI's turn) - Chooses highest value
 </div>
-<div>|</div>
-<div>
-<div>Score: 0</div>
-<div>Score: +10</div>
-<div>Score: -10</div>
+<div style="color: #64748b; font-size: 24px">|</div>
+<div style="display: flex; gap: 40px">
+<div style="background: #1f6feb; color: #fff; padding: 10px 20px; border-radius: 6px">Score: 0</div>
+<div style="background: #1f6feb; color: #fff; padding: 10px 20px; border-radius: 6px">Score: +10</div>
+<div style="background: #1f6feb; color: #fff; padding: 10px 20px; border-radius: 6px">Score: -10</div>
 </div>
-<div>|</div>
-<div>
+<div style="color: #64748b; font-size: 24px">|</div>
+<div style="background: #f85149; color: #fff; padding: 12px 24px; border-radius: 8px; font-weight: bold">
 MIN Layer (Opponent's turn) - Chooses lowest value
 </div>
-<div>
+<div style="color: #64748b; font-size: 12px; margin-top: 8px">
 Scores: +10 = AI wins, -10 = Opponent wins, 0 = Draw
 </div>
 </div>
@@ -1409,8 +1409,8 @@ class ZobristHasher:
         return self.current_hash
 </code></pre>
 <h3 id="interview-questions---ai-opponent">Interview Questions - AI Opponent</h3>
-<div>
-<h4>Level 1: Fundamentals</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 1: Fundamentals</h4>
 <p><strong>Q1: Why do we subtract depth from the win score?</strong></p>
 <p>Without depth adjustment, the AI treats all wins equally. It might delay a guaranteed win by several moves, which:</p>
 <ol>
@@ -1422,8 +1422,8 @@ class ZobristHasher:
 <p><strong>Q2: What happens if we use DFS instead of minimax?</strong></p>
 <p>DFS doesn't consider opponent strategy - it just explores one path. Minimax assumes the opponent plays optimally (worst case for us). DFS might find a winning path that relies on opponent mistakes, which a perfect opponent won't make.</p>
 </div>
-<div>
-<h4>Level 2: Algorithm Optimization</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 2: Algorithm Optimization</h4>
 <p><strong>Q3: Alpha-beta pruning depends on move ordering. How would you learn good move ordering?</strong></p>
 <ol>
 <li>
@@ -1461,8 +1461,8 @@ class ZobristHasher:
     return self.get_best_move()
 </code></pre>
 </div>
-<div>
-<h4>Level 3: Advanced Techniques</h4>
+<div style="background: #f8fafc;border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #c2410c; margin-top: 0">Level 3: Advanced Techniques</h4>
 <p><strong>Q5: For a 10x10 board (5-in-a-row), minimax is infeasible. What alternatives exist?</strong></p>
 <ol>
 <li>
@@ -1867,55 +1867,55 @@ func (ai *AI) evaluateTerminal(depth int) float64 {
 </code></pre>
 <hr />
 <h2 id="complexity-summary">Complexity Summary</h2>
-<div>
-<table>
-<tr>
-<th>Operation</th>
-<th>Naive</th>
-<th>Optimized</th>
-<th>Notes</th>
+<div style="background: #f0fdf4;border-radius: 8px; padding: 20px; margin: 20px 0">
+<table style="width: 100%; color: #1e293b; border-collapse: collapse">
+<tr style="background: #f8fafc">
+<th style="padding: 12px; text-align: left">Operation</th>
+<th style="padding: 12px; text-align: left">Naive</th>
+<th style="padding: 12px; text-align: left">Optimized</th>
+<th style="padding: 12px; text-align: left">Notes</th>
+</tr>
+<tr >
+<td style="padding: 12px">Make Move</td>
+<td style="padding: 12px; color: #c2410c">O(n)</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #64748b">Counter updates</td>
+</tr>
+<tr >
+<td style="padding: 12px">Win Check (N-in-a-row)</td>
+<td style="padding: 12px; color: #c2410c">O(n)</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #64748b">Counter comparison</td>
+</tr>
+<tr >
+<td style="padding: 12px">Win Check (M-in-a-row)</td>
+<td style="padding: 12px; color: #ef4444">O(n)</td>
+<td style="padding: 12px; color: #c2410c">O(m)</td>
+<td style="padding: 12px; color: #64748b">Direction scan</td>
+</tr>
+<tr >
+<td style="padding: 12px">Get Valid Moves</td>
+<td style="padding: 12px; color: #ef4444">O(n^2)</td>
+<td style="padding: 12px; color: #22c55e">O(1)*</td>
+<td style="padding: 12px; color: #64748b">*With set maintenance</td>
+</tr>
+<tr >
+<td style="padding: 12px">Undo</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #22c55e">O(1)</td>
+<td style="padding: 12px; color: #64748b">Pop from history</td>
+</tr>
+<tr >
+<td style="padding: 12px">AI (3x3)</td>
+<td style="padding: 12px; color: #ef4444">O(9!)</td>
+<td style="padding: 12px; color: #22c55e">~O(150)</td>
+<td style="padding: 12px; color: #64748b">Alpha-beta pruning</td>
 </tr>
 <tr>
-<td>Make Move</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>Counter updates</td>
-</tr>
-<tr>
-<td>Win Check (N-in-a-row)</td>
-<td>O(n)</td>
-<td>O(1)</td>
-<td>Counter comparison</td>
-</tr>
-<tr>
-<td>Win Check (M-in-a-row)</td>
-<td>O(n)</td>
-<td>O(m)</td>
-<td>Direction scan</td>
-</tr>
-<tr>
-<td>Get Valid Moves</td>
-<td>O(n^2)</td>
-<td>O(1)*</td>
-<td>*With set maintenance</td>
-</tr>
-<tr>
-<td>Undo</td>
-<td>O(1)</td>
-<td>O(1)</td>
-<td>Pop from history</td>
-</tr>
-<tr>
-<td>AI (3x3)</td>
-<td>O(9!)</td>
-<td>~O(150)</td>
-<td>Alpha-beta pruning</td>
-</tr>
-<tr>
-<td>Space</td>
-<td>O(n^2)</td>
-<td>O(n^2)</td>
-<td>Board dominates</td>
+<td style="padding: 12px">Space</td>
+<td style="padding: 12px; color: #c2410c">O(n^2)</td>
+<td style="padding: 12px; color: #c2410c">O(n^2)</td>
+<td style="padding: 12px; color: #64748b">Board dominates</td>
 </tr>
 </table>
 </div>

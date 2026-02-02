@@ -6,40 +6,40 @@
 <h3 id="foundational-architecture">Foundational Architecture</h3>
 <p><strong>REST (Representational State Transfer)</strong> models APIs around resources with standardized HTTP semantics. Each resource has a canonical URL, and operations map to HTTP methods. The server dictates response structure.</p>
 <p><strong>GraphQL</strong> models APIs around a typed schema with a single endpoint. Clients specify exactly what data they need through queries. The client dictates response structure.</p>
-<div>
-<h4>REST vs GraphQL: Request Flow Comparison</h4>
-<div>
-<div>
-<div>REST: Multiple Round Trips</div>
-<div>
-<div>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">REST vs GraphQL: Request Flow Comparison</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 24px">
+<div style="flex: 1; min-width: 300px">
+<div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600">REST: Multiple Round Trips</div>
+<div style="background: #eff6ff; padding: 16px; border-radius: 0 0 8px 8px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px">
 <strong>Request 1:</strong> GET /users/123
 </div>
-<div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px">
   Response: {id, name, email}
 </div>
-<div>
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px">
 <strong>Request 2:</strong> GET /users/123/orders
 </div>
-<div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px">
   Response: [{orderId, total, items}...]
 </div>
-<div>
+<div style="background: #dbeafe; color: #1e40af; padding: 8px 12px; border-radius: 4px; font-size: 13px">
 <strong>Request 3:</strong> GET /products/456
 </div>
-<div>
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 13px">
   Response: {productId, name, price}
 </div>
 </div>
-<div>3 round trips, potential over-fetching</div>
+<div style="color: #f97316; font-size: 12px; margin-top: 12px; text-align: center">3 round trips, potential over-fetching</div>
 </div>
 </div>
-<div>
-<div>GraphQL: Single Request</div>
-<div>
-<div>
-<div>query {
+<div style="flex: 1; min-width: 300px">
+<div style="background: #e11d48; color: white; padding: 8px 16px; border-radius: 8px 8px 0 0; font-weight: 600">GraphQL: Single Request</div>
+<div style="background: #fff1f2; padding: 16px; border-radius: 0 0 8px 8px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #fce7f3; color: #9d174d; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre">query {
   user(id: "123") {
   name
   orders(first: 5) {
@@ -48,14 +48,14 @@
   }
   }
 }</div>
-<div>{
+<div style="background: #dcfce7; color: #166534; padding: 8px 12px; border-radius: 4px; font-size: 12px; font-family: monospace; white-space: pre">{
   "user": {
   "name": "Alice",
   "orders": [...]
   }
 }</div>
 </div>
-<div>1 round trip, exact data requested</div>
+<div style="color: #4ade80; font-size: 12px; margin-top: 12px; text-align: center">1 round trip, exact data requested</div>
 </div>
 </div>
 </div>
@@ -94,19 +94,19 @@ const orderLoader = new DataLoader(async (userIds) =&gt; {
 });
 </code></pre>
 <h3 id="trade-offs-deep-dive">Trade-offs Deep Dive</h3>
-<div>
-<h4>Critical Trade-off: Query Complexity Control</h4>
-<div>
+<div style="background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #92400e; margin: 0 0 16px 0">Critical Trade-off: Query Complexity Control</h4>
+<div style="color: #1e293b; font-size: 14px; line-height: 1.6">
 <p><strong>The Problem:</strong> GraphQL allows arbitrarily deep queries. A malicious or naive client can request:</p>
-<pre>query Evil {
+<pre style="background: #f1f5f9; color: #1e293b; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto">query Evil {
   user(id: "1") {
   friends { friends { friends { friends { friends {
   posts { comments { author { posts { comments { ... } } } } }
   } } } } }
   }
 }</pre>
-<p><strong>Mitigation Strategies:</strong></p>
-<ul>
+<p style="margin-top: 12px"><strong>Mitigation Strategies:</strong></p>
+<ul style="margin: 8px 0; padding-left: 20px">
 <li><strong>Query Depth Limiting:</strong> Reject queries exceeding N levels (typically 7-10)</li>
 <li><strong>Query Cost Analysis:</strong> Assign weights to fields, reject queries exceeding budget</li>
 <li><strong>Persistent Queries:</strong> Only allow pre-registered query hashes in production</li>
@@ -271,47 +271,47 @@ app.use((req, res, next) =&gt; {
 <li><strong>Poor UX</strong>: Users waiting minutes for data loads</li>
 </ul>
 <h3 id="pagination-approaches">Pagination Approaches</h3>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center">Pagination Strategy Comparison</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="background: #fee2e2;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px">
 <div>
-<h4>Pagination Strategy Comparison</h4>
-<div>
-<div>
-<div>
-<div>
-<div>Offset Pagination</div>
-<code>SELECT * FROM items LIMIT 20 OFFSET 1000</code>
+<div style="color: #b91c1c; font-weight: 600; font-size: 16px">Offset Pagination</div>
+<code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px">SELECT * FROM items LIMIT 20 OFFSET 1000</code>
 </div>
-<div>
-<div>O(offset + limit)</div>
-<div>Performance degrades with offset</div>
-</div>
-</div>
-<div>Database must scan and discard offset rows. At offset 1M, DB reads 1M rows to return 20.</div>
-</div>
-<div>
-<div>
-<div>
-<div>Cursor/Keyset Pagination</div>
-<code>SELECT * FROM items WHERE id> 1000 LIMIT 20</code>
-</div>
-<div>
-<div>O(limit)</div>
-<div>Constant time regardless of position</div>
+<div style="text-align: right">
+<div style="color: #b91c1c; font-weight: 600">O(offset + limit)</div>
+<div style="color: #64748b; font-size: 12px">Performance degrades with offset</div>
 </div>
 </div>
-<div>Uses indexed column for positioning. Index seek directly to starting row. Consistent performance.</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px">Database must scan and discard offset rows. At offset 1M, DB reads 1M rows to return 20.</div>
 </div>
+<div style="background: #dcfce7;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px">
 <div>
-<div>
-<div>
-<div>Seek Pagination (Composite Keys)</div>
-<code>WHERE (date, id)> ('2024-01-15', 500) LIMIT 20</code>
+<div style="color: #15803d; font-weight: 600; font-size: 16px">Cursor/Keyset Pagination</div>
+<code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px">SELECT * FROM items WHERE id > 1000 LIMIT 20</code>
 </div>
+<div style="text-align: right">
+<div style="color: #15803d; font-weight: 600">O(limit)</div>
+<div style="color: #64748b; font-size: 12px">Constant time regardless of position</div>
+</div>
+</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px">Uses indexed column for positioning. Index seek directly to starting row. Consistent performance.</div>
+</div>
+<div style="background: #dbeafe;padding: 16px; border-radius: 0 8px 8px 0">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px">
 <div>
-<div>O(limit)</div>
-<div>Supports complex sort orders</div>
+<div style="color: #1e40af; font-weight: 600; font-size: 16px">Seek Pagination (Composite Keys)</div>
+<code style="background: #f1f5f9; color: #1e293b; padding: 4px 8px; border-radius: 4px; font-size: 12px">WHERE (date, id) > ('2024-01-15', 500) LIMIT 20</code>
+</div>
+<div style="text-align: right">
+<div style="color: #1e40af; font-weight: 600">O(limit)</div>
+<div style="color: #64748b; font-size: 12px">Supports complex sort orders</div>
 </div>
 </div>
-<div>Row value comparison on composite index. Enables pagination on non-unique columns with tiebreaker.</div>
+<div style="color: #1e293b; font-size: 13px; margin-top: 8px">Row value comparison on composite index. Enables pagination on non-unique columns with tiebreaker.</div>
 </div>
 </div>
 </div>
@@ -348,24 +348,24 @@ function decodeCursor(cursor) {
 </code></pre>
 <p><strong>Critical Assumption</strong>: Cursor pagination assumes stable sort order. If <code>created_at</code> has duplicates, results become unpredictable without a tiebreaker (typically the unique <code>id</code>).</p>
 <h3 id="edge-cases-and-failure-modes">Edge Cases and Failure Modes</h3>
-<div>
-<h4>Pagination Pitfalls</h4>
-<div>
-<div>
-<div>Page Drift (Offset Pagination)</div>
-<div>User on page 5. New item inserted. Page 6 request shows item already seen on page 5 (duplicate) while another item is skipped entirely.</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #b91c1c; margin: 0 0 16px 0">Pagination Pitfalls</h4>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Page Drift (Offset Pagination)</div>
+<div style="color: #1e293b; font-size: 13px">User on page 5. New item inserted. Page 6 request shows item already seen on page 5 (duplicate) while another item is skipped entirely.</div>
 </div>
-<div>
-<div>Cursor Invalidation</div>
-<div>Cursor references item_123. Item deleted. Next page query fails or returns unexpected results. Must handle gracefully with "cursor expired" error.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Cursor Invalidation</div>
+<div style="color: #1e293b; font-size: 13px">Cursor references item_123. Item deleted. Next page query fails or returns unexpected results. Must handle gracefully with "cursor expired" error.</div>
 </div>
-<div>
-<div>Non-Unique Sort Column</div>
-<div>Sorting by created_at where 1000 items share same timestamp. Keyset pagination with WHERE created_at> X either skips items or returns duplicates.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Non-Unique Sort Column</div>
+<div style="color: #1e293b; font-size: 13px">Sorting by created_at where 1000 items share same timestamp. Keyset pagination with WHERE created_at > X either skips items or returns duplicates.</div>
 </div>
-<div>
-<div>Backward Pagination Complexity</div>
-<div>Moving backward requires reversing sort order, then reversing results. Edge: first page has no "previous" cursor; must handle client-side.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600">Backward Pagination Complexity</div>
+<div style="color: #1e293b; font-size: 13px">Moving backward requires reversing sort order, then reversing results. Edge: first page has no "previous" cursor; must handle client-side.</div>
 </div>
 </div>
 </div>
@@ -564,40 +564,40 @@ const activeShards = shards.filter(s =&gt;
 <h2 id="api-versioning">API Versioning</h2>
 <h3 id="why-versioning-matters">Why Versioning Matters</h3>
 <p>APIs are contracts. Once clients integrate, any breaking change causes production failures. Versioning provides escape hatches for evolution while maintaining backward compatibility.</p>
-<div>
-<h4>Versioning Strategy Comparison</h4>
-<div>
-<div>
-<div>URL Path Versioning</div>
-<code>/v1/users/123</code>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 20px 0; text-align: center">Versioning Strategy Comparison</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1; min-width: 220px; background: #dcfce7; padding: 16px; border-radius: 8px">
+<div style="color: #15803d; font-weight: 600; margin-bottom: 8px">URL Path Versioning</div>
+<code style="background: #166534; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">/v1/users/123</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
 <strong>Pros:</strong> Explicit, cacheable, easy routing<br>
 <strong>Cons:</strong> URL pollution, version lock-in<br>
 <strong>Used by:</strong> Stripe, GitHub, Twitter
 </div>
 </div>
-<div>
-<div>Header Versioning</div>
-<code>Accept: application/vnd.api.v2+json</code>
-<div>
+<div style="flex: 1; min-width: 220px; background: #dbeafe; padding: 16px; border-radius: 8px">
+<div style="color: #1e40af; font-weight: 600; margin-bottom: 8px">Header Versioning</div>
+<code style="background: #1e40af; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">Accept: application/vnd.api.v2+json</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
 <strong>Pros:</strong> Clean URLs, content negotiation<br>
 <strong>Cons:</strong> Hidden, harder to test<br>
 <strong>Used by:</strong> GitHub (also), Azure
 </div>
 </div>
-<div>
-<div>Query Parameter</div>
-<code>/users/123?api-version=2024-01</code>
-<div>
+<div style="flex: 1; min-width: 220px; background: #fef3c7; padding: 16px; border-radius: 8px">
+<div style="color: #92400e; font-weight: 600; margin-bottom: 8px">Query Parameter</div>
+<code style="background: #92400e; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">/users/123?api-version=2024-01</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
 <strong>Pros:</strong> Optional, gradual adoption<br>
 <strong>Cons:</strong> Easy to forget, cache key issues<br>
 <strong>Used by:</strong> AWS, Google Cloud
 </div>
 </div>
-<div>
-<div>Date-Based Versioning</div>
-<code>Stripe-Version: 2024-01-15</code>
-<div>
+<div style="flex: 1; min-width: 220px; background: #f3e8ff; padding: 16px; border-radius: 8px">
+<div style="color: #7c3aed; font-weight: 600; margin-bottom: 8px">Date-Based Versioning</div>
+<code style="background: #7c3aed; color: white; padding: 6px 10px; border-radius: 4px; font-size: 12px; display: block">Stripe-Version: 2024-01-15</code>
+<div style="color: #1e293b; font-size: 12px; margin-top: 12px">
 <strong>Pros:</strong> Fine-grained, self-documenting<br>
 <strong>Cons:</strong> Complex support matrix<br>
 <strong>Used by:</strong> Stripe
@@ -661,13 +661,13 @@ const activeShards = shards.filter(s =&gt;
             ```
 </code></pre>
 <h3 id="breaking-vs-non-breaking-changes">Breaking vs Non-Breaking Changes</h3>
-<div>
-<h4>Change Classification</h4>
-<div>
-<div>
-<div>Non-Breaking (Safe)</div>
-<div>
-<ul>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Change Classification</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1; min-width: 280px">
+<div style="background: #dcfce7; padding: 12px; border-radius: 8px 8px 0 0; color: #15803d; font-weight: 600">Non-Breaking (Safe)</div>
+<div style="background: #f0fdf4; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
 <li>Adding new optional fields to responses</li>
 <li>Adding new optional request parameters</li>
 <li>Adding new endpoints</li>
@@ -677,10 +677,10 @@ const activeShards = shards.filter(s =&gt;
 </ul>
 </div>
 </div>
-<div>
-<div>Breaking (Requires New Version)</div>
-<div>
-<ul>
+<div style="flex: 1; min-width: 280px">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600">Breaking (Requires New Version)</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
 <li>Removing or renaming fields</li>
 <li>Changing field types (int to string)</li>
 <li>Changing response structure</li>
@@ -811,35 +811,35 @@ const activeShards = shards.filter(s =&gt;
 - Service A might be on internal v3, Service B on internal v5<br />
 - Client specifies gateway version; gateway must translate to each service's version</p>
 <p><strong>Solution Architecture:</strong></p>
-<div>
-<h4>Version Translation Architecture</h4>
-<div>
-<div>
-<div>Client Request</div>
-<div>API-Version: 2024-01</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Version Translation Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 12px; align-items: center">
+<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">Client Request</div>
+<div style="font-size: 12px; opacity: 0.9">API-Version: 2024-01</div>
 </div>
-<div>|</div>
-<div>
-<div>API Gateway</div>
-<div>Version Registry + Transform Engine</div>
+<div style="color: #94a3b8">|</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; text-align: center; width: 80%; max-width: 400px">
+<div style="font-weight: 600">API Gateway</div>
+<div style="font-size: 12px; opacity: 0.9; margin-top: 4px">Version Registry + Transform Engine</div>
 </div>
-<div>
+<div style="display: flex; gap: 24px; color: #94a3b8">
 <span>|</span>
 <span>|</span>
 <span>|</span>
 </div>
-<div>
-<div>
-<div>User Service</div>
-<div>Internal v3.2</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
+<div style="background: #22c55e; color: white; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600; font-size: 14px">User Service</div>
+<div style="font-size: 11px; opacity: 0.9">Internal v3.2</div>
 </div>
-<div>
-<div>Order Service</div>
-<div>Internal v2.1</div>
+<div style="background: #f59e0b; color: white; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600; font-size: 14px">Order Service</div>
+<div style="font-size: 11px; opacity: 0.9">Internal v2.1</div>
 </div>
-<div>
-<div>Payment Service</div>
-<div>Internal v4.0</div>
+<div style="background: #ef4444; color: white; padding: 12px 16px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600; font-size: 14px">Payment Service</div>
+<div style="font-size: 11px; opacity: 0.9">Internal v4.0</div>
 </div>
 </div>
 </div>
@@ -923,41 +923,41 @@ const response = await request(app)<br />
 <p>An operation <code>f</code> is idempotent if: <code>f(f(x)) = f(x)</code></p>
 <p>For APIs: Replaying a request with the same idempotency key returns the same response without re-executing side effects.</p>
 <h3 id="implementation-architecture">Implementation Architecture</h3>
-<div>
-<h4>Idempotency Request Flow</h4>
-<div>
-<div>
-<div>Request + Key</div>
-<div>--></div>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Idempotency Request Flow</h4>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+<div style="background: #3b82f6; color: white; padding: 8px 16px; border-radius: 8px; min-width: 120px; text-align: center">Request + Key</div>
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
 <strong>1. Check Store</strong>: Key exists?
 </div>
 </div>
-<div>
-<div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="background: #22c55e; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
 <strong>YES</strong>: Return cached response (no side effects)
 </div>
 </div>
-<div>
-<div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
 <strong>NO</strong>: Acquire lock, process request
 </div>
 </div>
-<div>
-<div>--></div>
-<div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
 <strong>2. Execute</strong>: Run business logic
 </div>
 </div>
-<div>
-<div>--></div>
-<div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
 <strong>3. Store</strong>: Save response with key (TTL: 24h)
 </div>
 </div>
-<div>
-<div>--></div>
-<div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-left: 20px">
+<div style="color: #94a3b8">--></div>
+<div style="background: #8b5cf6; color: white; padding: 8px 16px; border-radius: 8px; flex: 1; min-width: 200px">
 <strong>4. Release</strong>: Unlock, return response
 </div>
 </div>
@@ -1096,24 +1096,24 @@ const response = await request(app)<br />
             ```
 </code></pre>
 <h3 id="edge-cases-and-failure-modes-1">Edge Cases and Failure Modes</h3>
-<div>
-<h4>Idempotency Edge Cases</h4>
-<div>
-<div>
-<div>Key Reuse with Different Payload</div>
-<div>Client uses same key for different requests. Without fingerprint validation, second request returns first response (wrong data). <strong>Solution:</strong> Store and validate request hash.</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #b91c1c; margin: 0 0 16px 0">Idempotency Edge Cases</h4>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Key Reuse with Different Payload</div>
+<div style="color: #1e293b; font-size: 13px">Client uses same key for different requests. Without fingerprint validation, second request returns first response (wrong data). <strong>Solution:</strong> Store and validate request hash.</div>
 </div>
-<div>
-<div>Partial Execution Failure</div>
-<div>Request processed payment but crashed before caching response. Retry will charge again. <strong>Solution:</strong> Use database transactions that include idempotency record.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Partial Execution Failure</div>
+<div style="color: #1e293b; font-size: 13px">Request processed payment but crashed before caching response. Retry will charge again. <strong>Solution:</strong> Use database transactions that include idempotency record.</div>
 </div>
-<div>
-<div>Redis Failure During Lock</div>
-<div>Lock acquired, Redis fails, lock never released. Retries blocked. <strong>Solution:</strong> Use lock TTL, implement circuit breaker.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Redis Failure During Lock</div>
+<div style="color: #1e293b; font-size: 13px">Lock acquired, Redis fails, lock never released. Retries blocked. <strong>Solution:</strong> Use lock TTL, implement circuit breaker.</div>
 </div>
-<div>
-<div>Non-Deterministic Operations</div>
-<div>Endpoint uses current timestamp or random values. Replayed response has stale data. <strong>Solution:</strong> Accept these values as input, not server-generated.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Non-Deterministic Operations</div>
+<div style="color: #1e293b; font-size: 13px">Endpoint uses current timestamp or random values. Replayed response has stale data. <strong>Solution:</strong> Accept these values as input, not server-generated.</div>
 </div>
 </div>
 </div>
@@ -1217,38 +1217,38 @@ const response = await request(app)<br />
 - Partial failures leave system in inconsistent state<br />
 - Need to ensure entire saga is idempotent, not just individual calls</p>
 <p><strong>Solution: Orchestrated Saga with Per-Step Idempotency</strong></p>
-<div>
-<h4>Distributed Idempotency Architecture</h4>
-<div>
-<div>
-<div>API Gateway</div>
-<div>Idempotency-Key: order_abc123</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Distributed Idempotency Architecture</h4>
+<div style="display: flex; flex-direction: column; gap: 16px; align-items: center">
+<div style="background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-align: center">
+<div style="font-weight: 600">API Gateway</div>
+<div style="font-size: 11px">Idempotency-Key: order_abc123</div>
 </div>
-<div>|</div>
-<div>
-<div>Saga Orchestrator</div>
-<div>Tracks saga state + step completion</div>
+<div style="color: #94a3b8">|</div>
+<div style="background: #8b5cf6; color: white; padding: 16px 24px; border-radius: 8px; width: 80%; max-width: 400px">
+<div style="font-weight: 600; text-align: center">Saga Orchestrator</div>
+<div style="font-size: 12px; margin-top: 8px; text-align: center">Tracks saga state + step completion</div>
 </div>
-<div>
+<div style="display: flex; gap: 8px; color: #94a3b8">
 <span>|</span>
 <span>|</span>
 <span>|</span>
 </div>
-<div>
-<div>
-<div>Step 1</div>
-<div>Reserve Inventory</div>
-<div>key: order_abc123_inv</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center">
+<div style="background: #22c55e; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px">
+<div style="font-weight: 600; font-size: 13px">Step 1</div>
+<div style="font-size: 11px">Reserve Inventory</div>
+<div style="font-size: 10px; opacity: 0.8">key: order_abc123_inv</div>
 </div>
-<div>
-<div>Step 2</div>
-<div>Charge Payment</div>
-<div>key: order_abc123_pay</div>
+<div style="background: #f59e0b; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px">
+<div style="font-weight: 600; font-size: 13px">Step 2</div>
+<div style="font-size: 11px">Charge Payment</div>
+<div style="font-size: 10px; opacity: 0.8">key: order_abc123_pay</div>
 </div>
-<div>
-<div>Step 3</div>
-<div>Create Shipment</div>
-<div>key: order_abc123_ship</div>
+<div style="background: #ef4444; color: white; padding: 12px; border-radius: 8px; text-align: center; min-width: 100px">
+<div style="font-weight: 600; font-size: 13px">Step 3</div>
+<div style="font-size: 11px">Create Shipment</div>
+<div style="font-size: 10px; opacity: 0.8">key: order_abc123_ship</div>
 </div>
 </div>
 </div>
@@ -1382,65 +1382,65 @@ const response = await request(app)<br />
             }
             ```
 </code></pre>
-<div>
-<h4>Error Field Purposes</h4>
-<table>
-<tr>
-<th>Field</th>
-<th>Purpose</th>
-<th>Example</th>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Error Field Purposes</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 14px">
+<tr style="background: #e2e8f0">
+<th style="padding: 12px; text-align: left; color: #1e293b">Field</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Purpose</th>
+<th style="padding: 12px; text-align: left; color: #1e293b">Example</th>
 </tr>
-<tr>
-<td><code>code</code></td>
-<td>Machine-readable identifier for programmatic handling</td>
-<td><code>PAYMENT_DECLINED</code></td>
+<tr style="background: #f8fafc">
+<td style="padding: 12px; color: #1e293b"><code>code</code></td>
+<td style="padding: 12px; color: #1e293b">Machine-readable identifier for programmatic handling</td>
+<td style="padding: 12px; color: #1e293b"><code>PAYMENT_DECLINED</code></td>
 </tr>
-<tr>
-<td><code>message</code></td>
-<td>Human-readable description for developers</td>
-<td>"The card was declined"</td>
+<tr style="background: #ffffff">
+<td style="padding: 12px; color: #1e293b"><code>message</code></td>
+<td style="padding: 12px; color: #1e293b">Human-readable description for developers</td>
+<td style="padding: 12px; color: #1e293b">"The card was declined"</td>
 </tr>
-<tr>
-<td><code>type</code></td>
-<td>Error category for broad handling logic</td>
-<td><code>validation_error</code>, <code>authentication_error</code></td>
+<tr style="background: #f8fafc">
+<td style="padding: 12px; color: #1e293b"><code>type</code></td>
+<td style="padding: 12px; color: #1e293b">Error category for broad handling logic</td>
+<td style="padding: 12px; color: #1e293b"><code>validation_error</code>, <code>authentication_error</code></td>
 </tr>
-<tr>
-<td><code>param</code></td>
-<td>Specific field that caused the error</td>
-<td><code>email</code>, <code>card_number</code></td>
+<tr style="background: #ffffff">
+<td style="padding: 12px; color: #1e293b"><code>param</code></td>
+<td style="padding: 12px; color: #1e293b">Specific field that caused the error</td>
+<td style="padding: 12px; color: #1e293b"><code>email</code>, <code>card_number</code></td>
 </tr>
-<tr>
-<td><code>request_id</code></td>
-<td>Correlation ID for support and debugging</td>
-<td><code>req_8xKj2Mn4Pq</code></td>
+<tr style="background: #f8fafc">
+<td style="padding: 12px; color: #1e293b"><code>request_id</code></td>
+<td style="padding: 12px; color: #1e293b">Correlation ID for support and debugging</td>
+<td style="padding: 12px; color: #1e293b"><code>req_8xKj2Mn4Pq</code></td>
 </tr>
-<tr>
-<td><code>doc_url</code></td>
-<td>Link to detailed documentation</td>
-<td><code>https://docs.api.com/errors#...</code></td>
+<tr style="background: #ffffff">
+<td style="padding: 12px; color: #1e293b"><code>doc_url</code></td>
+<td style="padding: 12px; color: #1e293b">Link to detailed documentation</td>
+<td style="padding: 12px; color: #1e293b"><code>https://docs.api.com/errors#...</code></td>
 </tr>
 </table>
 </div>
 <h3 id="http-status-code-semantics">HTTP Status Code Semantics</h3>
-<div>
-<h4>Status Code Decision Tree</h4>
-<div>
-<div>
-<strong>2xx - Success</strong>
-<div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Status Code Decision Tree</h4>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="background: #dcfce7; padding: 12px; border-radius: 8px">
+<strong style="color: #15803d">2xx - Success</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px">
 <code>200</code> GET/PUT/PATCH success | <code>201</code> POST created | <code>204</code> DELETE success (no body)
 </div>
 </div>
-<div>
-<strong>4xx - Client Error (Don't Retry)</strong>
-<div>
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px">
+<strong style="color: #92400e">4xx - Client Error (Don't Retry)</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px">
 <code>400</code> Malformed request | <code>401</code> Auth missing | <code>403</code> Auth valid, no permission | <code>404</code> Resource not found | <code>409</code> Conflict/duplicate | <code>422</code> Semantic error | <code>429</code> Rate limited (retry with backoff)
 </div>
 </div>
-<div>
-<strong>5xx - Server Error (Safe to Retry)</strong>
-<div>
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px">
+<strong style="color: #b91c1c">5xx - Server Error (Safe to Retry)</strong>
+<div style="font-size: 13px; color: #1e293b; margin-top: 4px">
 <code>500</code> Internal error | <code>502</code> Bad gateway | <code>503</code> Service unavailable | <code>504</code> Gateway timeout
 </div>
 </div>
@@ -1563,28 +1563,28 @@ const response = await request(app)<br />
             ```
 </code></pre>
 <h3 id="security-considerations">Security Considerations</h3>
-<div>
-<h4>Error Information Leakage Risks</h4>
-<div>
-<div>
-<div>Stack Traces</div>
-<div>Revealing framework, library versions, file paths enables targeted attacks.</div>
-<div>Fix: Log internally, return generic message externally.</div>
+<div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #b91c1c; margin: 0 0 16px 0">Error Information Leakage Risks</h4>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Stack Traces</div>
+<div style="color: #1e293b; font-size: 13px">Revealing framework, library versions, file paths enables targeted attacks.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Log internally, return generic message externally.</div>
 </div>
-<div>
-<div>SQL Errors</div>
-<div>"Column 'password_hash' not found" reveals schema details.</div>
-<div>Fix: Catch all DB errors, return "database error" generically.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">SQL Errors</div>
+<div style="color: #1e293b; font-size: 13px">"Column 'password_hash' not found" reveals schema details.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Catch all DB errors, return "database error" generically.</div>
 </div>
-<div>
-<div>User Enumeration</div>
-<div>"User not found" vs "Invalid password" reveals which emails exist.</div>
-<div>Fix: Return "Invalid credentials" for both cases.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">User Enumeration</div>
+<div style="color: #1e293b; font-size: 13px">"User not found" vs "Invalid password" reveals which emails exist.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Return "Invalid credentials" for both cases.</div>
 </div>
-<div>
-<div>Rate Limit Details</div>
-<div>"User 123 has 5 requests remaining" confirms user existence.</div>
-<div>Fix: Generic "rate limited" without user-specific details.</div>
+<div style="background: white; padding: 12px; border-radius: 8px">
+<div style="color: #b91c1c; font-weight: 600">Rate Limit Details</div>
+<div style="color: #1e293b; font-size: 13px">"User 123 has 5 requests remaining" confirms user existence.</div>
+<div style="color: #15803d; font-size: 12px; margin-top: 4px">Fix: Generic "rate limited" without user-specific details.</div>
 </div>
 </div>
 </div>
@@ -1898,13 +1898,13 @@ const response = await request(app)<br />
 </code></pre>
 <p><strong>Rule of thumb</strong>: Assume any visible behavior is depended upon by someone.</p>
 <h3 id="types-of-breaking-changes">Types of Breaking Changes</h3>
-<div>
-<h4>Breaking Change Categories</h4>
-<div>
-<div>
-<div>Syntactic Breaking Changes</div>
-<div>
-<ul>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e40af; margin: 0 0 16px 0">Breaking Change Categories</h4>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1; min-width: 280px">
+<div style="background: #fee2e2; padding: 12px; border-radius: 8px 8px 0 0; color: #b91c1c; font-weight: 600">Syntactic Breaking Changes</div>
+<div style="background: #fef2f2; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
 <li>Removing endpoints</li>
 <li>Removing or renaming fields</li>
 <li>Changing field types</li>
@@ -1912,15 +1912,15 @@ const response = await request(app)<br />
 <li>Changing HTTP methods</li>
 <li>Adding required parameters</li>
 </ul>
-<div>
+<div style="margin-top: 8px; padding-top: 8px;color: #b91c1c; font-size: 12px">
   Detected by schema validation
 </div>
 </div>
 </div>
-<div>
-<div>Semantic Breaking Changes</div>
-<div>
-<ul>
+<div style="flex: 1; min-width: 280px">
+<div style="background: #fef3c7; padding: 12px; border-radius: 8px 8px 0 0; color: #92400e; font-weight: 600">Semantic Breaking Changes</div>
+<div style="background: #fffbeb; padding: 16px; border-radius: 0 0 8px 8px; font-size: 13px">
+<ul style="margin: 0; padding-left: 20px; color: #1e293b">
 <li>Changing field meaning/units</li>
 <li>Changing error codes</li>
 <li>Changing rate limits</li>
@@ -1928,7 +1928,7 @@ const response = await request(app)<br />
 <li>Changing side effects</li>
 <li>Changing default values</li>
 </ul>
-<div>
+<div style="margin-top: 8px; padding-top: 8px;color: #92400e; font-size: 12px">
   Often undetected until production failure
 </div>
 </div>
@@ -2190,29 +2190,29 @@ const response = await request(app)<br />
 - Breaking change unavoidable (e.g., security fix, legal requirement)<br />
 - Must balance migration timeline with client disruption</p>
 <p><strong>Solution: Multi-Phase Migration with Escape Hatches</strong></p>
-<div>
-<h4>Breaking Change Migration Phases</h4>
-<div>
-<div>
-<div>
-<div>Phase 1: Announcement</div>
-<div>T-180 days</div>
-<div>Documentation, blog, email to all devs</div>
+<div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+<h4 style="color: #1e293b; margin: 0 0 20px 0; text-align: center">Breaking Change Migration Phases</h4>
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 16px; flex-wrap: wrap">
+<div style="flex: 1; min-width: 200px; background: #22c55e; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 1: Announcement</div>
+<div style="font-size: 12px; margin-top: 8px">T-180 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Documentation, blog, email to all devs</div>
 </div>
-<div>
-<div>Phase 2: Soft Warnings</div>
-<div>T-120 days</div>
-<div>Deprecation headers, dashboard alerts</div>
+<div style="flex: 1; min-width: 200px; background: #3b82f6; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 2: Soft Warnings</div>
+<div style="font-size: 12px; margin-top: 8px">T-120 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Deprecation headers, dashboard alerts</div>
 </div>
-<div>
-<div>Phase 3: Hard Warnings</div>
-<div>T-60 days</div>
-<div>Targeted emails, support outreach</div>
+<div style="flex: 1; min-width: 200px; background: #f59e0b; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 3: Hard Warnings</div>
+<div style="font-size: 12px; margin-top: 8px">T-60 days</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Targeted emails, support outreach</div>
 </div>
-<div>
-<div>Phase 4: Enforcement</div>
-<div>T-0</div>
-<div>Gradual rollout, extension requests</div>
+<div style="flex: 1; min-width: 200px; background: #ef4444; color: white; padding: 16px; border-radius: 8px">
+<div style="font-weight: 600">Phase 4: Enforcement</div>
+<div style="font-size: 12px; margin-top: 8px">T-0</div>
+<div style="font-size: 11px; opacity: 0.9; margin-top: 4px">Gradual rollout, extension requests</div>
 </div>
 </div>
 </div>
