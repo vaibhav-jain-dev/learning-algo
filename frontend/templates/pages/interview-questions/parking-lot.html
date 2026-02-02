@@ -1,0 +1,445 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
+
+    <h1>🅿️ Parking Lot System Design</h1>
+    <p class="topic-description">Design a smart parking management system with real-time availability tracking using IoT sensors</p>
+
+    <!-- Quick Navigation -->
+    <div class="quick-nav">
+        <h4>Quick Navigation</h4>
+        <a href="#mvp">MVP Stage</a>
+        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#high-traffic">High Traffic</a>
+        <a href="#global">Global Scale</a>
+    </div>
+
+    <!-- MVP STAGE -->
+    <div class="stage-section" id="mvp">
+        <div class="stage-header">
+            <span class="stage-badge mvp">MVP Stage</span>
+            <h2 style="margin: 0;">Single Location Parking Management</h2>
+        </div>
+
+        <h3>📊 Database Strategy</h3>
+        <div class="feature-card">
+            <h4>Why PostgreSQL with PostGIS?</h4>
+            <p>For parking systems, we need geospatial queries to find nearby parking. PostGIS extension provides spatial indexing and distance calculations.</p>
+
+            <div class="pros-cons-grid">
+                <div class="pros-section">
+                    <h4>✅ Pros</h4>
+                    <ul>
+                        <li><strong>Geospatial Support</strong> - Native PostGIS for location queries</li>
+                        <li><strong>ACID Compliance</strong> - Critical for reservation transactions</li>
+                        <li><strong>JSON Support</strong> - Store flexible IoT sensor data</li>
+                    </ul>
+                    <div class="care-points">
+                        <h5>⚠️ What to Care About:</h5>
+                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                            <li>Create spatial indexes (GIST) for location columns</li>
+                            <li>Partition by parking_lot_id for large datasets</li>
+                            <li>Use connection pooling for IoT sensor updates</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cons-section">
+                    <h4>❌ Cons</h4>
+                    <ul>
+                        <li><strong>Write Contention</strong> - High-frequency spot status updates</li>
+                        <li><strong>Complex Queries</strong> - Geospatial + availability joins</li>
+                        <li><strong>Scaling Limits</strong> - Single region initially</li>
+                    </ul>
+                    <div class="manage-points">
+                        <h5>🔧 How to Manage:</h5>
+                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                            <li>Batch IoT updates (every 5 seconds max)</li>
+                            <li>Cache availability counts in Redis</li>
+                            <li>Use materialized views for search</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 24px;">Schema Design</h4>
+            <div class="diagram-container">
+                <h4>DATABASE SCHEMA</h4>
+                <div class="schema-diagram">
+                    <div class="schema-table">
+                        <div class="schema-table-header">parking_lots</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+                            <div class="schema-field"><span class="field-name">location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
+                            <div class="schema-field"><span class="field-name">address</span><span class="field-type">TEXT</span></div>
+                            <div class="schema-field"><span class="field-name">total_spots</span><span class="field-type">INT</span></div>
+                            <div class="schema-field"><span class="field-name">hourly_rate</span><span class="field-type">DECIMAL(8,2)</span></div>
+                            <div class="schema-field"><span class="field-name">operating_hours</span><span class="field-type">JSONB</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">parking_spots</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">lot_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">spot_number</span><span class="field-type">VARCHAR(10)</span></div>
+                            <div class="schema-field"><span class="field-name">floor</span><span class="field-type">INT</span></div>
+                            <div class="schema-field"><span class="field-name">spot_type</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">sensor_id</span><span class="field-type">VARCHAR(50)</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">reservations</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">spot_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">start_time</span><span class="field-type">TIMESTAMP</span></div>
+                            <div class="schema-field"><span class="field-name">end_time</span><span class="field-type">TIMESTAMP</span></div>
+                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">vehicle_number</span><span class="field-type">VARCHAR(20)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture (MVP)</h3>
+        <div class="diagram-container">
+            <h4>MVP ARCHITECTURE</h4>
+            <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                <div style="display: flex; gap: 24px; align-items: center;">
+                    <div class="arch-box client">Mobile App</div>
+                    <div class="arch-box client">IoT Sensors</div>
+                </div>
+                <span>↓</span>
+                <div class="arch-box server">API Server (Go)</div>
+                <span>↓</span>
+                <div style="display: flex; gap: 16px;">
+                    <div class="arch-box db">PostgreSQL + PostGIS</div>
+                    <div class="arch-box cache">Redis</div>
+                </div>
+            </div>
+            <p style="text-align: center; color: #64748b; font-size: 13px; margin-top: 16px;">IoT sensors push status updates every 5 seconds. Redis caches real-time availability.</p>
+        </div>
+
+        <h3>🔌 API Design</h3>
+        <div class="feature-card">
+            <div class="api-endpoint">
+                <span class="api-method get">GET</span> /api/v1/lots/nearby?lat=12.97&lng=77.59&radius=5km
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Response: {
+  "lots": [
+    { "id": "uuid", "name": "City Mall Parking", "distance": "1.2km",
+      "available_spots": 45, "total_spots": 200, "hourly_rate": 50 }
+  ]
+}</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/reservations
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request:  { "lot_id": "uuid", "spot_type": "regular", "start_time": "...", "duration_hours": 2 }
+Response: { "reservation_id": "uuid", "spot_number": "A-42", "qr_code": "base64..." }</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/sensors/status (Internal - IoT)
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request:  { "sensor_id": "S-001", "occupied": true, "timestamp": "..." }
+Response: { "ack": true }</pre>
+            </div>
+        </div>
+
+        <h3>💾 Caching Strategy</h3>
+        <div class="feature-card">
+            <p>Use <span class="term-tooltip" onclick="showTooltip('redis')">Redis<span class="info-icon">i</span></span> for real-time availability counts and recently searched locations.</p>
+
+            <h4>Cache Structure</h4>
+            <div class="code-example">
+<pre>// Real-time availability per lot
+lot:{lot_id}:available → 45 (counter, updated by IoT)
+
+// Spot status bitmap
+lot:{lot_id}:spots → bitmap (1=occupied, 0=free)
+
+// User's recent searches
+user:{user_id}:recent_lots → sorted set by timestamp</pre>
+            </div>
+
+            <h4>Cache Invalidation</h4>
+            <ul>
+                <li><strong>IoT Updates:</strong> Decrement/increment availability counter on sensor events</li>
+                <li><strong>Reservations:</strong> Mark spot as reserved, update counter</li>
+                <li><strong>TTL:</strong> Lot metadata cached for 5 minutes</li>
+            </ul>
+        </div>
+
+        <!-- Feature Addition 1 -->
+        <h3>🆕 Feature Addition 1: Dynamic Pricing</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Dynamic Pricing?</h4>
+            <p>Increase revenue during peak hours, incentivize off-peak usage.</p>
+
+            <div class="arch-comparison">
+                <div class="arch-before">
+                    <h5>Before</h5>
+                    <p>Fixed hourly rate: ₹50/hour</p>
+                </div>
+                <div class="arch-after">
+                    <h5>After</h5>
+                    <p>Dynamic rate based on:</p>
+                    <ul>
+                        <li>Occupancy % (surge at >80%)</li>
+                        <li>Time of day (peak hours)</li>
+                        <li>Events nearby</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4>Implementation</h4>
+            <ul>
+                <li>Add <code>pricing_rules</code> table with time-based multipliers</li>
+                <li>Background job calculates current price every minute</li>
+                <li>Cache current price in Redis for fast lookups</li>
+            </ul>
+        </div>
+
+        <!-- Feature Addition 2 -->
+        <h3>🆕 Feature Addition 2: EV Charging Integration</h3>
+        <div class="feature-card addition">
+            <h4>Why Add EV Charging?</h4>
+            <p>Growing EV market needs charging infrastructure. Premium pricing opportunity.</p>
+
+            <h4>Schema Changes</h4>
+            <div class="code-example">
+<pre>ALTER TABLE parking_spots ADD COLUMN has_ev_charger BOOLEAN DEFAULT false;
+ALTER TABLE parking_spots ADD COLUMN charger_type ENUM('level2', 'dc_fast');
+ALTER TABLE parking_spots ADD COLUMN charger_status ENUM('available', 'in_use', 'fault');
+
+CREATE TABLE charging_sessions (
+    id UUID PRIMARY KEY,
+    spot_id UUID REFERENCES parking_spots(id),
+    reservation_id UUID REFERENCES reservations(id),
+    kwh_delivered DECIMAL(8,2),
+    cost DECIMAL(8,2),
+    started_at TIMESTAMP,
+    ended_at TIMESTAMP
+);</pre>
+            </div>
+        </div>
+
+        <!-- Feature Addition 3 -->
+        <h3>🆕 Feature Addition 3: License Plate Recognition (LPR)</h3>
+        <div class="feature-card addition">
+            <h4>Why Add LPR?</h4>
+            <p>Automated entry/exit without QR scanning. Better user experience.</p>
+
+            <div class="diagram-container">
+                <h4>LPR FLOW</h4>
+                <div class="flow-diagram">
+                    <div class="arch-box client">Camera</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box server">LPR Service</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box server">Validate Reservation</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box client">Open Gate</div>
+                </div>
+            </div>
+
+            <div class="pros-cons-grid">
+                <div class="pros-section">
+                    <h4>✅ Pros</h4>
+                    <ul>
+                        <li>Seamless entry/exit experience</li>
+                        <li>Reduced staffing needs</li>
+                        <li>Fraud prevention</li>
+                    </ul>
+                </div>
+                <div class="cons-section">
+                    <h4>❌ Cons</h4>
+                    <ul>
+                        <li>High camera + ML infrastructure cost</li>
+                        <li>Privacy concerns (GDPR/local laws)</li>
+                        <li>Accuracy issues (dirty plates, low light)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Reversion -->
+        <h3>🔙 Feature Reversion: Rolling Back Dynamic Pricing</h3>
+        <div class="feature-card reversion">
+            <h4>Why Revert?</h4>
+            <p>Customer complaints about unfair surge pricing during emergencies. PR crisis.</p>
+
+            <h4>Reversion Strategy</h4>
+            <ol>
+                <li>Feature flag to disable dynamic pricing instantly</li>
+                <li>Fall back to fixed hourly rate</li>
+                <li>Honor existing reservations at quoted price</li>
+                <li>Refund difference for in-progress sessions</li>
+            </ol>
+
+            <h4>Communication</h4>
+            <ul>
+                <li>Push notification: "We've paused surge pricing"</li>
+                <li>Social media acknowledgment</li>
+                <li>Blog post explaining the decision</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PAN-INDIA SCALE -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Multi-City Expansion</h2>
+        </div>
+
+        <h3>🗺️ Architecture Evolution</h3>
+        <div class="diagram-container">
+            <h4>MULTI-CITY ARCHITECTURE</h4>
+            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+                <div class="arch-box client">Users (All India)</div>
+                <span>↓</span>
+                <div class="arch-box cdn">API Gateway (Regional)</div>
+                <span>↓</span>
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center;">
+                        <strong>Mumbai Region</strong>
+                        <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                        <div class="arch-box db" style="margin-top: 8px;">PostgreSQL</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <strong>Delhi Region</strong>
+                        <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                        <div class="arch-box db" style="margin-top: 8px;">PostgreSQL</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <strong>Bangalore Region</strong>
+                        <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                        <div class="arch-box db" style="margin-top: 8px;">PostgreSQL</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Key Changes</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Regional Databases:</strong> Each city has its own PostgreSQL instance (data locality)</li>
+                <li><strong>Geo-routing:</strong> Route users to nearest regional API based on location</li>
+                <li><strong>Central Analytics:</strong> Replicate to central data warehouse for reporting</li>
+                <li><strong>Redis Cluster:</strong> Regional Redis for caching, with cross-region user sessions</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- HIGH TRAFFIC -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">Handling Event Surge</h2>
+        </div>
+
+        <h3>⚠️ What Breaks First?</h3>
+        <div class="feature-card" style="border-left-color: #ef4444;">
+            <ol>
+                <li><strong>Reservation Conflicts:</strong> Multiple users booking same spot simultaneously</li>
+                <li><strong>IoT Data Flood:</strong> 100K sensors sending updates every 5 seconds</li>
+                <li><strong>Search Queries:</strong> Everyone searching nearby lots during events</li>
+            </ol>
+        </div>
+
+        <h3>🛠️ Solutions</h3>
+        <div class="feature-card">
+            <h4>1. Optimistic Locking for Reservations</h4>
+            <p>Use version column to detect concurrent modifications. Retry on conflict.</p>
+
+            <h4>2. IoT Message Queue</h4>
+            <p>Buffer sensor updates in <span class="term-tooltip" onclick="showTooltip('kafka')">Kafka<span class="info-icon">i</span></span>. Process in batches.</p>
+
+            <h4>3. Pre-computed Search Results</h4>
+            <p>Materialize "nearby lots with availability" every 10 seconds. Serve from cache.</p>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCALE -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">International Expansion</h2>
+        </div>
+
+        <h3>🌍 Key Considerations</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Multi-currency:</strong> Store prices in local currency, convert at checkout</li>
+                <li><strong>Localization:</strong> Multi-language support for mobile app</li>
+                <li><strong>Compliance:</strong> GDPR for EU, local data residency requirements</li>
+                <li><strong>Payment Gateways:</strong> Regional payment providers (Stripe, local alternatives)</li>
+            </ul>
+        </div>
+
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">10M+</div>
+                <div class="label">Parking Spots</div>
+            </div>
+            <div class="metric">
+                <div class="value">1M</div>
+                <div class="label">Daily Reservations</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;100ms</div>
+                <div class="label">Search Latency</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.9%</div>
+                <div class="label">Availability</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip System -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip()"></div>
+<div class="tooltip-popup" id="tooltipPopup">
+    <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
+    <h4 id="tooltipTitle"></h4>
+    <p id="tooltipContent"></p>
+</div>
+
+<script>
+const termDefinitions = {
+    'redis': { title: 'Redis', content: 'An in-memory data structure store used as a database, cache, and message broker. Ideal for real-time availability tracking.' },
+    'kafka': { title: 'Apache Kafka', content: 'A distributed event streaming platform. Perfect for handling high-volume IoT sensor data.' },
+    'postgis': { title: 'PostGIS', content: 'A spatial database extension for PostgreSQL. Enables efficient geospatial queries like "find parking lots within 5km".' }
+};
+
+function showTooltip(term) {
+    const def = termDefinitions[term];
+    if (def) {
+        document.getElementById('tooltipTitle').textContent = def.title;
+        document.getElementById('tooltipContent').textContent = def.content;
+        document.getElementById('tooltipOverlay').classList.add('show');
+        document.getElementById('tooltipPopup').classList.add('show');
+    }
+}
+
+function closeTooltip() {
+    document.getElementById('tooltipOverlay').classList.remove('show');
+    document.getElementById('tooltipPopup').classList.remove('show');
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeTooltip();
+});
+</script>

@@ -1,0 +1,257 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
+
+    <h1>🔔 Notification System Design</h1>
+    <p class="topic-description">Design a multi-channel notification system supporting Push, SMS, and Email at massive scale</p>
+
+    <div class="quick-nav">
+        <h4>Quick Navigation</h4>
+        <a href="#mvp">MVP Stage</a>
+        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#high-traffic">High Traffic</a>
+        <a href="#global">Global Scale</a>
+    </div>
+
+    <!-- MVP STAGE -->
+    <div class="stage-section" id="mvp">
+        <div class="stage-header">
+            <span class="stage-badge mvp">MVP Stage</span>
+            <h2 style="margin: 0;">Multi-Channel Notification System</h2>
+        </div>
+
+        <h3>📊 Database Strategy</h3>
+        <div class="feature-card">
+            <div class="diagram-container">
+                <h4>DATABASE SCHEMA</h4>
+                <div class="schema-diagram">
+                    <div class="schema-table">
+                        <div class="schema-table-header">notification_templates</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(100)</span></div>
+                            <div class="schema-field"><span class="field-name">channel</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">subject_template</span><span class="field-type">TEXT</span></div>
+                            <div class="schema-field"><span class="field-name">body_template</span><span class="field-type">TEXT</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">→</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">notifications</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">template_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">channel</span><span class="field-type">ENUM(push,sms,email)</span></div>
+                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">variables</span><span class="field-type">JSONB</span></div>
+                            <div class="schema-field"><span class="field-name">sent_at</span><span class="field-type">TIMESTAMP</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">→</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">user_preferences</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">push_enabled</span><span class="field-type">BOOLEAN</span></div>
+                            <div class="schema-field"><span class="field-name">sms_enabled</span><span class="field-type">BOOLEAN</span></div>
+                            <div class="schema-field"><span class="field-name">email_enabled</span><span class="field-type">BOOLEAN</span></div>
+                            <div class="schema-field"><span class="field-name">quiet_hours</span><span class="field-type">JSONB</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture (MVP)</h3>
+        <div class="diagram-container">
+            <h4>MVP ARCHITECTURE</h4>
+            <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                <div class="arch-box server">API Server</div>
+                <span>↓</span>
+                <div class="arch-box queue">Kafka (Notification Queue)</div>
+                <span>↓</span>
+                <div style="display: flex; gap: 16px;">
+                    <div class="arch-box worker">Push Worker</div>
+                    <div class="arch-box worker">SMS Worker</div>
+                    <div class="arch-box worker">Email Worker</div>
+                </div>
+                <span>↓</span>
+                <div style="display: flex; gap: 16px;">
+                    <div class="arch-box server" style="font-size: 11px;">FCM/APNS</div>
+                    <div class="arch-box server" style="font-size: 11px;">Twilio</div>
+                    <div class="arch-box server" style="font-size: 11px;">SendGrid</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔌 API Design</h3>
+        <div class="feature-card">
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/notifications/send
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request: {
+  "user_id": "uuid",
+  "template": "order_confirmation",
+  "channels": ["push", "email"],
+  "variables": { "order_id": "12345", "amount": "₹599" },
+  "priority": "high"
+}
+Response: { "notification_id": "uuid", "status": "queued" }</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/notifications/bulk
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request: {
+  "user_ids": ["uuid1", "uuid2", ...],  // or segment: "premium_users"
+  "template": "promo_offer",
+  "channels": ["push"],
+  "schedule_at": "2024-01-01T10:00:00Z"
+}</pre>
+            </div>
+        </div>
+
+        <!-- Feature Additions -->
+        <h3>🆕 Feature Addition 1: Template Engine</h3>
+        <div class="feature-card addition">
+            <h4>Template Personalization</h4>
+            <div class="code-example">
+<pre>// Template stored in DB
+{
+    "id": "order_confirmation",
+    "subject": "Order confirmed!",
+    "body": "Hi [user_name], your order #[order_id] for [item_count] items
+             worth [currency][total_amount] is confirmed.
+
+             [if express_delivery]
+             Express Delivery: Arriving by [delivery_date]
+             [else]
+             Standard Delivery: 3-5 business days
+             [endif]"
+}</pre>
+            </div>
+        </div>
+
+        <h3>🆕 Feature Addition 2: Priority Queues</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Priority?</h4>
+            <p>OTPs and transactional notifications should jump the queue.</p>
+
+            <h4>Queue Structure</h4>
+            <ul>
+                <li><strong>Critical:</strong> OTPs, security alerts (process immediately)</li>
+                <li><strong>High:</strong> Order updates, payments (process within 1 min)</li>
+                <li><strong>Medium:</strong> Reminders, updates (process within 5 min)</li>
+                <li><strong>Low:</strong> Marketing, newsletters (batch process)</li>
+            </ul>
+        </div>
+
+        <h3>🆕 Feature Addition 3: Delivery Tracking</h3>
+        <div class="feature-card addition">
+            <h4>Track Notification Status</h4>
+            <ul>
+                <li>Push: Delivered, Opened, Dismissed</li>
+                <li>Email: Delivered, Opened, Clicked, Bounced</li>
+                <li>SMS: Delivered, Failed</li>
+            </ul>
+        </div>
+
+        <h3>🔙 Feature Reversion: Disabling a Channel</h3>
+        <div class="feature-card reversion">
+            <h4>Why Revert?</h4>
+            <p>SMS provider outage causing delays. Switch to push-only temporarily.</p>
+
+            <h4>Strategy</h4>
+            <ol>
+                <li>Feature flag to disable SMS channel</li>
+                <li>Re-route SMS notifications to push (if user has app)</li>
+                <li>Queue SMS for retry when provider recovers</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- PAN-INDIA SCALE -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Regional Considerations</h2>
+        </div>
+
+        <div class="feature-card">
+            <ul>
+                <li><strong>Multi-language Templates:</strong> Hindi, Tamil, Telugu, etc.</li>
+                <li><strong>Regional SMS Providers:</strong> Multiple vendor failover</li>
+                <li><strong>DND Compliance:</strong> Respect TRAI DND registry for promotional SMS</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- HIGH TRAFFIC -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">Handling Millions of Notifications</h2>
+        </div>
+
+        <h3>⚠️ What Breaks First?</h3>
+        <div class="feature-card" style="border-left-color: #ef4444;">
+            <ol>
+                <li><strong>Kafka Lag:</strong> Workers can't keep up with queue</li>
+                <li><strong>Provider Rate Limits:</strong> FCM/Twilio/SendGrid limits</li>
+                <li><strong>Database Writes:</strong> Logging millions of notification statuses</li>
+            </ol>
+        </div>
+
+        <h3>🛠️ Solutions</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Worker Autoscaling:</strong> Scale workers based on Kafka lag</li>
+                <li><strong>Provider Load Balancing:</strong> Multiple SMS/Email providers</li>
+                <li><strong>Async Status Updates:</strong> Batch write to ClickHouse instead of PostgreSQL</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCALE -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">Worldwide Notifications</h2>
+        </div>
+
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">1B+</div>
+                <div class="label">Notifications/day</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;30s</div>
+                <div class="label">P99 Delivery Time</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.5%</div>
+                <div class="label">Delivery Rate</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip System -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip()"></div>
+<div class="tooltip-popup" id="tooltipPopup">
+    <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
+    <h4 id="tooltipTitle"></h4>
+    <p id="tooltipContent"></p>
+</div>
+
+<script>
+function showTooltip(term) {}
+function closeTooltip() {
+    document.getElementById('tooltipOverlay').classList.remove('show');
+    document.getElementById('tooltipPopup').classList.remove('show');
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeTooltip(); });
+</script>

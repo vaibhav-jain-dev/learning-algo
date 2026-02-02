@@ -1,0 +1,133 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-dashboard">
+    <div class="dashboard-header">
+        <h1>System Design Interview Questions</h1>
+        <p>Master system design with comprehensive case studies covering MVP to Global Scale</p>
+    </div>
+
+    <div class="topics-grid">
+        <a href="/interview-question/url-shortener" class="topic-card">
+            <div class="icon">🔗</div>
+            <h3>URL Shortener</h3>
+            <p>Design a URL shortening service like bit.ly or TinyURL that handles billions of redirects with high availability.</p>
+            <div class="tags">
+                <span class="tag">Hashing</span>
+                <span class="tag">Caching</span>
+                <span class="tag">Base62</span>
+                <span class="tag">Analytics</span>
+            </div>
+        </a>
+
+        <a href="/interview-question/parking-lot" class="topic-card">
+            <div class="icon">🅿️</div>
+            <h3>Parking Lot System</h3>
+            <p>Design a smart parking management system with real-time availability tracking, IoT sensors, and dynamic pricing.</p>
+            <div class="tags">
+                <span class="tag">IoT</span>
+                <span class="tag">Real-time</span>
+                <span class="tag">Reservations</span>
+                <span class="tag">Dynamic Pricing</span>
+            </div>
+        </a>
+
+        <a href="/interview-question/ride-booking" class="topic-card">
+            <div class="icon">🚗</div>
+            <h3>Ride Booking System</h3>
+            <p>Design a ride-sharing platform like Uber/Ola with real-time matching, GPS tracking, and surge pricing.</p>
+            <div class="tags">
+                <span class="tag">Geospatial</span>
+                <span class="tag">Matching</span>
+                <span class="tag">WebSocket</span>
+                <span class="tag">Surge Pricing</span>
+            </div>
+        </a>
+
+        <a href="/interview-question/notification" class="topic-card">
+            <div class="icon">🔔</div>
+            <h3>Notification System</h3>
+            <p>Design a multi-channel notification system supporting Push, SMS, and Email at massive scale with templating.</p>
+            <div class="tags">
+                <span class="tag">Multi-Channel</span>
+                <span class="tag">Templates</span>
+                <span class="tag">Priority Queue</span>
+                <span class="tag">Rate Limiting</span>
+            </div>
+        </a>
+
+        <a href="/interview-question/rate-limiter" class="topic-card">
+            <div class="icon">⏱️</div>
+            <h3>Rate Limiter</h3>
+            <p>Design a distributed rate limiting system with multiple algorithms like Token Bucket and Sliding Window.</p>
+            <div class="tags">
+                <span class="tag">Token Bucket</span>
+                <span class="tag">Sliding Window</span>
+                <span class="tag">Redis</span>
+                <span class="tag">Distributed</span>
+            </div>
+        </a>
+
+        <a href="/interview-question/food-ordering" class="topic-card">
+            <div class="icon">🍔</div>
+            <h3>Food Ordering System</h3>
+            <p>Design an online food delivery platform like Swiggy/Zomato with real-time tracking and restaurant management.</p>
+            <div class="tags">
+                <span class="tag">Order Management</span>
+                <span class="tag">Real-time Tracking</span>
+                <span class="tag">Search</span>
+                <span class="tag">Payments</span>
+            </div>
+        </a>
+
+        <a href="/interview-question/slot-booking" class="topic-card">
+            <div class="icon">📅</div>
+            <h3>Slot Booking System</h3>
+            <p>Design a slot booking system for appointments, meetings, and resource scheduling with conflict resolution.</p>
+            <div class="tags">
+                <span class="tag">Calendar</span>
+                <span class="tag">Concurrency</span>
+                <span class="tag">Availability</span>
+                <span class="tag">Reminders</span>
+            </div>
+        </a>
+    </div>
+
+    <div style="margin-top: 48px; padding: 32px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px;">
+        <h2 style="margin: 0 0 16px 0; color: #1e40af;">Each Topic Covers</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 24px;">1️⃣</span>
+                <div>
+                    <strong style="color: #1e293b;">MVP Stage</strong>
+                    <p style="margin: 4px 0 0 0; color: #64748b; font-size: 14px;">Core features, basic schema, simple architecture</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 24px;">2️⃣</span>
+                <div>
+                    <strong style="color: #1e293b;">PAN-India Scale</strong>
+                    <p style="margin: 4px 0 0 0; color: #64748b; font-size: 14px;">Multi-region, read replicas, CDN, caching</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 24px;">3️⃣</span>
+                <div>
+                    <strong style="color: #1e293b;">High Traffic</strong>
+                    <p style="margin: 4px 0 0 0; color: #64748b; font-size: 14px;">Sharding, event streaming, async processing</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <span style="font-size: 24px;">4️⃣</span>
+                <div>
+                    <strong style="color: #1e293b;">Global Scale</strong>
+                    <p style="margin: 4px 0 0 0; color: #64748b; font-size: 14px;">Multi-region active-active, global routing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 32px; padding: 24px; background: #fef3c7; border-radius: 12px; border-left: 4px solid #f59e0b;">
+        <h3 style="margin: 0 0 8px 0; color: #92400e;">Interview Tip</h3>
+        <p style="margin: 0; color: #78350f;">Start with requirements clarification, then propose MVP architecture. Progressively enhance based on scale requirements. Always discuss trade-offs with pros/cons for each decision.</p>
+    </div>
+</div>

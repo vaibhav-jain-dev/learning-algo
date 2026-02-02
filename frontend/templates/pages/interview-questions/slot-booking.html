@@ -1,0 +1,350 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
+
+    <h1>📅 Slot Booking System Design</h1>
+    <p class="topic-description">Design a slot booking system for appointments, meetings, and resource scheduling</p>
+
+    <div class="quick-nav">
+        <h4>Quick Navigation</h4>
+        <a href="#mvp">MVP Stage</a>
+        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#high-traffic">High Traffic</a>
+        <a href="#global">Global Scale</a>
+    </div>
+
+    <!-- MVP STAGE -->
+    <div class="stage-section" id="mvp">
+        <div class="stage-header">
+            <span class="stage-badge mvp">MVP Stage</span>
+            <h2 style="margin: 0;">Single-tenant Appointment System</h2>
+        </div>
+
+        <h3>📊 Database Strategy</h3>
+        <div class="feature-card">
+            <h4>Concurrency Challenge</h4>
+            <p>The biggest challenge in slot booking is handling concurrent bookings for the same slot. Two users clicking "Book" at the same time shouldn't both succeed.</p>
+
+            <div class="diagram-container">
+                <h4>DATABASE SCHEMA</h4>
+                <div class="schema-diagram">
+                    <div class="schema-table">
+                        <div class="schema-table-header">resources</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+                            <div class="schema-field"><span class="field-name">type</span><span class="field-type">ENUM(doctor, room, equipment)</span></div>
+                            <div class="schema-field"><span class="field-name">availability_hours</span><span class="field-type">JSONB</span></div>
+                            <div class="schema-field"><span class="field-name">slot_duration_mins</span><span class="field-type">INT</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">slots</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">resource_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">start_time</span><span class="field-type">TIMESTAMP</span></div>
+                            <div class="schema-field"><span class="field-name">end_time</span><span class="field-type">TIMESTAMP</span></div>
+                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">version</span><span class="field-type">INT</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:1</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">bookings</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">slot_id</span><span class="field-type">UUID FK UNIQUE</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">notes</span><span class="field-type">TEXT</span></div>
+                            <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔒 Concurrency Control</h3>
+        <div class="feature-card">
+            <h4>Option 1: Optimistic Locking (Recommended)</h4>
+            <div class="code-example">
+<pre>// Optimistic locking with version column
+BEGIN TRANSACTION;
+
+-- Read slot with version
+SELECT id, status, version FROM slots WHERE id = $slot_id FOR UPDATE;
+
+-- Check if still available
+IF status != 'available' THEN
+    ROLLBACK;
+    RETURN 'slot_taken';
+END IF;
+
+-- Update with version check
+UPDATE slots SET status = 'booked', version = version + 1
+WHERE id = $slot_id AND version = $current_version;
+
+IF row_count = 0 THEN
+    ROLLBACK;
+    RETURN 'concurrent_modification';
+END IF;
+
+-- Create booking
+INSERT INTO bookings (slot_id, user_id, status) VALUES ($slot_id, $user_id, 'confirmed');
+
+COMMIT;</pre>
+            </div>
+
+            <h4>Option 2: Redis Distributed Lock</h4>
+            <div class="code-example">
+<pre>// Acquire lock before booking
+const lockKey = `slot_lock:$/{slotId}`;
+const acquired = await redis.set(lockKey, uniqueId, 'NX', 'EX', 30);
+
+if (!acquired) {
+    return { error: 'slot_being_booked' };
+}
+
+try {
+    // Proceed with booking in database
+    await bookSlot(slotId, userId);
+} finally {
+    // Release lock
+    await redis.del(lockKey);
+}</pre>
+            </div>
+
+            <div class="pros-cons-grid">
+                <div class="pros-section">
+                    <h4>✅ Optimistic Locking</h4>
+                    <ul>
+                        <li>No external dependency</li>
+                        <li>Database-level consistency</li>
+                        <li>Simple implementation</li>
+                    </ul>
+                </div>
+                <div class="cons-section">
+                    <h4>❌ Distributed Lock</h4>
+                    <ul>
+                        <li>Redis dependency</li>
+                        <li>Lock expiration edge cases</li>
+                        <li>More complex failure handling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture (MVP)</h3>
+        <div class="diagram-container">
+            <h4>MVP ARCHITECTURE</h4>
+            <div class="flow-diagram">
+                <div class="arch-box client">Web/Mobile App</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-box server">API Server</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-box db">PostgreSQL</div>
+            </div>
+            <p style="text-align: center; color: #64748b; font-size: 13px; margin-top: 16px;">Simple architecture with database-level concurrency control</p>
+        </div>
+
+        <h3>🔌 API Design</h3>
+        <div class="feature-card">
+            <div class="api-endpoint">
+                <span class="api-method get">GET</span> /api/v1/resources/:resourceId/availability?date=2024-01-15
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Response: {
+  "date": "2024-01-15",
+  "slots": [
+    { "id": "uuid", "start": "09:00", "end": "09:30", "status": "available" },
+    { "id": "uuid", "start": "09:30", "end": "10:00", "status": "booked" },
+    { "id": "uuid", "start": "10:00", "end": "10:30", "status": "available" }
+  ]
+}</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/bookings
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request:  { "slot_id": "uuid", "notes": "Annual checkup" }
+Response: { "booking_id": "uuid", "status": "confirmed", "confirmation_code": "ABC123" }</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method delete">DELETE</span> /api/v1/bookings/:bookingId
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Response: { "status": "cancelled", "refund_eligible": true }</pre>
+            </div>
+        </div>
+
+        <!-- Feature Additions -->
+        <h3>🆕 Feature Addition 1: Recurring Bookings</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Recurring?</h4>
+            <p>Users want weekly/monthly appointments without rebooking each time.</p>
+
+            <h4>Schema Changes</h4>
+            <div class="code-example">
+<pre>CREATE TABLE recurring_patterns (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    resource_id UUID REFERENCES resources(id),
+    recurrence_rule VARCHAR(255), -- RRULE format (iCal)
+    start_date DATE,
+    end_date DATE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Example RRULE: "FREQ=WEEKLY;BYDAY=MO,WE,FR;UNTIL=20241231"</pre>
+            </div>
+        </div>
+
+        <h3>🆕 Feature Addition 2: Waitlist</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Waitlist?</h4>
+            <p>When slots are full, let users join waitlist. Auto-book if cancellation happens.</p>
+
+            <h4>Flow</h4>
+            <ol>
+                <li>User tries to book fully-booked slot</li>
+                <li>System offers to join waitlist (position shown)</li>
+                <li>When cancellation happens, first waitlisted user gets slot</li>
+                <li>15-minute window to confirm, else moves to next</li>
+            </ol>
+        </div>
+
+        <h3>🆕 Feature Addition 3: Reminders & Notifications</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Reminders?</h4>
+            <p>Reduce no-shows with automated reminders.</p>
+
+            <h4>Reminder Schedule</h4>
+            <ul>
+                <li>24 hours before: Email + Push notification</li>
+                <li>2 hours before: SMS + Push notification</li>
+                <li>Post-appointment: Feedback request</li>
+            </ul>
+        </div>
+
+        <h3>🔙 Feature Reversion: Disabling Waitlist</h3>
+        <div class="feature-card reversion">
+            <h4>Why Revert?</h4>
+            <p>Waitlist causing confusion - users not checking notifications, missing their turn.</p>
+
+            <h4>Strategy</h4>
+            <ol>
+                <li>Feature flag to hide "Join Waitlist" button</li>
+                <li>Existing waitlist entries honored</li>
+                <li>No new waitlist entries accepted</li>
+                <li>Communication: "Waitlist temporarily unavailable"</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- PAN-INDIA SCALE -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Multi-tenant SaaS</h2>
+        </div>
+
+        <div class="feature-card">
+            <h4>Multi-tenancy Approach</h4>
+            <ul>
+                <li><strong>Schema per Tenant:</strong> Separate PostgreSQL schemas (tenant_abc.slots)</li>
+                <li><strong>Tenant Identification:</strong> Subdomain (abc.booking.com) or header</li>
+                <li><strong>Resource Isolation:</strong> Each tenant's data completely isolated</li>
+            </ul>
+
+            <h4>Timezone Handling</h4>
+            <p>Store all times in UTC. Convert to tenant's timezone for display.</p>
+        </div>
+    </div>
+
+    <!-- HIGH TRAFFIC -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">Flash Sale Scenario</h2>
+        </div>
+
+        <h3>⚠️ What Breaks First?</h3>
+        <div class="feature-card" style="border-left-color: #ef4444;">
+            <p><strong>Scenario:</strong> Popular doctor releases 50 slots at 10 AM. 10,000 users try to book simultaneously.</p>
+            <ol>
+                <li><strong>Database Lock Contention:</strong> All requests trying to lock same rows</li>
+                <li><strong>Thundering Herd:</strong> All users refresh at same time</li>
+                <li><strong>Unfair Distribution:</strong> Fastest clickers win</li>
+            </ol>
+        </div>
+
+        <h3>🛠️ Solutions</h3>
+        <div class="feature-card">
+            <h4>1. Virtual Waiting Room</h4>
+            <p>Queue users randomly, process in batches. Fairer than first-come-first-served.</p>
+
+            <h4>2. Slot Reservation with Timeout</h4>
+            <p>Hold slot for 5 minutes during checkout. Release if payment not completed.</p>
+
+            <h4>3. Rate Limiting</h4>
+            <p>Limit booking attempts per user per minute. Prevent bot abuse.</p>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCALE -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">International SaaS</h2>
+        </div>
+
+        <h3>Key Considerations</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Multi-timezone:</strong> Users and resources in different timezones</li>
+                <li><strong>Holiday Calendars:</strong> Region-specific holidays affect availability</li>
+                <li><strong>Currency:</strong> Multi-currency for paid appointments</li>
+                <li><strong>Compliance:</strong> HIPAA (US), GDPR (EU) for healthcare bookings</li>
+            </ul>
+        </div>
+
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">10M+</div>
+                <div class="label">Bookings/month</div>
+            </div>
+            <div class="metric">
+                <div class="value">100K+</div>
+                <div class="label">Resources</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;2%</div>
+                <div class="label">No-show Rate</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.99%</div>
+                <div class="label">Booking Success</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip System -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip()"></div>
+<div class="tooltip-popup" id="tooltipPopup">
+    <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
+    <h4 id="tooltipTitle"></h4>
+    <p id="tooltipContent"></p>
+</div>
+
+<script>
+function showTooltip(term) {}
+function closeTooltip() {
+    document.getElementById('tooltipOverlay').classList.remove('show');
+    document.getElementById('tooltipPopup').classList.remove('show');
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeTooltip(); });
+</script>

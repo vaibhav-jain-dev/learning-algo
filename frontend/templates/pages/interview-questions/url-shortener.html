@@ -1,0 +1,586 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
+
+    <h1>🔗 URL Shortener System Design</h1>
+    <p class="topic-description">Design a URL shortening service like bit.ly or TinyURL that handles billions of redirects</p>
+
+    <!-- Quick Navigation -->
+    <div class="quick-nav">
+        <h4>Quick Navigation</h4>
+        <a href="#mvp">MVP Stage</a>
+        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#high-traffic">High Traffic</a>
+        <a href="#global">Global Scale</a>
+    </div>
+
+    <!-- MVP STAGE -->
+    <div class="stage-section" id="mvp">
+        <div class="stage-header">
+            <span class="stage-badge mvp">MVP Stage</span>
+            <h2 style="margin: 0;">Minimum Viable Product</h2>
+        </div>
+
+        <h3>📊 Database Strategy</h3>
+        <div class="feature-card">
+            <h4>Why PostgreSQL?</h4>
+            <p>For MVP, we choose <span class="term-tooltip" onclick="showTooltip('database-index')">PostgreSQL<span class="info-icon">i</span></span> for its ACID compliance, robust indexing, and proven reliability.</p>
+
+            <div class="pros-cons-grid">
+                <div class="pros-section">
+                    <h4>✅ Pros</h4>
+                    <ul>
+                        <li><strong>ACID Compliance</strong> - Guaranteed data consistency</li>
+                        <li><strong>Rich Indexing</strong> - B-tree indexes for fast lookups</li>
+                        <li><strong>Mature Ecosystem</strong> - Extensive tooling and community</li>
+                    </ul>
+                    <div class="care-points">
+                        <h5>⚠️ What to Care About:</h5>
+                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                            <li>Set up connection pooling (PgBouncer) from day 1</li>
+                            <li>Configure proper vacuum settings for high-write tables</li>
+                            <li>Monitor slow queries with pg_stat_statements</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cons-section">
+                    <h4>❌ Cons</h4>
+                    <ul>
+                        <li><strong>Vertical Scaling</strong> - Single node limits</li>
+                        <li><strong>Write Bottleneck</strong> - Single primary for writes</li>
+                        <li><strong>Complex Sharding</strong> - Not native support</li>
+                    </ul>
+                    <div class="manage-points">
+                        <h5>🔧 How to Manage:</h5>
+                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                            <li>Plan for read replicas early in design</li>
+                            <li>Use Citus extension for future sharding</li>
+                            <li>Implement caching layer to reduce DB load</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 24px;">Schema Design</h4>
+            <div class="diagram-container">
+                <h4>DATABASE SCHEMA</h4>
+                <div class="schema-diagram">
+                    <div class="schema-table">
+                        <div class="schema-table-header">urls</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                            <div class="schema-field"><span class="field-name">short_code</span><span class="field-type">VARCHAR(8) UNIQUE</span></div>
+                            <div class="schema-field"><span class="field-name">original_url</span><span class="field-type">TEXT NOT NULL</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">BIGINT FK</span></div>
+                            <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+                            <div class="schema-field"><span class="field-name">expires_at</span><span class="field-type">TIMESTAMP</span></div>
+                            <div class="schema-field"><span class="field-name">click_count</span><span class="field-type">BIGINT DEFAULT 0</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N ←</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">users</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">BIGSERIAL PK</span></div>
+                            <div class="schema-field"><span class="field-name">email</span><span class="field-type">VARCHAR(255)</span></div>
+                            <div class="schema-field"><span class="field-name">api_key</span><span class="field-type">VARCHAR(64)</span></div>
+                            <div class="schema-field"><span class="field-name">tier</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: #64748b; font-size: 12px; margin-top: 16px;">Index on short_code (B-tree) for O(log n) lookups</p>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture (MVP)</h3>
+        <div class="diagram-container">
+            <h4>MVP ARCHITECTURE</h4>
+            <div class="flow-diagram">
+                <div class="arch-box client">Browser/Client</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-box server">API Server (Go/Node)</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-box db">PostgreSQL</div>
+            </div>
+            <p style="text-align: center; color: #64748b; font-size: 13px; margin-top: 16px;">Simple 3-tier architecture for MVP. Single server handles ~1000 req/sec</p>
+        </div>
+
+        <h3>🔌 API Design</h3>
+        <div class="feature-card">
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/shorten
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request:  { "url": "https://example.com/very/long/path", "custom_alias": "mylink" }
+Response: { "short_url": "https://short.ly/abc123", "expires_at": "2024-12-31" }</pre>
+            </div>
+            <p><strong>DB Impact:</strong> 1 INSERT to urls table</p>
+            <p><strong>Concurrency:</strong> Use <span class="term-tooltip" onclick="showTooltip('idempotency')">idempotency key<span class="info-icon">i</span></span> to prevent duplicate URLs</p>
+
+            <div class="api-endpoint">
+                <span class="api-method get">GET</span> /:shortCode
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Response: 301 Redirect to original_url
+Headers:  Location: https://example.com/very/long/path</pre>
+            </div>
+            <p><strong>DB Impact:</strong> 1 SELECT + 1 UPDATE (increment click_count)</p>
+            <p><strong>Optimization:</strong> Use async click tracking to not block redirect</p>
+        </div>
+
+        <h3>💾 Caching Strategy</h3>
+        <div class="feature-card">
+            <p>Use <span class="term-tooltip" onclick="showTooltip('redis')">Redis<span class="info-icon">i</span></span> for caching URL mappings with TTL-based invalidation.</p>
+
+            <div class="diagram-container">
+                <h4>CACHE FLOW</h4>
+                <div class="flow-diagram">
+                    <div class="arch-box client">Request</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box cache">Redis (Check)</div>
+                    <span class="arch-arrow">→ miss →</span>
+                    <div class="arch-box db">PostgreSQL</div>
+                    <span class="arch-arrow">→ populate →</span>
+                    <div class="arch-box cache">Redis</div>
+                </div>
+            </div>
+
+            <h4>Cache Invalidation Strategy</h4>
+            <ul>
+                <li><strong>TTL-based:</strong> Cache entries expire after 24 hours</li>
+                <li><strong>Event-driven:</strong> On URL delete, publish to Redis pub/sub</li>
+                <li><strong>Write-through:</strong> Update cache on every URL creation</li>
+            </ul>
+
+            <div class="pros-cons-grid">
+                <div class="pros-section">
+                    <h4>✅ Cache Benefits</h4>
+                    <ul>
+                        <li>99% cache hit rate for popular URLs</li>
+                        <li>Sub-millisecond redirect latency</li>
+                        <li>Reduces DB load by 95%</li>
+                    </ul>
+                </div>
+                <div class="cons-section">
+                    <h4>❌ Cache Risks</h4>
+                    <ul>
+                        <li>Stale data if invalidation fails</li>
+                        <li>Cache stampede on cold start</li>
+                        <li>Memory costs for large datasets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Addition 1 -->
+        <h3>🆕 Feature Addition 1: Analytics Dashboard</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Analytics?</h4>
+            <p>Users want to track click counts, geographic distribution, and referrers.</p>
+
+            <div class="arch-comparison">
+                <div class="arch-before">
+                    <h5>Before</h5>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div class="arch-box server">API Server</div>
+                        <span>↓</span>
+                        <div class="arch-box db">PostgreSQL</div>
+                    </div>
+                </div>
+                <div class="arch-after">
+                    <h5>After</h5>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div class="arch-box server">API Server</div>
+                        <span>↓</span>
+                        <div class="arch-box queue">Kafka</div>
+                        <span>↓</span>
+                        <div style="display: flex; gap: 12px;">
+                            <div class="arch-box db">PostgreSQL</div>
+                            <div class="arch-box analytics">ClickHouse</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>New Components</h4>
+            <ul>
+                <li><strong><span class="term-tooltip" onclick="showTooltip('kafka')">Kafka<span class="info-icon">i</span></span>:</strong> Async event streaming for click events</li>
+                <li><strong>ClickHouse:</strong> Columnar DB for analytics queries</li>
+                <li><strong>Analytics API:</strong> New endpoints for dashboard data</li>
+            </ul>
+
+            <h4>Deployment Strategy</h4>
+            <p>Blue-green deployment with feature flag. Roll out to 5% users, monitor error rates, then full rollout.</p>
+
+            <h4>Rollback Strategy</h4>
+            <p>Disable feature flag instantly. Kafka consumer pauses. Analytics data preserved for retry.</p>
+        </div>
+
+        <!-- Feature Addition 2 -->
+        <h3>🆕 Feature Addition 2: Custom Domains</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Custom Domains?</h4>
+            <p>Enterprise users want branded short URLs (e.g., go.company.com/sale)</p>
+
+            <h4>Architecture Changes</h4>
+            <ul>
+                <li>Add <code>domains</code> table with SSL cert storage</li>
+                <li>Integrate Let's Encrypt for auto SSL provisioning</li>
+                <li>Add DNS verification workflow</li>
+                <li>Update routing to match domain + short_code</li>
+            </ul>
+
+            <div class="pros-cons-grid">
+                <div class="pros-section">
+                    <h4>✅ Pros</h4>
+                    <ul>
+                        <li>Higher trust with branded domains</li>
+                        <li>Premium feature for monetization</li>
+                        <li>Better click-through rates</li>
+                    </ul>
+                    <div class="care-points">
+                        <h5>⚠️ What to Care About:</h5>
+                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                            <li>SSL certificate renewal automation</li>
+                            <li>DNS propagation delays (up to 48h)</li>
+                            <li>Domain verification security</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="cons-section">
+                    <h4>❌ Cons</h4>
+                    <ul>
+                        <li>Complex SSL management</li>
+                        <li>Support burden for DNS issues</li>
+                        <li>Increased infrastructure cost</li>
+                    </ul>
+                    <div class="manage-points">
+                        <h5>🔧 How to Manage:</h5>
+                        <ul style="font-size: 12px; color: #475569; margin: 0; padding-left: 16px;">
+                            <li>Use Caddy or cert-manager for auto SSL</li>
+                            <li>Build self-service DNS troubleshooter</li>
+                            <li>Tier pricing to offset costs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Addition 3 -->
+        <h3>🆕 Feature Addition 3: Link Expiration & Password Protection</h3>
+        <div class="feature-card addition">
+            <h4>Why Add This?</h4>
+            <p>Security-conscious users need time-limited and password-protected links.</p>
+
+            <h4>Data Flow Changes</h4>
+            <div class="diagram-container">
+                <h4>PROTECTED LINK FLOW</h4>
+                <div class="flow-diagram">
+                    <div class="arch-box client">User</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box server">Check Expiry</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box server">Check Password</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box client">Redirect</div>
+                </div>
+            </div>
+
+            <h4>Schema Changes</h4>
+            <div class="code-example">
+<pre>ALTER TABLE urls ADD COLUMN password_hash VARCHAR(255);
+ALTER TABLE urls ADD COLUMN max_clicks INT;
+ALTER TABLE urls ADD COLUMN is_active BOOLEAN DEFAULT true;
+CREATE INDEX idx_urls_active ON urls(is_active, expires_at);</pre>
+            </div>
+        </div>
+
+        <!-- Feature Reversion -->
+        <h3>🔙 Feature Reversion: Rolling Back Analytics</h3>
+        <div class="feature-card reversion">
+            <h4>Why Revert?</h4>
+            <p>Kafka cluster instability causing 5% of clicks to be lost. Need to stabilize before re-enabling.</p>
+
+            <h4>Reversion Strategy</h4>
+            <ol>
+                <li>Disable analytics feature flag (instant)</li>
+                <li>Switch click tracking back to sync PostgreSQL writes</li>
+                <li>Keep Kafka running to not lose queued events</li>
+                <li>Historical analytics remain accessible (read-only)</li>
+            </ol>
+
+            <h4>User Impact</h4>
+            <ul>
+                <li>Dashboard shows "Analytics temporarily unavailable"</li>
+                <li>Click counts still increment (via PostgreSQL)</li>
+                <li>Enterprise users notified via email</li>
+            </ul>
+
+            <h4>Backward Compatibility</h4>
+            <p>API endpoints return cached data with <code>stale: true</code> flag. Clients can show "Data may be outdated" warning.</p>
+        </div>
+    </div>
+
+    <!-- PAN-INDIA SCALE -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Regional Expansion</h2>
+        </div>
+
+        <h3>🗺️ Architecture Evolution</h3>
+        <div class="diagram-container">
+            <h4>PAN-INDIA ARCHITECTURE</h4>
+            <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+                <div class="arch-box client">Users (All India)</div>
+                <span>↓</span>
+                <div class="arch-box cdn">CDN (Cloudflare Edge)</div>
+                <span>↓</span>
+                <div class="arch-box lb">Load Balancer (Regional)</div>
+                <span>↓</span>
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div class="arch-box server">API (Mumbai)</div>
+                        <span style="display: block;">↓</span>
+                        <div class="arch-box db">DB Primary</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box server">API (Delhi)</div>
+                        <span style="display: block;">↓</span>
+                        <div class="arch-box db" style="opacity: 0.7;">DB Replica</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box server">API (Bangalore)</div>
+                        <span style="display: block;">↓</span>
+                        <div class="arch-box db" style="opacity: 0.7;">DB Replica</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Key Changes</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong><span class="term-tooltip" onclick="showTooltip('cdn')">CDN<span class="info-icon">i</span></span> at Edge:</strong> Cache redirects at edge locations. 95% of redirects served without hitting origin.</li>
+                <li><strong><span class="term-tooltip" onclick="showTooltip('replica')">Read Replicas<span class="info-icon">i</span></span>:</strong> PostgreSQL replicas in each region for read queries.</li>
+                <li><strong>Regional <span class="term-tooltip" onclick="showTooltip('load-balancer')">Load Balancers<span class="info-icon">i</span></span>:</strong> Route to nearest healthy server.</li>
+                <li><strong>Redis Cluster:</strong> Distributed cache with consistent hashing.</li>
+            </ul>
+        </div>
+
+        <h3>🆕 Feature: QR Code Generation</h3>
+        <div class="feature-card addition">
+            <h4>Why Add QR Codes?</h4>
+            <p>Indian market heavily uses QR codes for payments (UPI). Adding QR generation increases adoption.</p>
+
+            <h4>Implementation</h4>
+            <ul>
+                <li>Generate QR on-demand (not pre-computed)</li>
+                <li>Cache generated QR images in CDN</li>
+                <li>Support custom colors and logo embedding</li>
+            </ul>
+
+            <div class="api-endpoint">
+                <span class="api-method get">GET</span> /api/v1/qr/:shortCode?size=300&color=000000
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Response: image/png (QR code image)
+Cache: CDN caches for 7 days</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIGH TRAFFIC -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">Handling Massive Scale</h2>
+        </div>
+
+        <h3>⚠️ What Breaks First?</h3>
+        <div class="feature-card" style="border-left-color: #ef4444;">
+            <ol>
+                <li><strong>Database Writes:</strong> Single primary can't handle 100K writes/sec</li>
+                <li><strong>Short Code Generation:</strong> Counter becomes bottleneck</li>
+                <li><strong>Cache Memory:</strong> 1 billion URLs × 100 bytes = 100GB RAM needed</li>
+                <li><strong>Click Tracking:</strong> Kafka partitions max out</li>
+            </ol>
+        </div>
+
+        <h3>🛠️ Solutions</h3>
+        <div class="feature-card">
+            <h4>1. Database <span class="term-tooltip" onclick="showTooltip('sharding')">Sharding<span class="info-icon">i</span></span></h4>
+            <p>Shard by first 2 characters of short_code. 36² = 1296 logical shards across 16 physical nodes.</p>
+
+            <div class="diagram-container">
+                <h4>SHARDING STRATEGY</h4>
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <div class="schema-table">
+                        <div class="schema-table-header">Shard 0 (aa-az)</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name">aaBc4x</span><span class="field-type">→ https://...</span></div>
+                            <div class="schema-field"><span class="field-name">azKm9p</span><span class="field-type">→ https://...</span></div>
+                        </div>
+                    </div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">Shard 1 (ba-bz)</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name">baXy2m</span><span class="field-type">→ https://...</span></div>
+                            <div class="schema-field"><span class="field-name">bzPq7n</span><span class="field-type">→ https://...</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>2. <span class="term-tooltip" onclick="showTooltip('consistent-hashing')">Consistent Hashing<span class="info-icon">i</span></span> for Cache</h4>
+            <p>Distribute cache keys across Redis cluster. Adding/removing nodes only redistributes K/n keys.</p>
+
+            <h4>3. Pre-generated Short Codes</h4>
+            <p>Background worker pre-generates 1M short codes. API picks from pool instead of computing.</p>
+        </div>
+
+        <h3>📉 Degradation Strategies</h3>
+        <div class="pros-cons-grid">
+            <div class="pros-section">
+                <h4>🟢 Graceful Degradation</h4>
+                <ul>
+                    <li>Disable analytics during peak (writes only)</li>
+                    <li>Return cached QR even if stale</li>
+                    <li>Queue non-critical operations</li>
+                </ul>
+            </div>
+            <div class="cons-section">
+                <h4>🔴 Hard Limits</h4>
+                <ul>
+                    <li><span class="term-tooltip" onclick="showTooltip('rate-limiting')">Rate limit<span class="info-icon">i</span></span> to 1000 req/sec per user</li>
+                    <li>Reject new URLs if queue > 10K</li>
+                    <li><span class="term-tooltip" onclick="showTooltip('circuit-breaker')">Circuit breaker<span class="info-icon">i</span></span> for DB connections</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCALE -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">Worldwide Operations</h2>
+        </div>
+
+        <h3>🌍 Global Architecture</h3>
+        <div class="diagram-container">
+            <h4>MULTI-REGION ACTIVE-ACTIVE</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;">
+                <div style="text-align: center; padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 12px;">
+                    <strong>US-East</strong>
+                    <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+                <div style="text-align: center; padding: 16px; background: rgba(34, 197, 94, 0.1); border-radius: 12px;">
+                    <strong>EU-West</strong>
+                    <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+                <div style="text-align: center; padding: 16px; background: rgba(249, 115, 22, 0.1); border-radius: 12px;">
+                    <strong>Asia-Pacific</strong>
+                    <div class="arch-box server" style="margin-top: 8px;">API Cluster</div>
+                    <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Key Decisions</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>CockroachDB:</strong> Globally distributed SQL with automatic sharding and replication</li>
+                <li><strong>Anycast DNS:</strong> Route users to nearest healthy region</li>
+                <li><strong>GDPR Compliance:</strong> EU user data stays in EU region</li>
+                <li><strong><span class="term-tooltip" onclick="showTooltip('eventual-consistency')">Eventual Consistency<span class="info-icon">i</span></span>:</strong> Accept ~100ms cross-region replication lag</li>
+            </ul>
+        </div>
+
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">100B+</div>
+                <div class="label">URLs Stored</div>
+            </div>
+            <div class="metric">
+                <div class="value">1M</div>
+                <div class="label">Redirects/sec</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;50ms</div>
+                <div class="label">P99 Latency</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.99%</div>
+                <div class="label">Availability</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip System -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip()"></div>
+<div class="tooltip-popup" id="tooltipPopup">
+    <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
+    <h4 id="tooltipTitle"></h4>
+    <p id="tooltipContent"></p>
+</div>
+
+<script>
+const termDefinitions = {
+    'cdn': { title: 'CDN (Content Delivery Network)', content: 'A geographically distributed network of proxy servers that cache and deliver content closer to users. CDNs reduce latency by serving static assets from edge locations nearest to the user.' },
+    'load-balancer': { title: 'Load Balancer', content: 'A device or software that distributes incoming network traffic across multiple servers to ensure no single server becomes overwhelmed. Common algorithms include Round Robin, Least Connections, and IP Hash.' },
+    'redis': { title: 'Redis', content: 'An in-memory data structure store used as a database, cache, and message broker. Redis supports various data structures like strings, hashes, lists, sets, and sorted sets with O(1) operations.' },
+    'kafka': { title: 'Apache Kafka', content: 'A distributed event streaming platform capable of handling trillions of events per day. Used for real-time data pipelines, event sourcing, and as a commit log for distributed systems.' },
+    'sharding': { title: 'Database Sharding', content: 'A horizontal scaling technique where data is partitioned across multiple database instances. Each shard contains a subset of the total data, determined by a sharding key.' },
+    'consistent-hashing': { title: 'Consistent Hashing', content: 'A distributed hashing technique where only K/n keys need to be remapped when a node is added or removed. Used in distributed caches and databases to minimize rebalancing.' },
+    'rate-limiting': { title: 'Rate Limiting', content: 'A technique to control the rate of requests a user or client can make to an API. Common algorithms include Token Bucket, Leaky Bucket, and Sliding Window.' },
+    'circuit-breaker': { title: 'Circuit Breaker Pattern', content: 'A design pattern that prevents cascading failures in distributed systems. When failures exceed a threshold, the circuit "opens" and fails fast.' },
+    'eventual-consistency': { title: 'Eventual Consistency', content: 'A consistency model where the system guarantees that if no new updates are made, eventually all reads will return the last updated value.' },
+    'idempotency': { title: 'Idempotency', content: 'A property where making the same request multiple times produces the same result as making it once. Critical for payment systems and APIs to handle retries safely.' },
+    'database-index': { title: 'Database Index', content: 'A data structure that improves the speed of data retrieval operations on a database table. B-tree indexes are common for range queries.' },
+    'replica': { title: 'Database Replica', content: 'A copy of the primary database that stays synchronized. Read replicas handle read traffic to scale horizontally.' }
+};
+
+function showTooltip(term) {
+    const def = termDefinitions[term];
+    if (def) {
+        document.getElementById('tooltipTitle').textContent = def.title;
+        document.getElementById('tooltipContent').textContent = def.content;
+        document.getElementById('tooltipOverlay').classList.add('show');
+        document.getElementById('tooltipPopup').classList.add('show');
+    }
+}
+
+function closeTooltip() {
+    document.getElementById('tooltipOverlay').classList.remove('show');
+    document.getElementById('tooltipPopup').classList.remove('show');
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeTooltip();
+});
+
+// Scroll spy for quick nav
+window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll('.stage-section');
+    const navLinks = document.querySelectorAll('.quick-nav a');
+
+    let current = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= sectionTop - 200) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+            link.classList.add('active');
+        }
+    });
+});
+</script>

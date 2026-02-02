@@ -1,0 +1,269 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
+
+    <h1>🚗 Ride Booking System Design</h1>
+    <p class="topic-description">Design a ride-sharing platform like Uber/Ola with real-time matching, GPS tracking, and surge pricing</p>
+
+    <div class="quick-nav">
+        <h4>Quick Navigation</h4>
+        <a href="#mvp">MVP Stage</a>
+        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#high-traffic">High Traffic</a>
+        <a href="#global">Global Scale</a>
+    </div>
+
+    <!-- MVP STAGE -->
+    <div class="stage-section" id="mvp">
+        <div class="stage-header">
+            <span class="stage-badge mvp">MVP Stage</span>
+            <h2 style="margin: 0;">Single City Ride Booking</h2>
+        </div>
+
+        <h3>📊 Database Strategy</h3>
+        <div class="feature-card">
+            <h4>Why PostgreSQL + PostGIS + Redis?</h4>
+            <p>Geospatial queries for driver matching, Redis for real-time driver locations.</p>
+
+            <div class="diagram-container">
+                <h4>DATABASE SCHEMA</h4>
+                <div class="schema-diagram">
+                    <div class="schema-table">
+                        <div class="schema-table-header">users</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+                            <div class="schema-field"><span class="field-name">phone</span><span class="field-type">VARCHAR(15)</span></div>
+                            <div class="schema-field"><span class="field-name">rating</span><span class="field-type">DECIMAL(3,2)</span></div>
+                            <div class="schema-field"><span class="field-name">user_type</span><span class="field-type">ENUM(rider, driver)</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">rides</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">rider_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">driver_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">pickup_location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
+                            <div class="schema-field"><span class="field-name">dropoff_location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
+                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">fare</span><span class="field-type">DECIMAL(10,2)</span></div>
+                            <div class="schema-field"><span class="field-name">surge_multiplier</span><span class="field-type">DECIMAL(3,2)</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">driver_locations</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">driver_id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name">location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
+                            <div class="schema-field"><span class="field-name">is_available</span><span class="field-type">BOOLEAN</span></div>
+                            <div class="schema-field"><span class="field-name">last_updated</span><span class="field-type">TIMESTAMP</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture (MVP)</h3>
+        <div class="diagram-container">
+            <h4>MVP ARCHITECTURE</h4>
+            <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                <div style="display: flex; gap: 24px;">
+                    <div class="arch-box client">Rider App</div>
+                    <div class="arch-box client">Driver App</div>
+                </div>
+                <span>↓</span>
+                <div class="arch-box lb">Load Balancer</div>
+                <span>↓</span>
+                <div class="arch-box server">API Server</div>
+                <span>↓</span>
+                <div style="display: flex; gap: 16px;">
+                    <div class="arch-box db">PostgreSQL</div>
+                    <div class="arch-box cache">Redis (Locations)</div>
+                    <div class="arch-box queue">Kafka</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔌 API Design</h3>
+        <div class="feature-card">
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/rides/request
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request:  { "pickup": {"lat": 12.97, "lng": 77.59}, "dropoff": {...}, "vehicle_type": "sedan" }
+Response: { "ride_id": "uuid", "eta": 5, "fare_estimate": {"min": 150, "max": 180} }</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method ws">WS</span> /api/v1/rides/:rideId/track
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+// WebSocket for real-time location updates
+{ "driver_location": {"lat": 12.98, "lng": 77.60}, "eta_seconds": 180 }</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/drivers/location (Driver App)
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request:  { "lat": 12.97, "lng": 77.59 }
+// Called every 3-5 seconds when driver is online</pre>
+            </div>
+        </div>
+
+        <h3>🎯 Driver Matching Algorithm</h3>
+        <div class="feature-card">
+            <h4>Matching Strategy</h4>
+            <ol>
+                <li>Query drivers within 3km radius using Redis Geo</li>
+                <li>Filter by vehicle type and availability</li>
+                <li>Score by: distance (40%), rating (30%), acceptance rate (30%)</li>
+                <li>Send ride request to top driver</li>
+                <li>If no response in 15s, cascade to next driver</li>
+            </ol>
+
+            <div class="code-example">
+<pre>// Redis Geo for nearby drivers
+GEOADD drivers:available 77.59 12.97 "driver_123"
+GEORADIUS drivers:available 77.59 12.97 3 km WITHDIST ASC COUNT 10</pre>
+            </div>
+        </div>
+
+        <!-- Feature Additions -->
+        <h3>🆕 Feature Addition 1: Surge Pricing</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Surge?</h4>
+            <p>Balance supply and demand during peak hours. Incentivize drivers.</p>
+
+            <h4>Surge Calculation</h4>
+            <div class="code-example">
+<pre>// Calculate surge multiplier per zone
+surge = (active_requests / available_drivers) * base_multiplier
+
+if surge > 1.5: notify_drivers("High demand area")
+if surge > 2.0: show_user_warning("Prices are higher than usual")</pre>
+            </div>
+        </div>
+
+        <h3>🆕 Feature Addition 2: Ride Sharing (Pool)</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Pool?</h4>
+            <p>Lower prices for riders, higher earnings for drivers. Environmental benefit.</p>
+
+            <h4>Matching Complexity</h4>
+            <ul>
+                <li>Match riders going same direction (cosine similarity)</li>
+                <li>Maximum detour: 10 minutes or 3km</li>
+                <li>Dynamic fare calculation based on actual distance</li>
+            </ul>
+        </div>
+
+        <h3>🆕 Feature Addition 3: In-app Navigation</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Navigation?</h4>
+            <p>Keep drivers in-app, collect route data for ETA improvements.</p>
+        </div>
+
+        <h3>🔙 Feature Reversion: Disabling Surge</h3>
+        <div class="feature-card reversion">
+            <h4>Why Revert?</h4>
+            <p>Regulatory pressure or PR crisis during emergency (e.g., floods, terror attack).</p>
+
+            <h4>Reversion Strategy</h4>
+            <ol>
+                <li>Feature flag to cap surge at 1.0x</li>
+                <li>Log foregone revenue for post-incident analysis</li>
+                <li>Communication: "Prices capped during emergency"</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- PAN-INDIA SCALE -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Multi-City Expansion</h2>
+        </div>
+
+        <div class="feature-card">
+            <ul>
+                <li><strong>Regional Databases:</strong> Each city gets its own PostgreSQL for data locality</li>
+                <li><strong>Regional Matching:</strong> Drivers matched within city boundaries only</li>
+                <li><strong>Central Analytics:</strong> Replicate to data warehouse for business intelligence</li>
+                <li><strong>Regional Pricing:</strong> Different base fares per city</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- HIGH TRAFFIC -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">Handling Event Surge</h2>
+        </div>
+
+        <h3>⚠️ What Breaks First?</h3>
+        <div class="feature-card" style="border-left-color: #ef4444;">
+            <ol>
+                <li><strong>Driver Location Updates:</strong> Millions of drivers sending location every 3 seconds</li>
+                <li><strong>Matching Service:</strong> Geo queries become slow with millions of drivers</li>
+                <li><strong>WebSocket Connections:</strong> Server memory exhaustion</li>
+            </ol>
+        </div>
+
+        <h3>🛠️ Solutions</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Location Batching:</strong> Batch location updates, process every 5 seconds</li>
+                <li><strong>Geo Sharding:</strong> Partition drivers by city/zone in Redis</li>
+                <li><strong>WebSocket Scaling:</strong> Sticky sessions + Redis pub/sub for cross-server events</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCALE -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">International Operations</h2>
+        </div>
+
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">10M+</div>
+                <div class="label">Daily Rides</div>
+            </div>
+            <div class="metric">
+                <div class="value">5M+</div>
+                <div class="label">Active Drivers</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;3min</div>
+                <div class="label">Avg Match Time</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.9%</div>
+                <div class="label">Uptime</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip System -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip()"></div>
+<div class="tooltip-popup" id="tooltipPopup">
+    <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
+    <h4 id="tooltipTitle"></h4>
+    <p id="tooltipContent"></p>
+</div>
+
+<script>
+function showTooltip(term) {}
+function closeTooltip() {
+    document.getElementById('tooltipOverlay').classList.remove('show');
+    document.getElementById('tooltipPopup').classList.remove('show');
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeTooltip(); });
+</script>

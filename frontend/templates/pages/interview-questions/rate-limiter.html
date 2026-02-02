@@ -1,0 +1,307 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
+
+    <h1>⏱️ Rate Limiter System Design</h1>
+    <p class="topic-description">Design a distributed rate limiting system with multiple algorithms (Token Bucket, Sliding Window)</p>
+
+    <div class="quick-nav">
+        <h4>Quick Navigation</h4>
+        <a href="#mvp">MVP Stage</a>
+        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#high-traffic">High Traffic</a>
+        <a href="#global">Global Scale</a>
+    </div>
+
+    <!-- MVP STAGE -->
+    <div class="stage-section" id="mvp">
+        <div class="stage-header">
+            <span class="stage-badge mvp">MVP Stage</span>
+            <h2 style="margin: 0;">Single Service Rate Limiter</h2>
+        </div>
+
+        <h3>📊 Algorithm Selection</h3>
+        <div class="feature-card">
+            <h4>Token Bucket Algorithm</h4>
+            <p>Allows burst traffic while maintaining average rate. Tokens added at fixed rate, consumed per request.</p>
+
+            <div class="pros-cons-grid">
+                <div class="pros-section">
+                    <h4>✅ Pros</h4>
+                    <ul>
+                        <li><strong>Burst Friendly</strong> - Allows short traffic bursts</li>
+                        <li><strong>Memory Efficient</strong> - Only stores token count + last refill time</li>
+                        <li><strong>Simple Implementation</strong> - Easy to understand and debug</li>
+                    </ul>
+                </div>
+                <div class="cons-section">
+                    <h4>❌ Cons</h4>
+                    <ul>
+                        <li><strong>No Smoothing</strong> - Can cause traffic spikes</li>
+                        <li><strong>Clock Sync Required</strong> - Distributed systems need synchronized clocks</li>
+                        <li><strong>Parameter Tuning</strong> - Bucket size and refill rate need careful tuning</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 24px;">Token Bucket Pseudocode</h4>
+            <div class="code-example">
+<pre>class TokenBucket {
+    constructor(capacity, refillRate) {
+        this.tokens = capacity;
+        this.capacity = capacity;
+        this.refillRate = refillRate; // tokens per second
+        this.lastRefill = Date.now();
+    }
+
+    tryConsume(tokens = 1) {
+        this.refill();
+        if (this.tokens >= tokens) {
+            this.tokens -= tokens;
+            return true; // Request allowed
+        }
+        return false; // Rate limited
+    }
+
+    refill() {
+        const now = Date.now();
+        const elapsed = (now - this.lastRefill) / 1000;
+        this.tokens = Math.min(
+            this.capacity,
+            this.tokens + elapsed * this.refillRate
+        );
+        this.lastRefill = now;
+    }
+}</pre>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture (MVP)</h3>
+        <div class="diagram-container">
+            <h4>MVP ARCHITECTURE</h4>
+            <div class="flow-diagram">
+                <div class="arch-box client">API Request</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-box lb">Rate Limiter Middleware</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-box cache">Redis</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-box server">Allow/Deny</div>
+            </div>
+            <p style="text-align: center; color: #64748b; font-size: 13px; margin-top: 16px;">Centralized Redis stores rate limit state. All API servers check against same Redis.</p>
+        </div>
+
+        <h3>💾 Redis Implementation</h3>
+        <div class="feature-card">
+            <h4>Lua Script for Atomic Operations</h4>
+            <div class="code-example">
+<pre>-- Token Bucket in Redis (Lua script for atomicity)
+local key = KEYS[1]
+local capacity = tonumber(ARGV[1])
+local refill_rate = tonumber(ARGV[2])
+local now = tonumber(ARGV[3])
+local requested = tonumber(ARGV[4])
+
+local bucket = redis.call('HMGET', key, 'tokens', 'last_refill')
+local tokens = tonumber(bucket[1]) or capacity
+local last_refill = tonumber(bucket[2]) or now
+
+-- Refill tokens
+local elapsed = now - last_refill
+tokens = math.min(capacity, tokens + elapsed * refill_rate)
+
+-- Try to consume
+if tokens >= requested then
+    tokens = tokens - requested
+    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+    redis.call('EXPIRE', key, 3600)
+    return 1 -- Allowed
+else
+    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+    return 0 -- Denied
+end</pre>
+            </div>
+        </div>
+
+        <!-- Feature Addition 1 -->
+        <h3>🆕 Feature Addition 1: Sliding Window Counter</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Sliding Window?</h4>
+            <p>More accurate rate limiting without burst allowance. Better for strict compliance scenarios.</p>
+
+            <h4>Algorithm</h4>
+            <div class="code-example">
+<pre>// Sliding Window Counter
+// Combines fixed window counter with weighted previous window
+
+function slidingWindowCount(userId, windowSize, limit) {
+    const now = Date.now();
+    const currentWindow = Math.floor(now / windowSize);
+    const previousWindow = currentWindow - 1;
+
+    const currentCount = redis.get(`rate:${userId}:${currentWindow}`) || 0;
+    const previousCount = redis.get(`rate:${userId}:${previousWindow}`) || 0;
+
+    // Weight previous window based on time elapsed in current window
+    const elapsedInWindow = now % windowSize;
+    const weightedCount = previousCount * (1 - elapsedInWindow / windowSize) + currentCount;
+
+    if (weightedCount < limit) {
+        redis.incr(`rate:${userId}:${currentWindow}`);
+        return true;
+    }
+    return false;
+}</pre>
+            </div>
+        </div>
+
+        <!-- Feature Addition 2 -->
+        <h3>🆕 Feature Addition 2: Tiered Rate Limits</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Tiers?</h4>
+            <p>Different limits for free vs paid users. Monetization opportunity.</p>
+
+            <h4>Configuration</h4>
+            <div class="code-example">
+<pre>rate_limits:
+  free:
+    requests_per_minute: 60
+    requests_per_day: 1000
+    burst_size: 10
+
+  pro:
+    requests_per_minute: 600
+    requests_per_day: 50000
+    burst_size: 100
+
+  enterprise:
+    requests_per_minute: 6000
+    requests_per_day: unlimited
+    burst_size: 1000</pre>
+            </div>
+        </div>
+
+        <!-- Feature Addition 3 -->
+        <h3>🆕 Feature Addition 3: Response Headers</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Headers?</h4>
+            <p>Help clients understand their rate limit status. Industry standard.</p>
+
+            <h4>Standard Headers</h4>
+            <div class="code-example">
+<pre>X-RateLimit-Limit: 100          // Max requests allowed
+X-RateLimit-Remaining: 45       // Requests remaining
+X-RateLimit-Reset: 1640000000   // Unix timestamp when limit resets
+Retry-After: 30                 // Seconds until retry (on 429)</pre>
+            </div>
+        </div>
+
+        <!-- Feature Reversion -->
+        <h3>🔙 Feature Reversion: Disabling Rate Limiting</h3>
+        <div class="feature-card reversion">
+            <h4>Why Revert?</h4>
+            <p>Redis cluster failure causing false rate limit hits. Emergency bypass needed.</p>
+
+            <h4>Reversion Strategy</h4>
+            <ol>
+                <li>Feature flag to bypass rate limiter</li>
+                <li>Log all requests for post-incident analysis</li>
+                <li>Alert on traffic anomalies</li>
+                <li>Prepare for traffic surge to backend</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- PAN-INDIA SCALE -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Regional Rate Limiting</h2>
+        </div>
+
+        <h3>Architecture Evolution</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Regional Redis Clusters:</strong> Rate limit state per region</li>
+                <li><strong>Global Rate Aggregation:</strong> Periodic sync for global limits</li>
+                <li><strong>Eventual Consistency:</strong> Accept slight over-limit during sync delays</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- HIGH TRAFFIC -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">Handling DDoS-level Traffic</h2>
+        </div>
+
+        <h3>Solutions</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Local Rate Limiting:</strong> First pass in API server memory (no Redis call)</li>
+                <li><strong>IP-based Limits:</strong> Block suspicious IPs at edge (Cloudflare)</li>
+                <li><strong>Circuit Breaker:</strong> Stop accepting new requests if Redis is down</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCALE -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">Worldwide Rate Limiting</h2>
+        </div>
+
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">1B+</div>
+                <div class="label">Requests/day</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;1ms</div>
+                <div class="label">Latency Added</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.99%</div>
+                <div class="label">Accuracy</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip System -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip()"></div>
+<div class="tooltip-popup" id="tooltipPopup">
+    <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
+    <h4 id="tooltipTitle"></h4>
+    <p id="tooltipContent"></p>
+</div>
+
+<script>
+const termDefinitions = {
+    'token-bucket': { title: 'Token Bucket', content: 'A rate limiting algorithm that allows burst traffic. Tokens are added at a fixed rate and consumed per request.' },
+    'sliding-window': { title: 'Sliding Window', content: 'A rate limiting algorithm that provides smooth rate limiting without allowing bursts.' }
+};
+
+function showTooltip(term) {
+    const def = termDefinitions[term];
+    if (def) {
+        document.getElementById('tooltipTitle').textContent = def.title;
+        document.getElementById('tooltipContent').textContent = def.content;
+        document.getElementById('tooltipOverlay').classList.add('show');
+        document.getElementById('tooltipPopup').classList.add('show');
+    }
+}
+
+function closeTooltip() {
+    document.getElementById('tooltipOverlay').classList.remove('show');
+    document.getElementById('tooltipPopup').classList.remove('show');
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeTooltip();
+});
+</script>

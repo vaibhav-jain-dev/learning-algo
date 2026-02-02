@@ -1,0 +1,296 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
+
+    <h1>🍔 Food Ordering System Design</h1>
+    <p class="topic-description">Design an online food delivery platform like Swiggy/Zomato with real-time tracking</p>
+
+    <div class="quick-nav">
+        <h4>Quick Navigation</h4>
+        <a href="#mvp">MVP Stage</a>
+        <a href="#pan-india">PAN-India Scale</a>
+        <a href="#high-traffic">High Traffic</a>
+        <a href="#global">Global Scale</a>
+    </div>
+
+    <!-- MVP STAGE -->
+    <div class="stage-section" id="mvp">
+        <div class="stage-header">
+            <span class="stage-badge mvp">MVP Stage</span>
+            <h2 style="margin: 0;">Single City Food Delivery</h2>
+        </div>
+
+        <h3>📊 Database Strategy</h3>
+        <div class="feature-card">
+            <div class="diagram-container">
+                <h4>DATABASE SCHEMA</h4>
+                <div class="schema-diagram">
+                    <div class="schema-table">
+                        <div class="schema-table-header">restaurants</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+                            <div class="schema-field"><span class="field-name">location</span><span class="field-type">GEOGRAPHY(POINT)</span></div>
+                            <div class="schema-field"><span class="field-name">cuisine_type</span><span class="field-type">VARCHAR[]</span></div>
+                            <div class="schema-field"><span class="field-name">rating</span><span class="field-type">DECIMAL(3,2)</span></div>
+                            <div class="schema-field"><span class="field-name">avg_delivery_time</span><span class="field-type">INT</span></div>
+                            <div class="schema-field"><span class="field-name">is_open</span><span class="field-type">BOOLEAN</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">menu_items</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">restaurant_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">name</span><span class="field-type">VARCHAR(255)</span></div>
+                            <div class="schema-field"><span class="field-name">description</span><span class="field-type">TEXT</span></div>
+                            <div class="schema-field"><span class="field-name">price</span><span class="field-type">DECIMAL(10,2)</span></div>
+                            <div class="schema-field"><span class="field-name">is_veg</span><span class="field-type">BOOLEAN</span></div>
+                            <div class="schema-field"><span class="field-name">is_available</span><span class="field-type">BOOLEAN</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="schema-diagram" style="margin-top: 24px;">
+                    <div class="schema-table">
+                        <div class="schema-table-header">orders</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">user_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">restaurant_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">delivery_partner_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+                            <div class="schema-field"><span class="field-name">total_amount</span><span class="field-type">DECIMAL(10,2)</span></div>
+                            <div class="schema-field"><span class="field-name">delivery_address</span><span class="field-type">JSONB</span></div>
+                            <div class="schema-field"><span class="field-name">estimated_delivery</span><span class="field-type">TIMESTAMP</span></div>
+                        </div>
+                    </div>
+                    <div class="relation-arrow">1:N</div>
+                    <div class="schema-table">
+                        <div class="schema-table-header">order_items</div>
+                        <div class="schema-table-body">
+                            <div class="schema-field"><span class="field-name field-pk">id</span><span class="field-type">UUID PK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">order_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name field-fk">item_id</span><span class="field-type">UUID FK</span></div>
+                            <div class="schema-field"><span class="field-name">quantity</span><span class="field-type">INT</span></div>
+                            <div class="schema-field"><span class="field-name">unit_price</span><span class="field-type">DECIMAL(10,2)</span></div>
+                            <div class="schema-field"><span class="field-name">customizations</span><span class="field-type">JSONB</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🏗️ Architecture (MVP)</h3>
+        <div class="diagram-container">
+            <h4>MVP ARCHITECTURE</h4>
+            <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                <div style="display: flex; gap: 24px;">
+                    <div class="arch-box client">Customer App</div>
+                    <div class="arch-box client">Restaurant App</div>
+                    <div class="arch-box client">Delivery App</div>
+                </div>
+                <span>↓</span>
+                <div class="arch-box lb">API Gateway</div>
+                <span>↓</span>
+                <div style="display: flex; gap: 16px;">
+                    <div class="arch-box server">Order Service</div>
+                    <div class="arch-box server">Restaurant Service</div>
+                    <div class="arch-box server">Delivery Service</div>
+                </div>
+                <span>↓</span>
+                <div style="display: flex; gap: 16px;">
+                    <div class="arch-box db">PostgreSQL</div>
+                    <div class="arch-box cache">Redis</div>
+                    <div class="arch-box queue">Kafka</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>🔌 API Design</h3>
+        <div class="feature-card">
+            <div class="api-endpoint">
+                <span class="api-method get">GET</span> /api/v1/restaurants?lat=12.97&lng=77.59&cuisine=indian
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Response: {
+  "restaurants": [
+    { "id": "uuid", "name": "Meghana Foods", "distance": "1.2km",
+      "rating": 4.5, "avg_delivery_time": 35, "cuisines": ["biryani", "indian"] }
+  ]
+}</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method post">POST</span> /api/v1/orders
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+Request: {
+  "restaurant_id": "uuid",
+  "items": [{ "item_id": "uuid", "quantity": 2, "customizations": {"spice": "medium"} }],
+  "delivery_address": { "lat": 12.98, "lng": 77.60, "address": "..." },
+  "payment_method": "upi"
+}
+Response: { "order_id": "uuid", "estimated_delivery": "35 mins", "total": 599 }</pre>
+            </div>
+
+            <div class="api-endpoint">
+                <span class="api-method ws">WS</span> /api/v1/orders/:orderId/track
+                <pre style="margin: 12px 0 0 0; color: #94a3b8;">
+// Real-time order status and delivery partner location
+{ "status": "out_for_delivery", "partner_location": {...}, "eta": "5 mins" }</pre>
+            </div>
+        </div>
+
+        <h3>📦 Order State Machine</h3>
+        <div class="feature-card">
+            <div class="diagram-container">
+                <h4>ORDER LIFECYCLE</h4>
+                <div class="flow-diagram">
+                    <div class="arch-box client">Placed</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box server">Confirmed</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box server">Preparing</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box server">Ready</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box worker">Picked Up</div>
+                    <span class="arch-arrow">→</span>
+                    <div class="arch-box client">Delivered</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Additions -->
+        <h3>🆕 Feature Addition 1: Restaurant Search with Elasticsearch</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Elasticsearch?</h4>
+            <p>Better search relevance, typo tolerance, and fuzzy matching for dish/restaurant names.</p>
+
+            <h4>Index Structure</h4>
+            <div class="code-example">
+<pre>{
+  "restaurant_name": "Meghana Foods",
+  "dishes": ["biryani", "kebab", "naan"],
+  "cuisines": ["indian", "hyderabadi"],
+  "location": { "lat": 12.97, "lon": 77.59 },
+  "rating": 4.5,
+  "is_open": true
+}</pre>
+            </div>
+        </div>
+
+        <h3>🆕 Feature Addition 2: Dynamic Pricing (Surge)</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Surge?</h4>
+            <p>Higher delivery fees during peak hours (lunch/dinner rush, rain, events).</p>
+        </div>
+
+        <h3>🆕 Feature Addition 3: Subscription (Pro Membership)</h3>
+        <div class="feature-card addition">
+            <h4>Why Add Subscriptions?</h4>
+            <p>Free delivery for members, increased order frequency, better retention.</p>
+        </div>
+
+        <h3>🔙 Feature Reversion: Disabling Surge Pricing</h3>
+        <div class="feature-card reversion">
+            <h4>Why Revert?</h4>
+            <p>Customer backlash during festival/emergency. PR damage control.</p>
+
+            <h4>Strategy</h4>
+            <ol>
+                <li>Feature flag to set surge multiplier to 1.0x</li>
+                <li>Honor existing orders at quoted price</li>
+                <li>Communication: "Free delivery during [event]"</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- PAN-INDIA SCALE -->
+    <div class="stage-section" id="pan-india">
+        <div class="stage-header">
+            <span class="stage-badge pan-india">PAN-India Scale</span>
+            <h2 style="margin: 0;">Multi-City Operations</h2>
+        </div>
+
+        <div class="feature-card">
+            <ul>
+                <li><strong>City-based Sharding:</strong> Restaurants and orders partitioned by city</li>
+                <li><strong>Regional Elasticsearch:</strong> Separate indices per city for faster search</li>
+                <li><strong>Local Payment Gateways:</strong> UPI, wallets, cash on delivery</li>
+                <li><strong>Multi-language Support:</strong> Regional languages for customer support</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- HIGH TRAFFIC -->
+    <div class="stage-section" id="high-traffic">
+        <div class="stage-header">
+            <span class="stage-badge high-traffic">High Traffic</span>
+            <h2 style="margin: 0;">Handling Lunch/Dinner Rush</h2>
+        </div>
+
+        <h3>⚠️ What Breaks First?</h3>
+        <div class="feature-card" style="border-left-color: #ef4444;">
+            <ol>
+                <li><strong>Order Service:</strong> 100K orders/minute during IPL match</li>
+                <li><strong>Restaurant Overload:</strong> Popular restaurants can't accept more orders</li>
+                <li><strong>Delivery Partner Shortage:</strong> Not enough drivers during peak</li>
+            </ol>
+        </div>
+
+        <h3>🛠️ Solutions</h3>
+        <div class="feature-card">
+            <ul>
+                <li><strong>Order Queue:</strong> Accept orders into queue, process async</li>
+                <li><strong>Restaurant Throttling:</strong> Cap active orders per restaurant</li>
+                <li><strong>Delivery Batching:</strong> Combine nearby deliveries for same partner</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- GLOBAL SCALE -->
+    <div class="stage-section" id="global">
+        <div class="stage-header">
+            <span class="stage-badge global">Global Scale</span>
+            <h2 style="margin: 0;">International Expansion</h2>
+        </div>
+
+        <h3>📊 Scale Metrics</h3>
+        <div class="metrics-card">
+            <div class="metric">
+                <div class="value">5M+</div>
+                <div class="label">Daily Orders</div>
+            </div>
+            <div class="metric">
+                <div class="value">500K+</div>
+                <div class="label">Restaurants</div>
+            </div>
+            <div class="metric">
+                <div class="value">&lt;30min</div>
+                <div class="label">Avg Delivery</div>
+            </div>
+            <div class="metric">
+                <div class="value">99.9%</div>
+                <div class="label">Order Success</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tooltip System -->
+<div class="tooltip-overlay" id="tooltipOverlay" onclick="closeTooltip()"></div>
+<div class="tooltip-popup" id="tooltipPopup">
+    <button class="tooltip-close" onclick="closeTooltip()">&times;</button>
+    <h4 id="tooltipTitle"></h4>
+    <p id="tooltipContent"></p>
+</div>
+
+<script>
+function showTooltip(term) {}
+function closeTooltip() {
+    document.getElementById('tooltipOverlay').classList.remove('show');
+    document.getElementById('tooltipPopup').classList.remove('show');
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeTooltip(); });
+</script>

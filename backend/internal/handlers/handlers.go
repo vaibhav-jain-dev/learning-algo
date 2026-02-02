@@ -266,10 +266,36 @@ func (h *Handlers) MachineCoding(c *fiber.Ctx) error {
 	})
 }
 
-// InterviewQuestions renders the system design interview questions page
+// InterviewQuestions renders the system design interview questions dashboard
 func (h *Handlers) InterviewQuestions(c *fiber.Ctx) error {
-	return c.Render("pages/interview-questions", fiber.Map{
+	return c.Render("pages/interview-questions-dashboard", fiber.Map{
 		"Title": "System Design Interview Questions",
+	})
+}
+
+// InterviewQuestionTopic renders a specific system design topic
+func (h *Handlers) InterviewQuestionTopic(c *fiber.Ctx) error {
+	topic := c.Params("topic")
+
+	// Map topics to their display names
+	topicNames := map[string]string{
+		"url-shortener":  "URL Shortener System Design",
+		"parking-lot":    "Parking Lot System Design",
+		"ride-booking":   "Ride Booking System Design",
+		"notification":   "Notification System Design",
+		"rate-limiter":   "Rate Limiter System Design",
+		"food-ordering":  "Food Ordering System Design",
+		"slot-booking":   "Slot Booking System Design",
+	}
+
+	title, exists := topicNames[topic]
+	if !exists {
+		return c.Status(404).SendString("Topic not found")
+	}
+
+	return c.Render("pages/interview-questions/"+topic, fiber.Map{
+		"Title": title,
+		"Topic": topic,
 	})
 }
 

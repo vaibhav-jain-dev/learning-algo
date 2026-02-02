@@ -3813,32 +3813,32 @@ Response: 200 OK
 // Template stored in DB
 {
     "id": "order_confirmation",
-    "subject": "Order {{order_id}} Confirmed!",
-    "body": "Hi {{user_name}}, your order of {{item_count}} items
-             worth {{currency}}{{total_amount}} is confirmed.
+    "subject": "Order ${order_id} Confirmed!",
+    "body": "Hi ${user_name}, your order of ${item_count} items
+             worth ${currency}${total_amount} is confirmed.
 
-             {{#if express_delivery}}
-             Express Delivery: Arriving by {{delivery_date}}
-             {{else}}
+             ${#if express_delivery}
+             Express Delivery: Arriving by ${delivery_date}
+             ${else}
              Standard Delivery: 3-5 business days
-             {{/if}}
+             ${/if}
 
-             Track your order: {{tracking_url}}"
+             Track your order: ${tracking_url}"
 }
 
-// Template Engine (Handlebars-like)
+// Template Engine (Mustache-like)
 class TemplateEngine {
     compile(template: string, variables: Record&lt;string, any&gt;): string {
         return template
-            .replace(/\{\{(\w+)\}\}/g, (_, key) =&gt; variables[key] || '')
-            .replace(/\{\{#if (\w+)\}\}(.*?)\{\{else\}\}(.*?)\{\{\/if\}\}/gs,
+            .replace(/\$\{(\w+)\}/g, (_, key) =&gt; variables[key] || '')
+            .replace(/\$\{#if (\w+)\}(.*?)\$\{else\}(.*?)\$\{\/if\}/gs,
                 (_, condition, ifTrue, ifFalse) =&gt;
                     variables[condition] ? ifTrue : ifFalse)
     }
 
     validate(template: string, requiredVars: string[]): boolean {
-        const usedVars = template.match(/\{\{(\w+)\}\}/g) || []
-        return requiredVars.every(v =&gt; usedVars.includes(`{{${v}}}`))
+        const usedVars = template.match(/\$\{(\w+)\}/g) || []
+        return requiredVars.every(v =&gt; usedVars.includes(`\${${v}}`))
     }
 }
 </pre>
