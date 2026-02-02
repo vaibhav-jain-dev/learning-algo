@@ -233,6 +233,7 @@ func main() {
 	app.Get("/system-design", h.SystemDesign)
 	app.Get("/design-patterns", h.DesignPatterns)
 	app.Get("/machine-coding", h.MachineCoding)
+	app.Get("/interview-question", h.InterviewQuestions)
 	app.Get("/microservices", h.Microservices)
 	app.Get("/system-architectures", h.SystemArchitectures)
 	app.Get("/golang", h.Golang)

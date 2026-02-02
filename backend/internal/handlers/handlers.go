@@ -266,6 +266,13 @@ func (h *Handlers) MachineCoding(c *fiber.Ctx) error {
 	})
 }
 
+// InterviewQuestions renders the system design interview questions page
+func (h *Handlers) InterviewQuestions(c *fiber.Ctx) error {
+	return c.Render("pages/interview-questions", fiber.Map{
+		"Title": "System Design Interview Questions",
+	})
+}
+
 // Golang renders the Go API development guide page
 func (h *Handlers) Golang(c *fiber.Ctx) error {
 	return c.Render("pages/golang", fiber.Map{
