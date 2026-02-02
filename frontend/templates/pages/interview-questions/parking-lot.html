@@ -12,6 +12,7 @@
         <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
         <a href="#global">Global</a>
+        <a href="#cap-analysis">CAP Analysis</a>
     </div>
 
     <!-- ============================================ -->
@@ -2059,6 +2060,521 @@ LIMIT 20;</pre>
             </div>
         </div>
     </div>
+
+    <!-- ============================================ -->
+    <!-- CAP ANALYSIS SECTION -->
+    <!-- ============================================ -->
+    <div class="cap-analysis-section" id="cap-analysis">
+        <div class="cap-header">
+            <h2>CAP Theorem Analysis</h2>
+            <div class="cap-badge mixed">Mixed CP/AP System</div>
+        </div>
+
+        <p class="cap-intro">
+            Parking Lot Management presents a fascinating CAP theorem case study. Unlike purely CP or AP systems,
+            parking lots require <strong>different consistency guarantees for different components</strong>.
+            The physical nature of parking (cars can't teleport!) combined with real-time availability needs
+            creates unique edge computing challenges.
+        </p>
+
+        <!-- Why Mixed CP/AP -->
+        <div class="cap-explanation">
+            <h3>Why Mixed CP/AP?</h3>
+            <div class="cap-reasoning">
+                <div class="reasoning-item cp">
+                    <div class="reasoning-icon">CP</div>
+                    <div class="reasoning-content">
+                        <h4>Consistency-Critical Operations</h4>
+                        <p>Spot reservation and payment processing <strong>cannot tolerate inconsistency</strong>.
+                        Double-booking a spot means two cars physically arriving at the same location -
+                        an unsolvable real-world conflict.</p>
+                    </div>
+                </div>
+                <div class="reasoning-item ap">
+                    <div class="reasoning-icon">AP</div>
+                    <div class="reasoning-content">
+                        <h4>Availability-Critical Operations</h4>
+                        <p>Availability displays and analytics can be <strong>eventually consistent</strong>.
+                        Showing "48 spots available" when there are actually 50 is acceptable -
+                        users just see slightly stale data.</p>
+                    </div>
+                </div>
+                <div class="reasoning-item edge">
+                    <div class="reasoning-icon">EDGE</div>
+                    <div class="reasoning-content">
+                        <h4>Edge Computing Exception</h4>
+                        <p>Gates must operate <strong>even during network partitions</strong>.
+                        A car stuck at a barrier during internet outage is unacceptable.
+                        This requires local edge computing with eventual sync.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component-wise CAP Breakdown -->
+        <h3>Component-wise CAP Breakdown</h3>
+        <div class="cap-components-grid">
+            <div class="cap-component cp-component">
+                <div class="component-header">
+                    <span class="cap-type-badge cp">CP</span>
+                    <h4>Spot Reservation</h4>
+                </div>
+                <div class="component-body">
+                    <p><strong>Why CP:</strong> Cannot assign same spot to two cars simultaneously</p>
+                    <ul>
+                        <li>Uses <code>SELECT ... FOR UPDATE SKIP LOCKED</code></li>
+                        <li>SERIALIZABLE isolation for booking transactions</li>
+                        <li>Reject reservation if consistency cannot be guaranteed</li>
+                    </ul>
+                    <div class="cap-tradeoff">
+                        <strong>Tradeoff:</strong> During partition, reservations may fail rather than risk double-booking
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-component cp-component">
+                <div class="component-header">
+                    <span class="cap-type-badge cp">CP</span>
+                    <h4>Payment Processing</h4>
+                </div>
+                <div class="component-body">
+                    <p><strong>Why CP:</strong> Financial transactions must be exactly-once</p>
+                    <ul>
+                        <li>Idempotency keys for payment requests</li>
+                        <li>Two-phase commit with payment gateway</li>
+                        <li>Gate opens only after confirmed payment</li>
+                    </ul>
+                    <div class="cap-tradeoff">
+                        <strong>Tradeoff:</strong> Payment may timeout during partition (manual override available)
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-component edge-component">
+                <div class="component-header">
+                    <span class="cap-type-badge edge">EDGE CP</span>
+                    <h4>Entry/Exit Gates</h4>
+                </div>
+                <div class="component-body">
+                    <p><strong>Why Edge CP:</strong> Barrier must work even offline - local consistency</p>
+                    <ul>
+                        <li>Local edge device with spot cache</li>
+                        <li>Can operate independently for hours</li>
+                        <li>Eventual sync when connectivity restored</li>
+                    </ul>
+                    <div class="cap-tradeoff">
+                        <strong>Tradeoff:</strong> May allow slight overbooking during extended partition
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-component ap-component">
+                <div class="component-header">
+                    <span class="cap-type-badge ap">AP</span>
+                    <h4>Availability Display</h4>
+                </div>
+                <div class="component-body">
+                    <p><strong>Why AP:</strong> Showing stale count is acceptable</p>
+                    <ul>
+                        <li>Redis counter with TTL refresh</li>
+                        <li>Async updates from booking events</li>
+                        <li>Always show some number (never "unavailable")</li>
+                    </ul>
+                    <div class="cap-tradeoff">
+                        <strong>Tradeoff:</strong> Display may show 50 free when only 48 exist
+                    </div>
+                </div>
+            </div>
+
+            <div class="cap-component ap-component">
+                <div class="component-header">
+                    <span class="cap-type-badge ap">AP</span>
+                    <h4>Analytics & Reporting</h4>
+                </div>
+                <div class="component-body">
+                    <p><strong>Why AP:</strong> Historical data can be eventually consistent</p>
+                    <ul>
+                        <li>Kafka streams to analytics pipeline</li>
+                        <li>Daily aggregations in data warehouse</li>
+                        <li>Reports may lag by minutes/hours</li>
+                    </ul>
+                    <div class="cap-tradeoff">
+                        <strong>Tradeoff:</strong> Real-time dashboard may show slightly stale metrics
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edge Computing Deep Dive -->
+        <h3>Edge Computing for Gates</h3>
+        <div class="diagram-container">
+            <h4>Edge Computing Architecture - Gate Controller</h4>
+            <div class="edge-architecture">
+                <div class="edge-layer cloud-layer">
+                    <div class="layer-label">CLOUD (Primary)</div>
+                    <div class="edge-nodes">
+                        <div class="arch-box server">API Server</div>
+                        <div class="arch-arrow">↔</div>
+                        <div class="arch-box db">PostgreSQL</div>
+                        <div class="arch-arrow">↔</div>
+                        <div class="arch-box cache">Redis</div>
+                    </div>
+                </div>
+
+                <div class="edge-sync-arrow">
+                    <span>↕</span>
+                    <span class="sync-label">Sync every 30s<br>(or on connectivity)</span>
+                </div>
+
+                <div class="edge-layer edge-layer-box">
+                    <div class="layer-label">EDGE (Per Gate)</div>
+                    <div class="edge-nodes">
+                        <div class="arch-box gateway">Edge Controller<br><small>Raspberry Pi / Industrial PC</small></div>
+                        <div class="arch-arrow">↔</div>
+                        <div class="arch-box storage">Local SQLite<br><small>Spot cache + Queue</small></div>
+                        <div class="arch-arrow">↔</div>
+                        <div class="arch-box client">Barrier + Display<br><small>Hardware I/O</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="edge-computing-details">
+            <div class="edge-detail-card">
+                <h4>What's Cached Locally?</h4>
+                <ul>
+                    <li><strong>Spot availability bitmap:</strong> Which spots are free/occupied</li>
+                    <li><strong>Active tickets:</strong> Ticket number → spot mapping for exits</li>
+                    <li><strong>Pricing rules:</strong> Hourly rates, peak pricing config</li>
+                    <li><strong>Pending transactions:</strong> Queue for sync when online</li>
+                </ul>
+            </div>
+
+            <div class="edge-detail-card">
+                <h4>Offline Operation Flow</h4>
+                <ol>
+                    <li>Car arrives → Edge checks local spot cache</li>
+                    <li>Assigns spot from local available pool</li>
+                    <li>Generates ticket with offline prefix (OFF-xxxxx)</li>
+                    <li>Queues transaction for later sync</li>
+                    <li>Opens barrier immediately</li>
+                </ol>
+            </div>
+
+            <div class="edge-detail-card">
+                <h4>Sync Strategy</h4>
+                <ul>
+                    <li><strong>Heartbeat:</strong> Every 30 seconds when online</li>
+                    <li><strong>Full sync:</strong> On reconnect after partition</li>
+                    <li><strong>Conflict resolution:</strong> Server timestamp wins</li>
+                    <li><strong>Retry queue:</strong> Failed syncs retry with exponential backoff</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Visual CAP Diagram -->
+        <h3>CAP Visual Diagram</h3>
+        <div class="diagram-container">
+            <h4>Parking Lot CAP Triangle</h4>
+            <div class="cap-triangle-container">
+                <div class="cap-triangle">
+                    <div class="cap-vertex consistency">
+                        <span class="vertex-label">C</span>
+                        <span class="vertex-name">Consistency</span>
+                    </div>
+                    <div class="cap-vertex availability">
+                        <span class="vertex-label">A</span>
+                        <span class="vertex-name">Availability</span>
+                    </div>
+                    <div class="cap-vertex partition">
+                        <span class="vertex-label">P</span>
+                        <span class="vertex-name">Partition Tolerance</span>
+                    </div>
+
+                    <div class="cap-edge ca-edge">
+                        <span class="edge-components">Spot Display, Analytics</span>
+                    </div>
+                    <div class="cap-edge cp-edge">
+                        <span class="edge-components">Reservations, Payments</span>
+                    </div>
+                    <div class="cap-edge ap-edge">
+                        <span class="edge-components">Gate Operations (Edge)</span>
+                    </div>
+
+                    <div class="cap-center">
+                        <span>PARKING</span>
+                        <span>LOT</span>
+                    </div>
+                </div>
+
+                <div class="cap-legend">
+                    <div class="legend-item">
+                        <span class="legend-color cp-color"></span>
+                        <span>CP: Reservations, Payments</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color ap-color"></span>
+                        <span>AP: Display, Analytics</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color edge-color"></span>
+                        <span>Edge CP: Gate Controllers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Impact Analysis -->
+        <h3>Business Impact Analysis</h3>
+        <div class="business-impact-grid">
+            <div class="impact-card negative">
+                <div class="impact-header">
+                    <span class="impact-icon">🚗</span>
+                    <h4>Car Stuck at Gate</h4>
+                    <span class="severity-badge critical">CRITICAL</span>
+                </div>
+                <div class="impact-body">
+                    <p><strong>Scenario:</strong> Network partition, no edge computing</p>
+                    <p><strong>Impact:</strong></p>
+                    <ul>
+                        <li>Traffic backup, angry customers</li>
+                        <li>Security concerns (manual intervention needed)</li>
+                        <li>Revenue loss (cars leave)</li>
+                        <li>Reputation damage</li>
+                    </ul>
+                    <p><strong>Cost:</strong> $500-2000 per incident (labor + lost revenue)</p>
+                </div>
+            </div>
+
+            <div class="impact-card acceptable">
+                <div class="impact-header">
+                    <span class="impact-icon">📊</span>
+                    <h4>Slight Overbooking</h4>
+                    <span class="severity-badge low">LOW</span>
+                </div>
+                <div class="impact-body">
+                    <p><strong>Scenario:</strong> Edge operates offline, slight desync</p>
+                    <p><strong>Impact:</strong></p>
+                    <ul>
+                        <li>1-2 extra cars than capacity</li>
+                        <li>Easily managed (overflow area)</li>
+                        <li>Rare occurrence (partition uncommon)</li>
+                        <li>Customers still served</li>
+                    </ul>
+                    <p><strong>Cost:</strong> $10-50 per incident (overflow management)</p>
+                </div>
+            </div>
+
+            <div class="impact-card acceptable">
+                <div class="impact-header">
+                    <span class="impact-icon">📱</span>
+                    <h4>Stale Availability Display</h4>
+                    <span class="severity-badge low">LOW</span>
+                </div>
+                <div class="impact-body">
+                    <p><strong>Scenario:</strong> Redis cache slightly behind actual state</p>
+                    <p><strong>Impact:</strong></p>
+                    <ul>
+                        <li>App shows 50 free, actually 48</li>
+                        <li>Customer arrives, still gets spot</li>
+                        <li>No real harm done</li>
+                        <li>Updates within seconds</li>
+                    </ul>
+                    <p><strong>Cost:</strong> $0 (no actual impact)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="business-decision">
+            <h4>Business Decision Framework</h4>
+            <div class="decision-matrix">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Consistency Cost</th>
+                            <th>Availability Cost</th>
+                            <th>Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Spot Reservation</td>
+                            <td class="low-cost">Double-booking = $2000</td>
+                            <td class="high-cost">Retry in 5s = $0</td>
+                            <td><span class="decision-badge cp">CP</span></td>
+                        </tr>
+                        <tr>
+                            <td>Gate Operation</td>
+                            <td class="medium-cost">Slight overbook = $50</td>
+                            <td class="critical-cost">Car stuck = $2000</td>
+                            <td><span class="decision-badge edge">Edge CP</span></td>
+                        </tr>
+                        <tr>
+                            <td>Payment</td>
+                            <td class="critical-cost">Double charge = $500+</td>
+                            <td class="medium-cost">Retry = $10</td>
+                            <td><span class="decision-badge cp">CP</span></td>
+                        </tr>
+                        <tr>
+                            <td>Availability Display</td>
+                            <td class="low-cost">Stale data = $0</td>
+                            <td class="high-cost">"Loading..." = UX hit</td>
+                            <td><span class="decision-badge ap">AP</span></td>
+                        </tr>
+                        <tr>
+                            <td>Analytics</td>
+                            <td class="low-cost">5 min lag = $0</td>
+                            <td class="medium-cost">No data = poor decisions</td>
+                            <td><span class="decision-badge ap">AP</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Implementation Details -->
+        <h3>Implementation Details</h3>
+        <div class="implementation-grid">
+            <div class="impl-card">
+                <h4>Local Cache at Gates</h4>
+                <div class="code-example">
+<pre><span class="comment">// Edge Controller - SQLite Schema</span>
+<span class="keyword">CREATE TABLE</span> local_spots (
+    spot_id     INTEGER PRIMARY KEY,
+    floor       INTEGER,
+    spot_number TEXT,
+    status      TEXT DEFAULT 'available',
+    updated_at  TIMESTAMP
+);
+
+<span class="keyword">CREATE TABLE</span> pending_transactions (
+    id          INTEGER PRIMARY KEY,
+    type        TEXT,  <span class="comment">-- 'entry' or 'exit'</span>
+    ticket      TEXT,
+    spot_id     INTEGER,
+    timestamp   TIMESTAMP,
+    synced      BOOLEAN DEFAULT FALSE
+);
+
+<span class="comment">-- Index for fast spot lookup</span>
+<span class="keyword">CREATE INDEX</span> idx_available ON local_spots(status)
+    WHERE status = 'available';</pre>
+                </div>
+            </div>
+
+            <div class="impl-card">
+                <h4>Eventual Sync Protocol</h4>
+                <div class="code-example">
+<pre><span class="comment">// Sync Service - Go</span>
+<span class="keyword">func</span> (s *SyncService) <span class="function">SyncWithCloud</span>() error {
+    <span class="comment">// 1. Push pending transactions</span>
+    pending := s.db.<span class="function">GetUnsynced</span>()
+    <span class="keyword">for</span> _, txn := <span class="keyword">range</span> pending {
+        err := s.api.<span class="function">PostTransaction</span>(txn)
+        <span class="keyword">if</span> err == nil {
+            s.db.<span class="function">MarkSynced</span>(txn.ID)
+        }
+    }
+
+    <span class="comment">// 2. Pull latest spot status</span>
+    spots, _ := s.api.<span class="function">GetSpotStatus</span>()
+    s.db.<span class="function">UpdateSpots</span>(spots)
+
+    <span class="comment">// 3. Resolve conflicts (server wins)</span>
+    conflicts := s.db.<span class="function">FindConflicts</span>()
+    <span class="keyword">for</span> _, c := <span class="keyword">range</span> conflicts {
+        s.db.<span class="function">ApplyServerState</span>(c.SpotID, c.ServerStatus)
+    }
+
+    <span class="keyword">return</span> nil
+}</pre>
+                </div>
+            </div>
+
+            <div class="impl-card">
+                <h4>Offline Entry Handler</h4>
+                <div class="code-example">
+<pre><span class="comment">// Edge Controller - Offline Mode</span>
+<span class="keyword">func</span> (g *GateController) <span class="function">HandleEntry</span>() (*Ticket, error) {
+    <span class="keyword">if</span> g.<span class="function">IsOnline</span>() {
+        <span class="keyword">return</span> g.api.<span class="function">RequestEntry</span>()
+    }
+
+    <span class="comment">// Offline mode - use local cache</span>
+    spot := g.localDB.<span class="function">FindAvailableSpot</span>()
+    <span class="keyword">if</span> spot == nil {
+        <span class="keyword">return</span> nil, ErrNoSpotsAvailable
+    }
+
+    ticket := &Ticket{
+        Number:   <span class="function">generateOfflineTicket</span>(), <span class="comment">// OFF-xxxxx</span>
+        SpotID:   spot.ID,
+        EntryAt:  time.<span class="function">Now</span>(),
+        IsOffline: true,
+    }
+
+    <span class="comment">// Queue for later sync</span>
+    g.localDB.<span class="function">QueueTransaction</span>("entry", ticket)
+    g.localDB.<span class="function">MarkSpotOccupied</span>(spot.ID)
+
+    <span class="comment">// Open barrier immediately</span>
+    g.barrier.<span class="function">Open</span>()
+
+    <span class="keyword">return</span> ticket, nil
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Tips -->
+        <h3>Interview Tips</h3>
+        <div class="interview-tips">
+            <div class="tip-card highlight">
+                <div class="tip-icon">💡</div>
+                <div class="tip-content">
+                    <h4>This is a Great Edge Computing Example</h4>
+                    <p>Parking lot is one of the best examples to demonstrate understanding of edge computing meets CAP theorem.
+                    The physical constraint (car at barrier) makes the tradeoffs tangible and easy to explain.</p>
+                </div>
+            </div>
+
+            <div class="tip-card">
+                <div class="tip-icon">🎯</div>
+                <div class="tip-content">
+                    <h4>Key Points to Mention</h4>
+                    <ul>
+                        <li><strong>Physical constraints:</strong> Cars can't teleport, so double-booking has real consequences</li>
+                        <li><strong>Edge necessity:</strong> Network partition = car stuck without edge computing</li>
+                        <li><strong>Cost analysis:</strong> Quantify the business impact of each CAP choice</li>
+                        <li><strong>Hybrid approach:</strong> Different components can have different CAP choices</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip-card">
+                <div class="tip-icon">❓</div>
+                <div class="tip-content">
+                    <h4>Expect These Follow-up Questions</h4>
+                    <ul>
+                        <li>"What happens when edge cache is full?" → Overflow to adjacent floors, alert operations</li>
+                        <li>"How do you handle extended outages?" → Battery backup, manual override, SMS alerts</li>
+                        <li>"What if two gates assign the same spot offline?" → Conflict resolution on sync, one car relocated</li>
+                        <li>"How do you prevent payment fraud offline?" → Limit offline payment amount, require card-on-file</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip-card">
+                <div class="tip-icon">📝</div>
+                <div class="tip-content">
+                    <h4>One-Liner Summary</h4>
+                    <p class="summary-quote">"Parking lot is a mixed CP/AP system where reservations and payments need strong consistency,
+                    but gates must operate via edge computing during network partitions to avoid cars getting stuck at barriers."</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Tooltip System -->
@@ -2135,7 +2651,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTooltip
 
 // Scroll spy
 window.addEventListener('scroll', function() {
-    const sections = document.querySelectorAll('.stage-section');
+    const sections = document.querySelectorAll('.stage-section, .cap-analysis-section');
     const navLinks = document.querySelectorAll('.quick-nav a');
     let current = '';
     sections.forEach(section => {

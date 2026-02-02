@@ -12,6 +12,7 @@
         <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
         <a href="#global">Global</a>
+        <a href="#cap-analysis">CAP Analysis</a>
     </div>
 
     <!-- ============================================ -->
@@ -1068,7 +1069,7 @@ argocd app rollback food-ordering --revision 42</pre>
             <div class="edge-case-item">
                 <div class="case-title">Restaurant Closes Mid-Order</div>
                 <p>Restaurant goes offline (closes early, emergency) after accepting order but before completion.</p>
-                <div class="case-solution">Implement heartbeat check every 2 minutes from restaurant app. On 3 missed heartbeats: alert ops team, attempt phone call, auto-cancel if unresponsive for 10 min. Full refund + compensation coupon. Kafka event triggers customer notification.</div>
+                <div class="case-solution">Implement heartbeat check every 2 minutes from restaurant app. On 3 missed heartbeats: alert ops team, attempt phone call, auto-cancel if unresponsive for 10 min. Full refund + compensation coupon. <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> event triggers customer notification.</div>
             </div>
 
             <div class="edge-case-item">
@@ -1121,7 +1122,7 @@ argocd app rollback food-ordering --revision 42</pre>
             <div class="future-item">
                 <div class="future-title">Dynamic Delivery Zones</div>
                 <p>Adjust restaurant delivery radius based on real-time demand, partner availability, and traffic.</p>
-                <div class="future-approach">ML model predicts delivery time by zone. Contract radius during peak hours or bad weather. Expand for high-rated restaurants with good packaging. Real-time zone boundaries stored in Redis, updated every 5 minutes.</div>
+                <div class="future-approach">ML model predicts delivery time by zone. Contract radius during peak hours or bad weather. Expand for high-rated restaurants with good packaging. Real-time zone boundaries stored in <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a>, updated every 5 minutes.</div>
             </div>
         </div>
 
@@ -1133,7 +1134,7 @@ argocd app rollback food-ordering --revision 42</pre>
                 <div class="followup-number">1</div>
                 <div class="followup-content">
                     <div class="followup-question">How would you design the order state machine? What states and transitions are needed?</div>
-                    <div class="followup-hint">States: placed → confirmed → preparing → ready → picked_up → in_transit → delivered. Also: cancelled, refunded. Validate transitions server-side. Store state history for disputes. Use Kafka events for each transition.</div>
+                    <div class="followup-hint">States: placed → confirmed → preparing → ready → picked_up → in_transit → delivered. Also: cancelled, refunded. Validate transitions server-side. Store state history for disputes. Use <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> events for each transition.</div>
                 </div>
             </div>
 
@@ -1141,7 +1142,7 @@ argocd app rollback food-ordering --revision 42</pre>
                 <div class="followup-number">2</div>
                 <div class="followup-content">
                     <div class="followup-question">How do you optimize delivery partner assignment to minimize delivery time?</div>
-                    <div class="followup-hint">Multi-factor scoring: distance to restaurant, current order load, partner rating, vehicle type, historical performance in area. Consider batching nearby orders. Use PostGIS for geospatial queries, rank top 10 candidates, send to best first with timeout.</div>
+                    <div class="followup-hint">Multi-factor scoring: distance to restaurant, current order load, partner rating, vehicle type, historical performance in area. Consider batching nearby orders. Use <a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a> for geospatial queries, rank top 10 candidates, send to best first with timeout.</div>
                 </div>
             </div>
 
@@ -1236,13 +1237,13 @@ argocd app rollback food-ordering --revision 42</pre>
                 <div class="evolution-stage">
                     <div class="evolution-icon">🌱</div>
                     <div class="evolution-label">MVP</div>
-                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + <a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">Single primary<br>Multi-AZ standby<br>Geospatial queries</div>
                 </div>
                 <div class="evolution-stage">
                     <div class="evolution-icon">🔍</div>
                     <div class="evolution-label">+ Search</div>
-                    <div class="evolution-db">Elasticsearch</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#elasticsearch" class="info-term">Elasticsearch<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">Full-text search<br>Menu + restaurant<br>Fuzzy matching</div>
                 </div>
                 <div class="evolution-stage">
@@ -1471,7 +1472,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
             <div class="edge-case-item">
                 <div class="case-title">Restaurant Chain Sync Issues</div>
                 <p>Chain restaurant (Domino's) updates menu centrally but changes don't propagate to all outlets uniformly.</p>
-                <div class="case-solution">Implement central menu template with outlet-level overrides. Event-driven sync via Kafka. Version tracking per outlet. Admin dashboard showing sync status. Alert on outlets with stale menu (>24h).</div>
+                <div class="case-solution">Implement central menu template with outlet-level overrides. Event-driven sync via <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a>. Version tracking per outlet. Admin dashboard showing sync status. Alert on outlets with stale menu (>24h).</div>
             </div>
 
             <div class="edge-case-item">
@@ -1530,7 +1531,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div class="followup-number">1</div>
                 <div class="followup-content">
                     <div class="followup-question">How do you handle database sharding by city while supporting cross-city users?</div>
-                    <div class="followup-hint">Shard by city_id with routing layer. User profiles in separate global DB. Order queries always include city_id. Cross-city order history via scatter-gather (expensive, acceptable for history). Use Citus or Vitess for PostgreSQL sharding.</div>
+                    <div class="followup-hint">Shard by city_id with routing layer. User profiles in separate global DB. Order queries always include city_id. Cross-city order history via scatter-gather (expensive, acceptable for history). Use Citus or Vitess for <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> sharding.</div>
                 </div>
             </div>
 
@@ -1554,7 +1555,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div class="followup-number">4</div>
                 <div class="followup-content">
                     <div class="followup-question">How do you ensure read replicas are consistent for order tracking?</div>
-                    <div class="followup-hint">Critical reads (order status) go to primary. Accept eventual consistency for search/browse (few seconds lag). Use Redis for real-time tracking (source of truth during delivery). Replica lag monitoring with automatic routing to primary if lag > 2s.</div>
+                    <div class="followup-hint">Critical reads (order status) go to primary. Accept eventual consistency for search/browse (few seconds lag). Use <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> for real-time tracking (source of truth during delivery). Replica lag monitoring with automatic routing to primary if lag > 2s.</div>
                 </div>
             </div>
 
@@ -1597,7 +1598,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                         <div class="flow-arrow">→</div>
                         <div class="flow-node db">Read Replica<br><small>Hyderabad</small></div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-node cache">Redis Global<br><small>Session sync</small></div>
+                        <div class="flow-node cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Global<br><small>Session sync</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node storage">ES Cluster<br><small>Search index</small></div>
                     </div>
@@ -1609,7 +1610,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                     <div class="flow-row">
                         <div class="flow-node service">Order Service<br><small>Validate city</small></div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-node queue">Kafka<br><small>City partition</small></div>
+                        <div class="flow-node queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a><br><small>City partition</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node service">City Consumer<br><small>Process order</small></div>
                         <div class="flow-arrow">→</div>
@@ -1710,11 +1711,11 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div class="arch-arrow">↓</div>
                 <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;">
                     <div style="text-align: center;">
-                        <div class="arch-box cache">Redis Cluster<br><small>32 shards</small></div>
+                        <div class="arch-box cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster<br><small>32 shards</small></div>
                         <div style="font-size: 11px; color: #64748b;">Location + Session</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box queue">Kafka<br><small>Order events</small></div>
+                        <div class="arch-box queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a><br><small>Order events</small></div>
                         <div style="font-size: 11px; color: #64748b;">100K msg/sec</div>
                     </div>
                     <div style="text-align: center;">
@@ -1737,7 +1738,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
         <div class="alternatives-grid">
             <div class="alternative-card">
                 <h5>Order Queue System</h5>
-                <p>Accept orders into Kafka queue, process async</p>
+                <p>Accept orders into <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> queue, process async</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Never reject during peak<br>
                     <span style="color: #22c55e;">✓</span> Back-pressure handling<br>
@@ -1770,7 +1771,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
         <h3>🔀 Message Queue Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Amazon MSK (Kafka)</h5>
+                <h5>✅ Amazon MSK (<a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a>)</h5>
                 <p>High throughput, ordering guarantees</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Millions msg/sec<br>
@@ -1790,10 +1791,10 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 </div>
             </div>
             <div class="alternative-card">
-                <h5>Redis Streams</h5>
+                <h5><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Streams</h5>
                 <p>Lightweight event streaming</p>
                 <div style="font-size: 13px; margin-top: 8px;">
-                    <span style="color: #22c55e;">✓</span> Already using Redis<br>
+                    <span style="color: #22c55e;">✓</span> Already using <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br>
                     <span style="color: #22c55e;">✓</span> Consumer groups<br>
                     <span style="color: #ef4444;">✗</span> Memory-bound<br>
                     <span style="color: #ef4444;">✗</span> Less durable
@@ -1842,8 +1843,8 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
             <h4>Edge Cases & Error Handling</h4>
 
             <div class="edge-case-item">
-                <div class="case-title">Kafka Consumer Lag During Peak</div>
-                <p>Order events pile up in Kafka faster than consumers can process during IPL final + dinner rush.</p>
+                <div class="case-title"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> Consumer Lag During Peak</div>
+                <p>Order events pile up in <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> faster than consumers can process during IPL final + dinner rush.</p>
                 <div class="case-solution">Auto-scale consumer pods based on lag metrics. Implement priority queues (paid orders first). Shed load by temporarily rejecting new orders in overloaded zones. Pre-warm consumers before predicted peaks. Partition by zone for parallel processing.</div>
             </div>
 
@@ -1854,9 +1855,9 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title">Redis Cluster Node Failure</div>
-                <p>One Redis cluster node dies, causing cache misses and increased DB load.</p>
-                <div class="case-solution">Redis Cluster with replicas (3 masters + 3 replicas). Automatic failover in &lt;30s. Client-side retry with exponential backoff. Fallback to DB with circuit breaker. Monitor cluster health, pre-emptive node replacement.</div>
+                <div class="case-title"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster Node Failure</div>
+                <p>One <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> cluster node dies, causing cache misses and increased DB load.</p>
+                <div class="case-solution"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster with replicas (3 masters + 3 replicas). Automatic failover in &lt;30s. Client-side retry with exponential backoff. Fallback to DB with circuit breaker. Monitor cluster health, pre-emptive node replacement.</div>
             </div>
 
             <div class="edge-case-item">
@@ -1867,8 +1868,8 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
 
             <div class="edge-case-item">
                 <div class="case-title">Search Index Out of Sync</div>
-                <p>Elasticsearch index lags behind PostgreSQL, showing closed restaurants as open or wrong prices.</p>
-                <div class="case-solution">Real-time sync via Debezium CDC (Change Data Capture). Reconciliation job every hour. Critical fields (is_open, price) also checked against Redis cache. Monitoring for index lag with alerting. Force refresh on critical updates.</div>
+                <p><a href="/interview-question/glossary#elasticsearch" class="info-term">Elasticsearch<span class="info-i">i</span></a> index lags behind <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a>, showing closed restaurants as open or wrong prices.</p>
+                <div class="case-solution">Real-time sync via Debezium CDC (Change Data Capture). Reconciliation job every hour. Critical fields (is_open, price) also checked against <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> cache. Monitoring for index lag with alerting. Force refresh on critical updates.</div>
             </div>
 
             <div class="edge-case-item">
@@ -1947,7 +1948,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div class="followup-number">5</div>
                 <div class="followup-content">
                     <div class="followup-question">Design the real-time location tracking system for 100K concurrent delivery partners.</div>
-                    <div class="followup-hint">Partner app sends GPS every 5s → Kafka (partitioned by zone) → Redis GEOADD. WebSocket server subscribes to relevant zone. Customer app connects via WebSocket, receives updates. Batch writes to PostgreSQL every 30s for history. Compression for mobile data efficiency.</div>
+                    <div class="followup-hint">Partner app sends GPS every 5s → <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> (partitioned by zone) → <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> GEOADD. WebSocket server subscribes to relevant zone. Customer app connects via WebSocket, receives updates. Batch writes to <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> every 30s for history. Compression for mobile data efficiency.</div>
                 </div>
             </div>
         </div>
@@ -1966,7 +1967,7 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                         <div class="flow-arrow">→</div>
                         <div class="flow-node service">Validate<br><small>Quick checks</small></div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-node queue">Kafka Queue<br><small>order.pending</small></div>
+                        <div class="flow-node queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> Queue<br><small>order.pending</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node user">Ack: "Processing"<br><small>&lt;100ms</small></div>
                     </div>
@@ -1976,13 +1977,13 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div style="width: 100%; margin-bottom: 24px;">
                     <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">ASYNC ORDER PROCESSING (BACK-PRESSURE HANDLING)</div>
                     <div class="flow-row">
-                        <div class="flow-node queue">Kafka<br><small>Consumer group</small></div>
+                        <div class="flow-node queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a><br><small>Consumer group</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node service">Process Order<br><small>Auto-scaled pods</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node db">DB Shard<br><small>INSERT</small></div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-node cache">Redis<br><small>Update status</small></div>
+                        <div class="flow-node cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br><small>Update status</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node service">Push Notify<br><small>"Order confirmed"</small></div>
                     </div>
@@ -1994,9 +1995,9 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                     <div class="flow-row">
                         <div class="flow-node user">Partner GPS<br><small>Every 5s</small></div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-node queue">Kafka Stream<br><small>Zone partition</small></div>
+                        <div class="flow-node queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> Stream<br><small>Zone partition</small></div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-node cache">Redis GEOADD<br><small>Real-time</small></div>
+                        <div class="flow-node cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> GEOADD<br><small>Real-time</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node service">WebSocket<br><small>Push to customers</small></div>
                         <div class="flow-arrow">→</div>
@@ -2031,8 +2032,8 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div class="evolution-stage">
                     <div class="evolution-icon">🔥</div>
                     <div class="evolution-label">Hot Data Tier</div>
-                    <div class="evolution-db">Redis Cluster</div>
-                    <div class="evolution-detail">Active orders in Redis<br>32 shard cluster<br>Sub-ms latency</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster</div>
+                    <div class="evolution-detail">Active orders in <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br>32 shard cluster<br>Sub-ms latency</div>
                 </div>
             </div>
         </div>
@@ -2248,9 +2249,9 @@ kubectl argo rollouts abort order-service</pre>
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title">DNS/CDN Global Outage</div>
+                <div class="case-title">DNS/<a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a> Global Outage</div>
                 <p>CloudFront or Route 53 has global outage affecting all regions simultaneously.</p>
-                <div class="case-solution">Multi-CDN strategy (CloudFront + Fastly). DNS failover to secondary provider. IP-based fallback (hardcoded IPs for critical services). Regional edge deployments. Chaos engineering to test failure scenarios quarterly.</div>
+                <div class="case-solution">Multi-<a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a> strategy (CloudFront + Fastly). DNS failover to secondary provider. IP-based fallback (hardcoded IPs for critical services). Regional edge deployments. Chaos engineering to test failure scenarios quarterly.</div>
             </div>
 
             <div class="edge-case-item">
@@ -2321,7 +2322,7 @@ kubectl argo rollouts abort order-service</pre>
                 <div class="followup-number">4</div>
                 <div class="followup-content">
                     <div class="followup-question">How would you design the global search system for 1M restaurants across different languages?</div>
-                    <div class="followup-hint">Elasticsearch per region with local language analyzers. Transliteration support (searching "biryani" finds "बिरयानी"). Federated search for travelers (query home region + current region). Search ranking tuned per market. A/B testing search relevance per region.</div>
+                    <div class="followup-hint"><a href="/interview-question/glossary#elasticsearch" class="info-term">Elasticsearch<span class="info-i">i</span></a> per region with local language analyzers. Transliteration support (searching "biryani" finds "बिरयानी"). Federated search for travelers (query home region + current region). Search ranking tuned per market. A/B testing search relevance per region.</div>
                 </div>
             </div>
 
@@ -2344,7 +2345,7 @@ kubectl argo rollouts abort order-service</pre>
                     <div class="flow-row">
                         <div class="flow-node user">User Request<br><small>Any country</small></div>
                         <div class="flow-arrow">→</div>
-                        <div class="flow-node cdn">CloudFront<br><small>400+ edge locations</small></div>
+                        <div class="flow-node cdn">CloudFront <a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a><br><small>400+ edge locations</small></div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-node gateway">Route 53<br><small>Geo + latency</small></div>
                         <div class="flow-arrow">→</div>
@@ -2426,6 +2427,402 @@ kubectl argo rollouts abort order-service</pre>
             </div>
         </div>
     </div>
+
+    <!-- ============================================ -->
+    <!-- CAP THEOREM ANALYSIS -->
+    <!-- ============================================ -->
+    <div class="cap-analysis-section" id="cap-analysis">
+        <h2>CAP Theorem Analysis</h2>
+        <p class="section-intro">Understanding the distributed systems tradeoffs in Food Ordering System design. <a href="/interview-question/components#cap-theorem" class="info-term">Learn more about CAP Theorem<span class="info-i">i</span></a></p>
+
+        <div class="cap-choice-card mixed">
+            <div class="cap-badge">Mixed CP/AP System</div>
+            <h3>Food Ordering Uses Different CAP Choices for Different Components</h3>
+            <p>A food ordering system can't be purely CP or AP. Order placement and payments need strong consistency to prevent double-charging or lost orders, while menu browsing and order tracking can use eventual consistency for better availability and performance.</p>
+        </div>
+
+        <!-- Component-wise CAP Analysis -->
+        <div class="cap-component-breakdown">
+            <h4>Component-wise CAP Analysis</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>CAP Choice</th>
+                        <th>Why?</th>
+                        <th>Impact of Wrong Choice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Order Placement</strong></td>
+                        <td><span class="cap-tag cp">CP</span></td>
+                        <td>Can't have duplicate orders or lost orders - money is involved</td>
+                        <td>Double charging customer, restaurant makes food twice, inventory mismatch</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Payment Processing</strong></td>
+                        <td><span class="cap-tag cp">CP</span></td>
+                        <td>Financial transactions must be consistent - no partial debits</td>
+                        <td>Money lost, disputes, legal issues, refund nightmares</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Restaurant Menu/Catalog</strong></td>
+                        <td><span class="cap-tag ap">AP</span></td>
+                        <td>Stale menu data for 30 seconds is acceptable</td>
+                        <td>User sees old price - handle at checkout with price verification</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Order Tracking</strong></td>
+                        <td><span class="cap-tag ap">AP</span></td>
+                        <td>Status update 5 seconds late is fine for users</td>
+                        <td>User sees "preparing" instead of "out for delivery" - minor UX issue</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Delivery Partner Location</strong></td>
+                        <td><span class="cap-tag ap">AP</span></td>
+                        <td>Location can be 10 seconds stale - GPS updates frequently anyway</td>
+                        <td>Map shows slightly old position - acceptable for tracking</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Restaurant Availability</strong></td>
+                        <td><span class="cap-tag ap">AP</span></td>
+                        <td>Better to show potentially closed restaurant than error page</td>
+                        <td>Handle "restaurant closed" gracefully at order time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inventory/Stock Levels</strong></td>
+                        <td><span class="cap-tag cp">CP</span></td>
+                        <td>Can't oversell items - leads to cancellations and bad UX</td>
+                        <td>Order accepted but item unavailable, forced cancellation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ratings & Reviews</strong></td>
+                        <td><span class="cap-tag ap">AP</span></td>
+                        <td>New review appearing 1 minute late is acceptable</td>
+                        <td>Slightly stale rating - negligible impact on decisions</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CAP Decision Grid -->
+        <div class="cap-decision-grid">
+            <h4>Decision Framework: When to Choose CP vs AP</h4>
+            <div class="decision-columns">
+                <div class="decision-column cp">
+                    <div class="column-header">
+                        <span class="cap-tag cp">CP - Consistency + Partition Tolerance</span>
+                    </div>
+                    <div class="column-content">
+                        <p><strong>Choose when:</strong></p>
+                        <ul>
+                            <li>Money is involved (payments, refunds)</li>
+                            <li>Data loss is unacceptable (orders)</li>
+                            <li>Duplicate actions cause real harm</li>
+                            <li>Legal/compliance requirements exist</li>
+                            <li>Inventory/stock management</li>
+                        </ul>
+                        <p><strong>Food Ordering Examples:</strong></p>
+                        <ul>
+                            <li>Order Service - exactly-once semantics</li>
+                            <li>Payment Gateway integration</li>
+                            <li>Wallet/credits deduction</li>
+                            <li>Coupon redemption (one-time use)</li>
+                        </ul>
+                        <p><strong>Trade-off:</strong> Users may see errors during network partitions, but data integrity is preserved.</p>
+                    </div>
+                </div>
+                <div class="decision-column ap">
+                    <div class="column-header">
+                        <span class="cap-tag ap">AP - Availability + Partition Tolerance</span>
+                    </div>
+                    <div class="column-content">
+                        <p><strong>Choose when:</strong></p>
+                        <ul>
+                            <li>Stale data is acceptable temporarily</li>
+                            <li>Read-heavy workloads dominate</li>
+                            <li>User experience trumps perfect accuracy</li>
+                            <li>Data can be reconciled later</li>
+                            <li>High availability is critical for revenue</li>
+                        </ul>
+                        <p><strong>Food Ordering Examples:</strong></p>
+                        <ul>
+                            <li>Restaurant search and browse</li>
+                            <li>Menu display with cached prices</li>
+                            <li>Delivery tracking updates</li>
+                            <li>Ratings and reviews display</li>
+                        </ul>
+                        <p><strong>Trade-off:</strong> Users always see a response, but data might be slightly outdated.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual CAP Diagram -->
+        <div class="cap-visual-diagram">
+            <h4>Food Ordering System CAP Mapping</h4>
+            <div class="cap-triangle-container">
+                <div class="cap-triangle">
+                    <div class="cap-vertex consistency">
+                        <div class="vertex-label">Consistency</div>
+                        <div class="vertex-desc">Every read receives the most recent write</div>
+                    </div>
+                    <div class="cap-vertex availability">
+                        <div class="vertex-label">Availability</div>
+                        <div class="vertex-desc">Every request receives a response</div>
+                    </div>
+                    <div class="cap-vertex partition">
+                        <div class="vertex-label">Partition Tolerance</div>
+                        <div class="vertex-desc">System operates despite network failures</div>
+                    </div>
+                    <div class="cap-center-text">Pick 2</div>
+                </div>
+                <div class="cap-services-mapping">
+                    <div class="service-group cp-services">
+                        <div class="group-label">CP Services (Consistency Priority)</div>
+                        <div class="service-badges">
+                            <span class="service-badge">Order Service</span>
+                            <span class="service-badge">Payment Service</span>
+                            <span class="service-badge">Inventory Service</span>
+                            <span class="service-badge">Wallet Service</span>
+                        </div>
+                    </div>
+                    <div class="service-group ap-services">
+                        <div class="group-label">AP Services (Availability Priority)</div>
+                        <div class="service-badges">
+                            <span class="service-badge">Restaurant Catalog</span>
+                            <span class="service-badge">Menu Service</span>
+                            <span class="service-badge">Tracking Service</span>
+                            <span class="service-badge">Search Service</span>
+                            <span class="service-badge">Reviews Service</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Impact Analysis -->
+        <div class="cap-business-impact">
+            <h4>Business Impact Analysis</h4>
+            <div class="impact-grid">
+                <div class="impact-card negative">
+                    <div class="impact-header">
+                        <span class="impact-icon">X</span>
+                        <span class="impact-title">Wrong: AP for Order Placement</span>
+                    </div>
+                    <div class="impact-body">
+                        <p><strong>Scenario:</strong> User places order, network partition occurs, order written to one node but not replicated.</p>
+                        <p><strong>Result:</strong></p>
+                        <ul>
+                            <li>Customer charged but restaurant never receives order</li>
+                            <li>Or: Duplicate order created on partition heal</li>
+                            <li>Support tickets, refunds, angry customers</li>
+                            <li>Revenue loss from cancellations</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="impact-card positive">
+                    <div class="impact-header">
+                        <span class="impact-icon">OK</span>
+                        <span class="impact-title">Correct: CP for Order Placement</span>
+                    </div>
+                    <div class="impact-body">
+                        <p><strong>Scenario:</strong> Network partition occurs during order placement.</p>
+                        <p><strong>Result:</strong></p>
+                        <ul>
+                            <li>User sees "Unable to place order, please retry"</li>
+                            <li>No money charged until order confirmed</li>
+                            <li>Order either fully succeeds or fully fails</li>
+                            <li>Clean state, easy to retry</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="impact-card negative">
+                    <div class="impact-header">
+                        <span class="impact-icon">X</span>
+                        <span class="impact-title">Wrong: CP for Menu Browsing</span>
+                    </div>
+                    <div class="impact-body">
+                        <p><strong>Scenario:</strong> Network partition occurs, menu service waits for consistency.</p>
+                        <p><strong>Result:</strong></p>
+                        <ul>
+                            <li>User sees loading spinner or error</li>
+                            <li>User leaves app, orders from competitor</li>
+                            <li>Lost revenue from browse-to-order funnel drop</li>
+                            <li>Poor app store ratings</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="impact-card positive">
+                    <div class="impact-header">
+                        <span class="impact-icon">OK</span>
+                        <span class="impact-title">Correct: AP for Menu Browsing</span>
+                    </div>
+                    <div class="impact-body">
+                        <p><strong>Scenario:</strong> Network partition occurs during menu browse.</p>
+                        <p><strong>Result:</strong></p>
+                        <ul>
+                            <li>User sees cached menu (maybe 30 sec stale)</li>
+                            <li>User can browse, add items to cart</li>
+                            <li>Price verification happens at checkout (CP)</li>
+                            <li>High conversion, happy users</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Patterns -->
+        <div class="cap-implementation">
+            <h4>Implementation Patterns for Food Ordering</h4>
+            <div class="implementation-cards">
+                <div class="impl-card">
+                    <div class="impl-header">
+                        <span class="impl-icon">1</span>
+                        <span class="impl-title">Saga Pattern for Orders (CP)</span>
+                    </div>
+                    <div class="impl-body">
+                        <p>Use distributed saga for order placement to maintain consistency across services:</p>
+                        <div class="code-example">
+                            <pre>Order Saga Steps:
+1. Reserve inventory      → (compensate: release)
+2. Authorize payment      → (compensate: void auth)
+3. Confirm with restaurant → (compensate: cancel)
+4. Assign delivery partner → (compensate: unassign)
+5. Finalize order         → Saga complete
+
+If step 3 fails: Run compensations for 2,1
+Result: All-or-nothing order creation</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="impl-card">
+                    <div class="impl-header">
+                        <span class="impl-icon">2</span>
+                        <span class="impl-title">CQRS for Menu/Catalog (AP)</span>
+                    </div>
+                    <div class="impl-body">
+                        <p>Separate read and write models for high availability reads:</p>
+                        <div class="code-example">
+                            <pre>Write Side (CP):
+- Restaurant updates menu in PostgreSQL
+- Change event published to Kafka
+- Strong consistency for writes
+
+Read Side (AP):
+- Menu cached in Redis (TTL: 30s)
+- Elasticsearch for search
+- Multiple read replicas
+- Serve stale data during partitions
+
+Reconciliation:
+- Verify price at checkout time
+- Show "price changed" if mismatch</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="impl-card">
+                    <div class="impl-header">
+                        <span class="impl-icon">3</span>
+                        <span class="impl-title">Event Sourcing for Tracking (AP)</span>
+                    </div>
+                    <div class="impl-body">
+                        <p>Use event sourcing for order tracking with eventual consistency:</p>
+                        <div class="code-example">
+                            <pre>Events Stream (Kafka):
+- OrderPlaced
+- OrderConfirmed
+- PreparationStarted
+- ReadyForPickup
+- PartnerAssigned
+- PickedUp
+- OutForDelivery
+- Delivered
+
+Read Model:
+- Project events to tracking state
+- WebSocket pushes to user
+- 3-5 second delay acceptable
+- Multiple consumers for availability</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="impl-card">
+                    <div class="impl-header">
+                        <span class="impl-icon">4</span>
+                        <span class="impl-title">Idempotency for Payments (CP)</span>
+                    </div>
+                    <div class="impl-body">
+                        <p>Ensure exactly-once payment processing with idempotency keys:</p>
+                        <div class="code-example">
+                            <pre>Payment Flow:
+1. Generate idempotency_key on client
+2. Send payment request with key
+3. Server checks: key exists in DB?
+   - Yes: Return cached response
+   - No: Process payment, store result
+
+Database:
+CREATE TABLE payment_requests (
+  idempotency_key UUID PRIMARY KEY,
+  order_id UUID NOT NULL,
+  status VARCHAR(20),
+  response JSONB,
+  created_at TIMESTAMP
+);
+
+Result: Retry-safe payments</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consistency Boundaries -->
+        <div class="cap-boundaries">
+            <h4>Consistency Boundaries in Food Ordering</h4>
+            <div class="boundary-diagram">
+                <div class="boundary-zone cp-zone">
+                    <div class="zone-header">Strong Consistency Zone (CP)</div>
+                    <div class="zone-content">
+                        <div class="zone-service">Order DB (PostgreSQL)</div>
+                        <div class="zone-arrow">sync</div>
+                        <div class="zone-service">Payment Service</div>
+                        <div class="zone-arrow">sync</div>
+                        <div class="zone-service">Inventory Service</div>
+                    </div>
+                    <div class="zone-note">Transactions span these services via Saga</div>
+                </div>
+                <div class="boundary-bridge">
+                    <div class="bridge-label">Event Bridge (Async)</div>
+                    <div class="bridge-tech">Kafka / SQS</div>
+                </div>
+                <div class="boundary-zone ap-zone">
+                    <div class="zone-header">Eventual Consistency Zone (AP)</div>
+                    <div class="zone-content">
+                        <div class="zone-service">Menu Cache (Redis)</div>
+                        <div class="zone-service">Search (Elasticsearch)</div>
+                        <div class="zone-service">Tracking (WebSocket)</div>
+                        <div class="zone-service">Analytics</div>
+                    </div>
+                    <div class="zone-note">Can be stale, rebuilt from events</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Tip -->
+        <div class="interview-tip">
+            <h4>Interview Tip: Discussing CAP for Food Ordering</h4>
+            <p><strong>Key talking points:</strong></p>
+            <ul>
+                <li><strong>Lead with business impact:</strong> "Order placement must be CP because a lost order means lost revenue and angry customers, while menu browsing can be AP because showing a 30-second stale menu is better than showing an error."</li>
+                <li><strong>Show you understand trade-offs:</strong> "We sacrifice some availability on order placement (user might need to retry) to guarantee consistency. We sacrifice perfect consistency on menu display to ensure users can always browse."</li>
+                <li><strong>Mention specific patterns:</strong> "We use Saga pattern for distributed transactions in order placement, CQRS for menu reads, and idempotency keys for payment retries."</li>
+                <li><strong>Discuss the boundary:</strong> "The key is defining clear boundaries - CP services communicate with AP services through async events, allowing each zone to optimize for its priority."</li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <!-- Tooltip System -->
@@ -2500,7 +2897,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTooltip
 
 // Scroll spy
 window.addEventListener('scroll', function() {
-    const sections = document.querySelectorAll('.stage-section');
+    const sections = document.querySelectorAll('.stage-section, .cap-analysis-section');
     const navLinks = document.querySelectorAll('.quick-nav a');
     let current = '';
     sections.forEach(section => {

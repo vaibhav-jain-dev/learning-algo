@@ -232,70 +232,256 @@ tokens = <span class="function">math.min</span>(max_tokens, tokens + (elapsed * 
     <section id="concepts" class="component-section">
         <h2>Core Concepts</h2>
 
-        <!-- CAP Theorem -->
-        <div class="component-card concept-card">
+        <!-- CAP Theorem - Comprehensive -->
+        <div class="component-card concept-card" id="cap-theorem">
             <div class="component-header">
                 <div class="component-icon">🔺</div>
                 <div>
-                    <h3>CAP Theorem</h3>
-                    <span class="component-type">Distributed Systems Theory</span>
+                    <h3>CAP Theorem - The Foundation of Distributed Systems</h3>
+                    <span class="component-type">Critical Distributed Systems Theory</span>
                 </div>
             </div>
 
             <div class="component-content">
-                <p>The CAP theorem states that a distributed system can only provide two of three guarantees simultaneously: <strong>Consistency</strong>, <strong>Availability</strong>, and <strong>Partition Tolerance</strong>.</p>
+                <p>The CAP theorem (Brewer's theorem) is <strong>THE most important concept</strong> in distributed systems design. It states that a distributed system can only provide two of three guarantees simultaneously. Understanding CAP deeply is essential for every system design interview.</p>
 
-                <!-- CAP Triangle Diagram -->
+                <!-- Detailed CAP Explanation -->
+                <div class="cap-detailed">
+                    <div class="cap-property">
+                        <h4>C - Consistency</h4>
+                        <p><strong>Definition:</strong> Every read receives the most recent write or an error. All nodes see the same data at the same time.</p>
+                        <div class="cap-example-box">
+                            <strong>Real Example:</strong> Bank account balance. If you deposit $100, the next read MUST show the updated balance. Showing stale data could cause overdrafts.
+                        </div>
+                        <ul>
+                            <li>All clients see the same data simultaneously</li>
+                            <li>Requires coordination between nodes (slower)</li>
+                            <li>Uses distributed locks, consensus protocols (Raft, Paxos)</li>
+                        </ul>
+                    </div>
+
+                    <div class="cap-property">
+                        <h4>A - Availability</h4>
+                        <p><strong>Definition:</strong> Every request receives a (non-error) response, without guarantee that it contains the most recent write.</p>
+                        <div class="cap-example-box">
+                            <strong>Real Example:</strong> Netflix movie catalog. Better to show slightly stale movie list than show error page. Users can still browse and watch.
+                        </div>
+                        <ul>
+                            <li>System always responds to requests</li>
+                            <li>No downtime even during failures</li>
+                            <li>May return stale data during partitions</li>
+                        </ul>
+                    </div>
+
+                    <div class="cap-property">
+                        <h4>P - Partition Tolerance</h4>
+                        <p><strong>Definition:</strong> System continues to operate despite network partitions (communication breaks between nodes).</p>
+                        <div class="cap-example-box">
+                            <strong>Real Example:</strong> AWS us-east-1 cannot communicate with us-west-2 due to cable cut. System must continue working.
+                        </div>
+                        <ul>
+                            <li>Network failures WILL happen in distributed systems</li>
+                            <li>You MUST choose P in any real distributed system</li>
+                            <li>The real choice is between CP and AP</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Visual CAP Diagram -->
                 <div class="diagram-container">
-                    <h4>CAP Theorem Triangle</h4>
-                    <div class="cap-diagram">
-                        <div class="cap-vertex" style="top: 0; left: 50%; transform: translateX(-50%);">
-                            <div class="cap-label">Consistency</div>
-                            <p>Every read receives the most recent write</p>
+                    <h4>CAP Theorem - The Impossible Triangle</h4>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
+                        <div style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;">
+                            <div style="text-align: center; padding: 20px; background: #eff6ff; border-radius: 12px; border: 3px solid #3b82f6; min-width: 150px;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">🔒</div>
+                                <strong style="color: #1e40af;">Consistency</strong>
+                                <p style="font-size: 12px; color: #64748b; margin: 8px 0 0 0;">All nodes see same data</p>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: #f0fdf4; border-radius: 12px; border: 3px solid #22c55e; min-width: 150px;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">✅</div>
+                                <strong style="color: #166534;">Availability</strong>
+                                <p style="font-size: 12px; color: #64748b; margin: 8px 0 0 0;">Always responds</p>
+                            </div>
+                            <div style="text-align: center; padding: 20px; background: #fef3c7; border-radius: 12px; border: 3px solid #f59e0b; min-width: 150px;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">🔀</div>
+                                <strong style="color: #92400e;">Partition Tolerance</strong>
+                                <p style="font-size: 12px; color: #64748b; margin: 8px 0 0 0;">Survives network splits</p>
+                            </div>
                         </div>
-                        <div class="cap-vertex" style="bottom: 0; left: 10%;">
-                            <div class="cap-label">Availability</div>
-                            <p>Every request receives a response</p>
-                        </div>
-                        <div class="cap-vertex" style="bottom: 0; right: 10%;">
-                            <div class="cap-label">Partition Tolerance</div>
-                            <p>System continues despite network failures</p>
-                        </div>
-                        <div class="cap-center">
-                            <strong>Pick 2</strong>
+                        <div style="background: #fee2e2; padding: 16px 24px; border-radius: 10px; border: 2px solid #ef4444;">
+                            <strong style="color: #991b1b;">⚠️ You Can Only Choose 2 of 3</strong>
                         </div>
                     </div>
                 </div>
 
-                <!-- CAP Examples -->
-                <div class="cap-examples">
-                    <div class="cap-example cp">
-                        <h4>CP Systems (Consistency + Partition Tolerance)</h4>
-                        <p>Sacrifice availability during partitions. Wait for consensus.</p>
-                        <div class="examples">PostgreSQL, MongoDB, Redis Cluster, ZooKeeper</div>
+                <!-- Real-World Examples Table -->
+                <h4 style="margin-top: 32px;">Real-World CAP Choices by Companies</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Company/System</th>
+                            <th>CAP Choice</th>
+                            <th>Why This Choice?</th>
+                            <th>Business Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Banking Systems</strong></td>
+                            <td><span style="background: #eff6ff; padding: 4px 8px; border-radius: 4px; font-weight: 600;">CP</span></td>
+                            <td>Money transfers MUST be consistent. Can't have double-spending.</td>
+                            <td>Better to show "try again later" than wrong balance</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Netflix</strong></td>
+                            <td><span style="background: #f0fdf4; padding: 4px 8px; border-radius: 4px; font-weight: 600;">AP</span></td>
+                            <td>Showing slightly stale movie catalog is fine. Must always be available.</td>
+                            <td>$6M+ revenue loss per hour of downtime</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amazon Shopping Cart</strong></td>
+                            <td><span style="background: #f0fdf4; padding: 4px 8px; border-radius: 4px; font-weight: 600;">AP</span></td>
+                            <td>Cart should always work. Merge conflicts later at checkout.</td>
+                            <td>Every cart abandonment = lost sale</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Google Spanner</strong></td>
+                            <td><span style="background: #eff6ff; padding: 4px 8px; border-radius: 4px; font-weight: 600;">CP</span></td>
+                            <td>Uses TrueTime API to achieve global consistency for AdWords billing.</td>
+                            <td>Billions in ad revenue requires accurate billing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DNS</strong></td>
+                            <td><span style="background: #f0fdf4; padding: 4px 8px; border-radius: 4px; font-weight: 600;">AP</span></td>
+                            <td>DNS must always resolve. Stale records are acceptable (TTL).</td>
+                            <td>Internet would break if DNS was unavailable</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- CP vs AP Deep Dive -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-top: 32px;">
+                    <div class="cap-deep-dive cp">
+                        <h4>🔵 CP Systems (Consistency + Partition Tolerance)</h4>
+                        <p><strong>Behavior during partition:</strong> Return error or timeout rather than stale data.</p>
+
+                        <h5>Pros</h5>
+                        <ul>
+                            <li>Data is always accurate</li>
+                            <li>No conflict resolution needed</li>
+                            <li>Simpler application logic</li>
+                            <li>ACID transactions possible</li>
+                        </ul>
+
+                        <h5>Cons</h5>
+                        <ul>
+                            <li>System may be unavailable during partitions</li>
+                            <li>Higher latency (wait for consensus)</li>
+                            <li>Harder to scale globally</li>
+                        </ul>
+
+                        <h5>Technologies</h5>
+                        <div class="tech-list">PostgreSQL, MongoDB (default), Redis Cluster, ZooKeeper, etcd, HBase</div>
+
+                        <h5>Use When</h5>
+                        <ul>
+                            <li>Financial transactions</li>
+                            <li>Inventory management</li>
+                            <li>Booking/reservation systems</li>
+                            <li>User authentication</li>
+                        </ul>
                     </div>
-                    <div class="cap-example ap">
-                        <h4>AP Systems (Availability + Partition Tolerance)</h4>
-                        <p>Sacrifice consistency. Allow stale reads during partitions.</p>
-                        <div class="examples">Cassandra, DynamoDB, CouchDB</div>
+
+                    <div class="cap-deep-dive ap">
+                        <h4>🟢 AP Systems (Availability + Partition Tolerance)</h4>
+                        <p><strong>Behavior during partition:</strong> Return potentially stale data rather than error.</p>
+
+                        <h5>Pros</h5>
+                        <ul>
+                            <li>System always responds</li>
+                            <li>Low latency reads</li>
+                            <li>Easy to scale globally</li>
+                            <li>Better user experience</li>
+                        </ul>
+
+                        <h5>Cons</h5>
+                        <ul>
+                            <li>Data may be stale</li>
+                            <li>Requires conflict resolution</li>
+                            <li>Complex application logic</li>
+                            <li>Eventual consistency semantics</li>
+                        </ul>
+
+                        <h5>Technologies</h5>
+                        <div class="tech-list">Cassandra, DynamoDB, CouchDB, Riak, Voldemort</div>
+
+                        <h5>Use When</h5>
+                        <ul>
+                            <li>Social media feeds</li>
+                            <li>Product catalogs</li>
+                            <li>Shopping carts</li>
+                            <li>Analytics/metrics</li>
+                        </ul>
                     </div>
-                    <div class="cap-example ca">
-                        <h4>CA Systems (Consistency + Availability)</h4>
-                        <p>Cannot handle partitions. Only works in single-node systems.</p>
-                        <div class="examples">Single-node RDBMS (no replication)</div>
+                </div>
+
+                <!-- Managing CAP Tradeoffs -->
+                <div class="feature-card" style="margin-top: 32px; border-left-color: #8b5cf6;">
+                    <h4>🛠️ Managing CAP Tradeoffs in Practice</h4>
+                    <p>Real systems don't make a single CAP choice - they use different strategies for different data:</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px;">
+                        <div style="background: #f8fafc; padding: 16px; border-radius: 10px;">
+                            <h5 style="color: #6b21a8; margin: 0 0 8px 0;">1. Eventual Consistency</h5>
+                            <p style="font-size: 14px; margin: 0;">Accept that replicas may diverge temporarily but will eventually converge. Use for: likes, views, analytics.</p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 16px; border-radius: 10px;">
+                            <h5 style="color: #6b21a8; margin: 0 0 8px 0;">2. Read-Your-Writes</h5>
+                            <p style="font-size: 14px; margin: 0;">User always sees their own writes immediately. Others may see stale data. Use for: user profiles, posts.</p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 16px; border-radius: 10px;">
+                            <h5 style="color: #6b21a8; margin: 0 0 8px 0;">3. Quorum Reads/Writes</h5>
+                            <p style="font-size: 14px; margin: 0;">Read from N/2+1 nodes to ensure latest data. Tunable consistency. Use for: configurable per-query.</p>
+                        </div>
+                        <div style="background: #f8fafc; padding: 16px; border-radius: 10px;">
+                            <h5 style="color: #6b21a8; margin: 0 0 8px 0;">4. CRDT (Conflict-free Replicated Data Types)</h5>
+                            <p style="font-size: 14px; margin: 0;">Data structures that automatically merge without conflicts. Use for: counters, sets, collaborative editing.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interview Questions -->
+                <div class="edge-cases" style="margin-top: 32px;">
+                    <h4>Common Interview Questions About CAP</h4>
+                    <div class="edge-case-item">
+                        <div class="case-title">Q: "Is CAP theorem still relevant?"</div>
+                        <div class="case-solution">Yes, but modern understanding is more nuanced. PACELC theorem extends CAP to also consider latency vs consistency tradeoffs during normal operation. CAP is about failure modes; PACELC covers the full picture.</div>
+                    </div>
+                    <div class="edge-case-item">
+                        <div class="case-title">Q: "How does your URL shortener handle CAP?"</div>
+                        <div class="case-solution">We choose AP. A redirect URL being 1 second stale is acceptable. But system being unavailable means lost revenue. We use eventual consistency with read-after-write consistency for the creating user.</div>
+                    </div>
+                    <div class="edge-case-item">
+                        <div class="case-title">Q: "When would you choose CP over AP?"</div>
+                        <div class="case-solution">When data accuracy is more important than availability: financial transactions, inventory that can oversell, authentication tokens, distributed locks, leader election.</div>
                     </div>
                 </div>
 
                 <div class="interview-tip">
-                    <h4>Interview Insight</h4>
-                    <p>In real-world distributed systems, network partitions WILL happen. So the real choice is between CP and AP. Most systems choose eventual consistency (AP) for availability, with techniques like conflict resolution and read-repair.</p>
+                    <h4>💡 Interview Pro Tip</h4>
+                    <p><strong>Don't just pick CP or AP blindly.</strong> Explain that real systems use different consistency levels for different data. User balance = strong consistency. User's avatar = eventual consistency. Show you understand the nuances, not just the theory.</p>
                 </div>
 
                 <div class="used-in-section">
-                    <h4>Applied In These Projects</h4>
+                    <h4>CAP Analysis in Each Project</h4>
                     <div class="project-links">
-                        <a href="/interview-question/url-shortener#consistency">URL Shortener (Eventual Consistency)</a>
-                        <a href="/interview-question/notification#reliability">Notification (At-least-once delivery)</a>
+                        <a href="/interview-question/url-shortener#cap-analysis">URL Shortener (AP)</a>
+                        <a href="/interview-question/food-ordering#cap-analysis">Food Ordering (Mixed)</a>
+                        <a href="/interview-question/ride-booking#cap-analysis">Ride Booking (Mixed)</a>
+                        <a href="/interview-question/notification#cap-analysis">Notification (AP)</a>
+                        <a href="/interview-question/rate-limiter#cap-analysis">Rate Limiter (AP)</a>
+                        <a href="/interview-question/slot-booking#cap-analysis">Slot Booking (CP)</a>
+                        <a href="/interview-question/parking-lot#cap-analysis">Parking Lot (Mixed)</a>
                     </div>
                 </div>
             </div>

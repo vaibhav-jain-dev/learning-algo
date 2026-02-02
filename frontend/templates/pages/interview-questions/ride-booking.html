@@ -12,6 +12,7 @@
         <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
         <a href="#global">Global</a>
+        <a href="#cap-analysis">CAP Analysis</a>
     </div>
 
     <!-- ============================================ -->
@@ -1603,23 +1604,23 @@ Response: <span class="json-number">200</span> OK
             <table style="width: 100%; font-size: 15px;">
                 <tr>
                     <td style="width: 25%;"><strong>1. Location Writes</strong></td>
-                    <td>500K drivers × 15 updates/min = 7.5M writes/min</td>
-                    <td style="color: #22c55e;"><strong>→ Kinesis stream + batch to Redis</strong></td>
+                    <td>500K drivers x 15 updates/min = 7.5M writes/min</td>
+                    <td style="color: #22c55e;"><strong>Kinesis stream + batch to <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></strong></td>
                 </tr>
                 <tr>
                     <td><strong>2. Matching Service</strong></td>
                     <td>GEORADIUS with millions of keys</td>
-                    <td style="color: #22c55e;"><strong>→ City-sharded Redis + H3 pre-indexing</strong></td>
+                    <td style="color: #22c55e;"><strong>City-sharded <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> + H3 pre-indexing</strong></td>
                 </tr>
                 <tr>
-                    <td><strong>3. WebSocket Connections</strong></td>
+                    <td><strong>3. <a href="/interview-question/glossary#websocket" class="info-term">WebSocket<span class="info-i">i</span></a> Connections</strong></td>
                     <td>1M concurrent connections</td>
-                    <td style="color: #22c55e;"><strong>→ Dedicated WS fleet + sticky sessions</strong></td>
+                    <td style="color: #22c55e;"><strong>Dedicated WS fleet + sticky sessions</strong></td>
                 </tr>
                 <tr>
                     <td><strong>4. Database Writes</strong></td>
                     <td>Ride state updates bottleneck</td>
-                    <td style="color: #22c55e;"><strong>→ Event sourcing + eventual consistency</strong></td>
+                    <td style="color: #22c55e;"><strong>Event sourcing + eventual consistency</strong></td>
                 </tr>
             </table>
         </div>
@@ -1647,10 +1648,10 @@ Response: <span class="json-number">200</span> OK
                         <div class="arch-box queue">Kinesis<br><small>Location stream</small></div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box cache">Redis Cluster<br><small>32 shards</small></div>
+                        <div class="arch-box cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster<br><small>32 shards</small></div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box queue">Kafka<br><small>Events</small></div>
+                        <div class="arch-box queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a><br><small>Events</small></div>
                     </div>
                 </div>
                 <div class="arch-arrow">↓</div>
@@ -1709,7 +1710,7 @@ Response: <span class="json-number">200</span> OK
             </div>
 
             <div class="alternative-card">
-                <h5>Apache Kafka (MSK)</h5>
+                <h5>Apache <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> (MSK)</h5>
                 <p>High-throughput event streaming</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">+</span> Higher throughput<br>
@@ -2442,6 +2443,593 @@ aws route53 change-resource-record-sets \
                     <div class="evolution-label">Global</div>
                     <div class="evolution-db">CockroachDB</div>
                     <div class="evolution-detail">Geo-partitioned<br>Data residency</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CAP ANALYSIS SECTION -->
+    <!-- ============================================ -->
+    <div class="stage-section" id="cap-analysis">
+        <div class="stage-header">
+            <span class="stage-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #8b5cf6 100%); color: white;">Mixed CP/AP</span>
+            <h2 style="margin: 0;">CAP Theorem Analysis - Ride Booking System</h2>
+        </div>
+
+        <p class="topic-description" style="margin-bottom: 24px;">
+            A ride booking system like Uber/Ola is a <strong>mixed CP/AP system</strong> - different components have different consistency requirements.
+            Driver assignment needs strong consistency (CP) to prevent double-booking, while location tracking can tolerate eventual consistency (AP) for better availability.
+        </p>
+
+        <!-- CAP VISUAL OVERVIEW -->
+        <h3>Component-Wise CAP Classification</h3>
+        <div class="diagram-container">
+            <h4>Ride Booking System - CAP Breakdown</h4>
+            <div class="cap-visual-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%;">
+
+                <!-- CP Components -->
+                <div class="cap-component-card" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <span style="background: #3b82f6; color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px;">CP</span>
+                        <span style="color: #1e40af; font-weight: 700;">Consistency + Partition Tolerance</span>
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; color: #1e40af; font-size: 14px; line-height: 1.8;">
+                        <li><strong>Driver Assignment</strong> - Can't assign same driver to two riders</li>
+                        <li><strong>Fare Calculation</strong> - Must be accurate, no discrepancies</li>
+                        <li><strong>Payment Processing</strong> - Double-charge prevention critical</li>
+                        <li><strong>Promo Code Redemption</strong> - Single-use enforcement</li>
+                    </ul>
+                </div>
+
+                <!-- AP Components -->
+                <div class="cap-component-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 16px; padding: 20px; border-left: 5px solid #22c55e;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <span style="background: #22c55e; color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px;">AP</span>
+                        <span style="color: #166534; font-weight: 700;">Availability + Partition Tolerance</span>
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; color: #166534; font-size: 14px; line-height: 1.8;">
+                        <li><strong>Driver Location Tracking</strong> - 4-sec staleness acceptable</li>
+                        <li><strong>ETA Calculations</strong> - Approximate is fine</li>
+                        <li><strong>Ride History</strong> - Eventual consistency OK</li>
+                        <li><strong>Ratings & Reviews</strong> - Can sync later</li>
+                    </ul>
+                </div>
+
+                <!-- Special Handling -->
+                <div class="cap-component-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; padding: 20px; border-left: 5px solid #f59e0b;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <span style="background: #f59e0b; color: white; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px;">SOFT RT</span>
+                        <span style="color: #92400e; font-weight: 700;">Soft Real-Time Requirements</span>
+                    </div>
+                    <ul style="margin: 0; padding-left: 20px; color: #92400e; font-size: 14px; line-height: 1.8;">
+                        <li><strong>Driver Availability</strong> - Needs quick updates, not strict CP</li>
+                        <li><strong>Surge Pricing</strong> - Near real-time, small delay OK</li>
+                        <li><strong>Notifications</strong> - Best-effort delivery acceptable</li>
+                        <li><strong>Map Updates</strong> - Refresh every few seconds</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETAILED CAP BREAKDOWN TABLE -->
+        <h3>Detailed CAP Analysis by Component</h3>
+        <div class="feature-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>CAP Choice</th>
+                        <th>Why This Choice?</th>
+                        <th>Failure Impact</th>
+                        <th>Implementation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Driver Assignment</strong></td>
+                        <td><span class="cap-badge cp">CP</span></td>
+                        <td>Double-booking = two angry customers + driver confusion</td>
+                        <td style="color: #dc2626;">Critical - Legal liability, refunds</td>
+                        <td>Distributed lock with Redis SETNX + PostgreSQL transaction</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fare Calculation</strong></td>
+                        <td><span class="cap-badge cp">CP</span></td>
+                        <td>Inconsistent fares = disputes, regulatory issues</td>
+                        <td style="color: #dc2626;">Critical - Customer trust, compliance</td>
+                        <td>Single source of truth, calculated server-side</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Payment Processing</strong></td>
+                        <td><span class="cap-badge cp">CP</span></td>
+                        <td>Double-charge or missed payment = financial loss</td>
+                        <td style="color: #dc2626;">Critical - Financial, chargebacks</td>
+                        <td>Idempotency keys, payment gateway integration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Driver Location</strong></td>
+                        <td><span class="cap-badge ap">AP</span></td>
+                        <td>4-second old location still usable for matching</td>
+                        <td style="color: #f59e0b;">Medium - Slightly inaccurate ETA</td>
+                        <td>Redis GEO with TTL, last-write-wins</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Driver Availability</strong></td>
+                        <td><span class="cap-badge soft-rt">Soft RT</span></td>
+                        <td>Brief staleness OK, but needs quick convergence</td>
+                        <td style="color: #f59e0b;">Medium - Wasted matching attempts</td>
+                        <td>Redis with short TTL (10s), heartbeat refresh</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ride History</strong></td>
+                        <td><span class="cap-badge ap">AP</span></td>
+                        <td>Historical data can be eventually consistent</td>
+                        <td style="color: #22c55e;">Low - Delayed display acceptable</td>
+                        <td>Async write to PostgreSQL, read replicas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ratings & Reviews</strong></td>
+                        <td><span class="cap-badge ap">AP</span></td>
+                        <td>Aggregate rating can be slightly stale</td>
+                        <td style="color: #22c55e;">Low - Minor UX impact</td>
+                        <td>Write to queue, batch process, cache result</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Surge Pricing</strong></td>
+                        <td><span class="cap-badge soft-rt">Soft RT</span></td>
+                        <td>30-second delay acceptable, but not minutes</td>
+                        <td style="color: #f59e0b;">Medium - Revenue/demand mismatch</td>
+                        <td>Redis pub/sub, recalculate every 30s per zone</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DRIVER ASSIGNMENT DEEP DIVE -->
+        <h3>Deep Dive: Driver Assignment (CP Critical Path)</h3>
+        <div class="diagram-container">
+            <h4>Preventing Double-Booking with Distributed Locking</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                <!-- Flow Diagram -->
+                <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
+                    <div class="flow-step">
+                        <div class="flow-step-number">1</div>
+                        <div class="arch-box server" style="padding: 10px 16px;">Matching Engine</div>
+                        <div class="flow-step-label">Find top 3 drivers</div>
+                    </div>
+                    <div class="arch-arrow">&#8594;</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">2</div>
+                        <div class="arch-box cache" style="padding: 10px 16px;">Redis SETNX</div>
+                        <div class="flow-step-label">Lock driver:123</div>
+                    </div>
+                    <div class="arch-arrow">&#8594;</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">3</div>
+                        <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                        <div class="flow-step-label">BEGIN TRANSACTION</div>
+                    </div>
+                    <div class="arch-arrow">&#8594;</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">4</div>
+                        <div class="arch-box db" style="padding: 10px 16px;">Check & Update</div>
+                        <div class="flow-step-label">Verify + Assign</div>
+                    </div>
+                    <div class="arch-arrow">&#8594;</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">5</div>
+                        <div class="arch-box server" style="padding: 10px 16px;">Commit/Rollback</div>
+                        <div class="flow-step-label">Release lock</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Example: Distributed Locking -->
+        <div class="code-example">
+            <h5>Driver Assignment with Distributed Locking</h5>
+            <pre><span class="keyword">async function</span> <span class="function">assignDriverToRide</span>(rideId: <span class="class-name">string</span>, driverIds: <span class="class-name">string</span>[]) {
+    <span class="keyword">for</span> (<span class="keyword">const</span> driverId <span class="keyword">of</span> driverIds) {
+        <span class="comment">// Step 1: Acquire distributed lock (15s TTL)</span>
+        <span class="keyword">const</span> lockKey = <span class="string">`lock:driver:</span>${driverId}<span class="string">`</span>;
+        <span class="keyword">const</span> lockAcquired = <span class="keyword">await</span> redis.<span class="function">set</span>(lockKey, rideId, <span class="string">'NX'</span>, <span class="string">'EX'</span>, <span class="number">15</span>);
+
+        <span class="keyword">if</span> (!lockAcquired) {
+            <span class="keyword">continue</span>; <span class="comment">// Driver being assigned elsewhere, try next</span>
+        }
+
+        <span class="keyword">try</span> {
+            <span class="comment">// Step 2: Database transaction with SERIALIZABLE isolation</span>
+            <span class="keyword">await</span> db.<span class="function">transaction</span>(<span class="keyword">async</span> (trx) => {
+                <span class="comment">// Double-check driver is still available</span>
+                <span class="keyword">const</span> driver = <span class="keyword">await</span> trx(<span class="string">'drivers'</span>)
+                    .<span class="function">where</span>({ id: driverId, status: <span class="string">'available'</span> })
+                    .<span class="function">forUpdate</span>()  <span class="comment">// Row-level lock</span>
+                    .<span class="function">first</span>();
+
+                <span class="keyword">if</span> (!driver) {
+                    <span class="keyword">throw new</span> <span class="class-name">Error</span>(<span class="string">'Driver no longer available'</span>);
+                }
+
+                <span class="comment">// Atomic update: ride + driver status</span>
+                <span class="keyword">await</span> trx(<span class="string">'rides'</span>).<span class="function">update</span>({ driver_id: driverId, status: <span class="string">'assigned'</span> }).<span class="function">where</span>({ id: rideId });
+                <span class="keyword">await</span> trx(<span class="string">'drivers'</span>).<span class="function">update</span>({ status: <span class="string">'on_trip'</span>, current_ride_id: rideId }).<span class="function">where</span>({ id: driverId });
+            });
+
+            <span class="comment">// Step 3: Update Redis cache (async, best-effort)</span>
+            <span class="keyword">await</span> redis.<span class="function">srem</span>(<span class="string">'available_drivers:mumbai'</span>, driverId);
+
+            <span class="keyword">return</span> { success: <span class="keyword">true</span>, driverId };
+
+        } <span class="keyword">catch</span> (error) {
+            <span class="comment">// Transaction failed, driver was taken</span>
+            <span class="keyword">continue</span>; <span class="comment">// Try next driver</span>
+        } <span class="keyword">finally</span> {
+            <span class="comment">// Always release lock</span>
+            <span class="keyword">await</span> redis.<span class="function">del</span>(lockKey);
+        }
+    }
+
+    <span class="keyword">return</span> { success: <span class="keyword">false</span>, reason: <span class="string">'No available drivers'</span> };
+}</pre>
+        </div>
+
+        <!-- Race Condition Scenarios -->
+        <h3>Race Condition Scenarios & Solutions</h3>
+        <div class="pros-cons-grid">
+            <div class="pros-section" style="border-color: #ef4444;">
+                <h4 style="color: #991b1b;">Problem: Two Riders Request Same Driver</h4>
+                <div style="background: #fef2f2; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <p style="font-size: 14px; color: #7f1d1d; margin: 0;">
+                        <strong>Scenario:</strong> Rider A and Rider B both see driver X as nearest.
+                        Both matching engines try to assign driver X simultaneously.
+                    </p>
+                </div>
+                <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <p style="font-size: 14px; color: #166534; margin: 0;">
+                        <strong>Solution:</strong> Redis SETNX ensures only one request acquires the lock.
+                        The loser immediately tries the next best driver. Total latency impact: ~5ms.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pros-section" style="border-color: #f59e0b;">
+                <h4 style="color: #92400e;">Problem: Driver Goes Offline During Assignment</h4>
+                <div style="background: #fffbeb; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <p style="font-size: 14px; color: #78350f; margin: 0;">
+                        <strong>Scenario:</strong> Driver X closes app while matching engine is assigning them.
+                        Lock acquired, but driver won't respond.
+                    </p>
+                </div>
+                <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <p style="font-size: 14px; color: #166534; margin: 0;">
+                        <strong>Solution:</strong> 15-second accept timeout. If driver doesn't accept,
+                        ride status reverts, driver marked stale, cascade to next driver.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Tracking (AP) Deep Dive -->
+        <h3>Deep Dive: Location Tracking (AP - Eventual Consistency)</h3>
+        <div class="diagram-container">
+            <h4>Why AP is Acceptable for Driver Locations</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; width: 100%;">
+                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h5 style="color: #3b82f6; margin: 0 0 12px 0;">Update Frequency</h5>
+                    <p style="font-size: 14px; color: #475569; margin: 0;">
+                        Drivers send GPS every <strong>4 seconds</strong>. Even if an update is lost,
+                        the next one arrives shortly. At 60 km/h, 4 seconds = 66 meters - acceptable margin.
+                    </p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h5 style="color: #22c55e; margin: 0 0 12px 0;">Last-Write-Wins</h5>
+                    <p style="font-size: 14px; color: #475569; margin: 0;">
+                        Conflicting writes don't matter - we always want the <strong>most recent location</strong>.
+                        Redis GEOADD naturally overwrites, no conflict resolution needed.
+                    </p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h5 style="color: #f59e0b; margin: 0 0 12px 0;">Graceful Degradation</h5>
+                    <p style="font-size: 14px; color: #475569; margin: 0;">
+                        If Redis node fails, matching uses slightly stale data from replica.
+                        Better to show <strong>approximate nearby drivers</strong> than show nothing.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Example: Location Update -->
+        <div class="code-example">
+            <h5>Location Update - AP Strategy with Redis GEO</h5>
+            <pre><span class="comment">// Driver app sends location every 4 seconds</span>
+<span class="keyword">async function</span> <span class="function">updateDriverLocation</span>(driverId: <span class="class-name">string</span>, lat: <span class="class-name">number</span>, lng: <span class="class-name">number</span>) {
+    <span class="keyword">const</span> city = <span class="keyword">await</span> <span class="function">getCityFromCoords</span>(lat, lng);
+    <span class="keyword">const</span> geoKey = <span class="string">`drivers:location:</span>${city}<span class="string">`</span>;
+
+    <span class="comment">// Fire-and-forget: Don't wait for confirmation (AP choice)</span>
+    redis.<span class="function">pipeline</span>()
+        <span class="comment">// Update geospatial index for matching queries</span>
+        .<span class="function">geoadd</span>(geoKey, lng, lat, driverId)
+        <span class="comment">// Set TTL - auto-expire if driver stops sending (10s)</span>
+        .<span class="function">expire</span>(geoKey, <span class="number">3600</span>)  <span class="comment">// Key TTL</span>
+        <span class="comment">// Track individual driver freshness</span>
+        .<span class="function">setex</span>(<span class="string">`driver:heartbeat:</span>${driverId}<span class="string">`</span>, <span class="number">10</span>, Date.<span class="function">now</span>())
+        <span class="comment">// Publish for real-time tracking (WebSocket consumers)</span>
+        .<span class="function">publish</span>(<span class="string">`location:</span>${driverId}<span class="string">`</span>, JSON.<span class="function">stringify</span>({ lat, lng, ts: Date.<span class="function">now</span>() }))
+        .<span class="function">exec</span>();  <span class="comment">// Non-blocking execution</span>
+
+    <span class="comment">// Async: Write to Kafka for analytics (eventual consistency)</span>
+    kafka.<span class="function">produce</span>(<span class="string">'driver-locations'</span>, { driverId, lat, lng, timestamp: Date.<span class="function">now</span>() });
+}
+
+<span class="comment">// Matching query - tolerates staleness</span>
+<span class="keyword">async function</span> <span class="function">findNearbyDrivers</span>(lat: <span class="class-name">number</span>, lng: <span class="class-name">number</span>, radiusKm: <span class="class-name">number</span>) {
+    <span class="keyword">const</span> city = <span class="keyword">await</span> <span class="function">getCityFromCoords</span>(lat, lng);
+
+    <span class="comment">// GEORADIUS returns drivers within radius, sorted by distance</span>
+    <span class="keyword">const</span> drivers = <span class="keyword">await</span> redis.<span class="function">georadius</span>(
+        <span class="string">`drivers:location:</span>${city}<span class="string">`</span>,
+        lng, lat, radiusKm, <span class="string">'km'</span>,
+        <span class="string">'WITHDIST'</span>, <span class="string">'ASC'</span>, <span class="string">'COUNT'</span>, <span class="number">20</span>
+    );
+
+    <span class="comment">// Filter out stale drivers (no heartbeat in 10s)</span>
+    <span class="keyword">const</span> freshDrivers = [];
+    <span class="keyword">for</span> (<span class="keyword">const</span> [driverId, distance] <span class="keyword">of</span> drivers) {
+        <span class="keyword">const</span> heartbeat = <span class="keyword">await</span> redis.<span class="function">get</span>(<span class="string">`driver:heartbeat:</span>${driverId}<span class="string">`</span>);
+        <span class="keyword">if</span> (heartbeat) freshDrivers.<span class="function">push</span>({ driverId, distance });
+    }
+
+    <span class="keyword">return</span> freshDrivers;
+}</pre>
+        </div>
+
+        <!-- Business Impact Justification -->
+        <h3>Business Impact: Why These CAP Choices?</h3>
+        <div class="feature-card" style="border-left-color: #8b5cf6;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                <div>
+                    <h4 style="color: #6b21a8;">CP for Driver Assignment</h4>
+                    <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px 0; color: #dc2626;"><strong>Cost of Inconsistency:</strong></td>
+                            <td style="padding: 8px 0;">$50-100 refund + support call + 2 angry customers</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; color: #dc2626;"><strong>Brand Impact:</strong></td>
+                            <td style="padding: 8px 0;">Negative reviews, social media complaints</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; color: #dc2626;"><strong>Operational:</strong></td>
+                            <td style="padding: 8px 0;">Driver trust erosion, potential churn</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; color: #22c55e;"><strong>CP Overhead:</strong></td>
+                            <td style="padding: 8px 0;">+5-15ms latency per assignment (acceptable)</td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <h4 style="color: #6b21a8;">AP for Location Tracking</h4>
+                    <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px 0; color: #22c55e;"><strong>Cost of Staleness:</strong></td>
+                            <td style="padding: 8px 0;">ETA off by ~30 seconds (users tolerate)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; color: #22c55e;"><strong>Availability Gain:</strong></td>
+                            <td style="padding: 8px 0;">99.99% vs 99.9% with CP (10x fewer outages)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; color: #22c55e;"><strong>Scale Benefit:</strong></td>
+                            <td style="padding: 8px 0;">Handle 7.5M updates/min without coordination</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; color: #f59e0b;"><strong>CP Alternative:</strong></td>
+                            <td style="padding: 8px 0;">Would need consensus (Raft) - 100ms+ latency, complex</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver Availability - Special Case -->
+        <h3>Special Case: Driver Availability (Soft Real-Time)</h3>
+        <div class="diagram-container">
+            <h4>Why Driver Availability Needs Special Handling</h4>
+            <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box;">
+                <p style="font-size: 15px; color: #334155; margin: 0 0 20px 0;">
+                    Driver availability is <strong>neither strictly CP nor AP</strong>. It needs to be "fresh enough"
+                    to avoid wasted matching attempts, but doesn't need ACID guarantees.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <div style="background: #fef2f2; padding: 16px; border-radius: 8px;">
+                        <h5 style="color: #991b1b; margin: 0 0 8px 0;">Too Stale (>30s)</h5>
+                        <p style="font-size: 13px; color: #7f1d1d; margin: 0;">
+                            Matching tries offline drivers. Timeout wastes 15s. Poor experience.
+                        </p>
+                    </div>
+                    <div style="background: #fef3c7; padding: 16px; border-radius: 8px;">
+                        <h5 style="color: #92400e; margin: 0 0 8px 0;">Sweet Spot (5-10s)</h5>
+                        <p style="font-size: 13px; color: #78350f; margin: 0;">
+                            Heartbeat with 10s TTL. Miss 2-3 updates before marked unavailable.
+                        </p>
+                    </div>
+                    <div style="background: #fef2f2; padding: 16px; border-radius: 8px;">
+                        <h5 style="color: #991b1b; margin: 0 0 8px 0;">Too Strict (CP)</h5>
+                        <p style="font-size: 13px; color: #7f1d1d; margin: 0;">
+                            Consensus for every heartbeat? 500K drivers = millions of ops/sec. Not scalable.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Pattern -->
+        <div class="code-example">
+            <h5>Soft Real-Time Availability with Heartbeat</h5>
+            <pre><span class="comment">// Driver availability: Heartbeat-based with short TTL</span>
+
+<span class="comment">// Driver sends heartbeat every 4s (same as location update)</span>
+<span class="keyword">async function</span> <span class="function">markDriverAvailable</span>(driverId: <span class="class-name">string</span>, city: <span class="class-name">string</span>) {
+    <span class="keyword">const</span> ttl = <span class="number">10</span>; <span class="comment">// Expire after 10s without heartbeat</span>
+
+    <span class="keyword">await</span> redis.<span class="function">pipeline</span>()
+        <span class="comment">// Add to available set with score = timestamp</span>
+        .<span class="function">zadd</span>(<span class="string">`available:</span>${city}<span class="string">`</span>, Date.<span class="function">now</span>(), driverId)
+        <span class="comment">// Individual TTL key for freshness check</span>
+        .<span class="function">setex</span>(<span class="string">`available:</span>${driverId}<span class="string">`</span>, ttl, <span class="string">'1'</span>)
+        .<span class="function">exec</span>();
+}
+
+<span class="comment">// Background job: Cleanup stale entries every 5s</span>
+<span class="keyword">async function</span> <span class="function">cleanupStaleDrivers</span>(city: <span class="class-name">string</span>) {
+    <span class="keyword">const</span> cutoff = Date.<span class="function">now</span>() - <span class="number">10000</span>; <span class="comment">// 10s ago</span>
+
+    <span class="comment">// Remove drivers who haven't sent heartbeat</span>
+    <span class="keyword">await</span> redis.<span class="function">zremrangebyscore</span>(<span class="string">`available:</span>${city}<span class="string">`</span>, <span class="number">0</span>, cutoff);
+}
+
+<span class="comment">// Matching: Check freshness before assignment</span>
+<span class="keyword">async function</span> <span class="function">getAvailableDrivers</span>(city: <span class="class-name">string</span>, limit: <span class="class-name">number</span>) {
+    <span class="comment">// Get recently active drivers</span>
+    <span class="keyword">const</span> candidates = <span class="keyword">await</span> redis.<span class="function">zrevrange</span>(<span class="string">`available:</span>${city}<span class="string">`</span>, <span class="number">0</span>, limit * <span class="number">2</span>);
+
+    <span class="comment">// Double-check individual freshness keys</span>
+    <span class="keyword">const</span> pipeline = redis.<span class="function">pipeline</span>();
+    candidates.<span class="function">forEach</span>(d => pipeline.<span class="function">exists</span>(<span class="string">`available:</span>${d}<span class="string">`</span>));
+    <span class="keyword">const</span> results = <span class="keyword">await</span> pipeline.<span class="function">exec</span>();
+
+    <span class="keyword">return</span> candidates.<span class="function">filter</span>((_, i) => results[i][<span class="number">1</span>] === <span class="number">1</span>).<span class="function">slice</span>(<span class="number">0</span>, limit);
+}</pre>
+        </div>
+
+        <!-- Partition Handling -->
+        <h3>Network Partition Handling</h3>
+        <div class="feature-card" style="border-left-color: #ef4444;">
+            <h4 style="color: #991b1b;">What Happens During a Network Partition?</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 16px;">
+                <div style="background: #fef2f2; padding: 20px; border-radius: 12px;">
+                    <h5 style="color: #dc2626; margin: 0 0 12px 0;">CP Components (Assignment, Payment)</h5>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #7f1d1d;">
+                        <li>Requests <strong>rejected</strong> if can't reach primary</li>
+                        <li>Users see "Service temporarily unavailable"</li>
+                        <li>Prefer correctness over availability</li>
+                        <li>Auto-retry when partition heals</li>
+                    </ul>
+                </div>
+                <div style="background: #f0fdf4; padding: 20px; border-radius: 12px;">
+                    <h5 style="color: #166534; margin: 0 0 12px 0;">AP Components (Location, History)</h5>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #166534;">
+                        <li>Continue serving from <strong>local replica</strong></li>
+                        <li>May show slightly stale data</li>
+                        <li>Sync when partition heals</li>
+                        <li>Users experience minimal disruption</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Tips -->
+        <div class="followup-features" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left-color: #f59e0b;">
+            <h4 style="color: #92400e;">Interview Tips: CAP for Ride Booking</h4>
+
+            <div class="followup-item" style="background: white; border-color: #fde68a;">
+                <div class="followup-number" style="background: #f59e0b;">1</div>
+                <div class="followup-content">
+                    <div class="followup-question" style="color: #92400e;">"Why is ride booking a mixed CP/AP system?"</div>
+                    <div class="followup-hint" style="background: #fffbeb; color: #78350f;">
+                        Different components have different consistency needs. Driver assignment is CP because double-booking
+                        causes refunds and angry customers. Location tracking is AP because 4-second staleness is acceptable
+                        and we need to handle 7.5M updates/min at scale.
+                    </div>
+                </div>
+            </div>
+
+            <div class="followup-item" style="background: white; border-color: #fde68a;">
+                <div class="followup-number" style="background: #f59e0b;">2</div>
+                <div class="followup-content">
+                    <div class="followup-question" style="color: #92400e;">"How do you prevent two riders from getting the same driver?"</div>
+                    <div class="followup-hint" style="background: #fffbeb; color: #78350f;">
+                        Two-phase approach: First, acquire a distributed lock (Redis SETNX with TTL). Then, database transaction
+                        with row-level locking (SELECT FOR UPDATE). If lock fails, immediately try next best driver.
+                        Total latency overhead: ~10ms - worth it to avoid double-booking.
+                    </div>
+                </div>
+            </div>
+
+            <div class="followup-item" style="background: white; border-color: #fde68a;">
+                <div class="followup-number" style="background: #f59e0b;">3</div>
+                <div class="followup-content">
+                    <div class="followup-question" style="color: #92400e;">"What if Redis fails during driver assignment?"</div>
+                    <div class="followup-hint" style="background: #fffbeb; color: #78350f;">
+                        Redis is only for the fast-path lock. If Redis is down, fall back to database-only locking (slower but correct).
+                        The PostgreSQL transaction with FOR UPDATE provides the actual consistency guarantee.
+                        Redis just reduces contention and speeds up the common case.
+                    </div>
+                </div>
+            </div>
+
+            <div class="followup-item" style="background: white; border-color: #fde68a;">
+                <div class="followup-number" style="background: #f59e0b;">4</div>
+                <div class="followup-content">
+                    <div class="followup-question" style="color: #92400e;">"Why not use CP for everything for simplicity?"</div>
+                    <div class="followup-hint" style="background: #fffbeb; color: #78350f;">
+                        CP requires coordination (consensus protocols like Raft/Paxos). At 7.5M location updates/minute,
+                        coordination would add 50-100ms latency per update and create a scalability bottleneck.
+                        Location data naturally fits last-write-wins semantics - we always want the latest position.
+                    </div>
+                </div>
+            </div>
+
+            <div class="followup-item" style="background: white; border-color: #fde68a;">
+                <div class="followup-number" style="background: #f59e0b;">5</div>
+                <div class="followup-content">
+                    <div class="followup-question" style="color: #92400e;">"How do you handle surge pricing consistency?"</div>
+                    <div class="followup-hint" style="background: #fffbeb; color: #78350f;">
+                        Surge pricing is "soft real-time" - recalculated every 30 seconds per H3 zone. Slight staleness is acceptable
+                        (rider sees 1.5x but actual might be 1.6x). The fare shown at booking time is locked in - that's the CP part.
+                        The surge multiplier itself can be eventually consistent.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference Card -->
+        <div class="summary-flow">
+            <h4>CAP Quick Reference - Ride Booking</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">CP</div>
+                    <div style="font-weight: 700; color: #1e40af; margin-bottom: 8px;">Strong Consistency</div>
+                    <div style="font-size: 13px; color: #3b82f6;">
+                        Driver Assignment<br>
+                        Fare Calculation<br>
+                        Payment Processing<br>
+                        Promo Codes
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">AP</div>
+                    <div style="font-weight: 700; color: #166534; margin-bottom: 8px;">High Availability</div>
+                    <div style="font-size: 13px; color: #22c55e;">
+                        Driver Location<br>
+                        ETA Display<br>
+                        Ride History<br>
+                        Ratings
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">Soft RT</div>
+                    <div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">Soft Real-Time</div>
+                    <div style="font-size: 13px; color: #b45309;">
+                        Driver Availability<br>
+                        Surge Pricing<br>
+                        Push Notifications<br>
+                        Map Updates
+                    </div>
                 </div>
             </div>
         </div>

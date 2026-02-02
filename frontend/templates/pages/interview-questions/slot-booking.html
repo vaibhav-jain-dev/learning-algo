@@ -12,6 +12,7 @@
         <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
         <a href="#global">Global</a>
+        <a href="#cap-analysis">CAP Analysis</a>
     </div>
 
     <!-- ============================================ -->
@@ -928,12 +929,12 @@ try {
                         <td>$60</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">RDS</span> PostgreSQL</td>
+                        <td><span class="cost-tag aws">RDS</span> <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></td>
                         <td>db.t3.medium, Multi-AZ, 50GB</td>
                         <td>$140</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td><span class="cost-tag aws">ElastiCache</span> <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></td>
                         <td>cache.t3.small, 1.5GB</td>
                         <td>$25</td>
                     </tr>
@@ -1111,7 +1112,7 @@ const dates = rule.between(startDate, endDate);</pre>
             <div class="edge-case-item">
                 <div class="case-title">Double Booking Race Condition</div>
                 <p>Two users click "Book" simultaneously on the same slot, both see it as available.</p>
-                <div class="case-solution">Use SELECT FOR UPDATE (pessimistic) or version column (optimistic). PostgreSQL row-level locks ensure only one transaction succeeds. Return 409 Conflict to the loser with retry suggestion.</div>
+                <div class="case-solution">Use SELECT FOR UPDATE (pessimistic) or version column (optimistic). <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> row-level locks ensure only one transaction succeeds. Return 409 Conflict to the loser with retry suggestion.</div>
             </div>
 
             <div class="edge-case-item">
@@ -1198,7 +1199,7 @@ const dates = rule.between(startDate, endDate);</pre>
                 <div class="followup-number">3</div>
                 <div class="followup-content">
                     <div class="followup-question">How do you efficiently query "next available slot" across 1000 resources?</div>
-                    <div class="followup-hint">Materialized view of next_available per resource, refreshed on booking/cancel. Or: bitmap index where each bit = 15-min slot. For real-time: Redis sorted set with (resource_id, next_available_timestamp) as score.</div>
+                    <div class="followup-hint">Materialized view of next_available per resource, refreshed on booking/cancel. Or: bitmap index where each bit = 15-min slot. For real-time: <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> sorted set with (resource_id, next_available_timestamp) as score.</div>
                 </div>
             </div>
 
@@ -1292,7 +1293,7 @@ const dates = rule.between(startDate, endDate);</pre>
                     <div class="evolution-icon high-traffic">HT</div>
                     <div class="evolution-label">High Traffic</div>
                     <div class="evolution-db"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> + Sharded PG</div>
-                    <div class="evolution-detail">Virtual queue<br>Pre-lock in Redis<br>Then persist to DB</div>
+                    <div class="evolution-detail">Virtual queue<br>Pre-lock in <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br>Then persist to DB</div>
                 </div>
                 <div class="evolution-arrow">-></div>
                 <div class="evolution-stage">
@@ -1359,7 +1360,7 @@ const dates = rule.between(startDate, endDate);</pre>
                             <div class="arch-box server" style="padding: 10px;">Worker (2x)</div>
                         </div>
                         <div style="display: flex; gap: 12px; margin-top: 12px;">
-                            <div class="arch-box cache" style="padding: 10px;">Redis Cluster</div>
+                            <div class="arch-box cache" style="padding: 10px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster</div>
                         </div>
                         <div class="arch-box db" style="margin-top: 12px;">RDS Primary</div>
                     </div>
@@ -1370,7 +1371,7 @@ const dates = rule.between(startDate, endDate);</pre>
                             <div class="arch-box server" style="padding: 10px;">Worker (1x)</div>
                         </div>
                         <div style="display: flex; gap: 12px; margin-top: 12px;">
-                            <div class="arch-box cache" style="padding: 10px;">Redis Replica</div>
+                            <div class="arch-box cache" style="padding: 10px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Replica</div>
                         </div>
                         <div class="arch-box db" style="margin-top: 12px; opacity: 0.7;">RDS Read Replica</div>
                     </div>
@@ -1455,7 +1456,7 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
             <div class="edge-case-item">
                 <div class="case-title">Cross-Tenant Data Leakage</div>
                 <p>Bug in query allows Tenant A to see Tenant B's bookings.</p>
-                <div class="case-solution">Always use Row-Level Security (RLS) in PostgreSQL. Set tenant context at connection level. Audit logs for cross-tenant queries. Penetration testing. Separate connection pools per tenant for premium tier.</div>
+                <div class="case-solution">Always use Row-Level Security (RLS) in <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a>. Set tenant context at connection level. Audit logs for cross-tenant queries. Penetration testing. Separate connection pools per tenant for premium tier.</div>
             </div>
 
             <div class="edge-case-item">
@@ -1558,7 +1559,7 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
                 <div class="followup-number">5</div>
                 <div class="followup-content">
                     <div class="followup-question">How would you implement regional failover for Indian users?</div>
-                    <div class="followup-hint">Primary in Mumbai (ap-south-1), standby in Hyderabad (ap-south-2). Route 53 health checks. RDS Multi-AZ for automatic DB failover. Redis Sentinel for cache failover. Test failover monthly.</div>
+                    <div class="followup-hint">Primary in Mumbai (ap-south-1), standby in Hyderabad (ap-south-2). Route 53 health checks. RDS Multi-AZ for automatic DB failover. <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Sentinel for cache failover. Test failover monthly.</div>
                 </div>
             </div>
         </div>
@@ -1688,7 +1689,7 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
                 <tr>
                     <td style="width: 25%;"><strong>1. DB Lock Contention</strong></td>
                     <td>All requests trying to lock same slot rows</td>
-                    <td style="color: #22c55e;"><strong>→ Pre-lock in Redis, then DB</strong></td>
+                    <td style="color: #22c55e;"><strong>→ Pre-lock in <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a>, then DB</strong></td>
                 </tr>
                 <tr>
                     <td><strong>2. Thundering Herd</strong></td>
@@ -1817,9 +1818,9 @@ async function processQueue(slotId) {
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title">Redis Cluster Failover During Flash Sale</div>
-                <p>Redis node fails during peak load, losing queue state.</p>
-                <div class="case-solution">Redis Cluster with replicas (3 masters, 3 replicas). AOF persistence for durability. Fallback to database-backed queue. Circuit breaker to reject new requests during failover.</div>
+                <div class="case-title"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster Failover During Flash Sale</div>
+                <p><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> node fails during peak load, losing queue state.</p>
+                <div class="case-solution"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster with replicas (3 masters, 3 replicas). AOF persistence for durability. Fallback to database-backed queue. Circuit breaker to reject new requests during failover.</div>
             </div>
 
             <div class="edge-case-item">
@@ -1860,7 +1861,7 @@ async function processQueue(slotId) {
             <div class="future-item">
                 <div class="future-title">Predictive Auto-Scaling</div>
                 <p>Scale up infrastructure before flash sale based on predicted demand.</p>
-                <div class="future-approach">ML model trained on: past sale patterns, marketing campaigns, day of week. Pre-warm Kubernetes nodes. Pre-scale Redis cluster. Load test at 2x predicted capacity. Automated runbook for sale events.</div>
+                <div class="future-approach">ML model trained on: past sale patterns, marketing campaigns, day of week. Pre-warm Kubernetes nodes. Pre-scale <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> cluster. Load test at 2x predicted capacity. Automated runbook for sale events.</div>
             </div>
 
             <div class="future-item">
@@ -1886,7 +1887,7 @@ async function processQueue(slotId) {
                 <div class="followup-number">2</div>
                 <div class="followup-content">
                     <div class="followup-question">Design a reservation system with checkout timeout. What happens on edge cases?</div>
-                    <div class="followup-hint">Redis SETEX for reservation with TTL. Background job checks expired reservations. Edge cases: extend if payment in progress, grace period, re-queue with priority, compensation for lost reservation.</div>
+                    <div class="followup-hint"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> SETEX for reservation with TTL. Background job checks expired reservations. Edge cases: extend if payment in progress, grace period, re-queue with priority, compensation for lost reservation.</div>
                 </div>
             </div>
 
@@ -1894,7 +1895,7 @@ async function processQueue(slotId) {
                 <div class="followup-number">3</div>
                 <div class="followup-content">
                     <div class="followup-question">How do you handle WebSocket connections at 100K concurrent users?</div>
-                    <div class="followup-hint">Sticky sessions to specific pods. Redis Pub/Sub for cross-pod messaging. Connection limits per pod (10K). Heartbeat for dead connection cleanup. Fallback to long-polling. Consider managed service (AWS API Gateway WebSocket).</div>
+                    <div class="followup-hint">Sticky sessions to specific pods. <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Pub/Sub for cross-pod messaging. Connection limits per pod (10K). Heartbeat for dead connection cleanup. Fallback to long-polling. Consider managed service (AWS API Gateway WebSocket).</div>
                 </div>
             </div>
 
@@ -1910,7 +1911,7 @@ async function processQueue(slotId) {
                 <div class="followup-number">5</div>
                 <div class="followup-content">
                     <div class="followup-question">How would you conduct a load test for flash sale scenario?</div>
-                    <div class="followup-hint">Tools: k6, Locust, or Gatling. Simulate realistic user journey (not just API calls). Ramp up gradually to find breaking point. Test Redis failover mid-load. Chaos engineering (kill pods). Run in production-like environment.</div>
+                    <div class="followup-hint">Tools: k6, Locust, or Gatling. Simulate realistic user journey (not just API calls). Ramp up gradually to find breaking point. Test <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> failover mid-load. Chaos engineering (kill pods). Run in production-like environment.</div>
                 </div>
             </div>
         </div>
@@ -1929,7 +1930,7 @@ async function processQueue(slotId) {
                         <div class="flow-arrow">-></div>
                         <div class="flow-node service">Queue Service<br><small>CAPTCHA verify</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node cache">Redis ZADD<br><small>Sorted by timestamp</small></div>
+                        <div class="flow-node cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> ZADD<br><small>Sorted by timestamp</small></div>
                         <div class="flow-arrow">-></div>
                         <div class="flow-node user">WebSocket<br><small>Position updates</small></div>
                     </div>
@@ -1941,7 +1942,7 @@ async function processQueue(slotId) {
                     <div class="flow-row">
                         <div class="flow-node service">Worker<br><small>ZPOPMIN batch</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node cache">Redis SETEX<br><small>5-min hold</small></div>
+                        <div class="flow-node cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> SETEX<br><small>5-min hold</small></div>
                         <div class="flow-arrow">-></div>
                         <div class="flow-node user">Checkout UI<br><small>Countdown timer</small></div>
                         <div class="flow-arrow">-></div>
@@ -1978,7 +1979,7 @@ async function processQueue(slotId) {
                     <div class="evolution-icon pan-india">CACHE</div>
                     <div class="evolution-label">Add Caching</div>
                     <div class="evolution-db"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> + <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
-                    <div class="evolution-detail">Hot data in Redis<br>10K read TPS<br>DB for writes only</div>
+                    <div class="evolution-detail">Hot data in <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br>10K read TPS<br>DB for writes only</div>
                 </div>
                 <div class="evolution-arrow">-></div>
                 <div class="evolution-stage">
@@ -2147,7 +2148,7 @@ async function processQueue(slotId) {
             <div class="edge-case-item">
                 <div class="case-title">Region Failover Mid-Booking</div>
                 <p>User starts booking in US-East, region fails, continues in US-West.</p>
-                <div class="case-solution">Stateless API design (no server-side sessions). Store booking draft in user's browser (localStorage). Use global session store (Redis Global Datastore). Idempotency keys to prevent double booking on retry.</div>
+                <div class="case-solution">Stateless API design (no server-side sessions). Store booking draft in user's browser (localStorage). Use global session store (<a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Global Datastore). Idempotency keys to prevent double booking on retry.</div>
             </div>
 
             <div class="edge-case-item">
@@ -2294,7 +2295,7 @@ async function processQueue(slotId) {
                 <div class="evolution-stage">
                     <div class="evolution-icon mvp">SINGLE</div>
                     <div class="evolution-label">Single Region</div>
-                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">One region<br>High latency globally<br>Single point of failure</div>
                 </div>
                 <div class="evolution-arrow">-></div>
@@ -2317,6 +2318,559 @@ async function processQueue(slotId) {
                     <div class="evolution-label">Active-Active</div>
                     <div class="evolution-db">CockroachDB / CRDTs</div>
                     <div class="evolution-detail">Multi-writer<br>Conflict-free<br>True global scale</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CAP ANALYSIS SECTION -->
+    <!-- ============================================ -->
+    <div class="cap-analysis-section" id="cap-analysis">
+        <div class="cap-header">
+            <span class="cap-badge cp">CP System</span>
+            <h2 style="margin: 0;">CAP Theorem Analysis</h2>
+        </div>
+        <p class="cap-intro">
+            Slot booking is one of the <strong>RARE cases</strong> where we intentionally choose <strong>Consistency over Availability (CP)</strong>.
+            Understanding why this system is different from URL shorteners or notification systems is crucial for system design interviews.
+        </p>
+
+        <!-- WHY CP IS MANDATORY -->
+        <h3>Why Slot Booking MUST Be CP</h3>
+        <div class="cap-explanation-grid">
+            <div class="cap-card cp-choice">
+                <div class="cap-card-header">
+                    <span class="cap-icon">C</span>
+                    <h4>Consistency is Non-Negotiable</h4>
+                </div>
+                <div class="cap-card-body">
+                    <p>Unlike most systems where "eventual consistency" is acceptable, slot booking has <strong>zero tolerance for inconsistency</strong>:</p>
+                    <ul>
+                        <li><strong>Slot availability</strong> - Cannot show a slot as available if it's already booked</li>
+                        <li><strong>Booking confirmation</strong> - User MUST know immediately if booking succeeded or failed</li>
+                        <li><strong>Cancellation</strong> - Freed slot must be immediately available to other users</li>
+                        <li><strong>No double-booking</strong> - A doctor's 3 PM slot can only be assigned to ONE patient</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cap-card ap-tradeoff">
+                <div class="cap-card-header">
+                    <span class="cap-icon">A</span>
+                    <h4>Availability We Sacrifice</h4>
+                </div>
+                <div class="cap-card-body">
+                    <p>During network partitions, we accept these tradeoffs:</p>
+                    <ul>
+                        <li><strong>Booking may fail</strong> - Better to reject than double-book</li>
+                        <li><strong>Higher latency</strong> - Distributed locks add 50-200ms</li>
+                        <li><strong>Region isolation</strong> - Users may need to retry from different region</li>
+                        <li><strong>Temporary unavailability</strong> - 503 errors during partition healing</li>
+                    </ul>
+                    <div class="tradeoff-note">
+                        <strong>Key Insight:</strong> A 30-second outage is far better than double-booking a surgery slot.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHAT CAN BE AP -->
+        <h3>Operations That CAN Be AP (Eventually Consistent)</h3>
+        <div class="cap-operations-grid">
+            <div class="cap-operation ap">
+                <div class="operation-header">
+                    <span class="op-badge ap">AP OK</span>
+                    <h5>Slot Browsing / Search</h5>
+                </div>
+                <p>Showing available slots for next week can be slightly stale (few seconds). User will get accurate info when they attempt to book.</p>
+            </div>
+            <div class="cap-operation ap">
+                <div class="operation-header">
+                    <span class="op-badge ap">AP OK</span>
+                    <h5>Booking History</h5>
+                </div>
+                <p>User's past appointments list can lag by a few seconds. Not critical for the booking flow.</p>
+            </div>
+            <div class="cap-operation ap">
+                <div class="operation-header">
+                    <span class="op-badge ap">AP OK</span>
+                    <h5>Notifications / Reminders</h5>
+                </div>
+                <p>Email/SMS reminders can be async. A few seconds delay in confirmation email is acceptable.</p>
+            </div>
+            <div class="cap-operation cp">
+                <div class="operation-header">
+                    <span class="op-badge cp">CP Required</span>
+                    <h5>Actual Booking</h5>
+                </div>
+                <p>The moment of slot reservation MUST be strongly consistent. No compromises here.</p>
+            </div>
+        </div>
+
+        <!-- VISUAL DIAGRAM - CP vs AP Decision -->
+        <h3>CAP Decision Flow</h3>
+        <div class="diagram-container">
+            <h4>When to Choose CP vs AP</h4>
+            <div class="cap-decision-flow">
+                <div class="decision-node question">
+                    <div class="node-content">Can data inconsistency cause real-world harm?</div>
+                </div>
+                <div class="decision-branches">
+                    <div class="decision-branch yes">
+                        <div class="branch-arrow">YES</div>
+                        <div class="decision-node answer cp">
+                            <div class="node-icon">CP</div>
+                            <div class="node-examples">
+                                <strong>Choose Consistency:</strong>
+                                <ul>
+                                    <li>Slot Booking (double booking)</li>
+                                    <li>Bank Transfers</li>
+                                    <li>Inventory (overselling)</li>
+                                    <li>Airline Seats</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="decision-branch no">
+                        <div class="branch-arrow">NO</div>
+                        <div class="decision-node answer ap">
+                            <div class="node-icon">AP</div>
+                            <div class="node-examples">
+                                <strong>Choose Availability:</strong>
+                                <ul>
+                                    <li>URL Shortener</li>
+                                    <li>Social Media Feeds</li>
+                                    <li>Notification System</li>
+                                    <li>Analytics Dashboard</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHY DIFFERENT FROM OTHER SYSTEMS -->
+        <h3>Why Slot Booking is Different</h3>
+        <div class="comparison-table-container">
+            <table class="cap-comparison-table">
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>CAP Choice</th>
+                        <th>Why?</th>
+                        <th>Inconsistency Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight-row">
+                        <td><strong>Slot Booking</strong></td>
+                        <td><span class="cap-tag cp">CP</span></td>
+                        <td>Double-booking has real-world consequences</td>
+                        <td class="impact-severe">Patient arrives, no doctor available. Legal liability.</td>
+                    </tr>
+                    <tr>
+                        <td>URL Shortener</td>
+                        <td><span class="cap-tag ap">AP</span></td>
+                        <td>Stale redirect is fine for few seconds</td>
+                        <td class="impact-low">User sees old destination briefly. Minor UX issue.</td>
+                    </tr>
+                    <tr>
+                        <td>Notification System</td>
+                        <td><span class="cap-tag ap">AP</span></td>
+                        <td>Delayed/duplicate notifications acceptable</td>
+                        <td class="impact-low">User gets notification late. No real harm.</td>
+                    </tr>
+                    <tr>
+                        <td>Food Ordering</td>
+                        <td><span class="cap-tag mixed">Mixed</span></td>
+                        <td>Payment CP, tracking AP</td>
+                        <td class="impact-medium">Payment must be consistent; delivery tracking can lag.</td>
+                    </tr>
+                    <tr>
+                        <td>Ride Booking</td>
+                        <td><span class="cap-tag mixed">Mixed</span></td>
+                        <td>Driver assignment CP, location AP</td>
+                        <td class="impact-medium">Can't assign same driver twice; location can lag.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- BUSINESS IMPACT -->
+        <h3>Business Impact of Double Booking</h3>
+        <div class="impact-cards">
+            <div class="impact-card severe">
+                <div class="impact-icon">!</div>
+                <h5>Healthcare / Medical</h5>
+                <ul>
+                    <li>Patient shows up, doctor unavailable</li>
+                    <li>Delayed treatment, potential health risk</li>
+                    <li>Medical malpractice liability</li>
+                    <li>Loss of patient trust, negative reviews</li>
+                </ul>
+                <div class="impact-cost">Cost: $10K - $100K+ per incident (lawsuits)</div>
+            </div>
+            <div class="impact-card high">
+                <div class="impact-icon">!</div>
+                <h5>Meeting Rooms / Resources</h5>
+                <ul>
+                    <li>Two teams arrive for same conference room</li>
+                    <li>Executive meeting disrupted</li>
+                    <li>Lost productivity, frustrated employees</li>
+                    <li>Undermines trust in booking system</li>
+                </ul>
+                <div class="impact-cost">Cost: $1K - $10K (lost productivity, reputation)</div>
+            </div>
+            <div class="impact-card high">
+                <div class="impact-icon">!</div>
+                <h5>Event Tickets / Venues</h5>
+                <ul>
+                    <li>Same seat sold to two people</li>
+                    <li>Venue confrontation, security issues</li>
+                    <li>Refund + compensation required</li>
+                    <li>Social media backlash</li>
+                </ul>
+                <div class="impact-cost">Cost: $500 - $5K per incident + reputation damage</div>
+            </div>
+        </div>
+
+        <!-- HANDLING PARTITION SCENARIO -->
+        <h3>What Happens During Network Partition?</h3>
+        <div class="diagram-container">
+            <h4>Partition Handling Strategy</h4>
+            <div class="partition-scenario">
+                <div class="partition-timeline">
+                    <div class="timeline-phase normal">
+                        <div class="phase-header">Normal Operation</div>
+                        <div class="phase-content">
+                            <div class="arch-box server">Region A</div>
+                            <div class="sync-arrow">Sync</div>
+                            <div class="arch-box server">Region B</div>
+                        </div>
+                        <div class="phase-desc">Both regions accept bookings, sync via distributed consensus</div>
+                    </div>
+                    <div class="timeline-arrow">Network Partition Occurs</div>
+                    <div class="timeline-phase partition">
+                        <div class="phase-header">During Partition</div>
+                        <div class="phase-content">
+                            <div class="arch-box server active">Region A (Primary)</div>
+                            <div class="sync-arrow broken">X</div>
+                            <div class="arch-box server readonly">Region B (Read-Only)</div>
+                        </div>
+                        <div class="phase-desc">Only primary accepts writes. Secondary returns 503 for bookings.</div>
+                    </div>
+                    <div class="timeline-arrow">Partition Heals</div>
+                    <div class="timeline-phase recovery">
+                        <div class="phase-header">Recovery</div>
+                        <div class="phase-content">
+                            <div class="arch-box server">Region A</div>
+                            <div class="sync-arrow healing">Healing</div>
+                            <div class="arch-box server">Region B</div>
+                        </div>
+                        <div class="phase-desc">Sync pending operations, resolve conflicts by timestamp + slot ID</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="partition-strategies">
+            <h4>Partition Response Strategies</h4>
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <h5>1. Fail Fast</h5>
+                    <p>Return error immediately if cannot reach consensus. User retries.</p>
+                    <div class="strategy-code">
+                        <code>HTTP 503 Service Unavailable<br>Retry-After: 5</code>
+                    </div>
+                </div>
+                <div class="strategy-card">
+                    <h5>2. Queue for Retry</h5>
+                    <p>Accept booking tentatively, confirm when partition heals.</p>
+                    <div class="strategy-code">
+                        <code>HTTP 202 Accepted<br>Status: PENDING_CONFIRMATION</code>
+                    </div>
+                </div>
+                <div class="strategy-card">
+                    <h5>3. Regional Isolation</h5>
+                    <p>Route user to healthy region. Each region handles its own resources.</p>
+                    <div class="strategy-code">
+                        <code>DNS failover to healthy region<br>TTL: 30 seconds</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IMPLEMENTATION PATTERNS -->
+        <h3>Implementation Patterns for CP</h3>
+
+        <div class="implementation-pattern">
+            <h4>1. Optimistic Locking (Version-Based)</h4>
+            <p>Best for low-contention scenarios. Check version at commit time.</p>
+            <div class="code-example">
+                <h5>Optimistic Lock Implementation</h5>
+<pre>
+// Read slot with current version
+const slot = await db.query(`
+    SELECT id, status, version, resource_id, start_time
+    FROM slots
+    WHERE id = $1
+`, [slotId]);
+
+if (slot.status !== 'available') {
+    return { error: 'SLOT_ALREADY_BOOKED' };
+}
+
+// Attempt atomic update with version check
+const result = await db.query(`
+    UPDATE slots
+    SET status = 'booked',
+        booked_by = $1,
+        version = version + 1,
+        booked_at = NOW()
+    WHERE id = $2
+      AND version = $3
+      AND status = 'available'
+    RETURNING id
+`, [userId, slotId, slot.version]);
+
+if (result.rowCount === 0) {
+    // Version changed = someone else booked it
+    return { error: 'CONCURRENT_BOOKING_CONFLICT', retry: true };
+}
+
+return { success: true, bookingId: result.rows[0].id };
+</pre>
+            </div>
+        </div>
+
+        <div class="implementation-pattern">
+            <h4>2. Pessimistic Locking (SELECT FOR UPDATE)</h4>
+            <p>Best for high-contention scenarios. Lock row immediately on read.</p>
+            <div class="code-example">
+                <h5>Pessimistic Lock with Transaction</h5>
+<pre>
+// Start transaction with explicit lock
+const client = await pool.connect();
+try {
+    await client.query('BEGIN');
+    await client.query('SET lock_timeout = 5000'); // 5 second timeout
+
+    // Lock the slot row - blocks other transactions
+    const slot = await client.query(`
+        SELECT id, status, resource_id
+        FROM slots
+        WHERE id = $1
+        FOR UPDATE NOWAIT  -- Fail immediately if locked
+    `, [slotId]);
+
+    if (!slot.rows[0] || slot.rows[0].status !== 'available') {
+        await client.query('ROLLBACK');
+        return { error: 'SLOT_NOT_AVAILABLE' };
+    }
+
+    // Safe to book - we have exclusive lock
+    await client.query(`
+        UPDATE slots SET status = 'booked', booked_by = $1
+        WHERE id = $2
+    `, [userId, slotId]);
+
+    // Create booking record in same transaction
+    const booking = await client.query(`
+        INSERT INTO bookings (slot_id, user_id, status)
+        VALUES ($1, $2, 'confirmed')
+        RETURNING id
+    `, [slotId, userId]);
+
+    await client.query('COMMIT');
+    return { success: true, bookingId: booking.rows[0].id };
+
+} catch (err) {
+    await client.query('ROLLBACK');
+    if (err.code === '55P03') { // lock_not_available
+        return { error: 'SLOT_BEING_BOOKED', retry: true };
+    }
+    throw err;
+} finally {
+    client.release();
+}
+</pre>
+            </div>
+        </div>
+
+        <div class="implementation-pattern">
+            <h4>3. Distributed Lock (Redis Redlock)</h4>
+            <p>For distributed systems. Acquire lock before DB operation.</p>
+            <div class="code-example">
+                <h5>Redis Distributed Lock</h5>
+<pre>
+const Redlock = require('redlock');
+const redlock = new Redlock([redisClient], {
+    retryCount: 3,
+    retryDelay: 200,
+    retryJitter: 100
+});
+
+async function bookSlotWithDistributedLock(slotId, userId) {
+    const lockKey = `slot:lock:${slotId}`;
+    const lockTTL = 10000; // 10 seconds
+
+    let lock;
+    try {
+        // Acquire distributed lock
+        lock = await redlock.acquire([lockKey], lockTTL);
+
+        // Now safe to check and book
+        const slot = await db.query(
+            'SELECT status FROM slots WHERE id = $1',
+            [slotId]
+        );
+
+        if (slot.rows[0]?.status !== 'available') {
+            return { error: 'SLOT_NOT_AVAILABLE' };
+        }
+
+        // Book the slot
+        await db.query(`
+            UPDATE slots SET status = 'booked', booked_by = $1
+            WHERE id = $2
+        `, [userId, slotId]);
+
+        return { success: true };
+
+    } catch (err) {
+        if (err instanceof Redlock.LockError) {
+            return { error: 'COULD_NOT_ACQUIRE_LOCK', retry: true };
+        }
+        throw err;
+    } finally {
+        // Always release lock
+        if (lock) await lock.release();
+    }
+}
+</pre>
+            </div>
+        </div>
+
+        <div class="implementation-pattern">
+            <h4>4. Saga Pattern (for Distributed Transactions)</h4>
+            <p>When booking spans multiple services (calendar sync, payment, notifications).</p>
+            <div class="diagram-container">
+                <h4>Booking Saga with Compensating Transactions</h4>
+                <div class="saga-flow">
+                    <div class="saga-step">
+                        <div class="saga-number">1</div>
+                        <div class="saga-action">Reserve Slot</div>
+                        <div class="saga-compensate">Release Slot</div>
+                    </div>
+                    <div class="saga-arrow">then</div>
+                    <div class="saga-step">
+                        <div class="saga-number">2</div>
+                        <div class="saga-action">Charge Payment</div>
+                        <div class="saga-compensate">Refund Payment</div>
+                    </div>
+                    <div class="saga-arrow">then</div>
+                    <div class="saga-step">
+                        <div class="saga-number">3</div>
+                        <div class="saga-action">Sync Calendar</div>
+                        <div class="saga-compensate">Remove Event</div>
+                    </div>
+                    <div class="saga-arrow">then</div>
+                    <div class="saga-step success">
+                        <div class="saga-number">OK</div>
+                        <div class="saga-action">Confirm Booking</div>
+                        <div class="saga-compensate">-</div>
+                    </div>
+                </div>
+                <div class="saga-note">
+                    <strong>Failure at any step:</strong> Execute compensating transactions in reverse order
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW TIPS -->
+        <h3>Interview Tips</h3>
+        <div class="interview-tips-section">
+            <div class="tip-card gold">
+                <div class="tip-header">
+                    <span class="tip-icon">*</span>
+                    <h5>This is Your "CP Example"</h5>
+                </div>
+                <p>When interviewers ask about CAP theorem, most candidates only give AP examples (social media, caching).
+                   Slot booking is your opportunity to show you understand <strong>when consistency matters more than availability</strong>.</p>
+            </div>
+
+            <div class="tip-card">
+                <div class="tip-header">
+                    <span class="tip-icon">?</span>
+                    <h5>Expected Follow-up Questions</h5>
+                </div>
+                <ul>
+                    <li><strong>"What if two users book the same slot simultaneously?"</strong><br>
+                        Answer: Optimistic locking with version check. First to commit wins, second gets conflict error and retries.</li>
+                    <li><strong>"How do you handle cross-region bookings?"</strong><br>
+                        Answer: Single-leader replication for writes. All booking writes go to primary region. Reads can be local.</li>
+                    <li><strong>"What's your availability target?"</strong><br>
+                        Answer: 99.9% availability is realistic for CP system. Accept that during 0.1% partition time, bookings fail gracefully.</li>
+                </ul>
+            </div>
+
+            <div class="tip-card">
+                <div class="tip-header">
+                    <span class="tip-icon">#</span>
+                    <h5>Key Phrases to Use</h5>
+                </div>
+                <ul class="phrase-list">
+                    <li>"Double-booking has real-world consequences - this forces us toward CP"</li>
+                    <li>"We sacrifice availability during partitions to guarantee no double-bookings"</li>
+                    <li>"The cost of a 30-second outage is far less than the cost of one double-booking"</li>
+                    <li>"Read operations can be eventually consistent, but writes must be strongly consistent"</li>
+                    <li>"We use optimistic locking for the happy path, pessimistic locking for high-contention slots"</li>
+                </ul>
+            </div>
+
+            <div class="tip-card warning">
+                <div class="tip-header">
+                    <span class="tip-icon">!</span>
+                    <h5>Common Mistakes to Avoid</h5>
+                </div>
+                <ul>
+                    <li><strong>Don't say "we'll use eventual consistency"</strong> - This will result in double bookings</li>
+                    <li><strong>Don't ignore the race condition</strong> - Always explain your locking strategy</li>
+                    <li><strong>Don't forget compensating transactions</strong> - What happens if payment fails after slot is reserved?</li>
+                    <li><strong>Don't overcomplicate</strong> - Start with simple optimistic locking, mention distributed locks only for multi-region</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- QUICK REFERENCE -->
+        <div class="cap-quick-reference">
+            <h4>Quick Reference Card</h4>
+            <div class="reference-grid">
+                <div class="reference-item">
+                    <span class="ref-label">CAP Choice:</span>
+                    <span class="ref-value cp">CP (Consistency + Partition Tolerance)</span>
+                </div>
+                <div class="reference-item">
+                    <span class="ref-label">Locking:</span>
+                    <span class="ref-value">Optimistic (low contention) / Pessimistic (high contention)</span>
+                </div>
+                <div class="reference-item">
+                    <span class="ref-label">Distributed:</span>
+                    <span class="ref-value">Redlock / ZooKeeper / etcd</span>
+                </div>
+                <div class="reference-item">
+                    <span class="ref-label">Multi-service:</span>
+                    <span class="ref-value">Saga pattern with compensating transactions</span>
+                </div>
+                <div class="reference-item">
+                    <span class="ref-label">Availability target:</span>
+                    <span class="ref-value">99.9% (accept graceful failures during partitions)</span>
+                </div>
+                <div class="reference-item">
+                    <span class="ref-label">Key principle:</span>
+                    <span class="ref-value">"Better to reject a booking than to double-book"</span>
                 </div>
             </div>
         </div>

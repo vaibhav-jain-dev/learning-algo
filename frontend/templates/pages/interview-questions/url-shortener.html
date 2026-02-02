@@ -12,6 +12,7 @@
         <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
         <a href="#global">Global</a>
+        <a href="#cap-analysis">CAP Analysis</a>
     </div>
 
     <!-- ============================================ -->
@@ -262,17 +263,17 @@
         <div class="code-example">
             <h5 style="color: #60a5fa; margin-bottom: 12px;"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> Event Schema (Avro/JSON)</h5>
 <pre>{
-    "event_type": "url.clicked",
-    "event_id": "550e8400-e29b-41d4-a716-446655440000",
-    "timestamp": "2024-01-15T10:30:00Z",
-    "data": {
-        "short_code": "abc123",
-        "user_id": "user-uuid",
-        "client_ip": "203.0.113.50",
-        "user_agent": "Mozilla/5.0...",
-        "referer": "https://twitter.com/...",
-        "country": "IN",
-        "device_type": "mobile"
+    <span class="json-key">"event_type"</span>: <span class="json-string">"url.clicked"</span>,
+    <span class="json-key">"event_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+    <span class="json-key">"timestamp"</span>: <span class="json-string">"2024-01-15T10:30:00Z"</span>,
+    <span class="json-key">"data"</span>: {
+        <span class="json-key">"short_code"</span>: <span class="json-string">"abc123"</span>,
+        <span class="json-key">"user_id"</span>: <span class="json-string">"user-uuid"</span>,
+        <span class="json-key">"client_ip"</span>: <span class="json-string">"203.0.113.50"</span>,
+        <span class="json-key">"user_agent"</span>: <span class="json-string">"Mozilla/5.0..."</span>,
+        <span class="json-key">"referer"</span>: <span class="json-string">"https://twitter.com/..."</span>,
+        <span class="json-key">"country"</span>: <span class="json-string">"IN"</span>,
+        <span class="json-key">"device_type"</span>: <span class="json-string">"mobile"</span>
     }
 }
 
@@ -504,17 +505,17 @@ FROM urls WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50;</pre>
 <pre>
 Request:
 {
-    "url": "https://example.com/very/long/path?with=params",
-    "custom_alias": "mylink",        // optional
-    "expires_in_days": 30            // optional
+    <span class="json-key">"url"</span>: <span class="json-string">"https://example.com/very/long/path?with=params"</span>,
+    <span class="json-key">"custom_alias"</span>: <span class="json-string">"mylink"</span>,        // optional
+    <span class="json-key">"expires_in_days"</span>: <span class="json-number">30</span>            // optional
 }
 
 Response: 201 Created
 {
-    "short_url": "https://short.ly/abc123",
-    "short_code": "abc123",
-    "expires_at": "2024-02-15T00:00:00Z",
-    "created_at": "2024-01-15T10:30:00Z"
+    <span class="json-key">"short_url"</span>: <span class="json-string">"https://short.ly/abc123"</span>,
+    <span class="json-key">"short_code"</span>: <span class="json-string">"abc123"</span>,
+    <span class="json-key">"expires_at"</span>: <span class="json-string">"2024-02-15T00:00:00Z"</span>,
+    <span class="json-key">"created_at"</span>: <span class="json-string">"2024-01-15T10:30:00Z"</span>
 }
 
 Errors:
@@ -735,61 +736,47 @@ func GenerateShortCode(id int64) string {
             </div>
         </div>
 
-        <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: url-shortener-api
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: url-shortener
-  template:
-    spec:
-      containers:
-      - name: api
-        image: url-shortener:v1.0.0
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-creds
-              key: url
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 5
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: url-shortener-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: url-shortener-api
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70</pre>
+        <div class="k8s-architecture">
+            <h5 style="color: #60a5fa; margin-bottom: 16px;">K8s Resource Overview</h5>
+            <div class="k8s-layer" style="background: rgba(59,130,246,0.1); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+                <div style="font-weight: 600; color: #3b82f6; margin-bottom: 8px;">Workloads</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-node" style="background: #3b82f6; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>Deployment</strong>: url-shortener-api<br>
+                        <span style="opacity: 0.9;">replicas: 2 | image: v1.0.0</span>
+                    </div>
+                    <div class="k8s-node" style="background: #8b5cf6; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>HPA</strong>: url-shortener-hpa<br>
+                        <span style="opacity: 0.9;">min: 2 | max: 10 | cpu: 70%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="k8s-layer" style="background: rgba(34,197,94,0.1); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+                <div style="font-weight: 600; color: #22c55e; margin-bottom: 8px;">Networking</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-node" style="background: #22c55e; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>Service</strong>: ClusterIP<br>
+                        <span style="opacity: 0.9;">port: 8080</span>
+                    </div>
+                    <div class="k8s-node" style="background: #0891b2; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>Ingress</strong>: ALB<br>
+                        <span style="opacity: 0.9;">TLS + path routing</span>
+                    </div>
+                </div>
+            </div>
+            <div class="k8s-layer" style="background: rgba(239,68,68,0.1); padding: 16px; border-radius: 12px;">
+                <div style="font-weight: 600; color: #ef4444; margin-bottom: 8px;">Configuration</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-node" style="background: #ef4444; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>Secret</strong>: db-creds<br>
+                        <span style="opacity: 0.9;">DATABASE_URL</span>
+                    </div>
+                    <div class="k8s-node" style="background: #f59e0b; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>Resources</strong><br>
+                        <span style="opacity: 0.9;">cpu: 250m-500m | mem: 256-512Mi</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- CI/CD -->
@@ -1006,9 +993,9 @@ X-RateLimit-Reset: 1704067260
 Retry-After: 45
 
 {
-    "error": "rate_limit_exceeded",
-    "message": "Too many requests. Please retry after 45 seconds.",
-    "retry_after": 45
+    <span class="json-key">"error"</span>: <span class="json-string">"rate_limit_exceeded"</span>,
+    <span class="json-key">"message"</span>: <span class="json-string">"Too many requests. Please retry after 45 seconds."</span>,
+    <span class="json-key">"retry_after"</span>: <span class="json-number">45</span>
 }</pre>
         </div>
 
@@ -1373,7 +1360,7 @@ cache_hit_ratio 0.95
                 <div class="evolution-stage">
                     <div class="evolution-icon">🌍</div>
                     <div class="evolution-label">Global</div>
-                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">Distributed SQL<br>Auto-sharding</div>
                 </div>
             </div>
@@ -1809,47 +1796,33 @@ cache_hit_ratio 0.95
             </div>
         </div>
 
-        <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">Canary Deployment with Istio Service Mesh</h5>
-<pre>apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: url-service
-spec:
-  hosts:
-  - url-service
-  http:
-  - match:
-    - headers:
-        x-canary:
-          exact: "true"
-    route:
-    - destination:
-        host: url-service
-        subset: canary  # v2.1.0
-  - route:
-    - destination:
-        host: url-service
-        subset: stable  # v2.0.9
-      weight: 95
-    - destination:
-        host: url-service
-        subset: canary  # v2.1.0
-      weight: 5
----
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: url-service
-spec:
-  host: url-service
-  subsets:
-  - name: stable
-    labels:
-      version: v2.0.9
-  - name: canary
-    labels:
-      version: v2.1.0</pre>
+        <div class="k8s-architecture">
+            <h5 style="color: #60a5fa; margin-bottom: 16px;">Istio Canary Traffic Routing</h5>
+            <div class="k8s-layer" style="background: rgba(139,92,246,0.1); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+                <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">VirtualService: url-service</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                    <div class="k8s-node" style="background: #3b82f6; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>stable</strong> (v2.0.9)<br>
+                        <span style="opacity: 0.9;">weight: 95%</span>
+                    </div>
+                    <div style="font-size: 20px; color: #64748b;">|</div>
+                    <div class="k8s-node" style="background: #22c55e; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>canary</strong> (v2.1.0)<br>
+                        <span style="opacity: 0.9;">weight: 5%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="k8s-layer" style="background: rgba(236,72,153,0.1); padding: 16px; border-radius: 12px;">
+                <div style="font-weight: 600; color: #ec4899; margin-bottom: 8px;">DestinationRule: Subset Labels</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <div class="k8s-node" style="background: #ec4899; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>Header Match</strong>: x-canary: true → canary
+                    </div>
+                    <div class="k8s-node" style="background: #f59e0b; color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+                        <strong>Default</strong>: weighted routing (95/5)
+                    </div>
+                </div>
+            </div>
         </div>
 
         <h3>⏪ Rollback Strategies per Service</h3>
@@ -1941,13 +1914,13 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
 
 // LaunchDarkly / Unleash configuration
 {
-    "flag": "new-shortcode-algo",
-    "rules": [
-        { "segment": "internal", "percentage": 100 },
-        { "segment": "beta", "percentage": 100 },
-        { "segment": "all", "percentage": 25 }
+    <span class="json-key">"flag"</span>: <span class="json-string">"new-shortcode-algo"</span>,
+    <span class="json-key">"rules"</span>: [
+        { <span class="json-key">"segment"</span>: <span class="json-string">"internal"</span>, <span class="json-key">"percentage"</span>: <span class="json-number">100</span> },
+        { <span class="json-key">"segment"</span>: <span class="json-string">"beta"</span>, <span class="json-key">"percentage"</span>: <span class="json-number">100</span> },
+        { <span class="json-key">"segment"</span>: <span class="json-string">"all"</span>, <span class="json-key">"percentage"</span>: <span class="json-number">25</span> }
     ],
-    "killSwitch": false  // Set to true for instant disable
+    <span class="json-key">"killSwitch"</span>: <span class="json-boolean">false</span>  // Set to true for instant disable
 }</pre>
         </div>
 
@@ -2043,8 +2016,8 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
             <div class="followup-item">
                 <div class="followup-number">2</div>
                 <div class="followup-content">
-                    <div class="followup-question">Why Kafka over SQS for click events at this scale?</div>
-                    <div class="followup-hint">Kafka: ordering guarantees per partition (important for user session analysis), higher throughput (millions msg/sec), replay capability for reprocessing, cheaper at scale. SQS: simpler ops, better for unpredictable workloads, limited to 120K msg/sec.</div>
+                    <div class="followup-question">Why <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> over SQS for click events at this scale?</div>
+                    <div class="followup-hint"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a>: ordering guarantees per partition (important for user session analysis), higher throughput (millions msg/sec), replay capability for reprocessing, cheaper at scale. SQS: simpler ops, better for unpredictable workloads, limited to 120K msg/sec.</div>
                 </div>
             </div>
 
@@ -2060,7 +2033,7 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
                 <div class="followup-number">4</div>
                 <div class="followup-content">
                     <div class="followup-question">Design the click deduplication logic for analytics accuracy</div>
-                    <div class="followup-hint">Generate click fingerprint (IP + UA + timestamp bucket). Store in Redis with short TTL (5 min). Check before Kafka publish. For exact dedup, use HyperLogLog for unique counts. Accept some duplication for simplicity if analytics can tolerate.</div>
+                    <div class="followup-hint">Generate click fingerprint (IP + UA + timestamp bucket). Store in <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> with short TTL (5 min). Check before <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> publish. For exact dedup, use HyperLogLog for unique counts. Accept some duplication for simplicity if analytics can tolerate.</div>
                 </div>
             </div>
         </div>
@@ -2141,7 +2114,7 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
                     <div class="arch-box db" style="margin-top: 8px;">CockroachDB</div>
                 </div>
             </div>
-            <p style="margin-top: 16px;"><strong>CockroachDB:</strong> Distributed SQL, automatic sharding, cross-region replication. SERIALIZABLE isolation.</p>
+            <p style="margin-top: 16px;"><strong><a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a>:</strong> Distributed SQL, automatic sharding, cross-region replication. SERIALIZABLE isolation.</p>
         </div>
 
         <h3>📊 Scale Metrics</h3>
@@ -2184,19 +2157,19 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
             <div class="edge-case-item">
                 <div class="case-title">GDPR Data Residency Violations</div>
                 <p>EU user data accidentally replicated to US or APAC regions, violating GDPR requirements.</p>
-                <div class="case-solution">Configure <span class="info-term" onclick="showTooltip('cockroachdb')">CockroachDB<span class="info-i">i</span></span> zone configs to pin EU data to EU nodes. Implement data classification tags at application layer. Add compliance audit logging for cross-region data access. Regular automated compliance checks.</div>
+                <div class="case-solution">Configure <a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a> zone configs to pin EU data to EU nodes. Implement data classification tags at application layer. Add compliance audit logging for cross-region data access. Regular automated compliance checks.</div>
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title">CockroachDB Partition/Split Issues</div>
+                <div class="case-title"><a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a> Partition/Split Issues</div>
                 <p>Network partition between US-East and EU-West causes split-brain scenario or write unavailability.</p>
-                <div class="case-solution">CockroachDB uses Raft consensus (majority quorum). With 3 regions, 2 must be reachable for writes. Configure leaseholder preferences for latency. Monitor range unavailability metrics. Have runbook for manual range recovery.</div>
+                <div class="case-solution"><a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a> uses Raft consensus (majority quorum). With 3 regions, 2 must be reachable for writes. Configure leaseholder preferences for latency. Monitor range unavailability metrics. Have runbook for manual range recovery.</div>
             </div>
 
             <div class="edge-case-item">
                 <div class="case-title">Multi-Region Consistency Conflicts</div>
                 <p>Same short code created simultaneously in different regions before replication completes.</p>
-                <div class="case-solution">CockroachDB provides SERIALIZABLE isolation globally. Use region-prefixed short codes (us-abc, eu-xyz) to avoid conflicts entirely. Alternatively, use global sequences with pre-allocated ranges per region.</div>
+                <div class="case-solution"><a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a> provides SERIALIZABLE isolation globally. Use region-prefixed short codes (us-abc, eu-xyz) to avoid conflicts entirely. Alternatively, use global sequences with pre-allocated ranges per region.</div>
             </div>
 
             <div class="edge-case-item">
@@ -2208,7 +2181,7 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
             <div class="edge-case-item">
                 <div class="case-title">Time Zone and Clock Skew Issues</div>
                 <p>URL expiration and analytics timestamps incorrect due to clock differences across regions.</p>
-                <div class="case-solution">Use UTC everywhere in storage and logic. Implement NTP sync with &lt;100ms tolerance. CockroachDB has hybrid-logical clocks for ordering. Convert to user timezone only at display layer.</div>
+                <div class="case-solution">Use UTC everywhere in storage and logic. Implement NTP sync with &lt;100ms tolerance. <a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a> has hybrid-logical clocks for ordering. Convert to user timezone only at display layer.</div>
             </div>
         </div>
 
@@ -2248,8 +2221,8 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
             <div class="followup-item">
                 <div class="followup-number">1</div>
                 <div class="followup-content">
-                    <div class="followup-question">Why CockroachDB over sharded PostgreSQL at global scale?</div>
-                    <div class="followup-hint">CockroachDB: automatic sharding/rebalancing, global SERIALIZABLE transactions, built-in geo-partitioning, survives region failures automatically. Sharded Postgres: manual resharding, no cross-shard transactions, complex failover scripts, but more mature ecosystem and lower cost.</div>
+                    <div class="followup-question">Why <a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a> over sharded <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> at global scale?</div>
+                    <div class="followup-hint"><a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a>: automatic sharding/rebalancing, global SERIALIZABLE transactions, built-in geo-partitioning, survives region failures automatically. Sharded Postgres: manual resharding, no cross-shard transactions, complex failover scripts, but more mature ecosystem and lower cost.</div>
                 </div>
             </div>
 
@@ -2265,14 +2238,14 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
                 <div class="followup-number">3</div>
                 <div class="followup-content">
                     <div class="followup-question">Design a disaster recovery plan for a full region outage</div>
-                    <div class="followup-hint">CockroachDB survives with 2/3 regions (Raft quorum). DNS failover in 30s. Cache continues serving reads. Queue writes during recovery. RPO: 0 (synchronous replication). RTO: &lt;1 minute. Regular DR drills to verify.</div>
+                    <div class="followup-hint"><a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a> survives with 2/3 regions (Raft quorum). DNS failover in 30s. Cache continues serving reads. Queue writes during recovery. RPO: 0 (synchronous replication). RTO: &lt;1 minute. Regular DR drills to verify.</div>
                 </div>
             </div>
 
             <div class="followup-item">
                 <div class="followup-number">4</div>
                 <div class="followup-content">
-                    <div class="followup-question">How would you migrate from sharded Postgres to CockroachDB?</div>
+                    <div class="followup-question">How would you migrate from sharded Postgres to <a href="/interview-question/glossary#cockroachdb" class="info-term">CockroachDB<span class="info-i">i</span></a>?</div>
                     <div class="followup-hint">Dual-write period with consistency verification. Use CDC (Debezium) to stream changes. Shadow reads for validation. Gradual traffic shift with feature flags. Rollback capability for 2 weeks. Plan for 3-6 month migration window at this scale.</div>
                 </div>
             </div>
@@ -2323,6 +2296,124 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- CAP THEOREM ANALYSIS -->
+    <div class="cap-analysis-section" id="cap-analysis">
+        <h2>🔺 CAP Theorem Analysis</h2>
+        <p class="section-intro">Understanding the distributed systems tradeoffs in URL Shortener design. <a href="/interview-question/components#cap-theorem" class="info-term">Learn more about CAP Theorem<span class="info-i">i</span></a></p>
+
+        <div class="cap-choice-card ap">
+            <div class="cap-badge">AP System</div>
+            <h3>URL Shortener Prioritizes: Availability + Partition Tolerance</h3>
+            <p>We sacrifice strong consistency for availability because a URL redirect being 1 second stale is acceptable, but the system being unavailable means lost revenue and broken links everywhere.</p>
+        </div>
+
+        <div class="cap-decision-grid">
+            <div class="cap-decision prioritized">
+                <h4>✅ What We Prioritize</h4>
+                <div class="decision-item">
+                    <strong>Availability (A)</strong>
+                    <p>Every redirect request MUST succeed. A broken short link damages user trust and SEO rankings. We use read replicas and caching to ensure 99.99% uptime.</p>
+                </div>
+                <div class="decision-item">
+                    <strong>Partition Tolerance (P)</strong>
+                    <p>System must work even if US-East cannot talk to US-West. Each region can serve redirects independently from local cache/replica.</p>
+                </div>
+            </div>
+
+            <div class="cap-decision sacrificed">
+                <h4>⚠️ What We Sacrifice</h4>
+                <div class="decision-item">
+                    <strong>Strong Consistency (C)</strong>
+                    <p>After creating a short URL, it might take 1-2 seconds to propagate to all read replicas. User creating the URL uses read-after-write consistency (reads from primary).</p>
+                </div>
+                <div class="decision-item">
+                    <strong>Impact:</strong>
+                    <p>User A creates short.ly/abc → User B in different region might get 404 for 1-2 seconds. Acceptable tradeoff for high availability.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAP Visual Diagram -->
+        <div class="diagram-container">
+            <h4>CAP Choice Visualization</h4>
+            <div class="cap-triangle-visual">
+                <div class="cap-node consistency dimmed">
+                    <span class="cap-letter">C</span>
+                    <span class="cap-name">Consistency</span>
+                    <span class="cap-status">Eventual</span>
+                </div>
+                <div class="cap-node availability highlighted">
+                    <span class="cap-letter">A</span>
+                    <span class="cap-name">Availability</span>
+                    <span class="cap-status">✓ Prioritized</span>
+                </div>
+                <div class="cap-node partition highlighted">
+                    <span class="cap-letter">P</span>
+                    <span class="cap-name">Partition Tolerance</span>
+                    <span class="cap-status">✓ Required</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Impact -->
+        <div class="feature-card" style="border-left-color: #f59e0b;">
+            <h4>💰 Business Impact Justification</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>If We Chose CP</th>
+                        <th>With AP (Our Choice)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Network partition between regions</td>
+                        <td>❌ Users in affected region get errors</td>
+                        <td>✅ Users get potentially stale (but working) redirects</td>
+                    </tr>
+                    <tr>
+                        <td>Primary database down</td>
+                        <td>❌ All writes AND reads fail</td>
+                        <td>✅ Reads continue from replicas, writes queue for retry</td>
+                    </tr>
+                    <tr>
+                        <td>High traffic spike</td>
+                        <td>❌ Consensus overhead causes timeouts</td>
+                        <td>✅ Cache serves 95% of reads without DB</td>
+                    </tr>
+                    <tr>
+                        <td>Revenue impact</td>
+                        <td>❌ $10K+ per minute of downtime</td>
+                        <td>✅ Minimal - stale data rarely noticed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Implementation Details -->
+        <div class="edge-cases">
+            <h4>🛠️ How We Implement AP</h4>
+            <div class="edge-case-item">
+                <div class="case-title">Read-After-Write Consistency for Creators</div>
+                <div class="case-solution">The user who creates a short URL reads from the primary database for 5 seconds after creation, ensuring they see their own URL immediately. Other users read from replicas.</div>
+            </div>
+            <div class="edge-case-item">
+                <div class="case-title">Multi-Region Cache Strategy</div>
+                <div class="case-solution">Each region has local Redis cache. On cache miss, read from local replica. Cache TTL of 1 hour with background refresh ensures high availability with eventual consistency.</div>
+            </div>
+            <div class="edge-case-item">
+                <div class="case-title">Conflict Resolution</div>
+                <div class="case-solution">Short codes are immutable - once created, the mapping never changes. This eliminates write conflicts. Only analytics counters need eventual consistency (acceptable for metrics).</div>
+            </div>
+        </div>
+
+        <div class="interview-tip">
+            <h4>💡 Interview Pro Tip</h4>
+            <p>When discussing URL shortener CAP tradeoffs, emphasize that <strong>redirects are idempotent</strong> - returning the same URL twice doesn't hurt anyone. This makes eventual consistency safe. Compare this to banking where returning stale balance could cause overdrafts.</p>
         </div>
     </div>
 </div>

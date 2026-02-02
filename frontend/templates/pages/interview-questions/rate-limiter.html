@@ -12,6 +12,7 @@
         <a href="#pan-india">PAN-India</a>
         <a href="#high-traffic">High Traffic</a>
         <a href="#global">Global</a>
+        <a href="#cap-analysis">CAP Analysis</a>
     </div>
 
     <!-- ============================================ -->
@@ -289,7 +290,7 @@
         </div>
 
         <!-- DATABASE/STORE SCHEMA -->
-        <h3>🗄️ Redis Data Structures</h3>
+        <h3>🗄️ <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Data Structures</h3>
         <div class="diagram-container">
             <h4>Storage Schema by Algorithm</h4>
             <div class="schema-diagram" style="flex-direction: column; gap: 16px;">
@@ -325,7 +326,7 @@
         </div>
 
         <!-- REDIS COMMANDS / LUA SCRIPTS -->
-        <h3>📝 Redis Lua Scripts (Atomic Operations)</h3>
+        <h3>📝 <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Lua Scripts (Atomic Operations)</h3>
         <div class="sql-query">
             <h5>Token Bucket - Atomic Check & Consume</h5>
 <pre>-- Token Bucket Lua Script
@@ -1147,7 +1148,7 @@ curl -X POST https://flags.internal/rate-limiter \
         </div>
 
         <!-- REDIS DATA STRUCTURES - DISTRIBUTED -->
-        <h3>🗄️ Distributed Redis Schema</h3>
+        <h3>🗄️ Distributed <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Schema</h3>
         <div class="sql-query">
             <h5>Global vs Regional Rate Limits</h5>
 <pre>-- Global rate limit (synced across regions)
@@ -1215,7 +1216,7 @@ func (rl *DistributedRateLimiter) Allow(ctx context.Context, key string) bool {
             </div>
 
             <div class="alternative-card">
-                <h5>Sliding Window + CRDT</h5>
+                <h5><a href="/interview-question/glossary#sliding-window" class="info-term">Sliding Window<span class="info-i">i</span></a> + CRDT</h5>
                 <p>Conflict-free replicated counters</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Mathematically consistent<br>
@@ -1660,7 +1661,7 @@ func (rl *DistributedRateLimiter) Allow(ctx context.Context, key string) bool {
         </div>
 
         <!-- REDIS CLUSTER SCHEMA -->
-        <h3>🗄️ Redis Cluster Configuration</h3>
+        <h3>🗄️ <a href="/interview-question/glossary#redis" class="info-term">Redis Cluster<span class="info-i">i</span></a> Configuration</h3>
         <div class="sql-query">
             <h5>Cluster Sharding Strategy</h5>
 <pre>-- Redis Cluster: 16 shards, hash slots 0-16383
@@ -2176,7 +2177,7 @@ APAC:      2,500 (25%)</pre>
                 </div>
 
                 <div style="background: #1e293b; padding: 16px; border-radius: 8px; border: 2px solid #22c55e;">
-                    <h5 style="color: #22c55e;">Strategy 2: Token Bucket + Rebalancing ✓</h5>
+                    <h5 style="color: #22c55e;">Strategy 2: <a href="/interview-question/glossary#token-bucket" class="info-term">Token Bucket<span class="info-i">i</span></a> + Rebalancing ✓</h5>
                     <p style="font-size: 13px; color: #94a3b8;">Dynamic quota based on demand</p>
                     <div class="code-example" style="margin-top: 8px;">
 <pre>// Rebalance every 5 seconds
@@ -2643,6 +2644,480 @@ curl -X POST https://flags.global/rate-limiter \
                     <div class="evolution-detail">Regional Redis clusters<br>Kafka for quota sync</div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CAP ANALYSIS -->
+    <!-- ============================================ -->
+    <div class="stage-section cap-analysis-section" id="cap-analysis">
+        <div class="stage-header">
+            <span class="stage-badge" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white;">AP System</span>
+            <h2 style="margin: 0;">CAP Theorem Analysis for Rate Limiters</h2>
+        </div>
+
+        <p style="font-size: 18px; color: #475569; margin-bottom: 24px;">
+            Rate limiters are <strong>primarily AP (Availability + Partition Tolerance) systems</strong>. Understanding why helps you make informed design decisions during interviews and real-world implementations.
+        </p>
+
+        <!-- Key Insight Box -->
+        <div class="feature-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 5px solid #22c55e; margin-bottom: 32px;">
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div style="font-size: 32px;">💡</div>
+                <div>
+                    <h4 style="color: #166534; margin: 0 0 8px 0;">Key Insight</h4>
+                    <p style="font-size: 18px; color: #166534; margin: 0; font-weight: 500;">
+                        A slightly inaccurate rate limiter is better than one that's down or has high latency.
+                    </p>
+                    <p style="font-size: 14px; color: #15803d; margin: 12px 0 0 0;">
+                        If your rate limiter adds 500ms latency or returns errors, you've created a bigger problem than letting a few extra requests through.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAP Choices by Component -->
+        <h3>CAP Choices by Component</h3>
+        <div class="feature-card">
+            <table class="data-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>CAP Choice</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Rate Limit Checking</strong></td>
+                        <td><span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 6px; font-weight: 600;">AP</span></td>
+                        <td>Better to occasionally allow an extra request than to block legitimate traffic or add latency</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Counter Synchronization</strong></td>
+                        <td><span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 6px; font-weight: 600;">AP</span></td>
+                        <td>Eventually consistent across nodes; brief windows of slight over-limit are acceptable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Configuration Updates</strong></td>
+                        <td><span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 6px; font-weight: 600;">CP</span></td>
+                        <td>Admin must see their saved configs immediately; rate limit rule changes need to be consistent</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quota Tracking (Billing)</strong></td>
+                        <td><span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 6px; font-weight: 600;">CP</span></td>
+                        <td>When tied to billing, eventual consistency could mean over/under-charging customers</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Why AP for Rate Limiting -->
+        <h3>Why AP is the Right Choice for Rate Limiting</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
+            <div class="feature-card" style="border-left: 5px solid #22c55e;">
+                <h4 style="color: #166534;">Availability Over Consistency</h4>
+                <ul>
+                    <li><strong>Business reality:</strong> Blocking 100 legitimate requests to prevent 1 abuse is worse than allowing 101 total</li>
+                    <li><strong>User experience:</strong> Users expect instant responses; waiting for distributed consensus is unacceptable</li>
+                    <li><strong>Fail-open principle:</strong> When rate limiter fails, let requests through (with alerting) rather than blocking all traffic</li>
+                    <li><strong>Revenue impact:</strong> Every blocked legitimate request is potential lost revenue</li>
+                </ul>
+            </div>
+            <div class="feature-card" style="border-left: 5px solid #3b82f6;">
+                <h4 style="color: #1e40af;">Eventual Consistency is Acceptable</h4>
+                <ul>
+                    <li><strong>Window tolerance:</strong> Rate limits are already time-windowed (100/min), brief sync delays are negligible</li>
+                    <li><strong>Statistical accuracy:</strong> Over time, eventual consistency converges to correct limits</li>
+                    <li><strong>Abuse patterns:</strong> Real attackers send thousands of requests; missing a few during sync window doesn't matter</li>
+                    <li><strong>Grace margins:</strong> Most systems have 5-10% buffer in limits anyway</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Local vs Global Rate Limiting -->
+        <h3>Local vs Global Rate Limiting Tradeoffs</h3>
+        <div class="diagram-container">
+            <h4>Consistency vs Performance Spectrum</h4>
+            <div style="display: flex; flex-direction: column; gap: 24px; padding: 20px;">
+                <!-- Spectrum Bar -->
+                <div style="position: relative; height: 60px; background: linear-gradient(90deg, #22c55e 0%, #f59e0b 50%, #3b82f6 100%); border-radius: 12px; margin: 0 40px;">
+                    <div style="position: absolute; left: 0; top: -25px; font-size: 12px; color: #64748b;">High Availability</div>
+                    <div style="position: absolute; right: 0; top: -25px; font-size: 12px; color: #64748b;">High Consistency</div>
+                    <div style="position: absolute; left: 10%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">Local Only</div>
+                    <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">Hybrid</div>
+                    <div style="position: absolute; left: 90%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">Global Only</div>
+                </div>
+
+                <!-- Comparison Grid -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
+                    <div style="background: #f0fdf4; padding: 20px; border-radius: 12px; border: 2px solid #22c55e;">
+                        <h5 style="color: #166534; margin: 0 0 12px 0;">Local Rate Limiting</h5>
+                        <ul style="font-size: 13px; margin: 0; padding-left: 16px;">
+                            <li>Sub-millisecond latency</li>
+                            <li>No network dependency</li>
+                            <li>Limit = global_limit / num_servers</li>
+                            <li>Works during network partitions</li>
+                        </ul>
+                        <div style="margin-top: 12px; padding: 8px; background: #dcfce7; border-radius: 6px; font-size: 12px;">
+                            <strong>Best for:</strong> High-frequency, low-stakes limits
+                        </div>
+                    </div>
+                    <div style="background: #fffbeb; padding: 20px; border-radius: 12px; border: 2px solid #f59e0b;">
+                        <h5 style="color: #92400e; margin: 0 0 12px 0;">Hybrid Approach</h5>
+                        <ul style="font-size: 13px; margin: 0; padding-left: 16px;">
+                            <li>Local counter + periodic sync</li>
+                            <li>Best of both worlds</li>
+                            <li>Sync every 1-5 seconds</li>
+                            <li>Graceful degradation</li>
+                        </ul>
+                        <div style="margin-top: 12px; padding: 8px; background: #fef3c7; border-radius: 6px; font-size: 12px;">
+                            <strong>Best for:</strong> Most production systems
+                        </div>
+                    </div>
+                    <div style="background: #eff6ff; padding: 20px; border-radius: 12px; border: 2px solid #3b82f6;">
+                        <h5 style="color: #1e40af; margin: 0 0 12px 0;">Global Rate Limiting</h5>
+                        <ul style="font-size: 13px; margin: 0; padding-left: 16px;">
+                            <li>Exact accuracy</li>
+                            <li>Network round-trip required</li>
+                            <li>Single point of coordination</li>
+                            <li>Higher latency (1-5ms)</li>
+                        </ul>
+                        <div style="margin-top: 12px; padding: 8px; background: #dbeafe; border-radius: 6px; font-size: 12px;">
+                            <strong>Best for:</strong> Billing, quota enforcement
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Architecture Diagram -->
+        <h3>AP Architecture Pattern</h3>
+        <div class="diagram-container">
+            <h4>Rate Limiter with Eventual Consistency</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px;">
+                <!-- Clients -->
+                <div style="display: flex; gap: 30px;">
+                    <div class="arch-box client">Client A</div>
+                    <div class="arch-box client">Client B</div>
+                    <div class="arch-box client">Client C</div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Load Balancer -->
+                <div class="arch-box lb">Load Balancer</div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- API Servers with Local Counters -->
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div class="arch-box server" style="flex-direction: column; min-height: 80px;">
+                            <span>API Server 1</span>
+                            <small style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; margin-top: 4px;">Local: 45 req</small>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box server" style="flex-direction: column; min-height: 80px;">
+                            <span>API Server 2</span>
+                            <small style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; margin-top: 4px;">Local: 38 req</small>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="arch-box server" style="flex-direction: column; min-height: 80px;">
+                            <span>API Server 3</span>
+                            <small style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; margin-top: 4px;">Local: 52 req</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sync arrows -->
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 12px; color: #f59e0b;">Async Sync (every 1-5s)</span>
+                    <div class="arch-arrow" style="animation: none; color: #f59e0b;">↓</div>
+                </div>
+
+                <!-- Redis Cluster -->
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                    <div class="arch-box cache" style="flex-direction: column;">
+                        <span>Redis Primary</span>
+                        <small>Global: 135 req</small>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div class="arch-box cache" style="opacity: 0.8; padding: 8px 16px;">
+                            <small>Replica 1</small>
+                        </div>
+                        <div class="arch-box cache" style="opacity: 0.8; padding: 8px 16px;">
+                            <small>Replica 2</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation -->
+                <div style="background: #1e293b; padding: 16px 24px; border-radius: 10px; margin-top: 12px; max-width: 500px;">
+                    <div style="font-size: 13px; color: #94a3b8;">
+                        <strong style="color: #22c55e;">AP Behavior:</strong> Each server tracks local counts and periodically syncs with Redis.
+                        During network partition, servers continue using local limits. Brief over-limit is acceptable.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Impact Analysis -->
+        <h3>Business Impact: Blocking vs Allowing</h3>
+        <div class="feature-card">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                <div style="background: #fef2f2; padding: 20px; border-radius: 12px; border: 2px solid #ef4444;">
+                    <h4 style="color: #991b1b; margin: 0 0 16px 0;">Cost of False Positives (Blocking Legitimate Users)</h4>
+                    <ul style="font-size: 14px; color: #7f1d1d;">
+                        <li><strong>Lost revenue:</strong> User can't complete purchase/action</li>
+                        <li><strong>User frustration:</strong> May switch to competitor</li>
+                        <li><strong>Support tickets:</strong> "Why am I being blocked?"</li>
+                        <li><strong>Reputation damage:</strong> Social media complaints</li>
+                    </ul>
+                    <div style="margin-top: 16px; padding: 12px; background: #fee2e2; border-radius: 8px;">
+                        <strong>Example:</strong> E-commerce site blocks power user during flash sale = $500 lost order + angry customer
+                    </div>
+                </div>
+                <div style="background: #fefce8; padding: 20px; border-radius: 12px; border: 2px solid #eab308;">
+                    <h4 style="color: #854d0e; margin: 0 0 16px 0;">Cost of False Negatives (Allowing Some Abuse)</h4>
+                    <ul style="font-size: 14px; color: #713f12;">
+                        <li><strong>Extra API calls:</strong> Marginal compute cost</li>
+                        <li><strong>Slight overload:</strong> Usually within capacity buffer</li>
+                        <li><strong>Brief window:</strong> Only during sync delays</li>
+                        <li><strong>Monitoring catches:</strong> Alerts for sustained abuse</li>
+                    </ul>
+                    <div style="margin-top: 16px; padding: 12px; background: #fef9c3; border-radius: 8px;">
+                        <strong>Example:</strong> User gets 105 requests instead of 100 limit = negligible extra cost
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 24px; padding: 16px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; border: 2px solid #22c55e;">
+                <p style="margin: 0; font-size: 16px; color: #166534; text-align: center;">
+                    <strong>Conclusion:</strong> The asymmetric cost structure heavily favors AP design. False positives are far more expensive than false negatives.
+                </p>
+            </div>
+        </div>
+
+        <!-- Implementation Patterns -->
+        <h3>Implementation Patterns for AP Rate Limiting</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
+            <div class="feature-card">
+                <h4 style="color: #f59e0b;">Redis Cluster with Lua Scripts</h4>
+                <pre style="background: #1e293b; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; color: #e2e8f0;">
+<code>-- Token bucket in Redis (atomic operation)
+local key = KEYS[1]
+local capacity = tonumber(ARGV[1])
+local refill_rate = tonumber(ARGV[2])
+local now = tonumber(ARGV[3])
+
+local bucket = redis.call('HMGET', key, 'tokens', 'last_refill')
+local tokens = tonumber(bucket[1]) or capacity
+local last = tonumber(bucket[2]) or now
+
+-- Refill tokens
+local elapsed = now - last
+tokens = math.min(capacity, tokens + elapsed * refill_rate)
+
+-- Try to consume
+if tokens >= 1 then
+    tokens = tokens - 1
+    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+    redis.call('EXPIRE', key, 3600)
+    return {1, tokens}  -- allowed, remaining
+else
+    return {0, tokens}  -- denied, remaining
+end</code></pre>
+                <p style="font-size: 13px; color: #64748b; margin-top: 12px;">
+                    Lua scripts execute atomically in Redis, preventing race conditions without distributed locks.
+                </p>
+            </div>
+            <div class="feature-card">
+                <h4 style="color: #3b82f6;">Local Counter with Async Sync</h4>
+                <pre style="background: #1e293b; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; color: #e2e8f0;">
+<code>class HybridRateLimiter:
+    def __init__(self, limit, window_sec):
+        self.local_count = 0
+        self.global_count = 0
+        self.limit = limit
+        self.sync_interval = 2  # seconds
+
+    async def allow(self, key: str) -> bool:
+        # Fast path: check local first
+        if self.local_count >= self.limit // num_servers:
+            return False
+
+        # Increment local counter
+        self.local_count += 1
+
+        # Async sync to global (non-blocking)
+        asyncio.create_task(self.sync_to_redis(key))
+        return True
+
+    async def sync_to_redis(self, key: str):
+        # Batch sync every N seconds
+        if time_since_last_sync > self.sync_interval:
+            delta = self.local_count
+            self.global_count = await redis.incrby(key, delta)
+            self.local_count = 0</code></pre>
+                <p style="font-size: 13px; color: #64748b; margin-top: 12px;">
+                    Local counters provide sub-ms latency; async sync maintains global accuracy.
+                </p>
+            </div>
+        </div>
+
+        <!-- Sliding Window vs Fixed Window in CAP Context -->
+        <h3>Sliding Window vs Fixed Window: CAP Implications</h3>
+        <div class="diagram-container">
+            <h4>Algorithm Choice Affects Consistency Requirements</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; padding: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #3b82f6;">
+                    <h5 style="color: #1e40af; margin: 0 0 16px 0;">Fixed Window</h5>
+                    <div style="background: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <div style="display: flex; gap: 4px; margin-bottom: 8px;">
+                            <div style="flex: 1; height: 30px; background: #3b82f6; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: white;">Window 1<br>0-60s</div>
+                            <div style="flex: 1; height: 30px; background: #22c55e; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: white;">Window 2<br>60-120s</div>
+                        </div>
+                        <div style="font-size: 11px; color: #94a3b8;">Simple counter per window</div>
+                    </div>
+                    <ul style="font-size: 13px;">
+                        <li><strong>CAP Impact:</strong> Easier to distribute (just increment counter)</li>
+                        <li><strong>Sync:</strong> Only need to sync one number</li>
+                        <li><strong>Problem:</strong> Burst at window boundaries (2x limit possible)</li>
+                    </ul>
+                    <div style="margin-top: 12px; padding: 8px; background: #dbeafe; border-radius: 6px; font-size: 12px;">
+                        <strong>Best for AP:</strong> Simple, fast, tolerant of sync delays
+                    </div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #8b5cf6;">
+                    <h5 style="color: #6d28d9; margin: 0 0 16px 0;">Sliding Window Log</h5>
+                    <div style="background: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                            <span style="background: #8b5cf6; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: white;">t=5</span>
+                            <span style="background: #8b5cf6; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: white;">t=12</span>
+                            <span style="background: #8b5cf6; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: white;">t=28</span>
+                            <span style="background: #8b5cf6; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: white;">t=45</span>
+                            <span style="background: #8b5cf6; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: white;">t=51</span>
+                        </div>
+                        <div style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Stores all timestamps in window</div>
+                    </div>
+                    <ul style="font-size: 13px;">
+                        <li><strong>CAP Impact:</strong> Harder to sync (set of timestamps)</li>
+                        <li><strong>Sync:</strong> Need to merge sorted sets</li>
+                        <li><strong>Benefit:</strong> 100% accurate, no boundary burst</li>
+                    </ul>
+                    <div style="margin-top: 12px; padding: 8px; background: #ede9fe; border-radius: 6px; font-size: 12px;">
+                        <strong>Tradeoff:</strong> More accurate but higher memory and sync cost
+                    </div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 2px solid #f59e0b;">
+                    <h5 style="color: #92400e; margin: 0 0 16px 0;">Sliding Window Counter (Hybrid)</h5>
+                    <div style="background: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="background: #f59e0b; padding: 8px; border-radius: 4px; font-size: 11px; color: white;">Prev: 80</div>
+                            <span style="color: #94a3b8;">×</span>
+                            <span style="color: #f59e0b; font-size: 12px;">40%</span>
+                            <span style="color: #94a3b8;">+</span>
+                            <div style="background: #22c55e; padding: 8px; border-radius: 4px; font-size: 11px; color: white;">Curr: 20</div>
+                            <span style="color: #94a3b8;">=</span>
+                            <span style="color: white; font-weight: 600;">52</span>
+                        </div>
+                        <div style="font-size: 11px; color: #94a3b8; margin-top: 8px;">Weighted average of two windows</div>
+                    </div>
+                    <ul style="font-size: 13px;">
+                        <li><strong>CAP Impact:</strong> Just two counters to sync</li>
+                        <li><strong>Sync:</strong> Same as fixed window</li>
+                        <li><strong>Benefit:</strong> No boundary burst, low memory</li>
+                    </ul>
+                    <div style="margin-top: 12px; padding: 8px; background: #fef3c7; border-radius: 6px; font-size: 12px;">
+                        <strong>Recommended:</strong> Best balance for AP systems
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Tips -->
+        <h3>Interview Tips: Discussing CAP in Rate Limiter Design</h3>
+        <div class="feature-card" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-left: 5px solid #3b82f6;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                <div>
+                    <h4 style="color: #1e40af;">What Interviewers Want to Hear</h4>
+                    <ol style="font-size: 14px;">
+                        <li><strong>Acknowledge the tradeoff:</strong> "Rate limiting is fundamentally an AP problem because..."</li>
+                        <li><strong>Justify with business impact:</strong> "Blocking legitimate users costs more than allowing occasional over-limit"</li>
+                        <li><strong>Show depth:</strong> "We could use local counters with periodic sync to Redis for best latency"</li>
+                        <li><strong>Discuss failure modes:</strong> "If Redis is down, we fail-open with local-only limiting"</li>
+                        <li><strong>Mention edge cases:</strong> "For billing-critical limits, we might choose CP for that specific counter"</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4 style="color: #1e40af;">Common Mistakes to Avoid</h4>
+                    <ul style="font-size: 14px;">
+                        <li><span style="color: #ef4444;">Wrong:</span> "We need strong consistency for rate limiting"</li>
+                        <li><span style="color: #ef4444;">Wrong:</span> "Every request must check the global counter"</li>
+                        <li><span style="color: #ef4444;">Wrong:</span> "Rate limiting should block during Redis failure"</li>
+                        <li><span style="color: #22c55e;">Right:</span> "We accept eventual consistency for performance"</li>
+                        <li><span style="color: #22c55e;">Right:</span> "Local caching with async sync balances accuracy and latency"</li>
+                        <li><span style="color: #22c55e;">Right:</span> "Fail-open prevents rate limiter from becoming a SPOF"</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="margin-top: 24px; padding: 16px; background: white; border-radius: 10px; border: 2px solid #3b82f6;">
+                <h4 style="color: #1e40af; margin: 0 0 12px 0;">Sample Interview Answer</h4>
+                <p style="font-size: 14px; color: #475569; font-style: italic; margin: 0;">
+                    "For rate limiting, I'd design an AP system because availability is more critical than perfect accuracy.
+                    We'll use a hybrid approach: local in-memory counters for sub-millisecond checks, syncing to Redis every 2-3 seconds.
+                    During network partitions, each server enforces local limits (global_limit / num_servers).
+                    This means we might briefly allow 10-20% over the limit during sync windows, but that's acceptable compared to
+                    adding latency or blocking legitimate users. For billing-critical quotas specifically, we'd use a separate CP path
+                    with synchronous Redis checks."
+                </p>
+            </div>
+        </div>
+
+        <!-- Summary Table -->
+        <h3>CAP Analysis Summary</h3>
+        <div class="feature-card">
+            <table class="data-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Recommendation</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Overall System</strong></td>
+                        <td><span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 6px; font-weight: 600;">AP</span></td>
+                        <td>Availability and low latency trump perfect accuracy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Counter Storage</strong></td>
+                        <td>Redis Cluster (eventually consistent)</td>
+                        <td>Horizontal scaling with acceptable sync delays</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Algorithm</strong></td>
+                        <td>Sliding Window Counter</td>
+                        <td>Good accuracy, easy to sync, low memory</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Failure Mode</strong></td>
+                        <td>Fail-open with alerting</td>
+                        <td>Rate limiter should not become SPOF</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sync Strategy</strong></td>
+                        <td>Local + async batch sync (2-5s)</td>
+                        <td>Sub-ms latency with global visibility</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Exception</strong></td>
+                        <td>CP for billing/quota enforcement</td>
+                        <td>Financial accuracy requires strong consistency</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
