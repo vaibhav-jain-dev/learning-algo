@@ -2490,52 +2490,70 @@ def get_with_swr(key, refresh_fn):
 /* Code block wrapper and buttons */
 .redis-code-wrapper {
     position: relative;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 12px;
+    border: 1px solid #2d3748;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .redis-code-wrapper pre {
     margin: 0;
-    padding-right: 120px;
+    padding: 1.5rem;
+    padding-right: 140px;
+    background: transparent;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+}
+
+.redis-code-wrapper pre code {
+    color: #e2e8f0;
+    font-weight: 500;
 }
 
 .redis-run-btn,
 .redis-copy-btn {
     position: absolute;
-    top: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    border-radius: 4px;
+    top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
     cursor: pointer;
     border: none;
-    opacity: 0.8;
-    transition: all 0.2s ease;
+    opacity: 0.9;
+    transition: all 0.3s ease;
     z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .redis-run-btn:hover,
 .redis-copy-btn:hover {
     opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .redis-run-btn {
-    right: 60px;
-    background: #dc2626;
+    right: 80px;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: white;
 }
 
 .redis-run-btn:hover {
-    background: #b91c1c;
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
 }
 
 .redis-copy-btn {
-    right: 0.5rem;
-    background: #374151;
+    right: 1rem;
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
     color: #e5e7eb;
-    border: 1px solid #4b5563;
 }
 
 .redis-copy-btn:hover {
-    background: #4b5563;
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
 }
 
 .redis-code-wrapper:hover .redis-run-btn,
@@ -2543,29 +2561,218 @@ def get_with_swr(key, refresh_fn):
     opacity: 1;
 }
 
-/* Result container styling */
-.redis-inline-result {
-    margin-top: 0.5rem;
+/* Line-by-line result container */
+.redis-inline-result-container {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-radius: 12px;
+    border: 2px solid #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.redis-command-line {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 8px;
+    border-left: 4px solid #dc2626;
+    transition: all 0.3s ease;
+}
+
+.redis-command-line:hover {
+    background: rgba(30, 41, 59, 0.8);
+    border-left-color: #ef4444;
+    transform: translateX(4px);
+}
+
+.redis-command {
+    font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+    font-size: 1rem;
+    color: #e2e8f0;
+    margin-bottom: 0.75rem;
     padding: 0.75rem;
-    background: #111827;
-    border-radius: 4px;
-    border-left: 3px solid #dc2626;
-    font-family: monospace;
-    font-size: 0.875rem;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.redis-prompt {
+    color: #10b981;
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+.redis-output {
+    font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-left: 1.5rem;
+    border-left: 3px solid;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.redis-output.loading {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    border-left-color: #fbbf24;
+}
+
+.redis-output.success {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    border-left-color: #10b981;
+}
+
+.redis-output.error {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border-left-color: #ef4444;
+}
+
+.loading-spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+    font-size: 1.1rem;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.output-icon {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+}
+
+/* Syntax highlighting styles */
+.cmd-keyword {
+    color: #f472b6;
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(244, 114, 182, 0.3);
+}
+
+.cmd-string {
+    color: #34d399;
+    font-weight: 600;
+}
+
+.cmd-number {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.cmd-key {
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+/* Enhanced code blocks in lessons */
+.bg-gray-900.rounded-lg {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid #334155;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.bg-gray-900.rounded-lg pre {
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* Enhanced tables */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+table thead tr {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+table tbody tr:hover {
+    background: rgba(51, 65, 85, 0.3);
+    transition: all 0.2s ease;
+}
+
+table td, table th {
+    padding: 0.75rem 1rem;
+}
+
+/* Enhanced text readability */
+.text-gray-300 {
+    color: #d1d5db !important;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+
+.text-gray-400 {
+    color: #9ca3af !important;
+    font-size: 1rem;
+}
+
+h3.text-red-400 {
+    color: #f87171 !important;
+    font-weight: 700;
+    font-size: 1.35rem;
+    margin-top: 2rem;
+    text-shadow: 0 0 10px rgba(248, 113, 113, 0.2);
+}
+
+h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+strong {
+    color: #fbbf24;
+    font-weight: 700;
+}
+
+/* Enhance info boxes */
+.bg-gray-900.border-l-4 {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
+    backdrop-filter: blur(10px);
+}
+
+.bg-blue-900\/30 {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.3) 0%, rgba(29, 78, 216, 0.2) 100%);
+    backdrop-filter: blur(5px);
+}
+
+/* Old inline result (kept for compatibility) */
+.redis-inline-result {
+    margin-top: 0.75rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-radius: 8px;
+    border-left: 4px solid #dc2626;
+    font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .redis-inline-result.success {
-    color: #4ecdc4;
-    border-left-color: #4ecdc4;
+    color: #10b981;
+    border-left-color: #10b981;
 }
 
 .redis-inline-result.error {
-    color: #ff6b6b;
-    border-left-color: #ff6b6b;
+    color: #ef4444;
+    border-left-color: #ef4444;
 }
 
 .redis-inline-result.loading {
-    color: #9ca3af;
+    color: #fbbf24;
+    border-left-color: #fbbf24;
 }
 </style>
 
@@ -2620,37 +2827,75 @@ async function tryCommand(command, button) {
     }
 }
 
-// Execute Redis command from code block
+// Execute Redis command from code block with line-by-line inline results
 async function runRedisCode(codeBlock, wrapper) {
-    // Get all commands from the code block (filter out comments and empty lines)
+    // Get all commands from the code block
     const code = codeBlock.textContent;
-    const lines = code.split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('#') && !line.startsWith('//'));
+    const lines = code.split('\n');
 
-    if (lines.length === 0) {
+    // Parse commands and strip inline comments
+    const commands = [];
+    for (let line of lines) {
+        line = line.trim();
+
+        // Skip empty lines and comment-only lines
+        if (!line || line.startsWith('#') || line.startsWith('//')) {
+            continue;
+        }
+
+        // Strip inline comments (everything after # or //)
+        let cleanCommand = line.split('#')[0].trim();
+        if (cleanCommand.includes('//')) {
+            cleanCommand = cleanCommand.split('//')[0].trim();
+        }
+
+        // Skip lines that look like responses or output
+        if (cleanCommand.includes('Response:') || cleanCommand.startsWith('"') || /^\d+$/.test(cleanCommand)) {
+            continue;
+        }
+
+        if (cleanCommand) {
+            commands.push(cleanCommand);
+        }
+    }
+
+    if (commands.length === 0) {
         alert('No Redis commands found in this code block');
         return;
     }
 
-    // Create or find result container
-    let resultContainer = wrapper.querySelector('.redis-inline-result');
-    if (!resultContainer) {
-        resultContainer = document.createElement('div');
-        resultContainer.className = 'redis-inline-result loading';
-        wrapper.appendChild(resultContainer);
+    // Remove old result container if exists
+    const oldResult = wrapper.querySelector('.redis-inline-result');
+    if (oldResult) {
+        oldResult.remove();
     }
 
-    resultContainer.className = 'redis-inline-result loading';
-    resultContainer.textContent = 'Executing...';
+    const oldResultContainer = wrapper.querySelector('.redis-inline-result-container');
+    if (oldResultContainer) {
+        oldResultContainer.remove();
+    }
 
-    // Execute commands one by one
-    const results = [];
-    for (const command of lines) {
-        // Skip lines that look like responses (e.g., "# Response: PONG")
-        if (command.includes('Response:') || command.startsWith('"') || /^\d+$/.test(command)) {
-            continue;
-        }
+    // Create new line-by-line result container
+    const resultContainer = document.createElement('div');
+    resultContainer.className = 'redis-inline-result-container';
+    wrapper.appendChild(resultContainer);
+
+    // Execute commands one by one and show inline results
+    for (const command of commands) {
+        const lineResult = document.createElement('div');
+        lineResult.className = 'redis-command-line';
+
+        const commandDiv = document.createElement('div');
+        commandDiv.className = 'redis-command';
+        commandDiv.innerHTML = `<span class="redis-prompt">redis&gt;</span> ${highlightCommand(command)}`;
+
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'redis-output loading';
+        outputDiv.innerHTML = '<span class="loading-spinner">⏳</span> Executing...';
+
+        lineResult.appendChild(commandDiv);
+        lineResult.appendChild(outputDiv);
+        resultContainer.appendChild(lineResult);
 
         try {
             const response = await fetch('/api/redis/execute', {
@@ -2661,25 +2906,68 @@ async function runRedisCode(codeBlock, wrapper) {
 
             const result = await response.json();
 
-            let output = result.success ? result.result : ('Error: ' + result.error);
-            if (typeof output === 'object') {
-                output = JSON.stringify(output, null, 2);
+            if (result.success) {
+                let output = result.result;
+                if (typeof output === 'object') {
+                    if (Array.isArray(output)) {
+                        output = output.map((item, idx) => `${idx + 1}) "${item}"`).join('\n');
+                    } else {
+                        output = JSON.stringify(output, null, 2);
+                    }
+                }
+                outputDiv.className = 'redis-output success';
+                outputDiv.innerHTML = `<span class="output-icon">✓</span> ${escapeHtml(String(output))}`;
+            } else {
+                outputDiv.className = 'redis-output error';
+                outputDiv.innerHTML = `<span class="output-icon">✗</span> Error: ${escapeHtml(result.error)}`;
             }
-            results.push('> ' + command + '\n' + output);
         } catch (error) {
-            results.push('> ' + command + '\nError: ' + error.message);
+            outputDiv.className = 'redis-output error';
+            outputDiv.innerHTML = `<span class="output-icon">✗</span> Error: ${escapeHtml(error.message)}`;
         }
-    }
 
-    // Show results
-    if (results.length > 0) {
-        const hasError = results.some(r => r.includes('Error:'));
-        resultContainer.className = 'redis-inline-result ' + (hasError ? 'error' : 'success');
-        resultContainer.textContent = results.join('\n\n');
-    } else {
-        resultContainer.className = 'redis-inline-result';
-        resultContainer.textContent = 'No executable commands found';
+        // Small delay between commands for visual effect
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
+}
+
+// Syntax highlighting for Redis commands
+function highlightCommand(command) {
+    // Redis command keywords
+    const keywords = ['GET', 'SET', 'DEL', 'INCR', 'DECR', 'LPUSH', 'RPUSH', 'LPOP', 'RPOP', 'LRANGE', 'LINDEX', 'LLEN', 'LSET', 'LINSERT',
+                     'SADD', 'SMEMBERS', 'SISMEMBER', 'SREM', 'HSET', 'HGET', 'HGETALL', 'HDEL', 'ZADD', 'ZRANGE', 'ZRANK',
+                     'EXPIRE', 'TTL', 'PING', 'INFO', 'FLUSHDB', 'KEYS', 'SCAN', 'MULTI', 'EXEC', 'PUBLISH', 'SUBSCRIBE',
+                     'MGET', 'MSET', 'INCRBY', 'DECRBY', 'APPEND', 'STRLEN', 'GETRANGE', 'SETRANGE', 'SINTER', 'SUNION', 'SDIFF',
+                     'HEXISTS', 'HINCRBY', 'HMGET', 'BLPOP', 'BRPOP', 'ZINCRBY', 'ZREM', 'PEXPIRE', 'EXPIREAT', 'NX', 'XX', 'EX', 'PX',
+                     'BEFORE', 'AFTER', 'LEFT', 'RIGHT', 'WITHSCORES', 'LIMIT'];
+
+    let highlighted = escapeHtml(command);
+
+    // Highlight command keywords
+    keywords.forEach(keyword => {
+        const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+        highlighted = highlighted.replace(regex, `<span class="cmd-keyword">${keyword.toUpperCase()}</span>`);
+    });
+
+    // Highlight strings in quotes
+    highlighted = highlighted.replace(/"([^"]*)"/g, '<span class="cmd-string">"$1"</span>');
+    highlighted = highlighted.replace(/'([^']*)'/g, '<span class="cmd-string">\'$1\'</span>');
+
+    // Highlight numbers
+    highlighted = highlighted.replace(/\b(\d+)\b/g, '<span class="cmd-number">$1</span>');
+    highlighted = highlighted.replace(/\b(-\d+)\b/g, '<span class="cmd-number">$1</span>');
+
+    // Highlight key patterns
+    highlighted = highlighted.replace(/\b([a-zA-Z_][\w:-]*):([a-zA-Z0-9_-]+)/g, '<span class="cmd-key">$1:$2</span>');
+
+    return highlighted;
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Add Run and Copy buttons to all code blocks
