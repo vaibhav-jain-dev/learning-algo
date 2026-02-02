@@ -1,443 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#3b82f6">
-    <meta name="description" content="Learn Data Structures and Algorithms with interactive visualizations and hands-on practice">
+    <meta name="description" content="Learn Data Structures and Algorithms with interactive practice">
     <title>{{.Title}}</title>
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 
-    <!-- DNS prefetch and preconnect for external domains -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="https://unpkg.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://unpkg.com">
+    <!-- SINGLE SOURCE CSS - Clean UI (shadow-based, no borders) -->
+    <link rel="stylesheet" href="/static/css/clean-ui.css">
 
-    <!-- Preload critical resources for faster FCP -->
-    <link rel="preload" href="/static/css/styles.css" as="style">
-    <link rel="preload" href="/static/js/lazy-loader.js" as="script">
-    <link rel="preload" href="/static/js/state-manager.js" as="script">
-
-    <!-- Critical CSS -->
+    <!-- Legacy CSS for specific pages (will be gradually migrated) -->
     <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="/static/css/animations.css">
-    <link rel="stylesheet" href="/static/css/diagrams.css">
     <link rel="stylesheet" href="/static/css/topic-detail.css">
-    <link rel="stylesheet" href="/static/css/responsive-enhancements.css">
-    <link rel="stylesheet" href="/static/css/smart-widescreen.css">
     <link rel="stylesheet" href="/static/css/adhd-friendly-layout.css">
 
-    <!-- Clean CSS Reset - No external framework dependencies -->
+    <!-- AGGRESSIVE BORDER RESET - Loaded LAST to override everything -->
     <style>
-        /* Universal border reset */
+        /* Nuclear border reset - override ALL CSS */
         *, *::before, *::after {
-            box-sizing: border-box;
-            border-width: 0;
-            border-style: solid;
-            border-color: transparent;
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
         }
 
-        /* Card components - clean shadows only, no borders */
+        /* Re-enable borders ONLY for semantic elements that need them */
+        table, table *, th, td,
+        pre, pre *, code,
+        hr, blockquote,
+        input, textarea, select, button {
+            border-width: revert !important;
+            border-style: revert !important;
+            border-color: revert !important;
+        }
+
+        /* Cards use shadows, not borders */
         .topic-card, .card, .quick-ref-card, .tldr-box,
-        .concept-section, .collapsible-section, .comparison-column,
-        .step-content, .progress-indicator, .table-of-contents,
-        .nav-category, .adhd-nav-panel, .adhd-quick-ref,
-        .topic-header, .content-box {
-            border: none !important;
-            outline: none !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        .table-of-contents, .concept-section, .panel,
+        .content-box, .toc, .adhd-nav-panel, .adhd-quick-ref {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+            border-radius: 12px !important;
         }
 
-        /* Tags and badges - no borders or shadows */
+        /* Tags - pill style, no border */
         .tag, .badge, .topic-badge, .tags span {
-            border: none !important;
+            background: #f1f5f9 !important;
             box-shadow: none !important;
+            border-radius: 999px !important;
         }
 
-        /* Allow borders only for semantic elements */
-        table, th, td { border-color: #e2e8f0; }
-        pre, code { border-color: #e2e8f0; }
-        hr { border-color: #e2e8f0; }
-        blockquote { border-left-color: #3b82f6; border-left-width: 4px; }
+        /* Mobile responsive */
+        @media (max-width: 1199px) {
+            .adhd-nav-panel, .adhd-quick-ref, .nav-panel, .quick-panel {
+                display: none !important;
+            }
+            .adhd-main-content, .detail-main {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+        }
 
-        /* Mobile-first responsive utilities */
         @media (max-width: 768px) {
-            .adhd-layout { display: block !important; }
-            .adhd-nav-panel, .adhd-quick-ref { display: none !important; }
-            .adhd-main-content { width: 100% !important; padding: 1rem !important; }
-            .topic-grid { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            .topic-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .nav {
+                display: none;
+            }
+            .nav.mobile-open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #fff;
+                padding: 1rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
         }
     </style>
-
-    <!-- HTMX - core functionality, loaded immediately but async -->
-    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
-
-    <!--
-    Heavy libraries are now lazy-loaded via lazy-loader.js:
-    - Highlight.js: Loaded on-demand for code highlighting
-    - CodeMirror: Loaded only on practice/SQL/Redis pages
-    - SQL Formatter: Loaded only on SQL pages
-    - html2pdf: Loaded only when PDF export is triggered
-    -->
 </head>
-<body hx-boost="true">
+<body>
     <header class="header">
         <a href="/" class="logo">
             <span class="logo-icon">&lt;/&gt;</span>
             <span class="logo-text">DSAlgo</span>
         </a>
-        <button class="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle navigation">
-            <span class="hamburger-icon">&#9776;</span>
+        <button class="mobile-menu-btn" onclick="document.getElementById('main-nav').classList.toggle('mobile-open')" aria-label="Menu">
+            &#9776;
         </button>
         <nav class="nav" id="main-nav">
-            <a href="/practice" class="nav-pill" data-path="/practice">
-                <span class="nav-icon">&#9654;</span>
-                <span>Practice</span>
-            </a>
-            <a href="/200-problems" class="nav-pill" data-path="/200-problems">
-                <span class="nav-icon">&#127942;</span>
-                <span>200 Problems</span>
-            </a>
-            <a href="/roadmap" class="nav-pill" data-path="/roadmap">
-                <span class="nav-icon">&#128199;</span>
-                <span>Roadmap</span>
-            </a>
-            <a href="/sql" class="nav-pill" data-path="/sql">
-                <span class="nav-icon">&#128451;</span>
-                <span>SQL</span>
-            </a>
-            <a href="/elasticsearch" class="nav-pill" data-path="/elasticsearch">
-                <span class="nav-icon">&#128269;</span>
-                <span>Elasticsearch</span>
-            </a>
-            <a href="/redis" class="nav-pill" data-path="/redis">
-                <span class="nav-icon">&#9889;</span>
-                <span>Redis</span>
-            </a>
-            <a href="/golang" class="nav-pill" data-path="/golang">
-                <span class="nav-icon">&#128025;</span>
-                <span>Go</span>
-            </a>
-            <a href="/python" class="nav-pill" data-path="/python">
-                <span class="nav-icon">&#128013;</span>
-                <span>Python</span>
-            </a>
-            <a href="/python-asyncio" class="nav-pill" data-path="/python-asyncio">
-                <span class="nav-icon">&#9889;</span>
-                <span>Asyncio</span>
-            </a>
-            <a href="/system-design" class="nav-pill" data-path="/system-design">
-                <span class="nav-icon">&#127959;</span>
-                <span>System Design</span>
-            </a>
-            <a href="/system-architectures" class="nav-pill" data-path="/system-architectures">
-                <span class="nav-icon">&#128203;</span>
-                <span>Architectures</span>
-            </a>
-            <a href="/design-patterns" class="nav-pill" data-path="/design-patterns">
-                <span class="nav-icon">&#129513;</span>
-                <span>Patterns</span>
-            </a>
-            <a href="/machine-coding" class="nav-pill" data-path="/machine-coding">
-                <span class="nav-icon">&#9881;</span>
-                <span>Machine Coding</span>
-            </a>
-            <a href="/microservices" class="nav-pill" data-path="/microservices">
-                <span class="nav-icon">&#128230;</span>
-                <span>Microservices</span>
-            </a>
+            <a href="/practice" class="nav-pill">&#9654; Practice</a>
+            <a href="/200-problems" class="nav-pill">&#127942; 200 Problems</a>
+            <a href="/roadmap" class="nav-pill">&#128199; Roadmap</a>
+            <a href="/sql" class="nav-pill">&#128451; SQL</a>
+            <a href="/elasticsearch" class="nav-pill">&#128269; Elasticsearch</a>
+            <a href="/redis" class="nav-pill">&#9889; Redis</a>
+            <a href="/golang" class="nav-pill">&#128025; Go</a>
+            <a href="/python" class="nav-pill">&#128013; Python</a>
+            <a href="/python-asyncio" class="nav-pill">&#9889; Asyncio</a>
+            <a href="/system-design" class="nav-pill">&#127959; System Design</a>
+            <a href="/system-architectures" class="nav-pill">&#128203; Architectures</a>
+            <a href="/design-patterns" class="nav-pill">&#129513; Patterns</a>
+            <a href="/machine-coding" class="nav-pill">&#9881; Machine Coding</a>
+            <a href="/microservices" class="nav-pill">&#128230; Microservices</a>
         </nav>
     </header>
-    <script>
-        // Highlight active nav item
-        (function() {
-            var path = window.location.pathname;
-            document.querySelectorAll('.nav-pill').forEach(function(pill) {
-                if (pill.getAttribute('data-path') === path) {
-                    pill.classList.add('active');
-                }
-            });
-        })();
-        // Mobile nav toggle
-        function toggleMobileNav() {
-            var nav = document.getElementById('main-nav');
-            var btn = document.querySelector('.mobile-menu-btn');
-            nav.classList.toggle('mobile-open');
-            btn.classList.toggle('active');
-        }
-    </script>
+
     <main class="main">
         {{embed}}
     </main>
-    <!-- Core utilities - Load first -->
-    <script src="/static/js/lazy-loader.js"></script>
-    <script src="/static/js/state-manager.js"></script>
 
-    <!-- Custom Diagram Engine -->
-    <script src="/static/js/diagrams.js" defer></script>
-    <!-- Algorithm Visualization Engine -->
-    <script src="/static/js/visualizations.js" defer></script>
-    <!-- PDF Export functionality -->
-    <script src="/static/js/pdf-export.js" defer></script>
-    <!-- ADHD-friendly interactive enhancements -->
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+
+    <!-- Core JS -->
+    <script src="/static/js/lazy-loader.js" defer></script>
+    <script src="/static/js/state-manager.js" defer></script>
     <script src="/static/js/adhd-enhancements.js" defer></script>
 
     <script>
-        // Wait for lazy loader to be ready
-        function onLazyLoaderReady(callback) {
+        // Highlight active nav
+        document.querySelectorAll('.nav-pill').forEach(function(pill) {
+            if (pill.getAttribute('href') === window.location.pathname) {
+                pill.classList.add('active');
+            }
+        });
+
+        // Code highlighting
+        document.addEventListener('DOMContentLoaded', function() {
             if (typeof LazyLoader !== 'undefined') {
-                callback();
-            } else {
-                setTimeout(function() { onLazyLoaderReady(callback); }, 10);
-            }
-        }
-
-        // Re-highlight code blocks and render diagrams after HTMX swaps
-        document.body.addEventListener('htmx:afterSwap', function(evt) {
-            onLazyLoaderReady(function() {
                 LazyLoader.loadHighlight().then(function() {
-                    document.querySelectorAll('pre code:not(.hljs)').forEach(function(block) {
-                        hljs.highlightElement(block);
-                    });
+                    if (typeof hljs !== 'undefined') hljs.highlightAll();
                 });
-            });
-
-            // Re-initialize visualizations and diagrams if needed
-            if (typeof initializeVisualizations === 'function') {
-                initializeVisualizations();
-            }
-            if (typeof diagramEngine !== 'undefined') {
-                diagramEngine.renderAll();
             }
         });
-
-        // Initial highlight and setup
-        onLazyLoaderReady(function() {
-            LazyLoader.loadHighlight().then(function() {
-                if (typeof hljs !== 'undefined') {
-                    hljs.highlightAll();
-                }
-            });
-        });
-
-        // Initialize visualizations on page load
-        function initializeVisualizations() {
-            // Auto-initialize any visualization containers with data attributes
-            document.querySelectorAll('[data-viz-type]').forEach(function(container) {
-                if (container.dataset.vizInitialized) return;
-                container.dataset.vizInitialized = 'true';
-
-                var type = container.dataset.vizType;
-                var demoFn = container.dataset.vizDemo;
-
-                if (demoFn && window[demoFn]) {
-                    window[demoFn](container.id);
-                }
-            });
-        }
-
-        // Run on DOM ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeVisualizations);
-        } else {
-            initializeVisualizations();
-        }
-
-        // ============================================
-        // GLOBAL ANCHOR LINKS FOR ALL HEADINGS
-        // Automatically adds IDs and anchor links to all headings
-        // ============================================
-        (function() {
-            // Slugify text to create URL-friendly IDs
-            function slugify(text) {
-                return text
-                    .toString()
-                    .toLowerCase()
-                    .trim()
-                    .replace(/\s+/g, '-')
-                    .replace(/[^\w\-]+/g, '')
-                    .replace(/\-\-+/g, '-')
-                    .replace(/^-+/, '')
-                    .replace(/-+$/, '');
-            }
-
-            // Track used IDs to handle duplicates
-            var usedIds = {};
-
-            // Create unique ID
-            function createUniqueId(baseId) {
-                if (!usedIds[baseId]) {
-                    usedIds[baseId] = 1;
-                    return baseId;
-                }
-                usedIds[baseId]++;
-                return baseId + '-' + usedIds[baseId];
-            }
-
-            // Create toast element for copy feedback (if not already exists)
-            var toast = document.querySelector('.anchor-toast');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.className = 'anchor-toast';
-                toast.textContent = 'Link copied!';
-                toast.style.cssText = 'position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 10000; opacity: 0; transition: opacity 0.3s; pointer-events: none;';
-                document.body.appendChild(toast);
-            }
-
-            function showToast() {
-                toast.style.opacity = '1';
-                setTimeout(function() { toast.style.opacity = '0'; }, 2000);
-            }
-
-            function copyLink(id) {
-                var url = window.location.href.split('#')[0] + '#' + id;
-                navigator.clipboard.writeText(url).then(showToast).catch(function() {
-                    // Fallback
-                    var ta = document.createElement('textarea');
-                    ta.value = url;
-                    ta.style.position = 'fixed';
-                    ta.style.left = '-9999px';
-                    document.body.appendChild(ta);
-                    ta.select();
-                    try { document.execCommand('copy'); showToast(); } catch(e) {}
-                    document.body.removeChild(ta);
-                });
-            }
-
-            // Process all headings in main content area
-            var mainContent = document.querySelector('.main');
-            if (!mainContent) return;
-
-            var headings = mainContent.querySelectorAll('h1, h2, h3, h4');
-            headings.forEach(function(heading) {
-                // Skip if already has an anchor or is hidden
-                if (heading.querySelector('.heading-anchor') || heading.offsetParent === null) return;
-
-                // Get or create ID
-                var id = heading.id;
-                if (!id) {
-                    var text = heading.textContent.trim();
-                    // Remove any existing symbols/icons at start
-                    text = text.replace(/^[^\w]+/, '').trim();
-                    if (!text) return;
-                    id = createUniqueId(slugify(text));
-                    heading.id = id;
-                }
-
-                // Add anchor link
-                var anchor = document.createElement('a');
-                anchor.className = 'heading-anchor';
-                anchor.href = '#' + id;
-                anchor.setAttribute('aria-label', 'Link to this section');
-                anchor.style.cssText = 'opacity: 0; margin-right: 8px; color: #3b82f6; text-decoration: none; font-weight: normal; transition: opacity 0.2s;';
-                anchor.textContent = '#';
-
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    copyLink(id);
-                    history.pushState(null, null, '#' + id);
-                });
-
-                // Show anchor on heading hover
-                heading.style.position = 'relative';
-                heading.addEventListener('mouseenter', function() {
-                    anchor.style.opacity = '1';
-                });
-                heading.addEventListener('mouseleave', function() {
-                    anchor.style.opacity = '0';
-                });
-
-                heading.insertBefore(anchor, heading.firstChild);
-            });
-
-            // Handle initial hash - scroll to section
-            if (window.location.hash) {
-                var target = document.getElementById(window.location.hash.substring(1));
-                if (target) {
-                    setTimeout(function() {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                }
-            }
-        })();
-    </script>
-
-    <!-- FORCE BORDER REMOVAL - Runs after ALL CSS loads including Tailwind -->
-    <script>
-        (function() {
-            function removeBorderFromElement(el) {
-                // Set ALL individual border properties explicitly
-                // This ensures border-top, border-right, border-bottom, border-left are all removed
-                el.style.setProperty('border-top-width', '0', 'important');
-                el.style.setProperty('border-right-width', '0', 'important');
-                el.style.setProperty('border-bottom-width', '0', 'important');
-                el.style.setProperty('border-left-width', '0', 'important');
-                el.style.setProperty('border-top-style', 'none', 'important');
-                el.style.setProperty('border-right-style', 'none', 'important');
-                el.style.setProperty('border-bottom-style', 'none', 'important');
-                el.style.setProperty('border-left-style', 'none', 'important');
-                el.style.setProperty('border-top-color', 'transparent', 'important');
-                el.style.setProperty('border-right-color', 'transparent', 'important');
-                el.style.setProperty('border-bottom-color', 'transparent', 'important');
-                el.style.setProperty('border-left-color', 'transparent', 'important');
-                el.style.setProperty('outline', 'none', 'important');
-            }
-
-            function removeBorders() {
-                var selectors = [
-                    '.topic-card', '.card', '.quick-ref-card', '.tldr-box',
-                    '.tag', '.badge', '.topic-badge', '.table-of-contents',
-                    '.concept-section', '.collapsible-section', '.comparison-column',
-                    '.step-content', '.progress-indicator', '.nav-category',
-                    '.adhd-nav-panel', '.adhd-quick-ref', '.quick-ref-list',
-                    '.quick-ref-item', '.quick-ref-header', '.concept-section-header',
-                    '.comparison-header', '.collapsible-header', '.topic-header'
-                ];
-
-                selectors.forEach(function(selector) {
-                    var elements = document.querySelectorAll(selector);
-                    elements.forEach(removeBorderFromElement);
-                });
-
-                // Also target any element inside topic-page, adhd-layout, topic-grid
-                var containers = document.querySelectorAll('.topic-page, .adhd-layout, .topic-grid, .topic-detail-page');
-                containers.forEach(function(container) {
-                    var children = container.querySelectorAll('*');
-                    children.forEach(function(child) {
-                        var tag = child.tagName.toLowerCase();
-                        if (tag !== 'table' && tag !== 'th' && tag !== 'td' &&
-                            tag !== 'pre' && tag !== 'code' && tag !== 'hr' && tag !== 'blockquote') {
-                            removeBorderFromElement(child);
-                        }
-                    });
-                });
-            }
-
-            // Run immediately
-            removeBorders();
-
-            // Run after DOM ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', removeBorders);
-            }
-
-            // Run after full page load (including Tailwind)
-            window.addEventListener('load', function() {
-                removeBorders();
-                // Run again after a short delay to catch any late-loading styles
-                setTimeout(removeBorders, 100);
-                setTimeout(removeBorders, 500);
-                setTimeout(removeBorders, 1000);
-            });
-        })();
     </script>
 </body>
 </html>
