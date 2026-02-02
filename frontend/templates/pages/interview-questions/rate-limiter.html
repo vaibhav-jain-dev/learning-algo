@@ -853,6 +853,218 @@ curl -X POST https://flags.internal/rate-limiter \
                 <div class="label">Availability</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redis Failure (Fallback Strategy)</div>
+                <p>Redis becomes unavailable due to network partition, memory exhaustion, or cluster failover.</p>
+                <div class="case-solution"><strong>Fail Open:</strong> Allow all requests (default for most APIs). <strong>Fail Closed:</strong> Deny all (for sensitive endpoints). <strong>Local Fallback:</strong> Use in-memory rate limiting with degraded accuracy. Implement circuit breaker pattern with 30s recovery window.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Clock Skew in Distributed Systems</div>
+                <p>Different servers have slightly different system times, causing inconsistent window calculations.</p>
+                <div class="case-solution">Use Redis server time (TIME command) instead of local time. Implement NTP sync with &lt;10ms drift tolerance. For sliding window, use Redis ZRANGEBYSCORE with server timestamps. Add 100ms grace period to window boundaries.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">IP Spoofing</div>
+                <p>Attackers forge X-Forwarded-For headers to bypass IP-based rate limits.</p>
+                <div class="case-solution">Only trust X-Forwarded-For from known proxies (ALB, CloudFront). Use rightmost non-private IP. Implement API key + IP combination for authenticated endpoints. Consider device fingerprinting for additional signal.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Shared IPs (NAT/Corporate)</div>
+                <p>Multiple legitimate users share same IP (office networks, mobile carriers, universities).</p>
+                <div class="case-solution">Higher limits for known NAT ranges. Prefer user ID over IP for authenticated requests. Implement graduated limits: IP (loose) + User (strict). Use ASN database to identify corporate/ISP ranges.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Burst vs Sustained Traffic</div>
+                <p>Legitimate use case needs 100 requests in 1 second, but sustained 100/min is fine.</p>
+                <div class="case-solution">Token bucket with burst capacity (e.g., bucket=50, refill=2/sec). Implement dual limits: burst (per-second) + sustained (per-minute). Configure different algorithms per endpoint type.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Legitimate Spike vs Attack</div>
+                <p>Marketing campaign causes 10x traffic spike that looks like DDoS.</p>
+                <div class="case-solution">Pre-warm rate limits before known events. Implement allowlists for verified partners. Use adaptive limits that scale with authenticated user history. Alert on anomaly but don't auto-block without confirmation.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">ML-Based Adaptive Limits</div>
+                <p>Dynamically adjust rate limits based on user behavior patterns and risk scores.</p>
+                <div class="future-approach">Train model on historical usage patterns. Input: request frequency, endpoint mix, time of day, user tenure. Output: personalized limit multiplier (0.5x to 3x). Retrain weekly. Explain decisions for audit.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Behavioral Rate Limiting</div>
+                <p>Rate limit based on behavior patterns rather than simple request counts.</p>
+                <div class="future-approach">Track request sequences (e.g., search → view → checkout = normal). Flag anomalous patterns (100 searches, 0 views). Use session-based limits. Implement "reputation score" that affects limits.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Cost-Based Quotas</div>
+                <p>Different operations have different costs; heavy queries should count more.</p>
+                <div class="future-approach">Assign cost weights: GET=1, POST=5, complex query=20. Track "cost units" instead of requests. Enable users to see cost breakdown in dashboard. Offer prepaid quota packages.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">GraphQL Complexity Limiting</div>
+                <p>Prevent expensive nested GraphQL queries that could DoS the server.</p>
+                <div class="future-approach">Calculate query complexity before execution (depth + breadth). Set max complexity per request (e.g., 1000 points). Rate limit by total complexity per minute. Reject queries exceeding single-request max.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">Compare Token Bucket vs Leaky Bucket vs Sliding Window. When would you use each?</div>
+                    <div class="followup-hint"><strong>Token Bucket:</strong> Allows bursts, best for user-facing APIs. <strong>Leaky Bucket:</strong> Smoothest output, best for protecting fragile backends. <strong>Sliding Window Counter:</strong> No boundary burst, best for billing/quotas. <strong>Sliding Window Log:</strong> Most accurate, but O(n) memory.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure consistency in distributed rate limiting across multiple servers?</div>
+                    <div class="followup-hint">Centralized store (Redis) with atomic Lua scripts. Accept eventual consistency for performance (user may get 10% over limit). Use sticky sessions for strict accuracy. Implement local + global hybrid with periodic sync.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement rate limiting for a multi-tenant SaaS platform?</div>
+                    <div class="followup-hint">Hierarchical limits: Global → Tenant → User → Endpoint. Store tenant limits in config (Redis hash). Use tenant_id in rate limit key. Implement noisy neighbor isolation (one tenant can't affect others). Offer self-service limit management.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">What happens if your rate limiter becomes the bottleneck?</div>
+                    <div class="followup-hint">Local caching of rate limit state (check local first). Batch Redis operations (pipeline). Fail open under extreme load. Use sampling (check 1 in 10 requests). Consider edge rate limiting (CloudFront/Lambda@Edge).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle rate limit bypass for internal services and health checks?</div>
+                    <div class="followup-hint">Allowlist internal IP ranges (10.x.x.x). Use service mesh identity (mTLS). Separate rate limit pools for internal vs external. Exempt specific paths (/health, /metrics). Use internal API keys with unlimited quota.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>MVP Stage - Complete Request Flow</h4>
+            <div class="flow-vertical">
+                <!-- Rate Limit Check Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">RATE LIMIT CHECK FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Request<br><small>POST /api/data</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Extract Key<br><small>IP / User / API Key</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>EVALSHA lua_script</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Decision<br><small>Check tokens</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db" style="background: #22c55e;">200 OK<br><small>→ Backend</small></div>
+                    </div>
+                </div>
+
+                <!-- Rate Limited Path -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #ef4444; margin-bottom: 12px;">RATE LIMITED PATH</div>
+                    <div class="flow-row">
+                        <div class="flow-node cache">Redis Check<br><small>tokens = 0</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user" style="background: #ef4444;">429 Denied<br><small>Retry-After: 30s</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Log Event<br><small>Metrics + Alert</small></div>
+                    </div>
+                </div>
+
+                <!-- Sliding Window Log Visual -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #3b82f6; margin-bottom: 12px;">SLIDING WINDOW LOG ALGORITHM</div>
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+                            <div style="background: #64748b; padding: 8px 12px; border-radius: 6px; font-size: 12px;">
+                                <span style="text-decoration: line-through; color: #94a3b8;">09:59:30</span><br>
+                                <small>Expired</small>
+                            </div>
+                            <div style="background: #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 12px;">
+                                10:00:15<br><small>In window</small>
+                            </div>
+                            <div style="background: #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 12px;">
+                                10:00:23<br><small>In window</small>
+                            </div>
+                            <div style="background: #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 12px;">
+                                10:00:45<br><small>In window</small>
+                            </div>
+                            <div style="background: #22c55e; padding: 8px 12px; border-radius: 6px; font-size: 12px;">
+                                10:00:58<br><small>New request</small>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: #94a3b8;">
+                            Window: 60s | Limit: 100 | Current: <span style="color: #22c55e; font-weight: bold;">4 requests</span> |
+                            <span style="color: #22c55e;">ALLOWED</span>
+                        </div>
+                        <div style="margin-top: 12px; font-size: 12px; color: #64748b;">
+                            ZREMRANGEBYSCORE removes entries older than (now - window_size)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Storage Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">💾</div>
+                    <div class="evolution-label">Local</div>
+                    <div class="evolution-db">In-Memory</div>
+                    <div class="evolution-detail">sync.Map / LRU cache<br>Single server only</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔴</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">Single Redis</div>
+                    <div class="evolution-detail">ElastiCache<br>Lua scripts for atomicity</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔷</div>
+                    <div class="evolution-label">Scale</div>
+                    <div class="evolution-db">Redis Cluster</div>
+                    <div class="evolution-detail">16+ shards<br>Hash slot distribution</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌐</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">Cell-Based Architecture</div>
+                    <div class="evolution-detail">Regional Redis + sync<br>Quota allocation per cell</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1115,6 +1327,219 @@ func (rl *DistributedRateLimiter) Allow(ctx context.Context, key string) bool {
             <div class="metric">
                 <div class="value">99.95%</div>
                 <div class="label">Availability</div>
+            </div>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Redis Replication Lag</div>
+                <p>User hits Mumbai then immediately hits Hyderabad before sync completes.</p>
+                <div class="case-solution">Accept eventual consistency (1-2% over-limit is OK). Use local-first check with global snapshot. Implement "soft limits" that warn before hard block. For critical APIs, use synchronous global check (adds latency).</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Region Failover During Traffic Spike</div>
+                <p>Primary region fails, all traffic redirects to secondary which doesn't have rate limit state.</p>
+                <div class="case-solution">Replicate rate limit state via Global Datastore. On failover, use conservative limits initially. Implement "recovery mode" with relaxed limits for 5 minutes. Pre-warm standby region with recent state snapshots.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Clock Drift Across Regions</div>
+                <p>Mumbai and Hyderabad servers have 500ms clock difference causing window miscalculations.</p>
+                <div class="case-solution">Use Redis TIME for all timestamp operations. Implement vector clocks for cross-region ordering. AWS Time Sync Service ensures &lt;1ms drift. Add tolerance buffer to window boundaries.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Tenant Isolation Breach</div>
+                <p>High-traffic tenant exhausts shared Redis resources, affecting other tenants.</p>
+                <div class="case-solution">Separate Redis instances per tier (free vs enterprise). Implement resource quotas per tenant in Redis. Use key prefixing with tenant isolation. Monitor per-tenant Redis operations and alert on abuse.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Dynamic Limit Changes During High Load</div>
+                <p>Admin updates rate limits but change doesn't propagate consistently across regions.</p>
+                <div class="case-solution">Use config versioning with atomic updates. Propagate via dedicated config sync channel. Implement "effective_at" timestamp for scheduled changes. Gradual rollout: 10% → 50% → 100% of traffic.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Geo-Routing Flip-Flop</div>
+                <p>User's requests alternate between regions due to DNS instability, doubling their effective limit.</p>
+                <div class="case-solution">Use sticky sessions based on user ID (not IP). Implement global rate limit check for authenticated users. Set DNS TTL appropriately (60s minimum). Track user's "home region" and enforce limits there.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Federated Rate Limiting</div>
+                <p>Allow partner APIs to share rate limit quota across organizational boundaries.</p>
+                <div class="future-approach">OAuth-based quota sharing. Partner A grants Partner B 10% of their quota. Implement quota transfer API. Real-time dashboard showing shared usage. Revocation with immediate effect.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Auto-Scaling</div>
+                <p>Anticipate traffic spikes and pre-scale rate limiter infrastructure.</p>
+                <div class="future-approach">ML model trained on historical patterns (time of day, day of week, events). Trigger pre-warming 30 minutes before predicted spike. Integrate with AWS Auto Scaling predictive policies. Alert on anomaly detection.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Rate Limit Marketplace</div>
+                <p>Allow users to purchase additional quota on-demand during peak usage.</p>
+                <div class="future-approach">Integrate with billing system. Offer burst packages (1000 extra requests for $1). Auto-suggest when user approaches limit. Implement spending caps and alerts.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Compliance-Aware Rate Limiting</div>
+                <p>Different rate limits based on data residency and regulatory requirements.</p>
+                <div class="future-approach">Geo-fence sensitive data endpoints. Stricter limits for cross-border data access. Audit logging for compliance reporting. GDPR/RBI-compliant rate limit policies.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle rate limiting when a user's requests are load-balanced across multiple servers?</div>
+                    <div class="followup-hint">Centralized Redis for source of truth. Each server checks Redis before allowing request. Use Lua scripts for atomic check-and-update. Accept ~1% over-limit due to network latency between check and update.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">What's the trade-off between accuracy and latency in distributed rate limiting?</div>
+                    <div class="followup-hint"><strong>Accuracy:</strong> Synchronous global check, adds 5-20ms latency. <strong>Low latency:</strong> Local check with async sync, may allow 10-20% over-limit. <strong>Hybrid:</strong> Local for fast path, global for borderline cases.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement tiered rate limits (free/pro/enterprise) with dynamic upgrades?</div>
+                    <div class="followup-hint">Store tier limits in Redis hash (config:tier:pro). Include tier in rate limit key (user:123:pro). On upgrade, update user's tier in auth token. New limits apply immediately on next request. Prorate if mid-billing cycle.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle rate limit state during a Redis cluster reshard?</div>
+                    <div class="followup-hint">ElastiCache handles resharding transparently. Brief increased latency during slot migration. Use hash tags {user:123} to keep related keys together. Implement retry logic with exponential backoff. Fail open during migration.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a rate limit analytics dashboard for multi-region deployment.</div>
+                    <div class="followup-hint">Aggregate metrics via CloudWatch cross-region. Show: requests/region, denial rate, top limited users, limit utilization %. Real-time streaming via Kinesis. Historical trends for capacity planning. Alert on sudden denial rate spikes.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>PAN-India Stage - Distributed Request Flow</h4>
+            <div class="flow-vertical">
+                <!-- Multi-Region Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">MULTI-REGION RATE LIMIT FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Request<br><small>User in Delhi</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Route 53<br><small>Latency routing</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Mumbai API<br><small>Nearest region</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Local Redis<br><small>Primary check</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db" style="background: #22c55e;">200 OK</div>
+                    </div>
+                </div>
+
+                <!-- Sync Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #3b82f6; margin-bottom: 12px;">CROSS-REGION SYNC (Async, every 500ms)</div>
+                    <div class="flow-row">
+                        <div class="flow-node cache">Mumbai Redis<br><small>delta: +15</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue" style="background: #8b5cf6;">Global Datastore<br><small>Replicate</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Hyderabad Redis<br><small>Receive sync</small></div>
+                    </div>
+                </div>
+
+                <!-- Eventual Consistency Visual -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #f59e0b; margin-bottom: 12px;">EVENTUAL CONSISTENCY MODEL</div>
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px; text-align: center;">
+                        <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 16px;">
+                            <div style="text-align: center;">
+                                <div style="background: #3b82f6; padding: 12px 24px; border-radius: 8px; margin-bottom: 8px;">
+                                    <strong>Mumbai</strong><br>
+                                    <span style="font-size: 24px;">78</span><small>/100</small>
+                                </div>
+                                <small style="color: #94a3b8;">Local count</small>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="background: #22c55e; padding: 12px 24px; border-radius: 8px; margin-bottom: 8px;">
+                                    <strong>Hyderabad</strong><br>
+                                    <span style="font-size: 24px;">45</span><small>/100</small>
+                                </div>
+                                <small style="color: #94a3b8;">Local count</small>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="background: #f59e0b; padding: 12px 24px; border-radius: 8px; margin-bottom: 8px;">
+                                    <strong>Global</strong><br>
+                                    <span style="font-size: 24px;">123</span><small>/200</small>
+                                </div>
+                                <small style="color: #94a3b8;">Aggregated (eventually)</small>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: #94a3b8;">
+                            Each region enforces local + global limits | Sync delay: &lt;1 second | Accuracy: ~98%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Storage Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">💾</div>
+                    <div class="evolution-label">Local</div>
+                    <div class="evolution-db">In-Memory</div>
+                    <div class="evolution-detail">sync.Map / LRU cache<br>Single server only</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔴</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">Single Redis</div>
+                    <div class="evolution-detail">ElastiCache<br>Lua scripts for atomicity</div>
+                </div>
+                <div class="evolution-stage current">
+                    <div class="evolution-icon">🇮🇳</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">Redis Global Datastore</div>
+                    <div class="evolution-detail">Cross-region replication<br>Primary + Replica</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌐</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">Cell-Based Architecture</div>
+                    <div class="evolution-detail">Regional Redis + sync<br>Quota allocation per cell</div>
+                </div>
             </div>
         </div>
     </div>
@@ -1477,6 +1902,227 @@ kubectl set env deployment/api \
                 <div class="label">Availability</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Hot Key Problem (Celebrity Effect)</div>
+                <p>Single user/IP generates millions of requests, overwhelming one Redis shard.</p>
+                <div class="case-solution">Spread hot keys across shards using random suffix (user:123:{rand}). Local cache absorbs hot key reads. Implement early rejection at edge (CloudFront). Use dedicated rate limit shard for known hot keys.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redis Cluster Slot Migration</div>
+                <p>During slot rebalancing, some keys temporarily unavailable or slow.</p>
+                <div class="case-solution">Implement retry with exponential backoff (max 3 attempts). Fail open during migration (allow requests). Use hash tags to keep user keys together on same slot. Monitor CLUSTER SLOTS for migration status.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">DDoS Amplification via Rate Limit API</div>
+                <p>Attacker queries rate limit status API to probe system capacity and plan attack.</p>
+                <div class="case-solution">Rate limit the rate limit status endpoint itself. Require authentication for detailed status. Return approximate values (not exact). Implement honeypot detection for probing patterns.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Lua Script Timeout Under Load</div>
+                <p>Complex Lua scripts block Redis single-threaded execution, causing cascading delays.</p>
+                <div class="case-solution">Keep Lua scripts simple (&lt;10 operations). Set lua-time-limit (default 5s). Pre-load scripts with SCRIPT LOAD. Use simpler algorithms (fixed window) during extreme load. Monitor slow log.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Multi-Layer Rate Limit Inconsistency</div>
+                <p>Edge allows request but application layer denies, causing confusing user experience.</p>
+                <div class="case-solution">Consistent limit definitions across layers (edge &gt;= app). Use same rate limit key format. Sync configurations via central config service. Include layer info in 429 response for debugging.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Local Cache Stampede</div>
+                <p>Local cache entry expires, all threads simultaneously hit Redis.</p>
+                <div class="case-solution">Implement singleflight pattern (one request to Redis, share result). Add jitter to cache TTL (TTL + random(0, 10s)). Use probabilistic early expiration. Background refresh before expiry.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">AI-Powered Anomaly Detection</div>
+                <p>Use machine learning to detect sophisticated attack patterns that evade simple rate limits.</p>
+                <div class="future-approach">Train model on normal traffic patterns (request timing, endpoint mix, payload size). Real-time scoring via SageMaker endpoint. Auto-escalate suspicious patterns to stricter limits. Human review queue for borderline cases.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Request Priority Queuing</div>
+                <p>Instead of hard rejection, queue low-priority requests during traffic spikes.</p>
+                <div class="future-approach">Classify requests: critical (payments) &gt; normal (API) &gt; background (analytics). Queue non-critical with timeout. Process queue as capacity allows. Return 202 Accepted with callback URL.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">WebAssembly Edge Rate Limiting</div>
+                <p>Run rate limiting logic at CDN edge using WASM for sub-millisecond decisions.</p>
+                <div class="future-approach">Compile rate limit logic to WASM. Deploy to Cloudflare Workers / Fastly Compute. Local state in edge KV store. Async sync to origin for global state. Achieves &lt;0.1ms overhead.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Blockchain-Based Quota Trading</div>
+                <p>Allow enterprises to trade unused API quotas on a transparent marketplace.</p>
+                <div class="future-approach">Mint quota tokens on private blockchain. Smart contracts for instant quota transfer. Real-time verification at API gateway. Audit trail for compliance. Settlement in fiat or crypto.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement rate limiting at the edge (CDN level) vs application level?</div>
+                    <div class="followup-hint"><strong>Edge:</strong> CloudFront + Lambda@Edge or WAF rules. Fast (no origin hit), but limited logic. Good for IP blocking, geo-blocking. <strong>App:</strong> Full context (user ID, API key). Complex rules. Higher latency. <strong>Best:</strong> Layer both - edge for coarse, app for fine-grained.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle the "thundering herd" problem when rate limit cache expires?</div>
+                    <div class="followup-hint">Singleflight pattern: first request fetches, others wait and share result. Probabilistic early expiration: refresh before TTL with some probability. Background refresh: async update before expiry. Mutex with timeout: only one thread updates.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design rate limiting for a system that needs to handle 100x traffic during flash sales.</div>
+                    <div class="followup-hint">Pre-scale Redis cluster before event. Implement virtual waiting room (queue users before they hit API). Use aggressive local caching. Simplify algorithm to fixed window (fastest). Pre-warm rate limit state. Have kill switch ready.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement per-endpoint rate limits with different algorithms?</div>
+                    <div class="followup-hint">Strategy pattern: each endpoint has RateLimitStrategy. Config maps endpoint → strategy + params. Factory creates appropriate limiter. Example: /search uses sliding window, /checkout uses token bucket with high burst. Store config in Redis for dynamic updates.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">What metrics would you monitor to ensure rate limiter health at scale?</div>
+                    <div class="followup-hint"><strong>Latency:</strong> p50/p99 of rate limit check. <strong>Error rate:</strong> Redis connection failures. <strong>Denial rate:</strong> % of 429s (alert if sudden spike). <strong>Cache hit ratio:</strong> local cache effectiveness. <strong>Redis memory:</strong> eviction rate. <strong>False positive rate:</strong> legitimate users blocked.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>High Traffic Stage - Multi-Layer Defense Flow</h4>
+            <div class="flow-vertical">
+                <!-- Multi-Layer Defense -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">MULTI-LAYER RATE LIMITING</div>
+                    <div class="flow-row">
+                        <div class="flow-node cdn" style="background: #ef4444;">Layer 1: Edge<br><small>WAF + CloudFront</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">70% blocked</span>
+                        </div>
+                        <div class="flow-node gateway" style="background: #f97316;">Layer 2: Gateway<br><small>API Gateway</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">20% pass</span>
+                        </div>
+                        <div class="flow-node service" style="background: #22c55e;">Layer 3: App<br><small>Service mesh</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Backend<br><small>Protected</small></div>
+                    </div>
+                </div>
+
+                <!-- Local + Redis Hybrid -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #3b82f6; margin-bottom: 12px;">LOCAL CACHE + REDIS HYBRID</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Request</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache" style="background: #22c55e;">Local LRU<br><small>0.01ms</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">cache miss</span>
+                        </div>
+                        <div class="flow-node cache">Redis Cluster<br><small>0.5ms</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Update Local<br><small>Cache result</small></div>
+                    </div>
+                </div>
+
+                <!-- Hot Key Mitigation Visual -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #f59e0b; margin-bottom: 12px;">HOT KEY MITIGATION STRATEGY</div>
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px; text-align: center;">
+                        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 16px;">
+                            <div style="text-align: center;">
+                                <div style="background: #ef4444; padding: 8px 16px; border-radius: 6px; margin-bottom: 4px;">
+                                    <strong>Problem</strong>
+                                </div>
+                                <div style="font-size: 12px; color: #94a3b8;">user:celebrity → Shard 7<br>1M req/sec to one shard</div>
+                            </div>
+                            <div style="font-size: 24px; color: #64748b; align-self: center;">→</div>
+                            <div style="text-align: center;">
+                                <div style="background: #22c55e; padding: 8px 16px; border-radius: 6px; margin-bottom: 4px;">
+                                    <strong>Solution</strong>
+                                </div>
+                                <div style="font-size: 12px; color: #94a3b8;">user:celebrity:{1-100}<br>Spread across 100 shards</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Shard 1</span>
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Shard 2</span>
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Shard 3</span>
+                            <span style="color: #64748b;">...</span>
+                            <span style="background: #3b82f6; padding: 4px 8px; border-radius: 4px; font-size: 11px;">Shard 16</span>
+                        </div>
+                        <div style="margin-top: 12px; font-size: 12px; color: #64748b;">
+                            Aggregate: SUM(user:celebrity:{1-100}) for total count
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Storage Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">💾</div>
+                    <div class="evolution-label">Local</div>
+                    <div class="evolution-db">In-Memory</div>
+                    <div class="evolution-detail">sync.Map / LRU cache<br>Single server only</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔴</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">Single Redis</div>
+                    <div class="evolution-detail">ElastiCache<br>Lua scripts for atomicity</div>
+                </div>
+                <div class="evolution-stage current">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Redis Cluster + Local</div>
+                    <div class="evolution-detail">16+ shards<br>LRU hybrid caching</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌐</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">Cell-Based Architecture</div>
+                    <div class="evolution-detail">Regional Redis + sync<br>Quota allocation per cell</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1813,6 +2459,227 @@ curl -X POST https://flags.global/rate-limiter \
             <div class="metric">
                 <div class="value">99.999%</div>
                 <div class="label">Availability</div>
+            </div>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Global Network Partition (Split Brain)</div>
+                <p>US and EU regions can't communicate, both think they're the primary for global limits.</p>
+                <div class="case-solution">Use Raft/Paxos for leader election with quorum. During partition, each region enforces local limits only. Reconcile counters when partition heals. Alert ops team immediately. Have manual override for critical users.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Quota Rebalancing During Attack</div>
+                <p>One region under DDoS exhausts its quota, tries to borrow from others, spreading the attack.</p>
+                <div class="case-solution">Implement circuit breaker on quota borrowing. Limit max borrow to 20% of donor's quota. Detect anomalous borrow patterns (ML-based). Isolate affected region automatically. Notify security team.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Kafka/Kinesis Lag in Global Sync</div>
+                <p>Event stream falls behind, rate limit state becomes minutes stale across regions.</p>
+                <div class="case-solution">Monitor consumer lag with alerts (threshold: 10s). Implement checkpoint-based catch-up. Fall back to local-only limits if lag exceeds threshold. Use compacted topics to reduce catch-up time.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">GDPR Data Locality Conflict</div>
+                <p>EU user's rate limit data must stay in EU, but they're hitting US endpoints.</p>
+                <div class="case-solution">Store rate limit state in user's home region. Route rate limit checks to home region (adds latency). Use anonymized/hashed keys for non-EU storage. Implement data residency tags in Redis keys.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Leader Election Flapping</div>
+                <p>Unstable network causes frequent leader changes, disrupting global quota decisions.</p>
+                <div class="case-solution">Implement leader election with hysteresis (10s minimum term). Use health check smoothing (3 failures before demotion). Have designated backup leader per region. Log all elections for debugging.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Time Zone Confusion in Daily Limits</div>
+                <p>User in Tokyo expects daily limit to reset at midnight JST, but system uses UTC.</p>
+                <div class="case-solution">Store user's timezone preference. Calculate window boundaries in user's timezone. Display remaining quota with timezone context. Option for fixed UTC for enterprise (predictable billing).</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Chaos Engineering for Rate Limiters</div>
+                <p>Proactively test rate limiter resilience by injecting failures in production.</p>
+                <div class="future-approach">Integrate with Chaos Monkey / Gremlin. Test scenarios: Redis failure, network partition, clock skew. Run chaos experiments during low-traffic windows. Automated runbooks for detected failures.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Carbon-Aware Rate Limiting</div>
+                <p>Adjust rate limits based on data center carbon intensity to reduce environmental impact.</p>
+                <div class="future-approach">Integrate with WattTime API for real-time carbon data. Shift non-critical traffic to greener regions. Offer "green API tier" with sustainability incentives. Report carbon savings in customer dashboard.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Self-Healing Rate Limiters</div>
+                <p>Automatically detect and recover from rate limiter failures without human intervention.</p>
+                <div class="future-approach">ML model detects anomalies in rate limit behavior. Auto-rollback bad config changes. Self-scaling based on traffic predictions. Automated failover with health verification.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">API Credits Economy</div>
+                <p>Full-featured internal marketplace for API quota management across teams.</p>
+                <div class="future-approach">Teams get monthly API credit budgets. Unused credits roll over or trade. Chargeback model for cross-team API usage. Executive dashboard for API consumption analytics.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement global rate limits across 5 regions while maintaining sub-millisecond latency?</div>
+                    <div class="followup-hint">Pre-allocate regional quotas (40/30/20/5/5%). Local enforcement first, no cross-region calls. Async rebalancing every 5s via Kafka. Accept eventual consistency (~2% over-limit globally). Use CRDT counters for conflict-free merge.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a system that can handle 100x traffic spike during global events like World Cup final.</div>
+                    <div class="followup-hint">Pre-scale infrastructure 2 hours before. Virtual waiting room queues users. Aggressive local caching (accept stale). Simplify algorithm to fixed window. Edge rate limiting blocks 90% at CDN. Dedicated "event mode" with relaxed limits for verified users.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure rate limiting doesn't become a single point of failure at global scale?</div>
+                    <div class="followup-hint">Multi-layer defense (edge + gateway + app). Each layer can function independently. Fail open with local fallback. No single Redis cluster owns all state. Cell-based architecture isolates failures. Chaos testing validates resilience.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement fair rate limiting for a multi-tenant global SaaS?</div>
+                    <div class="followup-hint">Hierarchical limits: Platform → Tenant → User → Endpoint. Noisy neighbor isolation (dedicated pools for large tenants). SLA-based guarantees per tier. Real-time usage dashboards. Alerting when approaching limits. Self-service limit increase workflow.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">What's your strategy for migrating from a centralized to distributed rate limiter with zero downtime?</div>
+                    <div class="followup-hint">Phase 1: Shadow mode (new system logs, old enforces). Phase 2: Percentage rollout (10% → 50% → 100%). Phase 3: Reverse shadow (new enforces, old logs for comparison). Automatic rollback on divergence. Feature flags per tenant. Run parallel for 2 weeks before decommission.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>Global Stage - Multi-Region Active-Active Flow</h4>
+            <div class="flow-vertical">
+                <!-- Global Request Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">GLOBAL RATE LIMIT FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Request<br><small>User in Tokyo</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cdn">CloudFront<br><small>Edge POP</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">APAC Gateway<br><small>Singapore</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Regional Redis<br><small>Local quota</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db" style="background: #22c55e;">200 OK</div>
+                    </div>
+                </div>
+
+                <!-- Quota Rebalancing -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #8b5cf6; margin-bottom: 12px;">DYNAMIC QUOTA REBALANCING (Every 5 seconds)</div>
+                    <div class="flow-row">
+                        <div class="flow-node cache">US-East<br><small>Usage: 30%</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue" style="background: #8b5cf6;">Kafka<br><small>Quota events</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Leader<br><small>Rebalance calc</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">APAC<br><small>Usage: 90%</small></div>
+                    </div>
+                    <div style="text-align: center; margin-top: 8px; font-size: 12px; color: #94a3b8;">
+                        APAC high usage → Borrow 500 quota from underutilized US-East
+                    </div>
+                </div>
+
+                <!-- Cell-Based Architecture Visual -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #f59e0b; margin-bottom: 12px;">CELL-BASED ARCHITECTURE</div>
+                    <div style="background: #1e293b; border-radius: 12px; padding: 20px; text-align: center;">
+                        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+                            <div style="background: rgba(59,130,246,0.2); padding: 16px; border-radius: 8px; border: 2px solid #3b82f6;">
+                                <strong style="color: #3b82f6;">Cell: US</strong><br>
+                                <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">
+                                    Quota: 4,000/min<br>
+                                    Redis: us-east-1<br>
+                                    Users: 40%
+                                </div>
+                            </div>
+                            <div style="background: rgba(34,197,94,0.2); padding: 16px; border-radius: 8px; border: 2px solid #22c55e;">
+                                <strong style="color: #22c55e;">Cell: EU</strong><br>
+                                <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">
+                                    Quota: 3,500/min<br>
+                                    Redis: eu-west-1<br>
+                                    Users: 35%
+                                </div>
+                            </div>
+                            <div style="background: rgba(249,115,22,0.2); padding: 16px; border-radius: 8px; border: 2px solid #f97316;">
+                                <strong style="color: #f97316;">Cell: APAC</strong><br>
+                                <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">
+                                    Quota: 2,500/min<br>
+                                    Redis: ap-southeast-1<br>
+                                    Users: 25%
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: #94a3b8;">
+                            Each cell is autonomous | Global limit: 10,000/min | Cells can borrow up to 20% from others
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Storage Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">💾</div>
+                    <div class="evolution-label">Local</div>
+                    <div class="evolution-db">In-Memory</div>
+                    <div class="evolution-detail">sync.Map / LRU cache<br>Single server only</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔴</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">Single Redis</div>
+                    <div class="evolution-detail">ElastiCache<br>Lua scripts for atomicity</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Redis Cluster</div>
+                    <div class="evolution-detail">16+ shards<br>LRU hybrid caching</div>
+                </div>
+                <div class="evolution-stage current">
+                    <div class="evolution-icon">🌐</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">Cell-Based Architecture</div>
+                    <div class="evolution-detail">Regional Redis clusters<br>Kafka for quota sync</div>
+                </div>
             </div>
         </div>
     </div>

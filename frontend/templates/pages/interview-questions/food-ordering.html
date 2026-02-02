@@ -1079,6 +1079,211 @@ argocd app rollback food-ordering --revision 42</pre>
                 <div class="label">Order Success</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Item Goes Out of Stock After Order Placed</div>
+                <p>Customer orders an item, payment succeeds, but restaurant marks item unavailable before confirming.</p>
+                <div class="case-solution">Implement inventory hold during checkout (5-min lock). On stock-out: auto-suggest substitutes via push notification, offer partial refund + credit, or full cancellation. Track "stock accuracy score" per restaurant for quality control.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Restaurant Closes Mid-Order</div>
+                <p>Restaurant goes offline (closes early, emergency) after accepting order but before completion.</p>
+                <div class="case-solution">Implement heartbeat check every 2 minutes from restaurant app. On 3 missed heartbeats: alert ops team, attempt phone call, auto-cancel if unresponsive for 10 min. Full refund + compensation coupon. Kafka event triggers customer notification.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">No Delivery Partner Available</div>
+                <p>Order ready for pickup but no delivery partners within acceptable radius or all busy.</p>
+                <div class="case-solution">Implement tiered radius expansion (3km → 5km → 8km). Activate surge incentives for partners. Show "high demand" warning at checkout. Fallback: offer self-pickup discount. Track "partner availability score" by zone/time for capacity planning.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Payment Failure After Food Prepared</div>
+                <p>Async payment confirmation fails (bank timeout, insufficient funds detected late) after restaurant started cooking.</p>
+                <div class="case-solution">Use payment pre-authorization (hold funds) before order confirmation. For COD: implement customer trust score based on history. Restaurant compensation fund for genuine failures. Flag repeat offenders, require prepaid only.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Order Modification After Confirmation</div>
+                <p>Customer wants to add items, change address, or modify order after restaurant accepted.</p>
+                <div class="case-solution">Allow modifications only in "confirmed" state, not "preparing". Address changes: recalculate delivery fee, check if within serviceable area. Item additions: create linked supplementary order. Implement modification window (e.g., 2 minutes post-confirmation).</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Customer Cancellation After Preparation Started</div>
+                <p>Customer cancels order when food is already being prepared or ready.</p>
+                <div class="case-solution">Implement progressive cancellation policy: full refund if "confirmed", 50% if "preparing", no refund if "ready". Show clear cancellation terms at checkout. Prepared food: offer to nearby customers at discount (food rescue feature) or donate to partner NGOs.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Ghost Kitchens Management</div>
+                <p>Support cloud kitchens operating multiple virtual brands from single location.</p>
+                <div class="future-approach">New `virtual_brands` table linked to physical kitchen. Separate menus, ratings, and branding per brand. Shared inventory and preparation queue. Analytics dashboard for kitchen owners to optimize brand performance.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Drone Delivery Integration</div>
+                <p>Autonomous drone delivery for short-distance orders in approved zones.</p>
+                <div class="future-approach">Integrate with drone fleet API (Wing, Zipline). Geofence eligible delivery zones. Weight/size restrictions per order. Dual-mode: drone to hub + last-mile partner for restricted areas. Real-time airspace coordination.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">AI Menu Recommendations</div>
+                <p>Personalized menu suggestions based on order history, time, weather, and preferences.</p>
+                <div class="future-approach">ML model trained on user behavior (collaborative filtering + content-based). Real-time features: weather API, time of day, recent orders. A/B test recommendation placement. Track conversion lift per recommendation type.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Dynamic Delivery Zones</div>
+                <p>Adjust restaurant delivery radius based on real-time demand, partner availability, and traffic.</p>
+                <div class="future-approach">ML model predicts delivery time by zone. Contract radius during peak hours or bad weather. Expand for high-rated restaurants with good packaging. Real-time zone boundaries stored in Redis, updated every 5 minutes.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you design the order state machine? What states and transitions are needed?</div>
+                    <div class="followup-hint">States: placed → confirmed → preparing → ready → picked_up → in_transit → delivered. Also: cancelled, refunded. Validate transitions server-side. Store state history for disputes. Use Kafka events for each transition.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you optimize delivery partner assignment to minimize delivery time?</div>
+                    <div class="followup-hint">Multi-factor scoring: distance to restaurant, current order load, partner rating, vehicle type, historical performance in area. Consider batching nearby orders. Use PostGIS for geospatial queries, rank top 10 candidates, send to best first with timeout.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the restaurant onboarding flow. What validations and data are needed?</div>
+                    <div class="followup-hint">KYC: FSSAI license verification, GST, bank account. Menu upload: structured format with categories, prices, images. Location verification via field visit or video call. Trial period with limited orders. Quality checklist before going live.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle peak hour traffic (IPL final + dinner time)?</div>
+                    <div class="followup-hint">Queue-based order acceptance with back-pressure. Restaurant-level order caps. Pre-scale infrastructure based on event calendar. Surge pricing to balance demand. Disable non-essential features (reviews, recommendations). Cache aggressively.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle payment reconciliation with restaurants?</div>
+                    <div class="followup-hint">Daily settlement batch job. Deduct platform commission, delivery partner payout, refunds, promotions. Generate detailed statement per restaurant. Handle disputes with order-level audit trail. Weekly/biweekly payout cycles based on restaurant tier.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>MVP Stage - Complete Order Flow</h4>
+            <div class="flow-vertical">
+                <!-- Customer Order Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">CUSTOMER ORDER JOURNEY</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Browse<br><small>Search restaurants</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Cart<br><small>Add items</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Checkout<br><small>Address + payment</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Payment<br><small>UPI/Card/COD</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Order Created<br><small>status: placed</small></div>
+                    </div>
+                </div>
+
+                <!-- Order State Machine -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">ORDER STATE MACHINE</div>
+                    <div class="flow-row">
+                        <div class="flow-node" style="background: #fef3c7; color: #92400e;">PLACED</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #dbeafe; color: #1e40af;">CONFIRMED</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #fce7f3; color: #9d174d;">PREPARING</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #d1fae5; color: #065f46;">READY</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #e0e7ff; color: #3730a3;">PICKED UP</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #dcfce7; color: #166534;">DELIVERED</div>
+                    </div>
+                    <div style="text-align: center; margin-top: 8px; font-size: 12px; color: #64748b;">
+                        Any state can transition to CANCELLED (with refund rules based on current state)
+                    </div>
+                </div>
+
+                <!-- Delivery Assignment Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #dc2626; margin-bottom: 12px;">DELIVERY ASSIGNMENT FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Order Ready<br><small>Kafka event</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Find Partners<br><small>PostGIS 3km</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Rank & Score<br><small>Distance + rating</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Push Request<br><small>30s timeout</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Partner Accepts<br><small>Update order</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌱</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Single primary<br>Multi-AZ standby<br>Geospatial queries</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔍</div>
+                    <div class="evolution-label">+ Search</div>
+                    <div class="evolution-db">Elasticsearch</div>
+                    <div class="evolution-detail">Full-text search<br>Menu + restaurant<br>Fuzzy matching</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">📖</div>
+                    <div class="evolution-label">+ Replicas</div>
+                    <div class="evolution-db">Read Replicas</div>
+                    <div class="evolution-detail">Separate read traffic<br>Analytics queries<br>Reporting dashboard</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">📜</div>
+                    <div class="evolution-label">+ Events</div>
+                    <div class="evolution-db">Event Sourcing</div>
+                    <div class="evolution-detail">Order event log<br>Full audit trail<br>State reconstruction</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1271,6 +1476,206 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div class="label">New Restaurants</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-City Order Routing Failure</div>
+                <p>User's GPS shows different city than delivery address, or order routed to wrong regional cluster.</p>
+                <div class="case-solution">Use delivery address (not user location) for city routing. Validate city_id matches restaurant's city. Implement cross-city order rejection at checkout. Monitor city mismatch metrics in Datadog.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regional Payment Gateway Outage</div>
+                <p>Primary payment gateway (Razorpay) fails in specific region while other regions work fine.</p>
+                <div class="case-solution">Multi-gateway setup: Razorpay primary, PayU secondary, Paytm tertiary. Circuit breaker per gateway per region. Auto-failover within 30s of detecting failures. Regional success rate dashboards for proactive switching.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Restaurant Chain Sync Issues</div>
+                <p>Chain restaurant (Domino's) updates menu centrally but changes don't propagate to all outlets uniformly.</p>
+                <div class="case-solution">Implement central menu template with outlet-level overrides. Event-driven sync via Kafka. Version tracking per outlet. Admin dashboard showing sync status. Alert on outlets with stale menu (>24h).</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Surge Pricing Backlash During Crisis</div>
+                <p>Automatic surge pricing activates during natural disaster or emergency, causing PR crisis.</p>
+                <div class="case-solution">Implement "crisis mode" flag that ops can activate per city. Auto-disable surge during declared emergencies. Geo-fence affected areas. Monitoring for unusual surge patterns + human review trigger.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Partner App Version Fragmentation</div>
+                <p>Delivery partners using outdated app versions causing tracking failures or feature incompatibility.</p>
+                <div class="case-solution">Force upgrade for critical versions. Graceful degradation for older versions. Backend compatibility layer for 2 versions back. In-app upgrade prompts with incentives. Track version distribution metrics.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regional Language Menu Translation Errors</div>
+                <p>Auto-translated menu items are incorrect or offensive in regional languages (Hindi, Tamil, etc.).</p>
+                <div class="case-solution">Human-reviewed translations for top 1000 dishes. ML translation with confidence scores. Low-confidence items flagged for review. Restaurant-provided regional names preferred. User feedback loop for corrections.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Multi-Restaurant Orders (Cart from Multiple Places)</div>
+                <p>Allow customers to order from multiple nearby restaurants in single checkout.</p>
+                <div class="future-approach">Group restaurants by delivery zone proximity. Single delivery partner picks up from multiple locations. Complex ETA calculation considering all stops. Split payment attribution per restaurant. Higher delivery fee for multi-stop.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Subscription Meal Plans</div>
+                <p>Weekly/monthly subscription for regular meals (office lunch, diet plans).</p>
+                <div class="future-approach">New `subscriptions` table with frequency, menu preferences. Auto-order generation at scheduled times. Pause/modify functionality. Discounted rates for commitment. Partner with health-focused restaurants for diet plans.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Live Kitchen Cameras</div>
+                <p>Stream restaurant kitchen for food preparation transparency.</p>
+                <div class="future-approach">WebRTC streaming integration. Opt-in for restaurants (premium badge). CDN for stream distribution. Recording for dispute resolution. Privacy-compliant with worker consent.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Pre-Ordering</div>
+                <p>ML-based prediction of user's likely order, pre-staged at nearby restaurant.</p>
+                <div class="future-approach">Train model on order history, time, day, weather. Confidence threshold for pre-staging. Restaurant incentives for participating. Significant delivery time reduction. Inventory risk mitigation strategy.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle database sharding by city while supporting cross-city users?</div>
+                    <div class="followup-hint">Shard by city_id with routing layer. User profiles in separate global DB. Order queries always include city_id. Cross-city order history via scatter-gather (expensive, acceptable for history). Use Citus or Vitess for PostgreSQL sharding.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a surge pricing algorithm that balances supply and demand fairly.</div>
+                    <div class="followup-hint">Calculate demand/supply ratio per zone (H3 hexagons). Tiers: 1.0x, 1.2x, 1.5x, 2.0x based on ratio. Cap at 2x to avoid backlash. Show surge prominently before checkout. Time-decay: reduce surge as partners arrive. ML model for demand prediction.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement restaurant self-onboarding at scale?</div>
+                    <div class="followup-hint">Digital KYC via DigiLocker API. Automated FSSAI verification. Menu builder with image upload to S3. Contract signing via DocuSign. Initial low order cap (10/day) with gradual increase. Quality score based on early reviews.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure read replicas are consistent for order tracking?</div>
+                    <div class="followup-hint">Critical reads (order status) go to primary. Accept eventual consistency for search/browse (few seconds lag). Use Redis for real-time tracking (source of truth during delivery). Replica lag monitoring with automatic routing to primary if lag > 2s.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the delivery partner incentive system to maximize coverage.</div>
+                    <div class="followup-hint">Zone-based incentives for underserved areas. Peak hour bonuses. Streak bonuses (5 deliveries = extra). Rain/bad weather multipliers. Weekly guaranteed minimum for full-time partners. Real-time incentive display in partner app.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>PAN-India Stage - Multi-Region Order Flow</h4>
+            <div class="flow-vertical">
+                <!-- Regional Routing Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">REGIONAL REQUEST ROUTING</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User Request<br><small>Any city</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Route 53<br><small>Latency-based</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cdn">CloudFront<br><small>Edge cache</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Regional EKS<br><small>Mumbai/Hyderabad</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">City Shard<br><small>Partitioned data</small></div>
+                    </div>
+                </div>
+
+                <!-- Cross-Region Data Sync -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">DATA SYNCHRONIZATION</div>
+                    <div class="flow-row">
+                        <div class="flow-node db">Primary DB<br><small>Mumbai (writes)</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue">Replication<br><small>Async &lt;1s</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Read Replica<br><small>Hyderabad</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis Global<br><small>Session sync</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node storage">ES Cluster<br><small>Search index</small></div>
+                    </div>
+                </div>
+
+                <!-- Order State at Scale -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #dc2626; margin-bottom: 12px;">DISTRIBUTED ORDER PROCESSING</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Order Service<br><small>Validate city</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue">Kafka<br><small>City partition</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">City Consumer<br><small>Process order</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">City Shard<br><small>INSERT order</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Notify<br><small>Restaurant app</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - PAN-India Stage</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🏙️</div>
+                    <div class="evolution-label">City Partitions</div>
+                    <div class="evolution-db">PostgreSQL Partitions</div>
+                    <div class="evolution-detail">LIST partition by city_id<br>Partition pruning<br>Per-city indexes</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">📖</div>
+                    <div class="evolution-label">Read Replicas</div>
+                    <div class="evolution-db">Cross-Region Replicas</div>
+                    <div class="evolution-detail">Mumbai → Hyderabad<br>Read traffic split<br>&lt;1s replication lag</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌐</div>
+                    <div class="evolution-label">Global Cache</div>
+                    <div class="evolution-db">ElastiCache Global</div>
+                    <div class="evolution-detail">Redis replication<br>Session sharing<br>Menu cache sync</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">📊</div>
+                    <div class="evolution-label">Analytics Split</div>
+                    <div class="evolution-db">Redshift/BigQuery</div>
+                    <div class="evolution-detail">OLAP workloads<br>Historical analysis<br>ML feature store</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1456,6 +1861,206 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <div class="label">Order Success</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Kafka Consumer Lag During Peak</div>
+                <p>Order events pile up in Kafka faster than consumers can process during IPL final + dinner rush.</p>
+                <div class="case-solution">Auto-scale consumer pods based on lag metrics. Implement priority queues (paid orders first). Shed load by temporarily rejecting new orders in overloaded zones. Pre-warm consumers before predicted peaks. Partition by zone for parallel processing.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Database Connection Pool Exhaustion</div>
+                <p>All DB connections consumed, new requests timeout waiting for connection.</p>
+                <div class="case-solution">Use PgBouncer for connection pooling (100 app connections → 20 DB connections). Implement request queuing with timeout. Circuit breaker to fast-fail when pool exhausted. Monitor pool utilization, alert at 70%.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redis Cluster Node Failure</div>
+                <p>One Redis cluster node dies, causing cache misses and increased DB load.</p>
+                <div class="case-solution">Redis Cluster with replicas (3 masters + 3 replicas). Automatic failover in &lt;30s. Client-side retry with exponential backoff. Fallback to DB with circuit breaker. Monitor cluster health, pre-emptive node replacement.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Batch Delivery Coordination Failure</div>
+                <p>Partner assigned multiple orders but one restaurant significantly delayed, affecting other orders in batch.</p>
+                <div class="case-solution">Real-time batch rebalancing: split batch if delay >10 min. Reassign delayed order to another partner. Customer notification about delay with compensation offer. ML model to predict restaurant prep time for better batching.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Search Index Out of Sync</div>
+                <p>Elasticsearch index lags behind PostgreSQL, showing closed restaurants as open or wrong prices.</p>
+                <div class="case-solution">Real-time sync via Debezium CDC (Change Data Capture). Reconciliation job every hour. Critical fields (is_open, price) also checked against Redis cache. Monitoring for index lag with alerting. Force refresh on critical updates.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Hot Partition Problem</div>
+                <p>One popular restaurant or zone creates hot partition in sharded database, causing uneven load.</p>
+                <div class="case-solution">Sub-partition hot keys (restaurant_id + date). Implement request rate limiting per restaurant. Cache hot restaurant data more aggressively. Consider separate "celebrity restaurant" handling with dedicated resources.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Real-time Demand Prediction</div>
+                <p>ML model predicting order volume per zone 30-60 minutes ahead for proactive scaling.</p>
+                <div class="future-approach">Features: historical patterns, weather, events, holidays, time. Model: LSTM or Prophet. Output: predicted orders per H3 hexagon. Actions: pre-scale pods, alert partner supply team, adjust surge pricing proactively.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Autonomous Delivery Robots</div>
+                <p>Sidewalk robots for last-mile delivery in supported areas (campuses, gated communities).</p>
+                <div class="future-approach">Partner with Starship or Nuro. Geofence supported areas. Customer app shows robot tracking. Secure compartment with OTP access. Fallback to human partner for failures. Cost savings on short-distance deliveries.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Voice Ordering Integration</div>
+                <p>Order food via Alexa, Google Assistant, or in-app voice commands.</p>
+                <div class="future-approach">NLU model for food ordering intent. Context-aware: "order my usual" uses order history. Confirmation flow before payment. Accessibility feature for visually impaired users. Integration with smart home routines.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Dynamic Kitchen Load Balancing</div>
+                <p>Route orders to less busy outlet of chain restaurants based on real-time kitchen load.</p>
+                <div class="future-approach">Real-time kitchen queue depth from restaurant app. For chains: suggest alternate outlet with shorter wait. Customer choice with ETA comparison. Incentivize switching with small discount. Analytics for restaurants on capacity optimization.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle thundering herd when a popular restaurant comes online?</div>
+                    <div class="followup-hint">Rate limiting at API gateway per restaurant. Request coalescing for identical queries. Staggered cache warming. Virtual queue with estimated wait time. Lottery system for initial slots if demand exceeds capacity.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the delivery batching algorithm to maximize efficiency without hurting customer experience.</div>
+                    <div class="followup-hint">Constraints: max 2-3 orders per batch, all pickups within 500m, all deliveries within 2km radius, max 15 min added delay. Algorithm: greedy matching with constraint satisfaction. Customer opt-in for batch discount. Clear communication of batch status.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you implement circuit breakers across microservices?</div>
+                    <div class="followup-hint">Use Istio service mesh or Hystrix/Resilience4j. Three states: closed, open, half-open. Metrics: error rate, latency percentiles. Per-service thresholds. Fallback responses (cached data, degraded experience). Dashboard showing circuit states.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement restaurant capacity management to prevent kitchen overload?</div>
+                    <div class="followup-hint">Track active orders per restaurant. Dynamic cap based on historical completion rate. "Busy" indicator on customer app. Temporary pause accepting orders (restaurant-initiated). ML model learning optimal cap per restaurant per time slot.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the real-time location tracking system for 100K concurrent delivery partners.</div>
+                    <div class="followup-hint">Partner app sends GPS every 5s → Kafka (partitioned by zone) → Redis GEOADD. WebSocket server subscribes to relevant zone. Customer app connects via WebSocket, receives updates. Batch writes to PostgreSQL every 30s for history. Compression for mobile data efficiency.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>High Traffic Stage - Peak Load Flow</h4>
+            <div class="flow-vertical">
+                <!-- Queue-Based Order Processing -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">QUEUE-BASED ORDER ACCEPTANCE</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Customer<br><small>Place order</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">API Gateway<br><small>Rate limit</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Validate<br><small>Quick checks</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue">Kafka Queue<br><small>order.pending</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Ack: "Processing"<br><small>&lt;100ms</small></div>
+                    </div>
+                </div>
+
+                <!-- Async Processing -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">ASYNC ORDER PROCESSING (BACK-PRESSURE HANDLING)</div>
+                    <div class="flow-row">
+                        <div class="flow-node queue">Kafka<br><small>Consumer group</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Process Order<br><small>Auto-scaled pods</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">DB Shard<br><small>INSERT</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>Update status</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Push Notify<br><small>"Order confirmed"</small></div>
+                    </div>
+                </div>
+
+                <!-- High-Frequency Location Updates -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #dc2626; margin-bottom: 12px;">LOCATION UPDATES (20K/sec)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Partner GPS<br><small>Every 5s</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue">Kafka Stream<br><small>Zone partition</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis GEOADD<br><small>Real-time</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">WebSocket<br><small>Push to customers</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Batch to DB<br><small>Every 30s</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - High Traffic Stage</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔀</div>
+                    <div class="evolution-label">Sharding</div>
+                    <div class="evolution-db">Vitess/Citus</div>
+                    <div class="evolution-detail">Horizontal sharding<br>4 shards by city<br>Distributed queries</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">Write Optimization</div>
+                    <div class="evolution-db">Aurora + Redis</div>
+                    <div class="evolution-detail">Write to Redis first<br>Async persist to DB<br>Eventual consistency</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">📊</div>
+                    <div class="evolution-label">CQRS</div>
+                    <div class="evolution-db">Separate Read/Write</div>
+                    <div class="evolution-detail">Write: PostgreSQL<br>Read: Elasticsearch<br>Sync via CDC</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔥</div>
+                    <div class="evolution-label">Hot Data Tier</div>
+                    <div class="evolution-db">Redis Cluster</div>
+                    <div class="evolution-detail">Active orders in Redis<br>32 shard cluster<br>Sub-ms latency</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1636,6 +2241,213 @@ kubectl argo rollouts abort order-service</pre>
             <div class="metric">
                 <div class="value">99.99%</div>
                 <div class="label">Availability</div>
+            </div>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Network Partition</div>
+                <p>Network connectivity between regions fails (e.g., Asia-Pacific can't reach Europe), causing split-brain scenario.</p>
+                <div class="case-solution">CockroachDB handles partitions via Raft consensus. Orders continue in each region independently. Conflict resolution on reconnection (last-write-wins with vector clocks). Monitor inter-region latency, alert on degradation. Graceful degradation: serve local data only.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">GDPR Data Deletion Across Regions</div>
+                <p>EU user requests data deletion but their order history exists in multiple regional databases.</p>
+                <div class="case-solution">Centralized GDPR service orchestrates deletion. Async deletion jobs per region with tracking. Verify deletion in all regions before confirmation. Anonymization for analytics retention. Audit log of deletion requests and completions.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Currency Exchange Rate Fluctuation</div>
+                <p>Exchange rate changes between order placement and restaurant payout, causing financial discrepancy.</p>
+                <div class="case-solution">Lock exchange rate at order time, store with order. Hedge currency exposure for large volumes. Settlement in local currency with platform absorbing minor fluctuations. Real-time rate feeds from multiple providers with fallback.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regional Regulatory Changes</div>
+                <p>New food delivery regulation in specific country (e.g., delivery fee caps, worker classification) requires immediate compliance.</p>
+                <div class="case-solution">Feature flags per country/region. Compliance rule engine that can be updated without deployment. Legal review workflow for configuration changes. Region-specific pricing and policies. Kill switch for entire country if needed.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">DNS/CDN Global Outage</div>
+                <p>CloudFront or Route 53 has global outage affecting all regions simultaneously.</p>
+                <div class="case-solution">Multi-CDN strategy (CloudFront + Fastly). DNS failover to secondary provider. IP-based fallback (hardcoded IPs for critical services). Regional edge deployments. Chaos engineering to test failure scenarios quarterly.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Time Zone Edge Cases</div>
+                <p>User orders at 11:55 PM, restaurant closes at midnight, delivery happens next day - which day's surge pricing applies?</p>
+                <div class="case-solution">All timestamps in UTC internally. Lock pricing at order confirmation time. Restaurant hours evaluated in restaurant's local timezone. Clear display of "order for tomorrow" when crossing midnight. Edge case testing for DST transitions.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Web3 Loyalty Program</div>
+                <p>Blockchain-based loyalty tokens that can be traded or used across partner platforms.</p>
+                <div class="future-approach">ERC-20 tokens on Polygon (low gas fees). Earn tokens per order. Redeem for discounts or trade on DEX. Partner integrations for cross-platform utility. Wallet connect for Web3 users, custodial wallet for others.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">AR Menu Visualization</div>
+                <p>See 3D representation of dishes using phone camera before ordering.</p>
+                <div class="future-approach">Partner with restaurants for 3D dish scans. WebXR for browser-based AR. Integration with Apple ARKit and Google ARCore. Start with top 100 dishes per city. User-generated content for community dishes.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Fleet Positioning</div>
+                <p>ML-driven pre-positioning of delivery partners based on predicted demand patterns.</p>
+                <div class="future-approach">Historical demand heatmaps + real-time signals (events, weather). Optimize partner distribution across H3 hexagons. Incentives for partners to relocate to predicted hot zones. Reduce average pickup time by 20%.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Sustainable Delivery Options</div>
+                <p>Carbon-neutral delivery option with EV/bicycle fleet and carbon offset.</p>
+                <div class="future-approach">Track carbon footprint per delivery. EV-only fleet in supported cities. Carbon offset integration for remaining emissions. "Green delivery" badge for eco-conscious users. Premium for express, discount for batched sustainable delivery.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle data sovereignty requirements (GDPR, data localization laws)?</div>
+                    <div class="followup-hint">Geo-partitioning in CockroachDB: EU data stays in EU. PII encryption with region-specific keys. Data residency compliance dashboard. Cross-region queries blocked for sensitive data. Legal entity per major region.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the global payment system supporting 50+ currencies and local payment methods.</div>
+                    <div class="followup-hint">Stripe/Adyen as primary global processor. Local gateways for specific markets (Razorpay India, iDEAL Netherlands). Currency conversion at checkout with locked rate. Multi-currency settlement with restaurants. Fraud detection models trained per region.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you achieve 99.99% availability across 4 regions?</div>
+                    <div class="followup-hint">Active-active deployment in all regions. Any region can serve any request (with latency penalty). Health checks and automatic traffic shifting. Zero-downtime deployments with canary. Chaos engineering (region failure drills). On-call rotation across time zones.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you design the global search system for 1M restaurants across different languages?</div>
+                    <div class="followup-hint">Elasticsearch per region with local language analyzers. Transliteration support (searching "biryani" finds "बिरयानी"). Federated search for travelers (query home region + current region). Search ranking tuned per market. A/B testing search relevance per region.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the multi-region deployment strategy to minimize blast radius of bad deployments.</div>
+                    <div class="followup-hint">Deploy to smallest region first (canary). Automated rollback on error rate spike. Progressive rollout: 5% → 25% → 50% → 100% per region. Region-by-region with 2-hour soak time. Feature flags for instant disable. Separate deployment pipelines per region.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>Global Scale - Multi-Region Active-Active Flow</h4>
+            <div class="flow-vertical">
+                <!-- Global Request Routing -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">GLOBAL REQUEST ROUTING</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User Request<br><small>Any country</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cdn">CloudFront<br><small>400+ edge locations</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Route 53<br><small>Geo + latency</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Nearest Region<br><small>EKS cluster</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">CockroachDB<br><small>Geo-partitioned</small></div>
+                    </div>
+                </div>
+
+                <!-- Cross-Region Data Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">CROSS-REGION DATA SYNCHRONIZATION</div>
+                    <div class="flow-row">
+                        <div class="flow-node db">APAC<br><small>Primary for Asia</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">⟷</div>
+                            <span style="font-size: 10px; color: #64748b;">Raft consensus</span>
+                        </div>
+                        <div class="flow-node db">EMEA<br><small>Primary for Europe</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">⟷</div>
+                            <span style="font-size: 10px; color: #64748b;">Raft consensus</span>
+                        </div>
+                        <div class="flow-node db">Americas<br><small>Primary for US</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">⟷</div>
+                            <span style="font-size: 10px; color: #64748b;">Raft consensus</span>
+                        </div>
+                        <div class="flow-node db">ME<br><small>Primary for MENA</small></div>
+                    </div>
+                </div>
+
+                <!-- Canary Deployment Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #dc2626; margin-bottom: 12px;">CANARY DEPLOYMENT FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">New Version<br><small>Build + test</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #fef3c7; color: #92400e;">Canary 5%<br><small>ap-south-1</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #dbeafe; color: #1e40af;">Region 1<br><small>Full rollout</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #d1fae5; color: #065f46;">Region 2-4<br><small>Sequential</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node" style="background: #dcfce7; color: #166534;">Global 100%<br><small>~8 hours</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - Global Scale</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌍</div>
+                    <div class="evolution-label">Global SQL</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Distributed SQL<br>Auto-sharding<br>Geo-partitioning</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🔐</div>
+                    <div class="evolution-label">Data Residency</div>
+                    <div class="evolution-db">Regional Isolation</div>
+                    <div class="evolution-detail">GDPR compliance<br>PII in-region<br>Encryption per region</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">📡</div>
+                    <div class="evolution-label">Event Mesh</div>
+                    <div class="evolution-db">Confluent Global</div>
+                    <div class="evolution-detail">Multi-region Kafka<br>Cluster linking<br>Geo-replication</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🧠</div>
+                    <div class="evolution-label">ML Platform</div>
+                    <div class="evolution-db">Feature Store</div>
+                    <div class="evolution-detail">Real-time features<br>Model serving<br>A/B experiments</div>
+                </div>
             </div>
         </div>
     </div>

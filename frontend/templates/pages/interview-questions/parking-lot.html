@@ -859,6 +859,192 @@ spec:
                 </div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Vehicle Stuck at Gate (Hardware Failure)</div>
+                <p>Gate barrier fails to open after successful payment, blocking entry/exit.</p>
+                <div class="case-solution">Implement manual override API for security staff. Log gate timeout events. Auto-alert maintenance after 2 failures. Keep local relay backup for barrier control.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Payment Failure During Exit</div>
+                <p>Payment gateway times out or card declines while vehicle is at exit gate.</p>
+                <div class="case-solution">Allow temporary exit with "payment pending" status. Send payment link via SMS. Block future entries until payment cleared. Implement 3-retry with exponential backoff.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Spot Sensor Malfunction</div>
+                <p>IoT sensor reports false occupied/available status, causing booking conflicts.</p>
+                <div class="case-solution">Cross-validate with entry/exit logs. Flag sensors with >5% discrepancy. Use soft-state: trust booking DB over sensor. Auto-reconcile every 15 minutes.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Simultaneous Booking Race Condition</div>
+                <p>Two users book the same spot at the exact same time from different gates.</p>
+                <div class="case-solution">Use <code>SELECT FOR UPDATE SKIP LOCKED</code> in PostgreSQL. Redis SETNX for distributed lock. Return next-best spot on conflict. Implement optimistic locking with version field.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Overstay Handling (Reservation Exceeded)</div>
+                <p>Vehicle doesn't exit by reserved end time, blocking next reservation.</p>
+                <div class="case-solution">Send reminder 15 min before expiry. Apply overstay surcharge (2x rate). Auto-extend if no waiting reservation. Notify next reserved user with alternate spot option.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">EV Charging Integration</div>
+                <p>Smart allocation of EV spots with charging station status and billing.</p>
+                <div class="future-approach">Integrate with ChargePoint/OCPP API. Track charging session separately from parking. Show real-time charger availability. Bill for kWh consumed + parking time.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Valet Parking Automation</div>
+                <p>Digital valet service with real-time vehicle tracking and retrieval requests.</p>
+                <div class="future-approach">Add valet_requests table with status tracking. Push notifications for retrieval ETA. QR code for keyless handoff. Track valet staff location for optimization.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">License Plate Recognition (ANPR)</div>
+                <p>Automatic vehicle identification for ticketless entry/exit.</p>
+                <div class="future-approach">Deploy edge cameras with ML inference (YOLO/OpenALPR). Match plates against registered vehicles DB. Fallback to manual ticket for unrecognized plates. 95%+ accuracy target.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Dynamic Pricing Based on Demand</div>
+                <p>Surge pricing during events, peak hours, or high occupancy periods.</p>
+                <div class="future-approach">Track occupancy rate per hour historically. Apply multiplier when >80% full. Integrate event calendars (concerts, matches). Show estimated price before entry.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you handle a power outage at the parking lot?</div>
+                    <div class="followup-hint">UPS for gate controllers (30 min backup). Local SQLite cache for offline mode. Sync pending transactions when connectivity restored. Manual barrier release for emergencies.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you prevent ticket fraud (reusing/forging tickets)?</div>
+                    <div class="followup-hint">QR codes with HMAC signature. Single-use validation in DB. Ticket contains encrypted entry timestamp. Cross-check with LPR on exit.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a system for monthly parking passes</div>
+                    <div class="followup-hint">Subscriptions table with validity period. Reserved spot assignment or floating allocation. Auto-renewal with payment retry. Grace period for expired passes.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement handicapped spot enforcement?</div>
+                    <div class="followup-hint">Require disability permit registration. LPR validates against permit DB. Alert security for violations. Time-limited use for non-permit holders (loading only).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">What metrics would you track for parking lot performance?</div>
+                    <div class="followup-hint">Occupancy rate by hour/day. Average parking duration. Revenue per spot. Entry/exit queue time. Payment success rate. Sensor health score.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>MVP Stage - Complete Request Flow</h4>
+            <div class="flow-vertical">
+                <!-- Entry Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">ENTRY FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Vehicle<br><small>Arrives</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">ANPR<br><small>Scan plate</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API Server<br><small>Find spot</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">PostgreSQL<br><small>Book spot</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>DECR available</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Generate<br><small>Ticket</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Gate<br><small>Opens</small></div>
+                    </div>
+                </div>
+
+                <!-- Exit Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">EXIT FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Vehicle<br><small>At exit</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Scan<br><small>Ticket/QR</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API Server<br><small>Calc fare</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Payment<br><small>Card/UPI</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">PostgreSQL<br><small>Complete booking</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>INCR available</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Gate<br><small>Opens</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌱</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">Single primary<br>Multi-AZ standby</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🇮🇳</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Read replicas<br>Geo-spatial queries</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Sharded + TimescaleDB</div>
+                    <div class="evolution-detail">City-based shards<br>Time-series analytics</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌍</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Distributed SQL<br>Multi-region active</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1054,6 +1240,186 @@ LIMIT 20;</pre>
                 </tr>
             </table>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Booking Conflict</div>
+                <p>User books in Mumbai but DB write goes to Hyderabad replica with lag.</p>
+                <div class="case-solution">Read-after-write consistency: route user's reads to primary for 5s after write. Use session stickiness or include write timestamp in response for client-side validation.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Payment Gateway Regional Failure</div>
+                <p>Razorpay outage affects all exits in South region.</p>
+                <div class="case-solution">Multi-gateway fallback: Razorpay → Paytm → Cash-only mode. Queue failed payments for retry. Allow exit with pending payment flag. Circuit breaker per gateway.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">PostGIS Query Timeout on Dense Areas</div>
+                <p>Mumbai downtown has 500 lots in 2km radius, query takes 2s+.</p>
+                <div class="case-solution">Pre-compute nearby lots in Redis GeoSet. Limit results to 20 nearest. Use bounding box filter before distance calc. Cache popular searches.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Subscription Conflict (Same Spot, Multiple Users)</div>
+                <p>Monthly pass holder arrives but spot taken by walk-in.</p>
+                <div class="case-solution">Reserved spots have 15-min grace period. After grace, convert to floating allocation. Priority queue: subscription > reservation > walk-in. Notify pass holder of alternate spot.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Partner Lot Data Sync Failure</div>
+                <p>Third-party lot API is down, showing stale availability.</p>
+                <div class="case-solution">Mark lot as "availability unconfirmed" after 5 min stale. Exponential backoff on retry. Show last-known count with timestamp. Webhook for partner to push updates.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Multi-City Subscription Roaming</div>
+                <p>Use monthly pass across any partner lot in India.</p>
+                <div class="future-approach">Federated subscription model. Home lot settles with visited lot monthly. Track usage across lots in central ledger. Fair-use policy: max 5 cities/month.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Availability</div>
+                <p>ML-based forecast of parking availability for next 2 hours.</p>
+                <div class="future-approach">Train on historical data: day-of-week, time, events, weather. LSTM/Prophet for time-series. Show "likely available" confidence score. Update model weekly.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Smart Navigation Integration</div>
+                <p>Guide user to specific spot with turn-by-turn inside lot.</p>
+                <div class="future-approach">Indoor positioning with BLE beacons. Generate floor maps in real-time. Integrate with Google Maps for last-mile. AR overlay for spot finding.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Carbon Credit Tracking</div>
+                <p>Calculate emissions saved by efficient parking vs circling.</p>
+                <div class="future-approach">Estimate: avg 10 min circling = 0.5kg CO2. Track total savings per user. Partner with carbon offset programs. Gamify with green badges.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you handle peak hour traffic at popular malls?</div>
+                    <div class="followup-hint">Queue management at entry. Show wait time on app. Surge pricing to distribute demand. Pre-book slots for peak hours. Overflow routing to nearby lots.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the partner onboarding flow for new parking lots</div>
+                    <div class="followup-hint">Self-service portal with lot details form. API key generation for POS integration. Test mode for validation. Go-live checklist: hardware, training, support contact.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure data consistency between primary and read replicas?</div>
+                    <div class="followup-hint">Replication lag monitoring (<100ms). Critical reads go to primary. Eventual consistency for availability display. Version vectors for conflict detection.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement a waitlist for full parking lots?</div>
+                    <div class="followup-hint">Redis sorted set by request time. Push notification when spot available. 5-min claim window before next in queue. Show position and estimated wait time.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design analytics dashboard for lot owners</div>
+                    <div class="followup-hint">Metrics: occupancy heatmap, revenue by hour/day, avg duration, peak times. Compare with nearby lots. Export reports. Real-time vs historical views.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>PAN-India Stage - Nearby Search Flow</h4>
+            <div class="flow-vertical">
+                <!-- Entry Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">NEARBY SEARCH + ENTRY FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Mobile App<br><small>GET /nearby</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Route 53<br><small>Latency routing</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis Geo<br><small>GEOSEARCH</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API<br><small>Enrich data</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Results<br><small>20 lots</small></div>
+                    </div>
+                </div>
+
+                <!-- Exit Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">RESERVATION + ENTRY FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User<br><small>Reserve spot</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API<br><small>Validate time</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Primary DB<br><small>INSERT reservation</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Payment<br><small>Pre-auth</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Confirmation<br><small>QR ticket</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">ANPR<br><small>Auto-entry</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - PAN-India Focus</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌱</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">Single primary<br>Multi-AZ standby</div>
+                </div>
+                <div class="evolution-stage" style="border: 2px solid #f97316;">
+                    <div class="evolution-icon">🇮🇳</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Read replicas<br>Geo-spatial indexes</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Sharded + TimescaleDB</div>
+                    <div class="evolution-detail">City-based shards<br>Time-series analytics</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌍</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Distributed SQL<br>Multi-region active</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1240,6 +1606,188 @@ LIMIT 20;</pre>
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$10,200/month</strong></td></tr>
             </table>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Kafka Consumer Lag Spike</div>
+                <p>IoT events pile up faster than consumers can process during stadium events.</p>
+                <div class="case-solution">Auto-scale consumers based on lag metric. Increase partitions for hot lots. Drop stale events (>30s old) for sensor data. Alert on lag >10K messages.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Elasticsearch Index Corruption</div>
+                <p>Search cluster goes down, nearby lot search fails.</p>
+                <div class="case-solution">Fallback to Redis GeoSet for basic search. Rebuild index from PostgreSQL source-of-truth. Multi-node ES cluster with replicas. Circuit breaker to prevent cascade.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Shard Hotspot (Stadium/Airport)</div>
+                <p>Single shard overwhelmed during events while others idle.</p>
+                <div class="case-solution">Use consistent hashing with virtual nodes. Split hot shard dynamically. Pre-warm connections for known events. Route overflow to adjacent shards.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">LPR Camera Backlog</div>
+                <p>100 vehicles queue at entry, ML inference can't keep up.</p>
+                <div class="case-solution">Edge processing with GPU (NVIDIA Jetson). Batch inference (4 plates at once). Fallback to manual ticket after 5s timeout. Pre-fetch registered plates to edge cache.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Distributed Lock Deadlock</div>
+                <p>Two transactions waiting for each other's locks indefinitely.</p>
+                <div class="case-solution">Lock timeout (500ms max). Lock ordering by resource ID. Deadlock detection with wait-for graph. Exponential backoff on retry with jitter.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Autonomous Vehicle Integration</div>
+                <p>Self-parking for AVs with V2I (Vehicle-to-Infrastructure) communication.</p>
+                <div class="future-approach">DSRC/C-V2X protocols for vehicle communication. Designated AV zones with tighter spacing. API for vehicle to request/release spots autonomously. No human exit flow.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Real-time Surge Pricing Engine</div>
+                <p>Dynamic pricing based on demand, events, weather, and competitor rates.</p>
+                <div class="future-approach">ML model with features: occupancy, time, nearby events, weather API. Price update every 5 min. Cap at 3x base rate. Show price before entry commitment.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Fleet Management Portal</div>
+                <p>Corporate dashboard for managing employee parking across multiple lots.</p>
+                <div class="future-approach">Bulk booking API. Budget allocation per department. Usage analytics and reporting. Integration with HR systems for employee validation.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Smart Overflow Routing</div>
+                <p>Automatically direct users to nearby lots when primary is full.</p>
+                <div class="future-approach">Real-time availability aggregation. Walking distance + availability score. Partner lot agreements. Seamless handoff with single ticket valid at overflow lot.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle 100K IoT sensors sending data every 5 seconds?</div>
+                    <div class="followup-hint">Kafka for ingestion (partitioned by lot_id). Batch writes to TimescaleDB. Redis for real-time state. Edge aggregation to reduce traffic. Sample data for analytics (1:10).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the sharding strategy for parking bookings</div>
+                    <div class="followup-hint">Shard by city/region (4 shards: North, South, East, West). Hash by lot_id for even distribution. Cross-shard queries via scatter-gather. Use Vitess or Citus for management.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement real-time occupancy dashboards?</div>
+                    <div class="followup-hint">WebSocket for live updates. Redis Pub/Sub for broadcasting. Aggregate at lot level (not spot). 5-second refresh max. CDN for historical charts.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle LPR accuracy issues (95% accuracy)?</div>
+                    <div class="followup-hint">Fuzzy matching for similar plates. Human review queue for low-confidence reads. Multiple camera angles. Link with booking ticket as backup validation.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design capacity planning for a major cricket match (50K attendees)</div>
+                    <div class="followup-hint">Pre-scale 24h before event. Reserve 80% capacity for pre-bookings. Stagger entry times. Coordinate with nearby lots. Post-event: gradual exit with payment pre-auth.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>High Traffic Stage - IoT + LPR Flow</h4>
+            <div class="flow-vertical">
+                <!-- Entry Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">LPR-BASED ENTRY FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Vehicle<br><small>Approaches</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">LPR Camera<br><small>Edge ML</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>Check registered</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API<br><small>Auto-assign spot</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Shard N<br><small>INSERT</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Gate Opens<br><small>&lt;2s total</small></div>
+                    </div>
+                </div>
+
+                <!-- IoT Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">IOT SENSOR UPDATE FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Sensor<br><small>Detects vehicle</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue">Kafka<br><small>iot.sensor topic</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Consumer<br><small>Batch 100</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>Update bitmap</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node storage">TimescaleDB<br><small>Async persist</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Broadcast<br><small>Pub/Sub</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - High Traffic Focus</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌱</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">Single primary<br>Multi-AZ standby</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🇮🇳</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Read replicas<br>Geo-spatial indexes</div>
+                </div>
+                <div class="evolution-stage" style="border: 2px solid #ef4444;">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Sharded + TimescaleDB</div>
+                    <div class="evolution-detail">City-based shards<br>Time-series for IoT</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌍</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Distributed SQL<br>Multi-region active</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1355,6 +1903,188 @@ LIMIT 20;</pre>
                 <tr><td>Monitoring (Datadog)</td><td>$5,000</td></tr>
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$73,000/month</strong></td></tr>
             </table>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Write Conflict</div>
+                <p>User in US books spot while EU user books same spot (partner lot) simultaneously.</p>
+                <div class="case-solution">CockroachDB SERIALIZABLE isolation handles this. One transaction aborts and retries. Add region affinity hints to prefer local writes. Implement client retry with backoff.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">GDPR Right to Deletion Request</div>
+                <p>EU user requests complete data deletion within 30 days.</p>
+                <div class="case-solution">Soft delete with anonymization. Replace PII with hashed IDs. Keep aggregated analytics. Audit trail for compliance proof. Automated deletion pipeline with verification.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Multi-Currency Payment Reconciliation</div>
+                <p>FX rate changes between booking and exit, causing revenue discrepancy.</p>
+                <div class="case-solution">Lock FX rate at booking time. Store original and converted amounts. Daily reconciliation job. Absorb small variances (<2%). Flag large discrepancies for review.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regional Outage (Entire AWS Region Down)</div>
+                <p>ap-south-1 fails, 30% of traffic has no backend.</p>
+                <div class="case-solution">Route 53 health checks failover in 30s. CockroachDB promotes replicas. Users routed to nearest healthy region. Accept higher latency (200ms vs 50ms) during recovery.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Global Fleet Booking Across Time Zones</div>
+                <p>Corporate books 50 spots in 10 countries for same "9 AM local" meeting.</p>
+                <div class="case-solution">Convert all times to UTC internally. Display in user's timezone. Batch booking API with per-location validation. Handle DST transitions. Confirm availability before commit.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Global Roaming Pass</div>
+                <p>Single subscription valid at any partner lot worldwide.</p>
+                <div class="future-approach">Federated identity with regional billing. Settlement between regions monthly. Fair-use caps per region. Premium tier for unlimited roaming.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">AI-Powered Demand Forecasting</div>
+                <p>Predict parking demand for next 7 days with 90% accuracy.</p>
+                <div class="future-approach">Train on: historical data, local events, flights/trains, weather, holidays. Per-lot models updated weekly. Feed into dynamic pricing and staffing.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Carbon Neutral Parking</div>
+                <p>Offset carbon footprint of parked vehicles.</p>
+                <div class="future-approach">Calculate emissions based on vehicle type and duration. Partner with verified carbon credit providers. Optional add-on at checkout. Green certification for lots.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Mobility Hub Integration</div>
+                <p>Connect parking with EV charging, bike sharing, and public transit.</p>
+                <div class="future-approach">Unified app for all mobility. Book parking + last-mile together. Incentivize multi-modal trips. Real-time transit integration for optimal handoff timing.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure data residency compliance (GDPR, CCPA)?</div>
+                    <div class="followup-hint">CockroachDB locality constraints keep EU data in EU. Separate encryption keys per region. Audit logs for data access. Data processing agreements with sub-processors.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the global payment processing architecture</div>
+                    <div class="followup-hint">Adapter pattern: Stripe (US/EU), Razorpay (India), Alipay (China). Route by user's country. Fallback gateways per region. PCI compliance with tokenization.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you handle a 10x traffic spike during global events?</div>
+                    <div class="followup-hint">Pre-scale based on event calendar. CDN for static content. Queue non-critical writes. Graceful degradation: disable analytics, reduce refresh rate. Auto-scale with 2-min warm-up buffer.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you monitor a globally distributed system?</div>
+                    <div class="followup-hint">Datadog for unified observability. Per-region dashboards + global view. SLO: 99.99% availability, P99 <100ms. PagerDuty for on-call with follow-the-sun rotation.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design disaster recovery for complete region failure</div>
+                    <div class="followup-hint">RPO: 0 (sync replication). RTO: <5 min. Route 53 failover. CockroachDB auto-promotes. Runbook for manual interventions. Quarterly DR drills. Chaos engineering in staging.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>Global Stage - Multi-Region Flow</h4>
+            <div class="flow-vertical">
+                <!-- Entry Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">GLOBAL ENTRY FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User (EU)<br><small>Book spot</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">CloudFront<br><small>Edge POP</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Route 53<br><small>Geo routing</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">EU API<br><small>Frankfurt</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">CockroachDB<br><small>EU node</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Confirmed<br><small>&lt;100ms</small></div>
+                    </div>
+                </div>
+
+                <!-- Exit Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">CROSS-REGION SYNC FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node db">EU Node<br><small>Write</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Raft<br><small>Consensus</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">US Node<br><small>Replicate</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">APAC Node<br><small>Replicate</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Global Redis<br><small>Invalidate</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Analytics<br><small>Stream</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - Global Focus</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌱</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">Single primary<br>Multi-AZ standby</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🇮🇳</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Read replicas<br>Geo-spatial indexes</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Sharded + TimescaleDB</div>
+                    <div class="evolution-detail">City-based shards<br>Time-series for IoT</div>
+                </div>
+                <div class="evolution-stage" style="border: 2px solid #8b5cf6;">
+                    <div class="evolution-icon">🌍</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Distributed SQL<br>Multi-region active</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

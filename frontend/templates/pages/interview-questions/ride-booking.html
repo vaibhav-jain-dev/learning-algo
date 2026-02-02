@@ -965,6 +965,220 @@ kubectl rollout undo deployment/ride-matching</pre>
                 </div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Driver Cancellation Mid-Ride</div>
+                <p>Driver cancels after pickup but before dropoff, leaving rider stranded.</p>
+                <div class="case-solution">Immediately trigger re-matching for nearby drivers. Store trip progress (waypoints traveled). Calculate partial fare. Penalize driver (cancellation score affects future assignments). Notify rider with ETA for new driver.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">GPS Drift in Tunnels/Underground</div>
+                <p>GPS signal lost in tunnels, parking garages, or dense urban areas causing erratic location updates.</p>
+                <div class="case-solution">Implement dead reckoning using last known velocity + heading. Use cell tower triangulation as fallback. Smooth location jumps with Kalman filter. Flag abnormal speed (&gt;200 km/h) as GPS error. Resume normal tracking when signal stabilizes.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Surge Pricing During Emergencies</div>
+                <p>Natural disasters or emergencies trigger extreme surge (10x+), causing PR backlash.</p>
+                <div class="case-solution">Implement surge caps (max 3x during declared emergencies). Geo-fence affected areas. Automatic detection via sudden demand spike + news API. Free ride credits for evacuations. Partner with emergency services for priority dispatch.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Payment Failure After Ride Completion</div>
+                <p>Card declined or wallet empty after ride ends. Driver already marked trip complete.</p>
+                <div class="case-solution">Pre-authorize estimated fare before ride starts. Queue failed payments for retry (exponential backoff). Block rider from new rides until settled. Offer alternative payment methods. After 3 days, send to collections and credit driver from reserve fund.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Driver-Rider Disputes</div>
+                <p>Disagreements on route taken, fare charged, or ride quality. Both parties blame each other.</p>
+                <div class="case-solution">Store complete GPS trace for audit. Record trip audio (with consent, region-specific). Implement in-app dispute flow with evidence upload. ML-based initial resolution (compare actual vs optimal route). Escalate to human review for complex cases.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">No Drivers Available in Area</div>
+                <p>Rider requests in low-supply area. Multiple retry attempts fail.</p>
+                <div class="case-solution">Expand search radius progressively (5km → 10km → 15km). Show "Notify me when available" option. Suggest pickup point adjustment to nearby high-supply area. Incentivize drivers to reposition with heat maps. Offer scheduled ride for future time.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Autonomous Vehicle Integration</div>
+                <p>Self-driving cars joining the driver fleet with different matching and safety requirements.</p>
+                <div class="future-approach">Create separate vehicle_type='autonomous'. Different pickup UX (locate car by plate, unlock via app). Remote operations center for edge cases. Gradual rollout in geo-fenced zones. Handle handoff between AV and human driver modes.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">ML-Optimized Ride Pooling</div>
+                <p>Match multiple riders heading in similar directions to share rides efficiently.</p>
+                <div class="future-approach">Build pooling graph with compatible pickup/dropoff pairs. Use ML to predict rider flexibility (time vs cost preference). Dynamic pricing based on pool efficiency. Real-time route optimization as riders join/leave. Handle partial matches and rider consent flow.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Carbon Footprint Tracking</div>
+                <p>Calculate and display environmental impact of rides, promote green choices.</p>
+                <div class="future-approach">Track CO2 per ride based on vehicle type, distance, occupancy. Gamify with "green ride" badges and streaks. Offer carbon offset at checkout. Partner with EV charging networks. Show emissions saved via pooling vs solo rides.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Subscription Models</div>
+                <p>Monthly plans for frequent riders with discounted fares and priority matching.</p>
+                <div class="future-approach">Tier-based plans (5, 10, 20 rides/month). Priority matching during surge (skip queue). Fixed fare corridors (home to office). Rollover unused rides. Family plans with multiple rider profiles. Corporate accounts with expense integration.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How does your matching algorithm balance driver proximity vs driver rating?</div>
+                    <div class="followup-hint">Weighted scoring: score = (1 - distance/max_radius) * 0.6 + (rating/5) * 0.4. Adjust weights based on rider preference. Consider driver acceptance rate history. Premium riders might weight rating higher.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Why use Redis GEO over PostGIS for real-time driver locations?</div>
+                    <div class="followup-hint">Redis GEO: sub-ms GEORADIUS, handles 10K drivers × 15 updates/min easily. PostGIS: GIST index slower for high-frequency updates. Use Redis for hot path (matching), PostGIS for ride history and analytics. Redis GEOADD is O(log N).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle WebSocket connection failures during a ride?</div>
+                    <div class="followup-hint">Client-side reconnection with exponential backoff. Store last known position in Redis with TTL. On reconnect, send missed location updates from buffer. Fallback to polling API if WebSocket unavailable. Show "reconnecting" UI state.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you calculate ETA that accounts for traffic?</div>
+                    <div class="followup-hint">Use Google Maps / Mapbox Distance Matrix API for traffic-aware routing. Cache route segments by time-of-day. ML model trained on historical trip durations. Update ETA in real-time based on actual progress vs predicted. Show confidence range (5-8 min).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">What happens if the driver's app crashes mid-ride?</div>
+                    <div class="followup-hint">Detect via missing heartbeats (&gt;30s gap). Cache last known state in Redis. On app restart, restore ride context from server. Show rider a "driver reconnecting" message. If prolonged (&gt;5 min), offer rider option to cancel with no penalty.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>MVP Stage - Complete Ride Booking Flow</h4>
+            <div class="flow-vertical">
+                <!-- Booking Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">RIDE BOOKING FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Rider<br><small>POST /ride/request</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node gateway">ALB<br><small>Route to API</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">API Server<br><small>Validate + Create</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">PostgreSQL<br><small>INSERT request</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Kafka<br><small>ride.requested</small></div>
+                    </div>
+                </div>
+
+                <!-- Matching Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #7c3aed; margin-bottom: 12px;">DRIVER MATCHING FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Matching<br><small>Consume event</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Redis GEO<br><small>GEORADIUS 5km</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Score<br><small>distance + rating</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Push<br><small>FCM/APNS</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">Driver<br><small>Accept (15s)</small></div>
+                    </div>
+                </div>
+
+                <!-- Real-time Tracking Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #0891b2; margin-bottom: 12px;">REAL-TIME TRACKING (WebSocket)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Driver GPS<br><small>Every 4s</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Redis<br><small>GEOADD + PUBLISH</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">WS Server<br><small>Subscribe channel</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">Rider App<br><small>Update map</small></div>
+                    </div>
+                </div>
+
+                <!-- Trip Completion Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #dc2626; margin-bottom: 12px;">TRIP COMPLETION + PAYMENT</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Driver<br><small>End Trip</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Fare Engine<br><small>Calculate fare</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Payment<br><small>Charge rider</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">PostgreSQL<br><small>UPDATE ride</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">Both Apps<br><small>Rate 1-5 stars</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F331;</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Single primary<br>Redis for locations</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F1EE;&#x1F1F3;</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">Redis GEO Sharded</div>
+                    <div class="evolution-detail">City-based keys<br>Read replicas</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x26A1;</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">H3 Hexagonal Index</div>
+                    <div class="evolution-detail">Resolution 8-9<br>Surge zones</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F30D;</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Geo-partitioned<br>Data residency</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1175,6 +1389,220 @@ Response: 200 OK
                 </tr>
             </table>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-City Border Rides</div>
+                <p>Rider in City A requests ride to City B which has different pricing and regulations.</p>
+                <div class="case-solution">Detect cross-city at request time via dropoff coordinates. Apply origin city's base fare + destination city's per-km rate. Show fare estimate with breakdown. Ensure driver is licensed for both jurisdictions. Handle currency if crossing state lines.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regional Database Failover</div>
+                <p>Mumbai region RDS primary goes down during peak hours. 50% of India traffic affected.</p>
+                <div class="case-solution">Multi-AZ RDS with automatic failover (&lt;60s). Route 53 health checks redirect to Hyderabad. Regional Redis has cached active rides. Accept slight staleness (30s) during failover. Replay uncommitted transactions from Kafka.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Surge Zone Boundary Gaming</div>
+                <p>Riders request pickup just outside surge zone to avoid multiplier, causing driver deadhead.</p>
+                <div class="case-solution">Apply surge based on pickup H3 cell + adjacent cells (k-ring=1). Smooth surge transitions at boundaries. Show heat map to riders. Calculate driver's actual pickup distance, not straight-line. Minimum fare covers deadhead cost.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Driver Location Spoofing</div>
+                <p>Drivers fake GPS to appear in high-demand areas or claim completed rides.</p>
+                <div class="case-solution">Detect teleportation (impossible speed between pings). Cross-reference with cell tower data. Track accelerometer/gyroscope patterns. Flag accounts with anomalous location patterns. Trip photos at pickup/dropoff verification.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Payment Gateway Regional Outage</div>
+                <p>Razorpay down in South India. Rides completing but payments failing.</p>
+                <div class="case-solution">Multi-gateway setup (Razorpay + PayU + Stripe). Circuit breaker per gateway per region. Fallback to wallet balance. Queue payments for retry. COD option for repeat riders. Credit driver immediately, reconcile later.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Intercity Scheduled Ride No-Show</div>
+                <p>Driver travels 50km for scheduled airport pickup. Rider cancels last minute.</p>
+                <div class="case-solution">Enforce cancellation policy (escalating fees closer to pickup time). Compensate driver for deadhead based on distance traveled. Priority matching for return trip. Show driver acceptance rate for scheduled rides. Pre-authorize full fare.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Driver Positioning</div>
+                <p>ML model suggests where drivers should wait based on historical demand patterns.</p>
+                <div class="future-approach">Train on historical ride data by hour/day/location. Factor in events (concerts, sports), weather, holidays. Push heat maps to driver app. Gamify with bonuses for positioning in underserved areas. Reduce average pickup time by 30%.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Multi-Modal Trip Planning</div>
+                <p>Combine ride-booking with metro, bus, and bike rentals for optimal routes.</p>
+                <div class="future-approach">Integrate public transit APIs (GTFS feeds). Calculate time + cost for multi-modal options. Offer "first/last mile" rides to transit hubs. Unified payment across modes. Show CO2 comparison vs car-only.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Driver Earnings Guarantee</div>
+                <p>Guarantee minimum hourly earnings during specific hours to ensure supply.</p>
+                <div class="future-approach">Define guarantee zones and time slots. Track driver online time vs ride time. Top-up difference if below threshold. Require minimum acceptance rate. ML to predict guarantee cost and optimize zones.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Voice-First Booking</div>
+                <p>Book rides via voice assistants (Alexa, Google Home, Siri) for hands-free experience.</p>
+                <div class="future-approach">Integrate with Alexa Skills Kit / Google Actions. Store frequent destinations. Voice confirmation of ETA and surge. Push to phone for tracking. Support local languages (Hindi, Tamil, etc.).</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you implement city-based sharding for driver locations?</div>
+                    <div class="followup-hint">Use Redis key pattern: drivers:{city_id}. Determine city from coordinates using city polygon lookup (PostGIS ST_Contains). Each city in separate Redis cluster. Cross-city queries rare, acceptable to query multiple clusters.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How does H3 help with surge pricing?</div>
+                    <div class="followup-hint">H3 resolution 8 (~1km hexagons) for surge zones. Count demand (requests) and supply (available drivers) per cell. Surge = demand/supply ratio with smoothing. Update every 30s. K-ring for neighbor-aware pricing. Consistent cell sizes unlike geohash.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle latency for users in Tier-2/3 cities far from data centers?</div>
+                    <div class="followup-hint">Edge caching (CloudFront) for static assets. Regional read replicas in Hyderabad for North/East India. Optimistic UI updates (show "searching" before confirmation). Compress payloads. Use persistent connections (WebSocket/HTTP2).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement ride pooling matching efficiently?</div>
+                    <div class="followup-hint">Batch requests in 10s windows. Build graph: nodes = requests, edges = compatible pairs (same direction, time overlap). Use approximation algorithms for max matching. Consider detour tolerance per rider. Price discount proportional to pooling efficiency.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure data consistency between primary and replica during writes?</div>
+                    <div class="followup-hint">Writes always go to primary (Mumbai). Read-after-write: use primary for user's own data. Replica lag monitoring (should be &lt;100ms). For critical reads (ride state), route to primary. Accept eventual consistency for analytics/dashboards.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>PAN-India Stage - Multi-Region Flow</h4>
+            <div class="flow-vertical">
+                <!-- Request Routing Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">LATENCY-BASED REQUEST ROUTING</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Delhi Rider<br><small>Ride request</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node gateway">Route 53<br><small>Latency routing</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Hyderabad API<br><small>Nearest region</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Regional Redis<br><small>drivers:delhi</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">RDS Replica<br><small>Read-heavy</small></div>
+                    </div>
+                </div>
+
+                <!-- Write Path Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #dc2626; margin-bottom: 12px;">WRITE PATH (Cross-Region)</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Hyderabad API<br><small>Ride confirmed</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">Mumbai RDS<br><small>Primary write</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Async Replication<br><small>&lt;100ms lag</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">Hyderabad Replica<br><small>Eventually consistent</small></div>
+                    </div>
+                </div>
+
+                <!-- Surge Calculation Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #f59e0b; margin-bottom: 12px;">SURGE CALCULATION (H3 Zones)</div>
+                    <div class="flow-row">
+                        <div class="flow-node cache">Redis<br><small>Location counts</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Surge Worker<br><small>Every 30s</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">H3 Aggregation<br><small>demand/supply</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">surge_zones<br><small>UPDATE multiplier</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">App Heat Map<br><small>Show to riders</small></div>
+                    </div>
+                </div>
+
+                <!-- Real-time Tracking (WebSocket) -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #0891b2; margin-bottom: 12px;">REAL-TIME TRACKING (Regional WebSocket)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Driver App<br><small>GPS update</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Regional WS<br><small>Sticky session</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Redis Pub/Sub<br><small>ride:{id} channel</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">WS Broadcast<br><small>Same region</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">Rider App<br><small>Map update</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F331;</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Single primary<br>Redis for locations</div>
+                </div>
+                <div class="evolution-stage current">
+                    <div class="evolution-icon">&#x1F1EE;&#x1F1F3;</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">Redis GEO Sharded</div>
+                    <div class="evolution-detail">City-based keys<br>Read replicas</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x26A1;</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">H3 Hexagonal Index</div>
+                    <div class="evolution-detail">Resolution 8-9<br>Surge zones</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F30D;</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Geo-partitioned<br>Data residency</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1356,6 +1784,222 @@ Response: 200 OK
                 <tr><td>Lambda (location processing)</td><td>$500</td></tr>
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$26,000/month</strong></td></tr>
             </table>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Flash Mob Event (Concert Ends)</div>
+                <p>50K people exit stadium simultaneously. Demand spikes 100x in 5 minutes.</p>
+                <div class="case-solution">Pre-position drivers based on event schedule. Queue requests with fair ordering. Cap surge at 3x with wait time estimates. Temporary pickup zones (GPS-guided). Batch matching every 2s instead of instant. Communicate delays proactively.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Kinesis Shard Hot Spotting</div>
+                <p>Single H3 cell (airport) overwhelms one Kinesis shard with location updates.</p>
+                <div class="case-solution">Use random partition keys within hot zones. Enable adaptive capacity. Split hot shards automatically. Buffer writes client-side with jitter. Aggregate locations per cell before writing. Monitor IteratorAge metric.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redis Cluster Node Failure</div>
+                <p>One of 32 Redis cluster nodes dies. 1/32 of driver locations unavailable.</p>
+                <div class="case-solution">Redis Cluster automatic failover to replica (&lt;15s). Drivers re-announce location on reconnect. Matching engine gracefully degrades (slightly larger search radius). Monitor cluster health with Prometheus. Persist to disk for recovery.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Matching Service Overload</div>
+                <p>Matching service can't keep up with 50K rides/hour. Requests backing up in Kafka.</p>
+                <div class="case-solution">Horizontal auto-scale based on Kafka consumer lag. Partition by city for parallel processing. Shed load by delaying low-priority matches (scheduled rides). Circuit breaker if downstream (Redis) slow. Pre-compute driver availability bitmaps.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Lambda Cold Start Storm</div>
+                <p>Traffic spike triggers massive Lambda scaling. Cold starts cause 2-3s delays.</p>
+                <div class="case-solution">Provisioned concurrency for baseline (500 instances). Warm pools via scheduled ping. Reduce package size (&lt;50MB). Use SnapStart for Java. Fallback to direct Kinesis-to-Redis for critical path. Monitor throttling errors.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Database Shard Hotspot</div>
+                <p>Mumbai shard (35% of traffic) hitting write limits during peak.</p>
+                <div class="case-solution">Further shard Mumbai into zones (North/South). Async writes for non-critical updates. Use Redis write-behind cache. Promote read replica to accept writes temporarily. Monitor IOPS and latency per shard.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">ML-Based Demand Forecasting</div>
+                <p>Predict ride demand 30 minutes ahead for proactive supply positioning.</p>
+                <div class="future-approach">Time-series model (Prophet/LSTM) trained on historical data. Features: time, day, weather, events, holidays. Output: rides/H3 cell/30min. Feed to driver app as "busy zones". Reduce surge by 20% through better positioning.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Dynamic Pricing with Caps</div>
+                <p>Real-time pricing that balances demand while protecting consumers.</p>
+                <div class="future-approach">Gradient-based pricing: small demand/supply ratio changes = small price changes. Hard caps per city (regulated). Show "wait 10 min for lower price" option. A/B test price sensitivity. Audit logs for regulatory compliance.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Event-Driven Architecture</div>
+                <p>Full CQRS/Event Sourcing for audit trail and system reliability.</p>
+                <div class="future-approach">All state changes as events in Kafka. Rebuild state from event log. Separate read models (Elasticsearch for search, Redis for matching). Enable replay for debugging. Support event versioning and migration.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Real-Time Fraud Detection</div>
+                <p>ML model detecting fraudulent rides, fake GPS, collusion in real-time.</p>
+                <div class="future-approach">Stream processing (Flink) on ride events. Features: route deviation, driver-rider history, fare patterns. Flag for review or auto-block. Feedback loop from manual reviews. Low latency (&lt;5s) for in-progress ride intervention.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle 7.5M location updates per minute efficiently?</div>
+                    <div class="followup-hint">Kinesis with 50 shards (150K/shard/min). Lambda consumers batch 500ms of updates. Pipeline GEOADD commands to Redis (100 commands per round-trip). Compress payloads (protobuf). Accept 500ms staleness for matching.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Why use H3 over geohash for high-scale geospatial operations?</div>
+                    <div class="followup-hint">H3 hexagons have consistent area (unlike geohash rectangles). No edge distortion at poles. K-ring gives exactly N neighbors. Hierarchy for zoom levels. Better for demand/supply aggregation. Uber open-sourced, battle-tested.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement priority matching for premium users during surge?</div>
+                    <div class="followup-hint">Separate Kafka topics by rider tier. Premium queue processed first. Lower latency SLA (2s vs 5s). Access to larger driver pool (7km vs 5km radius). Driver incentive to accept premium rides. A/B test impact on non-premium conversion.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle sticky WebSocket sessions with NLB?</div>
+                    <div class="followup-hint">NLB uses 5-tuple hash for connection stickiness. Store connection → server mapping in Redis. On reconnect, route to same server or replay missed messages from Redis buffer. Graceful shutdown drains connections. Health checks exclude WebSocket endpoints.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you scale PostgreSQL shards for ride data?</div>
+                    <div class="followup-hint">Shard by region (North/South/East/West). Use Vitess or Citus for transparent sharding. Shard key in every query. Cross-shard joins avoided (denormalize). Each shard has own connection pool. Monitor per-shard latency independently.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>High Traffic Stage - Event Surge Flow</h4>
+            <div class="flow-vertical">
+                <!-- Location Ingestion at Scale -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">LOCATION INGESTION (7.5M/min)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">500K Drivers<br><small>GPS every 4s</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">NLB<br><small>Layer 4</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Kinesis<br><small>50 shards</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Lambda<br><small>Batch 500ms</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Redis Cluster<br><small>GEOADD pipeline</small></div>
+                    </div>
+                </div>
+
+                <!-- Matching at Scale -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #7c3aed; margin-bottom: 12px;">MATCHING (50K rides/hour)</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Kafka<br><small>ride.requested</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Matching (5x)<br><small>Partition by city</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Redis Cluster<br><small>GEORADIUS</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Scoring<br><small>H3 + rating</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">Driver Push<br><small>FCM batch</small></div>
+                    </div>
+                </div>
+
+                <!-- Real-time WebSocket at Scale -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #0891b2; margin-bottom: 12px;">WEBSOCKET (1M connections)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Apps<br><small>Persistent conn</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">NLB<br><small>5-tuple sticky</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">WS Fleet (10x)<br><small>100K conn each</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Redis Pub/Sub<br><small>Cluster mode</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">Broadcast<br><small>Location updates</small></div>
+                    </div>
+                </div>
+
+                <!-- Event Surge Handling -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #dc2626; margin-bottom: 12px;">SURGE HANDLING (Concert Exit)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">50K Requests<br><small>5 min burst</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Queue<br><small>Fair ordering</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Batch Match<br><small>Every 2s</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Surge Cap<br><small>Max 3x</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">ETA + Wait<br><small>Communicate delay</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F331;</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Single primary<br>Redis for locations</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F1EE;&#x1F1F3;</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">Redis GEO Sharded</div>
+                    <div class="evolution-detail">City-based keys<br>Read replicas</div>
+                </div>
+                <div class="evolution-stage current">
+                    <div class="evolution-icon">&#x26A1;</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">H3 Hexagonal Index</div>
+                    <div class="evolution-detail">Resolution 8-9<br>Surge zones</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F30D;</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Geo-partitioned<br>Data residency</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1656,6 +2300,220 @@ aws route53 change-resource-record-sets \
                 <tr><td>Monitoring (Datadog)</td><td>$10,000</td></tr>
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$170,000/month</strong></td></tr>
             </table>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Border Ride (EU → Non-EU)</div>
+                <p>Rider starts in Germany, ends in Switzerland. Different data residency, currency, and regulations.</p>
+                <div class="case-solution">Detect border crossing at booking via route analysis. Show dual-jurisdiction notice. Store data in both regions (GDPR allows transfer with consent). Handle currency conversion at booking rate. Partner with local operators for license compliance.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">CockroachDB Region Failure</div>
+                <p>Entire EU region of CockroachDB goes offline. Millions of European rides affected.</p>
+                <div class="case-solution">CockroachDB survives minority region loss (quorum in remaining regions). Writes redirect to nearest region. Temporary latency increase (100ms → 200ms). Partition data survives on 2 of 3 replicas. Monitor range unavailability dashboards. Manually rebalance after recovery.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Maps API Quota Exceeded</div>
+                <p>Google Maps API quota exhausted mid-day. ETA and routing unavailable globally.</p>
+                <div class="case-solution">Multi-vendor maps (Google + Mapbox + HERE). Circuit breaker per provider. Cache popular routes (airport → downtown). Fallback to straight-line distance with buffer. Pre-negotiate enterprise quotas. Real-time quota monitoring with auto-switch.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Time Zone Edge Cases</div>
+                <p>Scheduled ride spans DST change. Rider books "9 AM" but clocks change overnight.</p>
+                <div class="case-solution">Store all times in UTC internally. Convert to local only for display. Detect DST transitions at booking time. Confirm with rider if ambiguous (2 AM happens twice). Use IANA timezone database. Send reminders in local time with UTC backup.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Payment Method Not Supported in Region</div>
+                <p>Rider with Indian wallet tries to book in UAE. Wallet not available in that region.</p>
+                <div class="case-solution">Check payment method availability at booking based on rider + pickup location. Offer alternative methods (international cards, local wallets). Pre-authorize before ride. Allow cash in supported regions. Show clear error with alternatives.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Language/Script Mismatch</div>
+                <p>Japanese driver, Arabic-speaking rider. Address in Arabic script, driver can't read.</p>
+                <div class="case-solution">Transliterate addresses to driver's language. Show phonetic pronunciation. In-app translation for chat. Pin drop for pickup/dropoff (reduce text dependency). Multilingual voice directions. Support RTL and LTR layouts.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Federated Learning for Global ML</div>
+                <p>Train ML models on decentralized data without moving data across borders.</p>
+                <div class="future-approach">Train local models per region (GDPR-compliant). Aggregate gradients centrally without raw data. Personalization stays local. Global model improves from all regions. Handle non-IID data across regions. Reduce model sync frequency to save bandwidth.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Carbon-Neutral Operations</div>
+                <p>Achieve net-zero carbon for all rides globally through offsets and EV incentives.</p>
+                <div class="future-approach">Track emissions per ride (vehicle type, distance, occupancy). Partner with verified offset providers. Rider opt-in for carbon-neutral rides (small fee). Driver EV incentives (higher earnings). Green badges and leaderboards. Annual sustainability reports.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Interoperability with Public Transit</div>
+                <p>Seamless integration with local transit agencies worldwide for unified mobility.</p>
+                <div class="future-approach">Integrate MaaS (Mobility as a Service) standards. Partner with transit authorities. Unified ticketing and payment. Show ride + transit combinations. First/last mile optimization. Real-time transit data integration (GTFS-RT).</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Drone/Air Taxi Integration</div>
+                <p>Future urban air mobility for premium long-distance routes.</p>
+                <div class="future-approach">Separate vehicle class for air mobility. Vertiport integration (booking landing slots). Weather-aware availability. Regulatory compliance per airspace. Ground transport coordination for first/last mile. Premium pricing model.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">Why CockroachDB over PostgreSQL with Citus for global scale?</div>
+                    <div class="followup-hint">CockroachDB: native geo-partitioning, automatic rebalancing, survives region failure. Citus: extension, manual sharding, single-region focus. CockroachDB SERIALIZE isolation. Data residency via zone constraints. PostgreSQL-compatible wire protocol.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle GDPR right to deletion across distributed system?</div>
+                    <div class="followup-hint">Soft delete with 30-day grace period. Cascade to all services via Kafka event. Audit log of deletion (metadata only). Anonymize analytics (can't delete aggregates). Hard delete from all replicas. Provide export before deletion. Compliance dashboard.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement global driver repositioning incentives?</div>
+                    <div class="followup-hint">ML model predicts demand by region/time. Calculate driver surplus/deficit per H3 cell. Offer bonuses for repositioning to deficit areas. Show heat maps in driver app. Factor in driver preferences and distance. A/B test incentive amounts.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure consistent experience across 50 countries?</div>
+                    <div class="followup-hint">Core platform is global, customization via config. Feature flags per region. Local payment integrations. Regulatory rule engine. A/B test new features per market. Global SLAs with regional monitoring. Follow-the-sun on-call rotation.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle 100M location updates per minute globally?</div>
+                    <div class="followup-hint">Regional Kinesis/Kafka (no cross-region streaming). 200 shards globally. Edge processing with Lambda@Edge. Aggregate before writing to Redis. Accept 1s staleness globally. Monitor per-region ingestion lag. Auto-scale consumers based on backlog.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>Global Stage - Multi-Region Active-Active Flow</h4>
+            <div class="flow-vertical">
+                <!-- Global Request Routing -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">GLOBAL REQUEST ROUTING</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Paris Rider<br><small>Ride request</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node gateway">CloudFront<br><small>Edge POP</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node gateway">Route 53<br><small>Geolocation</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">EU API<br><small>Frankfurt</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">CockroachDB<br><small>EU partition</small></div>
+                    </div>
+                </div>
+
+                <!-- Multi-Region Matching -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #7c3aed; margin-bottom: 12px;">REGIONAL MATCHING (Isolated per Region)</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">EU Kafka<br><small>ride.requested</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">EU Matching<br><small>Frankfurt cluster</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">EU Redis<br><small>Paris drivers</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">FCM Europe<br><small>Low latency push</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">French Driver<br><small>Accept ride</small></div>
+                    </div>
+                </div>
+
+                <!-- Cross-Region Data Sync -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #f59e0b; margin-bottom: 12px;">DATA RESIDENCY (GDPR Compliant)</div>
+                    <div class="flow-row">
+                        <div class="flow-node db">CockroachDB EU<br><small>EU user data</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Zone Constraint<br><small>Data stays in EU</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Global Metadata<br><small>Anonymized only</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node db">Analytics<br><small>Aggregated stats</small></div>
+                    </div>
+                </div>
+
+                <!-- WebSocket Global -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #0891b2; margin-bottom: 12px;">REAL-TIME TRACKING (Regional WebSocket)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Driver GPS<br><small>Every 4s</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">Regional WS<br><small>Nearest edge</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node cache">Regional Redis<br><small>Pub/Sub local</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node service">WS Broadcast<br><small>Same region</small></div>
+                        <div class="flow-arrow">&#8594;</div>
+                        <div class="flow-node user">Rider App<br><small>&lt;150ms latency</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F331;</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL + PostGIS</div>
+                    <div class="evolution-detail">Single primary<br>Redis for locations</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x1F1EE;&#x1F1F3;</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">Redis GEO Sharded</div>
+                    <div class="evolution-detail">City-based keys<br>Read replicas</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">&#x26A1;</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">H3 Hexagonal Index</div>
+                    <div class="evolution-detail">Resolution 8-9<br>Surge zones</div>
+                </div>
+                <div class="evolution-stage current">
+                    <div class="evolution-icon">&#x1F30D;</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Geo-partitioned<br>Data residency</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

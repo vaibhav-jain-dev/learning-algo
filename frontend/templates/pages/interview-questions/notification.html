@@ -988,6 +988,204 @@ kubectl rollout undo deployment/email-worker</pre>
                 <div class="label">API Availability</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Notification Storm (Millions at Once)</div>
+                <p>Flash sale announcement or system alert triggers millions of notifications simultaneously.</p>
+                <div class="case-solution">Use priority queues with separate topics. Rate limit marketing to 100K/min. Auto-scale workers based on Kafka consumer lag. Implement backpressure at API level.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">User Unsubscribed Mid-Delivery</div>
+                <p>User opts out while notification is queued but not yet delivered.</p>
+                <div class="case-solution">Check user preferences at delivery time (not just queue time). Cache preferences in Redis with short TTL (60s). Honor unsubscribe immediately - better to miss one notification than annoy user.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Push Token Expired/Invalid</div>
+                <p>FCM/APNS returns "NotRegistered" or "InvalidToken" error.</p>
+                <div class="case-solution">Mark device_token as is_active=false immediately. Don't retry invalid tokens. Clean up stale tokens via batch job (>90 days unused). Track token refresh rate as health metric.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Email Bounces (Hard/Soft)</div>
+                <p>Email delivery fails due to invalid address or full mailbox.</p>
+                <div class="case-solution">Hard bounce: Mark email as invalid, stop future sends. Soft bounce: Retry 3x over 24h, then mark as problematic. Use SES bounce notifications via SNS webhook. Maintain bounce rate < 5% to protect sender reputation.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">SMS Delivery Failure</div>
+                <p>SMS fails due to invalid number, carrier issues, or DND registration.</p>
+                <div class="case-solution">Parse provider error codes (invalid number vs temporary failure). Retry temporary failures with exponential backoff. Log detailed error for invalid numbers. Fallback to email/push for critical notifications.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Provider Rate Limiting (FCM, APNs, SES)</div>
+                <p>Provider returns 429 Too Many Requests or throttling errors.</p>
+                <div class="case-solution">Implement client-side rate limiting (token bucket). Respect Retry-After headers. Use multiple provider accounts for higher limits. Queue overflow to DLQ, process when rate limit resets.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">AI-Driven Send Time Optimization</div>
+                <p>Use ML to predict optimal delivery time per user based on engagement history.</p>
+                <div class="future-approach">Collect open/click timestamps. Train model on user engagement patterns. Predict best hour/day per user. For new users, use cohort-based defaults. A/B test optimized vs fixed times.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Personalized Content with LLM</div>
+                <p>Generate dynamic notification content based on user context and preferences.</p>
+                <div class="future-approach">Use GPT-4 for template variants. Input: user profile, past purchases, browsing history. Output: personalized subject line and body. Cache generated content for similar user segments.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Cross-Channel Orchestration</div>
+                <p>Intelligently route notifications across channels based on urgency and user behavior.</p>
+                <div class="future-approach">Define channel priority per notification type. If push not opened in 5 min, send email. If email not opened in 1 hour, send SMS. Track cross-channel attribution.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Preference Learning</div>
+                <p>Automatically learn user channel and frequency preferences from behavior.</p>
+                <div class="future-approach">Track unsubscribes, mutes, open rates per channel. Build preference model per user. Suggest optimal settings. Auto-reduce frequency for low-engagement users.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement priority queues for notifications?</div>
+                    <div class="followup-hint">Separate Kafka topics per priority (critical/high/medium/low). Workers consume from critical first. Use weighted fair queuing. Critical = OTP/security, High = orders, Medium = updates, Low = marketing.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">What delivery guarantees do you provide? At-least-once or exactly-once?</div>
+                    <div class="followup-hint">At-least-once with idempotency. Kafka provides at-least-once. Use idempotency_key + Redis SETNX for dedup. Accept rare duplicates (better than message loss). Exactly-once too expensive for notifications.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle template management and versioning?</div>
+                    <div class="followup-hint">Store templates in DB with version column. A/B test new templates with traffic split. Rollback via version revert. Validate variable schema before save. Cache compiled templates in Redis.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement notification scheduling and timezone handling?</div>
+                    <div class="followup-hint">Store scheduled_at in UTC. Scheduler job runs every minute: SELECT WHERE scheduled_at <= NOW(). For timezone-aware: convert user's preferred time to UTC at creation. Batch fetch scheduled notifications with FOR UPDATE SKIP LOCKED.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you prevent notification fatigue and spam?</div>
+                    <div class="followup-hint">Per-user rate limit (10/hour for marketing). Frequency capping per category. Quiet hours (don't send 10pm-8am). Aggregate similar notifications. Track unsubscribe rate as quality metric.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>MVP Stage - Complete Notification Flow</h4>
+            <div class="flow-vertical">
+                <!-- Send Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">NOTIFICATION SEND FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Event<br><small>Order placed</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Queue<br><small>Kafka topic</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Priority Sort<br><small>Critical first</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Channel Select<br><small>Push/Email/SMS</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Rate Limit<br><small>Token bucket</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node external">Provider<br><small>FCM/SES/Twilio</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Delivery<br><small>+ Tracking</small></div>
+                    </div>
+                </div>
+
+                <!-- Multi-Channel Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">MULTI-CHANNEL DELIVERY</div>
+                    <div class="flow-row" style="justify-content: center; gap: 24px;">
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #f59e0b; color: white;">Push<br><small>FCM/APNs</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Instant, Free</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #3b82f6; color: white;">Email<br><small>SES</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Rich content</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #22c55e; color: white;">SMS<br><small>Twilio</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">High urgency</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #8b5cf6; color: white;">In-App<br><small>WebSocket</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Real-time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">MVP</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">Single primary<br>All tables colocated</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">+</div>
+                    <div class="evolution-label">Events</div>
+                    <div class="evolution-db">Kafka</div>
+                    <div class="evolution-detail">Event streaming<br>Priority topics</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">+</div>
+                    <div class="evolution-label">Analytics</div>
+                    <div class="evolution-db">ClickHouse</div>
+                    <div class="evolution-detail">Delivery logs<br>Columnar analytics</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">+</div>
+                    <div class="evolution-label">Preferences</div>
+                    <div class="evolution-db">ScyllaDB</div>
+                    <div class="evolution-detail">User preferences<br>Low-latency reads</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1242,6 +1440,204 @@ kubectl rollout undo deployment/email-worker</pre>
                 <div class="label">Languages Supported</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Notification Storm During Festival Sales (Diwali, Big Billion Days)</div>
+                <p>50M notifications triggered within minutes during flash sale start.</p>
+                <div class="case-solution">Pre-warm workers 30min before sale. Use priority queues - transactional (OTP) gets dedicated capacity. Marketing notifications throttled to 500K/min. Implement circuit breakers on all provider calls.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regional Language Template Missing</div>
+                <p>User's preferred language (e.g., Kannada) template not available for notification type.</p>
+                <div class="case-solution">Fallback chain: user_language → Hindi → English. Log missing translations for ops team. Show fallback indicator in analytics. Never fail delivery due to missing translation.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">DND Registry Check Failure</div>
+                <p>TRAI DND API timeout or error during promotional SMS send.</p>
+                <div class="case-solution">Cache DND list locally (sync daily). On cache miss + API failure: block promotional, allow transactional. Err on side of caution - better to not send than violate DND.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">WhatsApp Template Rejection</div>
+                <p>Meta rejects template or marks business as spam.</p>
+                <div class="case-solution">Pre-approve all templates before use. Monitor template quality score. Have fallback to SMS for critical messages. Maintain separate numbers for transactional vs marketing.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">SMS Provider Regional Outage</div>
+                <p>Twilio experiencing issues in specific telecom circles (e.g., BSNL).</p>
+                <div class="case-solution">Multi-provider setup with circuit breaker per provider-carrier combo. Route BSNL numbers to Msg91 if Twilio failing. Real-time delivery rate monitoring per carrier.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Kafka Replication Lag</div>
+                <p>MirrorMaker lag causes duplicate processing or message loss during failover.</p>
+                <div class="case-solution">Use idempotency keys that survive cross-region replay. Accept eventual consistency (seconds). Monitor replication lag in Grafana. Manual failover only when lag < 1000 messages.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">AI-Powered Regional Content Optimization</div>
+                <p>Use ML to optimize notification content for regional preferences and cultural context.</p>
+                <div class="future-approach">Train models on engagement data per region. Adjust tone, timing, and offers for cultural events (Pongal, Onam, Durga Puja). A/B test regional variants automatically.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Intelligent Channel Selection with ML</div>
+                <p>Predict best channel per user based on historical engagement and context.</p>
+                <div class="future-approach">Features: time of day, user's past open rates per channel, notification type, device active status. Model outputs channel probability. Route to highest probability channel first.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Cross-Channel Orchestration Engine</div>
+                <p>Cascade notifications across channels based on delivery and engagement.</p>
+                <div class="future-approach">Define workflows: Push first → if no open in 10min → Email → if no open in 2hr → SMS. Track cross-channel attribution. Respect user fatigue limits across channels.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Voice Notification Channel (IVR)</div>
+                <p>Add automated voice calls for critical notifications to non-smartphone users.</p>
+                <div class="future-approach">Integrate with Exotel/Knowlarity for IVR. Use for COD confirmation, delivery OTP for elderly users. Text-to-speech in regional languages. Fallback for SMS failures.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle multi-language template management at scale?</div>
+                    <div class="followup-hint">Separate translation table with (template_id, language_code) PK. Use i18n libraries for variable interpolation. Crowdsource translations via internal tools. Cache compiled templates per language in Redis.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement SMS provider failover without message loss?</div>
+                    <div class="followup-hint">Circuit breaker per provider. On failure: don't ack Kafka message, it retries with next provider. Track provider health score (success rate last 5 min). Weighted routing based on health + cost.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure DND compliance while maintaining delivery SLAs?</div>
+                    <div class="followup-hint">Daily DND registry sync to local cache. Check cache first (P99 < 1ms). Transactional SMS exempt from DND. For promotional: block if in DND, offer WhatsApp/email alternative. Audit log all DND checks.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle WhatsApp Business API rate limits and template approvals?</div>
+                    <div class="followup-hint">Pre-approve template library. Monitor quality rating (needs > 4/5). Rate limit: start with 1K/day, scale to 100K based on quality. Implement queueing when approaching limits. Fallback to SMS for overflow.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you implement timezone-aware scheduling for PAN-India users?</div>
+                    <div class="followup-hint">Store user timezone in preferences. Convert scheduled_at to UTC at creation. Scheduler fetches by UTC time. For "send at 10am local": expand to multiple UTC times. Batch users by timezone for efficiency.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>PAN-India Stage - Multi-Region Notification Flow</h4>
+            <div class="flow-vertical">
+                <!-- Regional Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">REGIONAL NOTIFICATION FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Event<br><small>Any region</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Route 53<br><small>Latency routing</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Regional API<br><small>Mumbai/Hyd</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Language<br><small>Load template</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">DND Check<br><small>TRAI registry</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node external">Provider<br><small>Failover enabled</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Delivery<br><small>Regional</small></div>
+                    </div>
+                </div>
+
+                <!-- Multi-Channel with Regional Providers -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">REGIONAL PROVIDER ROUTING</div>
+                    <div class="flow-row" style="justify-content: center; gap: 24px;">
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #f59e0b; color: white;">Push<br><small>FCM/APNs</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Global</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #3b82f6; color: white;">Email<br><small>SES Mumbai</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Regional SES</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #22c55e; color: white;">SMS<br><small>Twilio→Msg91</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Failover chain</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #25D366; color: white;">WhatsApp<br><small>Meta Business</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">HSM templates</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - PAN-India Stage</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">PG</div>
+                    <div class="evolution-label">Core Data</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">Primary Mumbai<br>Read replica Hyd</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">K</div>
+                    <div class="evolution-label">Events</div>
+                    <div class="evolution-db">Kafka (MSK)</div>
+                    <div class="evolution-detail">Cross-region<br>MirrorMaker 2</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">CH</div>
+                    <div class="evolution-label">Analytics</div>
+                    <div class="evolution-db">ClickHouse</div>
+                    <div class="evolution-detail">Regional delivery<br>Language metrics</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">R</div>
+                    <div class="evolution-label">Cache</div>
+                    <div class="evolution-db">Redis Cluster</div>
+                    <div class="evolution-detail">DND cache<br>Template cache</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1479,6 +1875,204 @@ GROUP BY channel;</pre>
                 <div class="label">API Availability</div>
             </div>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Notification Storm at 10K/sec (Black Friday Peak)</div>
+                <p>All channels hit simultaneously during major sale event.</p>
+                <div class="case-solution">Pre-scale workers 2x expected peak. Implement adaptive rate limiting per channel. Use separate Kafka clusters for critical vs marketing. Shed low-priority traffic gracefully when at capacity.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Kafka Consumer Lag Explosion</div>
+                <p>Consumer lag grows to millions, causing notification delays.</p>
+                <div class="case-solution">Alert on lag > 10K messages. Auto-scale consumers based on lag metric (KEDA). Implement backpressure - reject new low-priority requests when lag high. Consider dropping expired marketing notifications.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Database Shard Hotspot</div>
+                <p>One shard receives disproportionate traffic (celebrity user, viral campaign).</p>
+                <div class="case-solution">Monitor per-shard metrics. Use consistent hashing with virtual nodes for better distribution. Implement read replicas per shard. Consider splitting hot shard dynamically.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Bloom Filter False Positives Spike</div>
+                <p>Dedup bloom filter returning too many false positives, blocking legitimate notifications.</p>
+                <div class="case-solution">Monitor false positive rate. Rebuild bloom filter when FP rate > 2%. Use counting bloom filter to support deletions. Fallback to Redis check on positive bloom result.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Provider Multi-Account Rate Limit Coordination</div>
+                <p>Using multiple FCM/SES accounts but still hitting aggregate limits.</p>
+                <div class="case-solution">Distribute users across accounts by user_id hash. Track rate limit per account in Redis. Implement account-level circuit breakers. Request enterprise limits from providers.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">ClickHouse Insert Lag During Peak</div>
+                <p>Analytics writes falling behind, losing delivery tracking data.</p>
+                <div class="case-solution">Buffer writes in Kafka before ClickHouse. Use async batch inserts (10K rows/batch). Implement backpressure - don't block delivery on analytics write. Accept eventual consistency for analytics.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Real-Time ML Personalization at Scale</div>
+                <p>Use streaming ML models to personalize notification content in real-time.</p>
+                <div class="future-approach">Deploy ML models on Kubernetes with GPU nodes. Use feature store (Feast) for real-time features. Implement A/B testing framework for model variants. Target < 10ms inference latency.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Send Time Optimization</div>
+                <p>ML model predicts optimal send time per user to maximize engagement.</p>
+                <div class="future-approach">Train on historical open/click timestamps. Features: user timezone, past engagement patterns, notification type. Batch score users nightly, cache optimal times. A/B test against fixed schedule.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Intelligent Notification Aggregation</div>
+                <p>Automatically batch similar notifications to reduce fatigue.</p>
+                <div class="future-approach">Hold notifications for configurable window (5-15 min). Group by category/type. Generate digest notification. Use ML to learn optimal aggregation per user.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Self-Healing Provider Routing</div>
+                <p>ML-based automatic provider selection and failover.</p>
+                <div class="future-approach">Train on provider performance data (latency, success rate, cost). Real-time scoring of provider health. Automatic traffic shifting based on predicted success. Learn carrier-specific routing.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you implement priority queues that guarantee critical notifications are never delayed?</div>
+                    <div class="followup-hint">Dedicated Kafka cluster for critical (OTP/security). Separate worker pools with resource isolation (bulkhead). Critical pool never shares resources with marketing. Alert if critical queue depth > 100.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle exactly-once delivery semantics at this scale?</div>
+                    <div class="followup-hint">True exactly-once is expensive. Use at-least-once with idempotency. Bloom filter + Redis for dedup. Accept 0.01% duplicate rate as acceptable tradeoff. For critical: use DB unique constraint as final check.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you manage template versioning and A/B testing at 10K/sec?</div>
+                    <div class="followup-hint">Store template versions in DB. Cache active versions in Redis. A/B split at notification creation time (not delivery). Track metrics per version. Gradual rollout: 1% → 10% → 50% → 100%. Auto-rollback if engagement drops.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you implement efficient bulk notifications for 100M users?</div>
+                    <div class="followup-hint">Segment service pre-computes user lists. Split into 10K batches. Throttled produce to Kafka (avoid thundering herd). Workers process in parallel. Progress tracking via Redis counters. Estimated completion time shown in UI.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle database sharding for notifications?</div>
+                    <div class="followup-hint">Shard by user_id (all user's notifications colocated). Use Citus for PostgreSQL sharding. Cross-shard queries only for analytics (use ClickHouse). Shard key in all queries. Consider time-based partitioning within shards.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>High Traffic Stage - Scaled Notification Flow</h4>
+            <div class="flow-vertical">
+                <!-- High Volume Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">HIGH-VOLUME NOTIFICATION FLOW (10K/sec)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Event<br><small>Bulk/Single</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">API Gateway<br><small>Rate limit</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Bloom Filter<br><small>Dedup check</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Priority Queue<br><small>4 topics</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Worker Pool<br><small>90 pods</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node external">Providers<br><small>Multi-account</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">ClickHouse<br><small>Analytics</small></div>
+                    </div>
+                </div>
+
+                <!-- Priority Queue Distribution -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">PRIORITY QUEUE DISTRIBUTION</div>
+                    <div class="flow-row" style="justify-content: center; gap: 24px;">
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #dc2626; color: white;">Critical<br><small>OTP, Security</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">32 partitions</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #f59e0b; color: white;">High<br><small>Orders</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">64 partitions</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #3b82f6; color: white;">Medium<br><small>Updates</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">32 partitions</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #64748b; color: white;">Low<br><small>Marketing</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">16 partitions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - High Traffic Stage</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">PG</div>
+                    <div class="evolution-label">Sharded</div>
+                    <div class="evolution-db">PostgreSQL (Citus)</div>
+                    <div class="evolution-detail">4 shards<br>user_id based</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">K</div>
+                    <div class="evolution-label">Events</div>
+                    <div class="evolution-db">Kafka (MSK)</div>
+                    <div class="evolution-detail">12 brokers<br>144 partitions</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">CH</div>
+                    <div class="evolution-label">Analytics</div>
+                    <div class="evolution-db">ClickHouse Cluster</div>
+                    <div class="evolution-detail">500M logs/day<br>30-day retention</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">R</div>
+                    <div class="evolution-label">Cache</div>
+                    <div class="evolution-db">Redis Cluster</div>
+                    <div class="evolution-detail">16 shards<br>Bloom + dedup</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1703,6 +2297,204 @@ kubectl --context=us-east rollout undo deployment/api</pre>
             <div class="metric">
                 <div class="value">99.99%</div>
                 <div class="label">Availability</div>
+            </div>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Global Notification Storm (100K/sec Multi-Region)</div>
+                <p>Worldwide product launch or incident notification hits all regions simultaneously.</p>
+                <div class="case-solution">Pre-coordinate capacity across regions. Use global rate limiter with regional quotas. Implement cross-region load shedding. Critical notifications get reserved capacity in each region.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Data Consistency During Failover</div>
+                <p>User preferences updated in EU, notification sent from US before replication completes.</p>
+                <div class="case-solution">Use CockroachDB follower reads for preferences (accept staleness). For critical preferences (unsubscribe): synchronous replication with higher latency. Accept eventual consistency for non-critical preferences.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">GDPR Right to Erasure Mid-Campaign</div>
+                <p>EU user requests data deletion while marketing campaign is in progress.</p>
+                <div class="case-solution">Immediate soft-delete blocks all future sends. Kafka consumers check deletion status before delivery. Purge from all regional caches. Audit log deletion request for compliance. Complete hard delete within 30 days.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regional Provider Outage (AWS SES EU-West Down)</div>
+                <p>Email provider experiences regional outage affecting millions of users.</p>
+                <div class="case-solution">Multi-region provider failover (route to US-East SES). Queue emails during outage with TTL. Implement provider health checks per region. Consider multi-cloud (SES + SendGrid) for critical regions.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Time-Sensitive Notification Across Timezones</div>
+                <p>Flash sale notification needs to arrive at exactly 10am local time across 50+ timezones.</p>
+                <div class="case-solution">Pre-compute send times in UTC for each timezone. Batch users by timezone. Stagger Kafka produce to match timezone windows. Account for DST transitions. Monitor delivery timing accuracy.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Regulatory Compliance Conflict (GDPR vs Local Law)</div>
+                <p>EU user traveling in country with different data laws receives notification.</p>
+                <div class="case-solution">Always apply user's home region compliance rules. Route all processing through user's registered region. Geo-IP only for latency optimization, not compliance. Legal review of cross-border scenarios.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">AI-Powered Global Content Optimization</div>
+                <p>Use LLMs to generate culturally-appropriate notification content for each region.</p>
+                <div class="future-approach">Train regional content models on engagement data. Consider cultural nuances, holidays, local events. A/B test AI-generated vs human-written content. Implement content safety filters for each region.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Cross-Channel Orchestration</div>
+                <p>ML model determines optimal channel sequence per user across global touchpoints.</p>
+                <div class="future-approach">Build user journey models spanning channels and regions. Predict: push in morning → email if not opened → WhatsApp for high-intent users. Learn regional channel preferences automatically.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Real-Time Personalization with Edge ML</div>
+                <p>Deploy ML models at edge locations for sub-10ms personalization.</p>
+                <div class="future-approach">Use TensorFlow Lite models at CloudFront edge. Personalize notification content based on real-time user context. A/B test edge vs centralized personalization. Target P99 < 5ms for model inference.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Autonomous Notification System</div>
+                <p>Self-optimizing system that automatically adjusts frequency, timing, and content.</p>
+                <div class="future-approach">Reinforcement learning for send time optimization. Auto-adjust frequency based on engagement signals. Self-healing provider routing. Human oversight for major changes only.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you implement priority queues with global consistency?</div>
+                    <div class="followup-hint">Each region has independent Kafka clusters with same topic structure. Critical notifications processed locally first. Cross-region replication only for analytics/audit. Use global rate limiter (Redis Global) to prevent total system overload.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you guarantee delivery while respecting data residency?</div>
+                    <div class="followup-hint">Route all user data processing through user's home region. Use CockroachDB geo-partitioning. Notification metadata can be global, PII stays regional. For cross-region notifications: send request to user's home region for processing.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you manage template versioning across 50+ languages?</div>
+                    <div class="followup-hint">Translation management system (Lokalise/Phrase). Template version + language_code as cache key. Gradual rollout per language. Fallback chain: user_lang → region_default → English. Track engagement per language version.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you implement global rate limiting without adding latency?</div>
+                    <div class="followup-hint">Use Redis Global Datastore for distributed rate limiting. Local rate limit check first (region quota). Global check only when approaching limits. Accept slight over-delivery vs adding latency. Async reconciliation of global counters.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle notification delivery during regional failover?</div>
+                    <div class="followup-hint">Active-active means no failover needed for most cases. If region totally down: Route 53 health checks redirect traffic. Pending notifications replayed from Kafka (retained 7 days). Accept temporary increase in latency during failover. User preferences cached globally with TTL.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>Global Stage - Multi-Region Notification Flow</h4>
+            <div class="flow-vertical">
+                <!-- Global Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">GLOBAL NOTIFICATION FLOW (100K/sec)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Event<br><small>Any region</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">Route 53<br><small>Geo routing</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Regional API<br><small>US/EU/APAC</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">CockroachDB<br><small>Geo-partitioned</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Regional Kafka<br><small>Local process</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node external">Regional Provider<br><small>Compliance</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Global Delivery<br><small>Analytics</small></div>
+                    </div>
+                </div>
+
+                <!-- Multi-Region Distribution -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">REGIONAL DISTRIBUTION (Data Residency)</div>
+                    <div class="flow-row" style="justify-content: center; gap: 24px;">
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #3b82f6; color: white;">US-East<br><small>Americas</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">CCPA compliant</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #22c55e; color: white;">EU-West<br><small>EMEA</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">GDPR compliant</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #f59e0b; color: white;">AP-Southeast<br><small>APAC</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Regional laws</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="flow-node" style="background: #8b5cf6; color: white;">Global<br><small>Coordination</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Argo CD sync</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - Global Stage</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">CRDB</div>
+                    <div class="evolution-label">Distributed SQL</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Geo-partitioned<br>3 regions</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">K</div>
+                    <div class="evolution-label">Regional Events</div>
+                    <div class="evolution-db">Kafka (MSK)</div>
+                    <div class="evolution-detail">36 brokers<br>3 clusters</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">CH</div>
+                    <div class="evolution-label">Global Analytics</div>
+                    <div class="evolution-db">ClickHouse Cloud</div>
+                    <div class="evolution-detail">5B events/day<br>Cross-region</div>
+                </div>
+                <div class="evolution-arrow">→</div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">Scy</div>
+                    <div class="evolution-label">Preferences</div>
+                    <div class="evolution-db">ScyllaDB Global</div>
+                    <div class="evolution-detail">User prefs<br>Sub-ms reads</div>
+                </div>
             </div>
         </div>
     </div>

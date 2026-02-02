@@ -1471,6 +1471,142 @@ cache_hit_ratio 0.95
                 </tr>
             </table>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Replication Lag</div>
+                <p>Hyderabad read replica may be 100-500ms behind Mumbai primary during high write loads.</p>
+                <div class="case-solution">Use read-after-write consistency for critical paths (force read from primary). Set max acceptable lag threshold (500ms) and route to primary if exceeded. Monitor replication lag in CloudWatch with alerts.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">CDN Cache Invalidation Delays</div>
+                <p><span class="info-term" onclick="showTooltip('cloudfront')">CloudFront<span class="info-i">i</span></span> edge locations take 5-10 minutes to invalidate cached redirects.</p>
+                <div class="case-solution">Use versioned short codes for updated URLs. Implement cache-busting query params for admin updates. Set reasonable TTLs (1 hour) balancing freshness vs origin load. Use invalidation API for critical updates only (1000 free/month).</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title"><span class="info-term" onclick="showTooltip('route53')">Route 53<span class="info-i">i</span></span> Failover Delays</div>
+                <p>Health check interval (10s) + failover propagation (30s) = up to 40s of failed requests during region outage.</p>
+                <div class="case-solution">Set health check interval to minimum (10s). Use fast failover policy. Implement client-side retry with exponential backoff. Consider active-active with both regions always serving traffic.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redis Cross-Region Sync Conflicts</div>
+                <p><span class="info-term" onclick="showTooltip('elasticache')">ElastiCache<span class="info-i">i</span></span> Global Datastore may have write conflicts when same key updated in both regions.</p>
+                <div class="case-solution">Designate one region as primary for writes. Use last-writer-wins for cache (acceptable for URL lookups). For counters, use CRDT-based approach or aggregate in analytics pipeline.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Regional Compliance (RBI Data Localization)</div>
+                <p>Indian users' data must stay within India per RBI/DPDP Act requirements.</p>
+                <div class="future-approach">Tag URLs with user's region. Route writes to region-local database. Implement data residency policies in application layer. Add audit logging for cross-region data access.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Vernacular Language Support</div>
+                <p>Support Hindi, Tamil, Telugu URLs and UI for Tier 2/3 city users.</p>
+                <div class="future-approach">Punycode encoding for Indic script URLs. i18n framework for UI (react-intl). Store original + normalized URL. OCR for Hindi text in images for QR scanning.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">UPI Deep Link Integration</div>
+                <p>Short URLs that trigger UPI payment apps directly.</p>
+                <div class="future-approach">Generate UPI intent URLs (upi://pay?pa=...). Partner with PhonePe/GPay for verified merchant links. Add payment tracking in analytics.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle the CAP theorem trade-offs between Mumbai and Hyderabad?</div>
+                    <div class="followup-hint">We choose AP (Availability + Partition tolerance). Accept eventual consistency for reads (100ms lag OK for redirects). Route all writes to Mumbai primary. Use async replication with monitoring.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">What happens if the Mumbai-Hyderabad network link fails?</div>
+                    <div class="followup-hint">Hyderabad serves stale data from local replica (read-only mode). Queue writes locally and sync when connection restores. Route 53 health checks detect and alert. Consider promoting replica in extended outage.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you add a third region (e.g., Delhi) without downtime?</div>
+                    <div class="followup-hint">Create read replica in Delhi region. Add to Route 53 with weighted routing (start at 0%). Gradually increase traffic. Deploy API servers. Add to ElastiCache Global Datastore. Blue-green the DNS cutover.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you test multi-region failover without affecting production?</div>
+                    <div class="followup-hint">Chaos engineering with AWS Fault Injection Simulator. Scheduled failover drills during low-traffic windows. Synthetic monitoring from both regions. Game day exercises with runbooks.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>PAN-India Stage - Complete Request Flow</h4>
+            <div class="flow-vertical">
+                <!-- Request Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">USER REQUEST FLOW (Latency-Based Routing)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User<br><small>Delhi/Mumbai</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cdn">CloudFront<br><small>Edge Cache</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">cache miss</span>
+                        </div>
+                        <div class="flow-node gateway">Route 53<br><small>Latency routing</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Mumbai API<br><small>Nearest region</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>Local cluster</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">RDS Primary<br><small>Mumbai</small></div>
+                    </div>
+                </div>
+
+                <!-- Cross-Region Sync -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">CROSS-REGION REPLICATION</div>
+                    <div class="flow-row">
+                        <div class="flow-node db">Mumbai Primary<br><small>Writes</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">async &lt;100ms</span>
+                        </div>
+                        <div class="flow-node db" style="opacity: 0.7;">Hyderabad Replica<br><small>Reads only</small></div>
+                        <div style="width: 40px;"></div>
+                        <div class="flow-node cache">Mumbai Redis</div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">Global Datastore</span>
+                        </div>
+                        <div class="flow-node cache">Hyderabad Redis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1827,6 +1963,153 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$18,700/month</strong></td></tr>
             </table>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Kafka Consumer Lag</div>
+                <p><span class="info-term" onclick="showTooltip('msk')">Amazon MSK<span class="info-i">i</span></span> consumers fall behind during traffic spikes, causing delayed analytics.</p>
+                <div class="case-solution">Auto-scale consumer pods based on lag metric. Set up dead-letter queue for failed messages. Implement backpressure in producers. Monitor consumer group lag in Kafka UI/Datadog.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Sharding Hot Spots</div>
+                <p>Short codes starting with popular letters (a-f) get disproportionate traffic, overloading specific shards.</p>
+                <div class="case-solution">Use consistent hashing instead of range-based sharding. Implement virtual nodes (256 per physical shard). Monitor per-shard QPS and auto-rebalance. Consider <span class="info-term" onclick="showTooltip('vitess')">Vitess<span class="info-i">i</span></span> for automatic resharding.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Rate Limiter Redis Failure</div>
+                <p><span class="info-term" onclick="showTooltip('elasticache')">ElastiCache<span class="info-i">i</span></span> cluster used for rate limiting goes down, allowing potential abuse.</p>
+                <div class="case-solution">Fail-open with in-memory fallback (per-pod limiting). Use Redis Sentinel for auto-failover. Implement circuit breaker pattern. Have backup rate limiting at API Gateway level (less accurate but functional).</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Pre-generated Code Pool Exhaustion</div>
+                <p>Background worker can't keep up with code generation during viral traffic events.</p>
+                <div class="case-solution">Maintain buffer of 100K pre-generated codes. Alert when pool drops below 10K. Fallback to synchronous generation if pool empty. Scale worker pods based on pool size metric.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">NLB Connection Draining Issues</div>
+                <p>During rolling deployments, in-flight requests get terminated when pods are killed.</p>
+                <div class="case-solution">Configure preStop hook with sleep(15s). Set terminationGracePeriodSeconds to 30s. Use readiness probe removal before pod termination. Configure deregistration delay on target group.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Real-Time Analytics Dashboard</div>
+                <p>Live dashboard showing clicks, geographic distribution, and referrer data with &lt;5s latency.</p>
+                <div class="future-approach">Kafka Streams for real-time aggregation. Apache Druid or ClickHouse for OLAP queries. WebSocket push to dashboard. Pre-aggregate common metrics (hourly/daily rollups).</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">ML-Based Spam/Phishing Detection</div>
+                <p>Automatically detect and block malicious URLs before they're shortened.</p>
+                <div class="future-approach">Train model on URL features (domain age, path patterns, TLD). Use AWS SageMaker for inference. Integrate with VirusTotal API. Queue suspicious URLs for manual review with confidence scores.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Smart Link Routing</div>
+                <p>Route users to different destinations based on device, location, or time.</p>
+                <div class="future-approach">Store routing rules in URL metadata JSON. Evaluate rules at redirect time. Support A/B testing with configurable traffic split. Track conversion rates per variant.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">API Rate Tier Monetization</div>
+                <p>Offer premium tiers with higher rate limits and advanced features.</p>
+                <div class="future-approach">Implement tiered rate limiting (free: 100/hour, pro: 10K/hour). Use Stripe for billing integration. Track usage per API key. Offer enterprise custom limits with SLA.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you decide when to shard vs. when to add read replicas?</div>
+                    <div class="followup-hint">Read replicas for read-heavy loads (10:1 read:write ratio). Sharding when single primary can't handle write throughput (>10K writes/sec) or data size exceeds single node (>1TB). Often use both: sharded primaries with replicas per shard.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Why Kafka over SQS for click events at this scale?</div>
+                    <div class="followup-hint">Kafka: ordering guarantees per partition (important for user session analysis), higher throughput (millions msg/sec), replay capability for reprocessing, cheaper at scale. SQS: simpler ops, better for unpredictable workloads, limited to 120K msg/sec.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you handle a shard migration (rebalancing) without downtime?</div>
+                    <div class="followup-hint">Double-write to old and new shard during migration. Use Vitess/Citus for automated resharding. Background copy with consistency verification. Switch reads first, then writes. Rollback plan with reverse migration scripts.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the click deduplication logic for analytics accuracy</div>
+                    <div class="followup-hint">Generate click fingerprint (IP + UA + timestamp bucket). Store in Redis with short TTL (5 min). Check before Kafka publish. For exact dedup, use HyperLogLog for unique counts. Accept some duplication for simplicity if analytics can tolerate.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>High-Traffic Stage - Complete Request Flow</h4>
+            <div class="flow-vertical">
+                <!-- Read Path -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">REDIRECT FLOW (100K req/sec)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Client<br><small>GET /abc</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cdn">CloudFront<br><small>95% hit</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">5% miss</span>
+                        </div>
+                        <div class="flow-node gateway">NLB<br><small>Layer 4</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API Pod<br><small>1 of 20</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis Cluster<br><small>16 shards</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">miss</span>
+                        </div>
+                        <div class="flow-node db">DB Shard<br><small>by prefix</small></div>
+                    </div>
+                </div>
+
+                <!-- Analytics Pipeline -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">ASYNC ANALYTICS PIPELINE</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">API Pod<br><small>Click event</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node queue">Kafka<br><small>clicks topic</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Consumer<br><small>Batch writer</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">Analytics DB<br><small>TimescaleDB</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node analytics">Grafana<br><small>Dashboards</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1893,6 +2176,154 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$96,000/month</strong></td></tr>
             </table>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">GDPR Data Residency Violations</div>
+                <p>EU user data accidentally replicated to US or APAC regions, violating GDPR requirements.</p>
+                <div class="case-solution">Configure <span class="info-term" onclick="showTooltip('cockroachdb')">CockroachDB<span class="info-i">i</span></span> zone configs to pin EU data to EU nodes. Implement data classification tags at application layer. Add compliance audit logging for cross-region data access. Regular automated compliance checks.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">CockroachDB Partition/Split Issues</div>
+                <p>Network partition between US-East and EU-West causes split-brain scenario or write unavailability.</p>
+                <div class="case-solution">CockroachDB uses Raft consensus (majority quorum). With 3 regions, 2 must be reachable for writes. Configure leaseholder preferences for latency. Monitor range unavailability metrics. Have runbook for manual range recovery.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Multi-Region Consistency Conflicts</div>
+                <p>Same short code created simultaneously in different regions before replication completes.</p>
+                <div class="case-solution">CockroachDB provides SERIALIZABLE isolation globally. Use region-prefixed short codes (us-abc, eu-xyz) to avoid conflicts entirely. Alternatively, use global sequences with pre-allocated ranges per region.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Global DNS Propagation Delays</div>
+                <p>DNS changes (new region, failover) take up to 48 hours to propagate globally.</p>
+                <div class="case-solution">Use low TTLs (60s) for critical records. Implement anycast for instant failover. Use health-check based routing (Route 53 / Cloudflare). Pre-warm DNS caches before major changes.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Time Zone and Clock Skew Issues</div>
+                <p>URL expiration and analytics timestamps incorrect due to clock differences across regions.</p>
+                <div class="case-solution">Use UTC everywhere in storage and logic. Implement NTP sync with &lt;100ms tolerance. CockroachDB has hybrid-logical clocks for ordering. Convert to user timezone only at display layer.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Edge Computing with CloudFlare Workers</div>
+                <p>Run redirect logic at 200+ edge locations for sub-10ms latency globally.</p>
+                <div class="future-approach">Deploy Workers script for cache lookup + redirect. Use Durable Objects for distributed state. KV storage for hot URLs (replicated globally). Fallback to origin for cache misses. Reduces origin traffic by 99%.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Blockchain-Based URL Verification</div>
+                <p>Immutable proof of URL creation time and ownership for legal/compliance use cases.</p>
+                <div class="future-approach">Hash URL metadata to Ethereum/Polygon. Store transaction hash in DB. Provide verification API. Use for copyright claims, legal timestamps. Optional premium feature for enterprise.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">AI-Powered Link Previews</div>
+                <p>Generate rich previews with AI-summarized content for shared links.</p>
+                <div class="future-approach">Crawl destination on creation. Use LLM to summarize content. Generate preview images with puppeteer. Cache previews in CDN. Update periodically for dynamic content.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Zero-Knowledge Analytics</div>
+                <p>Privacy-preserving analytics that don't track individual users.</p>
+                <div class="future-approach">Implement differential privacy for aggregate stats. Use homomorphic encryption for sensitive data. K-anonymity for location data. Comply with strictest privacy regulations (GDPR, CCPA, LGPD).</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">Why CockroachDB over sharded PostgreSQL at global scale?</div>
+                    <div class="followup-hint">CockroachDB: automatic sharding/rebalancing, global SERIALIZABLE transactions, built-in geo-partitioning, survives region failures automatically. Sharded Postgres: manual resharding, no cross-shard transactions, complex failover scripts, but more mature ecosystem and lower cost.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle the speed of light problem for global consistency?</div>
+                    <div class="followup-hint">Accept higher write latency (100-200ms for cross-region consensus). Use read-only replicas for local reads. Implement stale reads with bounded staleness (5s). Design for eventual consistency where possible. Cache aggressively at edge.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a disaster recovery plan for a full region outage</div>
+                    <div class="followup-hint">CockroachDB survives with 2/3 regions (Raft quorum). DNS failover in 30s. Cache continues serving reads. Queue writes during recovery. RPO: 0 (synchronous replication). RTO: &lt;1 minute. Regular DR drills to verify.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you migrate from sharded Postgres to CockroachDB?</div>
+                    <div class="followup-hint">Dual-write period with consistency verification. Use CDC (Debezium) to stream changes. Shadow reads for validation. Gradual traffic shift with feature flags. Rollback capability for 2 weeks. Plan for 3-6 month migration window at this scale.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>Global Stage - Complete Request Flow</h4>
+            <div class="flow-vertical">
+                <!-- Global Request Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">ACTIVE-ACTIVE GLOBAL FLOW (1M req/sec)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User<br><small>Any region</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cdn">CloudFront<br><small>Edge POP</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">GeoDNS</span>
+                        </div>
+                        <div class="flow-node gateway">Nearest Region<br><small>US/EU/APAC</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">EKS Cluster<br><small>Local pods</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>Regional</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">CockroachDB<br><small>Local replica</small></div>
+                    </div>
+                </div>
+
+                <!-- Global Replication -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">COCKROACHDB GLOBAL REPLICATION (Raft Consensus)</div>
+                    <div class="flow-row">
+                        <div class="flow-node db">US-East<br><small>Leaseholder</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">⟷</div>
+                            <span class="flow-arrow-label">Raft</span>
+                        </div>
+                        <div class="flow-node db">EU-West<br><small>Follower</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">⟷</div>
+                            <span class="flow-arrow-label">Raft</span>
+                        </div>
+                        <div class="flow-node db">APAC<br><small>Follower</small></div>
+                        <div style="width: 40px;"></div>
+                        <div class="flow-node analytics">Global<br><small>Observability</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1942,6 +2373,112 @@ INCR clicks:abc123</pre>
         </div>
         <div style="margin-top: 12px;">
             <strong>Use Case:</strong> Click tracking events. Async processing. Decouple API from analytics writes.
+        </div>`
+    },
+    'msk': {
+        title: 'Amazon MSK (Managed Streaming for Kafka)',
+        content: `<p>Fully managed Apache Kafka service on AWS.</p>
+        <div style="margin-top: 16px;">
+            <strong>Key Features:</strong>
+            <ul style="margin: 8px 0; padding-left: 20px;">
+                <li>Automatic broker provisioning and patching</li>
+                <li>Multi-AZ deployment for high availability</li>
+                <li>Integration with AWS IAM, VPC, CloudWatch</li>
+                <li>Supports millions of messages per second</li>
+            </ul>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Pricing:</strong> ~$0.21/hour per broker (kafka.m5.large) + storage + data transfer
+        </div>`
+    },
+    'cloudfront': {
+        title: 'Amazon CloudFront (CDN)',
+        content: `<p>Global Content Delivery Network with 400+ edge locations worldwide.</p>
+        <div style="margin-top: 16px;">
+            <strong>For URL Shortener:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;">
+                <span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 4px;">Edge Location</span>
+                <span>→</span>
+                <span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;">Cache 301 Redirects</span>
+                <span>→</span>
+                <span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px;">95% Hit Rate</span>
+            </div>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Benefits:</strong> Sub-10ms latency globally, DDoS protection, SSL/TLS termination at edge
+        </div>`
+    },
+    'route53': {
+        title: 'Amazon Route 53 (DNS)',
+        content: `<p>Highly available DNS service with health checking and traffic routing.</p>
+        <div style="margin-top: 16px;">
+            <strong>Routing Policies:</strong>
+            <ul style="margin: 8px 0; padding-left: 20px;">
+                <li><strong>Latency-based:</strong> Route to lowest latency region</li>
+                <li><strong>Geolocation:</strong> Route by user's country/continent</li>
+                <li><strong>Failover:</strong> Auto-switch on health check failure</li>
+                <li><strong>Weighted:</strong> Split traffic by percentage</li>
+            </ul>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Health Checks:</strong> Every 10-30 seconds, failover in 30-60 seconds
+        </div>`
+    },
+    'elasticache': {
+        title: 'Amazon ElastiCache',
+        content: `<p>Managed Redis/Memcached service for sub-millisecond caching.</p>
+        <div style="margin-top: 16px;">
+            <strong>ElastiCache Global Datastore:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;">
+                <span style="background: #ef4444; color: white; padding: 4px 8px; border-radius: 4px;">Primary (Mumbai)</span>
+                <span>→</span>
+                <span style="background: #64748b; color: white; padding: 4px 8px; border-radius: 4px;">Replica (Hyderabad)</span>
+            </div>
+            <div style="font-size: 13px; color: #64748b;">Cross-region replication &lt;1 second</div>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Cluster Mode:</strong> Shard data across 16+ nodes for 200GB+ datasets
+        </div>`
+    },
+    'vitess': {
+        title: 'Vitess / Citus (Database Sharding)',
+        content: `<p>Horizontal sharding solutions for MySQL (Vitess) and PostgreSQL (Citus).</p>
+        <div style="margin-top: 16px;">
+            <strong>Vitess Features:</strong>
+            <ul style="margin: 8px 0; padding-left: 20px;">
+                <li>Automatic resharding without downtime</li>
+                <li>Connection pooling and query routing</li>
+                <li>Used by YouTube, Slack, GitHub</li>
+            </ul>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Citus Features:</strong>
+            <ul style="margin: 8px 0; padding-left: 20px;">
+                <li>Distributed PostgreSQL extension</li>
+                <li>Real-time analytics + OLTP</li>
+                <li>Available as Azure managed service</li>
+            </ul>
+        </div>`
+    },
+    'cockroachdb': {
+        title: 'CockroachDB',
+        content: `<p>Distributed SQL database with global SERIALIZABLE transactions.</p>
+        <div style="margin-top: 16px;">
+            <strong>Key Features:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0;">
+                <span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px;">Auto-Sharding</span>
+                <span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px;">Geo-Partitioning</span>
+                <span style="background: #8b5cf6; color: white; padding: 4px 8px; border-radius: 4px;">Raft Consensus</span>
+            </div>
+        </div>
+        <div style="margin-top: 12px;">
+            <strong>Why for Global Scale:</strong>
+            <ul style="margin: 8px 0; padding-left: 20px;">
+                <li>Survives full region failures automatically</li>
+                <li>PostgreSQL-compatible wire protocol</li>
+                <li>GDPR compliance via zone configs</li>
+                <li>No manual sharding or resharding needed</li>
+            </ul>
         </div>`
     }
 };

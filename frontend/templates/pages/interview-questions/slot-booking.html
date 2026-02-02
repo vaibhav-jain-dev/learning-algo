@@ -1157,6 +1157,206 @@ const dates = rule.between(startDate, endDate);</pre>
                 <li>Store event_id in bookings table for updates</li>
             </ul>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Double Booking Race Condition</div>
+                <p>Two users click "Book" simultaneously on the same slot, both see it as available.</p>
+                <div class="case-solution">Use SELECT FOR UPDATE (pessimistic) or version column (optimistic). PostgreSQL row-level locks ensure only one transaction succeeds. Return 409 Conflict to the loser with retry suggestion.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">No-Show Handling</div>
+                <p>User books slot but doesn't show up, wasting resource capacity.</p>
+                <div class="case-solution">Implement no-show tracking per user. After 3 no-shows: require deposit or restrict booking. Auto-mark as no-show if not checked in within grace period (15 min). Notify waitlist immediately on no-show.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Overbooking Strategy</div>
+                <p>Some industries intentionally overbook expecting cancellations (airlines, hotels).</p>
+                <div class="case-solution">Add `overbooking_factor` to resources (e.g., 1.1 = 10% overbook). Track historical no-show rate per resource. Implement compensation workflow when overbooked slot actually fills up.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Timezone Confusion</div>
+                <p>User in IST books 10 AM slot, expects IST but system stored UTC.</p>
+                <div class="case-solution">Always store TIMESTAMPTZ (UTC). Display in user's browser timezone OR resource's timezone. Confirmation email shows both: "10:00 AM IST (04:30 UTC)". Handle DST transitions carefully.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Recurring Booking Conflicts</div>
+                <p>Weekly recurring booking conflicts with a holiday or one-time block.</p>
+                <div class="case-solution">Generate recurring instances at booking time (not lazily). Check each instance for conflicts. Allow "skip" for individual occurrences. Notify user of partial failures: "Booked 11/12 weeks, Dec 25 unavailable".</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Last-Minute Cancellation</div>
+                <p>User cancels 5 minutes before appointment, leaving slot unfillable.</p>
+                <div class="case-solution">Implement cancellation policies with cutoff times (e.g., 24h). Charge cancellation fee for late cancels. Auto-notify waitlist with "flash" availability. Consider partial refund tiers: 100% > 24h, 50% > 2h, 0% < 2h.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">AI Scheduling Assistant</div>
+                <p>Natural language booking: "Book me with Dr. Smith next Tuesday afternoon".</p>
+                <div class="future-approach">Integrate LLM for intent parsing. Extract: resource, date range, time preference. Query availability API. Present top 3 options. Confirm via voice or text. Store user preferences for personalization.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive No-Show Detection</div>
+                <p>ML model predicts likelihood of no-show to enable proactive overbooking.</p>
+                <div class="future-approach">Features: user history, booking lead time, day of week, weather, distance from user location. Train XGBoost classifier. Score at booking time. Auto-waitlist if P(no-show) > 40%. Send extra reminders to high-risk bookings.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Waitlist Optimization</div>
+                <p>Smart waitlist that maximizes fill rate and user satisfaction.</p>
+                <div class="future-approach">Priority scoring: wait time + user value + flexibility. Batch notifications to multiple waitlist users simultaneously. First to confirm wins (FCFS with parallelism). A/B test notification timing for best conversion.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Resource Pooling</div>
+                <p>Dynamically assign resources at check-in time rather than booking time.</p>
+                <div class="future-approach">Book "any available doctor" instead of specific doctor. At check-in, assign based on current availability + skill match. Reduces no-show impact. Works well for fungible resources (massage therapists, meeting rooms).</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">When would you choose optimistic vs pessimistic locking?</div>
+                    <div class="followup-hint">Optimistic: Low contention, read-heavy, user think time (typical booking). Pessimistic: High contention, flash sales, critical sections. Optimistic = higher throughput but requires retry logic. Pessimistic = simpler but can cause lock waits.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you handle calendar sync conflicts? (User modifies event in Google Calendar)</div>
+                    <div class="followup-hint">Webhook from Google Calendar on event change. Detect: delete = cancel booking, time change = attempt reschedule. If new time unavailable, notify user and revert calendar event. Store last_sync_at for conflict detection.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you efficiently query "next available slot" across 1000 resources?</div>
+                    <div class="followup-hint">Materialized view of next_available per resource, refreshed on booking/cancel. Or: bitmap index where each bit = 15-min slot. For real-time: Redis sorted set with (resource_id, next_available_timestamp) as score.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a fair booking system for high-demand slots (celebrity doctor, popular time)</div>
+                    <div class="followup-hint">Virtual queue with randomized entry (lottery). Or: weighted priority (new patients, referred, loyalty). Release slots in batches. Rate limit per user. CAPTCHA to prevent bots. Consider appointment request + approval workflow.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement buffer time between appointments?</div>
+                    <div class="followup-hint">Store buffer_minutes per resource. When checking availability, slot is "blocked" for (duration + buffer). Don't expose buffer to user. Use buffer for: cleanup, travel time, overrun. Can be asymmetric (15min after, 5min before).</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>MVP Stage - Complete Booking Flow</h4>
+            <div class="flow-vertical">
+                <!-- Booking Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">BOOK SLOT FLOW (with Locking)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Client<br><small>POST /bookings</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">ALB<br><small>SSL + Auth</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">API Server<br><small>BEGIN TXN</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">PostgreSQL<br><small>SELECT FOR UPDATE</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">Check<br><small>status=available?</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">PostgreSQL<br><small>UPDATE + INSERT</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node cache">Redis<br><small>Queue reminder</small></div>
+                    </div>
+                </div>
+
+                <!-- Reminder Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">REMINDER & CHECK-IN FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Worker<br><small>Poll due reminders</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">SES/Twilio<br><small>Send notification</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node user">User Arrives<br><small>Check-in</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">PostgreSQL<br><small>status=completed</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">Analytics<br><small>Track metrics</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
+                <strong>Locking Mechanism (Version Column):</strong>
+                <div style="font-family: monospace; font-size: 13px; margin-top: 8px;">
+                    1. READ: SELECT id, version FROM slots WHERE id = $1 --> version = 5<br>
+                    2. UPDATE: UPDATE slots SET status='booked', version=6 WHERE id=$1 AND version=5<br>
+                    3. If rowCount = 0 --> Concurrent modification, return 409 Conflict
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon mvp">MVP</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">SELECT FOR UPDATE<br>Optimistic locking<br>Single primary</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon pan-india">PAN</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">PostgreSQL + Redis Lock</div>
+                    <div class="evolution-detail">Distributed lock<br>SETNX with TTL<br>Read replicas</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon high-traffic">HT</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Redis + Sharded PG</div>
+                    <div class="evolution-detail">Virtual queue<br>Pre-lock in Redis<br>Then persist to DB</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon global">GLB</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CRDTs + Aurora Global</div>
+                    <div class="evolution-detail">Conflict-free types<br>Last-write-wins<br>Regional primaries</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1300,6 +1500,204 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
                     <td><strong>~$1,450/month</strong></td>
                 </tr>
             </table>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Tenant Data Leakage</div>
+                <p>Bug in query allows Tenant A to see Tenant B's bookings.</p>
+                <div class="case-solution">Always use Row-Level Security (RLS) in PostgreSQL. Set tenant context at connection level. Audit logs for cross-tenant queries. Penetration testing. Separate connection pools per tenant for premium tier.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Tenant Database Hotspot</div>
+                <p>One large tenant (Apollo with 5000 clinics) overwhelms shared database.</p>
+                <div class="case-solution">Monitor queries per tenant. Implement tenant-level rate limiting. Move large tenants to dedicated shards. Use tenant_id as partition key. Connection pooling per tenant with PgBouncer.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Clinic Booking Conflicts</div>
+                <p>User books same time at two clinics in same chain, but can only attend one.</p>
+                <div class="case-solution">Optional: Enable user-level conflict detection across tenant's clinics. Warn user: "You have another booking at 10 AM at Clinic B". Allow override for valid cases (different family members).</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Timezone at Tenant vs Resource Level</div>
+                <p>Chain has clinics in Mumbai (IST) and Dubai (GST). Which timezone for display?</p>
+                <div class="case-solution">Store timezone per resource (clinic), not tenant. Display in resource's timezone for booking. Show user's local time in confirmation. API always uses UTC; client converts for display.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Read Replica Lag</div>
+                <p>User books slot, immediately checks "My Bookings" - doesn't see new booking (replica lag).</p>
+                <div class="case-solution">Read-your-writes consistency: Route reads to primary for 5s after write. Or: Return booking from response, merge client-side. Use session stickiness to same replica.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Bulk Slot Update Failure</div>
+                <p>Admin updates 1000 slots (holiday closure), partial failure occurs.</p>
+                <div class="case-solution">Use database transactions for atomicity. Or: async job with progress tracking. Report partial success: "Updated 950/1000 slots. 50 failed (already booked)". Allow retry for failed items.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">White-Label Mobile Apps</div>
+                <p>Each tenant gets their own branded mobile app without code changes.</p>
+                <div class="future-approach">React Native with theme injection. Tenant config: logo, colors, features enabled. Single codebase, build-time customization. App store submission per tenant or single app with tenant selector.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Cross-Tenant Analytics (Benchmarking)</div>
+                <p>Anonymized comparison: "Your no-show rate is 8% vs industry average 5%".</p>
+                <div class="future-approach">Aggregate metrics across tenants (anonymized). Industry benchmarks by specialty. Insights dashboard: "Clinics with SMS reminders have 40% fewer no-shows". Opt-in data sharing program.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Tenant Self-Service Configuration</div>
+                <p>Tenants configure booking rules, cancellation policies, reminders without code changes.</p>
+                <div class="future-approach">Admin portal with rule builder. Store config in tenant_settings table. Feature flags per tenant. Webhook configuration for integrations. Custom fields per tenant.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Marketplace for Integrations</div>
+                <p>Third-party developers build integrations (EMR, payment, CRM).</p>
+                <div class="future-approach">OAuth 2.0 for third-party apps. Scoped permissions (read:bookings, write:slots). Rate limiting per app. Revenue share model. App review process for quality.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure tenant isolation in a shared database?</div>
+                    <div class="followup-hint">Row-Level Security (RLS) policies. Tenant_id on every table. Set session variable (app.current_tenant). Audit queries. Alternative: schema-per-tenant (harder migrations) or database-per-tenant (expensive).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you handle a tenant requesting data export (GDPR)?</div>
+                    <div class="followup-hint">Background job to export all tenant data. Include: bookings, users, audit logs. Format: JSON or CSV. Secure download link with expiry. Log the export request. Allow user-level export too.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design tenant-specific pricing tiers (Free, Pro, Enterprise)</div>
+                    <div class="followup-hint">Limits table: max_bookings_per_month, max_resources, features_enabled. Check limits at booking time. Soft limit (warn) vs hard limit (block). Upgrade prompts. Usage-based billing option.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you migrate a large tenant to their own dedicated database?</div>
+                    <div class="followup-hint">Dual-write during migration. Copy historical data with pg_dump filtered by tenant_id. Verify row counts match. Switch read traffic, then writes. Keep old data for rollback period. Update tenant routing config.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement regional failover for Indian users?</div>
+                    <div class="followup-hint">Primary in Mumbai (ap-south-1), standby in Hyderabad (ap-south-2). Route 53 health checks. RDS Multi-AZ for automatic DB failover. Redis Sentinel for cache failover. Test failover monthly.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>PAN-India Stage - Multi-Tenant Booking Flow</h4>
+            <div class="flow-vertical">
+                <!-- Tenant-Aware Booking Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">MULTI-TENANT BOOKING FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Client<br><small>apollo.booking.com</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">Route 53<br><small>Latency routing</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">ALB<br><small>Extract tenant</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">API Server<br><small>SET app.tenant</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">PostgreSQL<br><small>RLS filter</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node cache">Redis<br><small>tenant:slot:lock</small></div>
+                    </div>
+                </div>
+
+                <!-- Cross-Region Read -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">READ REPLICA ROUTING</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User (Hyderabad)<br><small>GET /availability</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">Route 53<br><small>Nearest region</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">API (ap-south-2)<br><small>Read-only</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">Read Replica<br><small>~10ms lag</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node user">Response<br><small>Low latency</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
+                <strong>Redis Distributed Lock (Multi-Region):</strong>
+                <div style="font-family: monospace; font-size: 13px; margin-top: 8px;">
+                    1. SETNX tenant:{tenant_id}:slot:{slot_id}:lock {request_id} EX 30<br>
+                    2. If acquired: Proceed with DB transaction<br>
+                    3. Release: DEL if value matches request_id (Lua script for atomicity)
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - PAN-India Focus</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon mvp">MVP</div>
+                    <div class="evolution-label">Single Tenant</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">No tenant_id<br>Simple queries<br>db.t3.medium</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon pan-india">PAN</div>
+                    <div class="evolution-label">Multi-Tenant</div>
+                    <div class="evolution-db">PostgreSQL + RLS</div>
+                    <div class="evolution-detail">tenant_id on all tables<br>Row-Level Security<br>Read replicas</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon high-traffic">SHARD</div>
+                    <div class="evolution-label">Large Tenants</div>
+                    <div class="evolution-db">Citus (Distributed PG)</div>
+                    <div class="evolution-detail">Shard by tenant_id<br>Dedicated shards<br>Parallel queries</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon global">ISOLATE</div>
+                    <div class="evolution-label">Enterprise</div>
+                    <div class="evolution-db">DB per Tenant</div>
+                    <div class="evolution-detail">Full isolation<br>Custom retention<br>Compliance ready</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1455,6 +1853,203 @@ async function processQueue(slotId) {
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$8,100/month</strong></td></tr>
             </table>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Queue Starvation (User Never Gets Turn)</div>
+                <p>User joins queue but keeps getting pushed back by new arrivals or slow processing.</p>
+                <div class="case-solution">Implement fair queuing with maximum wait time guarantee. After 10 minutes in queue, prioritize user. Show estimated wait time. Allow users to leave queue and get notified later.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Reservation Timeout During Payment</div>
+                <p>User's 5-minute reservation expires while entering payment details.</p>
+                <div class="case-solution">Extend reservation automatically if payment is in progress (check payment gateway status). Grace period of 60 seconds after expiry. If truly expired, notify user and offer to re-queue with priority.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redis Cluster Failover During Flash Sale</div>
+                <p>Redis node fails during peak load, losing queue state.</p>
+                <div class="case-solution">Redis Cluster with replicas (3 masters, 3 replicas). AOF persistence for durability. Fallback to database-backed queue. Circuit breaker to reject new requests during failover.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Bot Attack Filling Queue</div>
+                <p>Scalpers use bots to join queue thousands of times.</p>
+                <div class="case-solution">CAPTCHA before queue entry. Device fingerprinting. Rate limit per IP/user. Phone verification for queue entry. Detect abnormal patterns (same browser fingerprint, timing). Ban repeat offenders.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Thundering Herd on Availability Check</div>
+                <p>100K users refresh availability page simultaneously at sale start time.</p>
+                <div class="case-solution">Cache availability at CDN edge (CloudFront). Stale-while-revalidate caching. Rate limit availability API. Pre-computed availability snapshots. WebSocket push instead of polling.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Partial System Failure (Some Pods Down)</div>
+                <p>3 of 20 API pods crash under load, remaining pods get overwhelmed.</p>
+                <div class="case-solution">Kubernetes HPA with aggressive scaling. Pod disruption budgets. Load shedding (reject requests when at capacity). Circuit breaker per downstream service. Graceful degradation (read-only mode).</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">Dynamic Pricing (Surge Pricing)</div>
+                <p>Adjust slot prices based on demand, like Uber surge pricing.</p>
+                <div class="future-approach">Price = base_price * demand_multiplier. Calculate multiplier from: queue length, historical demand, time of day. Show price upfront before queue entry. Cap maximum surge (3x). Discount for off-peak times.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Lottery System for Fairness</div>
+                <p>Instead of FCFS, randomly select winners from registration pool.</p>
+                <div class="future-approach">Registration window (e.g., 24 hours before sale). Random selection at sale time using verifiable randomness. Notify winners with time-limited booking link. Transparent: publish seed and algorithm.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Predictive Auto-Scaling</div>
+                <p>Scale up infrastructure before flash sale based on predicted demand.</p>
+                <div class="future-approach">ML model trained on: past sale patterns, marketing campaigns, day of week. Pre-warm Kubernetes nodes. Pre-scale Redis cluster. Load test at 2x predicted capacity. Automated runbook for sale events.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Real-Time Analytics Dashboard</div>
+                <p>Live dashboard showing: queue depth, bookings/second, error rates.</p>
+                <div class="future-approach">ClickHouse for real-time aggregations. Grafana dashboards with 1-second refresh. Alerts for anomalies. War room mode during flash sales. Post-sale automated reports.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement a fair virtual queue that prevents bots?</div>
+                    <div class="followup-hint">CAPTCHA + phone verification. Proof-of-work puzzle (client must compute hash). Device fingerprint + behavioral analysis. Queue position tied to verified identity. Rate limit queue joins per phone number.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a reservation system with checkout timeout. What happens on edge cases?</div>
+                    <div class="followup-hint">Redis SETEX for reservation with TTL. Background job checks expired reservations. Edge cases: extend if payment in progress, grace period, re-queue with priority, compensation for lost reservation.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle WebSocket connections at 100K concurrent users?</div>
+                    <div class="followup-hint">Sticky sessions to specific pods. Redis Pub/Sub for cross-pod messaging. Connection limits per pod (10K). Heartbeat for dead connection cleanup. Fallback to long-polling. Consider managed service (AWS API Gateway WebSocket).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">What's your load shedding strategy when system is overwhelmed?</div>
+                    <div class="followup-hint">Priority queues: existing reservations > queue members > new requests. Return 503 with Retry-After header. Disable non-critical features. Read-only mode (no new bookings). Queue depth circuit breaker.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you conduct a load test for flash sale scenario?</div>
+                    <div class="followup-hint">Tools: k6, Locust, or Gatling. Simulate realistic user journey (not just API calls). Ramp up gradually to find breaking point. Test Redis failover mid-load. Chaos engineering (kill pods). Run in production-like environment.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>High Traffic Stage - Flash Sale Booking Flow</h4>
+            <div class="flow-vertical">
+                <!-- Queue Entry Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">VIRTUAL QUEUE FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">100K Users<br><small>Sale starts</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">CloudFront + WAF<br><small>Rate limit</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">Queue Service<br><small>CAPTCHA verify</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node cache">Redis ZADD<br><small>Sorted by timestamp</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node user">WebSocket<br><small>Position updates</small></div>
+                    </div>
+                </div>
+
+                <!-- Reservation Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">RESERVATION CHECKOUT FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node service">Worker<br><small>ZPOPMIN batch</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node cache">Redis SETEX<br><small>5-min hold</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node user">Checkout UI<br><small>Countdown timer</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">Payment<br><small>Stripe/Razorpay</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">PostgreSQL<br><small>Confirm booking</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 8px;">
+                <strong>Reservation Timeout Handling:</strong>
+                <div style="font-family: monospace; font-size: 13px; margin-top: 8px;">
+                    1. Redis key expires after 5 minutes (TTL)<br>
+                    2. Background job: SCAN for expired reservations<br>
+                    3. Release slot: UPDATE slots SET status='available' WHERE reservation_expired<br>
+                    4. Notify next in queue: ZPOPMIN queue:{slot_id}
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - High Traffic Focus</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon mvp">SINGLE</div>
+                    <div class="evolution-label">Single DB</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">1K TPS limit<br>Connection pool<br>Breaks at 10K</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon pan-india">CACHE</div>
+                    <div class="evolution-label">Add Caching</div>
+                    <div class="evolution-db">Redis + PostgreSQL</div>
+                    <div class="evolution-detail">Hot data in Redis<br>10K read TPS<br>DB for writes only</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon high-traffic">QUEUE</div>
+                    <div class="evolution-label">Virtual Queue</div>
+                    <div class="evolution-db">Redis Queue + PG</div>
+                    <div class="evolution-detail">Absorb spike in queue<br>Controlled DB writes<br>100K concurrent</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon global">SHARD</div>
+                    <div class="evolution-label">Sharded</div>
+                    <div class="evolution-db">Vitess/Citus</div>
+                    <div class="evolution-detail">Shard by resource<br>Parallel writes<br>Linear scaling</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
@@ -1579,6 +2174,205 @@ async function processQueue(slotId) {
                 <tr><td>Compliance (Auditing, Encryption)</td><td>$2,000</td></tr>
                 <tr class="total-row"><td><strong>Total</strong></td><td><strong>~$48,000/month</strong></td></tr>
             </table>
+        </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Cross-Region Booking Conflict</div>
+                <p>User in US books slot, user in EU books same slot during replication lag.</p>
+                <div class="case-solution">Use global unique booking IDs (ULID with region prefix). Last-write-wins with timestamp (UTC). Conflict detection at read time. Compensating transaction: notify loser, offer alternative. Consider single-leader for critical writes.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">DST Transition Booking</div>
+                <p>User books 2 AM slot on DST change day. That hour doesn't exist or exists twice.</p>
+                <div class="case-solution">Store timezone name (America/New_York), not offset. Use IANA timezone database (tzdata). For non-existent time: shift forward. For ambiguous time: assume standard time. Show warning to user during booking.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">GDPR Right to Erasure</div>
+                <p>EU user requests deletion of all their data across all regions.</p>
+                <div class="case-solution">Track all user data locations (data map). Async deletion job across regions. Retain anonymized booking records for business metrics. Audit log of deletion request. 30-day compliance window.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Region Failover Mid-Booking</div>
+                <p>User starts booking in US-East, region fails, continues in US-West.</p>
+                <div class="case-solution">Stateless API design (no server-side sessions). Store booking draft in user's browser (localStorage). Use global session store (Redis Global Datastore). Idempotency keys to prevent double booking on retry.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Telemedicine Cross-Border Booking</div>
+                <p>Patient in India books with US doctor. Which timezone? Which compliance rules?</p>
+                <div class="case-solution">Display time in both timezones. Resource determines compliance region. Check licensing (can this doctor treat patients in India?). Payment in patient's currency, payout in doctor's. Consider video call platform regional availability.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Data Residency Violation</div>
+                <p>EU user's data accidentally replicated to US region.</p>
+                <div class="case-solution">Geo-fencing at database level. Separate clusters per compliance region (not global replication). Route by user's registered country. Audit data location periodically. Encrypt with region-specific keys (can't decrypt in wrong region).</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">AI-Powered Smart Scheduling</div>
+                <p>ML optimizes slot allocation based on no-show predictions, travel time, and preferences.</p>
+                <div class="future-approach">Predict optimal appointment duration per patient (new vs returning). Suggest best times based on historical show rates. Auto-cluster appointments by patient location to reduce travel. Personalized reminders based on user behavior.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Blockchain Audit Trail</div>
+                <p>Immutable record of all booking changes for compliance and dispute resolution.</p>
+                <div class="future-approach">Hyperledger Fabric for private blockchain. Hash of each booking state change. Useful for: insurance claims, legal disputes, compliance audits. Query via traditional APIs, blockchain for verification.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Voice-First Booking (Alexa, Google Assistant)</div>
+                <p>"Alexa, book me a dentist appointment next week".</p>
+                <div class="future-approach">Alexa Skill / Google Action. Voice interface for: check availability, book, cancel, reschedule. Confirm via voice with confirmation code. Link to existing user account. Support multiple languages per region.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Federated Learning for Privacy</div>
+                <p>Train ML models across regions without sharing raw patient data.</p>
+                <div class="future-approach">Each region trains local model on local data. Share only model gradients, not data. Aggregate globally for improved predictions. Compliant with GDPR, HIPAA. Use for: no-show prediction, demand forecasting.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you handle booking conflicts in an active-active multi-region setup?</div>
+                    <div class="followup-hint">Last-write-wins with vector clocks. Or: designate primary region per resource. CRDTs for conflict-free counters (waitlist position). Compensating transactions for true conflicts. Eventual consistency is OK for reads, strong for writes.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design the data residency architecture for GDPR compliance</div>
+                    <div class="followup-hint">EU data stays in EU region (Frankfurt). Separate database clusters, not global replication. Route by user's country at API gateway. Encrypt with region-specific KMS keys. Audit trail for data access. Right to erasure workflow.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement multi-timezone recurring bookings?</div>
+                    <div class="followup-hint">Store RRULE with TZID (RRULE:FREQ=WEEKLY;BYDAY=MO;TZID=America/New_York). Expand occurrences using timezone-aware library (date-fns-tz, luxon). Handle DST: skip non-existent, disambiguate duplicates. Display in user's timezone.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design a disaster recovery plan for a global booking system</div>
+                    <div class="followup-hint">RPO: 1 second (Aurora Global). RTO: 5 minutes (DNS failover). Active-active preferred over active-passive. Chaos engineering (Gremlin). Runbook for region failover. Data backup to S3 cross-region. Test DR quarterly.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you ensure consistency for cross-border telemedicine bookings?</div>
+                    <div class="followup-hint">Single source of truth for booking (resource's region). Replicate to patient's region for read availability. Strong consistency for booking writes. Check: provider licensing, patient consent, payment regulations. Time display in both timezones.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>Global Stage - Cross-Region Booking Flow</h4>
+            <div class="flow-vertical">
+                <!-- Global Routing Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">GLOBAL ROUTING FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User (Tokyo)<br><small>Book US doctor</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">CloudFront<br><small>Edge location</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node gateway">Route 53<br><small>Geolocation</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">API (US-East)<br><small>Resource's region</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">Aurora Global<br><small>Primary write</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">Replicas<br><small>&lt;1s sync</small></div>
+                    </div>
+                </div>
+
+                <!-- Conflict Resolution Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">CONFLICT RESOLUTION (CRDTs)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">User A (US)<br><small>Book slot X</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node db">Region US<br><small>Write locally</small></div>
+                        <div class="flow-arrow" style="color: #ef4444;">conflict</div>
+                        <div class="flow-node db">Region EU<br><small>User B wrote</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node service">Resolver<br><small>Last-write-wins</small></div>
+                        <div class="flow-arrow">-></div>
+                        <div class="flow-node user">Notify Loser<br><small>Offer alternative</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 16px; background: rgba(139, 92, 246, 0.1); border-radius: 8px;">
+                <strong>CRDT-based Slot Counter:</strong>
+                <div style="font-family: monospace; font-size: 13px; margin-top: 8px;">
+                    // G-Counter (Grow-only Counter) for waitlist position<br>
+                    Region US: {US: 5, EU: 0, APAC: 0} --> total = 5<br>
+                    Region EU: {US: 5, EU: 3, APAC: 0} --> total = 8<br>
+                    Merge: max per region --> {US: 5, EU: 3, APAC: 0} = 8
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution - Global Focus</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon mvp">SINGLE</div>
+                    <div class="evolution-label">Single Region</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">One region<br>High latency globally<br>Single point of failure</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon pan-india">REPLICA</div>
+                    <div class="evolution-label">Read Replicas</div>
+                    <div class="evolution-db">Aurora + Replicas</div>
+                    <div class="evolution-detail">Reads from nearest<br>Writes to primary<br>100-200ms write latency</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon high-traffic">GLOBAL</div>
+                    <div class="evolution-label">Aurora Global</div>
+                    <div class="evolution-db">Aurora Global DB</div>
+                    <div class="evolution-detail">Sub-second replication<br>Promote replica on failover<br>Single writer</div>
+                </div>
+                <div class="evolution-arrow">-></div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon global">CRDT</div>
+                    <div class="evolution-label">Active-Active</div>
+                    <div class="evolution-db">CockroachDB / CRDTs</div>
+                    <div class="evolution-detail">Multi-writer<br>Conflict-free<br>True global scale</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
