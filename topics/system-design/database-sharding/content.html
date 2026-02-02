@@ -155,6 +155,28 @@
 </ul>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a When to Use Each?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about When to Use Each in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply When to Use Each?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where When to Use Each provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using When to Use Each?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider When to Use Each from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="why-this-matters-real-company-examples">Why This Matters: Real Company Examples</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <div style="display: grid; gap: 16px">
@@ -268,6 +290,28 @@
 <div style="text-align: center; color: #d97706; font-size: 12px; margin-top: 8px">All new data hits the latest shard - write bottleneck</div>
 </div>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in Good vs Bad Shard Keys?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Good vs Bad Shard Keys?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Good vs Bad Shard Keys provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Good vs Bad Shard Keys?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Good vs Bad Shard Keys performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
+</div>
 <h3 id="compound-shard-keys">Compound Shard Keys</h3>
 <p>For complex access patterns, use <span style="color: #22c55e; font-weight: 600">compound shard keys</span> that combine multiple fields:</p>
 <pre><code class="language-python">def compute_compound_shard_key(tenant_id: str, user_id: str) -&gt; str:
@@ -291,6 +335,28 @@
 # User ID determines partition within cluster (performance)
 </code></pre>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Compound Shard Keys and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Compound Shard Keys and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Compound Shard Keys?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Compound Shard Keys provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Compound Shard Keys?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Compound Shard Keys from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="sharding-strategies-deep-dive">Sharding Strategies Deep Dive</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
 <div style="text-align: center; color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 24px; padding-bottom: 16px">SHARDING STRATEGIES COMPARISON</div>
@@ -396,6 +462,28 @@
 </div>
 </div>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1. Range-Based Sharding?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 1. Range-Based Sharding in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1. Range-Based Sharding?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 1. Range-Based Sharding provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1. Range-Based Sharding?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 1. Range-Based Sharding from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="2-hash-based-sharding">2. Hash-Based Sharding</h3>
 <pre><code class="language-python">import hashlib
 
@@ -414,6 +502,28 @@ def get_shard_by_hash(key: str, num_shards: int) -&gt; int:
 # With 5 shards: hash(&quot;user_123&quot;) % 5 = 3  &lt;- Different shard!
 # Adding one shard moves ~80% of data (N-1/N)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 2. Hash-Based Sharding?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 2. Hash-Based Sharding in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2. Hash-Based Sharding?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 2. Hash-Based Sharding provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2. Hash-Based Sharding?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 2. Hash-Based Sharding from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="3-consistent-hashing-recommended">3. Consistent Hashing (Recommended)</h3>
 <p><span style="color: #22c55e; font-weight: 600">Consistent hashing</span> is the industry standard for dynamic sharding because it minimizes data movement when adding or removing shards.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -564,6 +674,28 @@ replicas = ring.get_nodes_for_key(&quot;user:12345&quot;, replicas=3)  # -&gt; [
 
 ---
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3. Consistent Hashing (Recommended)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 3. Consistent Hashing (Recommended) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3. Consistent Hashing (Recommended)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 3. Consistent Hashing (Recommended) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3. Consistent Hashing (Recommended)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 3. Consistent Hashing (Recommended) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="cross-shard-queries">Cross-Shard Queries</h2>
 <p>Cross-shard queries are one of the biggest challenges in sharded databases. When a query cannot be routed to a single shard, you need <span style="color: #22c55e; font-weight: 600">scatter-gather</span> or other strategies.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -752,6 +884,28 @@ order_count = executor.aggregate_count(&quot;orders&quot;, &quot;created_at &gt;
 
 ---
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Cross-Shard Query Strategies and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Cross-Shard Query Strategies and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Cross-Shard Query Strategies?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Cross-Shard Query Strategies provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Cross-Shard Query Strategies?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Cross-Shard Query Strategies from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="resharding-strategies">Resharding Strategies</h2>
 <p><span style="color: #22c55e; font-weight: 600">Resharding</span> is the process of redistributing data when adding or removing shards. It's one of the most complex operations in a sharded database.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -942,6 +1096,28 @@ return old_checksum == new_checksum
 
 ---
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Resharding Without Downtime?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Resharding Without Downtime in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Resharding Without Downtime?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Resharding Without Downtime provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Resharding Without Downtime?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Resharding Without Downtime from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="real-life-failure-story">Real-Life Failure Story</h2>
 <h3 id="the-notion-sharding-incident-2021">The Notion Sharding Incident (2021)</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
@@ -974,6 +1150,28 @@ return old_checksum == new_checksum
 </div>
 <pre><code>---
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Notion Sharding Incident (2021) and what problem does it solve?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about The Notion Sharding Incident (2021) in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Notion Sharding Incident (2021)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where The Notion Sharding Incident (2021) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Notion Sharding Incident (2021)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider The Notion Sharding Incident (2021) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="interview-questions---3-level-deep-dive">Interview Questions - 3-Level Deep Dive</h2>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="q1-how-do-you-choose-a-shard-key-for-a-social-media-application">Q1: How do you choose a shard key for a social media application?</h3>
@@ -1020,6 +1218,28 @@ The shard key decision requires analyzing the full data model:</p>
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q1: How do you choose a shard key for a social media application??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Q1: How do you choose a shard key for a social media application? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q1: How do you choose a shard key for a social media application??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Q1: How do you choose a shard key for a social media application? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q1: How do you choose a shard key for a social media application??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Q1: How do you choose a shard key for a social media application? from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="q2-explain-consistent-hashing-and-why-virtual-nodes-are-important">Q2: Explain consistent hashing and why virtual nodes are important.</h3>
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0">
 <p><strong>Level 1 Answer (Junior):</strong><br />
@@ -1067,6 +1287,28 @@ Consistent hashing is fundamental to distributed systems like DynamoDB, Cassandr
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q2: Explain consistent hashing and why virtual nodes are important.?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Q2: Explain consistent hashing and why virtual nodes are important. in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q2: Explain consistent hashing and why virtual nodes are important.?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Q2: Explain consistent hashing and why virtual nodes are important. provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q2: Explain consistent hashing and why virtual nodes are important.?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Q2: Explain consistent hashing and why virtual nodes are important. from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="q3-how-do-you-handle-cross-shard-transactions">Q3: How do you handle cross-shard transactions?</h3>
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0">
 <p><strong>Level 1 Answer (Junior):</strong><br />
@@ -1141,6 +1383,28 @@ steps = [<br />
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q3: How do you handle cross-shard transactions??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Q3: How do you handle cross-shard transactions? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q3: How do you handle cross-shard transactions??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Q3: How do you handle cross-shard transactions? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q3: How do you handle cross-shard transactions??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Q3: How do you handle cross-shard transactions? from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="q4-how-would-you-reshard-a-production-database-with-zero-downtime">Q4: How would you reshard a production database with zero downtime?</h3>
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0">
 <p><strong>Level 1 Answer (Junior):</strong><br />
@@ -1233,6 +1497,28 @@ write(new_shard, key, new_format)</p>
 </div>
 </div>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q4: How would you reshard a production database with zero downtime??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Q4: How would you reshard a production database with zero downtime? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q4: How would you reshard a production database with zero downtime??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Q4: How would you reshard a production database with zero downtime? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Q4: How would you reshard a production database with zero downtime??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Q4: How would you reshard a production database with zero downtime? from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="q5-what-are-the-trade-offs-between-database-sharding-and-using-a-distributed-database-like-cockroachdb">Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB?</h3>
 <div style="background: #eff6ff; border-radius: 8px; padding: 16px; margin: 12px 0">
 <p><strong>Level 1 Answer (Junior):</strong><br />
@@ -1370,29 +1656,183 @@ manual_sharding()  # Consensus is too slow</p>
 </div>
 <pre><code>---
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB? in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB? provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB??</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Q5: What are the trade-offs between database sharding and using a distributed database like CockroachDB? performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
+</div>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <h3 id="1-wrong-shard-key-selection">1. Wrong Shard Key Selection</h3>
 <p><strong>Problem</strong>: Chose low-cardinality key (country, status) causing hotspots.<br />
 <strong>Solution</strong>: Use high-cardinality keys (user_id, UUID); compound keys for multi-dimensional access.</p>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1. Wrong Shard Key Selection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 1. Wrong Shard Key Selection in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1. Wrong Shard Key Selection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 1. Wrong Shard Key Selection provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1. Wrong Shard Key Selection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 1. Wrong Shard Key Selection from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="2-cross-shard-joins-without-planning">2. Cross-Shard Joins Without Planning</h3>
 <p><strong>Problem</strong>: Application evolved to need JOINs across shards, causing scatter-gather everywhere.<br />
 <strong>Solution</strong>: Design schema upfront considering sharding. Denormalize or use reference tables.</p>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 2. Cross-Shard Joins Without Planning?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 2. Cross-Shard Joins Without Planning in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2. Cross-Shard Joins Without Planning?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 2. Cross-Shard Joins Without Planning provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2. Cross-Shard Joins Without Planning?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 2. Cross-Shard Joins Without Planning from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="3-sequential-id-collisions">3. Sequential ID Collisions</h3>
 <p><strong>Problem</strong>: Auto-increment IDs from different shards collide (shard1.id=1, shard2.id=1).<br />
 <strong>Solution</strong>: Use UUIDs, Snowflake IDs, or shard-prefixed sequences: <code>shard_1_00001</code>.</p>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 3. Sequential ID Collisions and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of 3. Sequential ID Collisions and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3. Sequential ID Collisions?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 3. Sequential ID Collisions provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3. Sequential ID Collisions?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 3. Sequential ID Collisions from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="4-ignoring-hotspot-potential">4. Ignoring Hotspot Potential</h3>
 <p><strong>Problem</strong>: Viral content or celebrity users overwhelm a single shard.<br />
 <strong>Solution</strong>: Secondary sharding for hot entities, <a href="/topic/system-design/caching">[caching]</a>, rate limiting, or special &quot;hot&quot; shards.</p>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 4. Ignoring Hotspot Potential?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 4. Ignoring Hotspot Potential in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4. Ignoring Hotspot Potential?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 4. Ignoring Hotspot Potential provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4. Ignoring Hotspot Potential?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 4. Ignoring Hotspot Potential from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="5-resharding-as-afterthought">5. Resharding as Afterthought</h3>
 <p><strong>Problem</strong>: Started with simple hash sharding; now adding shards requires massive data movement.<br />
 <strong>Solution</strong>: Use consistent hashing from day one. Build resharding capability before you need it.</p>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 5. Resharding as Afterthought?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 5. Resharding as Afterthought in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 5. Resharding as Afterthought?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 5. Resharding as Afterthought provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 5. Resharding as Afterthought?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 5. Resharding as Afterthought from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="6-no-per-shard-observability">6. No Per-Shard Observability</h3>
 <p><strong>Problem</strong>: Aggregate metrics hide individual shard problems until cascade failure.<br />
 <strong>Solution</strong>: Dashboard per shard: CPU, memory, connections, query latency, replication lag.</p>
 </div>
 <pre><code>---
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 6. No Per-Shard Observability?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 6. No Per-Shard Observability in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 6. No Per-Shard Observability?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 6. No Per-Shard Observability provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 6. No Per-Shard Observability?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 6. No Per-Shard Observability from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="best-practices">Best Practices</h2>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 12px; padding: 24px; margin: 20px 0">
 <ol>

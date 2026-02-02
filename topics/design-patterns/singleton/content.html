@@ -75,6 +75,28 @@ The Singleton pattern is deceptively simple - the challenge isn't creating a sin
 </div>
 </div>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Singleton Guarantee Problem and what problem does it solve?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about The Singleton Guarantee Problem in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: How would you approach solving a problem related to The Singleton Guarantee Problem?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Start by clearly defining the problem constraints and requirements. Consider what makes this problem challenging and what techniques apply. Think about how you would break it down into smaller subproblems. Remember that recognizing the problem pattern is often the hardest part.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Singleton Guarantee Problem?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider The Singleton Guarantee Problem from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="singleton-implementation-spectrum">Singleton Implementation Spectrum</h3>
 <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin: 2rem 0">
 <div style="font-weight: 700; font-size: 1.2rem; color: #1e293b; text-align: center; margin-bottom: 1.5rem">Implementation Approaches: Safety vs. Complexity</div>
@@ -107,6 +129,28 @@ The Singleton pattern is deceptively simple - the challenge isn't creating a sin
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Singleton Implementation Spectrum?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Singleton Implementation Spectrum in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Singleton Implementation Spectrum correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Singleton Implementation Spectrum?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Singleton Implementation Spectrum from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="thread-safe-implementations-deep-dive">Thread-Safe Implementations Deep Dive</h2>
 <h3 id="1-eager-initialization">1. Eager Initialization</h3>
 <pre><code class="language-java">/**
@@ -138,6 +182,28 @@ public class EagerSingleton {
 The JVM guarantees that <span style="color: #10b981; font-weight: 600">static initialization happens exactly once</span> when the class is first loaded. The class loading mechanism uses internal locking to ensure thread safety. No explicit synchronization needed in your code.
 </div>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1. Eager Initialization?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 1. Eager Initialization in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1. Eager Initialization?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 1. Eager Initialization provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1. Eager Initialization?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 1. Eager Initialization from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="2-synchronized-method-naive-thread-safe">2. Synchronized Method (Naive Thread-Safe)</h3>
 <pre><code class="language-java">/**
  * Synchronized Method Singleton
@@ -164,6 +230,28 @@ public class SynchronizedSingleton {
 <div style="color: #78350f; font-size: 0.9rem; line-height: 1.6">
 Synchronization is only needed during the first call when instance is created. After that, every thread contends for a lock just to return an already-created instance. In high-throughput systems, this creates a <span style="color: #dc2626; font-weight: 600">severe bottleneck</span> - threads queue up waiting for the lock.
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 2. Synchronized Method (Naive Thread-Safe)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 2. Synchronized Method (Naive Thread-Safe) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2. Synchronized Method (Naive Thread-Safe)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 2. Synchronized Method (Naive Thread-Safe) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2. Synchronized Method (Naive Thread-Safe)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 2. Synchronized Method (Naive Thread-Safe) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="3-double-checked-locking-dcl">3. Double-Checked Locking (DCL)</h3>
 <div style="background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white">
@@ -226,6 +314,28 @@ public class DCLSingleton {
 <p style="color: #7f1d1d; margin-top: 16px; font-size: 14px">
 Thread B calls <code>getInstance()</code> between steps 2 and 3. It sees <code>instance != null</code> and returns a <span style="color: #dc2626; font-weight: 600">partially constructed object</span> with uninitialized fields. This causes NullPointerExceptions or corrupt state later.
 </p>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3. Double-Checked Locking (DCL)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 3. Double-Checked Locking (DCL) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3. Double-Checked Locking (DCL)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 3. Double-Checked Locking (DCL) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3. Double-Checked Locking (DCL)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 3. Double-Checked Locking (DCL) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="4-bill-pugh-solution-initialization-on-demand-holder">4. Bill Pugh Solution (Initialization-on-Demand Holder)</h3>
 <div style="background: linear-gradient(135deg, #059669 0%, #34d399 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white">
@@ -300,6 +410,28 @@ public class BillPughSingleton {
 </div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 4. Bill Pugh Solution (Initialization-on-Demand Holder)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 4. Bill Pugh Solution (Initialization-on-Demand Holder) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4. Bill Pugh Solution (Initialization-on-Demand Holder)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 4. Bill Pugh Solution (Initialization-on-Demand Holder) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4. Bill Pugh Solution (Initialization-on-Demand Holder)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 4. Bill Pugh Solution (Initialization-on-Demand Holder) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="5-enum-singleton-effective-java-recommendation">5. Enum Singleton (Effective Java Recommendation)</h3>
 <div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); border-radius: 16px; padding: 28px; margin: 24px 0; color: white">
@@ -386,6 +518,28 @@ Object config = EnumSingleton.INSTANCE.get(&quot;config&quot;);
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 5. Enum Singleton (Effective Java Recommendation)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 5. Enum Singleton (Effective Java Recommendation) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 5. Enum Singleton (Effective Java Recommendation)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 5. Enum Singleton (Effective Java Recommendation) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the potential pitfalls when implementing 5. Enum Singleton (Effective Java Recommendation)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Best practices exist because people have made mistakes. Consider what could go wrong: edge cases, concurrency issues, resource leaks, or maintenance challenges. Think about how to test for these issues and what safeguards can prevent them. Learning from others' mistakes is more efficient than making them yourself.)</p>
+</div>
+</details>
+</div>
 <h2 id="python-thread-safe-implementations">Python Thread-Safe Implementations</h2>
 <h3 id="metaclass-singleton-most-pythonic">Metaclass Singleton (Most Pythonic)</h3>
 <pre><code class="language-python">import threading
@@ -444,6 +598,28 @@ db1 = DatabaseConnection(&quot;postgresql://localhost/mydb&quot;)
 db2 = DatabaseConnection(&quot;different_string&quot;)  # Args ignored after first call
 assert db1 is db2  # True
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Metaclass Singleton (Most Pythonic)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Metaclass Singleton (Most Pythonic) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Metaclass Singleton (Most Pythonic)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Metaclass Singleton (Most Pythonic) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Metaclass Singleton (Most Pythonic)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Metaclass Singleton (Most Pythonic) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="module-level-singleton-pythons-natural-pattern">Module-Level Singleton (Python's Natural Pattern)</h3>
 <pre><code class="language-python">&quot;&quot;&quot;
 config_singleton.py
@@ -494,6 +670,28 @@ def get_config() -&gt; _ConfigManager:
     &quot;&quot;&quot;Get the singleton config manager.&quot;&quot;&quot;
     return config
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the Module-Level Singleton (Python's Natural Pattern) and when should you use it?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>The Module-Level Singleton (Python's Natural Pattern) addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Module-Level Singleton (Python's Natural Pattern)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Module-Level Singleton (Python's Natural Pattern) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Module-Level Singleton (Python's Natural Pattern)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Module-Level Singleton (Python's Natural Pattern) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="go-synconce-pattern">Go sync.Once Pattern</h3>
 <pre><code class="language-go">package singleton
 
@@ -553,6 +751,28 @@ func (c *ConfigManager) Set(key string, value interface{}) {
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the Go sync.Once Pattern and when should you use it?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>The Go sync.Once Pattern addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Go sync.Once Pattern?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Go sync.Once Pattern provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Go sync.Once Pattern?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Go sync.Once Pattern from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="testing-challenges-and-solutions">Testing Challenges and Solutions</h2>
 <div style="background: #fef2f2;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #991b1b; margin-top: 0">Why Singletons Are Hard to Test</h4>
@@ -634,6 +854,28 @@ ConfigService mockConfig = mock(ConfigService.class);
 when(mockConfig.get(&quot;max_items_per_order&quot;)).thenReturn(&quot;100&quot;);
 OrderService testService = new OrderService(mockConfig);
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Solution 1: Interface + Dependency Injection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Solution 1: Interface + Dependency Injection in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Solution 1: Interface + Dependency Injection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Solution 1: Interface + Dependency Injection provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Solution 1: Interface + Dependency Injection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Solution 1: Interface + Dependency Injection from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="solution-2-reset-method-for-testing">Solution 2: Reset Method for Testing</h3>
 <pre><code class="language-python">&quot;&quot;&quot;
 Solution: Provide a reset method for tests.
@@ -704,6 +946,28 @@ def test_cache_empty():
     # This would fail without reset - it would see previous test's data
     assert cache.get(&quot;key&quot;) is None
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Solution 2: Reset Method for Testing?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Solution 2: Reset Method for Testing in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Solution 2: Reset Method for Testing?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Solution 2: Reset Method for Testing provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Solution 2: Reset Method for Testing?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Solution 2: Reset Method for Testing from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="solution-3-scoped-singletons-per-requestper-thread">Solution 3: Scoped Singletons (Per-Request/Per-Thread)</h3>
 <pre><code class="language-python">&quot;&quot;&quot;
 Solution: Use scoped singletons instead of global singletons.
@@ -761,6 +1025,28 @@ def test_something():
     assert ctx.user_id is None
 </code></pre>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Solution 3: Scoped Singletons (Per-Request/Per-Thread)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Solution 3: Scoped Singletons (Per-Request/Per-Thread) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Solution 3: Scoped Singletons (Per-Request/Per-Thread)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Solution 3: Scoped Singletons (Per-Request/Per-Thread) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Solution 3: Scoped Singletons (Per-Request/Per-Thread)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Solution 3: Scoped Singletons (Per-Request/Per-Thread) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="interview-deep-dive-thread-safe-implementations">Interview Deep-Dive: Thread-Safe Implementations</h2>
 <div style="background: #eff6ff;border-radius: 12px; padding: 24px; margin: 20px 0">
 <h4 style="color: #1e40af; margin-top: 0">Level 1: What are the main approaches to implement a thread-safe singleton?</h4>

@@ -71,6 +71,28 @@
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a High-Level System Design?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about High-Level System Design in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply High-Level System Design?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where High-Level System Design provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using High-Level System Design?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider High-Level System Design from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-1-key-value-store-foundation">Section 1: Key-Value Store Foundation</h2>
 <h3 id="internal-data-structure">Internal Data Structure</h3>
 <p>The core of any in-memory database is a <a href="/data-structures/hash-tables">[hash-table]</a> providing O(1) average-case lookup. However, the naive implementation hides critical design decisions.</p>
@@ -124,6 +146,28 @@ class Entry:
         &quot;&quot;&quot;Update access statistics for LRU/LFU tracking.&quot;&quot;&quot;
         self.access_count += 1
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Internal Data Structure?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Internal Data Structure in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Internal Data Structure?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Internal Data Structure provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Internal Data Structure?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Internal Data Structure from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="hash-table-internals">Hash Table Internals</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 16px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Critical Implementation Detail: Collision Resolution</div>
@@ -214,6 +258,28 @@ class Entry:
             return True
         return False
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Hash Table Internals and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Hash Table Internals and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Hash Table Internals?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Hash Table Internals provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Hash Table Internals?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Hash Table Internals from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="memory-layout-considerations">Memory Layout Considerations</h3>
 <div style="background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #166534; font-weight: 700; margin-bottom: 12px">Assumption: Memory is the Primary Constraint</div>
@@ -225,6 +291,28 @@ In-memory databases assume RAM is both the primary storage AND the bottleneck. D
 <li><strong>Cache efficiency:</strong> Keep hot data in CPU cache hierarchy</li>
 </ul>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Memory Layout Considerations and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Memory Layout Considerations and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Memory Layout Considerations?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Memory Layout Considerations provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Memory Layout Considerations?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Memory Layout Considerations from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="interview-questions-key-value-stores">Interview Questions: Key-Value Stores</h3>
 <div style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
@@ -255,6 +343,28 @@ In-memory databases assume RAM is both the primary storage AND the bottleneck. D
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Interview Questions: Key-Value Stores and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Interview Questions: Key-Value Stores and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Key-Value Stores?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Key-Value Stores provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Key-Value Stores?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Key-Value Stores from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-2-indexing-strategies">Section 2: Indexing Strategies</h2>
 <h3 id="primary-vs-secondary-indexes">Primary vs Secondary Indexes</h3>
 <div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -279,6 +389,28 @@ In-memory databases assume RAM is both the primary storage AND the bottleneck. D
 </div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in Primary vs Secondary Indexes?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Primary vs Secondary Indexes?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Primary vs Secondary Indexes provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Primary vs Secondary Indexes?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Primary vs Secondary Indexes performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
 </div>
 <h3 id="ttl-index-implementation">TTL Index Implementation</h3>
 <p>The TTL index is a specialized secondary index for efficient expiration processing. This is one of the most asked topics in machine coding rounds.</p>
@@ -366,6 +498,28 @@ class TTLIndex:
         with self._lock:
             return self._heap[0][0] if self._heap else None
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a TTL Index Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about TTL Index Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement TTL Index Implementation correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using TTL Index Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider TTL Index Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="skip-list-for-sorted-data">Skip List for Sorted Data</h3>
 <p>Redis sorted sets (ZSET) use a <a href="/data-structures/skip-list">[skip-list]</a> - understanding this demonstrates deep knowledge.</p>
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
@@ -486,6 +640,28 @@ class SkipList:
 
         self.length += 1
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Skip List for Sorted Data?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Skip List for Sorted Data in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Skip List for Sorted Data?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Skip List for Sorted Data provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Skip List for Sorted Data?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Skip List for Sorted Data from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-indexing">Interview Questions: Indexing</h3>
 <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
 <div style="color: #166534; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
@@ -515,6 +691,28 @@ class SkipList:
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Indexing?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Questions: Indexing in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Indexing?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Indexing provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Indexing?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Indexing from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-3-ttl-expiration-mechanisms">Section 3: TTL Expiration Mechanisms</h2>
 <h3 id="expiration-strategies">Expiration Strategies</h3>
 <div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -557,6 +755,28 @@ Combine both: lazy check on access + probabilistic active cleanup.
 </div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Expiration Strategies and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Expiration Strategies and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Expiration Strategies?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Expiration Strategies provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Expiration Strategies?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Expiration Strategies from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="redis-style-probabilistic-expiration">Redis-Style Probabilistic Expiration</h3>
 <pre><code class="language-python">import random
@@ -659,6 +879,28 @@ class TTLManager:
             if entry.expires_at is not None
         ]
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Redis-Style Probabilistic Expiration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Redis-Style Probabilistic Expiration in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Redis-Style Probabilistic Expiration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Redis-Style Probabilistic Expiration provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Redis-Style Probabilistic Expiration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Redis-Style Probabilistic Expiration from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="edge-cases-in-ttl-handling">Edge Cases in TTL Handling</h3>
 <div style="background: #fef2f2; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #991b1b; font-weight: 700; margin-bottom: 16px">Critical Edge Cases</div>
@@ -686,6 +928,28 @@ Storing millisecond precision (8-byte float) vs second precision (4-byte int). F
 If many keys expire at the same timestamp (e.g., cache populated at startup + same TTL), deletion storm causes latency spike. Solution: Add random jitter to TTL (e.g., 300s + random(0,60)).
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Edge Cases in TTL Handling?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Edge Cases in TTL Handling in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Edge Cases in TTL Handling?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Edge Cases in TTL Handling provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Edge Cases in TTL Handling?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Edge Cases in TTL Handling from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="interview-questions-ttl-expiration">Interview Questions: TTL Expiration</h3>
 <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
@@ -716,6 +980,28 @@ If many keys expire at the same timestamp (e.g., cache populated at startup + sa
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: TTL Expiration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Questions: TTL Expiration in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: TTL Expiration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: TTL Expiration provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: TTL Expiration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: TTL Expiration from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-4-transaction-support">Section 4: Transaction Support</h2>
 <h3 id="transaction-semantics">Transaction Semantics</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
@@ -723,6 +1009,28 @@ If many keys expire at the same timestamp (e.g., cache populated at startup + sa
 <div style="color: #1e3a8a; font-size: 14px; line-height: 1.8">
 Most in-memory databases use <strong>READ UNCOMMITTED</strong> within a session (you see your own uncommitted changes) but operations are atomic. This differs from SQL databases' default READ COMMITTED. The trade-off: simpler implementation and higher performance at the cost of potential dirty reads in multi-session scenarios.
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Transaction Semantics and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Transaction Semantics and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Transaction Semantics?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Transaction Semantics provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Transaction Semantics?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Transaction Semantics from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="implementation-nested-transaction-stack">Implementation: Nested Transaction Stack</h3>
 <pre><code class="language-python">from dataclasses import dataclass, field
@@ -864,6 +1172,28 @@ class TransactionManager:
             count += 1
         return count
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Implementation: Nested Transaction Stack?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Implementation: Nested Transaction Stack in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Implementation: Nested Transaction Stack correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Implementation: Nested Transaction Stack?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Implementation: Nested Transaction Stack from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="concurrent-transaction-handling">Concurrent Transaction Handling</h3>
 <div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #92400e; font-weight: 700; margin-bottom: 12px">Trade-off: Concurrency Model</div>
@@ -959,6 +1289,28 @@ class ThreadSafeInMemoryDB:
         with self._locked():
             return self._txn_manager.rollback()
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Concurrent Transaction Handling?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Concurrent Transaction Handling in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Concurrent Transaction Handling?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Concurrent Transaction Handling provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Concurrent Transaction Handling?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Concurrent Transaction Handling from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-transactions">Interview Questions: Transactions</h3>
 <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
 <div style="color: #1e40af; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
@@ -988,6 +1340,28 @@ class ThreadSafeInMemoryDB:
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Interview Questions: Transactions and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Interview Questions: Transactions and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Transactions?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Transactions provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Transactions?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Transactions from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-5-persistence-options">Section 5: Persistence Options</h2>
 <h3 id="persistence-strategies-overview">Persistence Strategies Overview</h3>
 <div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -1032,6 +1406,28 @@ Log every write operation. Classic [[write-ahead-log]](/system-design/storage) p
 </div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Persistence Strategies Overview?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Persistence Strategies Overview in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Persistence Strategies Overview?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Persistence Strategies Overview provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Persistence Strategies Overview?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Persistence Strategies Overview from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="write-ahead-log-implementation">Write-Ahead Log Implementation</h3>
 <pre><code class="language-python">import json
@@ -1203,6 +1599,28 @@ class WriteAheadLog:
         # Atomic rename (on POSIX systems)
         os.rename(temp_path, self._path)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Write-Ahead Log Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Write-Ahead Log Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Write-Ahead Log Implementation correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Write-Ahead Log Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Write-Ahead Log Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="snapshot-rdb-implementation">Snapshot (RDB) Implementation</h3>
 <pre><code class="language-python">import pickle
 import os
@@ -1349,6 +1767,28 @@ class SnapshotManager:
         return (self._changes_since_save &gt;= changes_threshold or
                 (time_since_save &gt;= time_threshold and self._changes_since_save &gt; 0))
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Snapshot (RDB) Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Snapshot (RDB) Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Snapshot (RDB) Implementation correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully. Implementation)</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Snapshot (RDB) Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Snapshot (RDB) Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-persistence">Interview Questions: Persistence</h3>
 <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
 <div style="color: #92400e; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
@@ -1378,6 +1818,28 @@ class SnapshotManager:
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Persistence?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Questions: Persistence in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Persistence?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Persistence provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Persistence?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Persistence from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="complete-implementation">Complete Implementation</h2>
 <h3 id="integrated-in-memory-database">Integrated In-Memory Database</h3>
 <pre><code class="language-python">&quot;&quot;&quot;
@@ -1875,6 +2337,28 @@ class InMemoryDB:
             return entry.data_type.value if entry else None
 </code></pre>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Integrated In-Memory Database?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Integrated In-Memory Database in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Integrated In-Memory Database?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Integrated In-Memory Database provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Integrated In-Memory Database?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Integrated In-Memory Database from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="testing-and-validation">Testing and Validation</h2>
 <pre><code class="language-python">import unittest
 import time
@@ -2424,6 +2908,28 @@ class BPlusTree:
                 return result
         return None
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are B-Tree and B+ Tree for Range Queries and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of B-Tree and B+ Tree for Range Queries and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply B-Tree and B+ Tree for Range Queries?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where B-Tree and B+ Tree for Range Queries provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using B-Tree and B+ Tree for Range Queries?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider B-Tree and B+ Tree for Range Queries from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="hash-map-vs-b-tree-decision-matrix">Hash Map vs B-Tree: Decision Matrix</h3>
 <div style="background: #f8fafc;border-radius: 16px; padding: 28px; margin: 24px 0">
 <div style="font-weight: 700; color: #1e293b; font-size: 16px; margin-bottom: 20px">When to Use Each Data Structure</div>
@@ -2457,6 +2963,28 @@ class BPlusTree:
 </div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in Hash Map vs B-Tree: Decision Matrix?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Hash Map vs B-Tree: Decision Matrix?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Hash Map vs B-Tree: Decision Matrix provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Hash Map vs B-Tree: Decision Matrix?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Hash Map vs B-Tree: Decision Matrix performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
 </div>
 <h3 id="radix-tree-for-prefix-operations">Radix Tree for Prefix Operations</h3>
 <p>For string-heavy workloads requiring <span style="color: #16a34a; font-weight: 600">prefix matching</span>, a <a href="/data-structures/tries">[radix-tree]</a> (compressed trie) offers optimal performance. Redis uses this internally for key pattern matching.</p>
@@ -2619,6 +3147,28 @@ class RadixTree:
         for char, child in node.children.items():
             self._collect_all(child, prefix + child.edge_label, results)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Radix Tree for Prefix Operations and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Radix Tree for Prefix Operations and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Radix Tree for Prefix Operations?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Radix Tree for Prefix Operations provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Radix Tree for Prefix Operations?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Radix Tree for Prefix Operations from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-data-structures">Interview Questions: Data Structures</h3>
 <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
 <div style="color: #065f46; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
@@ -2648,6 +3198,28 @@ class RadixTree:
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Interview Questions: Data Structures and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Interview Questions: Data Structures and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Data Structures?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Data Structures provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Data Structures?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Data Structures from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-7-query-optimization">Section 7: Query Optimization</h2>
 <h3 id="query-planning-and-execution">Query Planning and Execution</h3>
 <p><span style="color: #16a34a; font-weight: 600">Query optimization</span> in in-memory databases differs from disk-based systems because I/O is not the bottleneck - instead, we optimize for CPU cache efficiency and memory access patterns.</p>
@@ -2679,6 +3251,28 @@ class RadixTree:
 <div style="color: #581c87; font-size: 10px; margin-top: 4px">Serialize result</div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Query Planning and Execution?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Query Planning and Execution in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Query Planning and Execution?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Query Planning and Execution provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Query Planning and Execution?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Query Planning and Execution from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="index-selection-strategy">Index Selection Strategy</h3>
 <pre><code class="language-python">from enum import Enum
@@ -2849,6 +3443,28 @@ class TableStats:
     row_count: int
     distinct_values: Dict[str, int]
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Index Selection Strategy?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Index Selection Strategy in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Index Selection Strategy?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Index Selection Strategy provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Index Selection Strategy?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Index Selection Strategy from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="memory-efficient-query-execution">Memory-Efficient Query Execution</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 20px; margin: 16px 0">
 <div style="color: #1e40af; font-weight: 700; margin-bottom: 12px">Design Principle: Streaming vs Materialization</div>
@@ -3058,6 +3674,28 @@ def example_query_execution(store: dict):
 
     return results
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Memory-Efficient Query Execution?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Memory-Efficient Query Execution in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Memory-Efficient Query Execution?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Memory-Efficient Query Execution provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Memory-Efficient Query Execution?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Memory-Efficient Query Execution from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-query-optimization">Interview Questions: Query Optimization</h3>
 <div style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
 <div style="color: #86198f; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Foundational Understanding</div>
@@ -3087,6 +3725,28 @@ def example_query_execution(store: dict):
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Query Optimization?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Questions: Query Optimization in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: When and why should you apply Interview Questions: Query Optimization?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Optimization should be driven by measured bottlenecks, not assumptions. Consider what metrics would indicate a need for Interview Questions: Query Optimization. Think about the cost-benefit ratio - does the complexity introduced by optimization justify the performance gains? Remember: premature optimization is the root of all evil.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Query Optimization?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Query Optimization from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-8-comprehensive-interview-deep-dive">Section 8: Comprehensive Interview Deep-Dive</h2>
 <p>This section presents a complete 3-level recursive interview covering all aspects of in-memory database design.</p>
 <div style="background: #f8fafc; border-radius: 16px; padding: 28px; margin: 24px 0">
@@ -3142,6 +3802,28 @@ def example_query_execution(store: dict):
 </div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Core Architecture Questions and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Core Architecture Questions and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Core Architecture Questions?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Core Architecture Questions provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Core Architecture Questions?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Core Architecture Questions from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="ttl-and-expiration-deep-dive">TTL and Expiration Deep-Dive</h3>
 <div style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
@@ -3232,6 +3914,28 @@ def example_query_execution(store: dict):
 </div>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a TTL and Expiration Deep-Dive?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about TTL and Expiration Deep-Dive in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply TTL and Expiration Deep-Dive?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where TTL and Expiration Deep-Dive provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using TTL and Expiration Deep-Dive?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider TTL and Expiration Deep-Dive from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="persistence-strategy-deep-dive">Persistence Strategy Deep-Dive</h3>
 <div style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
@@ -3337,6 +4041,28 @@ def example_query_execution(store: dict):
 </div>
 </div>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Persistence Strategy Deep-Dive?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Persistence Strategy Deep-Dive in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Persistence Strategy Deep-Dive?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Persistence Strategy Deep-Dive provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Persistence Strategy Deep-Dive?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Persistence Strategy Deep-Dive from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="concurrency-and-threading">Concurrency and Threading</h3>
 <div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
 <div style="color: #5b21b6; font-weight: 700; font-size: 16px; margin-bottom: 20px">Level 1: Concurrency Models</div>
@@ -3428,6 +4154,28 @@ def example_query_execution(store: dict):
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Concurrency and Threading?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Concurrency and Threading in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Concurrency and Threading?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Concurrency and Threading provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Concurrency and Threading?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Concurrency and Threading from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="related-topics">Related Topics</h2>
 <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border-radius: 16px; padding: 24px; margin: 24px 0">
 <div style="color: #0c4a6e; font-weight: 700; font-size: 16px; margin-bottom: 16px">Explore Further</div>

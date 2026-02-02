@@ -41,6 +41,28 @@ The Iterator pattern separates the <span style="color:#166534"><strong>traversal
 <p><strong>Novice thinks:</strong> &quot;Iterator is just a for-loop in disguise.&quot;</p>
 <p><strong>Expert knows:</strong> &quot;Iterator enables <span style="color:#22c55e"><strong>lazy evaluation</strong></span> and <span style="color:#22c55e"><strong>infinite sequences</strong></span>. It separates the 'what' (traversal logic) from the 'how' (data structure). This is why Python generators, Java Streams, and JavaScript async iterators are so powerful - they can process terabytes of data without loading everything into memory.&quot;</p>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is The Expert Insight and what problem does it solve?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about The Expert Insight in terms of its core purpose. Consider what specific problem it was designed to address and how it differs from simpler approaches. Try to explain it as if teaching someone who has never encountered this concept before.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply The Expert Insight?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where The Expert Insight provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using The Expert Insight?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider The Expert Insight from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="internal-vs-external-iterators">Internal vs External Iterators</h2>
 <p>A critical design decision when implementing the Iterator pattern is choosing between <span style="color:#22c55e"><strong>internal</strong></span> and <span style="color:#22c55e"><strong>external</strong></span> iterators. This choice fundamentally affects control flow, flexibility, and API design.</p>
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0">
@@ -116,6 +138,28 @@ iter2 = ExternalIterator([1, 2, 3])
 while iter1.has_next() and iter2.has_next():
     print(f&quot;{iter1.next()} -&gt; {iter2.next()}&quot;)  # Zip behavior
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an External Iterator: Client in Control?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about External Iterator: Client in Control in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply External Iterator: Client in Control?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where External Iterator: Client in Control provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using External Iterator: Client in Control?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider External Iterator: Client in Control from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="internal-iterator-collection-in-control">Internal Iterator: Collection in Control</h3>
 <p>With <span style="color:#22c55e"><strong>internal iterators</strong></span>, you pass a function to the collection, which applies it to each element. The collection controls the traversal.</p>
 <pre><code class="language-python"># Internal Iterator - Collection controls traversal
@@ -184,6 +228,28 @@ result = (numbers
 
 print(f&quot;Result: {result}&quot;)  # 12 (2*2 + 4*2)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Internal Iterator: Collection in Control?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Internal Iterator: Collection in Control in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Internal Iterator: Collection in Control?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Internal Iterator: Collection in Control provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Internal Iterator: Collection in Control?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Internal Iterator: Collection in Control from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="comparison-and-trade-offs">Comparison and Trade-offs</h3>
 <div style="background: #f8fafc; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 1rem">When to Use Each Approach</div>
@@ -220,6 +286,28 @@ print(f&quot;Result: {result}&quot;)  # 12 (2*2 + 4*2)
 </tr>
 </table>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Comparison and Trade-offs and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Comparison and Trade-offs and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Comparison and Trade-offs?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Comparison and Trade-offs provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Comparison and Trade-offs?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Comparison and Trade-offs performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-deep-dive-internal-vs-external-iterators">Interview Deep Dive: Internal vs External Iterators</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: What is the difference between internal and external iterators?</div>
@@ -240,6 +328,28 @@ Generators combine both models. They're <strong>written</strong> like internal i
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in Interview Deep Dive: Internal vs External Iterators?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Deep Dive: Internal vs External Iterators?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Deep Dive: Internal vs External Iterators provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Interview Deep Dive: Internal vs External Iterators?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Interview Deep Dive: Internal vs External Iterators performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
+</div>
 <h2 id="lazy-evaluation-and-infinite-sequences">Lazy Evaluation and Infinite Sequences</h2>
 <p><span style="color:#22c55e"><strong>Lazy evaluation</strong></span> is one of the most powerful capabilities of the Iterator pattern. Instead of computing all elements upfront, elements are generated on-demand when requested.</p>
 <div style="background: #f8fafc; border-radius: 12px; padding: 2rem; margin: 2rem 0">
@@ -397,6 +507,28 @@ def sum_of_squares_lazy(n: int) -&gt; int:
         total += x * x
     return total
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Infinite Sequence Iterators and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Infinite Sequence Iterators and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Infinite Sequence Iterators?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Infinite Sequence Iterators provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Infinite Sequence Iterators?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Infinite Sequence Iterators from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="generator-based-lazy-evaluation">Generator-Based Lazy Evaluation</h3>
 <p>Python generators provide elegant lazy evaluation syntax.</p>
 <pre><code class="language-python">def fibonacci_generator(limit=None):
@@ -496,6 +628,28 @@ def lazy_pipeline_example():
 
 lazy_pipeline_example()
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Generator-Based Lazy Evaluation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Generator-Based Lazy Evaluation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Generator-Based Lazy Evaluation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Generator-Based Lazy Evaluation provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Generator-Based Lazy Evaluation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Generator-Based Lazy Evaluation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-deep-dive-lazy-evaluation">Interview Deep Dive: Lazy Evaluation</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: What is lazy evaluation and why is it useful in iterators?</div>
@@ -516,6 +670,28 @@ Use <strong>cursor-based iteration</strong> with buffering. The iterator maintai
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Deep Dive: Lazy Evaluation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Deep Dive: Lazy Evaluation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Deep Dive: Lazy Evaluation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Deep Dive: Lazy Evaluation provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Deep Dive: Lazy Evaluation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Deep Dive: Lazy Evaluation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="concurrent-modification-problem">Concurrent Modification Problem</h2>
 <p>One of the most critical challenges with iterators is handling modifications to the underlying collection during iteration. This is known as the <span style="color:#22c55e"><strong>concurrent modification problem</strong></span>.</p>
 <div style="background: #fef2f2; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
@@ -575,6 +751,28 @@ try:
 except RuntimeError as e:
     print(f&quot;Error: {e}&quot;)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a What Goes Wrong?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about What Goes Wrong in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply What Goes Wrong?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where What Goes Wrong provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using What Goes Wrong?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider What Goes Wrong from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="solution-strategies">Solution Strategies</h3>
 <pre><code class="language-python">from typing import List, TypeVar, Callable, Set
 from copy import copy
@@ -779,6 +977,28 @@ while it.has_next():
 it.apply_modifications()
 print(f&quot;After modifications: {items}&quot;)  # [1, 3, 5, 30]
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Solution Strategies and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Solution Strategies and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Solution Strategies?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Solution Strategies provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Solution Strategies?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Solution Strategies from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-deep-dive-concurrent-modification">Interview Deep Dive: Concurrent Modification</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: What causes ConcurrentModificationException in Java?</div>
@@ -799,6 +1019,28 @@ Use <strong>hazard pointers</strong> or <strong>epoch-based reclamation</strong>
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Deep Dive: Concurrent Modification?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Deep Dive: Concurrent Modification in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Deep Dive: Concurrent Modification?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Deep Dive: Concurrent Modification provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Deep Dive: Concurrent Modification?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Deep Dive: Concurrent Modification from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="custom-collection-iteration">Custom Collection Iteration</h2>
 <p>Implementing iterators for custom data structures requires careful consideration of the collection's characteristics and traversal semantics.</p>
 <h3 id="binary-tree-with-multiple-traversals">Binary Tree with Multiple Traversals</h3>
@@ -1019,6 +1261,28 @@ class BinaryTree(Generic[T]):
             yield node.value
             yield from self._inorder_generator(node.right)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Binary Tree with Multiple Traversals and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Binary Tree with Multiple Traversals and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Binary Tree with Multiple Traversals?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Binary Tree with Multiple Traversals provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Binary Tree with Multiple Traversals?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Binary Tree with Multiple Traversals from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="graph-iterator-with-cycle-detection">Graph Iterator with Cycle Detection</h3>
 <pre><code class="language-python">from typing import Dict, Set, List, Optional
 from collections import deque
@@ -1167,6 +1431,28 @@ while it.has_next():
     print(it.next(), end=&quot; &quot;)
 print()
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Graph Iterator with Cycle Detection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Graph Iterator with Cycle Detection in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Graph Iterator with Cycle Detection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Graph Iterator with Cycle Detection provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Graph Iterator with Cycle Detection?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Graph Iterator with Cycle Detection from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="skip-list-iterator">Skip List Iterator</h3>
 <pre><code class="language-python">import random
 from typing import Optional, Generic, TypeVar
@@ -1286,6 +1572,28 @@ class SkipListRangeIterator(Generic[K, V]):
         self.current = self.current.forward[0]
         return (key, value)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Skip List Iterator?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Skip List Iterator in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Skip List Iterator?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Skip List Iterator provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Skip List Iterator?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Skip List Iterator from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-deep-dive-custom-collection-iteration">Interview Deep Dive: Custom Collection Iteration</h3>
 <div style="background: #eff6ff; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0">
 <div style="font-weight: 700; color: #1e40af; margin-bottom: 1rem">Level 1: What methods must a custom iterator implement?</div>
@@ -1306,6 +1614,28 @@ Use a <strong>min-heap of (value, iterator_index)</strong> pairs. Initialize by 
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Deep Dive: Custom Collection Iteration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Deep Dive: Custom Collection Iteration in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Deep Dive: Custom Collection Iteration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Deep Dive: Custom Collection Iteration provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Deep Dive: Custom Collection Iteration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Deep Dive: Custom Collection Iteration from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="real-world-company-usage">Real-World Company Usage</h2>
 <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0">
 <div style="font-weight: 700; color: #1e293b; margin-bottom: 12px">Industry Applications</div>

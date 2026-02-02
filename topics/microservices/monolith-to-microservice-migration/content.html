@@ -9,6 +9,28 @@
 <h3 id="11-core-mechanism">1.1 Core Mechanism</h3>
 <p>The Strangler Fig Pattern derives its name from strangler fig trees that grow around host trees, eventually replacing them entirely. In software, this translates to <strong>incrementally replacing monolith functionality with microservices while maintaining system operation</strong>.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1.1 Core Mechanism?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 1.1 Core Mechanism in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1.1 Core Mechanism?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 1.1 Core Mechanism provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1.1 Core Mechanism?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 1.1 Core Mechanism from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">STRANGLER FIG PATTERN: INTERNAL MECHANISM</h3>
 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px">
 <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 16px; text-align: center">
@@ -208,6 +230,28 @@ func (s *ShadowModeComparator) compareAndRecord(
 </div>
 </div>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 1.2 Shadow Mode: The Verification Mechanism?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 1.2 Shadow Mode: The Verification Mechanism in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1.2 Shadow Mode: The Verification Mechanism?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 1.2 Shadow Mode: The Verification Mechanism provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1.2 Shadow Mode: The Verification Mechanism?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 1.2 Shadow Mode: The Verification Mechanism from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="13-interview-questions-strangler-fig-pattern">1.3 Interview Questions: Strangler Fig Pattern</h3>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 style="color: #fff; margin: 0 0 16px 0">LEVEL 1: Conceptual Understanding</h4>
@@ -237,10 +281,54 @@ func (s *ShadowModeComparator) compareAndRecord(
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the 1.3 Interview Questions: Strangler Fig Pattern and when should you use it?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>The 1.3 Interview Questions: Strangler Fig Pattern addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 1.3 Interview Questions: Strangler Fig Pattern?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 1.3 Interview Questions: Strangler Fig Pattern provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 1.3 Interview Questions: Strangler Fig Pattern?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 1.3 Interview Questions: Strangler Fig Pattern from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-2-domain-decomposition">Section 2: Domain Decomposition</h2>
 <h3 id="21-identifying-service-boundaries">2.1 Identifying Service Boundaries</h3>
 <p>Domain decomposition determines <strong>where to cut</strong> the monolith. Poor boundaries create distributed monoliths - systems with all the complexity of microservices and none of the benefits.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0; font-family: 'Segoe UI', system-ui, sans-serif">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 2.1 Identifying Service Boundaries and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of 2.1 Identifying Service Boundaries and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.1 Identifying Service Boundaries?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 2.1 Identifying Service Boundaries provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2.1 Identifying Service Boundaries?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 2.1 Identifying Service Boundaries from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">DOMAIN DECOMPOSITION DECISION FRAMEWORK</h3>
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px">
@@ -349,6 +437,28 @@ class CouplingAnalyzer:
 <h3 id="22-the-bounded-context-mapping">2.2 The Bounded Context Mapping</h3>
 <p><a href="/topics/ddd/bounded-contexts">[Bounded Contexts]</a> from Domain-Driven Design provide the theoretical framework for service boundaries. Each microservice should align with exactly one bounded context.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 2.2 The Bounded Context Mapping?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 2.2 The Bounded Context Mapping in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.2 The Bounded Context Mapping?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 2.2 The Bounded Context Mapping provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2.2 The Bounded Context Mapping?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 2.2 The Bounded Context Mapping from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">CONTEXT MAPPING PATTERNS</h3>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
 <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px">
@@ -531,6 +641,28 @@ The ACL should live in the <strong>consuming service</strong>, not the producing
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 2.3 Interview Questions: Domain Decomposition?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 2.3 Interview Questions: Domain Decomposition in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 2.3 Interview Questions: Domain Decomposition?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 2.3 Interview Questions: Domain Decomposition provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 2.3 Interview Questions: Domain Decomposition?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 2.3 Interview Questions: Domain Decomposition from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-3-data-migration-strategies">Section 3: Data Migration Strategies</h2>
 <h3 id="31-the-data-sovereignty-challenge">3.1 The Data Sovereignty Challenge</h3>
 <p>Data migration is often the <strong>hardest part</strong> of microservices migration. The monolith's shared database must be split into service-owned databases while maintaining:</p>
@@ -541,6 +673,28 @@ The ACL should live in the <strong>consuming service</strong>, not the producing
 <li><strong>Rollback capability</strong> if migration fails</li>
 </ul>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3.1 The Data Sovereignty Challenge?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 3.1 The Data Sovereignty Challenge in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: How would you approach solving a problem related to 3.1 The Data Sovereignty Challenge?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Start by clearly defining the problem constraints and requirements. Consider what makes this problem challenging and what techniques apply. Think about how you would break it down into smaller subproblems. Remember that recognizing the problem pattern is often the hardest part.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.1 The Data Sovereignty Challenge?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 3.1 The Data Sovereignty Challenge from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">DATA MIGRATION PATTERNS</h3>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px">
 <div style="background: linear-gradient(135deg, #238636 0%, #2ea043 100%); border-radius: 12px; padding: 20px">
@@ -709,6 +863,28 @@ type CDCSource struct {
 </div>
 </div>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3.2 Change Data Capture Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 3.2 Change Data Capture Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement 3.2 Change Data Capture Implementation correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.2 Change Data Capture Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 3.2 Change Data Capture Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="33-dual-write-pattern-with-reconciliation">3.3 Dual-Write Pattern with Reconciliation</h3>
 <p>For critical data where CDC lag is unacceptable, dual-write ensures both databases are updated synchronously. However, this pattern has significant complexity.</p>
 <pre><code class="language-go">// Dual-write service with reconciliation
@@ -842,6 +1018,28 @@ func (c *ConflictResolver) Resolve(monolith, micro *User) *User {
 Dual-write without distributed transactions (2PC) means you <strong>will have inconsistency windows</strong>. If write to DB1 succeeds but DB2 fails, you have divergent state until reconciliation runs. Options: (1) Accept eventual consistency with reconciliation. (2) Use XA transactions (complex, slow, limited database support). (3) Use the [[Saga Pattern]](/topics/microservices/saga-pattern) with compensation. (4) Use [[Outbox Pattern]](/topics/microservices/outbox-pattern) - write to one DB plus outbox table atomically, process outbox to sync. Option 4 is generally preferred.
 </p>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the 3.3 Dual-Write Pattern with Reconciliation and when should you use it?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>The 3.3 Dual-Write Pattern with Reconciliation addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3.3 Dual-Write Pattern with Reconciliation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 3.3 Dual-Write Pattern with Reconciliation provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.3 Dual-Write Pattern with Reconciliation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 3.3 Dual-Write Pattern with Reconciliation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="34-interview-questions-data-migration">3.4 Interview Questions: Data Migration</h3>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 style="color: #fff; margin: 0 0 16px 0">LEVEL 1: Conceptual Understanding</h4>
@@ -871,10 +1069,54 @@ Dual-write without distributed transactions (2PC) means you <strong>will have in
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 3.4 Interview Questions: Data Migration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 3.4 Interview Questions: Data Migration in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 3.4 Interview Questions: Data Migration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 3.4 Interview Questions: Data Migration provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 3.4 Interview Questions: Data Migration?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 3.4 Interview Questions: Data Migration from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-4-the-shared-database-anti-pattern">Section 4: The Shared Database Anti-Pattern</h2>
 <h3 id="41-why-shared-databases-undermine-microservices">4.1 Why Shared Databases Undermine Microservices</h3>
 <p>The shared database anti-pattern occurs when multiple services read from and write to the same database tables. This fundamentally violates microservices principles and creates a <strong>distributed monolith</strong>.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are 4.1 Why Shared Databases Undermine Microservices and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of 4.1 Why Shared Databases Undermine Microservices and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.1 Why Shared Databases Undermine Microservices?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 4.1 Why Shared Databases Undermine Microservices provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.1 Why Shared Databases Undermine Microservices?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 4.1 Why Shared Databases Undermine Microservices from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 style="color: #f85149; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">SHARED DATABASE: FAILURE MODES</h3>
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px">
 <div style="background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); border-radius: 12px; padding: 20px">
@@ -932,6 +1174,28 @@ GROUP BY DATE(o.created_at);
 <h3 id="42-gradual-decoupling-from-shared-database">4.2 Gradual Decoupling from Shared Database</h3>
 <p>Decoupling from a shared database requires a systematic approach. You cannot simply &quot;stop using&quot; the shared database.</p>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 4.2 Gradual Decoupling from Shared Database?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 4.2 Gradual Decoupling from Shared Database in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.2 Gradual Decoupling from Shared Database?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 4.2 Gradual Decoupling from Shared Database provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.2 Gradual Decoupling from Shared Database?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 4.2 Gradual Decoupling from Shared Database from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 style="color: #7ee787; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">DECOUPLING STRATEGY: PHASED APPROACH</h3>
 <div style="display: flex; flex-direction: column; gap: 16px">
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 12px; padding: 20px">
@@ -1082,6 +1346,28 @@ CREATE SCHEMA order_service;
 -- Services cannot query other schemas
 */
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 4.3 When Shared Database Is (Temporarily) Acceptable?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 4.3 When Shared Database Is (Temporarily) Acceptable in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.3 When Shared Database Is (Temporarily) Acceptable?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 4.3 When Shared Database Is (Temporarily) Acceptable provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.3 When Shared Database Is (Temporarily) Acceptable?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 4.3 When Shared Database Is (Temporarily) Acceptable from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="44-interview-questions-shared-database-anti-pattern">4.4 Interview Questions: Shared Database Anti-Pattern</h3>
 <div style="background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%); border-radius: 16px; padding: 24px; margin: 20px 0">
 <h4 style="color: #fff; margin: 0 0 16px 0">LEVEL 1: Conceptual Understanding</h4>
@@ -1111,6 +1397,28 @@ CREATE SCHEMA order_service;
 </div>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the 4.4 Interview Questions: Shared Database Anti-Pattern and when should you use it?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>The 4.4 Interview Questions: Shared Database Anti-Pattern addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 4.4 Interview Questions: Shared Database Anti-Pattern?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 4.4 Interview Questions: Shared Database Anti-Pattern provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 4.4 Interview Questions: Shared Database Anti-Pattern?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 4.4 Interview Questions: Shared Database Anti-Pattern from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="section-5-migration-execution-framework">Section 5: Migration Execution Framework</h2>
 <h3 id="51-the-complete-migration-playbook">5.1 The Complete Migration Playbook</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
@@ -1270,6 +1578,28 @@ func (c *MigrationRollbackController) executeRollback(
     return nil
 }
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a 5.2 Rollback Strategies at Each Phase?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about 5.2 Rollback Strategies at Each Phase in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply 5.2 Rollback Strategies at Each Phase?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where 5.2 Rollback Strategies at Each Phase provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using 5.2 Rollback Strategies at Each Phase?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider 5.2 Rollback Strategies at Each Phase from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="53-success-metrics-and-validation">5.3 Success Metrics and Validation</h3>
 <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; padding: 32px; margin: 20px 0">
 <h3 style="color: #58a6ff; margin: 0 0 20px 0; font-size: 1.3em; text-align: center;padding-bottom: 12px">MIGRATION SUCCESS CRITERIA</h3>

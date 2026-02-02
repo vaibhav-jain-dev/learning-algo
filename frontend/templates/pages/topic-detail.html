@@ -45,10 +45,14 @@
     var content = document.getElementById('topic-content');
     if (!content) return;
 
-    // Build navigation from headings
-    var headings = content.querySelectorAll('h2, h3');
+    // Build navigation from headings (h1, h2, h3, h4)
+    var headings = content.querySelectorAll('h1, h2, h3, h4');
     var tocNav = document.getElementById('toc-nav');
     var quickNav = document.getElementById('quick-nav');
+
+    // Store heading-to-link mappings for scroll-spy
+    var headingLinks = new Map();
+    var allLinks = [];
 
     headings.forEach(function(h, i) {
         // Ensure heading has an ID
@@ -57,15 +61,168 @@
         var link = document.createElement('a');
         link.href = '#' + h.id;
         link.className = 'panel-item';
-        link.textContent = h.textContent;
+        link.setAttribute('data-heading-id', h.id);
+
+        // Add indentation class based on heading level
+        var level = parseInt(h.tagName.charAt(1));
+        link.classList.add('panel-item-h' + level);
+
+        // Get text content without anchor link text
+        var headingText = h.textContent.replace(/^#\s*/, '').trim();
+        link.textContent = headingText;
+
         link.onclick = function(e) {
             e.preventDefault();
-            h.scrollIntoView({ behavior: 'smooth' });
+            // Remove active from all links before scrolling
+            allLinks.forEach(function(l) { l.classList.remove('active'); });
+            link.classList.add('active');
+            h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Update URL hash without scrolling
+            history.pushState(null, null, '#' + h.id);
         };
 
-        if (tocNav) tocNav.appendChild(link.cloneNode(true));
+        // Store mapping
+        headingLinks.set(h.id, link);
+        allLinks.push(link);
+
+        if (tocNav) {
+            var tocLink = link.cloneNode(true);
+            tocLink.onclick = link.onclick;
+            headingLinks.set(h.id + '-toc', tocLink);
+            allLinks.push(tocLink);
+            tocNav.appendChild(tocLink);
+        }
         if (quickNav) quickNav.appendChild(link);
     });
+
+    // Scroll-spy using Intersection Observer
+    if (headings.length > 0 && 'IntersectionObserver' in window) {
+        var currentActiveId = null;
+
+        // Create observer with rootMargin to trigger earlier
+        var observer = new IntersectionObserver(function(entries) {
+            // Find the heading that's most visible/closest to the top
+            var visibleHeadings = [];
+
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    visibleHeadings.push({
+                        id: entry.target.id,
+                        top: entry.boundingClientRect.top
+                    });
+                }
+            });
+
+            // If we have visible headings, pick the one closest to the top of viewport
+            if (visibleHeadings.length > 0) {
+                visibleHeadings.sort(function(a, b) { return a.top - b.top; });
+                var closestHeading = visibleHeadings[0];
+
+                if (closestHeading.id !== currentActiveId) {
+                    setActiveHeading(closestHeading.id);
+                }
+            }
+        }, {
+            // Observe from 80px from top (header height) to 40% down the viewport
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: [0, 0.25, 0.5, 0.75, 1]
+        });
+
+        // Also track scroll position for cases when no heading is in view
+        var headingsArray = Array.from(headings);
+        var ticking = false;
+
+        function findActiveHeadingOnScroll() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop;
+            var headerOffset = 100; // Account for sticky header
+            var activeHeading = null;
+
+            // Find the last heading that's above the scroll position + offset
+            for (var i = headingsArray.length - 1; i >= 0; i--) {
+                var h = headingsArray[i];
+                var rect = h.getBoundingClientRect();
+                var headingTop = rect.top + scrollTop;
+
+                if (headingTop <= scrollTop + headerOffset) {
+                    activeHeading = h;
+                    break;
+                }
+            }
+
+            // If no heading found above, use the first one
+            if (!activeHeading && headingsArray.length > 0) {
+                activeHeading = headingsArray[0];
+            }
+
+            if (activeHeading && activeHeading.id !== currentActiveId) {
+                setActiveHeading(activeHeading.id);
+            }
+
+            ticking = false;
+        }
+
+        function onScroll() {
+            if (!ticking) {
+                requestAnimationFrame(findActiveHeadingOnScroll);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        function setActiveHeading(headingId) {
+            currentActiveId = headingId;
+
+            // Remove active class from all links
+            allLinks.forEach(function(link) {
+                link.classList.remove('active');
+            });
+
+            // Add active class to matching links
+            var mainLink = headingLinks.get(headingId);
+            var tocLink = headingLinks.get(headingId + '-toc');
+
+            if (mainLink) {
+                mainLink.classList.add('active');
+                scrollNavItemIntoView(mainLink, quickNav);
+            }
+            if (tocLink) {
+                tocLink.classList.add('active');
+                scrollNavItemIntoView(tocLink, tocNav);
+            }
+        }
+
+        function scrollNavItemIntoView(link, navContainer) {
+            if (!link || !navContainer) return;
+
+            var linkRect = link.getBoundingClientRect();
+            var containerRect = navContainer.getBoundingClientRect();
+
+            // Check if link is outside visible area of nav panel
+            if (linkRect.top < containerRect.top || linkRect.bottom > containerRect.bottom) {
+                link.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Observe all headings
+        headings.forEach(function(h) {
+            observer.observe(h);
+        });
+
+        // Set initial active heading
+        findActiveHeadingOnScroll();
+
+        // Handle hash on page load
+        if (window.location.hash) {
+            var hashId = window.location.hash.slice(1);
+            var targetHeading = document.getElementById(hashId);
+            if (targetHeading) {
+                setTimeout(function() {
+                    setActiveHeading(hashId);
+                }, 100);
+            }
+        }
+    }
 
     // Code highlighting
     if (typeof hljs !== 'undefined') {

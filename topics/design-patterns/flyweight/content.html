@@ -33,6 +33,28 @@
 </tbody>
 </table>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the Pattern Classification and when should you use it?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>The Pattern Classification addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Pattern Classification?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Pattern Classification provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Pattern Classification?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Pattern Classification from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="intrinsic-vs-extrinsic-state">Intrinsic vs Extrinsic State</h2>
 <p>The most critical decision in implementing Flyweight is correctly partitioning state. This partitioning determines the pattern's effectiveness and correctness.</p>
 <h3 id="intrinsic-state-shared">Intrinsic State (Shared)</h3>
@@ -53,6 +75,28 @@
 <li>Tree species mesh data, bark texture in a forest simulation</li>
 <li>Compiled regex pattern in a validation framework</li>
 </ul>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Intrinsic State (Shared)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Intrinsic State (Shared) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Intrinsic State (Shared)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Intrinsic State (Shared) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Intrinsic State (Shared)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Intrinsic State (Shared) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="extrinsic-state-unique">Extrinsic State (Unique)</h3>
 <p>Extrinsic state represents the <strong>context-dependent, variable properties</strong> that differ for each logical use of a flyweight. This state is NOT stored in the flyweight; instead, it is passed to flyweight methods by the client.</p>
 <div style="background: #0d1117;border-radius: 8px; padding: 20px; margin: 20px 0">
@@ -71,6 +115,28 @@
 <li>Tree position, current growth stage, wind sway offset in a forest</li>
 <li>Input string to validate against a compiled regex</li>
 </ul>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Extrinsic State (Unique)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Extrinsic State (Unique) in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Extrinsic State (Unique)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Extrinsic State (Unique) provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Extrinsic State (Unique)?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Extrinsic State (Unique) from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="state-partitioning-decision-framework">State Partitioning Decision Framework</h3>
 <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
 <h4 style="color: #7dd3fc; margin-top: 0">Decision Criteria</h4>
@@ -102,6 +168,28 @@
 </tr>
 </table>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a State Partitioning Decision Framework?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about State Partitioning Decision Framework in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply State Partitioning Decision Framework?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where State Partitioning Decision Framework provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using State Partitioning Decision Framework?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider State Partitioning Decision Framework from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-intrinsic-vs-extrinsic-state">Interview Questions: Intrinsic vs Extrinsic State</h3>
 <div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
 <h4 style="color: #ffd700; margin-top: 0">Level 1: Conceptual Understanding</h4>
@@ -115,6 +203,28 @@
 <p style="color: #9ca3af; font-style: italic">A: (1) Style conflicts: Flyweights are immutable, so no conflict on intrinsic state. Conflict is on extrinsic mapping (which char has which style). Use [[CRDT]](/topic/distributed-systems/crdt) or OT for character-to-style-reference mapping. (2) Undo/redo: Store operation log of (position, old_flyweight_ref, new_flyweight_ref). Flyweights themselves never undo - just swap references. (3) Pool sync: Don't sync pools directly. Each node maintains local pool. Sync style-keys (font, size, color tuples), not objects. Nodes lazily create flyweights on first local use of a key. Pool convergence is eventual and doesn't affect correctness since flyweights with same intrinsic state are semantically identical.</p>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are the key differences between the concepts compared in Interview Questions: Intrinsic vs Extrinsic State?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider each concept independently first, then identify the specific dimensions where they differ - performance, use cases, complexity, and trade-offs. Understanding both sides helps you choose the right approach for your specific situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Intrinsic vs Extrinsic State?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Intrinsic vs Extrinsic State provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Interview Questions: Intrinsic vs Extrinsic State?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Interview Questions: Intrinsic vs Extrinsic State performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
+</div>
 <h2 id="the-flyweight-factory">The Flyweight Factory</h2>
 <p>The Flyweight Factory is the centralized component responsible for <strong>creating, caching, and dispensing flyweight instances</strong>. It ensures that flyweights are shared properly and that duplicate flyweights are never created.</p>
 <h3 id="factory-responsibilities">Factory Responsibilities</h3>
@@ -124,6 +234,28 @@
 <li><strong>Cache Maintenance</strong>: Store and retrieve existing flyweights</li>
 <li><strong>Thread Safety</strong>: Ensure correct behavior under concurrent access</li>
 </ol>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Factory Responsibilities and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Factory Responsibilities and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Factory Responsibilities?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Factory Responsibilities provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Factory Responsibilities?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Factory Responsibilities from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="implementation-patterns">Implementation Patterns</h3>
 <div style="background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); border-radius: 8px; padding: 20px; margin: 20px 0">
 <h4 style="color: #6ee7b7; margin-top: 0">Factory Implementation Strategies</h4>
@@ -154,6 +286,28 @@
 <td style="padding: 8px">May recreate evicted flyweights</td>
 </tr>
 </table>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is the Implementation Patterns and when should you use it?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>The Implementation Patterns addresses a specific category of problems. Think about the conditions that make this pattern valuable - what symptoms in your code suggest you need it? Also consider what alternatives exist and why you might choose this approach over others.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Implementation Patterns correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Implementation Patterns?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Implementation Patterns from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="thread-safe-factory-implementation">Thread-Safe Factory Implementation</h3>
 <pre><code class="language-python">from threading import Lock
@@ -290,6 +444,28 @@ class WeakStyleFactory:
                 self._styles[key] = style
             return style
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Thread-Safe Factory Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Thread-Safe Factory Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Thread-Safe Factory Implementation correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Thread-Safe Factory Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Thread-Safe Factory Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-flyweight-factory">Interview Questions: Flyweight Factory</h3>
 <div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
 <h4 style="color: #ffd700; margin-top: 0">Level 1: Implementation Details</h4>
@@ -303,6 +479,28 @@ class WeakStyleFactory:
 <p style="color: #9ca3af; font-style: italic">A: Multiple strategies: (1) <strong>Sharded factories</strong>: Partition keyspace (e.g., by hash of key % N) across N independent factories, each with its own lock. Reduces contention by N. (2) <strong>Lock-free ConcurrentHashMap</strong>: Languages like Java offer ConcurrentHashMap with fine-grained locking or lock-free operations. (3) <strong>Read-write lock</strong>: Allow multiple concurrent readers; only block for writes (new flyweights). Most operations are reads after warmup. (4) <strong>Pre-population</strong>: If flyweight set is known/bounded, create all flyweights at startup. Factory becomes read-only, eliminating write locks entirely. (5) <strong>Thread-local caching</strong>: Each thread maintains local cache of recently used flyweights, reducing factory access. Trade-off: memory duplication if sets diverge. Best approach often combines pre-population (for known flyweights) with sharded lazy creation (for dynamic ones).</p>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Flyweight Factory?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Questions: Flyweight Factory in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Flyweight Factory?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Flyweight Factory provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Flyweight Factory?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Flyweight Factory from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="string-interning-flyweight-in-language-runtimes">String Interning: Flyweight in Language Runtimes</h2>
 <p>String interning is the <strong>canonical example of Flyweight</strong> implemented at the language/runtime level. It demonstrates how the pattern can be applied transparently to achieve memory optimization without explicit programmer intervention.</p>
 <h3 id="how-string-interning-works">How String Interning Works</h3>
@@ -316,6 +514,28 @@ class WeakStyleFactory:
 <li>If not found: adds string to pool, returns reference to new entry</li>
 </ol>
 <p style="color: #ddd; margin-bottom: 0"><strong>Result</strong>: All references to the same string content point to the same object in memory. Equality comparison becomes O(1) pointer comparison instead of O(n) character comparison.</p>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are How String Interning Works and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of How String Interning Works and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply How String Interning Works?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where How String Interning Works provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using How String Interning Works?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider How String Interning Works from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="language-specific-implementations">Language-Specific Implementations</h3>
 <pre><code class="language-python">import sys
@@ -418,6 +638,28 @@ func main() {
     fmt.Printf(&quot;Same pointer: %v\n&quot;, &amp;a == &amp;b) // Note: this checks slice header, not string data
 }
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Language-Specific Implementations and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Language-Specific Implementations and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Language-Specific Implementations correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Language-Specific Implementations?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Language-Specific Implementations from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interning-trade-offs">Interning Trade-offs</h3>
 <div style="background: #1e293b;border-radius: 8px; padding: 20px; margin: 20px 0">
 <h4 style="color: #f472b6; margin-top: 0">When to Use Manual Interning</h4>
@@ -448,6 +690,28 @@ func main() {
 </tr>
 </table>
 </div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What are Interning Trade-offs and why are they important?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider the different types or categories of Interning Trade-offs and what distinguishes them. Think about real-world examples where each type would be most appropriate. Understanding the variety helps you select the right tool for each situation.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interning Trade-offs?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interning Trade-offs provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What factors should you consider when evaluating Interning Trade-offs?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Every technical decision involves trade-offs across multiple dimensions: time complexity, space complexity, implementation complexity, maintainability, and scalability. Consider how Interning Trade-offs performs across these dimensions and in what contexts each trade-off is acceptable. There is rarely a universally 'best' solution.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-string-interning">Interview Questions: String Interning</h3>
 <div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
 <h4 style="color: #ffd700; margin-top: 0">Level 1: Language Behavior</h4>
@@ -461,6 +725,28 @@ func main() {
 <p style="color: #9ca3af; font-style: italic">A: Architecture: (1) <strong>Local tier</strong>: Each node has LRU intern cache (bounded, e.g., 100K entries). Handles high-frequency strings locally. (2) <strong>Shared tier</strong>: [[Redis]](/topic/databases/redis) cluster with string content -> canonical ID mapping. Use SETNX for atomic intern-or-get. (3) <strong>Storage optimization</strong>: Instead of storing strings, store (hash, length, content) tuples. Use consistent hashing to partition keyspace across Redis nodes. (4) <strong>Expiration</strong>: Redis TTL on entries (e.g., 24h). Local cache uses access-time-based LRU. (5) <strong>Flow</strong>: Check local cache -> if miss, check Redis -> if miss, SETNX to Redis with TTL, update local cache. (6) <strong>Memory bound</strong>: Monitor Redis memory. If approaching limit, reduce TTL or switch to approximate dedup (bloom filter to skip known-unique strings). Trade-off: Some strings may be re-interned after expiration, but memory stays bounded. See also: [[Bloom Filters]](/topic/data-structures/bloom-filter) for approximate membership.</p>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: String Interning?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Questions: String Interning in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: String Interning?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: String Interning provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: String Interning?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: String Interning from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="game-character-system-complete-implementation">Game Character System: Complete Implementation</h2>
 <p>The game character/sprite system is the <strong>quintessential Flyweight example</strong> because it perfectly illustrates the memory savings when rendering thousands of entities with shared visual assets.</p>
 <h3 id="architecture-overview">Architecture Overview</h3>
@@ -490,6 +776,28 @@ func main() {
 </ul>
 </div>
 </div>
+</div>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Architecture Overview?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Architecture Overview in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Architecture Overview?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Architecture Overview provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Architecture Overview?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Architecture Overview from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
 </div>
 <h3 id="production-grade-implementation">Production-Grade Implementation</h3>
 <pre><code class="language-python">from __future__ import annotations
@@ -961,6 +1269,28 @@ if __name__ == &quot;__main__&quot;:
     for key, value in world.factory.get_memory_stats().items():
         print(f&quot;  {key}: {value}&quot;)
 </code></pre>
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is a Production-Grade Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Production-Grade Implementation in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: What are the key steps to implement Production-Grade Implementation correctly?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Focus on the sequence of operations and critical decisions at each step. Consider what invariants must be maintained throughout the implementation. Think about edge cases and how they should be handled. A correct implementation handles both the common case and the exceptional cases gracefully.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Production-Grade Implementation?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Production-Grade Implementation from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h3 id="interview-questions-game-character-system">Interview Questions: Game Character System</h3>
 <div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0">
 <h4 style="color: #ffd700; margin-top: 0">Level 1: Pattern Recognition</h4>
@@ -974,6 +1304,28 @@ if __name__ == &quot;__main__&quot;:
 <p style="color: #9ca3af; font-style: italic">A: Use composite flyweight architecture: (1) <strong>Base flyweight layer</strong>: CharacterType stays as-is (mesh, animation, base texture). (2) <strong>Customization flyweights</strong>: New flyweight category for customizations. ArmorTint(color), WeaponSkin(texture_id) are separate flyweights. Limited set (e.g., 20 colors, 50 skins) = manageable pool. (3) <strong>Instance composition</strong>: CharacterInstance holds references to [base_type, armor_tint, weapon_skin]. (4) <strong>Render pipeline</strong>: Shader applies customizations as overlays/tints. base_texture + tint_color + skin_texture combined at render time. (5) <strong>Database design</strong>: User purchases stored as (user_id, customization_type_id). Customization flyweights loaded from config, not per-user. (6) <strong>Memory math</strong>: 1M players with customizations = 1M * 3 references (24 bytes) + shared flyweight pool. Without flyweight: 1M * full texture data = impossible. Key insight: Flyweight pattern composes - multiple flyweight pools can work together.</p>
 </div>
 <hr />
+
+<div class="qa-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; padding: 20px; margin: 20px 0;">
+<h4 style="color: #0369a1; margin-top: 0;">Check Your Understanding</h4>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q1: What is an Interview Questions: Game Character System?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about Interview Questions: Game Character System in terms of its fundamental definition and purpose. Consider what makes it unique compared to related concepts. Try to identify the key characteristics that define it and the problems it was designed to solve.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q2: In what scenarios would you apply Interview Questions: Game Character System?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Think about the characteristics of problems where Interview Questions: Game Character System provides the most value. Consider both the technical requirements (data structures, algorithms needed) and the business context (scalability, performance constraints). Real-world applications often require adapting the theoretical approach to practical constraints.</p>
+</div>
+</details>
+<details style="margin-bottom: 12px;">
+<summary style="cursor: pointer; font-weight: 600; color: #1e293b;">Q3: What are the trade-offs involved in using Interview Questions: Game Character System?</summary>
+<div style="padding: 12px; background: white; border-radius: 8px; margin-top: 8px;">
+<p>Consider Interview Questions: Game Character System from multiple perspectives: What do you gain? What do you sacrifice? Think about time vs. space trade-offs, simplicity vs. flexibility, and short-term convenience vs. long-term maintainability. The best engineers understand these trade-offs deeply and make informed decisions based on their specific context.</p>
+</div>
+</details>
+</div>
 <h2 id="related-patterns-and-integration">Related Patterns and Integration</h2>
 <p>The Flyweight pattern often works alongside other patterns to create robust architectures.</p>
 <div style="background: linear-gradient(135deg, #3f0d0d 0%, #5c1a1a 100%); border-radius: 8px; padding: 20px; margin: 20px 0">

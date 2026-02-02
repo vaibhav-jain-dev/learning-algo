@@ -1252,3 +1252,116 @@ h4:has(.heading-anchor) {
     border-left-color: var(--color-brand-primary, #3b82f6);
     padding-left: 1rem;
 }
+
+/* ============================================
+   NAVIGATION SCROLL-SPY STYLES
+   ============================================ */
+
+/* Panel item base styles with transition */
+.panel-list .panel-item {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin: 0.125rem 0;
+    border-radius: var(--radius-sm, 0.25rem);
+    font-size: 0.875rem;
+    color: var(--color-text-secondary, #64748b);
+    text-decoration: none;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    line-height: 1.4;
+}
+
+.panel-list .panel-item:hover {
+    background: var(--color-bg-secondary, #f8fafc);
+    color: var(--color-text-primary, #0f172a);
+    border-left-color: var(--color-border, #e2e8f0);
+}
+
+/* Active state - highlighted current section */
+.panel-list .panel-item.active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.08) 100%);
+    color: var(--color-brand-primary, #3b82f6);
+    font-weight: 600;
+    border-left-color: var(--color-brand-primary, #3b82f6);
+}
+
+/* Subtle glow effect for active item */
+.panel-list .panel-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--color-brand-primary, #3b82f6);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Heading level indentation */
+.panel-list .panel-item-h1 {
+    padding-left: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text-primary, #0f172a);
+}
+
+.panel-list .panel-item-h2 {
+    padding-left: 0.75rem;
+    font-weight: 500;
+}
+
+.panel-list .panel-item-h3 {
+    padding-left: 1.25rem;
+    font-size: 0.8125rem;
+}
+
+.panel-list .panel-item-h4 {
+    padding-left: 1.75rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #94a3b8);
+}
+
+/* Keep font-weight for active state regardless of heading level */
+.panel-list .panel-item-h1.active,
+.panel-list .panel-item-h2.active,
+.panel-list .panel-item-h3.active,
+.panel-list .panel-item-h4.active {
+    font-weight: 600;
+    color: var(--color-brand-primary, #3b82f6);
+}
+
+/* Smooth scroll behavior for nav panels */
+.nav-panel .panel-list,
+.quick-panel .panel-list {
+    scroll-behavior: smooth;
+}
+
+/* Panel scrollbar styling */
+.nav-panel,
+.quick-panel {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border, #e2e8f0) transparent;
+}
+
+.nav-panel::-webkit-scrollbar,
+.quick-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nav-panel::-webkit-scrollbar-track,
+.quick-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.nav-panel::-webkit-scrollbar-thumb,
+.quick-panel::-webkit-scrollbar-thumb {
+    background: var(--color-border, #e2e8f0);
+    border-radius: 3px;
+}
+
+.nav-panel::-webkit-scrollbar-thumb:hover,
+.quick-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted, #94a3b8);
+}
