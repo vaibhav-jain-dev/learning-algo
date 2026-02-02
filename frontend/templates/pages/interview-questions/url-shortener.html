@@ -1177,6 +1177,207 @@ cache_hit_ratio 0.95
   annotations:
     summary: "High 5xx error rate detected"</pre>
         </div>
+
+        <!-- EDGE CASES -->
+        <div class="edge-cases">
+            <h4>Edge Cases & Error Handling</h4>
+
+            <div class="edge-case-item">
+                <div class="case-title">Short Code Collision (Two URLs get same code)</div>
+                <p>When using counter-based or random generation, collisions can occur especially at scale.</p>
+                <div class="case-solution">Use DB UNIQUE constraint + retry with new code. For random: P(collision) = 1/62^7 ≈ 0.00000003%. For counter: Use distributed counter (Redis INCR) or pre-allocate ranges per server.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Malicious URLs (Phishing, Malware)</div>
+                <p>Attackers use short URLs to hide malicious destinations.</p>
+                <div class="case-solution">Integrate Google Safe Browsing API (async check). Queue suspicious URLs for manual review. Show interstitial warning page for flagged URLs. Rate limit creates per IP.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redis Cache Miss Storm</div>
+                <p>When cache expires, all requests hit DB simultaneously (thundering herd).</p>
+                <div class="case-solution">Use probabilistic early expiration (add random jitter to TTL). Implement cache stampede protection with mutex/singleflight. Warm cache proactively for popular URLs.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">URL Expiration Race Condition</div>
+                <p>User clicks expired URL exactly when it's being deleted.</p>
+                <div class="case-solution">Soft delete with grace period. Check expiry at read time, not via cron job. Return 410 Gone (not 404) for expired URLs with message.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Database Connection Exhaustion</div>
+                <p>Under high load, connection pool depletes causing cascading failures.</p>
+                <div class="case-solution">Use <span class="info-term">PgBouncer<span class="info-i">i</span></span> connection pooler. Set max connections with queue. Implement circuit breaker. Monitor pool utilization in Grafana.</div>
+            </div>
+
+            <div class="edge-case-item">
+                <div class="case-title">Redirect Loop Attack</div>
+                <p>short.ly/a → short.ly/b → short.ly/a creates infinite loop.</p>
+                <div class="case-solution">Block creation if target URL contains own domain. Limit redirect chain depth (max 5 hops). Detect and break loops at redirect time.</div>
+            </div>
+        </div>
+
+        <!-- FUTURE ASPECTS -->
+        <div class="future-aspects">
+            <h4>Future Enhancements</h4>
+
+            <div class="future-item">
+                <div class="future-title">QR Code Generation</div>
+                <p>Auto-generate QR codes for each short URL for offline-to-online use cases.</p>
+                <div class="future-approach">Generate QR on-demand (not pre-computed). Use library like go-qrcode. Cache generated QR images in S3/CloudFront. Support custom colors and logo embedding.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Link-in-Bio Pages</div>
+                <p>Allow users to create profile pages with multiple links (like Linktree).</p>
+                <div class="future-approach">New `bio_pages` table with user_id, theme, links JSON array. Serve from /bio/:username. Add drag-drop link ordering. Support custom themes.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">A/B Testing for Links</div>
+                <p>Split traffic between multiple destinations to test conversion.</p>
+                <div class="future-approach">Add `ab_variants` table with percentages. At redirect time, randomly select variant based on weights. Track conversion with webhook callbacks.</div>
+            </div>
+
+            <div class="future-item">
+                <div class="future-title">Deep Link Support (Mobile Apps)</div>
+                <p>Redirect to app if installed, fallback to web.</p>
+                <div class="future-approach">Detect User-Agent for mobile. Try app scheme (myapp://path) first. Use Universal Links (iOS) / App Links (Android). Fallback to web after timeout.</div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW FOLLOW-UP FEATURES -->
+        <div class="followup-features">
+            <h4>Interview Follow-Up Questions</h4>
+
+            <div class="followup-item">
+                <div class="followup-number">1</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you handle 301 vs 302 redirects? When to use each?</div>
+                    <div class="followup-hint">301 (permanent) = browsers cache, good for SEO. 302 (temporary) = no cache, needed for analytics tracking, A/B tests, or when URL might change.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">2</div>
+                <div class="followup-content">
+                    <div class="followup-question">How do you prevent abuse? (spam, phishing, bot attacks)</div>
+                    <div class="followup-hint">Rate limiting (token bucket), CAPTCHA for suspicious IPs, Safe Browsing API integration, domain blocklist, require account for bulk creation.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">3</div>
+                <div class="followup-content">
+                    <div class="followup-question">How would you implement private/password-protected URLs?</div>
+                    <div class="followup-hint">Add `password_hash` column. Show password form before redirect. Store in session to avoid re-prompting. Consider time-limited access tokens instead.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">4</div>
+                <div class="followup-content">
+                    <div class="followup-question">Design click fraud detection for analytics</div>
+                    <div class="followup-hint">Track fingerprint (IP + UA + timing). Detect bot patterns (no JS, unusual timing). Count unique vs total clicks. Flag suspicious spikes. Use ML for anomaly detection.</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">5</div>
+                <div class="followup-content">
+                    <div class="followup-question">How to handle URL shortener for internal enterprise use?</div>
+                    <div class="followup-hint">SSO integration (SAML/OIDC). Namespace per team. Audit logging. Private network deployment. Custom domain per department. Compliance (GDPR, SOC2).</div>
+                </div>
+            </div>
+
+            <div class="followup-item">
+                <div class="followup-number">6</div>
+                <div class="followup-content">
+                    <div class="followup-question">What if you need to support 10 billion URLs?</div>
+                    <div class="followup-hint">Increase code length (8 chars = 218 trillion). Use consistent hashing for sharding. Consider Cassandra/ScyllaDB for write-heavy. Pre-generate code ranges.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY FLOW DIAGRAM -->
+        <div class="summary-flow">
+            <h4>MVP Stage - Complete Request Flow</h4>
+            <div class="flow-vertical">
+                <!-- Create Flow -->
+                <div style="width: 100%; margin-bottom: 24px;">
+                    <div style="text-align: center; font-weight: 700; color: #166534; margin-bottom: 12px;">CREATE SHORT URL FLOW</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Client<br><small>POST /shorten</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">ALB<br><small>SSL terminate</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API Server<br><small>Validate URL</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">Generate<br><small>Base62 code</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node db">PostgreSQL<br><small>INSERT</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>SET + TTL</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">Response<br><small>short.ly/abc</small></div>
+                    </div>
+                </div>
+
+                <!-- Redirect Flow -->
+                <div style="width: 100%;">
+                    <div style="text-align: center; font-weight: 700; color: #1e40af; margin-bottom: 12px;">REDIRECT FLOW (95% of traffic)</div>
+                    <div class="flow-row">
+                        <div class="flow-node user">Client<br><small>GET /abc123</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node gateway">ALB</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node service">API Server</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node cache">Redis<br><small>GET (95% hit)</small></div>
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="flow-arrow">→</div>
+                            <span class="flow-arrow-label">cache miss</span>
+                        </div>
+                        <div class="flow-node db">PostgreSQL<br><small>SELECT</small></div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-node user">301 Redirect<br><small>+ async analytics</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DB EVOLUTION -->
+        <div class="db-evolution">
+            <h4>Database Evolution Across Stages</h4>
+            <div class="evolution-timeline">
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌱</div>
+                    <div class="evolution-label">MVP</div>
+                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-detail">Single primary<br>Multi-AZ standby</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🇮🇳</div>
+                    <div class="evolution-label">PAN-India</div>
+                    <div class="evolution-db">PostgreSQL + Replica</div>
+                    <div class="evolution-detail">Read replicas<br>Cross-region</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">⚡</div>
+                    <div class="evolution-label">High Traffic</div>
+                    <div class="evolution-db">Sharded PostgreSQL</div>
+                    <div class="evolution-detail">4 shards by code prefix<br>Vitess/Citus</div>
+                </div>
+                <div class="evolution-stage">
+                    <div class="evolution-icon">🌍</div>
+                    <div class="evolution-label">Global</div>
+                    <div class="evolution-db">CockroachDB</div>
+                    <div class="evolution-detail">Distributed SQL<br>Auto-sharding</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================ -->
