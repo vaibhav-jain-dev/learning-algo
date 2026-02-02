@@ -144,7 +144,7 @@
 │   └── shortcode/              # Base62 encoding
 └── config/</pre>
             </div>
-            <p style="font-size: 14px; color: #64748b;">Each module has clear boundaries. When ready to split, extract analytics/ as separate service with Kafka events.</p>
+            <p style="font-size: 14px; color: #64748b;">Each module has clear boundaries. When ready to split, extract analytics/ as separate service with <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> events.</p>
         </div>
 
         <!-- DOMAIN MODEL -->
@@ -244,7 +244,7 @@
 
                 <!-- Async Path -->
                 <div style="border: 2px solid #ec4899; border-radius: 12px; padding: 20px;">
-                    <h5 style="color: #ec4899; margin: 0 0 16px 0;">📬 Asynchronous (Kafka) - Analytics Path</h5>
+                    <h5 style="color: #ec4899; margin: 0 0 16px 0;">📬 Asynchronous (<a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a>) - Analytics Path</h5>
                     <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
                         <div class="arch-box server" style="padding: 10px;">URL Service</div>
                         <div class="arch-arrow">publish</div>
@@ -260,7 +260,7 @@
         </div>
 
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">Kafka Event Schema (Avro/JSON)</h5>
+            <h5 style="color: #60a5fa; margin-bottom: 12px;"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> Event Schema (Avro/JSON)</h5>
 <pre>{
     "event_type": "url.clicked",
     "event_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -395,7 +395,7 @@ consumer.Subscribe("click-events", func(event ClickEvent) {
         <!-- DATABASE SCHEMA -->
         <h3>🗄️ Database Schema</h3>
         <div class="diagram-container">
-            <h4>PostgreSQL Schema with Relationships</h4>
+            <h4><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> Schema with Relationships</h4>
             <div class="schema-diagram">
                 <div class="schema-table">
                     <div class="schema-table-header">📦 users</div>
@@ -540,7 +540,7 @@ Errors:
         <h3>🔀 Database Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ PostgreSQL (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> (Selected)</h5>
                 <p>ACID compliance, robust indexing, proven at scale</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -561,7 +561,7 @@ Errors:
                     </div>
                 </div>
                 <div style="background: #fef3c7; padding: 10px; border-radius: 6px; font-size: 13px;">
-                    <strong>⚠️ Care:</strong> Configure PgBouncer from day 1. Set autovacuum_vacuum_scale_factor = 0.1
+                    <strong>⚠️ Care:</strong> Configure <a href="/interview-question/glossary#pgbouncer" class="info-term">PgBouncer<span class="info-i">i</span></a> from day 1. Set autovacuum_vacuum_scale_factor = 0.1
                 </div>
             </div>
 
@@ -598,7 +598,7 @@ Errors:
         <h3>🔀 Cache Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Redis / ElastiCache (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> / ElastiCache (Selected)</h5>
                 <p>In-memory, sub-ms latency</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> O(1) GET/SET operations<br>
@@ -620,8 +620,8 @@ Errors:
             </div>
 
             <div class="alternative-card">
-                <h5>Local Cache + CDN</h5>
-                <p>Edge caching with CloudFront</p>
+                <h5>Local Cache + <a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a></h5>
+                <p>Edge caching with <a href="/interview-question/glossary#cdn" class="info-term">CloudFront<span class="info-i">i</span></a></p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Lowest latency (edge)</li>
                     <span style="color: #22c55e;">✓</span> Offloads origin 95%+<br>
@@ -640,7 +640,7 @@ Errors:
             </div>
             <div class="pattern-card">
                 <h5>Strategy Pattern</h5>
-                <p>Short code generation. Base62Strategy, MD5Strategy, NanoIDStrategy. Switch via config.</p>
+                <p>Short code generation. <a href="/interview-question/glossary#base62" class="info-term">Base62<span class="info-i">i</span></a>Strategy, MD5Strategy, NanoIDStrategy. Switch via config.</p>
             </div>
             <div class="pattern-card">
                 <h5>Cache-Aside Pattern</h5>
@@ -653,7 +653,7 @@ Errors:
         </div>
 
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">Short Code Generation - Base62</h5>
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Short Code Generation - <a href="/interview-question/glossary#base62" class="info-term">Base62<span class="info-i">i</span></a></h5>
 <pre>const ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 func GenerateShortCode(id int64) string {
@@ -700,7 +700,7 @@ func GenerateShortCode(id int64) string {
                         <td>$25</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">ALB</span> Load Balancer</td>
+                        <td><span class="cost-tag aws">ALB</span> <a href="/interview-question/glossary#load-balancer" class="info-term">Load Balancer<span class="info-i">i</span></a></td>
                         <td>Application LB + 1M requests</td>
                         <td>$30</td>
                     </tr>
@@ -966,7 +966,7 @@ spec:
         </div>
 
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">Redis Token Bucket Implementation</h5>
+            <h5 style="color: #60a5fa; margin-bottom: 12px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Token Bucket Implementation</h5>
 <pre>-- Lua script for atomic token bucket
 local key = KEYS[1]
 local capacity = tonumber(ARGV[1])      -- Max tokens (burst)
@@ -1016,7 +1016,7 @@ Retry-After: 45
         <h3>🚧 Traffic Management</h3>
         <div class="feature-card">
             <h4>Circuit Breaker Pattern</h4>
-            <p>Prevent cascade failures when downstream services (DB, Redis) are degraded.</p>
+            <p>Prevent cascade failures when downstream services (DB, <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a>) are degraded.</p>
             <div class="diagram-container" style="margin: 16px 0; background: white;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
                     <div style="text-align: center; padding: 16px; border: 2px solid #22c55e; border-radius: 12px;">
@@ -1049,7 +1049,7 @@ Retry-After: 45
             </div>
             <div class="alternative-card">
                 <h5>Graceful Degradation</h5>
-                <p>When Redis is down:</p>
+                <p>When <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> is down:</p>
                 <ol style="font-size: 14px; margin-top: 8px;">
                     <li>Fallback to PostgreSQL directly</li>
                     <li>Accept higher latency (50ms → 200ms)</li>
@@ -1062,7 +1062,7 @@ Retry-After: 45
                 <ol style="font-size: 14px; margin-top: 8px;">
                     <li>Queue depth > 1000 → 503 to new requests</li>
                     <li>Connection pool exhausted → wait with timeout</li>
-                    <li>Kafka lag > 10k → pause consumers</li>
+                    <li><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> lag > 10k → pause consumers</li>
                 </ol>
             </div>
         </div>
@@ -1195,7 +1195,7 @@ cache_hit_ratio 0.95
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title">Redis Cache Miss Storm</div>
+                <div class="case-title"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cache Miss Storm</div>
                 <p>When cache expires, all requests hit DB simultaneously (thundering herd).</p>
                 <div class="case-solution">Use probabilistic early expiration (add random jitter to TTL). Implement cache stampede protection with mutex/singleflight. Warm cache proactively for popular URLs.</div>
             </div>
@@ -1209,7 +1209,7 @@ cache_hit_ratio 0.95
             <div class="edge-case-item">
                 <div class="case-title">Database Connection Exhaustion</div>
                 <p>Under high load, connection pool depletes causing cascading failures.</p>
-                <div class="case-solution">Use <span class="info-term">PgBouncer<span class="info-i">i</span></span> connection pooler. Set max connections with queue. Implement circuit breaker. Monitor pool utilization in Grafana.</div>
+                <div class="case-solution">Use <a href="/interview-question/glossary#pgbouncer" class="info-term">PgBouncer<span class="info-i">i</span></a> connection pooler. Set max connections with queue. Implement circuit breaker. Monitor pool utilization in Grafana.</div>
             </div>
 
             <div class="edge-case-item">
@@ -1484,19 +1484,19 @@ cache_hit_ratio 0.95
 
             <div class="edge-case-item">
                 <div class="case-title">CDN Cache Invalidation Delays</div>
-                <p><span class="info-term" onclick="showTooltip('cloudfront')">CloudFront<span class="info-i">i</span></span> edge locations take 5-10 minutes to invalidate cached redirects.</p>
+                <p><a href="/interview-question/glossary#cdn" class="info-term">CloudFront<span class="info-i">i</span></a> edge locations take 5-10 minutes to invalidate cached redirects.</p>
                 <div class="case-solution">Use versioned short codes for updated URLs. Implement cache-busting query params for admin updates. Set reasonable TTLs (1 hour) balancing freshness vs origin load. Use invalidation API for critical updates only (1000 free/month).</div>
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title"><span class="info-term" onclick="showTooltip('route53')">Route 53<span class="info-i">i</span></span> Failover Delays</div>
+                <div class="case-title">Route 53 Failover Delays</div>
                 <p>Health check interval (10s) + failover propagation (30s) = up to 40s of failed requests during region outage.</p>
                 <div class="case-solution">Set health check interval to minimum (10s). Use fast failover policy. Implement client-side retry with exponential backoff. Consider active-active with both regions always serving traffic.</div>
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title">Redis Cross-Region Sync Conflicts</div>
-                <p><span class="info-term" onclick="showTooltip('elasticache')">ElastiCache<span class="info-i">i</span></span> Global Datastore may have write conflicts when same key updated in both regions.</p>
+                <div class="case-title"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cross-Region Sync Conflicts</div>
+                <p>ElastiCache Global Datastore may have write conflicts when same key updated in both regions.</p>
                 <div class="case-solution">Designate one region as primary for writes. Use last-writer-wins for cache (acceptable for URL lookups). For counters, use CRDT-based approach or aggregate in analytics pipeline.</div>
             </div>
         </div>
@@ -1629,7 +1629,7 @@ cache_hit_ratio 0.95
                 <tr>
                     <td><strong>2. Counter Updates</strong></td>
                     <td>click_count UPDATE on every request</td>
-                    <td style="color: #22c55e;"><strong>→ Async via Kafka + batch writes</strong></td>
+                    <td style="color: #22c55e;"><strong>→ Async via <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> + batch writes</strong></td>
                 </tr>
                 <tr>
                     <td><strong>3. Short Code Gen</strong></td>
@@ -1680,7 +1680,7 @@ cache_hit_ratio 0.95
         <h3>🔀 Message Queue Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Amazon MSK (Kafka)</h5>
+                <h5>✅ Amazon MSK (<a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a>)</h5>
                 <p>High throughput, ordering guarantees</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Millions msg/sec<br>
@@ -1969,20 +1969,20 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
             <h4>Edge Cases & Error Handling</h4>
 
             <div class="edge-case-item">
-                <div class="case-title">Kafka Consumer Lag</div>
-                <p><span class="info-term" onclick="showTooltip('msk')">Amazon MSK<span class="info-i">i</span></span> consumers fall behind during traffic spikes, causing delayed analytics.</p>
+                <div class="case-title"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> Consumer Lag</div>
+                <p>Amazon MSK consumers fall behind during traffic spikes, causing delayed analytics.</p>
                 <div class="case-solution">Auto-scale consumer pods based on lag metric. Set up dead-letter queue for failed messages. Implement backpressure in producers. Monitor consumer group lag in Kafka UI/Datadog.</div>
             </div>
 
             <div class="edge-case-item">
                 <div class="case-title">Sharding Hot Spots</div>
                 <p>Short codes starting with popular letters (a-f) get disproportionate traffic, overloading specific shards.</p>
-                <div class="case-solution">Use consistent hashing instead of range-based sharding. Implement virtual nodes (256 per physical shard). Monitor per-shard QPS and auto-rebalance. Consider <span class="info-term" onclick="showTooltip('vitess')">Vitess<span class="info-i">i</span></span> for automatic resharding.</div>
+                <div class="case-solution">Use <a href="/interview-question/glossary#consistent-hashing" class="info-term">consistent hashing<span class="info-i">i</span></a> instead of range-based sharding. Implement virtual nodes (256 per physical shard). Monitor per-shard QPS and auto-rebalance. Consider Vitess for automatic resharding.</div>
             </div>
 
             <div class="edge-case-item">
-                <div class="case-title">Rate Limiter Redis Failure</div>
-                <p><span class="info-term" onclick="showTooltip('elasticache')">ElastiCache<span class="info-i">i</span></span> cluster used for rate limiting goes down, allowing potential abuse.</p>
+                <div class="case-title">Rate Limiter <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Failure</div>
+                <p>ElastiCache cluster used for rate limiting goes down, allowing potential abuse.</p>
                 <div class="case-solution">Fail-open with in-memory fallback (per-pod limiting). Use Redis Sentinel for auto-failover. Implement circuit breaker pattern. Have backup rate limiting at API Gateway level (less accurate but functional).</div>
             </div>
 
@@ -2006,7 +2006,7 @@ func (s *URLService) CreateShortURL(ctx context.Context, req CreateRequest) (*UR
             <div class="future-item">
                 <div class="future-title">Real-Time Analytics Dashboard</div>
                 <p>Live dashboard showing clicks, geographic distribution, and referrer data with &lt;5s latency.</p>
-                <div class="future-approach">Kafka Streams for real-time aggregation. Apache Druid or ClickHouse for OLAP queries. WebSocket push to dashboard. Pre-aggregate common metrics (hourly/daily rollups).</div>
+                <div class="future-approach"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> Streams for real-time aggregation. Apache Druid or ClickHouse for OLAP queries. WebSocket push to dashboard. Pre-aggregate common metrics (hourly/daily rollups).</div>
             </div>
 
             <div class="future-item">

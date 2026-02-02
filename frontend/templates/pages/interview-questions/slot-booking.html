@@ -80,11 +80,11 @@
                 <!-- Layer 4: Data + Integrations -->
                 <div style="display: flex; gap: 40px; align-items: flex-start;">
                     <div style="text-align: center;">
-                        <div class="arch-box cache">Redis<br><small>Slot locks + queue</small></div>
+                        <div class="arch-box cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br><small>Slot locks + queue</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Reminder queue<br>Distributed locks</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box db">PostgreSQL<br><small>db.t3.medium</small></div>
+                        <div class="arch-box db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>db.t3.medium</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">ACID transactions<br>Optimistic locking</div>
                     </div>
                     <div style="text-align: center;">
@@ -113,7 +113,7 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">3</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">JOIN slots + bookings</div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -149,19 +149,19 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">3</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">SELECT FOR UPDATE</div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">4</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">INSERT booking</div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">5</div>
-                    <div class="arch-box queue" style="padding: 10px 16px;">Redis</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">Queue reminder</div>
                 </div>
             </div>
@@ -182,19 +182,19 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">2</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">UPDATE status=cancelled</div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">3</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">Check waitlist</div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">4</div>
-                    <div class="arch-box queue" style="padding: 10px 16px;">Redis</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">Notify waitlist user</div>
                 </div>
             </div>
@@ -212,7 +212,7 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">2</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">SELECT first waitlist</div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -224,7 +224,7 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">4</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">15min hold</div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -239,7 +239,7 @@
         <!-- DATABASE SCHEMA -->
         <h3>Database Schema</h3>
         <div class="diagram-container">
-            <h4>PostgreSQL Schema with Relationships</h4>
+            <h4><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> Schema with Relationships</h4>
             <div class="schema-diagram">
                 <div class="schema-table">
                     <div class="schema-table-header">resources</div>
@@ -539,13 +539,13 @@ Query: ?date=2024-01-15&timezone=Asia/Kolkata
 
 Response: 200 OK
 {
-    "resource_id": "uuid",
-    "date": "2024-01-15",
-    "timezone": "Asia/Kolkata",
-    "slots": [
-        { "id": "uuid", "start": "09:00", "end": "09:30", "status": "available" },
-        { "id": "uuid", "start": "09:30", "end": "10:00", "status": "booked" },
-        { "id": "uuid", "start": "10:00", "end": "10:30", "status": "available", "waitlist_count": 0 }
+    <span class="json-key">"resource_id"</span>: <span class="json-string">"uuid"</span>,
+    <span class="json-key">"date"</span>: <span class="json-string">"2024-01-15"</span>,
+    <span class="json-key">"timezone"</span>: <span class="json-string">"Asia/Kolkata"</span>,
+    <span class="json-key">"slots"</span>: [
+        { <span class="json-key">"id"</span>: <span class="json-string">"uuid"</span>, <span class="json-key">"start"</span>: <span class="json-string">"09:00"</span>, <span class="json-key">"end"</span>: <span class="json-string">"09:30"</span>, <span class="json-key">"status"</span>: <span class="json-string">"available"</span> },
+        { <span class="json-key">"id"</span>: <span class="json-string">"uuid"</span>, <span class="json-key">"start"</span>: <span class="json-string">"09:30"</span>, <span class="json-key">"end"</span>: <span class="json-string">"10:00"</span>, <span class="json-key">"status"</span>: <span class="json-string">"booked"</span> },
+        { <span class="json-key">"id"</span>: <span class="json-string">"uuid"</span>, <span class="json-key">"start"</span>: <span class="json-string">"10:00"</span>, <span class="json-key">"end"</span>: <span class="json-string">"10:30"</span>, <span class="json-key">"status"</span>: <span class="json-string">"available"</span>, <span class="json-key">"waitlist_count"</span>: <span class="json-number">0</span> }
     ]
 }
 
@@ -559,24 +559,24 @@ Errors:
 <pre>
 Request:
 {
-    "slot_id": "uuid",
-    "notes": "Annual checkup",
-    "reminders": ["email", "sms"],
-    "calendar_sync": "google"  // optional
+    <span class="json-key">"slot_id"</span>: <span class="json-string">"uuid"</span>,
+    <span class="json-key">"notes"</span>: <span class="json-string">"Annual checkup"</span>,
+    <span class="json-key">"reminders"</span>: [<span class="json-string">"email"</span>, <span class="json-string">"sms"</span>],
+    <span class="json-key">"calendar_sync"</span>: <span class="json-string">"google"</span>  <span class="json-comment">// optional</span>
 }
 
 Response: 201 Created
 {
-    "booking_id": "uuid",
-    "confirmation_code": "ABC123",
-    "status": "confirmed",
-    "slot": {
-        "resource_name": "Dr. Smith",
-        "start_time": "2024-01-15T09:00:00Z",
-        "end_time": "2024-01-15T09:30:00Z"
+    <span class="json-key">"booking_id"</span>: <span class="json-string">"uuid"</span>,
+    <span class="json-key">"confirmation_code"</span>: <span class="json-string">"ABC123"</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"confirmed"</span>,
+    <span class="json-key">"slot"</span>: {
+        <span class="json-key">"resource_name"</span>: <span class="json-string">"Dr. Smith"</span>,
+        <span class="json-key">"start_time"</span>: <span class="json-string">"2024-01-15T09:00:00Z"</span>,
+        <span class="json-key">"end_time"</span>: <span class="json-string">"2024-01-15T09:30:00Z"</span>
     },
-    "reminders_scheduled": 2,
-    "calendar_event_id": "google_event_123"
+    <span class="json-key">"reminders_scheduled"</span>: <span class="json-number">2</span>,
+    <span class="json-key">"calendar_event_id"</span>: <span class="json-string">"google_event_123"</span>
 }
 
 Errors:
@@ -590,10 +590,10 @@ Errors:
 <pre>
 Response: 200 OK
 {
-    "status": "cancelled",
-    "cancellation_time": "2024-01-14T10:00:00Z",
-    "refund_eligible": true,
-    "waitlist_notified": true
+    <span class="json-key">"status"</span>: <span class="json-string">"cancelled"</span>,
+    <span class="json-key">"cancellation_time"</span>: <span class="json-string">"2024-01-14T10:00:00Z"</span>,
+    <span class="json-key">"refund_eligible"</span>: <span class="json-boolean">true</span>,
+    <span class="json-key">"waitlist_notified"</span>: <span class="json-boolean">true</span>
 }
 
 Errors:
@@ -607,10 +607,10 @@ Errors:
 <pre>
 Response: 201 Created
 {
-    "waitlist_id": "uuid",
-    "position": 3,
-    "estimated_wait": "unlikely",
-    "notification_preference": "email"
+    <span class="json-key">"waitlist_id"</span>: <span class="json-string">"uuid"</span>,
+    <span class="json-key">"position"</span>: <span class="json-number">3</span>,
+    <span class="json-key">"estimated_wait"</span>: <span class="json-string">"unlikely"</span>,
+    <span class="json-key">"notification_preference"</span>: <span class="json-string">"email"</span>
 }
 
 Errors:
@@ -661,12 +661,12 @@ Errors:
             </div>
 
             <div class="alternative-card">
-                <h5>Redis Distributed Lock</h5>
+                <h5><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Distributed Lock</h5>
                 <p>SETNX with TTL before DB operation</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">+</span> Works across multiple DB instances<br>
                     <span style="color: #22c55e;">+</span> Sub-ms lock acquisition<br>
-                    <span style="color: #ef4444;">-</span> Redis as SPOF<br>
+                    <span style="color: #ef4444;">-</span> <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> as SPOF<br>
                     <span style="color: #ef4444;">-</span> Lock expiry edge cases
                 </div>
                 <div style="background: #eff6ff; padding: 8px; border-radius: 6px; font-size: 12px; margin-top: 8px;">
@@ -679,7 +679,7 @@ Errors:
         <h3>Database Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>PostgreSQL (Selected)</h5>
+                <h5><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> (Selected)</h5>
                 <p>ACID compliance, robust locking primitives</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -736,7 +736,7 @@ Errors:
         <h3>Queue Alternatives (Reminders)</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>Redis (Selected)</h5>
+                <h5><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> (Selected)</h5>
                 <p>Sorted sets for scheduled reminders</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -772,7 +772,7 @@ Errors:
             </div>
 
             <div class="alternative-card">
-                <h5>Apache Kafka</h5>
+                <h5>Apache <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></h5>
                 <p>Event streaming, replay capability</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">+</span> Event sourcing for bookings<br>
@@ -791,7 +791,7 @@ Errors:
         <div class="patterns-grid">
             <div class="pattern-card">
                 <h5>Repository Pattern</h5>
-                <p>Abstract slot/booking persistence. SlotRepository, BookingRepository interfaces. Swap PostgreSQL for DynamoDB without service changes.</p>
+                <p>Abstract slot/booking persistence. SlotRepository, BookingRepository interfaces. Swap <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> for DynamoDB without service changes.</p>
             </div>
             <div class="pattern-card">
                 <h5>Unit of Work Pattern</h5>
@@ -875,7 +875,7 @@ if (result.rowCount === 0) {
         </div>
 
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">Redis Distributed Lock - Lua Script</h5>
+            <h5 style="color: #60a5fa; margin-bottom: 12px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Distributed Lock - Lua Script</h5>
 <pre>-- Atomic lock acquisition with Lua
 local key = KEYS[1]
 local token = ARGV[1]
@@ -987,92 +987,38 @@ try {
 
         <div class="code-example">
             <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml (API + Reminder Worker)</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: booking-api
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: booking-api
-  template:
-    spec:
-      containers:
-      - name: api
-        image: booking-api:v1.0.0
-        ports:
-        - containerPort: 3000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-creds
-              key: url
-        - name: REDIS_URL
-          valueFrom:
-            secretKeyRef:
-              name: redis-creds
-              key: url
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
+<pre><span class="yaml-comment"># booking-api Deployment</span>
+<span class="yaml-key">apiVersion</span>: apps/v1
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: booking-api
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">replicas</span>: <span class="yaml-value">2</span>
+  <span class="yaml-key">template</span>:
+    <span class="yaml-key">containers</span>:
+    - <span class="yaml-key">image</span>: booking-api:v1.0.0
+      <span class="yaml-key">ports</span>: [<span class="yaml-value">3000</span>]
+      <span class="yaml-key">envFrom</span>: [secretRef: db-creds, redis-creds]
+      <span class="yaml-key">resources</span>: { cpu: 250m-500m, mem: 256Mi-512Mi }
+      <span class="yaml-key">readinessProbe</span>: /health
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: reminder-worker
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: reminder-worker
-  template:
-    spec:
-      containers:
-      - name: worker
-        image: booking-api:v1.0.0
-        command: ["node", "worker/reminder.js"]
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-creds
-              key: url
-        - name: SES_REGION
-          value: "ap-south-1"
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
+<span class="yaml-comment"># reminder-worker Deployment</span>
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: reminder-worker
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">replicas</span>: <span class="yaml-value">1</span>
+  <span class="yaml-key">template</span>:
+    <span class="yaml-key">containers</span>:
+    - <span class="yaml-key">command</span>: ["node", "worker/reminder.js"]
+      <span class="yaml-key">resources</span>: { cpu: 100m, mem: 128Mi }
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: booking-api-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: booking-api
-  minReplicas: 2
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70</pre>
+<span class="yaml-comment"># HorizontalPodAutoscaler</span>
+<span class="yaml-key">kind</span>: HorizontalPodAutoscaler
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">scaleTargetRef</span>: booking-api
+  <span class="yaml-key">minReplicas</span>: <span class="yaml-value">2</span> | <span class="yaml-key">maxReplicas</span>: <span class="yaml-value">10</span>
+  <span class="yaml-key">metrics</span>: cpu @ <span class="yaml-value">70%</span> utilization</pre>
         </div>
 
         <!-- CI/CD -->
@@ -1287,13 +1233,13 @@ const dates = rule.between(startDate, endDate);</pre>
                         <div class="flow-arrow">-></div>
                         <div class="flow-node service">API Server<br><small>BEGIN TXN</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node db">PostgreSQL<br><small>SELECT FOR UPDATE</small></div>
+                        <div class="flow-node db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>SELECT FOR UPDATE</small></div>
                         <div class="flow-arrow">-></div>
                         <div class="flow-node service">Check<br><small>status=available?</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node db">PostgreSQL<br><small>UPDATE + INSERT</small></div>
+                        <div class="flow-node db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>UPDATE + INSERT</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node cache">Redis<br><small>Queue reminder</small></div>
+                        <div class="flow-node cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br><small>Queue reminder</small></div>
                     </div>
                 </div>
 
@@ -1307,7 +1253,7 @@ const dates = rule.between(startDate, endDate);</pre>
                         <div class="flow-arrow">-></div>
                         <div class="flow-node user">User Arrives<br><small>Check-in</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node db">PostgreSQL<br><small>status=completed</small></div>
+                        <div class="flow-node db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>status=completed</small></div>
                         <div class="flow-arrow">-></div>
                         <div class="flow-node service">Analytics<br><small>Track metrics</small></div>
                     </div>
@@ -1331,21 +1277,21 @@ const dates = rule.between(startDate, endDate);</pre>
                 <div class="evolution-stage">
                     <div class="evolution-icon mvp">MVP</div>
                     <div class="evolution-label">MVP</div>
-                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">SELECT FOR UPDATE<br>Optimistic locking<br>Single primary</div>
                 </div>
                 <div class="evolution-arrow">-></div>
                 <div class="evolution-stage">
                     <div class="evolution-icon pan-india">PAN</div>
                     <div class="evolution-label">PAN-India</div>
-                    <div class="evolution-db">PostgreSQL + Redis Lock</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Lock</div>
                     <div class="evolution-detail">Distributed lock<br>SETNX with TTL<br>Read replicas</div>
                 </div>
                 <div class="evolution-arrow">-></div>
                 <div class="evolution-stage">
                     <div class="evolution-icon high-traffic">HT</div>
                     <div class="evolution-label">High Traffic</div>
-                    <div class="evolution-db">Redis + Sharded PG</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> + Sharded PG</div>
                     <div class="evolution-detail">Virtual queue<br>Pre-lock in Redis<br>Then persist to DB</div>
                 </div>
                 <div class="evolution-arrow">-></div>
@@ -1633,9 +1579,9 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
                         <div class="flow-arrow">-></div>
                         <div class="flow-node service">API Server<br><small>SET app.tenant</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node db">PostgreSQL<br><small>RLS filter</small></div>
+                        <div class="flow-node db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>RLS filter</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node cache">Redis<br><small>tenant:slot:lock</small></div>
+                        <div class="flow-node cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br><small>tenant:slot:lock</small></div>
                     </div>
                 </div>
 
@@ -1657,7 +1603,7 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
             </div>
 
             <div style="margin-top: 20px; padding: 16px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
-                <strong>Redis Distributed Lock (Multi-Region):</strong>
+                <strong><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Distributed Lock (Multi-Region):</strong>
                 <div style="font-family: monospace; font-size: 13px; margin-top: 8px;">
                     1. SETNX tenant:{tenant_id}:slot:{slot_id}:lock {request_id} EX 30<br>
                     2. If acquired: Proceed with DB transaction<br>
@@ -1673,14 +1619,14 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
                 <div class="evolution-stage">
                     <div class="evolution-icon mvp">MVP</div>
                     <div class="evolution-label">Single Tenant</div>
-                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">No tenant_id<br>Simple queries<br>db.t3.medium</div>
                 </div>
                 <div class="evolution-arrow">-></div>
                 <div class="evolution-stage">
                     <div class="evolution-icon pan-india">PAN</div>
                     <div class="evolution-label">Multi-Tenant</div>
-                    <div class="evolution-db">PostgreSQL + RLS</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + RLS</div>
                     <div class="evolution-detail">tenant_id on all tables<br>Row-Level Security<br>Read replicas</div>
                 </div>
                 <div class="evolution-arrow">-></div>
@@ -1771,7 +1717,7 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
                 <div class="arch-arrow">↓</div>
                 <div class="arch-box cdn">CloudFront + WAF<br><small>Rate limiting, DDoS protection</small></div>
                 <div class="arch-arrow">↓</div>
-                <div class="arch-box gateway">Virtual Queue<br><small>Redis Sorted Set</small></div>
+                <div class="arch-box gateway">Virtual Queue<br><small><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Sorted Set</small></div>
                 <div class="arch-arrow">↓ (batch of 100)</div>
                 <div class="arch-box lb">NLB (Layer 4)</div>
                 <div class="arch-arrow">↓</div>
@@ -1783,15 +1729,15 @@ SET app.current_tenant = 'tenant-uuid-here';</pre>
                 </div>
                 <div class="arch-arrow">↓</div>
                 <div style="display: flex; gap: 40px;">
-                    <div class="arch-box cache">Redis Cluster<br><small>Slot locks + queue</small></div>
-                    <div class="arch-box db">PostgreSQL<br><small>With PgBouncer</small></div>
+                    <div class="arch-box cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Cluster<br><small>Slot locks + queue</small></div>
+                    <div class="arch-box db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>With PgBouncer</small></div>
                 </div>
             </div>
         </div>
 
         <h3>Virtual Waiting Room</h3>
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">Redis-based Queue Implementation</h5>
+            <h5 style="color: #60a5fa; margin-bottom: 12px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a>-based Queue Implementation</h5>
 <pre>// User enters queue
 const position = await redis.zadd('queue:slot:123', Date.now(), `user:${userId}`);
 
@@ -1823,7 +1769,7 @@ async function processQueue(slotId) {
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">2</div>
-                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">SETEX reservation 5min</div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -2001,7 +1947,7 @@ async function processQueue(slotId) {
                         <div class="flow-arrow">-></div>
                         <div class="flow-node gateway">Payment<br><small>Stripe/Razorpay</small></div>
                         <div class="flow-arrow">-></div>
-                        <div class="flow-node db">PostgreSQL<br><small>Confirm booking</small></div>
+                        <div class="flow-node db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>Confirm booking</small></div>
                     </div>
                 </div>
             </div>
@@ -2009,7 +1955,7 @@ async function processQueue(slotId) {
             <div style="margin-top: 20px; padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 8px;">
                 <strong>Reservation Timeout Handling:</strong>
                 <div style="font-family: monospace; font-size: 13px; margin-top: 8px;">
-                    1. Redis key expires after 5 minutes (TTL)<br>
+                    1. <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> key expires after 5 minutes (TTL)<br>
                     2. Background job: SCAN for expired reservations<br>
                     3. Release slot: UPDATE slots SET status='available' WHERE reservation_expired<br>
                     4. Notify next in queue: ZPOPMIN queue:{slot_id}
@@ -2024,21 +1970,21 @@ async function processQueue(slotId) {
                 <div class="evolution-stage">
                     <div class="evolution-icon mvp">SINGLE</div>
                     <div class="evolution-label">Single DB</div>
-                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">1K TPS limit<br>Connection pool<br>Breaks at 10K</div>
                 </div>
                 <div class="evolution-arrow">-></div>
                 <div class="evolution-stage">
                     <div class="evolution-icon pan-india">CACHE</div>
                     <div class="evolution-label">Add Caching</div>
-                    <div class="evolution-db">Redis + PostgreSQL</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> + <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">Hot data in Redis<br>10K read TPS<br>DB for writes only</div>
                 </div>
                 <div class="evolution-arrow">-></div>
                 <div class="evolution-stage">
                     <div class="evolution-icon high-traffic">QUEUE</div>
                     <div class="evolution-label">Virtual Queue</div>
-                    <div class="evolution-db">Redis Queue + PG</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Queue + PG</div>
                     <div class="evolution-detail">Absorb spike in queue<br>Controlled DB writes<br>100K concurrent</div>
                 </div>
                 <div class="evolution-arrow">-></div>

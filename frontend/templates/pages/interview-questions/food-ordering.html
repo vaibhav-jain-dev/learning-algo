@@ -69,7 +69,7 @@
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 2: API Gateway -->
-                <div class="arch-box lb">AWS ALB + API Gateway<br><small>Auth, Rate Limiting, SSL</small></div>
+                <div class="arch-box lb">AWS ALB + <a href="/interview-question/glossary#api-gateway" class="info-term">API Gateway<span class="info-i">i</span></a><br><small>Auth, Rate Limiting, SSL</small></div>
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 3: Microservices -->
@@ -84,15 +84,15 @@
                 <!-- Layer 4: Data -->
                 <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; justify-content: center;">
                     <div style="text-align: center;">
-                        <div class="arch-box db">PostgreSQL + PostGIS<br><small>db.t3.medium</small></div>
+                        <div class="arch-box db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + <a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a><br><small>db.t3.medium</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Geospatial queries<br>Multi-AZ</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box cache">ElastiCache Redis<br><small>Session + Cache</small></div>
+                        <div class="arch-box cache">ElastiCache <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br><small>Session + Cache</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Menu cache<br>Rate limiting</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box queue">Amazon MSK<br><small>Kafka</small></div>
+                        <div class="arch-box queue">Amazon MSK<br><small><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Order events<br>Location updates</div>
                     </div>
                 </div>
@@ -123,13 +123,13 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">4</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostgreSQL</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">INSERT order</div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">5</div>
-                    <div class="arch-box queue" style="padding: 10px 16px;">Kafka</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">order.placed</div>
                 </div>
             </div>
@@ -153,7 +153,7 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">3</div>
-                    <div class="arch-box queue" style="padding: 10px 16px;">Kafka</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">order.confirmed</div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -183,7 +183,7 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">2</div>
-                    <div class="arch-box db" style="padding: 10px 16px;">PostGIS</div>
+                    <div class="arch-box db" style="padding: 10px 16px;"><a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">ST_DWithin 3km</div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -213,13 +213,13 @@
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">2</div>
-                    <div class="arch-box queue" style="padding: 10px 16px;">Kafka</div>
+                    <div class="arch-box queue" style="padding: 10px 16px;"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">location.update</div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="flow-step">
                     <div class="flow-step-number">3</div>
-                    <div class="arch-box cache" style="padding: 10px 16px;">Redis</div>
+                    <div class="arch-box cache" style="padding: 10px 16px;"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></div>
                     <div class="flow-step-label">GEOADD partner</div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -234,7 +234,7 @@
         <!-- DATABASE SCHEMA -->
         <h3>🗄️ Database Schema</h3>
         <div class="diagram-container">
-            <h4>PostgreSQL + PostGIS Schema with Relationships</h4>
+            <h4><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + <a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a> Schema with Relationships</h4>
             <div class="schema-diagram">
                 <div class="schema-table">
                     <div class="schema-table-header">📦 restaurants</div>
@@ -511,20 +511,20 @@ GET /api/v1/restaurants?lat=12.9716&lng=77.5946&cuisine=indian&radius=5000
 
 Response: 200 OK
 {
-    "restaurants": [
+    <span class="json-key">"restaurants"</span>: [
         {
-            "id": "uuid",
-            "name": "Meghana Foods",
-            "cuisine_types": ["biryani", "indian"],
-            "rating": 4.5,
-            "avg_delivery_time": 35,
-            "distance_km": 1.2,
-            "is_open": true,
-            "delivery_fee": 30
+            <span class="json-key">"id"</span>: <span class="json-string">"uuid"</span>,
+            <span class="json-key">"name"</span>: <span class="json-string">"Meghana Foods"</span>,
+            <span class="json-key">"cuisine_types"</span>: [<span class="json-string">"biryani"</span>, <span class="json-string">"indian"</span>],
+            <span class="json-key">"rating"</span>: <span class="json-number">4.5</span>,
+            <span class="json-key">"avg_delivery_time"</span>: <span class="json-number">35</span>,
+            <span class="json-key">"distance_km"</span>: <span class="json-number">1.2</span>,
+            <span class="json-key">"is_open"</span>: <span class="json-boolean">true</span>,
+            <span class="json-key">"delivery_fee"</span>: <span class="json-number">30</span>
         }
     ],
-    "total": 45,
-    "page": 1
+    <span class="json-key">"total"</span>: <span class="json-number">45</span>,
+    <span class="json-key">"page"</span>: <span class="json-number">1</span>
 }
 
 Errors:
@@ -537,33 +537,33 @@ Errors:
 <pre>
 Request:
 {
-    "restaurant_id": "uuid",
-    "items": [
+    <span class="json-key">"restaurant_id"</span>: <span class="json-string">"uuid"</span>,
+    <span class="json-key">"items"</span>: [
         {
-            "menu_item_id": "uuid",
-            "quantity": 2,
-            "customizations": {"spice_level": "medium", "extras": ["cheese"]}
+            <span class="json-key">"menu_item_id"</span>: <span class="json-string">"uuid"</span>,
+            <span class="json-key">"quantity"</span>: <span class="json-number">2</span>,
+            <span class="json-key">"customizations"</span>: {<span class="json-key">"spice_level"</span>: <span class="json-string">"medium"</span>, <span class="json-key">"extras"</span>: [<span class="json-string">"cheese"</span>]}
         }
     ],
-    "delivery_address": {
-        "lat": 12.9800,
-        "lng": 77.6000,
-        "address_line": "123 Main St, Bangalore",
-        "landmark": "Near Metro Station"
+    <span class="json-key">"delivery_address"</span>: {
+        <span class="json-key">"lat"</span>: <span class="json-number">12.9800</span>,
+        <span class="json-key">"lng"</span>: <span class="json-number">77.6000</span>,
+        <span class="json-key">"address_line"</span>: <span class="json-string">"123 Main St, Bangalore"</span>,
+        <span class="json-key">"landmark"</span>: <span class="json-string">"Near Metro Station"</span>
     },
-    "payment_method": "upi",
-    "coupon_code": "FIRST50"
+    <span class="json-key">"payment_method"</span>: <span class="json-string">"upi"</span>,
+    <span class="json-key">"coupon_code"</span>: <span class="json-string">"FIRST50"</span>
 }
 
 Response: 201 Created
 {
-    "order_id": "uuid",
-    "status": "placed",
-    "total_amount": 599,
-    "delivery_fee": 30,
-    "discount": 50,
-    "estimated_delivery": "2024-01-15T13:30:00Z",
-    "payment_status": "pending"
+    <span class="json-key">"order_id"</span>: <span class="json-string">"uuid"</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"placed"</span>,
+    <span class="json-key">"total_amount"</span>: <span class="json-number">599</span>,
+    <span class="json-key">"delivery_fee"</span>: <span class="json-number">30</span>,
+    <span class="json-key">"discount"</span>: <span class="json-number">50</span>,
+    <span class="json-key">"estimated_delivery"</span>: <span class="json-string">"2024-01-15T13:30:00Z"</span>,
+    <span class="json-key">"payment_status"</span>: <span class="json-string">"pending"</span>
 }
 
 Errors:
@@ -580,20 +580,20 @@ Errors:
 
 // Server pushes updates:
 {
-    "type": "status_update",
-    "order_id": "uuid",
-    "status": "out_for_delivery",
-    "partner": {
-        "name": "Rahul",
-        "phone": "+91-9876543210",
-        "photo_url": "https://..."
+    <span class="json-key">"type"</span>: <span class="json-string">"status_update"</span>,
+    <span class="json-key">"order_id"</span>: <span class="json-string">"uuid"</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"out_for_delivery"</span>,
+    <span class="json-key">"partner"</span>: {
+        <span class="json-key">"name"</span>: <span class="json-string">"Rahul"</span>,
+        <span class="json-key">"phone"</span>: <span class="json-string">"+91-9876543210"</span>,
+        <span class="json-key">"photo_url"</span>: <span class="json-string">"https://..."</span>
     },
-    "location": {
-        "lat": 12.9750,
-        "lng": 77.5980
+    <span class="json-key">"location"</span>: {
+        <span class="json-key">"lat"</span>: <span class="json-number">12.9750</span>,
+        <span class="json-key">"lng"</span>: <span class="json-number">77.5980</span>
     },
-    "eta_minutes": 8,
-    "timestamp": "2024-01-15T13:22:00Z"
+    <span class="json-key">"eta_minutes"</span>: <span class="json-number">8</span>,
+    <span class="json-key">"timestamp"</span>: <span class="json-string">"2024-01-15T13:22:00Z"</span>
 }
 
 // Status transitions pushed:
@@ -604,13 +604,13 @@ Errors:
         <h3>🔀 Database Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ PostgreSQL + PostGIS (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + <a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a> (Selected)</h5>
                 <p>ACID compliance, geospatial support, proven at scale</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
                         <strong style="color: #166534;">Pros:</strong>
                         <ul style="margin: 8px 0 0 0; padding-left: 16px; font-size: 13px;">
-                            <li>Native geospatial with PostGIS</li>
+                            <li>Native geospatial with <a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a></li>
                             <li>ACID for order consistency</li>
                             <li>JSONB for flexible schemas</li>
                             <li>Rich ecosystem</li>
@@ -626,12 +626,12 @@ Errors:
                     </div>
                 </div>
                 <div style="background: #fef3c7; padding: 10px; border-radius: 6px; font-size: 13px;">
-                    <strong>⚠️ Care:</strong> Use Redis for high-frequency location updates. Batch DB writes every 30s.
+                    <strong>⚠️ Care:</strong> Use <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> for high-frequency location updates. Batch DB writes every 30s.
                 </div>
             </div>
 
             <div class="alternative-card">
-                <h5>MongoDB</h5>
+                <h5><a href="/interview-question/glossary#mongodb" class="info-term">MongoDB<span class="info-i">i</span></a></h5>
                 <p>Document store with geospatial indexes</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Native 2dsphere indexes<br>
@@ -665,7 +665,7 @@ Errors:
         <h3>🔀 Search Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Elasticsearch (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#elasticsearch" class="info-term">Elasticsearch<span class="info-i">i</span></a> (Selected)</h5>
                 <p>Full-text search with geo queries</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -689,7 +689,7 @@ Errors:
             </div>
 
             <div class="alternative-card">
-                <h5>PostgreSQL Full-Text Search</h5>
+                <h5><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> Full-Text Search</h5>
                 <p>Built-in tsvector/tsquery</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> No extra infrastructure<br>
@@ -789,11 +789,11 @@ Errors:
             </div>
             <div class="pattern-card">
                 <h5>CQRS Pattern</h5>
-                <p>Separate read/write models. Writes to PostgreSQL (orders), reads from Elasticsearch (search) and Redis (tracking). Optimized for each use case.</p>
+                <p>Separate read/write models. Writes to <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> (orders), reads from <a href="/interview-question/glossary#elasticsearch" class="info-term">Elasticsearch<span class="info-i">i</span></a> (search) and <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> (tracking). Optimized for each use case.</p>
             </div>
             <div class="pattern-card">
                 <h5>Event Sourcing</h5>
-                <p>Store order events (OrderPlaced, OrderConfirmed, etc.) in Kafka. Rebuild state from events. Full audit trail for disputes.</p>
+                <p>Store order events (OrderPlaced, OrderConfirmed, etc.) in <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a>. Rebuild state from events. Full audit trail for disputes.</p>
             </div>
         </div>
 
@@ -860,27 +860,27 @@ class OrderStateMachine {
                         <td>$120</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">RDS</span> PostgreSQL + PostGIS</td>
+                        <td><span class="cost-tag aws">RDS</span> <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + <a href="/interview-question/glossary#postgresql" class="info-term">PostGIS<span class="info-i">i</span></a></td>
                         <td>db.t3.large, Multi-AZ, 200GB</td>
                         <td>$250</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td><span class="cost-tag aws">ElastiCache</span> <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></td>
                         <td>cache.t3.medium, 3GB</td>
                         <td>$50</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">OpenSearch</span> Elasticsearch</td>
+                        <td><span class="cost-tag aws">OpenSearch</span> <a href="/interview-question/glossary#elasticsearch" class="info-term">Elasticsearch<span class="info-i">i</span></a></td>
                         <td>t3.small.search, 2 nodes</td>
                         <td>$80</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">MSK</span> Kafka</td>
+                        <td><span class="cost-tag aws">MSK</span> <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></td>
                         <td>kafka.t3.small, 3 brokers</td>
                         <td>$200</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">ALB</span> Load Balancer</td>
+                        <td><span class="cost-tag aws">ALB</span> <a href="/interview-question/glossary#load-balancer" class="info-term">Load Balancer<span class="info-i">i</span></a></td>
                         <td>Application LB + 5M requests</td>
                         <td>$50</td>
                     </tr>
@@ -891,7 +891,7 @@ class OrderStateMachine {
                     </tr>
                     <tr>
                         <td><span class="cost-tag aws">S3</span> Images + Backups</td>
-                        <td>100GB storage + CDN</td>
+                        <td>100GB storage + <a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a></td>
                         <td>$30</td>
                     </tr>
                     <tr class="total-row">
@@ -905,7 +905,7 @@ class OrderStateMachine {
         <!-- Deployment -->
         <h3>🚀 Deployment (K8s)</h3>
         <div class="deployment-diagram">
-            <h4>Kubernetes Architecture - Microservices</h4>
+            <h4>Kubernetes Architecture - <a href="/interview-question/glossary#microservices" class="info-term">Microservices<span class="info-i">i</span></a></h4>
             <div class="k8s-cluster">
                 <h5>EKS Cluster - ap-south-1</h5>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
@@ -923,83 +923,58 @@ class OrderStateMachine {
             </div>
         </div>
 
-        <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">order-service-deployment.yaml</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: order-service
-  labels:
-    app: order-service
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: order-service
-  template:
-    metadata:
-      labels:
-        app: order-service
-      annotations:
-        sidecar.istio.io/inject: "true"
-    spec:
-      containers:
-      - name: order-service
-        image: food-ordering/order-service:v1.2.0
-        ports:
-        - containerPort: 3000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: url
-        - name: KAFKA_BROKERS
-          value: "kafka-0.kafka:9092,kafka-1.kafka:9092"
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "1Gi"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: order-service-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: order-service
-  minReplicas: 3
-  maxReplicas: 20
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80</pre>
+        <div class="diagram-container">
+            <h4>K8s Deployment Architecture</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                <!-- Ingress Layer -->
+                <div class="arch-box lb">ALB Ingress Controller<br><small>SSL termination, path routing</small></div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Service Mesh -->
+                <div style="padding: 16px; border: 2px dashed #7c3aed; border-radius: 12px; width: 90%; max-width: 600px;">
+                    <div style="text-align: center; color: #7c3aed; font-weight: 600; margin-bottom: 12px;">Istio Service Mesh</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+                        <div style="text-align: center;">
+                            <div class="arch-box server" style="padding: 10px 16px;">order-service<br><small>Deployment (3 replicas)</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">HPA: 3-20 pods</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="arch-box server" style="padding: 10px 16px;">restaurant-svc<br><small>Deployment (2 replicas)</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">HPA: 2-10 pods</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="arch-box server" style="padding: 10px 16px;">delivery-svc<br><small>Deployment (3 replicas)</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">HPA: 3-15 pods</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="arch-box server" style="padding: 10px 16px;">payment-svc<br><small>Deployment (2 replicas)</small></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">HPA: 2-8 pods</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+
+                <!-- Config & Secrets -->
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                    <div class="arch-box" style="background: #dc2626; padding: 10px 16px;">Vault Secrets<br><small>DB creds, API keys</small></div>
+                    <div class="arch-box" style="background: #0891b2; padding: 10px 16px;">ConfigMaps<br><small>Feature flags, env</small></div>
+                    <div class="arch-box" style="background: #ea580c; padding: 10px 16px;">HPA/VPA<br><small>Auto-scaling</small></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; background: #1e293b; padding: 16px; border-radius: 8px;">
+                <div style="font-size: 13px; color: #94a3b8;">
+                    <strong style="color: #60a5fa;">Key K8s Resources per Service:</strong>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 8px;">
+                        <div><code>Deployment</code> - Pod replicas with rolling updates</div>
+                        <div><code>Service</code> - ClusterIP for internal routing</div>
+                        <div><code>HPA</code> - Scale on CPU/memory (70% threshold)</div>
+                        <div><code>PodDisruptionBudget</code> - Min available during updates</div>
+                        <div><code>ServiceAccount</code> - IRSA for AWS access</div>
+                        <div><code>NetworkPolicy</code> - Pod-to-pod security</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- CI/CD -->
@@ -1329,7 +1304,7 @@ argocd app rollback food-ordering --revision 42</pre>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
                 <div class="arch-box client">Users (All India)</div>
                 <div class="arch-arrow">↓</div>
-                <div class="arch-box cdn">CloudFront CDN<br><small>Static assets, menu images</small></div>
+                <div class="arch-box cdn">CloudFront <a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a><br><small>Static assets, menu images</small></div>
                 <div class="arch-arrow">↓</div>
                 <div class="arch-box lb">Route 53 (Latency-based)</div>
                 <div class="arch-arrow">↓</div>
@@ -1368,11 +1343,11 @@ argocd app rollback food-ordering --revision 42</pre>
                     <td>Restaurants and orders partitioned by city_id. Each city's data localized.</td>
                 </tr>
                 <tr>
-                    <td><strong>Regional Elasticsearch</strong></td>
+                    <td><strong>Regional <a href="/interview-question/glossary#elasticsearch" class="info-term">Elasticsearch<span class="info-i">i</span></a></strong></td>
                     <td>Separate indices per region. Mumbai cluster handles West/South, Hyderabad handles East/North.</td>
                 </tr>
                 <tr>
-                    <td><strong>Redis Global Datastore</strong></td>
+                    <td><strong><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Global Datastore</strong></td>
                     <td>ElastiCache Global for session/cache. Cross-region replication &lt;1s.</td>
                 </tr>
                 <tr>
@@ -1381,7 +1356,7 @@ argocd app rollback food-ordering --revision 42</pre>
                 </tr>
                 <tr>
                     <td><strong>Surge Pricing Engine</strong></td>
-                    <td>Real-time demand/supply calculation per zone. Kafka streams for partner availability.</td>
+                    <td>Real-time demand/supply calculation per zone. <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a> streams for partner availability.</td>
                 </tr>
             </table>
         </div>
@@ -1708,12 +1683,12 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
                 <tr>
                     <td><strong>4. Location Updates</strong></td>
                     <td>100K partners × 1 update/5s = 20K writes/sec</td>
-                    <td style="color: #22c55e;"><strong>→ Redis Streams + batch to DB</strong></td>
+                    <td style="color: #22c55e;"><strong>→ <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Streams + batch to DB</strong></td>
                 </tr>
                 <tr>
                     <td><strong>5. Search Spikes</strong></td>
                     <td>Everyone searching "biryani" at 8pm</td>
-                    <td style="color: #22c55e;"><strong>→ Search result caching + CDN</strong></td>
+                    <td style="color: #22c55e;"><strong>→ Search result caching + <a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a></strong></td>
                 </tr>
             </table>
         </div>
@@ -1722,9 +1697,9 @@ CREATE INDEX idx_restaurants_city_location ON restaurants
         <div class="diagram-container">
             <h4>High-Traffic Architecture</h4>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-                <div class="arch-box cdn">CloudFront (95% static hit rate)</div>
+                <div class="arch-box cdn">CloudFront <a href="/interview-question/glossary#cdn" class="info-term">CDN<span class="info-i">i</span></a> (95% static hit rate)</div>
                 <div class="arch-arrow">↓</div>
-                <div class="arch-box lb">NLB (Layer 4) + API Gateway</div>
+                <div class="arch-box lb">NLB (Layer 4) + <a href="/interview-question/glossary#api-gateway" class="info-term">API Gateway<span class="info-i">i</span></a></div>
                 <div class="arch-arrow">↓</div>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
                     <div class="arch-box server">Order Pods (x20)</div>

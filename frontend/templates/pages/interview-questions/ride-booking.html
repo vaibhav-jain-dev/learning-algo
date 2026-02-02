@@ -65,29 +65,29 @@
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 2: Load Balancer -->
-                <div class="arch-box lb">AWS ALB<br><small>WebSocket + REST</small></div>
+                <div class="arch-box lb"><a href="/interview-question/glossary#load-balancer" class="info-term">Load Balancer<span class="info-i">i</span></a><br><small>WebSocket + REST</small></div>
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 3: Services -->
                 <div style="display: flex; gap: 20px;">
                     <div class="arch-box server">API Server<br><small>Go/Fiber</small></div>
-                    <div class="arch-box server">Location Service<br><small>WebSocket</small></div>
-                    <div class="arch-box server">Matching Engine<br><small>Geospatial</small></div>
+                    <div class="arch-box server">Location Service<br><small><a href="/interview-question/glossary#websocket" class="info-term">WebSocket<span class="info-i">i</span></a></small></div>
+                    <div class="arch-box server">Matching Engine<br><small><a href="/interview-question/glossary#postgresql" class="info-term">Geospatial<span class="info-i">i</span></a></small></div>
                 </div>
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 4: Data -->
                 <div style="display: flex; gap: 40px; align-items: flex-start;">
                     <div style="text-align: center;">
-                        <div class="arch-box cache">Redis GEO<br><small>Driver Locations</small></div>
+                        <div class="arch-box cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> GEO<br><small>Driver Locations</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">GEOADD/GEORADIUS<br>4-sec TTL</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box db">PostgreSQL + PostGIS<br><small>db.r5.large</small></div>
+                        <div class="arch-box db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + PostGIS<br><small>db.r5.large</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Rides, Users<br>Multi-AZ</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box queue">Kafka<br><small>Events</small></div>
+                        <div class="arch-box queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a><br><small>Events</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Location stream<br>Analytics</div>
                     </div>
                 </div>
@@ -463,39 +463,39 @@ WHERE r.id = $1;</pre>
 <pre>
 Request:
 {
-    "pickup": {"lat": 12.9716, "lng": 77.5946},
-    "dropoff": {"lat": 12.9352, "lng": 77.6245},
-    "vehicle_type": "sedan"
+    <span class="json-key">"pickup"</span>: {<span class="json-key">"lat"</span>: <span class="json-number">12.9716</span>, <span class="json-key">"lng"</span>: <span class="json-number">77.5946</span>},
+    <span class="json-key">"dropoff"</span>: {<span class="json-key">"lat"</span>: <span class="json-number">12.9352</span>, <span class="json-key">"lng"</span>: <span class="json-number">77.6245</span>},
+    <span class="json-key">"vehicle_type"</span>: <span class="json-string">"sedan"</span>
 }
 
-Response: 201 Created
+Response: <span class="json-number">201</span> Created
 {
-    "request_id": "uuid-123",
-    "status": "searching",
-    "fare_estimate": {"min": 150, "max": 180, "surge": 1.0},
-    "eta_minutes": 5
+    <span class="json-key">"request_id"</span>: <span class="json-string">"uuid-123"</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"searching"</span>,
+    <span class="json-key">"fare_estimate"</span>: {<span class="json-key">"min"</span>: <span class="json-number">150</span>, <span class="json-key">"max"</span>: <span class="json-number">180</span>, <span class="json-key">"surge"</span>: <span class="json-number">1.0</span>},
+    <span class="json-key">"eta_minutes"</span>: <span class="json-number">5</span>
 }
 
 Errors:
-- 400: Invalid coordinates
-- 404: No drivers available
-- 429: Rate limit exceeded</pre>
+- <span class="json-number">400</span>: Invalid coordinates
+- <span class="json-number">404</span>: No drivers available
+- <span class="json-number">429</span>: Rate limit exceeded</pre>
         </div>
 
         <div class="api-endpoint">
             <span class="api-method ws">WS</span> <span class="api-path">/api/v1/ride/:rideId/track</span>
 <pre>
-// WebSocket for real-time tracking
+// <a href="/interview-question/glossary#websocket" class="info-term">WebSocket<span class="info-i">i</span></a> for real-time tracking
 // Server → Client messages:
 
-{ "type": "driver_location", "lat": 12.9720, "lng": 77.5950, "heading": 45 }
-{ "type": "eta_update", "eta_seconds": 180 }
-{ "type": "status_change", "status": "arrived", "timestamp": "..." }
-{ "type": "trip_started", "timestamp": "..." }
-{ "type": "trip_completed", "fare": 165.50, "distance_km": 8.2 }
+{ <span class="json-key">"type"</span>: <span class="json-string">"driver_location"</span>, <span class="json-key">"lat"</span>: <span class="json-number">12.9720</span>, <span class="json-key">"lng"</span>: <span class="json-number">77.5950</span>, <span class="json-key">"heading"</span>: <span class="json-number">45</span> }
+{ <span class="json-key">"type"</span>: <span class="json-string">"eta_update"</span>, <span class="json-key">"eta_seconds"</span>: <span class="json-number">180</span> }
+{ <span class="json-key">"type"</span>: <span class="json-string">"status_change"</span>, <span class="json-key">"status"</span>: <span class="json-string">"arrived"</span>, <span class="json-key">"timestamp"</span>: <span class="json-string">"..."</span> }
+{ <span class="json-key">"type"</span>: <span class="json-string">"trip_started"</span>, <span class="json-key">"timestamp"</span>: <span class="json-string">"..."</span> }
+{ <span class="json-key">"type"</span>: <span class="json-string">"trip_completed"</span>, <span class="json-key">"fare"</span>: <span class="json-number">165.50</span>, <span class="json-key">"distance_km"</span>: <span class="json-number">8.2</span> }
 
 // Client → Server messages:
-{ "type": "ping" }  // Keep-alive every 30s</pre>
+{ <span class="json-key">"type"</span>: <span class="json-string">"ping"</span> }  // Keep-alive every 30s</pre>
         </div>
 
         <div class="api-endpoint">
@@ -503,23 +503,23 @@ Errors:
 <pre>
 Request: (Driver app)
 {
-    "dropoff_location": {"lat": 12.9352, "lng": 77.6245},
-    "distance_km": 8.2,
-    "duration_minutes": 25
+    <span class="json-key">"dropoff_location"</span>: {<span class="json-key">"lat"</span>: <span class="json-number">12.9352</span>, <span class="json-key">"lng"</span>: <span class="json-number">77.6245</span>},
+    <span class="json-key">"distance_km"</span>: <span class="json-number">8.2</span>,
+    <span class="json-key">"duration_minutes"</span>: <span class="json-number">25</span>
 }
 
-Response: 200 OK
+Response: <span class="json-number">200</span> OK
 {
-    "ride_id": "uuid-123",
-    "fare": 165.50,
-    "breakdown": {
-        "base_fare": 50,
-        "distance_charge": 82.00,
-        "time_charge": 25.00,
-        "surge_multiplier": 1.0,
-        "taxes": 8.50
+    <span class="json-key">"ride_id"</span>: <span class="json-string">"uuid-123"</span>,
+    <span class="json-key">"fare"</span>: <span class="json-number">165.50</span>,
+    <span class="json-key">"breakdown"</span>: {
+        <span class="json-key">"base_fare"</span>: <span class="json-number">50</span>,
+        <span class="json-key">"distance_charge"</span>: <span class="json-number">82.00</span>,
+        <span class="json-key">"time_charge"</span>: <span class="json-number">25.00</span>,
+        <span class="json-key">"surge_multiplier"</span>: <span class="json-number">1.0</span>,
+        <span class="json-key">"taxes"</span>: <span class="json-number">8.50</span>
     },
-    "payment_status": "charged"
+    <span class="json-key">"payment_status"</span>: <span class="json-string">"charged"</span>
 }</pre>
         </div>
 
@@ -528,24 +528,24 @@ Response: 200 OK
 <pre>
 Request: (Every 4 seconds when driver online)
 {
-    "lat": 12.9716,
-    "lng": 77.5946,
-    "heading": 180,
-    "is_available": true
+    <span class="json-key">"lat"</span>: <span class="json-number">12.9716</span>,
+    <span class="json-key">"lng"</span>: <span class="json-number">77.5946</span>,
+    <span class="json-key">"heading"</span>: <span class="json-number">180</span>,
+    <span class="json-key">"is_available"</span>: <span class="json-boolean">true</span>
 }
 
-Response: 200 OK
-{ "ack": true }
+Response: <span class="json-number">200</span> OK
+{ <span class="json-key">"ack"</span>: <span class="json-boolean">true</span> }
 
-// Batched internally, written to Redis immediately</pre>
+// Batched internally, written to <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> immediately</pre>
         </div>
 
         <!-- Database Alternatives -->
         <h3>Database Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>PostgreSQL + PostGIS (Selected)</h5>
-                <p>ACID compliance with native geospatial support</p>
+                <h5><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + PostGIS (Selected)</h5>
+                <p>ACID compliance with native <a href="/interview-question/glossary#postgresql" class="info-term">geospatial<span class="info-i">i</span></a> support</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
                         <strong style="color: #166534;">Pros:</strong>
@@ -585,8 +585,8 @@ Response: 200 OK
             </div>
 
             <div class="alternative-card">
-                <h5>Redis GEO (Hot Path Only)</h5>
-                <p>In-memory geospatial with GEORADIUS</p>
+                <h5><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> GEO (Hot Path Only)</h5>
+                <p>In-memory <a href="/interview-question/glossary#postgresql" class="info-term">geospatial<span class="info-i">i</span></a> with GEORADIUS</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">+</span> Sub-ms GEORADIUS queries<br>
                     <span style="color: #22c55e;">+</span> Built-in sorted sets<br>
@@ -603,8 +603,8 @@ Response: 200 OK
         <h3>Location Index Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>Redis GEO (Selected)</h5>
-                <p>In-memory geospatial with sorted sets</p>
+                <h5><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> GEO (Selected)</h5>
+                <p>In-memory <a href="/interview-question/glossary#postgresql" class="info-term">geospatial<span class="info-i">i</span></a> with sorted sets</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
                         <strong style="color: #166534;">Pros:</strong>
@@ -719,7 +719,7 @@ Response: 200 OK
             </div>
             <div class="pattern-card">
                 <h5>Observer Pattern</h5>
-                <p>Location updates via Redis Pub/Sub. Driver publishes location, rider's WebSocket subscribes to ride channel for real-time updates.</p>
+                <p>Location updates via <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> Pub/Sub. Driver publishes location, rider's <a href="/interview-question/glossary#websocket" class="info-term">WebSocket<span class="info-i">i</span></a> subscribes to ride channel for real-time updates.</p>
             </div>
             <div class="pattern-card">
                 <h5>Strategy Pattern</h5>
@@ -784,22 +784,22 @@ func (r *Ride) CanTransitionTo(newStatus RideStatus) bool {
                         <td>$120</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">RDS</span> PostgreSQL + PostGIS</td>
+                        <td><span class="cost-tag aws">RDS</span> <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> + PostGIS</td>
                         <td>db.r5.large, Multi-AZ</td>
                         <td>$350</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td><span class="cost-tag aws">ElastiCache</span> <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></td>
                         <td>cache.r5.large, 13GB</td>
                         <td>$200</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">MSK</span> Kafka</td>
+                        <td><span class="cost-tag aws">MSK</span> <a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></td>
                         <td>kafka.t3.small, 3 brokers</td>
                         <td>$150</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">ALB</span> Load Balancer</td>
+                        <td><span class="cost-tag aws">ALB</span> <a href="/interview-question/glossary#load-balancer" class="info-term">Load Balancer<span class="info-i">i</span></a></td>
                         <td>Application LB + 5M requests</td>
                         <td>$50</td>
                     </tr>
@@ -843,76 +843,35 @@ func (r *Ride) CanTransitionTo(newStatus RideStatus) bool {
         </div>
 
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ride-api
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: ride-api
-  template:
-    spec:
-      containers:
-      - name: api
-        image: ride-booking:v1.0.0
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-creds
-              key: url
-        - name: REDIS_URL
-          valueFrom:
-            secretKeyRef:
-              name: redis-creds
-              key: url
-        resources:
-          requests:
-            cpu: "500m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "1Gi"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 5
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml (simplified)</h5>
+<pre><span class="yaml-key">apiVersion</span>: apps/v1
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: ride-api
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">replicas</span>: <span class="yaml-number">3</span>
+  <span class="yaml-key">template</span>:
+    <span class="yaml-key">spec</span>:
+      <span class="yaml-key">containers</span>:
+      - <span class="yaml-key">name</span>: api
+        <span class="yaml-key">image</span>: ride-booking:v1.0.0
+        <span class="yaml-key">ports</span>: [<span class="yaml-number">8080</span>]
+        <span class="yaml-key">envFrom</span>: [secretRef: {name: db-creds}]
+        <span class="yaml-key">resources</span>:
+          <span class="yaml-key">requests</span>: {cpu: <span class="yaml-string">"500m"</span>, memory: <span class="yaml-string">"512Mi"</span>}
+          <span class="yaml-key">limits</span>: {cpu: <span class="yaml-string">"1000m"</span>, memory: <span class="yaml-string">"1Gi"</span>}
+        <span class="yaml-key">readinessProbe</span>:
+          <span class="yaml-key">httpGet</span>: {path: /health, port: <span class="yaml-number">8080</span>}
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ride-matching
-spec:
-  replicas: 2
-  template:
-    spec:
-      containers:
-      - name: matching
-        image: ride-matching:v1.0.0
-        resources:
-          requests:
-            cpu: "1000m"
-            memory: "1Gi"
+<span class="yaml-comment"># Matching Service: 2 replicas, 1 CPU, 1Gi memory</span>
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>: {<span class="yaml-key">name</span>: ride-matching}
+<span class="yaml-key">spec</span>: {<span class="yaml-key">replicas</span>: <span class="yaml-number">2</span>}
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ride-location
-spec:
-  replicas: 2
-  template:
-    spec:
-      containers:
-      - name: location
-        image: ride-location:v1.0.0
-        ports:
-        - containerPort: 8081  # WebSocket</pre>
+<span class="yaml-comment"># Location Service: 2 replicas, <a href="/interview-question/glossary#websocket" class="info-term">WebSocket<span class="info-i">i</span></a> on port 8081</span>
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>: {<span class="yaml-key">name</span>: ride-location}
+<span class="yaml-key">spec</span>: {<span class="yaml-key">replicas</span>: <span class="yaml-number">2</span>}</pre>
         </div>
 
         <!-- CI/CD Pipeline -->
@@ -1345,14 +1304,14 @@ kubectl rollout undo deployment/ride-matching</pre>
         <div class="api-endpoint">
             <span class="api-method get">GET</span> <span class="api-path">/api/v1/surge/:cityId</span>
 <pre>
-Response: 200 OK
+Response: <span class="json-number">200</span> OK
 {
-    "city_id": "mumbai",
-    "zones": [
-        {"h3_index": "8928308280fffff", "surge": 1.5, "demand": 45, "supply": 20},
-        {"h3_index": "8928308281fffff", "surge": 1.0, "demand": 12, "supply": 15}
+    <span class="json-key">"city_id"</span>: <span class="json-string">"mumbai"</span>,
+    <span class="json-key">"zones"</span>: [
+        {<span class="json-key">"h3_index"</span>: <span class="json-string">"8928308280fffff"</span>, <span class="json-key">"surge"</span>: <span class="json-number">1.5</span>, <span class="json-key">"demand"</span>: <span class="json-number">45</span>, <span class="json-key">"supply"</span>: <span class="json-number">20</span>},
+        {<span class="json-key">"h3_index"</span>: <span class="json-string">"8928308281fffff"</span>, <span class="json-key">"surge"</span>: <span class="json-number">1.0</span>, <span class="json-key">"demand"</span>: <span class="json-number">12</span>, <span class="json-key">"supply"</span>: <span class="json-number">15</span>}
     ],
-    "updated_at": "2024-01-15T10:30:00Z"
+    <span class="json-key">"updated_at"</span>: <span class="json-string">"2024-01-15T10:30:00Z"</span>
 }</pre>
         </div>
 
@@ -2193,70 +2152,41 @@ ALTER PARTITION europe OF TABLE rides
         <!-- K8s at Global -->
         <h3>K8s Deployment - Global</h3>
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">Multi-Cluster Federation</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ride-api
-  labels:
-    app: ride-api
-    region: eu-central
-spec:
-  replicas: 20
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 0
-  template:
-    spec:
-      topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: DoNotSchedule
-      containers:
-      - name: api
-        image: ride-booking:v3.0.0
-        env:
-        - name: REGION
-          value: "eu-central"
-        - name: COCKROACH_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-creds
-              key: url
-        resources:
-          requests:
-            cpu: "2000m"
-            memory: "4Gi"
-          limits:
-            cpu: "4000m"
-            memory: "8Gi"
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">Multi-Cluster Federation (simplified)</h5>
+<pre><span class="yaml-key">apiVersion</span>: apps/v1
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: ride-api
+  <span class="yaml-key">labels</span>: {app: ride-api, region: eu-central}
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">replicas</span>: <span class="yaml-number">20</span>
+  <span class="yaml-key">strategy</span>: {type: RollingUpdate, maxSurge: <span class="yaml-string">"25%"</span>, maxUnavailable: <span class="yaml-number">0</span>}
+  <span class="yaml-key">template</span>:
+    <span class="yaml-key">spec</span>:
+      <span class="yaml-key">topologySpreadConstraints</span>:
+      - <span class="yaml-key">maxSkew</span>: <span class="yaml-number">1</span>
+        <span class="yaml-key">topologyKey</span>: topology.kubernetes.io/zone
+      <span class="yaml-key">containers</span>:
+      - <span class="yaml-key">name</span>: api
+        <span class="yaml-key">image</span>: ride-booking:v3.0.0
+        <span class="yaml-key">env</span>: [{name: REGION, value: <span class="yaml-string">"eu-central"</span>}]
+        <span class="yaml-key">envFrom</span>: [secretRef: {name: db-creds}]
+        <span class="yaml-key">resources</span>:
+          <span class="yaml-key">requests</span>: {cpu: <span class="yaml-string">"2000m"</span>, memory: <span class="yaml-string">"4Gi"</span>}
+          <span class="yaml-key">limits</span>: {cpu: <span class="yaml-string">"4000m"</span>, memory: <span class="yaml-string">"8Gi"</span>}
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: ride-api-hpa
-spec:
-  scaleTargetRef:
-    kind: Deployment
-    name: ride-api
-  minReplicas: 20
-  maxReplicas: 100
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 60
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 60
-      policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60</pre>
+<span class="yaml-key">apiVersion</span>: autoscaling/v2
+<span class="yaml-key">kind</span>: HorizontalPodAutoscaler
+<span class="yaml-key">metadata</span>: {<span class="yaml-key">name</span>: ride-api-hpa}
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">scaleTargetRef</span>: {kind: Deployment, name: ride-api}
+  <span class="yaml-key">minReplicas</span>: <span class="yaml-number">20</span>
+  <span class="yaml-key">maxReplicas</span>: <span class="yaml-number">100</span>
+  <span class="yaml-key">metrics</span>:
+  - <span class="yaml-key">type</span>: Resource
+    <span class="yaml-key">resource</span>: {name: cpu, target: {type: Utilization, averageUtilization: <span class="yaml-number">60</span>}}
+  <span class="yaml-key">behavior</span>:
+    <span class="yaml-key">scaleUp</span>: {stabilizationWindowSeconds: <span class="yaml-number">60</span>}</pre>
         </div>
 
         <!-- Rollback at Global -->

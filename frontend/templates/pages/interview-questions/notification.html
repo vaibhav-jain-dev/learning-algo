@@ -76,12 +76,12 @@
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 4: Message Queue -->
-                <div class="arch-box queue">Kafka<br><small>Priority Topics (critical, high, medium, low)</small></div>
+                <div class="arch-box queue"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a><br><small>Priority Topics (critical, high, medium, low)</small></div>
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 5: Workers -->
                 <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                    <div class="arch-box worker">Push Worker<br><small>FCM/APNS</small></div>
+                    <div class="arch-box worker">Push Worker<br><small><a href="/interview-question/glossary#fcm" class="info-term">FCM<span class="info-i">i</span></a>/APNS</small></div>
                     <div class="arch-box worker">Email Worker<br><small>SES</small></div>
                     <div class="arch-box worker">SMS Worker<br><small>Twilio</small></div>
                     <div class="arch-box worker">In-App Worker<br><small>WebSocket</small></div>
@@ -90,7 +90,7 @@
 
                 <!-- Layer 6: Providers -->
                 <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                    <div class="arch-box external">FCM</div>
+                    <div class="arch-box external"><a href="/interview-question/glossary#fcm" class="info-term">FCM<span class="info-i">i</span></a></div>
                     <div class="arch-box external">APNS</div>
                     <div class="arch-box external">Amazon SES</div>
                     <div class="arch-box external">Twilio</div>
@@ -100,11 +100,11 @@
                 <!-- Layer 7: Data -->
                 <div style="display: flex; gap: 40px; align-items: flex-start;">
                     <div style="text-align: center;">
-                        <div class="arch-box db">PostgreSQL<br><small>Notifications, Templates</small></div>
+                        <div class="arch-box db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a><br><small>Notifications, Templates</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Primary + Read Replica</div>
                     </div>
                     <div style="text-align: center;">
-                        <div class="arch-box cache">Redis<br><small>Dedup, Rate Limit</small></div>
+                        <div class="arch-box cache"><a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a><br><small>Dedup, Rate Limit</small></div>
                         <div style="font-size: 12px; color: #64748b; margin-top: 8px;">TTL-based dedup keys</div>
                     </div>
                 </div>
@@ -186,7 +186,7 @@
         <!-- DATABASE SCHEMA -->
         <h3>🗄️ Database Schema</h3>
         <div class="diagram-container">
-            <h4>PostgreSQL Schema with Relationships</h4>
+            <h4><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> Schema with Relationships</h4>
             <div class="schema-diagram">
                 <div class="schema-table">
                     <div class="schema-table-header">📦 notification_templates</div>
@@ -434,31 +434,31 @@ SELECT unnest($1::uuid[]), $2, $3, $4, $5, unnest($6::varchar[]);</pre>
 <pre>
 Request:
 {
-    "user_id": "550e8400-e29b-41d4-a716-446655440000",
-    "template": "order_confirmation",
-    "channels": ["push", "email"],
-    "variables": {
-        "order_id": "ORD-12345",
-        "amount": "599.00",
-        "currency": "INR"
+    <span class="json-key">"user_id"</span>: <span class="json-string">"550e8400-e29b-41d4-a716-446655440000"</span>,
+    <span class="json-key">"template"</span>: <span class="json-string">"order_confirmation"</span>,
+    <span class="json-key">"channels"</span>: [<span class="json-string">"push"</span>, <span class="json-string">"email"</span>],
+    <span class="json-key">"variables"</span>: {
+        <span class="json-key">"order_id"</span>: <span class="json-string">"ORD-12345"</span>,
+        <span class="json-key">"amount"</span>: <span class="json-string">"599.00"</span>,
+        <span class="json-key">"currency"</span>: <span class="json-string">"INR"</span>
     },
-    "priority": "high",
-    "idempotency_key": "order-12345-confirm"
+    <span class="json-key">"priority"</span>: <span class="json-string">"high"</span>,
+    <span class="json-key">"idempotency_key"</span>: <span class="json-string">"order-12345-confirm"</span>
 }
 
-Response: 202 Accepted
+Response: <span class="json-number">202</span> Accepted
 {
-    "notification_id": "660e8400-e29b-41d4-a716-446655440001",
-    "status": "queued",
-    "channels_targeted": ["push", "email"],
-    "estimated_delivery": "< 30 seconds"
+    <span class="json-key">"notification_id"</span>: <span class="json-string">"660e8400-e29b-41d4-a716-446655440001"</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"queued"</span>,
+    <span class="json-key">"channels_targeted"</span>: [<span class="json-string">"push"</span>, <span class="json-string">"email"</span>],
+    <span class="json-key">"estimated_delivery"</span>: <span class="json-string">"&lt; 30 seconds"</span>
 }
 
 Errors:
-- 400: Invalid template or missing required variables
-- 404: User not found
-- 409: Duplicate idempotency_key (already sent)
-- 429: Rate limit exceeded for user</pre>
+- <span class="json-number">400</span>: Invalid template or missing required variables
+- <span class="json-number">404</span>: User not found
+- <span class="json-number">409</span>: Duplicate idempotency_key (already sent)
+- <span class="json-number">429</span>: Rate limit exceeded for user</pre>
         </div>
 
         <div class="api-endpoint">
@@ -466,48 +466,48 @@ Errors:
 <pre>
 Request:
 {
-    "user_ids": ["uuid1", "uuid2", "uuid3"],
-    "segment": "premium_users",           // alternative to user_ids
-    "template": "promo_offer",
-    "channels": ["push"],
-    "variables": {
-        "offer_code": "SAVE20",
-        "expiry": "2024-02-01"
+    <span class="json-key">"user_ids"</span>: [<span class="json-string">"uuid1"</span>, <span class="json-string">"uuid2"</span>, <span class="json-string">"uuid3"</span>],
+    <span class="json-key">"segment"</span>: <span class="json-string">"premium_users"</span>,           <span class="json-comment">// alternative to user_ids</span>
+    <span class="json-key">"template"</span>: <span class="json-string">"promo_offer"</span>,
+    <span class="json-key">"channels"</span>: [<span class="json-string">"push"</span>],
+    <span class="json-key">"variables"</span>: {
+        <span class="json-key">"offer_code"</span>: <span class="json-string">"SAVE20"</span>,
+        <span class="json-key">"expiry"</span>: <span class="json-string">"2024-02-01"</span>
     },
-    "priority": "low",
-    "schedule_at": "2024-01-15T10:00:00Z" // optional
+    <span class="json-key">"priority"</span>: <span class="json-string">"low"</span>,
+    <span class="json-key">"schedule_at"</span>: <span class="json-string">"2024-01-15T10:00:00Z"</span> <span class="json-comment">// optional</span>
 }
 
-Response: 202 Accepted
+Response: <span class="json-number">202</span> Accepted
 {
-    "batch_id": "batch-550e8400",
-    "total_recipients": 15000,
-    "status": "processing",
-    "estimated_completion": "2024-01-15T10:05:00Z"
+    <span class="json-key">"batch_id"</span>: <span class="json-string">"batch-550e8400"</span>,
+    <span class="json-key">"total_recipients"</span>: <span class="json-number">15000</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"processing"</span>,
+    <span class="json-key">"estimated_completion"</span>: <span class="json-string">"2024-01-15T10:05:00Z"</span>
 }</pre>
         </div>
 
         <div class="api-endpoint">
             <span class="api-method get">GET</span> <span class="api-path">/api/v1/notifications/user/:userId</span>
 <pre>
-Response: 200 OK
+Response: <span class="json-number">200</span> OK
 {
-    "notifications": [
+    <span class="json-key">"notifications"</span>: [
         {
-            "id": "notif-001",
-            "template": "order_shipped",
-            "channel": "push",
-            "status": "delivered",
-            "title": "Your order is on the way!",
-            "body": "Order #12345 shipped via BlueDart",
-            "read": false,
-            "created_at": "2024-01-14T15:30:00Z"
+            <span class="json-key">"id"</span>: <span class="json-string">"notif-001"</span>,
+            <span class="json-key">"template"</span>: <span class="json-string">"order_shipped"</span>,
+            <span class="json-key">"channel"</span>: <span class="json-string">"push"</span>,
+            <span class="json-key">"status"</span>: <span class="json-string">"delivered"</span>,
+            <span class="json-key">"title"</span>: <span class="json-string">"Your order is on the way!"</span>,
+            <span class="json-key">"body"</span>: <span class="json-string">"Order #12345 shipped via BlueDart"</span>,
+            <span class="json-key">"read"</span>: <span class="json-bool">false</span>,
+            <span class="json-key">"created_at"</span>: <span class="json-string">"2024-01-14T15:30:00Z"</span>
         }
     ],
-    "unread_count": 5,
-    "pagination": {
-        "cursor": "eyJpZCI6MTAwfQ==",
-        "has_more": true
+    <span class="json-key">"unread_count"</span>: <span class="json-number">5</span>,
+    <span class="json-key">"pagination"</span>: {
+        <span class="json-key">"cursor"</span>: <span class="json-string">"eyJpZCI6MTAwfQ=="</span>,
+        <span class="json-key">"has_more"</span>: <span class="json-bool">true</span>
     }
 }</pre>
         </div>
@@ -515,24 +515,24 @@ Response: 200 OK
         <div class="api-endpoint">
             <span class="api-method websocket">WS</span> <span class="api-path">/ws/notifications</span>
 <pre>
-// WebSocket for real-time in-app notifications
+<span class="json-comment">// WebSocket for real-time in-app notifications</span>
 Connect: wss://api.example.com/ws/notifications?token=jwt
 
-// Server pushes new notifications
+<span class="json-comment">// Server pushes new notifications</span>
 {
-    "type": "notification",
-    "payload": {
-        "id": "notif-002",
-        "title": "Payment received!",
-        "body": "₹599 credited to your wallet",
-        "action_url": "/wallet"
+    <span class="json-key">"type"</span>: <span class="json-string">"notification"</span>,
+    <span class="json-key">"payload"</span>: {
+        <span class="json-key">"id"</span>: <span class="json-string">"notif-002"</span>,
+        <span class="json-key">"title"</span>: <span class="json-string">"Payment received!"</span>,
+        <span class="json-key">"body"</span>: <span class="json-string">"₹599 credited to your wallet"</span>,
+        <span class="json-key">"action_url"</span>: <span class="json-string">"/wallet"</span>
     }
 }
 
-// Client acknowledges read
+<span class="json-comment">// Client acknowledges read</span>
 {
-    "type": "mark_read",
-    "notification_ids": ["notif-001", "notif-002"]
+    <span class="json-key">"type"</span>: <span class="json-string">"mark_read"</span>,
+    <span class="json-key">"notification_ids"</span>: [<span class="json-string">"notif-001"</span>, <span class="json-string">"notif-002"</span>]
 }</pre>
         </div>
 
@@ -540,7 +540,7 @@ Connect: wss://api.example.com/ws/notifications?token=jwt
         <h3>🔀 Message Queue Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Apache Kafka (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#kafka" class="info-term">Apache Kafka<span class="info-i">i</span></a> (Selected)</h5>
                 <p>High throughput, ordering, replay capability</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -567,7 +567,7 @@ Connect: wss://api.example.com/ws/notifications?token=jwt
             </div>
 
             <div class="alternative-card">
-                <h5>Amazon SQS</h5>
+                <h5><a href="/interview-question/glossary#amazon-sqs" class="info-term">Amazon SQS<span class="info-i">i</span></a></h5>
                 <p>Serverless, zero ops, pay-per-message</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Zero operational overhead<br>
@@ -582,7 +582,7 @@ Connect: wss://api.example.com/ws/notifications?token=jwt
             </div>
 
             <div class="alternative-card">
-                <h5>RabbitMQ</h5>
+                <h5><a href="/interview-question/glossary#rabbitmq" class="info-term">RabbitMQ<span class="info-i">i</span></a></h5>
                 <p>Flexible routing, priority queues native</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Native priority queue support<br>
@@ -601,7 +601,7 @@ Connect: wss://api.example.com/ws/notifications?token=jwt
         <h3>🔀 Push Provider Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ FCM + APNS (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#fcm" class="info-term">FCM<span class="info-i">i</span></a> + APNS (Selected)</h5>
                 <p>Direct integration with platform providers</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -637,7 +637,7 @@ Connect: wss://api.example.com/ws/notifications?token=jwt
             </div>
 
             <div class="alternative-card">
-                <h5>AWS SNS Mobile Push</h5>
+                <h5><a href="/interview-question/glossary#amazon-sns" class="info-term">AWS SNS<span class="info-i">i</span></a> Mobile Push</h5>
                 <p>AWS-native, unified platform endpoints</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> AWS ecosystem integration<br>
@@ -653,7 +653,7 @@ Connect: wss://api.example.com/ws/notifications?token=jwt
         <h3>🔀 Email Provider Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Amazon SES (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#amazon-ses" class="info-term">Amazon SES<span class="info-i">i</span></a> (Selected)</h5>
                 <p>Cost-effective, high deliverability, AWS-native</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -790,7 +790,7 @@ func (w *Worker) sendWithRetry(ctx context.Context, notif Notification) error {
                         <td>$100</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">SNS</span> Push (1M notifications)</td>
+                        <td><span class="cost-tag aws"><a href="/interview-question/glossary#amazon-sns" class="info-term">SNS<span class="info-i">i</span></a></span> Push (1M notifications)</td>
                         <td>$0.50 per 1M mobile push</td>
                         <td>$1</td>
                     </tr>
@@ -800,17 +800,17 @@ func (w *Worker) sendWithRetry(ctx context.Context, notif Notification) error {
                         <td>$15</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">SQS</span> Message Queue</td>
+                        <td><span class="cost-tag aws"><a href="/interview-question/glossary#amazon-sqs" class="info-term">SQS<span class="info-i">i</span></a></span> Message Queue</td>
                         <td>1M requests</td>
                         <td>$0.40</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">RDS</span> PostgreSQL</td>
+                        <td><span class="cost-tag aws">RDS</span> <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></td>
                         <td>db.t3.medium, Multi-AZ</td>
                         <td>$140</td>
                     </tr>
                     <tr>
-                        <td><span class="cost-tag aws">ElastiCache</span> Redis</td>
+                        <td><span class="cost-tag aws">ElastiCache</span> <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a></td>
                         <td>cache.t3.small (dedup, rate limit)</td>
                         <td>$25</td>
                     </tr>
@@ -853,62 +853,39 @@ func (w *Worker) sendWithRetry(ctx context.Context, notif Notification) error {
         </div>
 
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">push-worker-deployment.yaml</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: push-worker
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      app: push-worker
-  template:
-    spec:
-      containers:
-      - name: worker
-        image: notification-system:v1.0.0
-        args: ["--worker=push"]
-        env:
-        - name: KAFKA_BROKERS
-          value: "kafka:9092"
-        - name: KAFKA_TOPIC
-          value: "notifications.push"
-        - name: FCM_CREDENTIALS
-          valueFrom:
-            secretKeyRef:
-              name: provider-creds
-              key: fcm-key
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "256Mi"
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">push-worker-deployment.yaml (simplified)</h5>
+<pre><span class="yaml-comment"># Deployment for push notification workers</span>
+<span class="yaml-key">apiVersion</span>: apps/v1
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: push-worker
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">replicas</span>: <span class="yaml-value">5</span>
+  <span class="yaml-key">template</span>:
+    <span class="yaml-key">containers</span>:
+    - <span class="yaml-key">name</span>: worker
+      <span class="yaml-key">image</span>: notification-system:v1.0.0
+      <span class="yaml-key">env</span>:
+      - <span class="yaml-key">name</span>: KAFKA_BROKERS  <span class="yaml-comment"># Kafka connection</span>
+        <span class="yaml-key">value</span>: <span class="yaml-string">"kafka:9092"</span>
+      - <span class="yaml-key">name</span>: FCM_CREDENTIALS  <span class="yaml-comment"># From K8s secret</span>
+        <span class="yaml-key">valueFrom</span>: { <span class="yaml-key">secretKeyRef</span>: { <span class="yaml-key">name</span>: provider-creds, <span class="yaml-key">key</span>: fcm-key } }
+      <span class="yaml-key">resources</span>:
+        <span class="yaml-key">requests</span>: { <span class="yaml-key">cpu</span>: <span class="yaml-string">"100m"</span>, <span class="yaml-key">memory</span>: <span class="yaml-string">"128Mi"</span> }
+        <span class="yaml-key">limits</span>: { <span class="yaml-key">cpu</span>: <span class="yaml-string">"500m"</span>, <span class="yaml-key">memory</span>: <span class="yaml-string">"256Mi"</span> }
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: push-worker-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: push-worker
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-  - type: External
-    external:
-      metric:
-        name: kafka_consumer_lag
-        selector:
-          matchLabels:
-            topic: notifications.push
-      target:
-        type: AverageValue
-        averageValue: "1000"</pre>
+<span class="yaml-comment"># HPA scales based on Kafka consumer lag</span>
+<span class="yaml-key">apiVersion</span>: autoscaling/v2
+<span class="yaml-key">kind</span>: HorizontalPodAutoscaler
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">scaleTargetRef</span>: { <span class="yaml-key">name</span>: push-worker }
+  <span class="yaml-key">minReplicas</span>: <span class="yaml-value">2</span>
+  <span class="yaml-key">maxReplicas</span>: <span class="yaml-value">20</span>
+  <span class="yaml-key">metrics</span>:
+  - <span class="yaml-key">type</span>: External
+    <span class="yaml-key">external</span>:
+      <span class="yaml-key">metric</span>: { <span class="yaml-key">name</span>: kafka_consumer_lag }
+      <span class="yaml-key">target</span>: { <span class="yaml-key">averageValue</span>: <span class="yaml-string">"1000"</span> }</pre>
         </div>
 
         <!-- CI/CD -->
@@ -1160,14 +1137,14 @@ kubectl rollout undo deployment/email-worker</pre>
                 <div class="evolution-stage">
                     <div class="evolution-icon">MVP</div>
                     <div class="evolution-label">MVP</div>
-                    <div class="evolution-db">PostgreSQL</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">Single primary<br>All tables colocated</div>
                 </div>
                 <div class="evolution-arrow">→</div>
                 <div class="evolution-stage">
                     <div class="evolution-icon">+</div>
                     <div class="evolution-label">Events</div>
-                    <div class="evolution-db">Kafka</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">Event streaming<br>Priority topics</div>
                 </div>
                 <div class="evolution-arrow">→</div>
@@ -1181,7 +1158,7 @@ kubectl rollout undo deployment/email-worker</pre>
                 <div class="evolution-stage">
                     <div class="evolution-icon">+</div>
                     <div class="evolution-label">Preferences</div>
-                    <div class="evolution-db">ScyllaDB</div>
+                    <div class="evolution-db"><a href="/interview-question/glossary#scylladb" class="info-term">ScyllaDB<span class="info-i">i</span></a></div>
                     <div class="evolution-detail">User preferences<br>Low-latency reads</div>
                 </div>
             </div>
@@ -1393,7 +1370,7 @@ kubectl rollout undo deployment/email-worker</pre>
                     <td>$600</td>
                 </tr>
                 <tr>
-                    <td>Amazon MSK (Kafka, 2 regions)</td>
+                    <td><a href="/interview-question/glossary#amazon-msk" class="info-term">Amazon MSK<span class="info-i">i</span></a> (<a href="/interview-question/glossary#kafka" class="info-term">Kafka<span class="info-i">i</span></a>, 2 regions)</td>
                     <td>$1,200</td>
                 </tr>
                 <tr>
@@ -1845,7 +1822,7 @@ GROUP BY channel;</pre>
                 <tr><td>EKS (100 nodes, c5.2xlarge)</td><td>$25,000</td></tr>
                 <tr><td>RDS (4 shards, db.r5.2xlarge)</td><td>$8,000</td></tr>
                 <tr><td>ClickHouse Cloud</td><td>$3,000</td></tr>
-                <tr><td>Amazon MSK (12 brokers)</td><td>$4,000</td></tr>
+                <tr><td><a href="/interview-question/glossary#amazon-msk" class="info-term">Amazon MSK<span class="info-i">i</span></a> (12 brokers)</td><td>$4,000</td></tr>
                 <tr><td>ElastiCache Cluster (16 nodes)</td><td>$3,000</td></tr>
                 <tr><td>SES (500M emails)</td><td>$50,000</td></tr>
                 <tr><td>SMS (50M, multi-provider)</td><td>$250,000</td></tr>
@@ -2265,7 +2242,7 @@ kubectl --context=us-east rollout undo deployment/api</pre>
             <table class="cost-table">
                 <tr><td>EKS (3 regions, 300 nodes total)</td><td>$100,000</td></tr>
                 <tr><td>CockroachDB Cloud (3 regions)</td><td>$50,000</td></tr>
-                <tr><td>Amazon MSK (3 regions, 36 brokers)</td><td>$15,000</td></tr>
+                <tr><td><a href="/interview-question/glossary#amazon-msk" class="info-term">Amazon MSK<span class="info-i">i</span></a> (3 regions, 36 brokers)</td><td>$15,000</td></tr>
                 <tr><td>ElastiCache Global (48 nodes)</td><td>$12,000</td></tr>
                 <tr><td>ClickHouse Cloud</td><td>$10,000</td></tr>
                 <tr><td>SES (5B emails)</td><td>$500,000</td></tr>

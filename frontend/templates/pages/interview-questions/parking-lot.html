@@ -198,7 +198,7 @@
         <!-- DATABASE SCHEMA -->
         <h3>🗄️ Database Schema</h3>
         <div class="diagram-container">
-            <h4>PostgreSQL Schema with Relationships</h4>
+            <h4><a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> Schema with Relationships</h4>
             <div class="schema-diagram">
                 <div class="schema-table">
                     <div class="schema-table-header">📦 parking_lots</div>
@@ -451,23 +451,23 @@ GROUP BY f.id ORDER BY f.floor_number;</pre>
 <pre>
 Request:
 {
-    "lot_id": 1,
-    "license_plate": "KA-01-AB-1234",
-    "vehicle_type": "sedan",
-    "spot_type": "regular"          // optional: compact, regular, large, handicapped, ev
+    <span class="json-key">"lot_id"</span>: <span class="json-number">1</span>,
+    <span class="json-key">"license_plate"</span>: <span class="json-string">"KA-01-AB-1234"</span>,
+    <span class="json-key">"vehicle_type"</span>: <span class="json-string">"sedan"</span>,
+    <span class="json-key">"spot_type"</span>: <span class="json-string">"regular"</span>          <span class="json-comment">// optional: compact, regular, large, handicapped, ev</span>
 }
 
 Response: 201 Created
 {
-    "booking_id": 12345,
-    "ticket_number": "TKT-20240115-001",
-    "spot": {
-        "floor": 2,
-        "spot_number": "A-42",
-        "spot_type": "regular"
+    <span class="json-key">"booking_id"</span>: <span class="json-number">12345</span>,
+    <span class="json-key">"ticket_number"</span>: <span class="json-string">"TKT-20240115-001"</span>,
+    <span class="json-key">"spot"</span>: {
+        <span class="json-key">"floor"</span>: <span class="json-number">2</span>,
+        <span class="json-key">"spot_number"</span>: <span class="json-string">"A-42"</span>,
+        <span class="json-key">"spot_type"</span>: <span class="json-string">"regular"</span>
     },
-    "entry_time": "2024-01-15T10:30:00Z",
-    "hourly_rate": 50.00
+    <span class="json-key">"entry_time"</span>: <span class="json-string">"2024-01-15T10:30:00Z"</span>,
+    <span class="json-key">"hourly_rate"</span>: <span class="json-number">50.00</span>
 }
 
 Errors:
@@ -481,21 +481,21 @@ Errors:
 <pre>
 Request:
 {
-    "ticket_number": "TKT-20240115-001",
-    "payment_method": "card"        // cash, card, upi, wallet
+    <span class="json-key">"ticket_number"</span>: <span class="json-string">"TKT-20240115-001"</span>,
+    <span class="json-key">"payment_method"</span>: <span class="json-string">"card"</span>        <span class="json-comment">// cash, card, upi, wallet</span>
 }
 
 Response: 200 OK
 {
-    "booking_id": 12345,
-    "duration_hours": 2.5,
-    "amount": 125.00,
-    "payment": {
-        "status": "completed",
-        "transaction_id": "txn_abc123",
-        "method": "card"
+    <span class="json-key">"booking_id"</span>: <span class="json-number">12345</span>,
+    <span class="json-key">"duration_hours"</span>: <span class="json-number">2.5</span>,
+    <span class="json-key">"amount"</span>: <span class="json-number">125.00</span>,
+    <span class="json-key">"payment"</span>: {
+        <span class="json-key">"status"</span>: <span class="json-string">"completed"</span>,
+        <span class="json-key">"transaction_id"</span>: <span class="json-string">"txn_abc123"</span>,
+        <span class="json-key">"method"</span>: <span class="json-string">"card"</span>
     },
-    "exit_time": "2024-01-15T13:00:00Z"
+    <span class="json-key">"exit_time"</span>: <span class="json-string">"2024-01-15T13:00:00Z"</span>
 }
 
 Errors:
@@ -509,26 +509,26 @@ Errors:
 <pre>
 Response: 200 OK
 {
-    "lot_id": 1,
-    "lot_name": "City Mall Parking",
-    "total_spots": 500,
-    "available": 127,
-    "floors": [
-        { "floor": 1, "total": 100, "available": 23 },
-        { "floor": 2, "total": 100, "available": 45 },
-        { "floor": 3, "total": 100, "available": 30 },
-        { "floor": 4, "total": 100, "available": 18 },
-        { "floor": 5, "total": 100, "available": 11 }
+    <span class="json-key">"lot_id"</span>: <span class="json-number">1</span>,
+    <span class="json-key">"lot_name"</span>: <span class="json-string">"City Mall Parking"</span>,
+    <span class="json-key">"total_spots"</span>: <span class="json-number">500</span>,
+    <span class="json-key">"available"</span>: <span class="json-number">127</span>,
+    <span class="json-key">"floors"</span>: [
+        { <span class="json-key">"floor"</span>: <span class="json-number">1</span>, <span class="json-key">"total"</span>: <span class="json-number">100</span>, <span class="json-key">"available"</span>: <span class="json-number">23</span> },
+        { <span class="json-key">"floor"</span>: <span class="json-number">2</span>, <span class="json-key">"total"</span>: <span class="json-number">100</span>, <span class="json-key">"available"</span>: <span class="json-number">45</span> },
+        { <span class="json-key">"floor"</span>: <span class="json-number">3</span>, <span class="json-key">"total"</span>: <span class="json-number">100</span>, <span class="json-key">"available"</span>: <span class="json-number">30</span> },
+        { <span class="json-key">"floor"</span>: <span class="json-number">4</span>, <span class="json-key">"total"</span>: <span class="json-number">100</span>, <span class="json-key">"available"</span>: <span class="json-number">18</span> },
+        { <span class="json-key">"floor"</span>: <span class="json-number">5</span>, <span class="json-key">"total"</span>: <span class="json-number">100</span>, <span class="json-key">"available"</span>: <span class="json-number">11</span> }
     ],
-    "by_type": {
-        "compact": { "total": 100, "available": 35 },
-        "regular": { "total": 300, "available": 72 },
-        "large": { "total": 50, "available": 12 },
-        "handicapped": { "total": 25, "available": 5 },
-        "ev": { "total": 25, "available": 3 }
+    <span class="json-key">"by_type"</span>: {
+        <span class="json-key">"compact"</span>: { <span class="json-key">"total"</span>: <span class="json-number">100</span>, <span class="json-key">"available"</span>: <span class="json-number">35</span> },
+        <span class="json-key">"regular"</span>: { <span class="json-key">"total"</span>: <span class="json-number">300</span>, <span class="json-key">"available"</span>: <span class="json-number">72</span> },
+        <span class="json-key">"large"</span>: { <span class="json-key">"total"</span>: <span class="json-number">50</span>, <span class="json-key">"available"</span>: <span class="json-number">12</span> },
+        <span class="json-key">"handicapped"</span>: { <span class="json-key">"total"</span>: <span class="json-number">25</span>, <span class="json-key">"available"</span>: <span class="json-number">5</span> },
+        <span class="json-key">"ev"</span>: { <span class="json-key">"total"</span>: <span class="json-number">25</span>, <span class="json-key">"available"</span>: <span class="json-number">3</span> }
     },
-    "hourly_rate": 50.00,
-    "updated_at": "2024-01-15T10:30:00Z"
+    <span class="json-key">"hourly_rate"</span>: <span class="json-number">50.00</span>,
+    <span class="json-key">"updated_at"</span>: <span class="json-string">"2024-01-15T10:30:00Z"</span>
 }
 
 Headers:
@@ -539,7 +539,7 @@ Headers:
         <h3>🔀 Database Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ PostgreSQL (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#postgresql" class="info-term">PostgreSQL<span class="info-i">i</span></a> (Selected)</h5>
                 <p>ACID compliance, robust for transactional workloads</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -597,7 +597,7 @@ Headers:
         <h3>🔀 Cache Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Redis / ElastiCache (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> / ElastiCache (Selected)</h5>
                 <p>Real-time availability counters</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> INCR/DECR atomic counters<br>
@@ -745,70 +745,42 @@ func (spot *Spot) SetStatus(newStatus SpotStatus) error {
         </div>
 
         <div class="code-example">
-            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml</h5>
-<pre>apiVersion: apps/v1
+            <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml (simplified)</h5>
+<pre><span class="yaml-comment"># Deployment - API Server</span>
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: parking-lot-api
 spec:
   replicas: 2
   selector:
-    matchLabels:
-      app: parking-lot
+    matchLabels: { app: parking-lot }
   template:
     spec:
       containers:
       - name: api
         image: parking-lot:v1.0.0
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-creds
-              key: url
-        - name: REDIS_URL
-          valueFrom:
-            secretKeyRef:
-              name: redis-creds
-              key: url
+        ports: [{ containerPort: 8080 }]
+        envFrom:
+        - secretRef: { name: db-creds }    <span class="yaml-comment"># DATABASE_URL, REDIS_URL</span>
         resources:
-          requests:
-            cpu: "250m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 15
+          requests: { cpu: "250m", memory: "256Mi" }
+          limits: { cpu: "500m", memory: "512Mi" }
+        readinessProbe: { httpGet: { path: /health, port: 8080 } }
+        livenessProbe: { httpGet: { path: /health, port: 8080 } }
 ---
+<span class="yaml-comment"># HPA - Auto-scale 2-10 pods based on CPU</span>
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: parking-lot-hpa
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: parking-lot-api
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: parking-lot-api }
   minReplicas: 2
   maxReplicas: 10
   metrics:
   - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70</pre>
+    resource: { name: cpu, target: { type: Utilization, averageUtilization: 70 } }</pre>
         </div>
 
         <!-- CI/CD -->
@@ -878,7 +850,7 @@ spec:
 
             <div class="edge-case-item">
                 <div class="case-title">Spot Sensor Malfunction</div>
-                <p>IoT sensor reports false occupied/available status, causing booking conflicts.</p>
+                <p><a href="/interview-question/glossary#iot" class="info-term">IoT<span class="info-i">i</span></a> sensor reports false occupied/available status, causing booking conflicts.</p>
                 <div class="case-solution">Cross-validate with entry/exit logs. Flag sensors with >5% discrepancy. Use soft-state: trust booking DB over sensor. Auto-reconcile every 15 minutes.</div>
             </div>
 
@@ -1439,7 +1411,7 @@ LIMIT 20;</pre>
                     <h4 style="color: #22c55e;">Functional</h4>
                     <ul>
                         <li>Event-based surge pricing</li>
-                        <li>Real-time IoT sensor integration</li>
+                        <li>Real-time <a href="/interview-question/glossary#iot" class="info-term">IoT<span class="info-i">i</span></a> sensor integration</li>
                         <li>License Plate Recognition (LPR)</li>
                         <li>Corporate fleet management</li>
                         <li>Airport/stadium overflow routing</li>
@@ -1525,7 +1497,7 @@ LIMIT 20;</pre>
         </div>
 
         <!-- Data Flow - IoT -->
-        <h3>🔄 Data Flow - IoT Sensor Updates</h3>
+        <h3>🔄 Data Flow - <a href="/interview-question/glossary#iot" class="info-term">IoT<span class="info-i">i</span></a> Sensor Updates</h3>
         <div class="diagram-container">
             <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;">
                 <div class="flow-step">
@@ -1573,8 +1545,8 @@ LIMIT 20;</pre>
                 </div>
             </div>
             <div class="alternative-card">
-                <h5>AWS IoT Core</h5>
-                <p>Managed MQTT broker for sensors</p>
+                <h5>AWS <a href="/interview-question/glossary#iot" class="info-term">IoT<span class="info-i">i</span></a> Core</h5>
+                <p>Managed <a href="/interview-question/glossary#mqtt" class="info-term">MQTT<span class="info-i">i</span></a> broker for sensors</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Native IoT protocol support<br>
                     <span style="color: #22c55e;">✓</span> Device shadows for offline<br>

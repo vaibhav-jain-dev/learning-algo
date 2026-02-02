@@ -4,7 +4,7 @@
     <a href="/interview-question" class="back-to-dashboard">← Back to All Topics</a>
 
     <h1>⏱️ Rate Limiter System Design</h1>
-    <p class="topic-description">Design a distributed rate limiting system protecting APIs from abuse with Token Bucket, Sliding Window algorithms</p>
+    <p class="topic-description">Design a distributed rate limiting system protecting APIs from abuse with <a href="/interview-question/glossary#token-bucket" class="info-term">Token Bucket<span class="info-i">i</span></a>, <a href="/interview-question/glossary#sliding-window" class="info-term">Sliding Window<span class="info-i">i</span></a> algorithms</p>
 
     <div class="quick-nav">
         <h4>Navigation</h4>
@@ -66,7 +66,7 @@
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 2: Load Balancer -->
-                <div class="arch-box lb">AWS ALB<br><small>Health checks, SSL termination</small></div>
+                <div class="arch-box lb"><a href="/interview-question/glossary#load-balancer" class="info-term">AWS ALB<span class="info-i">i</span></a><br><small>Health checks, SSL termination</small></div>
                 <div class="arch-arrow">↓</div>
 
                 <!-- Layer 3: API Servers with Rate Limiter -->
@@ -88,7 +88,7 @@
 
                 <!-- Layer 4: Redis -->
                 <div style="text-align: center;">
-                    <div class="arch-box cache">ElastiCache Redis<br><small>Rate Limit State</small></div>
+                    <div class="arch-box cache"><a href="/interview-question/glossary#redis" class="info-term">ElastiCache Redis<span class="info-i">i</span></a><br><small>Rate Limit State</small></div>
                     <div style="font-size: 12px; color: #64748b; margin-top: 8px;">Centralized counter storage<br>Lua scripts for atomicity</div>
                 </div>
             </div>
@@ -136,7 +136,7 @@
 
         <!-- Token Bucket -->
         <div class="diagram-container">
-            <h4>Token Bucket Algorithm (Most Flexible)</h4>
+            <h4><a href="/interview-question/glossary#token-bucket" class="info-term">Token Bucket<span class="info-i">i</span></a> Algorithm (Most Flexible)</h4>
             <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
                 <div style="text-align: center;">
                     <div style="background: #1e293b; border: 3px solid #f59e0b; border-radius: 12px; padding: 20px; min-width: 150px;">
@@ -172,7 +172,7 @@
 
         <!-- Sliding Window Log -->
         <div class="diagram-container">
-            <h4>Sliding Window Log (Most Accurate)</h4>
+            <h4><a href="/interview-question/glossary#sliding-window" class="info-term">Sliding Window<span class="info-i">i</span></a> Log (Most Accurate)</h4>
             <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
                 <div style="text-align: center;">
                     <div style="background: #1e293b; border-radius: 12px; padding: 20px; min-width: 300px;">
@@ -200,7 +200,7 @@
 
         <!-- Sliding Window Counter -->
         <div class="diagram-container">
-            <h4>Sliding Window Counter (Balanced)</h4>
+            <h4><a href="/interview-question/glossary#sliding-window" class="info-term">Sliding Window<span class="info-i">i</span></a> Counter (Balanced)</h4>
             <div style="display: flex; gap: 40px; align-items: center; justify-content: center; flex-wrap: wrap;">
                 <div style="text-align: center;">
                     <div style="background: #1e293b; border-radius: 12px; padding: 20px;">
@@ -443,12 +443,12 @@ X-RateLimit-Policy: "100;w=60"      // Policy: 100 per 60 seconds
 
 Success Response: 200 OK
 {
-    "data": { ... },
-    "meta": {
-        "rateLimit": {
-            "limit": 100,
-            "remaining": 45,
-            "reset": 1704067200
+    <span class="json-key">"data"</span>: { ... },
+    <span class="json-key">"meta"</span>: {
+        <span class="json-key">"rateLimit"</span>: {
+            <span class="json-key">"limit"</span>: <span class="json-number">100</span>,
+            <span class="json-key">"remaining"</span>: <span class="json-number">45</span>,
+            <span class="json-key">"reset"</span>: <span class="json-number">1704067200</span>
         }
     }
 }</pre>
@@ -467,12 +467,12 @@ Headers:
 
 Response Body:
 {
-    "error": {
-        "code": "RATE_LIMIT_EXCEEDED",
-        "message": "Too many requests. Please retry after 30 seconds.",
-        "retryAfter": 30,
-        "limit": 100,
-        "window": "60s"
+    <span class="json-key">"error"</span>: {
+        <span class="json-key">"code"</span>: <span class="json-string">"RATE_LIMIT_EXCEEDED"</span>,
+        <span class="json-key">"message"</span>: <span class="json-string">"Too many requests. Please retry after 30 seconds."</span>,
+        <span class="json-key">"retryAfter"</span>: <span class="json-number">30</span>,
+        <span class="json-key">"limit"</span>: <span class="json-number">100</span>,
+        <span class="json-key">"window"</span>: <span class="json-string">"60s"</span>
     }
 }</pre>
         </div>
@@ -484,20 +484,20 @@ Response Body:
 
 Response: 200 OK
 {
-    "userId": "user_123",
-    "tier": "pro",
-    "limits": {
-        "requests": {
-            "limit": 1000,
-            "remaining": 847,
-            "reset": 1704067200,
-            "window": "60s"
+    <span class="json-key">"userId"</span>: <span class="json-string">"user_123"</span>,
+    <span class="json-key">"tier"</span>: <span class="json-string">"pro"</span>,
+    <span class="json-key">"limits"</span>: {
+        <span class="json-key">"requests"</span>: {
+            <span class="json-key">"limit"</span>: <span class="json-number">1000</span>,
+            <span class="json-key">"remaining"</span>: <span class="json-number">847</span>,
+            <span class="json-key">"reset"</span>: <span class="json-number">1704067200</span>,
+            <span class="json-key">"window"</span>: <span class="json-string">"60s"</span>
         },
-        "daily": {
-            "limit": 50000,
-            "remaining": 42156,
-            "reset": 1704153600,
-            "window": "24h"
+        <span class="json-key">"daily"</span>: {
+            <span class="json-key">"limit"</span>: <span class="json-number">50000</span>,
+            <span class="json-key">"remaining"</span>: <span class="json-number">42156</span>,
+            <span class="json-key">"reset"</span>: <span class="json-number">1704153600</span>,
+            <span class="json-key">"window"</span>: <span class="json-string">"24h"</span>
         }
     }
 }</pre>
@@ -507,7 +507,7 @@ Response: 200 OK
         <h3>🔀 Storage Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Redis / ElastiCache (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#redis" class="info-term">Redis<span class="info-i">i</span></a> / ElastiCache (Selected)</h5>
                 <p>In-memory, atomic Lua scripts, sub-ms latency</p>
                 <div class="pros-cons-grid" style="margin: 12px 0;">
                     <div style="background: #f0fdf4; padding: 12px; border-radius: 8px;">
@@ -567,7 +567,7 @@ Response: 200 OK
         <h3>🔀 Algorithm Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Token Bucket (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#token-bucket" class="info-term">Token Bucket<span class="info-i">i</span></a> (Selected)</h5>
                 <p>Best for APIs with burst tolerance</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Allows controlled bursts<br>
@@ -581,7 +581,7 @@ Response: 200 OK
             </div>
 
             <div class="alternative-card">
-                <h5>Sliding Window Counter</h5>
+                <h5><a href="/interview-question/glossary#sliding-window" class="info-term">Sliding Window<span class="info-i">i</span></a> Counter</h5>
                 <p>Balanced accuracy and memory</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> No burst at boundaries<br>
@@ -748,60 +748,38 @@ func (rl *RateLimiter) Middleware() gin.HandlerFunc {
 
         <div class="code-example">
             <h5 style="color: #60a5fa; margin-bottom: 12px;">deployment.yaml</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: api-with-rate-limiter
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: api
-  template:
-    spec:
-      containers:
-      - name: api
-        image: api:v1.0.0
-        ports:
-        - containerPort: 8080
-        env:
-        - name: REDIS_URL
-          valueFrom:
-            secretKeyRef:
-              name: redis-creds
-              key: url
-        - name: RATE_LIMIT_ENABLED
-          valueFrom:
-            configMapKeyRef:
-              name: rate-limit-config
-              key: enabled
-        - name: RATE_LIMIT_CAPACITY
-          value: "100"
-        - name: RATE_LIMIT_RATE
-          value: "10"  # 10 tokens/sec
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "200m"
-            memory: "256Mi"
+<pre><span class="yaml-comment"># Deployment with rate limiter middleware</span>
+<span class="yaml-key">apiVersion</span>: apps/v1
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: api-with-rate-limiter
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">replicas</span>: <span class="yaml-number">2</span>
+  <span class="yaml-key">template</span>:
+    <span class="yaml-key">spec</span>:
+      <span class="yaml-key">containers</span>:
+      - <span class="yaml-key">name</span>: api
+        <span class="yaml-key">image</span>: api:v1.0.0
+        <span class="yaml-key">env</span>:
+        - <span class="yaml-key">name</span>: REDIS_URL
+          <span class="yaml-key">valueFrom</span>:
+            <span class="yaml-key">secretKeyRef</span>: { <span class="yaml-key">name</span>: redis-creds, <span class="yaml-key">key</span>: url }
+        - <span class="yaml-key">name</span>: RATE_LIMIT_CAPACITY
+          <span class="yaml-key">value</span>: <span class="yaml-string">"100"</span>
+        - <span class="yaml-key">name</span>: RATE_LIMIT_RATE
+          <span class="yaml-key">value</span>: <span class="yaml-string">"10"</span>  <span class="yaml-comment"># tokens/sec</span>
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: rate-limit-config
-data:
-  enabled: "true"
-  rules: |
-    default:
-      capacity: 100
-      rate: 10
-    /api/v1/expensive:
-      capacity: 10
-      rate: 1
-    /api/v1/health:
-      enabled: false</pre>
+<span class="yaml-comment"># ConfigMap for rate limit rules</span>
+<span class="yaml-key">apiVersion</span>: v1
+<span class="yaml-key">kind</span>: ConfigMap
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: rate-limit-config
+<span class="yaml-key">data</span>:
+  <span class="yaml-key">enabled</span>: <span class="yaml-string">"true"</span>
+  <span class="yaml-key">rules</span>: |
+    default: { capacity: 100, rate: 10 }
+    /api/v1/expensive: { capacity: 10, rate: 1 }
+    /api/v1/health: { enabled: false }</pre>
         </div>
 
         <!-- ROLLBACK STRATEGY -->
@@ -1227,7 +1205,7 @@ func (rl *DistributedRateLimiter) Allow(ctx context.Context, key string) bool {
         <h3>🔀 Distributed Algorithm Alternatives</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Token Bucket + Sync (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#token-bucket" class="info-term">Token Bucket<span class="info-i">i</span></a> + Sync (Selected)</h5>
                 <p>Local bucket with periodic global sync</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> Tolerates network partitions<br>
@@ -1626,7 +1604,7 @@ func (rl *DistributedRateLimiter) Allow(ctx context.Context, key string) bool {
                 <div class="arch-arrow">↓ 70% blocked</div>
 
                 <div style="background: rgba(249,115,22,0.1); padding: 16px; border-radius: 12px; border: 2px solid #f97316;">
-                    <div style="text-align: center; margin-bottom: 8px; color: #f97316; font-weight: bold;">Layer 2: API Gateway</div>
+                    <div style="text-align: center; margin-bottom: 8px; color: #f97316; font-weight: bold;">Layer 2: <a href="/interview-question/glossary#api-gateway" class="info-term">API Gateway<span class="info-i">i</span></a></div>
                     <div style="display: flex; gap: 12px; justify-content: center;">
                         <div class="arch-box gateway" style="padding: 10px;">Auth Check</div>
                         <div class="arch-box gateway" style="padding: 10px;">User Tier Limits</div>
@@ -1751,7 +1729,7 @@ func (rl *HybridRateLimiter) Allow(ctx context.Context, key string) (bool, error
         <h3>🔀 Storage Alternatives at Scale</h3>
         <div class="alternatives-grid">
             <div class="alternative-card selected">
-                <h5>✅ Redis Cluster (Selected)</h5>
+                <h5>✅ <a href="/interview-question/glossary#redis" class="info-term">Redis Cluster<span class="info-i">i</span></a> (Selected)</h5>
                 <p>Horizontally scaled, automatic sharding</p>
                 <div style="font-size: 13px; margin-top: 8px;">
                     <span style="color: #22c55e;">✓</span> 16+ shards for throughput<br>
@@ -1787,57 +1765,41 @@ func (rl *HybridRateLimiter) Allow(ctx context.Context, key string) (bool, error
         <h3>🚀 K8s Deployment at Scale</h3>
         <div class="code-example">
             <h5 style="color: #60a5fa; margin-bottom: 12px;">Envoy Sidecar Rate Limiting</h5>
-<pre>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: api-with-envoy-ratelimit
-spec:
-  replicas: 20
-  template:
-    spec:
-      containers:
-      - name: api
-        image: api:v2.0.0
-        ports:
-        - containerPort: 8080
-
-      - name: envoy-proxy
-        image: envoyproxy/envoy:v1.28
-        ports:
-        - containerPort: 8443
-        volumeMounts:
-        - name: envoy-config
-          mountPath: /etc/envoy
-
-      volumes:
-      - name: envoy-config
-        configMap:
-          name: envoy-ratelimit-config
+<pre><span class="yaml-comment"># Envoy sidecar for rate limiting</span>
+<span class="yaml-key">apiVersion</span>: apps/v1
+<span class="yaml-key">kind</span>: Deployment
+<span class="yaml-key">metadata</span>:
+  <span class="yaml-key">name</span>: api-with-envoy-ratelimit
+<span class="yaml-key">spec</span>:
+  <span class="yaml-key">replicas</span>: <span class="yaml-number">20</span>
+  <span class="yaml-key">template</span>:
+    <span class="yaml-key">spec</span>:
+      <span class="yaml-key">containers</span>:
+      - <span class="yaml-key">name</span>: api
+        <span class="yaml-key">image</span>: api:v2.0.0
+      - <span class="yaml-key">name</span>: envoy-proxy  <span class="yaml-comment"># Sidecar</span>
+        <span class="yaml-key">image</span>: envoyproxy/envoy:v1.28
+        <span class="yaml-key">volumeMounts</span>:
+        - { <span class="yaml-key">name</span>: envoy-config, <span class="yaml-key">mountPath</span>: /etc/envoy }
+      <span class="yaml-key">volumes</span>:
+      - <span class="yaml-key">name</span>: envoy-config
+        <span class="yaml-key">configMap</span>: { <span class="yaml-key">name</span>: envoy-ratelimit-config }
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: envoy-ratelimit-config
-data:
-  envoy.yaml: |
-    static_resources:
-      listeners:
-      - address:
-          socket_address: { address: 0.0.0.0, port_value: 8443 }
-        filter_chains:
-        - filters:
-          - name: envoy.filters.network.http_connection_manager
-            typed_config:
-              "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
-              http_filters:
-              - name: envoy.filters.http.ratelimit
-                typed_config:
-                  "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
-                  domain: api_ratelimit
-                  rate_limit_service:
-                    grpc_service:
-                      envoy_grpc:
-                        cluster_name: ratelimit_cluster</pre>
+<span class="yaml-comment"># Envoy rate limit config (simplified)</span>
+<span class="yaml-key">apiVersion</span>: v1
+<span class="yaml-key">kind</span>: ConfigMap
+<span class="yaml-key">data</span>:
+  <span class="yaml-key">envoy.yaml</span>: |
+    <span class="yaml-key">static_resources</span>:
+      <span class="yaml-key">listeners</span>:
+      - <span class="yaml-key">address</span>: { socket_address: { address: 0.0.0.0, port_value: 8443 } }
+        <span class="yaml-key">filter_chains</span>:
+        - <span class="yaml-key">filters</span>:
+          - <span class="yaml-key">name</span>: envoy.filters.http.ratelimit
+            <span class="yaml-key">typed_config</span>:
+              <span class="yaml-key">domain</span>: api_ratelimit
+              <span class="yaml-key">rate_limit_service</span>:
+                <span class="yaml-key">grpc_service</span>: { envoy_grpc: { cluster_name: ratelimit_cluster } }</pre>
         </div>
 
         <!-- ROLLBACK STRATEGY -->
@@ -2347,27 +2309,27 @@ func (gl *GlobalRateLimiter) rebalanceLoop() {
 
 Request:
 {
-    "scope": "user",           // user | ip | api_key | endpoint
-    "identifier": "user_123",  // specific ID or "*" for default
-    "limits": {
-        "requests_per_minute": 1000,
-        "requests_per_day": 100000,
-        "burst_size": 200
+    <span class="json-key">"scope"</span>: <span class="json-string">"user"</span>,
+    <span class="json-key">"identifier"</span>: <span class="json-string">"user_123"</span>,
+    <span class="json-key">"limits"</span>: {
+        <span class="json-key">"requests_per_minute"</span>: <span class="json-number">1000</span>,
+        <span class="json-key">"requests_per_day"</span>: <span class="json-number">100000</span>,
+        <span class="json-key">"burst_size"</span>: <span class="json-number">200</span>
     },
-    "tier": "enterprise",
-    "regions": ["us-east-1", "eu-west-1", "ap-southeast-1"],
-    "effective_at": "2024-01-15T00:00:00Z",
-    "expires_at": null
+    <span class="json-key">"tier"</span>: <span class="json-string">"enterprise"</span>,
+    <span class="json-key">"regions"</span>: [<span class="json-string">"us-east-1"</span>, <span class="json-string">"eu-west-1"</span>, <span class="json-string">"ap-southeast-1"</span>],
+    <span class="json-key">"effective_at"</span>: <span class="json-string">"2024-01-15T00:00:00Z"</span>,
+    <span class="json-key">"expires_at"</span>: <span class="json-null">null</span>
 }
 
 Response: 201 Created
 {
-    "id": "rl_abc123",
-    "status": "propagating",
-    "propagation": {
-        "us-east-1": "applied",
-        "eu-west-1": "pending",
-        "ap-southeast-1": "pending"
+    <span class="json-key">"id"</span>: <span class="json-string">"rl_abc123"</span>,
+    <span class="json-key">"status"</span>: <span class="json-string">"propagating"</span>,
+    <span class="json-key">"propagation"</span>: {
+        <span class="json-key">"us-east-1"</span>: <span class="json-string">"applied"</span>,
+        <span class="json-key">"eu-west-1"</span>: <span class="json-string">"pending"</span>,
+        <span class="json-key">"ap-southeast-1"</span>: <span class="json-string">"pending"</span>
     }
 }</pre>
         </div>
@@ -2379,21 +2341,21 @@ Response: 201 Created
 
 Response: 200 OK
 {
-    "period": "last_hour",
-    "global": {
-        "total_requests": 45678901,
-        "allowed": 45123456,
-        "denied": 555445,
-        "denial_rate": "1.22%"
+    <span class="json-key">"period"</span>: <span class="json-string">"last_hour"</span>,
+    <span class="json-key">"global"</span>: {
+        <span class="json-key">"total_requests"</span>: <span class="json-number">45678901</span>,
+        <span class="json-key">"allowed"</span>: <span class="json-number">45123456</span>,
+        <span class="json-key">"denied"</span>: <span class="json-number">555445</span>,
+        <span class="json-key">"denial_rate"</span>: <span class="json-string">"1.22%"</span>
     },
-    "by_region": {
-        "us-east-1": { "requests": 18234567, "denied": 198234 },
-        "eu-west-1": { "requests": 15678901, "denied": 187654 },
-        "ap-southeast-1": { "requests": 11765433, "denied": 169557 }
+    <span class="json-key">"by_region"</span>: {
+        <span class="json-key">"us-east-1"</span>: { <span class="json-key">"requests"</span>: <span class="json-number">18234567</span>, <span class="json-key">"denied"</span>: <span class="json-number">198234</span> },
+        <span class="json-key">"eu-west-1"</span>: { <span class="json-key">"requests"</span>: <span class="json-number">15678901</span>, <span class="json-key">"denied"</span>: <span class="json-number">187654</span> },
+        <span class="json-key">"ap-southeast-1"</span>: { <span class="json-key">"requests"</span>: <span class="json-number">11765433</span>, <span class="json-key">"denied"</span>: <span class="json-number">169557</span> }
     },
-    "top_limited_users": [
-        { "user_id": "user_456", "denied": 12345, "tier": "free" },
-        { "user_id": "user_789", "denied": 8901, "tier": "pro" }
+    <span class="json-key">"top_limited_users"</span>: [
+        { <span class="json-key">"user_id"</span>: <span class="json-string">"user_456"</span>, <span class="json-key">"denied"</span>: <span class="json-number">12345</span>, <span class="json-key">"tier"</span>: <span class="json-string">"free"</span> },
+        { <span class="json-key">"user_id"</span>: <span class="json-string">"user_789"</span>, <span class="json-key">"denied"</span>: <span class="json-number">8901</span>, <span class="json-key">"tier"</span>: <span class="json-string">"pro"</span> }
     ]
 }</pre>
         </div>
