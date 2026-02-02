@@ -286,6 +286,8 @@ func (h *Handlers) InterviewQuestionTopic(c *fiber.Ctx) error {
 		"rate-limiter":   "Rate Limiter System Design",
 		"food-ordering":  "Food Ordering System Design",
 		"slot-booking":   "Slot Booking System Design",
+		"glossary":       "Technical Glossary",
+		"components":     "System Components & Concepts",
 	}
 
 	title, exists := topicNames[topic]

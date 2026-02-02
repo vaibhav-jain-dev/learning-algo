@@ -1,0 +1,758 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to Dashboard</a>
+
+    <h1>Technical Glossary</h1>
+    <p class="topic-description">All technical terms and concepts used across system design topics with detailed explanations and links to where they're used.</p>
+
+    <!-- Search/Filter -->
+    <div style="margin: 24px 0;">
+        <input type="text" id="glossary-search" placeholder="Search terms..."
+               style="width: 100%; max-width: 400px; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px;">
+    </div>
+
+    <!-- Category Navigation -->
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px;">
+        <button class="glossary-filter active" data-category="all">All Terms</button>
+        <button class="glossary-filter" data-category="databases">Databases</button>
+        <button class="glossary-filter" data-category="caching">Caching</button>
+        <button class="glossary-filter" data-category="messaging">Messaging</button>
+        <button class="glossary-filter" data-category="architecture">Architecture</button>
+        <button class="glossary-filter" data-category="algorithms">Algorithms</button>
+        <button class="glossary-filter" data-category="cloud">Cloud Services</button>
+    </div>
+
+    <!-- Databases Category -->
+    <section class="glossary-section" data-category="databases">
+        <h2>Databases & Storage</h2>
+
+        <div class="glossary-item" id="postgresql">
+            <div class="glossary-header">
+                <h3>PostgreSQL</h3>
+                <span class="glossary-tag">RDBMS</span>
+            </div>
+            <p>Advanced open-source relational database with support for JSON, full-text search, and geospatial data (PostGIS). ACID compliant with excellent performance for complex queries.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>JSONB:</strong> Binary JSON storage with indexing support</li>
+                    <li><strong>PostGIS:</strong> Geospatial extension for location queries</li>
+                    <li><strong>Full-Text Search:</strong> Built-in text search capabilities</li>
+                    <li><strong>Partitioning:</strong> Table partitioning for large datasets</li>
+                </ul>
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Complex relationships and joins</li>
+                    <li>ACID compliance required</li>
+                    <li>Geospatial queries (with PostGIS)</li>
+                    <li>Mixed structured and semi-structured data</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#database">URL Shortener</a>
+                <a href="/interview-question/food-ordering#database">Food Ordering</a>
+                <a href="/interview-question/ride-booking#database">Ride Booking</a>
+                <a href="/interview-question/slot-booking#database">Slot Booking</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="mongodb">
+            <div class="glossary-header">
+                <h3>MongoDB</h3>
+                <span class="glossary-tag">NoSQL</span>
+            </div>
+            <p>Document-oriented NoSQL database designed for flexibility and horizontal scalability. Stores data in JSON-like BSON documents.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>Flexible Schema:</strong> Documents can have different structures</li>
+                    <li><strong>Sharding:</strong> Built-in horizontal scaling</li>
+                    <li><strong>Replication:</strong> Automatic failover with replica sets</li>
+                    <li><strong>Aggregation Pipeline:</strong> Powerful data processing</li>
+                </ul>
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Rapidly evolving schemas</li>
+                    <li>Document-centric data (logs, content)</li>
+                    <li>High write throughput</li>
+                    <li>Geographically distributed data</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/notification#database">Notification System</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="cockroachdb">
+            <div class="glossary-header">
+                <h3>CockroachDB</h3>
+                <span class="glossary-tag">NewSQL</span>
+            </div>
+            <p>Distributed SQL database that combines the scalability of NoSQL with ACID guarantees. Designed for global deployments with automatic sharding.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>Geo-Partitioning:</strong> Data locality for compliance</li>
+                    <li><strong>Serializable Isolation:</strong> Strongest consistency level</li>
+                    <li><strong>Automatic Sharding:</strong> No manual shard management</li>
+                    <li><strong>PostgreSQL Compatible:</strong> Standard SQL interface</li>
+                </ul>
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Global-scale applications</li>
+                    <li>Multi-region deployments</li>
+                    <li>Strong consistency requirements</li>
+                    <li>High availability (99.999%)</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#global-scale">URL Shortener (Global)</a>
+                <a href="/interview-question/food-ordering#global-scale">Food Ordering (Global)</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="cassandra">
+            <div class="glossary-header">
+                <h3>Apache Cassandra</h3>
+                <span class="glossary-tag">Wide-Column</span>
+            </div>
+            <p>Highly scalable, distributed wide-column store designed for handling large amounts of data across many commodity servers with no single point of failure.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>Linear Scalability:</strong> Performance scales linearly</li>
+                    <li><strong>No SPOF:</strong> Peer-to-peer architecture</li>
+                    <li><strong>Tunable Consistency:</strong> Choose your consistency level</li>
+                    <li><strong>Time-Series Optimized:</strong> Great for time-series data</li>
+                </ul>
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Write-heavy workloads</li>
+                    <li>Time-series data</li>
+                    <li>High availability over consistency</li>
+                    <li>Large-scale distributed systems</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/notification#high-traffic">Notification (High Traffic)</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Caching Category -->
+    <section class="glossary-section" data-category="caching">
+        <h2>Caching Technologies</h2>
+
+        <div class="glossary-item" id="redis">
+            <div class="glossary-header">
+                <h3>Redis</h3>
+                <span class="glossary-tag">In-Memory</span>
+            </div>
+            <p>In-memory data structure store used as database, cache, message broker, and queue. Supports strings, hashes, lists, sets, sorted sets, and more.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>Data Structures:</strong> Rich set of data types</li>
+                    <li><strong>Pub/Sub:</strong> Message broadcasting</li>
+                    <li><strong>Lua Scripting:</strong> Atomic operations</li>
+                    <li><strong>Cluster Mode:</strong> Horizontal scaling</li>
+                    <li><strong>Persistence:</strong> RDB and AOF options</li>
+                </ul>
+                <h4>Common Use Cases</h4>
+                <ul>
+                    <li>Session storage</li>
+                    <li>Rate limiting</li>
+                    <li>Leaderboards</li>
+                    <li>Real-time analytics</li>
+                    <li>Caching layer</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#caching">URL Shortener</a>
+                <a href="/interview-question/rate-limiter#redis">Rate Limiter</a>
+                <a href="/interview-question/ride-booking#caching">Ride Booking</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="elasticache">
+            <div class="glossary-header">
+                <h3>Amazon ElastiCache</h3>
+                <span class="glossary-tag">AWS</span>
+            </div>
+            <p>Fully managed in-memory caching service compatible with Redis and Memcached. Provides sub-millisecond latency for caching use cases.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>Managed Service:</strong> No server management</li>
+                    <li><strong>Auto Scaling:</strong> Automatic capacity adjustment</li>
+                    <li><strong>Multi-AZ:</strong> High availability</li>
+                    <li><strong>Global Datastore:</strong> Cross-region replication</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#pan-india">URL Shortener (PAN-India)</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Messaging Category -->
+    <section class="glossary-section" data-category="messaging">
+        <h2>Message Queues & Streaming</h2>
+
+        <div class="glossary-item" id="kafka">
+            <div class="glossary-header">
+                <h3>Apache Kafka</h3>
+                <span class="glossary-tag">Event Streaming</span>
+            </div>
+            <p>Distributed event streaming platform capable of handling trillions of events per day. Used for building real-time data pipelines and streaming applications.</p>
+            <div class="glossary-details">
+                <h4>Key Concepts</h4>
+                <ul>
+                    <li><strong>Topics:</strong> Categories for organizing messages</li>
+                    <li><strong>Partitions:</strong> Parallel processing units</li>
+                    <li><strong>Consumer Groups:</strong> Scaling consumers</li>
+                    <li><strong>Retention:</strong> Configurable message retention</li>
+                </ul>
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Event sourcing</li>
+                    <li>Log aggregation</li>
+                    <li>Stream processing</li>
+                    <li>Activity tracking</li>
+                    <li>Metrics collection</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#analytics">URL Shortener (Analytics)</a>
+                <a href="/interview-question/notification#messaging">Notification System</a>
+                <a href="/interview-question/food-ordering#events">Food Ordering</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="amazon-msk">
+            <div class="glossary-header">
+                <h3>Amazon MSK (Managed Kafka)</h3>
+                <span class="glossary-tag">AWS</span>
+            </div>
+            <p>Fully managed Apache Kafka service that makes it easy to build and run applications that use Kafka for streaming data.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>Managed:</strong> AWS handles cluster operations</li>
+                    <li><strong>Security:</strong> IAM, TLS, and encryption</li>
+                    <li><strong>Monitoring:</strong> CloudWatch integration</li>
+                    <li><strong>Serverless:</strong> MSK Serverless option available</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/notification#high-traffic">Notification (High Traffic)</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="rabbitmq">
+            <div class="glossary-header">
+                <h3>RabbitMQ</h3>
+                <span class="glossary-tag">Message Broker</span>
+            </div>
+            <p>Traditional message broker implementing AMQP protocol. Excellent for complex routing scenarios and when message acknowledgment is critical.</p>
+            <div class="glossary-details">
+                <h4>Key Features</h4>
+                <ul>
+                    <li><strong>Exchanges:</strong> Flexible message routing</li>
+                    <li><strong>Dead Letter Queues:</strong> Failed message handling</li>
+                    <li><strong>Priority Queues:</strong> Message prioritization</li>
+                    <li><strong>Acknowledgments:</strong> Guaranteed delivery</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/notification#mvp">Notification MVP</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Category -->
+    <section class="glossary-section" data-category="architecture">
+        <h2>Architecture Patterns</h2>
+
+        <div class="glossary-item" id="microservices">
+            <div class="glossary-header">
+                <h3>Microservices Architecture</h3>
+                <span class="glossary-tag">Pattern</span>
+            </div>
+            <p>Architectural style that structures an application as a collection of loosely coupled, independently deployable services.</p>
+            <div class="glossary-details">
+                <h4>Benefits</h4>
+                <ul>
+                    <li>Independent deployment and scaling</li>
+                    <li>Technology flexibility per service</li>
+                    <li>Fault isolation</li>
+                    <li>Team autonomy</li>
+                </ul>
+                <h4>Challenges</h4>
+                <ul>
+                    <li>Distributed system complexity</li>
+                    <li>Data consistency</li>
+                    <li>Service discovery</li>
+                    <li>Monitoring and debugging</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/food-ordering#architecture">Food Ordering</a>
+                <a href="/interview-question/ride-booking#architecture">Ride Booking</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="cqrs">
+            <div class="glossary-header">
+                <h3>CQRS (Command Query Responsibility Segregation)</h3>
+                <span class="glossary-tag">Pattern</span>
+            </div>
+            <p>Pattern that separates read and write operations into different models, allowing optimization for each use case.</p>
+            <div class="glossary-details">
+                <h4>Benefits</h4>
+                <ul>
+                    <li>Optimized read and write models</li>
+                    <li>Independent scaling</li>
+                    <li>Better performance for read-heavy systems</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#high-traffic">URL Shortener (High Traffic)</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="event-sourcing">
+            <div class="glossary-header">
+                <h3>Event Sourcing</h3>
+                <span class="glossary-tag">Pattern</span>
+            </div>
+            <p>Pattern where state changes are stored as a sequence of events, enabling complete audit trails and temporal queries.</p>
+            <div class="glossary-details">
+                <h4>Benefits</h4>
+                <ul>
+                    <li>Complete audit trail</li>
+                    <li>Temporal queries (state at any point)</li>
+                    <li>Event replay for debugging</li>
+                    <li>Natural fit with CQRS</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/food-ordering#events">Food Ordering</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="api-gateway">
+            <div class="glossary-header">
+                <h3>API Gateway</h3>
+                <span class="glossary-tag">Component</span>
+            </div>
+            <p>Entry point for all client requests, providing routing, authentication, rate limiting, and request transformation.</p>
+            <div class="glossary-details">
+                <h4>Responsibilities</h4>
+                <ul>
+                    <li>Request routing</li>
+                    <li>Authentication/Authorization</li>
+                    <li>Rate limiting</li>
+                    <li>Request/Response transformation</li>
+                    <li>Load balancing</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/rate-limiter#gateway">Rate Limiter</a>
+                <a href="/interview-question/food-ordering#gateway">Food Ordering</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Algorithms Category -->
+    <section class="glossary-section" data-category="algorithms">
+        <h2>Algorithms & Techniques</h2>
+
+        <div class="glossary-item" id="token-bucket">
+            <div class="glossary-header">
+                <h3>Token Bucket Algorithm</h3>
+                <span class="glossary-tag">Rate Limiting</span>
+            </div>
+            <p>Rate limiting algorithm where tokens are added to a bucket at a fixed rate. Requests consume tokens; if empty, requests are rejected.</p>
+            <div class="glossary-details">
+                <h4>How It Works</h4>
+                <ul>
+                    <li>Bucket has maximum capacity</li>
+                    <li>Tokens added at constant rate</li>
+                    <li>Each request consumes one token</li>
+                    <li>Allows burst traffic up to bucket size</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/rate-limiter#token-bucket">Rate Limiter</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="sliding-window">
+            <div class="glossary-header">
+                <h3>Sliding Window Algorithm</h3>
+                <span class="glossary-tag">Rate Limiting</span>
+            </div>
+            <p>Rate limiting algorithm that tracks requests in a sliding time window, providing smoother rate limiting than fixed windows.</p>
+            <div class="glossary-details">
+                <h4>Variants</h4>
+                <ul>
+                    <li><strong>Sliding Window Log:</strong> Store timestamp of each request</li>
+                    <li><strong>Sliding Window Counter:</strong> Weighted count from adjacent windows</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/rate-limiter#sliding-window">Rate Limiter</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="consistent-hashing">
+            <div class="glossary-header">
+                <h3>Consistent Hashing</h3>
+                <span class="glossary-tag">Distribution</span>
+            </div>
+            <p>Hashing technique that minimizes remapping when nodes are added or removed, essential for distributed caching and sharding.</p>
+            <div class="glossary-details">
+                <h4>Benefits</h4>
+                <ul>
+                    <li>Minimal data movement on scaling</li>
+                    <li>Even distribution with virtual nodes</li>
+                    <li>Fault tolerance</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#sharding">URL Shortener (Sharding)</a>
+                <a href="/interview-question/rate-limiter#distributed">Rate Limiter (Distributed)</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="base62">
+            <div class="glossary-header">
+                <h3>Base62 Encoding</h3>
+                <span class="glossary-tag">Encoding</span>
+            </div>
+            <p>Encoding scheme using 62 characters (a-z, A-Z, 0-9) to create URL-safe short codes from numeric IDs.</p>
+            <div class="glossary-details">
+                <h4>Why Base62?</h4>
+                <ul>
+                    <li>URL-safe characters only</li>
+                    <li>Case-sensitive for more combinations</li>
+                    <li>7 chars = 3.5 trillion unique codes</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#encoding">URL Shortener</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cloud Services Category -->
+    <section class="glossary-section" data-category="cloud">
+        <h2>Cloud Services & Infrastructure</h2>
+
+        <div class="glossary-item" id="cdn">
+            <div class="glossary-header">
+                <h3>CDN (Content Delivery Network)</h3>
+                <span class="glossary-tag">Infrastructure</span>
+            </div>
+            <p>Geographically distributed network of servers that cache content closer to users for faster delivery.</p>
+            <div class="glossary-details">
+                <h4>Key Benefits</h4>
+                <ul>
+                    <li>Reduced latency</li>
+                    <li>DDoS protection</li>
+                    <li>Origin offloading</li>
+                    <li>Global availability</li>
+                </ul>
+                <h4>Popular CDNs</h4>
+                <ul>
+                    <li>CloudFront (AWS)</li>
+                    <li>Cloudflare</li>
+                    <li>Akamai</li>
+                    <li>Fastly</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#cdn">URL Shortener</a>
+                <a href="/interview-question/food-ordering#cdn">Food Ordering</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="kubernetes">
+            <div class="glossary-header">
+                <h3>Kubernetes (K8s)</h3>
+                <span class="glossary-tag">Orchestration</span>
+            </div>
+            <p>Container orchestration platform for automating deployment, scaling, and management of containerized applications.</p>
+            <div class="glossary-details">
+                <h4>Key Concepts</h4>
+                <ul>
+                    <li><strong>Pods:</strong> Smallest deployable units</li>
+                    <li><strong>Services:</strong> Stable network endpoints</li>
+                    <li><strong>Deployments:</strong> Declarative updates</li>
+                    <li><strong>HPA:</strong> Horizontal Pod Autoscaler</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#deployment">URL Shortener</a>
+                <a href="/interview-question/food-ordering#deployment">Food Ordering</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="pgbouncer">
+            <div class="glossary-header">
+                <h3>PgBouncer</h3>
+                <span class="glossary-tag">Connection Pool</span>
+            </div>
+            <p>Lightweight connection pooler for PostgreSQL that reduces database connection overhead and improves performance.</p>
+            <div class="glossary-details">
+                <h4>Pooling Modes</h4>
+                <ul>
+                    <li><strong>Session:</strong> Connection per client session</li>
+                    <li><strong>Transaction:</strong> Connection per transaction</li>
+                    <li><strong>Statement:</strong> Connection per statement</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#connection-pooling">URL Shortener</a>
+            </div>
+        </div>
+
+        <div class="glossary-item" id="load-balancer">
+            <div class="glossary-header">
+                <h3>Load Balancer</h3>
+                <span class="glossary-tag">Infrastructure</span>
+            </div>
+            <p>Distributes incoming network traffic across multiple servers to ensure no single server is overwhelmed.</p>
+            <div class="glossary-details">
+                <h4>Algorithms</h4>
+                <ul>
+                    <li>Round Robin</li>
+                    <li>Least Connections</li>
+                    <li>IP Hash</li>
+                    <li>Weighted Round Robin</li>
+                </ul>
+                <h4>Types</h4>
+                <ul>
+                    <li>Layer 4 (TCP/UDP)</li>
+                    <li>Layer 7 (HTTP/HTTPS)</li>
+                </ul>
+            </div>
+            <div class="glossary-links">
+                <span>Used in:</span>
+                <a href="/interview-question/url-shortener#lb">URL Shortener</a>
+                <a href="/interview-question/food-ordering#lb">Food Ordering</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Glossary-specific styles */
+.glossary-filter {
+    padding: 10px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.glossary-filter:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.glossary-filter.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.glossary-section {
+    margin-bottom: 48px;
+}
+
+.glossary-section h2 {
+    color: #1e293b;
+    font-size: 28px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #e2e8f0;
+}
+
+.glossary-item {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.glossary-item:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.glossary-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.glossary-header h3 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 22px;
+}
+
+.glossary-tag {
+    padding: 4px 12px;
+    background: #eff6ff;
+    color: #1e40af;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.glossary-item > p {
+    color: #475569;
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.glossary-details {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.glossary-details h4 {
+    color: #334155;
+    font-size: 14px;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.glossary-details ul {
+    margin: 0 0 16px 0;
+    padding-left: 20px;
+}
+
+.glossary-details ul:last-child {
+    margin-bottom: 0;
+}
+
+.glossary-details li {
+    color: #475569;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.glossary-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.glossary-links span {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.glossary-links a {
+    padding: 6px 12px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.glossary-links a:hover {
+    background: #3b82f6;
+    color: white;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const filters = document.querySelectorAll('.glossary-filter');
+    const sections = document.querySelectorAll('.glossary-section');
+
+    filters.forEach(filter => {
+        filter.addEventListener('click', function() {
+            filters.forEach(f => f.classList.remove('active'));
+            this.classList.add('active');
+
+            const category = this.dataset.category;
+
+            sections.forEach(section => {
+                if (category === 'all' || section.dataset.category === category) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('glossary-search');
+    const items = document.querySelectorAll('.glossary-item');
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(query)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        // Show all sections when searching
+        sections.forEach(section => {
+            section.style.display = 'block';
+        });
+    });
+});
+</script>

@@ -1,0 +1,1361 @@
+<link rel="stylesheet" href="/static/css/interview-questions.css">
+
+<div class="interview-topic-layout">
+    <a href="/interview-question" class="back-to-dashboard">← Back to Dashboard</a>
+
+    <h1>System Components & Concepts</h1>
+    <p class="topic-description">Deep dive into all technologies, concepts, and patterns used in system design with diagrams and real-world examples.</p>
+
+    <!-- Quick Navigation -->
+    <div class="component-nav">
+        <a href="#databases">Databases</a>
+        <a href="#caching">Caching</a>
+        <a href="#messaging">Messaging</a>
+        <a href="#concepts">Core Concepts</a>
+        <a href="#patterns">Design Patterns</a>
+        <a href="#scaling">Scaling Strategies</a>
+    </div>
+
+    <!-- =================== DATABASES =================== -->
+    <section id="databases" class="component-section">
+        <h2>Databases</h2>
+
+        <!-- PostgreSQL -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">🐘</div>
+                <div>
+                    <h3>PostgreSQL</h3>
+                    <span class="component-type">Relational Database (RDBMS)</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>PostgreSQL is an advanced, enterprise-class open-source relational database that supports both SQL (relational) and JSON (non-relational) querying.</p>
+
+                <!-- Architecture Diagram -->
+                <div class="diagram-container">
+                    <h4>PostgreSQL Architecture</h4>
+                    <div class="architecture-visual">
+                        <div class="arch-layer">
+                            <div class="arch-box client">Client Apps</div>
+                            <div class="arch-arrow">↓</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-box lb">Connection Pooler<small>(PgBouncer)</small></div>
+                            <div class="arch-arrow">↓</div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-box server">Primary DB<small>Write Operations</small></div>
+                            <div class="arch-arrow">→</div>
+                            <div class="arch-box cache">Read Replica<small>Read Operations</small></div>
+                        </div>
+                        <div class="arch-layer">
+                            <div class="arch-box storage">WAL (Write-Ahead Log)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Features -->
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>ACID Compliance</h4>
+                        <p>Atomicity, Consistency, Isolation, Durability - guarantees data integrity even during crashes.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>JSONB Support</h4>
+                        <p>Store and query JSON data with indexing support for flexible schemas within relational model.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>PostGIS Extension</h4>
+                        <p>Geospatial data support for location-based queries (find nearby, within radius, etc.).</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Full-Text Search</h4>
+                        <p>Built-in text search with stemming, ranking, and highlighting without external tools.</p>
+                    </div>
+                </div>
+
+                <!-- Code Example -->
+                <div class="code-example">
+                    <h5>PostGIS Example - Find Nearby Restaurants</h5>
+<pre><span class="keyword">SELECT</span> name, address,
+       <span class="function">ST_Distance</span>(location, <span class="function">ST_MakePoint</span>(<span class="number">77.5946</span>, <span class="number">12.9716</span>)::geography) <span class="keyword">AS</span> distance_meters
+<span class="keyword">FROM</span> restaurants
+<span class="keyword">WHERE</span> <span class="function">ST_DWithin</span>(
+    location,
+    <span class="function">ST_MakePoint</span>(<span class="number">77.5946</span>, <span class="number">12.9716</span>)::geography,
+    <span class="number">5000</span>  <span class="comment">-- 5km radius</span>
+)
+<span class="keyword">ORDER BY</span> distance_meters
+<span class="keyword">LIMIT</span> <span class="number">20</span>;</pre>
+                </div>
+
+                <!-- Used In -->
+                <div class="used-in-section">
+                    <h4>Used In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#database">URL Shortener</a>
+                        <a href="/interview-question/food-ordering#database">Food Ordering</a>
+                        <a href="/interview-question/ride-booking#database">Ride Booking</a>
+                        <a href="/interview-question/slot-booking#database">Slot Booking</a>
+                        <a href="/interview-question/parking-lot#database">Parking Lot</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Redis -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">🔴</div>
+                <div>
+                    <h3>Redis</h3>
+                    <span class="component-type">In-Memory Data Store</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>Redis is an in-memory data structure store used as database, cache, message broker, and queue. It provides sub-millisecond latency.</p>
+
+                <!-- Data Structures Diagram -->
+                <div class="diagram-container">
+                    <h4>Redis Data Structures</h4>
+                    <div class="redis-structures">
+                        <div class="redis-type">
+                            <h5>Strings</h5>
+                            <code>SET user:1:session "abc123"</code>
+                            <p>Simple key-value, counters, caching</p>
+                        </div>
+                        <div class="redis-type">
+                            <h5>Hashes</h5>
+                            <code>HSET user:1 name "John" age 30</code>
+                            <p>Objects, user profiles, settings</p>
+                        </div>
+                        <div class="redis-type">
+                            <h5>Lists</h5>
+                            <code>LPUSH queue:jobs "job1"</code>
+                            <p>Queues, recent items, timelines</p>
+                        </div>
+                        <div class="redis-type">
+                            <h5>Sets</h5>
+                            <code>SADD tags:post:1 "tech" "go"</code>
+                            <p>Unique items, tags, relationships</p>
+                        </div>
+                        <div class="redis-type">
+                            <h5>Sorted Sets</h5>
+                            <code>ZADD leaderboard 100 "user:1"</code>
+                            <p>Rankings, leaderboards, scheduling</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rate Limiting Example -->
+                <div class="code-example">
+                    <h5>Rate Limiting with Redis (Token Bucket)</h5>
+<pre><span class="keyword">local</span> key = KEYS[<span class="number">1</span>]
+<span class="keyword">local</span> max_tokens = <span class="function">tonumber</span>(ARGV[<span class="number">1</span>])
+<span class="keyword">local</span> refill_rate = <span class="function">tonumber</span>(ARGV[<span class="number">2</span>])
+<span class="keyword">local</span> now = <span class="function">tonumber</span>(ARGV[<span class="number">3</span>])
+
+<span class="keyword">local</span> bucket = redis.<span class="function">call</span>(<span class="string">'HMGET'</span>, key, <span class="string">'tokens'</span>, <span class="string">'last_refill'</span>)
+<span class="keyword">local</span> tokens = <span class="function">tonumber</span>(bucket[<span class="number">1</span>]) <span class="keyword">or</span> max_tokens
+<span class="keyword">local</span> last_refill = <span class="function">tonumber</span>(bucket[<span class="number">2</span>]) <span class="keyword">or</span> now
+
+<span class="comment">-- Refill tokens based on elapsed time</span>
+<span class="keyword">local</span> elapsed = now - last_refill
+tokens = <span class="function">math.min</span>(max_tokens, tokens + (elapsed * refill_rate))
+
+<span class="keyword">if</span> tokens >= <span class="number">1</span> <span class="keyword">then</span>
+    tokens = tokens - <span class="number">1</span>
+    redis.<span class="function">call</span>(<span class="string">'HMSET'</span>, key, <span class="string">'tokens'</span>, tokens, <span class="string">'last_refill'</span>, now)
+    <span class="keyword">return</span> <span class="number">1</span>  <span class="comment">-- Allowed</span>
+<span class="keyword">end</span>
+<span class="keyword">return</span> <span class="number">0</span>  <span class="comment">-- Rate limited</span></pre>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Used In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#caching">URL Shortener (Caching)</a>
+                        <a href="/interview-question/rate-limiter#redis">Rate Limiter</a>
+                        <a href="/interview-question/ride-booking#caching">Ride Booking</a>
+                        <a href="/interview-question/notification#dedup">Notification (Dedup)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MongoDB -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">🍃</div>
+                <div>
+                    <h3>MongoDB</h3>
+                    <span class="component-type">Document Database (NoSQL)</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>MongoDB is a document-oriented NoSQL database designed for scalability and flexibility. Stores data in JSON-like BSON documents.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>Flexible Schema</h4>
+                        <p>Documents can have different structures - ideal for evolving data models.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Horizontal Scaling</h4>
+                        <p>Built-in sharding for distributing data across multiple machines.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Aggregation Pipeline</h4>
+                        <p>Powerful data processing and transformation framework.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Change Streams</h4>
+                        <p>Real-time notifications when data changes.</p>
+                    </div>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Used In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/notification#storage">Notification System</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== CORE CONCEPTS =================== -->
+    <section id="concepts" class="component-section">
+        <h2>Core Concepts</h2>
+
+        <!-- CAP Theorem -->
+        <div class="component-card concept-card">
+            <div class="component-header">
+                <div class="component-icon">🔺</div>
+                <div>
+                    <h3>CAP Theorem</h3>
+                    <span class="component-type">Distributed Systems Theory</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>The CAP theorem states that a distributed system can only provide two of three guarantees simultaneously: <strong>Consistency</strong>, <strong>Availability</strong>, and <strong>Partition Tolerance</strong>.</p>
+
+                <!-- CAP Triangle Diagram -->
+                <div class="diagram-container">
+                    <h4>CAP Theorem Triangle</h4>
+                    <div class="cap-diagram">
+                        <div class="cap-vertex" style="top: 0; left: 50%; transform: translateX(-50%);">
+                            <div class="cap-label">Consistency</div>
+                            <p>Every read receives the most recent write</p>
+                        </div>
+                        <div class="cap-vertex" style="bottom: 0; left: 10%;">
+                            <div class="cap-label">Availability</div>
+                            <p>Every request receives a response</p>
+                        </div>
+                        <div class="cap-vertex" style="bottom: 0; right: 10%;">
+                            <div class="cap-label">Partition Tolerance</div>
+                            <p>System continues despite network failures</p>
+                        </div>
+                        <div class="cap-center">
+                            <strong>Pick 2</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CAP Examples -->
+                <div class="cap-examples">
+                    <div class="cap-example cp">
+                        <h4>CP Systems (Consistency + Partition Tolerance)</h4>
+                        <p>Sacrifice availability during partitions. Wait for consensus.</p>
+                        <div class="examples">PostgreSQL, MongoDB, Redis Cluster, ZooKeeper</div>
+                    </div>
+                    <div class="cap-example ap">
+                        <h4>AP Systems (Availability + Partition Tolerance)</h4>
+                        <p>Sacrifice consistency. Allow stale reads during partitions.</p>
+                        <div class="examples">Cassandra, DynamoDB, CouchDB</div>
+                    </div>
+                    <div class="cap-example ca">
+                        <h4>CA Systems (Consistency + Availability)</h4>
+                        <p>Cannot handle partitions. Only works in single-node systems.</p>
+                        <div class="examples">Single-node RDBMS (no replication)</div>
+                    </div>
+                </div>
+
+                <div class="interview-tip">
+                    <h4>Interview Insight</h4>
+                    <p>In real-world distributed systems, network partitions WILL happen. So the real choice is between CP and AP. Most systems choose eventual consistency (AP) for availability, with techniques like conflict resolution and read-repair.</p>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Applied In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#consistency">URL Shortener (Eventual Consistency)</a>
+                        <a href="/interview-question/notification#reliability">Notification (At-least-once delivery)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sharding -->
+        <div class="component-card concept-card">
+            <div class="component-header">
+                <div class="component-icon">🔀</div>
+                <div>
+                    <h3>Database Sharding</h3>
+                    <span class="component-type">Horizontal Scaling</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>Sharding is a database architecture pattern that splits data across multiple database instances (shards) to handle larger datasets and higher throughput.</p>
+
+                <!-- Sharding Strategies Diagram -->
+                <div class="diagram-container">
+                    <h4>Sharding Strategies</h4>
+                    <div class="sharding-strategies">
+                        <div class="strategy">
+                            <h5>Range-Based Sharding</h5>
+                            <div class="strategy-visual">
+                                <div class="shard">Shard 1<small>IDs 1-1M</small></div>
+                                <div class="shard">Shard 2<small>IDs 1M-2M</small></div>
+                                <div class="shard">Shard 3<small>IDs 2M-3M</small></div>
+                            </div>
+                            <p class="strategy-note">Simple but can cause hotspots</p>
+                        </div>
+                        <div class="strategy">
+                            <h5>Hash-Based Sharding</h5>
+                            <div class="strategy-visual">
+                                <div class="shard">Shard 1<small>hash % 3 = 0</small></div>
+                                <div class="shard">Shard 2<small>hash % 3 = 1</small></div>
+                                <div class="shard">Shard 3<small>hash % 3 = 2</small></div>
+                            </div>
+                            <p class="strategy-note">Even distribution but hard to rebalance</p>
+                        </div>
+                        <div class="strategy">
+                            <h5>Consistent Hashing</h5>
+                            <div class="strategy-visual circle">
+                                <div class="hash-ring">
+                                    <span>Ring with virtual nodes</span>
+                                </div>
+                            </div>
+                            <p class="strategy-note">Minimal data movement on scaling</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shard Key Selection -->
+                <div class="feature-card">
+                    <h4>Choosing a Shard Key</h4>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Criteria</th>
+                                <th>Good Shard Key</th>
+                                <th>Bad Shard Key</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Cardinality</td>
+                                <td>user_id (millions of values)</td>
+                                <td>country (few values)</td>
+                            </tr>
+                            <tr>
+                                <td>Distribution</td>
+                                <td>UUID (even spread)</td>
+                                <td>timestamp (sequential hotspot)</td>
+                            </tr>
+                            <tr>
+                                <td>Query Pattern</td>
+                                <td>Matches common WHERE clause</td>
+                                <td>Requires cross-shard queries</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Applied In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#sharding">URL Shortener (Hash Sharding)</a>
+                        <a href="/interview-question/notification#sharding">Notification (User-based)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Replication -->
+        <div class="component-card concept-card">
+            <div class="component-header">
+                <div class="component-icon">📋</div>
+                <div>
+                    <h3>Database Replication</h3>
+                    <span class="component-type">High Availability</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>Replication keeps copies of data on multiple machines for fault tolerance, read scaling, and geographic distribution.</p>
+
+                <!-- Replication Types -->
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>Synchronous Replication</h4>
+                        <p>Write waits for all replicas. Strong consistency but higher latency.</p>
+                        <div class="use-case">Use for: Financial transactions, critical data</div>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Asynchronous Replication</h4>
+                        <p>Write returns immediately. Eventually consistent, lower latency.</p>
+                        <div class="use-case">Use for: Read scaling, analytics replicas</div>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Semi-Synchronous</h4>
+                        <p>Wait for at least one replica. Balance of consistency and performance.</p>
+                        <div class="use-case">Use for: Most production systems</div>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Multi-Master</h4>
+                        <p>Multiple nodes accept writes. Requires conflict resolution.</p>
+                        <div class="use-case">Use for: Global active-active deployments</div>
+                    </div>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Applied In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#replication">URL Shortener (Read Replicas)</a>
+                        <a href="/interview-question/food-ordering#replication">Food Ordering</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indexing -->
+        <div class="component-card concept-card">
+            <div class="component-header">
+                <div class="component-icon">📑</div>
+                <div>
+                    <h3>Database Indexing</h3>
+                    <span class="component-type">Query Optimization</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>Indexes are data structures that improve query performance by reducing the amount of data scanned. Essential for fast lookups.</p>
+
+                <!-- Index Types -->
+                <div class="index-types">
+                    <div class="index-type">
+                        <h4>B-Tree Index</h4>
+                        <p>Default index type. Good for equality and range queries.</p>
+                        <code>CREATE INDEX idx_users_email ON users(email);</code>
+                    </div>
+                    <div class="index-type">
+                        <h4>Hash Index</h4>
+                        <p>Only for equality comparisons. O(1) lookup.</p>
+                        <code>CREATE INDEX idx_sessions USING HASH ON sessions(token);</code>
+                    </div>
+                    <div class="index-type">
+                        <h4>GIN Index</h4>
+                        <p>Generalized Inverted Index. For arrays, JSONB, full-text.</p>
+                        <code>CREATE INDEX idx_tags ON posts USING GIN(tags);</code>
+                    </div>
+                    <div class="index-type">
+                        <h4>GIST Index</h4>
+                        <p>Generalized Search Tree. For geometric/spatial data.</p>
+                        <code>CREATE INDEX idx_location ON places USING GIST(location);</code>
+                    </div>
+                    <div class="index-type">
+                        <h4>Partial Index</h4>
+                        <p>Index only rows matching a condition. Smaller and faster.</p>
+                        <code>CREATE INDEX idx_active ON users(id) WHERE is_active = true;</code>
+                    </div>
+                    <div class="index-type">
+                        <h4>Composite Index</h4>
+                        <p>Multi-column index. Order matters for query matching.</p>
+                        <code>CREATE INDEX idx_orders ON orders(user_id, created_at DESC);</code>
+                    </div>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Applied In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#indexes">URL Shortener</a>
+                        <a href="/interview-question/food-ordering#indexes">Food Ordering</a>
+                        <a href="/interview-question/ride-booking#indexes">Ride Booking</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== MESSAGING =================== -->
+    <section id="messaging" class="component-section">
+        <h2>Messaging & Event Streaming</h2>
+
+        <!-- Kafka -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">📨</div>
+                <div>
+                    <h3>Apache Kafka</h3>
+                    <span class="component-type">Event Streaming Platform</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>Kafka is a distributed event streaming platform for high-throughput, fault-tolerant, publish-subscribe messaging.</p>
+
+                <!-- Kafka Architecture -->
+                <div class="diagram-container">
+                    <h4>Kafka Architecture</h4>
+                    <div class="kafka-diagram">
+                        <div class="kafka-layer">
+                            <div class="kafka-producers">
+                                <div class="arch-box server">Producer 1</div>
+                                <div class="arch-box server">Producer 2</div>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="kafka-layer">
+                            <div class="kafka-topic">
+                                <h5>Topic: orders</h5>
+                                <div class="partitions">
+                                    <div class="partition">P0</div>
+                                    <div class="partition">P1</div>
+                                    <div class="partition">P2</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="kafka-layer">
+                            <div class="kafka-consumers">
+                                <div class="consumer-group">
+                                    <h6>Consumer Group: order-processor</h6>
+                                    <div class="consumers">
+                                        <div class="arch-box worker">C1 (P0)</div>
+                                        <div class="arch-box worker">C2 (P1)</div>
+                                        <div class="arch-box worker">C3 (P2)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>Partitions</h4>
+                        <p>Topics are split into partitions for parallel processing and ordering within partition.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Consumer Groups</h4>
+                        <p>Multiple consumers in a group share partitions for load balancing.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Retention</h4>
+                        <p>Messages are retained for configurable time, allowing replay.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Exactly-Once</h4>
+                        <p>Supports exactly-once semantics with idempotent producers.</p>
+                    </div>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Used In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#analytics">URL Shortener (Analytics)</a>
+                        <a href="/interview-question/notification#kafka">Notification System</a>
+                        <a href="/interview-question/food-ordering#events">Food Ordering</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== SCALING =================== -->
+    <section id="scaling" class="component-section">
+        <h2>Scaling Strategies</h2>
+
+        <!-- Horizontal vs Vertical -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">📈</div>
+                <div>
+                    <h3>Scaling Approaches</h3>
+                    <span class="component-type">Infrastructure</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <div class="scaling-comparison">
+                    <div class="scaling-type">
+                        <h4>Vertical Scaling (Scale Up)</h4>
+                        <div class="scaling-visual vertical">
+                            <div class="server small">4 CPU, 8GB</div>
+                            <div class="arch-arrow">↓</div>
+                            <div class="server large">32 CPU, 128GB</div>
+                        </div>
+                        <ul>
+                            <li>Add more CPU/RAM to existing server</li>
+                            <li>Simple, no code changes</li>
+                            <li>Hardware limits exist</li>
+                            <li>Single point of failure</li>
+                        </ul>
+                    </div>
+                    <div class="scaling-type">
+                        <h4>Horizontal Scaling (Scale Out)</h4>
+                        <div class="scaling-visual horizontal">
+                            <div class="server-row">
+                                <div class="server small">Server 1</div>
+                            </div>
+                            <div class="arch-arrow">↓</div>
+                            <div class="server-row">
+                                <div class="server small">Server 1</div>
+                                <div class="server small">Server 2</div>
+                                <div class="server small">Server 3</div>
+                            </div>
+                        </div>
+                        <ul>
+                            <li>Add more servers</li>
+                            <li>Near-infinite scaling</li>
+                            <li>Requires distributed architecture</li>
+                            <li>More complex, but fault tolerant</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Applied In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#scaling">URL Shortener</a>
+                        <a href="/interview-question/notification#scaling">Notification System</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Caching Strategies -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">⚡</div>
+                <div>
+                    <h3>Caching Strategies</h3>
+                    <span class="component-type">Performance</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <div class="caching-patterns">
+                    <div class="cache-pattern">
+                        <h4>Cache-Aside (Lazy Loading)</h4>
+                        <p>Application checks cache first, loads from DB on miss, then caches.</p>
+                        <div class="code-example">
+<pre><span class="keyword">func</span> <span class="function">GetUser</span>(id <span class="keyword">string</span>) *User {
+    <span class="comment">// 1. Check cache</span>
+    <span class="keyword">if</span> user := cache.<span class="function">Get</span>(<span class="string">"user:"</span> + id); user != <span class="keyword">nil</span> {
+        <span class="keyword">return</span> user
+    }
+    <span class="comment">// 2. Load from DB</span>
+    user := db.<span class="function">FindUser</span>(id)
+    <span class="comment">// 3. Cache it</span>
+    cache.<span class="function">Set</span>(<span class="string">"user:"</span> + id, user, <span class="number">1</span>*time.Hour)
+    <span class="keyword">return</span> user
+}</pre>
+                        </div>
+                    </div>
+                    <div class="cache-pattern">
+                        <h4>Write-Through</h4>
+                        <p>Write to cache and DB together. Always consistent but slower writes.</p>
+                    </div>
+                    <div class="cache-pattern">
+                        <h4>Write-Behind (Write-Back)</h4>
+                        <p>Write to cache immediately, async write to DB. Fast but risk of data loss.</p>
+                    </div>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Applied In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/url-shortener#caching">URL Shortener</a>
+                        <a href="/interview-question/food-ordering#caching">Food Ordering</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =================== PATTERNS =================== -->
+    <section id="patterns" class="component-section">
+        <h2>Design Patterns</h2>
+
+        <!-- Circuit Breaker -->
+        <div class="component-card">
+            <div class="component-header">
+                <div class="component-icon">🔌</div>
+                <div>
+                    <h3>Circuit Breaker Pattern</h3>
+                    <span class="component-type">Resilience</span>
+                </div>
+            </div>
+
+            <div class="component-content">
+                <p>Prevents cascading failures by stopping requests to a failing service. Like an electrical circuit breaker.</p>
+
+                <div class="circuit-states">
+                    <div class="circuit-state closed">
+                        <h4>Closed</h4>
+                        <p>Normal operation. Requests pass through.</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="circuit-state open">
+                        <h4>Open</h4>
+                        <p>Failure threshold reached. Requests fail fast.</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="circuit-state half-open">
+                        <h4>Half-Open</h4>
+                        <p>Test with limited requests. Recover or stay open.</p>
+                    </div>
+                </div>
+
+                <div class="used-in-section">
+                    <h4>Applied In These Projects</h4>
+                    <div class="project-links">
+                        <a href="/interview-question/notification#resilience">Notification System</a>
+                        <a href="/interview-question/food-ordering#resilience">Food Ordering</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+/* Component Page Styles */
+.component-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 24px 0 32px 0;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.component-nav a {
+    padding: 10px 20px;
+    background: white;
+    color: #3b82f6;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 2px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.component-nav a:hover {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.component-section {
+    margin-bottom: 48px;
+}
+
+.component-section > h2 {
+    font-size: 32px;
+    color: #0f172a;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #e2e8f0;
+}
+
+.component-card {
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.component-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.component-icon {
+    font-size: 48px;
+}
+
+.component-header h3 {
+    margin: 0;
+    font-size: 28px;
+    color: #0f172a;
+}
+
+.component-type {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.component-content {
+    padding: 24px;
+}
+
+.component-content > p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #475569;
+    margin-bottom: 24px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+}
+
+.feature-item {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #3b82f6;
+}
+
+.feature-item h4 {
+    margin: 0 0 8px 0;
+    color: #1e293b;
+    font-size: 16px;
+}
+
+.feature-item p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.feature-item .use-case {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 12px;
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.used-in-section {
+    margin-top: 24px;
+    padding: 20px;
+    background: #eff6ff;
+    border-radius: 12px;
+}
+
+.used-in-section h4 {
+    margin: 0 0 12px 0;
+    color: #1e40af;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.project-links a {
+    padding: 8px 16px;
+    background: white;
+    color: #3b82f6;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #bfdbfe;
+    transition: all 0.2s;
+}
+
+.project-links a:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Redis Structures */
+.redis-structures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.redis-type {
+    background: #fef2f2;
+    padding: 16px;
+    border-radius: 10px;
+    border-left: 4px solid #ef4444;
+}
+
+.redis-type h5 {
+    margin: 0 0 8px 0;
+    color: #991b1b;
+}
+
+.redis-type code {
+    display: block;
+    background: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    word-break: break-all;
+}
+
+.redis-type p {
+    margin: 0;
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* CAP Diagram */
+.cap-diagram {
+    position: relative;
+    height: 300px;
+    margin: 24px 0;
+}
+
+.cap-vertex {
+    position: absolute;
+    text-align: center;
+    max-width: 180px;
+}
+
+.cap-label {
+    background: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.cap-vertex p {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+}
+
+.cap-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fef3c7;
+    padding: 16px 24px;
+    border-radius: 50%;
+    color: #92400e;
+    font-size: 18px;
+}
+
+.cap-examples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.cap-example {
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.cap-example.cp {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+}
+
+.cap-example.ap {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+}
+
+.cap-example.ca {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+}
+
+.cap-example h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+}
+
+.cap-example p {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.cap-example .examples {
+    font-size: 12px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.interview-tip {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #f59e0b;
+    margin: 24px 0;
+}
+
+.interview-tip h4 {
+    margin: 0 0 8px 0;
+    color: #92400e;
+}
+
+.interview-tip p {
+    margin: 0;
+    color: #78350f;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Index Types */
+.index-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.index-type {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.index-type h4 {
+    margin: 0 0 8px 0;
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.index-type p {
+    margin: 0 0 12px 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.index-type code {
+    display: block;
+    background: #0f172a;
+    color: #22c55e;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    overflow-x: auto;
+}
+
+/* Sharding Strategies */
+.sharding-strategies {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin: 20px 0;
+}
+
+.strategy {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.strategy h5 {
+    margin: 0 0 16px 0;
+    color: #1e293b;
+}
+
+.strategy-visual {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.shard {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.shard small {
+    display: block;
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+.strategy-note {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Circuit Breaker States */
+.circuit-states {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 24px 0;
+}
+
+.circuit-state {
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 150px;
+}
+
+.circuit-state.closed {
+    background: #dcfce7;
+    border: 2px solid #22c55e;
+}
+
+.circuit-state.open {
+    background: #fee2e2;
+    border: 2px solid #ef4444;
+}
+
+.circuit-state.half-open {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+}
+
+.circuit-state h4 {
+    margin: 0 0 8px 0;
+}
+
+.circuit-state p {
+    margin: 0;
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Scaling Visual */
+.scaling-comparison {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin: 24px 0;
+}
+
+.scaling-type {
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 12px;
+}
+
+.scaling-type h4 {
+    margin: 0 0 16px 0;
+    color: #1e293b;
+}
+
+.scaling-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+}
+
+.server {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.server.large {
+    padding: 20px 30px;
+    font-size: 14px;
+}
+
+.server-row {
+    display: flex;
+    gap: 8px;
+}
+
+.scaling-type ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.scaling-type li {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+/* Kafka Diagram */
+.kafka-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.kafka-layer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.kafka-producers, .kafka-consumers {
+    display: flex;
+    gap: 16px;
+}
+
+.kafka-topic {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid #3b82f6;
+}
+
+.kafka-topic h5 {
+    margin: 0 0 12px 0;
+    color: #1e40af;
+}
+
+.partitions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.partition {
+    background: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.consumer-group {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.consumer-group h6 {
+    margin: 0 0 12px 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.consumers {
+    display: flex;
+    gap: 8px;
+}
+
+/* Caching Patterns */
+.caching-patterns {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cache-pattern {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.cache-pattern h4 {
+    margin: 0 0 8px 0;
+    color: #1e293b;
+}
+
+.cache-pattern > p {
+    margin: 0 0 16px 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* Architecture Visual */
+.architecture-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.arch-layer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .component-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .cap-diagram {
+        height: auto;
+    }
+
+    .cap-vertex {
+        position: static;
+        transform: none !important;
+        margin-bottom: 16px;
+    }
+
+    .cap-center {
+        position: static;
+        transform: none;
+        margin: 16px auto;
+    }
+
+    .circuit-states {
+        flex-direction: column;
+    }
+
+    .circuit-states .arch-arrow {
+        transform: rotate(90deg);
+    }
+}
+</style>
