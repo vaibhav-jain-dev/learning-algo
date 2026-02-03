@@ -177,13 +177,8 @@ services:
     labels:
       - "cloudflare:learn.arvaibhav.cloud:8080"
       - "cloudflare:learn-api.arvaibhav.cloud:8080"
-    # Dependencies - only core services (Postgres, Redis)
-    # Elasticsearch is optional - app will work without it
-    depends_on:
-      dsalgo-postgres:
-        condition: service_healthy
-      dsalgo-redis:
-        condition: service_healthy
+    # No dependencies - app starts immediately and handles service connections gracefully
+    # Services (Postgres, Redis, Elasticsearch) are available but app doesn't wait for them
     ports:
       - "8080:8080"
     volumes:
@@ -263,13 +258,8 @@ services:
     labels:
       - "cloudflare:learn.arvaibhav.cloud:8080"
       - "cloudflare:learn-api.arvaibhav.cloud:8080"
-    # Dependencies - only core services (Postgres, Redis)
-    # Elasticsearch is optional - app will work without it
-    depends_on:
-      dsalgo-postgres:
-        condition: service_healthy
-      dsalgo-redis:
-        condition: service_healthy
+    # No dependencies - app starts immediately and handles service connections gracefully
+    # Services (Postgres, Redis, Elasticsearch) are available but app doesn't wait for them
     ports:
       - "8080:8080"
     volumes:
