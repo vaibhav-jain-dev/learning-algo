@@ -2028,8 +2028,227 @@ li.CodeMirror-hint-active {
         padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
         font-size: var(--text-xs, 0.75rem);
     }
-    
+
     .panel-title {
         font-size: var(--text-lg, 1.125rem) !important;
+    }
+}
+
+/* ============================================
+   SOLUTION TABS - Python/Go Toggle
+   ============================================ */
+.solution-tabs-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #e8ecf1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.solution-tabs-header {
+    display: flex;
+    background: #d1d9e3;
+    border-bottom: 2px solid #c4ced9;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.solution-tab-btn {
+    flex: 1;
+    padding: 0.875rem 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #5a6a7a;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+    font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+}
+
+.solution-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: #3a4a5a;
+}
+
+.solution-tab-btn.active {
+    background: #e8ecf1;
+    color: #1e3a5f;
+    box-shadow: inset 0 -3px 0 #3b82f6;
+}
+
+.solution-tab-btn.active[data-lang="python"] {
+    box-shadow: inset 0 -3px 0 #3776ab;
+}
+
+.solution-tab-btn.active[data-lang="go"] {
+    box-shadow: inset 0 -3px 0 #00ADD8;
+}
+
+.solution-tab-icon {
+    font-size: 1.1rem;
+}
+
+.solution-tabs-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.solution-tab-panel {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.solution-tab-panel.active {
+    display: flex;
+}
+
+.solution-panel-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.75rem 1rem;
+    background: #dde4ec;
+    border-bottom: 1px solid #c4ced9;
+    flex-shrink: 0;
+}
+
+.solution-copy-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+    font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+}
+
+.solution-copy-btn.python {
+    background: #3776ab;
+    color: white;
+}
+
+.solution-copy-btn.python:hover {
+    background: #2d5f8a;
+}
+
+.solution-copy-btn.go {
+    background: #00ADD8;
+    color: white;
+}
+
+.solution-copy-btn.go:hover {
+    background: #0090b5;
+}
+
+.solution-code-block {
+    flex: 1;
+    margin: 0;
+    padding: 1.25rem;
+    background: #1e2736;
+    overflow: auto;
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #e4e8ed;
+    border-radius: 0;
+}
+
+.solution-code-block code {
+    font-family: inherit;
+    background: transparent;
+    padding: 0;
+}
+
+.solution-no-code {
+    color: #6b7a8a;
+    padding: 2rem;
+    text-align: center;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Better syntax highlighting colors for light grey bg */
+.solution-code-block .hljs-keyword {
+    color: #c792ea;
+    font-weight: 600;
+}
+
+.solution-code-block .hljs-built_in {
+    color: #82aaff;
+}
+
+.solution-code-block .hljs-type {
+    color: #ffcb6b;
+}
+
+.solution-code-block .hljs-literal {
+    color: #f78c6c;
+}
+
+.solution-code-block .hljs-number {
+    color: #f78c6c;
+}
+
+.solution-code-block .hljs-string {
+    color: #c3e88d;
+}
+
+.solution-code-block .hljs-comment {
+    color: #7c8fa0;
+    font-style: italic;
+}
+
+.solution-code-block .hljs-function {
+    color: #82aaff;
+}
+
+.solution-code-block .hljs-title {
+    color: #82aaff;
+    font-weight: 600;
+}
+
+.solution-code-block .hljs-params {
+    color: #e4e8ed;
+}
+
+.solution-code-block .hljs-variable {
+    color: #f07178;
+}
+
+.solution-code-block .hljs-attr {
+    color: #ffcb6b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .solution-tab-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .solution-code-block {
+        font-size: 0.8rem;
+        padding: 1rem;
+        line-height: 1.6;
+    }
+
+    .solution-copy-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
     }
 }

@@ -6415,39 +6415,52 @@
     }
 
     function renderSolutions(solContent, pythonCode, goCode) {
-        var html = '<div style="display:flex;flex-direction:column;gap:1.5rem;">';
+        var html = '<div class="solution-tabs-container">';
 
-        // Python Solution
-        html += '<div style="background:#f8f9fa;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
-        html += '<h3 style="color:#306998;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🐍 Python Solution</h3>';
+        // Tab buttons
+        html += '<div class="solution-tabs-header">';
+        html += '<button class="solution-tab-btn active" data-lang="python">';
+        html += '<span class="solution-tab-icon">🐍</span> Python';
+        html += '</button>';
+        html += '<button class="solution-tab-btn" data-lang="go">';
+        html += '<span class="solution-tab-icon">🔵</span> Go';
+        html += '</button>';
+        html += '</div>';
+
+        // Tab content
+        html += '<div class="solution-tabs-content">';
+
+        // Python Solution Tab
+        html += '<div class="solution-tab-panel active" data-lang="python">';
+        html += '<div class="solution-panel-header">';
         if (pythonCode) {
-            html += '<button onclick="window.copyToEditor(\'python\')" style="background:#306998;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
+            html += '<button onclick="window.copyToEditor(\'python\')" class="solution-copy-btn python">Copy to Editor</button>';
         }
         html += '</div>';
         if (pythonCode) {
-            html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
+            html += '<pre class="solution-code-block"><code class="language-python">' + escapeHtml(pythonCode) + '</code></pre>';
         } else {
-            html += '<p style="color:#888;margin:0;">No Python solution available.</p>';
+            html += '<p class="solution-no-code">No Python solution available.</p>';
         }
         html += '</div>';
 
-        // Go Solution
-        html += '<div style="background:#f0f5f9;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;">';
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">';
-        html += '<h3 style="color:#00ADD8;margin:0;font-size:1rem;display:flex;align-items:center;gap:0.5rem;">🔵 Go Solution</h3>';
+        // Go Solution Tab
+        html += '<div class="solution-tab-panel" data-lang="go">';
+        html += '<div class="solution-panel-header">';
         if (goCode) {
-            html += '<button onclick="window.copyToEditor(\'go\')" style="background:#00ADD8;color:white;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;gap:0.3rem;">📋 Copy to Editor</button>';
+            html += '<button onclick="window.copyToEditor(\'go\')" class="solution-copy-btn go">Copy to Editor</button>';
         }
         html += '</div>';
         if (goCode) {
-            html += '<pre style="background:#282c34;color:#abb2bf;padding:1rem;border-radius:6px;overflow-x:auto;max-height:400px;overflow-y:auto;margin:0;font-size:0.85rem;line-height:1.5;"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
+            html += '<pre class="solution-code-block"><code class="language-go">' + escapeHtml(goCode) + '</code></pre>';
         } else {
-            html += '<p style="color:#888;margin:0;">No Go solution available.</p>';
+            html += '<p class="solution-no-code">No Go solution available.</p>';
         }
         html += '</div>';
 
-        html += '</div>';
+        html += '</div>'; // .solution-tabs-content
+        html += '</div>'; // .solution-tabs-container
+
         solContent.innerHTML = html;
 
         // Apply syntax highlighting
@@ -6456,6 +6469,24 @@
                 hljs.highlightElement(block);
             });
         }
+
+        // Add tab switching logic
+        var tabBtns = solContent.querySelectorAll('.solution-tab-btn');
+        var tabPanels = solContent.querySelectorAll('.solution-tab-panel');
+
+        tabBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var lang = this.getAttribute('data-lang');
+
+                // Update active tab button
+                tabBtns.forEach(function(b) { b.classList.remove('active'); });
+                this.classList.add('active');
+
+                // Update active panel
+                tabPanels.forEach(function(p) { p.classList.remove('active'); });
+                solContent.querySelector('.solution-tab-panel[data-lang="' + lang + '"]').classList.add('active');
+            });
+        });
     }
 
     // ============================================
