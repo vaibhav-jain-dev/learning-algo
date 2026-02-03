@@ -11807,15 +11807,17 @@
                     h3 { font-size: 11px; color: #374151; margin: 8px 0 4px 0; }
 
                     /* Compact problem card */
-                    .problem { margin-bottom: 10px; padding: 8px 10px; background: #f8fafc; border-radius: 4px; border-left: 3px solid #3b82f6; page-break-inside: avoid; }
-                    .problem-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
-                    .problem-title { font-size: 11px; font-weight: 600; color: #1e293b; }
-                    .difficulty { font-size: 8px; padding: 1px 5px; border-radius: 3px; font-weight: 600; text-transform: uppercase; }
+                    .problem { margin-bottom: 8px; padding: 6px 10px; background: #f8fafc; border-radius: 4px; border-left: 3px solid #3b82f6; page-break-inside: avoid; }
+                    .problem-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
+                    .q-num { font-size: 10px; font-weight: 700; color: #1e40af; background: #dbeafe; padding: 1px 6px; border-radius: 3px; }
+                    .a-num { font-size: 10px; font-weight: 700; color: #166534; background: #dcfce7; padding: 1px 6px; border-radius: 3px; }
+                    .problem-title { font-size: 10px; font-weight: 600; color: #1e293b; }
+                    .difficulty { font-size: 7px; padding: 1px 4px; border-radius: 3px; font-weight: 600; text-transform: uppercase; }
                     .easy { background: #dcfce7; color: #166534; }
                     .medium { background: #fef3c7; color: #a16207; }
                     .hard { background: #fee2e2; color: #b91c1c; }
                     .very-hard { background: #fae8ff; color: #86198f; }
-                    .tags { font-size: 8px; color: #64748b; }
+                    .tags { font-size: 7px; color: #64748b; }
 
                     /* Description */
                     .desc { font-size: 9px; color: #475569; margin: 4px 0; line-height: 1.3; }
@@ -11834,8 +11836,10 @@
 
                     /* Solutions */
                     .solution-section { margin: 6px 0; }
-                    .approach { margin: 6px 0; padding: 6px 8px; background: #fff; border-radius: 4px; border: 1px solid #e2e8f0; page-break-inside: avoid; }
-                    .approach-title { font-size: 10px; font-weight: 600; color: #1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+                    .solution-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+                    .solution-title { font-size: 10px; font-weight: 600; color: #374151; }
+                    .approach { margin: 4px 0; padding: 5px 8px; background: #fff; border-radius: 4px; border: 1px solid #e2e8f0; page-break-inside: avoid; }
+                    .approach-title { font-size: 9px; font-weight: 600; color: #1e293b; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
                     .approach-badge { font-size: 7px; padding: 1px 4px; border-radius: 3px; background: #dcfce7; color: #166534; }
                     pre { background: #1e293b; color: #e2e8f0; padding: 6px; border-radius: 3px; font-family: 'SF Mono', Consolas, monospace; font-size: 8px; overflow-x: auto; white-space: pre-wrap; margin: 4px 0; }
 
@@ -11867,23 +11871,24 @@
 
             for (var j = 0; j < problems.length; j++) {
                 var problem = problems[j];
+                var qNum = j + 1; // Q1, Q2, Q3...
 
                 if (includeProblems) {
-                    content += await renderProblemForPDF(cat, problem, false);
+                    content += await renderProblemForPDF(cat, problem, false, null, qNum, null);
 
-                    // Include similar/alternative problems
+                    // Include similar/alternative problems (Q1.1, Q1.2, Q1.3...)
                     if (problem.similar && problem.similar.length > 0) {
                         for (var k = 0; k < problem.similar.length; k++) {
-                            content += await renderProblemForPDF(cat, problem, true, k);
+                            content += await renderProblemForPDF(cat, problem, true, k, qNum, k + 1);
                         }
                     }
                 }
 
                 if (includeSolutions) {
-                    content += await renderSolutionForPDF(cat, problem);
+                    content += await renderSolutionForPDF(cat, problem, qNum);
                 }
 
-                content += '<hr style="border:none;border-top:1px dashed #e2e8f0;margin:20px 0;">';
+                content += '<hr style="border:none;border-top:1px dashed #e2e8f0;margin:8px 0;">';
             }
 
             if (i < categories.length - 1) {
@@ -11909,14 +11914,18 @@
         return names[cat] || cat;
     }
 
-    async function renderProblemForPDF(category, problem, isAlt, altIdx) {
+    async function renderProblemForPDF(category, problem, isAlt, altIdx, qNum, subNum) {
         var html = '<div class="problem' + (isAlt ? ' alt-problem' : '') + '">';
         var title = isAlt ? problem.similar[altIdx].name : problem.name;
         var id = isAlt ? problem.similar[altIdx].id : problem.id;
         var difficulty = isAlt ? (problem.similar[altIdx].difficulty || problem.difficulty) : problem.difficulty;
 
+        // Build question number (Q1, Q1.1, Q1.2, etc.)
+        var qLabel = 'Q' + qNum + (subNum ? '.' + subNum : '');
+
         html += '<div class="problem-header">';
-        html += '<span class="problem-title">' + (isAlt ? '↳ ' : '') + escapeHtml(title) + '</span>';
+        html += '<span class="q-num">' + qLabel + '</span>';
+        html += '<span class="problem-title">' + escapeHtml(title) + '</span>';
         html += '<span class="difficulty ' + difficulty.toLowerCase() + '">' + difficulty.toUpperCase() + '</span>';
         if (problem.tags && !isAlt) {
             html += '<span class="tags">' + problem.tags.join(', ') + '</span>';
@@ -11986,9 +11995,10 @@
         return html;
     }
 
-    async function renderSolutionForPDF(category, problem) {
+    async function renderSolutionForPDF(category, problem, qNum) {
+        var aLabel = 'A' + qNum;
         var html = '<div class="solution-section">';
-        html += '<h3>Solutions for: ' + escapeHtml(problem.name) + '</h3>';
+        html += '<div class="solution-header"><span class="a-num">' + aLabel + '</span> <span class="solution-title">Solutions: ' + escapeHtml(problem.name) + '</span></div>';
 
         try {
             var basePath = '/problems/200-must-solve/' + category + '/' + problem.id;
@@ -12000,11 +12010,13 @@
 
                 if (approaches.length > 0) {
                     approaches.forEach(function(approach, idx) {
+                        var approachLabel = aLabel + '.' + (idx + 1);
                         html += '<div class="approach">';
                         html += '<div class="approach-title">';
-                        html += '<span>' + approach.number + '. ' + escapeHtml(approach.title) + '</span>';
+                        html += '<span class="a-num" style="font-size:8px;padding:1px 4px;">' + approachLabel + '</span>';
+                        html += '<span>' + escapeHtml(approach.title) + '</span>';
                         if (approach.isRecommended) {
-                            html += '<span class="approach-badge" style="background:#dcfce7;color:#166534;">Best Choice</span>';
+                            html += '<span class="approach-badge">Best</span>';
                         }
                         html += '</div>';
 
